@@ -165,7 +165,7 @@ class TraderService
                     break;
                 case TradeGroupEnum::DARK_THINGS:
                     $title = 'Umbral';
-                    $trades = $this->getDarkThingsOffers($user, $quantities);
+                    $trades = $this->getUmbralThingsOffers($user, $quantities);
                     break;
                 case TradeGroupEnum::CURIOSITIES:
                     $title = 'Curiosities';
@@ -769,7 +769,7 @@ class TraderService
         ];
     }
 
-    private function getDarkThingsOffers(User $user, array $quantities): array
+    private function getUmbralThingsOffers(User $user, array $quantities): array
     {
         return [
             TraderOffer::createTradeOffer(
@@ -814,6 +814,16 @@ class TraderService
                 $user,
                 $quantities
             ),
+            TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Heart Beetle'), 1),
+                    TraderOfferCostOrYield::createRecyclingPoints(2),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Harmony-dusted Donut'), 1) ],
+                'What? No, we don\'t _cook_ them! That would be barbaric...',
+                $user,
+                $quantities
+            )
         ];
     }
 

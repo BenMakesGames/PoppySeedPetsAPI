@@ -36,4 +36,5 @@ final class StatusEffectEnum
     public const GLITTER_BOMBED = 'Glitter-bombed';
     public const RAWR = 'Rawr!';
     public const MOONSTRUCK = 'Moonstruck';
+    public const CORDIAL = 'Cordial';
 }

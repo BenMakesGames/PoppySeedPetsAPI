@@ -8,6 +8,7 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\RelationshipEnum;
+use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRelationshipRepository;
@@ -468,6 +469,11 @@ class PetRelationshipService
                     throw new \InvalidArgumentException('p1 relationship goal is of an unexpected type, "' . $p1->getRelationshipGoal() . '"');
             }
         }
+    }
+
+    private static function EitherPetIsCordial(Pet $p1, Pet $p2): bool
+    {
+        return $p1->hasStatusEffect(StatusEffectEnum::CORDIAL) || $p2->hasStatusEffect(StatusEffectEnum::CORDIAL);
     }
 
     /**
