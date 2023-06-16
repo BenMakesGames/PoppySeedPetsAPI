@@ -73,7 +73,12 @@ class FruitScrollController extends AbstractController
 
             $em->flush();
 
-            $responseService->addFlashMessage('You read the scroll perfectly, summoning ' . $numItems . '&times; ' . $item . '!');
+            $message = 'You read the scroll perfectly, summoning ' . $numItems . '&times; ' . $item . '!';
+
+            if($squirrel3->rngNextInt(1, 10) == 10)
+                $message .= "\n\nAs the scroll dissolves, the motes of nothingness it leaves behind form words in your mind:\n\n\"Tie a String to a Fruit Fly, and find my reward.\"\n\nFascinating! Who knew motes of nothingness could talk!";
+
+            $responseService->addFlashMessage($message);
 
             return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
         }
