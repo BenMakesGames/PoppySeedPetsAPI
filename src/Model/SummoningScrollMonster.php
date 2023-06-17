@@ -1,6 +1,8 @@
 <?php
 namespace App\Model;
 
+use App\Enum\Enum;
+
 class SummoningScrollMonster
 {
     public string $name;
@@ -21,7 +23,7 @@ class SummoningScrollMonster
         $monster->nameWithArticle = 'a Dragon';
         $monster->majorReward = 'Dragon Vase';
         $monster->minorRewards = [ 'Scales', 'Gold Bar' ];
-        $monster->element = 'fire';
+        $monster->element = SummoningScrollMonsterElementEnum::FIRE;
 
         return $monster;
     }
@@ -34,7 +36,7 @@ class SummoningScrollMonster
         $monster->nameWithArticle = 'a Balrog';
         $monster->majorReward = 'Blackonite';
         $monster->minorRewards = [ 'Quintessence', 'Talon' ];
-        $monster->element = 'fire';
+        $monster->element = SummoningScrollMonsterElementEnum::FIRE;
 
         return $monster;
     }
@@ -47,7 +49,7 @@ class SummoningScrollMonster
         $monster->nameWithArticle = 'a Basabasa';
         $monster->majorReward = 'Black Feathers';
         $monster->minorRewards = [ 'Feathers', 'Talon' ];
-        $monster->element = 'fire';
+        $monster->element = SummoningScrollMonsterElementEnum::FIRE;
 
         return $monster;
     }
@@ -60,7 +62,7 @@ class SummoningScrollMonster
         $monster->nameWithArticle = 'Ifrit';
         $monster->majorReward = 'Gold Crown';
         $monster->minorRewards = [ 'Quintessence', 'White Cloth' ];
-        $monster->element = 'fire';
+        $monster->element = SummoningScrollMonsterElementEnum::FIRE;
 
         return $monster;
     }
@@ -73,7 +75,7 @@ class SummoningScrollMonster
         $monster->nameWithArticle = 'Cherufe';
         $monster->majorReward = 'Meteorite';
         $monster->minorRewards = [ 'Liquid-hot Magma', 'Iron Ore' ];
-        $monster->element = 'fire';
+        $monster->element = SummoningScrollMonsterElementEnum::FIRE;
 
         return $monster;
     }
@@ -86,7 +88,7 @@ class SummoningScrollMonster
         $monster->nameWithArticle = 'a Crystalline Entity';
         $monster->majorReward = 'Forgetting Scroll';
         $monster->minorRewards = [ 'Fiberglass', 'Gypsum' ];
-        $monster->element = 'electricity';
+        $monster->element = SummoningScrollMonsterElementEnum::ELECTRICITY;
 
         return $monster;
     }
@@ -99,7 +101,8 @@ class SummoningScrollMonster
         $monster->nameWithArticle = 'Bivu\'s Release';
         $monster->majorReward = 'Collimated Lance';
         $monster->minorRewards = [ 'Photon', 'Gravitational Waves' ];
-        $monster->element = 'fire';
+        $monster->element = SummoningScrollMonsterElementEnum::FIRE;
+
         $monster->fieldGuideEntry = 'Bivu';
 
         return $monster;
@@ -113,9 +116,33 @@ class SummoningScrollMonster
         $monster->nameWithArticle = 'an Intergalactic Space Jelly';
         $monster->majorReward = 'Transparent Bow';
         $monster->minorRewards = [ 'Pectin', 'Jellyfish Jelly' ];
-        $monster->element = 'electricity';
+        $monster->element = SummoningScrollMonsterElementEnum::ELECTRICITY;
 
         return $monster;
     }
 
+    public static function CreateDiscipleOfHunCame(): SummoningScrollMonster
+    {
+        $monster = new SummoningScrollMonster();
+
+        $monster->name = 'Disciple of Hun-Came';
+        $monster->nameWithArticle = 'a Disciple of Hun-Came';
+        $monster->majorReward = 'Blackonite';
+        $monster->minorRewards = [ 'Scales', 'Quintessence' ];
+        $monster->element = SummoningScrollMonsterElementEnum::DARKNESS;
+
+        $monster->fieldGuideEntry = 'Hun-Came';
+
+        return $monster;
+    }
+
+}
+
+class SummoningScrollMonsterElementEnum
+{
+    use Enum;
+
+    public const FIRE = 'Fire';
+    public const ELECTRICITY = 'Electricity';
+    public const DARKNESS = 'Darkness';
 }

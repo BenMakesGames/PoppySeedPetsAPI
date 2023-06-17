@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller\Item\Scroll;
+namespace App\Controller\Item;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
@@ -22,12 +22,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
- * @Route("/item/summoningScroll")
+ * @Route("/item/evilBeetle")
  */
-class SummoningController extends AbstractController
+class EvilSentientBeetleController extends AbstractController
 {
     /**
-     * @Route("/{inventory}/unfriendly", methods={"POST"})
+     * @Route("/{inventory}/defeat", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function summonSomethingUnfriendly(
@@ -35,9 +35,10 @@ class SummoningController extends AbstractController
         EntityManagerInterface $em, HouseMonsterService $houseMonsterService, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'summoningScroll/#/unfriendly');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'evilBeetle/#/defeat');
 
         $em->remove($inventory);
 
@@ -48,19 +49,13 @@ class SummoningController extends AbstractController
 
         if(count($petsAtHome) === 0)
         {
-            return $responseService->itemActionSuccess('Summoning something so terrifying on your own would be... _unwise_. (You need some pets at home to help!)');
+            return $responseService->itemActionSuccess('You have no pets at home! You can\'t defeat evil all on your own!');
         }
 
         /** @var SummoningScrollMonster $monster */
-        $monster = $squirrel3->rngNextFromArray([
-            SummoningScrollMonster::CreateDragon(),
-            SummoningScrollMonster::CreateBalrog(),
-            SummoningScrollMonster::CreateBasabasa(),
-            SummoningScrollMonster::CreateIfrit(),
-            SummoningScrollMonster::CreateCherufe(),
-        ]);
+        $monster = SummoningScrollMonster::CreateDiscipleOfHunCame();
 
-        $result = $houseMonsterService->doFight('You read the scroll', $petsAtHome, $monster);
+        $result = $houseMonsterService->doFight('You challenge the beetle', $petsAtHome, $monster);
 
         $em->flush();
 
@@ -89,7 +84,7 @@ class SummoningController extends AbstractController
 
         if(count($petsAtHome) === 0)
         {
-            return $responseService->itemActionSuccess('Summoning something so terrifying on your own would be... _unwise_. (You need some pets at home to help!)');
+            return $responseService->itemActionSuccess('');
         }
 
         /** @var SummoningScrollMonster $monster */

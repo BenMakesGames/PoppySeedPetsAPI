@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\Item;
 use App\Entity\Merit;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
@@ -32,7 +33,8 @@ class BetaBugController extends AbstractController
 {
     private const ALLOWED_ITEMS = [
         'Cooking Buddy',
-        'Cooking "Alien"'
+        'Cooking "Alien"',
+        'Sentient Beetle',
     ];
 
     /**
@@ -88,50 +90,62 @@ class BetaBugController extends AbstractController
 
         switch($item->getItem()->getName())
         {
-            case 'Cooking Buddy': self::createCookingBuddy($responseService, $em, $petSpeciesRepository, $petFactory, $rng, $petRepository, $itemRepository, $item->getId(), $user, $meritRepository->getRandomStartingMerit(), null); break;
-            case 'Cooking "Alien"': self::createCookingBuddy($responseService, $em, $petSpeciesRepository, $petFactory, $rng, $petRepository, $itemRepository, $item->getId(), $user, $meritRepository->findOneByName(MeritEnum::BEHATTED), 'Antenna'); break;
+            case 'Cooking Buddy': self::createCookingBuddy($responseService, $em, $petSpeciesRepository, $petFactory, $rng, $petRepository, $itemRepository, $item, $user, $meritRepository->getRandomStartingMerit(), null); break;
+            case 'Cooking "Alien"': self::createCookingBuddy($responseService, $em, $petSpeciesRepository, $petFactory, $rng, $petRepository, $itemRepository, $item, $user, $meritRepository->findOneByName(MeritEnum::BEHATTED), 'Antenna'); break;
+            case 'Sentient Beetle': self::makeBeetleEvil($responseService, $itemRepository, $user, $item); break;
             default: throw new UnprocessableEntityHttpException("The Beta Bug cannot be used on that item!");
         }
 
-        $em->remove($item);
         $em->remove($inventory);
         $em->flush();
 
         return $responseService->success();
     }
 
+    private static function makeBeetleEvil(
+        ResponseService $responseService, ItemRepository $itemRepository,
+        User $user, Inventory $beetle
+    )
+    {
+        $beetle->changeItem($itemRepository->findOneByName('EVIL Sentient Beetle'));
+        $beetle->addComment($user->getName() . ' introduced a Beta Bug into the Sentient Beetle, turning it EVIL!');
+
+        $responseService->addFlashMessage('Oh dang! Introducing a Beta Bug into the Sentient Beetle turned it EVIL!');
+        $responseService->setReloadInventory();
+    }
+
     // if this list of names changes, it must also be changed in the front-end (cooking-buddy.component.ts)
     private const COOKING_BUDDY_NAMES = [
-    'Asparagus', 'Arugula',
-    'Biryani', 'Bisque',
-    'Cake', 'Ceviche',
-    'Cookie', 'Couscous',
-    'Dal',
-    'Egg Roll', 'Edamame',
-    'Falafel',
-    'Gnocchi', 'Gobi', 'Goulash', 'Gumbo',
-    'Haggis', 'Halibut', 'Hummus',
-    'Kabuli', 'Kebab', 'Kimchi', 'Kiwi', 'Kuli Kuli',
-    'Larb',
-    'Masala', 'Moose',
-    'Pinto', 'Pho', 'Polenta', 'Pudding',
-    'Reuben',
-    'Schnitzel', 'Shawarma', 'Soba', 'Stew', 'Succotash',
-    'Taco', 'Tart',
-    'Walnut',
-    'Yuzu',
-    'Ziti',
-  ];
+        'Asparagus', 'Arugula',
+        'Biryani', 'Bisque',
+        'Cake', 'Ceviche',
+        'Cookie', 'Couscous',
+        'Dal',
+        'Egg Roll', 'Edamame',
+        'Falafel',
+        'Gnocchi', 'Gobi', 'Goulash', 'Gumbo',
+        'Haggis', 'Halibut', 'Hummus',
+        'Kabuli', 'Kebab', 'Kimchi', 'Kiwi', 'Kuli Kuli',
+        'Larb',
+        'Masala', 'Moose',
+        'Pinto', 'Pho', 'Polenta', 'Pudding',
+        'Reuben',
+        'Schnitzel', 'Shawarma', 'Soba', 'Stew', 'Succotash',
+        'Taco', 'Tart',
+        'Walnut',
+        'Yuzu',
+        'Ziti',
+    ];
 
     private static function createCookingBuddy(
         ResponseService $responseService, EntityManagerInterface $em, PetSpeciesRepository $petSpeciesRepository,
         PetFactory $petFactory, Squirrel3 $rng, PetRepository $petRepository, ItemRepository $itemRepository,
-        int $inventoryId, User $user, Merit $startingMerit, ?string $startingHatItem
+        Inventory $inventoryItem, User $user, Merit $startingMerit, ?string $startingHatItem
     )
     {
         $newPet = $petFactory->createPet(
             $user,
-            self::COOKING_BUDDY_NAMES[$inventoryId % count(self::COOKING_BUDDY_NAMES)],
+            self::COOKING_BUDDY_NAMES[$inventoryItem->getId() % count(self::COOKING_BUDDY_NAMES)],
             $petSpeciesRepository->findOneBy([ 'name' => 'Cooking Buddy' ]),
             'd8d8d8', // body
             '236924', // "eyes"
@@ -152,6 +166,8 @@ class BetaBugController extends AbstractController
 
             $em->persist($inventory);
         }
+
+        $em->remove($inventoryItem);
 
         $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
 
