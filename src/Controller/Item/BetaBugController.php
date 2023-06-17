@@ -2,7 +2,6 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Entity\Item;
 use App\Entity\Merit;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
@@ -35,6 +34,7 @@ class BetaBugController extends AbstractController
         'Cooking Buddy',
         'Cooking "Alien"',
         'Sentient Beetle',
+        'Rainbowsaber'
     ];
 
     /**
@@ -93,6 +93,7 @@ class BetaBugController extends AbstractController
             case 'Cooking Buddy': self::createCookingBuddy($responseService, $em, $petSpeciesRepository, $petFactory, $rng, $petRepository, $itemRepository, $item, $user, $meritRepository->getRandomStartingMerit(), null); break;
             case 'Cooking "Alien"': self::createCookingBuddy($responseService, $em, $petSpeciesRepository, $petFactory, $rng, $petRepository, $itemRepository, $item, $user, $meritRepository->findOneByName(MeritEnum::BEHATTED), 'Antenna'); break;
             case 'Sentient Beetle': self::makeBeetleEvil($responseService, $itemRepository, $user, $item); break;
+            case 'Rainbowsaber': self::makeGlitchedOutRainbowsaber($responseService, $itemRepository, $user, $item); break;
             default: throw new UnprocessableEntityHttpException("The Beta Bug cannot be used on that item!");
         }
 
@@ -111,6 +112,18 @@ class BetaBugController extends AbstractController
         $beetle->addComment($user->getName() . ' introduced a Beta Bug into the Sentient Beetle, turning it EVIL!');
 
         $responseService->addFlashMessage('Oh dang! Introducing a Beta Bug into the Sentient Beetle turned it EVIL!');
+        $responseService->setReloadInventory();
+    }
+
+    private static function makeGlitchedOutRainbowsaber(
+        ResponseService $responseService, ItemRepository $itemRepository,
+        User $user, Inventory $rainbowsaber
+    )
+    {
+        $rainbowsaber->changeItem($itemRepository->findOneByName('Glitched-out Rainbowsaber'));
+        $rainbowsaber->addComment($user->getName() . ' introduced a Beta Bug into the Rainbowsaber, glitching it out!');
+
+        $responseService->addFlashMessage('Oh dang! Introducing a Beta Bug into the Rainbowsaber made it all glitchy!');
         $responseService->setReloadInventory();
     }
 
