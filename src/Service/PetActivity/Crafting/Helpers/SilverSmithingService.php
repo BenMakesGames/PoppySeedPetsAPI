@@ -380,11 +380,11 @@ class SilverSmithingService
             $this->houseSimService->getState()->loseItem('Talon', 1);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
             $pet->increaseEsteem(4);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Gold Keyblade.', '')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Sharktooth Axe.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 19)
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing', 'Crafting' ]))
             ;
-            $this->inventoryService->petCollectsItem('Gold Keyblade', $pet, $pet->getName() . ' created this.', $activityLog);
+            $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' created this.', $activityLog);
             return $activityLog;
         }
         else
