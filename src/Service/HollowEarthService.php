@@ -472,78 +472,36 @@ class HollowEarthService
         ]);
 
         return [
-            [
-                'id' => 'skillpotion1',
-                'item' => self::serializeItem($items, 'Potion of Brawling'),
-                'cost' => [ 'jade' => 4, 'fruit' => 4 ], // 4 jade, 4 fruit + 1 extra in 3 go-arounds
-                'maxQuantity' => self::computeMaxQuantity($player, 4, 0, 0, 0, 4),
-            ],
-            [
-                'id' => 'skillpotion2',
-                'item' => self::serializeItem($items, 'Potion of Crafts'),
-                'cost' => [ 'jade' => 4, 'incense' => 4 ], // 4 jade, 4 incense in 4 go-arounds + 4 extra
-                'maxQuantity' => self::computeMaxQuantity($player, 4, 4, 0, 0, 0),
-            ],
-            [
-                'id' => 'skillpotion3',
-                'item' => self::serializeItem($items, 'Potion of Music'),
-                'cost' => [ 'incense' => 4, 'fruit' => 4 ], // 4 incense & 2 fruit + 2 fruit & 1 extra in 3 go-arounds
-                'maxQuantity' => self::computeMaxQuantity($player, 0, 4, 0, 0, 4),
-            ],
-            [
-                'id' => 'skillpotion4',
-                'item' => self::serializeItem($items, 'Potion of Nature'),
-                'cost' => [ 'fruit' => 4, 'salt' => 4 ], // 3 go-arounds with 1 extras
-                'maxQuantity' => self::computeMaxQuantity($player, 0, 0, 4, 0, 4),
-            ],
-            [
-                'id' => 'skillpotion5',
-                'item' => self::serializeItem($items, 'Potion of Science'),
-                'cost' => [ 'amber' => 4, 'salt' => 4 ], // 4 go-arounds with 4 extras
-                'maxQuantity' => self::computeMaxQuantity($player, 0, 0, 4, 4, 0),
-            ],
-            [
-                'id' => 'skillpotion6',
-                'item' => self::serializeItem($items, 'Potion of Stealth'),
-                'cost' => [ 'incense' => 4, 'salt' => 4 ], // 4 go arounds with 4 extras
-                'maxQuantity' => self::computeMaxQuantity($player, 0, 0, 4, 4, 0),
-            ],
-            [
-                'id' => 'skillpotion7',
-                'item' => self::serializeItem($items, 'Potion of Umbra'),
-                'cost' => [ 'incense' => 4, 'amber' => 4 ], // 3 go arounds, with 1 extra
-                'maxQuantity' => self::computeMaxQuantity($player, 0, 4, 0, 4, 0),
-            ],
-            [
-                'id' => 'magic1',
-                'item' => self::serializeItem($items, 'Magic Smoke'),
-                'cost' => [ 'jade' => 2 ],
-                'maxQuantity' => self::computeMaxQuantity($player, 2, 0, 0, 0, 0),
-            ],
-            [
-                'id' => 'magic2',
-                'item' => self::serializeItem($items, 'Quintessence'),
-                'cost' => [ 'incense' => 2 ],
-                'maxQuantity' => self::computeMaxQuantity($player, 0, 2, 0, 0, 0),
-            ],
-            [
-                'id' => 'box2',
-                'item' => self::serializeItem($items, 'Small Box of Ores'),
-                'cost' => [ 'salt' => 2 ],
-                'maxQuantity' => self::computeMaxQuantity($player, 0, 0, 2, 0, 0),
-            ],
-            [
-                'id' => 'box1',
-                'item' => self::serializeItem($items, 'Fruits & Veggies Box'),
-                'cost' => [ 'amber' => 2 ],
-                'maxQuantity' => self::computeMaxQuantity($player, 0, 0, 0, 2, 0),
-            ],
-            [
-                'id' => 'box3',
-                'item' => self::serializeItem($items, 'Bag of Beans'),
-                'cost' => [ 'fruit' => 2 ],
-                'maxQuantity' => self::computeMaxQuantity($player, 0, 0, 0, 0, 2),
-            ]
+            self::createTrade($player, $items, 'skillpotion1', 'Potion of Brawling', [ 'jade' => 4, 'fruit' => 4 ]),
+            self::createTrade($player, $items, 'skillpotion2', 'Potion of Crafts', [ 'jade' => 4, 'incense' => 4 ]),
+            self::createTrade($player, $items, 'skillpotion3', 'Potion of Music', [ 'incense' => 4, 'fruit' => 4 ]),
+            self::createTrade($player, $items, 'skillpotion4', 'Potion of Nature', [ 'fruit' => 4, 'salt' => 4 ]),
+            self::createTrade($player, $items, 'skillpotion5', 'Potion of Science', [ 'amber' => 4, 'salt' => 4 ]),
+            self::createTrade($player, $items, 'skillpotion6', 'Potion of Stealth', [ 'incense' => 4, 'salt' => 4 ]),
+            self::createTrade($player, $items, 'skillpotion7', 'Potion of Umbra', [ 'incense' => 4, 'amber' => 4 ]),
+            self::createTrade($player, $items, 'magic1', 'Magic Smoke', [ 'jade' => 2 ]),
+            self::createTrade($player, $items, 'magic2', 'Quintessence', [ 'incense' => 2 ]),
+            self::createTrade($player, $items, 'box2', 'Small Box of Ores', [ 'salt' => 2 ]),
+            self::createTrade($player, $items, 'box1', 'Fruits & Veggies Box', [ 'amber' => 2 ]),
+            self::createTrade($player, $items, 'box3', 'Bag of Beans', [ 'fruit' => 2 ]),
+        ];
+    }
+
+    private static function createTrade(HollowEarthPlayer $player, array $items, string $id, string $itemName, array $cost)
+    {
+        return
+        [
+            'id' => $id,
+            'item' => self::serializeItem($items, $itemName),
+            'cost' => $cost,
+            'maxQuantity' => self::computeMaxQuantity(
+                $player,
+                array_key_exists('jade', $cost) ? $cost['jade'] : 0,
+                array_key_exists('incense', $cost) ? $cost['incense'] : 0,
+                array_key_exists('salt', $cost) ? $cost['salt'] : 0,
+                array_key_exists('amber', $cost) ? $cost['amber'] : 0,
+                array_key_exists('fruit', $cost) ? $cost['fruit'] : 0
+            ),
         ];
     }
 
