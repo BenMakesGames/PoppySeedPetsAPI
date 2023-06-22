@@ -50,6 +50,16 @@ class CalendarService
         return $this->monthAndDay >= 621 && $this->monthAndDay <= 623;
     }
 
+    public function isSummerSolstice(): bool
+    {
+        return $this->monthAndDay >= 619 && $this->monthAndDay <= 622;
+    }
+
+    public function isWinterSolstice(): bool
+    {
+        return $this->monthAndDay >= 1220 && $this->monthAndDay <= 1223;
+    }
+
     public function isThanksgivingMonsters(): bool
     {
         // if it's not November, just get outta' here
@@ -307,6 +317,12 @@ class CalendarService
 
         if($this->isPSPBirthday())
             $events[] = HolidayEnum::PSP_BIRTHDAY;
+
+        if($this->isSummerSolstice())
+            $events[] = HolidayEnum::SUMMER_SOLSTICE;
+
+        if($this->isWinterSolstice())
+            $events[] = HolidayEnum::WINTER_SOLSTICE;
 
         if($this->isPsyPetsBirthday())
             $events[] = HolidayEnum::PSYPETS_BIRTHDAY;

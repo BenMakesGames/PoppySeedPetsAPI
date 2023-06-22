@@ -17,6 +17,8 @@ class HolidayEnum
     public const NEW_YEARS_DAY = 'New Year\'s Day';
     public const PI_DAY = 'Pi Day';
     public const PSP_BIRTHDAY = 'PSP Birthday';
+    public const SUMMER_SOLSTICE = 'Summer Solstice';
+    public const WINTER_SOLSTICE = 'Winter Solstice';
     public const PSYPETS_BIRTHDAY = 'PsyPets\' Birthday';
     public const SAINT_PATRICKS = 'Saint Patrick\'s';
     public const STOCKING_STUFFING_SEASON = 'Stocking Stuffing Season';

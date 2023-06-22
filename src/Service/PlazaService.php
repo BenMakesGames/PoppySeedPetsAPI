@@ -66,6 +66,38 @@ class PlazaService
             }
         }
 
+        if($this->calendarService->isSummerSolstice())
+        {
+            $gotGoodieBagsThisYear = $this->userQuestRepository->findOrCreate($user, 'Summer Solstice, ' . $year, false);
+
+            if(!$gotGoodieBagsThisYear->getValue())
+            {
+                $boxes[] = new AvailableHolidayBox(
+                    'two Summer Goodie Bags',
+                    'two Summer Goodie Bags',
+                    'Summer Goodie Bag', 2,
+                    'Received for Summer Solstice, ' . $year . '.',
+                    $gotGoodieBagsThisYear
+                );
+            }
+        }
+        else if($this->calendarService->isWinterSolstice())
+        {
+            $gotGoodieBagsThisYear = $this->userQuestRepository->findOrCreate($user, 'Winter Solstice, ' . $year, false);
+
+            if(!$gotGoodieBagsThisYear->getValue())
+            {
+                $boxes[] = new AvailableHolidayBox(
+                    'two Winter Goodie Bags',
+                    'two Winter Goodie Bags',
+                    'Winter Goodie Bag', 2,
+                    'Received for Winter Solstice, ' . $year . '.',
+                    $gotGoodieBagsThisYear
+                );
+            }
+        }
+
+
         if($this->calendarService->isJuly4th())
         {
             $gotBox = $this->userQuestRepository->findOrCreate($user, '4th of July, ' . $year, false);
