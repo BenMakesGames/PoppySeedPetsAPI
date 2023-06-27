@@ -17,6 +17,7 @@ class ProfanityFilterFunctions
         '(^|[^a-z])t+i+t+y*($|[^a-z])' => '$1muffin$2',
         'b+i+t+c+h+e+s+' => 'ne\'er-do-wells',
         'b+i+t+c+h+' => 'ne\'er-do-well',
+        't+w+a+t+' => 'ne\'er-do-well',
         'b+a+s+t+a+r+d+(s*)' => 'ne\'er-do-well$1',
         'p+u+s+(y+|i+e+)' => 'kitten',
         'c+l+i+t+($|[^io])' => 'gem$1',
