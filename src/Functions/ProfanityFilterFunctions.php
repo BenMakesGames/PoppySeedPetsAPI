@@ -9,7 +9,7 @@ class ProfanityFilterFunctions
         'c+u+n+t+' => 'muffin',
         'b+o+n+e+r+(s*)' => 'pickle$1',
         'd+i+c+k+(s*)($|[^a-z])' => 'pickle$1$2',
-        '($|[^a-z])c+o+c+k+(s*)($|[^a-z])' => '$1pickle$2$3',
+        '(^|[^a-z])c+o+c+k+(s*)($|[^a-z])' => '$1pickle$2$3',
         'f+a+t+a+s+' => 'butt',
         '(^|[^a-z])a+ss+([^a-z]|$)' => '$1butt$2',
         '(a+s+|b+u+t+)h+o+l+e+(s*)' => 'butt$2',
