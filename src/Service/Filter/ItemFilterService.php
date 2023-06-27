@@ -19,10 +19,12 @@ class ItemFilterService
 
     private $repository;
     private $user;
+    private $useResultCache;
 
     public function __construct(ItemRepository $itemRepository)
     {
         $this->repository = $itemRepository;
+        $this->useResultCache = true;
 
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
@@ -92,6 +94,8 @@ class ItemFilterService
             ->andWhere('m.id IS NULL')
             ->setParameter('user', $value)
         ;
+
+        $this->useResultCache = false;
     }
 
     public function filterCandy(QueryBuilder $qb, $value)
@@ -214,6 +218,8 @@ class ItemFilterService
             $qb->andWhere('donations.id IS NULL');
         else
             $qb->andWhere('donations.id IS NOT NULL');
+
+        $this->useResultCache = false;
     }
 
     public function filterItemGroup(QueryBuilder $qb, $value)
@@ -253,6 +259,9 @@ class ItemFilterService
 
     function applyResultCache(Query $qb, string $cacheKey): AbstractQuery
     {
-        return $qb->enableResultCache(24 * 60 * 60, self::class . '_' . $cacheKey);
+        if($this->useResultCache)
+            return $qb->enableResultCache(24 * 60 * 60, self::class . '_' . $cacheKey);
+        else
+            return $qb;
     }
 }
