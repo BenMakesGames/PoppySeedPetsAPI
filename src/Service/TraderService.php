@@ -346,6 +346,36 @@ class TraderService
             ),
             TraderOffer::createTradeOffer(
                 [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Dark Horsey Hat'), 1),
+                    TraderOfferCostOrYield::createMoney(10),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Zebra "Horsey" Hat'), 1) ],
+                'Someone was telling me that zebras _aren\'t_ a kind of horse? Is that true?? You land-dwellers have confusing animals...',
+                $user,
+                $quantities
+            ),
+            TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Zebra "Horsey" Hat'), 1),
+                    TraderOfferCostOrYield::createMoney(10),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('White Horsey Hat'), 1) ],
+                'And you\'re _super_ sure zebras aren\'t horses? It just seems _really_ weird, you know??',
+                $user,
+                $quantities
+            ),
+            TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Horsey Hat'), 1),
+                    TraderOfferCostOrYield::createMoney(10),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('White Horsey Hat'), 1) ],
+                'It\'s fun that horses come in so many colors! But what about, like, purple horses? Are there any of those?',
+                $user,
+                $quantities
+            ),
+            TraderOffer::createTradeOffer(
+                [
                     TraderOfferCostOrYield::createMoney(10),
                 ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Paint Stripper'), 1) ],
