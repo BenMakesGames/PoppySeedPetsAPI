@@ -5,8 +5,10 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\User;
+use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\ActivityHelpers;
 use App\Repository\PetRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -59,11 +61,17 @@ class MoonPearlController extends AbstractController
 
             if($squirrel3->rngNextInt(1, $skill) >= 16)
             {
-                $petExperienceService->gainExp($helper, 2, [ PetSkillEnum::UMBRA ]);
+                $activityLog = $responseService->createActivityLog($helper, ActivityHelpers::UserName($user, true) . ' shattered a moon pearl; ' . ActivityHelpers::PetName($helper) . ' gathered up some of its Quintessence before it could evaporate away!', '');
 
-                $inventoryService->receiveItem('Quintessence', $user, $user, $helper->getName() . ' caught this as it escaped from a shattered Moon Pearl.', $location);
+                $inventoryService->petCollectsItem('Quintessence', $helper, $helper->getName() . ' caught this as it escaped from a shattered Moon Pearl.', $activityLog);
+
+                $petExperienceService->gainExp($helper, 2, [ PetSkillEnum::UMBRA ], $activityLog);
 
                 $message = 'You shatter the Moon Pearl, yielding a couple lumps of Moon Dust, and some Silica Grounds, and ' . $helper->getName() . ' gathers up the Quintessence before it evaporates away.';
+
+                if($location !== LocationEnum::HOME)
+                    $message .= ' (' . $helper->getName() . ' placed the items they got in the house... that\'s just where pets that items get go!)';
+
                 $reloadPets = true;
             }
         }

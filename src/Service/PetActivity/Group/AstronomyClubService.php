@@ -102,6 +102,8 @@ class AstronomyClubService
 
     public function meet(PetGroup $group)
     {
+        $activityLogsPerPet = [];
+        $expGainPerPet = [];
         $groupSize = count($group->getMembers());
 
         $skill = 0;
@@ -115,7 +117,7 @@ class AstronomyClubService
 
             $roll = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getScience()->getTotal());
 
-            $this->petExperienceService->gainExp($pet, max(1, floor($roll / 5)), [ PetSkillEnum::SCIENCE ]);
+            $expGainPerPet[$pet->getId()] = max(1, floor($roll / 5));
 
             $skill += $roll;
         }
@@ -145,6 +147,8 @@ class AstronomyClubService
                 $this->inventoryService->petCollectsItem('Stardust', $member, $this->formatMessage($messageTemplate, $member, $group, 'this'), $activityLog);
 
                 $this->em->persist($activityLog);
+
+                $activityLogsPerPet[$member->getId()] = $activityLog;
             }
         }
         else if($group->getProgress() >= 100)
@@ -238,6 +242,8 @@ class AstronomyClubService
                 );
 
                 $this->em->persist($activityLog);
+
+                $activityLogsPerPet[$member->getId()] = $activityLog;
             }
         }
         else
@@ -259,8 +265,13 @@ class AstronomyClubService
                 ;
 
                 $this->em->persist($activityLog);
+
+                $activityLogsPerPet[$member->getId()] = $activityLog;
             }
         }
+
+        foreach($group->getMembers() as $pet)
+            $this->petExperienceService->gainExp($pet, $expGainPerPet[$pet->getId()], [ PetSkillEnum::SCIENCE ], $activityLogsPerPet[$pet->getId()]);
 
         $this->petRelationshipService->groupGathering(
             $group->getMembers(),

@@ -253,6 +253,8 @@ class PetSocialActivityService
 
     private function hangOutWithSpiritCompanion(Pet $pet)
     {
+        $teachingStat = null;
+
         $changes = new PetChanges($pet);
 
         $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
@@ -265,8 +267,6 @@ class PetSocialActivityService
 
         if($this->squirrel3->rngNextInt(1, 3) !== 1 || ($pet->getSafety() > 0 && $pet->getLove() > 0 && $pet->getEsteem() > 0))
         {
-            $teachingStat = null;
-
             switch($companion->getStar())
             {
                 case SpiritCompanionStarEnum::ALTAIR:
@@ -354,8 +354,6 @@ class PetSocialActivityService
                     ->increaseLove($this->squirrel3->rngNextInt(1, 2))
                     ->increaseEsteem($this->squirrel3->rngNextInt(1, 2))
                 ;
-
-                $this->petExperienceService->gainExp($pet, 1, [ $teachingStat ]);
             }
             else
             {
@@ -501,10 +499,13 @@ class PetSocialActivityService
             }
         }
 
-        $this->responseService->createActivityLog($pet, $message, 'companions/' . $companion->getImage(), $changes->compare($pet))
+        $activityLog = $this->responseService->createActivityLog($pet, $message, 'companions/' . $companion->getImage(), $changes->compare($pet))
             ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
             ->addTags($this->petActivityLogTagRepository->findByNames([ 'Spirit Companion' ]))
         ;
+
+        if($teachingStat)
+            $this->petExperienceService->gainExp($pet, 1, [ $teachingStat ], $activityLog);
     }
 
     /**

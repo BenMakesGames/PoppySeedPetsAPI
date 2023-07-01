@@ -260,6 +260,8 @@ class BandService
      */
     public function produceAlbum(PetGroup $group)
     {
+        $activityLogsPerPet = [];
+        $expGainPerPet = [];
         $bandSize = count($group->getMembers());
 
         $soothingVoiceValue = 3;
@@ -274,14 +276,13 @@ class BandService
 
             $roll = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getMusic()->getTotal());
 
-            if($pet->hasMerit(MeritEnum::SOOTHING_VOICE))
+            if($pet->hasMerit(MeritEnum::SOOTHING_VOICE) && $soothingVoiceValue > 0)
             {
                 $roll += $soothingVoiceValue;
-
-                if($soothingVoiceValue > 0) $soothingVoiceValue--;
+                $soothingVoiceValue--;
             }
 
-            $this->petExperienceService->gainExp($pet, max(1, floor($roll / 5)), [ PetSkillEnum::MUSIC ]);
+            $expGainPerPet[$pet->getId()] = max(1, floor($roll / 5));
 
             $skill += $roll;
         }
@@ -328,6 +329,8 @@ class BandService
 
                 $this->em->persist($activityLog);
 
+                $activityLogsPerPet[$member->getId()] = $activityLog;
+
                 $this->inventoryService->petCollectsItem($item, $member, $member->getName() . '\'s band made this!', $activityLog);
             }
         }
@@ -357,8 +360,13 @@ class BandService
                 ;
 
                 $this->em->persist($activityLog);
+
+                $activityLogsPerPet[$member->getId()] = $activityLog;
             }
         }
+
+        foreach($group->getMembers() as $pet)
+            $this->petExperienceService->gainExp($pet, $expGainPerPet[$pet->getId()], [ PetSkillEnum::MUSIC ], $activityLogsPerPet[$pet->getId()]);
 
         $this->petRelationshipService->groupGathering(
             $group->getMembers(),
