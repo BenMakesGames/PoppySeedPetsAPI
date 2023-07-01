@@ -303,7 +303,7 @@ class GuildService
 
         $activityLog = $this->responseService->createActivityLog($pet, $message, '');
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::getRandomValue($this->squirrel3) ]);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::getRandomValue($this->squirrel3) ], $activityLog);
 
         return $activityLog;
     }
