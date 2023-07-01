@@ -50,17 +50,19 @@ class GatheringDistractionService
 
         $description = 'While %pet:' . $pet->getId() . '.name% was ' . $whileDoingDescription . ', ' . $distraction['description'];
 
-        $this->petExperienceService->gainExp($pet, 1, $distraction['skills']);
-
         if($location === DistractionLocationEnum::VOLCANO)
         {
             $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Île Volcan', '%pet:' . $pet->getId() . '.name% went out ' . $location . '...');
         }
 
-        return $this->responseService->createActivityLog($pet, $description, '')
+        $activityLog = $this->responseService->createActivityLog($pet, $description, '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering' ]))
         ;
+
+        $this->petExperienceService->gainExp($pet, 1, $distraction['skills'], $activityLog);
+
+        return $activityLog;
     }
 
     private function getPossibleDistractions(ComputedPetSkills $petWithSkills, string $location): array

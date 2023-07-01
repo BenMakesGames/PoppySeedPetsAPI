@@ -347,17 +347,14 @@ class HollowEarthService
             }
         }
 
-        if(array_key_exists('exp', $event))
-        {
-            $this->petExperienceService->gainExp($pet, $event['exp']['amount'], $event['exp']['stats']);
-            $doLog = true;
-        }
-
         if(array_key_exists('statusEffect', $event))
         {
             $this->statusEffectService->applyStatusEffect($pet, $event['statusEffect']['status'], $event['statusEffect']['duration']);
             $doLog = true;
         }
+
+        if(array_key_exists('exp', $event))
+            $doLog = true;
 
         $activityLog = null;
 
@@ -371,13 +368,15 @@ class HollowEarthService
                 ->setPet($pet)
                 ->setEntry($description)
                 ->setIcon(($currentCard && $currentCard->getImage()) ? ('hollow-earth/tile/' . $currentCard->getImage()) : '')
-                ->setChanges($petChanges->compare($pet))
                 ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Hollow Earth' ]))
                 ->setViewed()
             ;
 
             $this->em->persist($activityLog);
         }
+
+        if(array_key_exists('exp', $event))
+            $this->petExperienceService->gainExp($pet, $event['exp']['amount'], $event['exp']['stats'], $activityLog);
 
         if(array_key_exists('receiveItems', $event))
             $this->receiveItems($player, $pet, $petChanges, $event['receiveItems'], $activityLog);
@@ -394,6 +393,9 @@ class HollowEarthService
 
         if(array_key_exists('type', $event))
             $player->setCurrentAction($event);
+
+        if($activityLog)
+            $activityLog->setChanges($petChanges->compare($pet));
     }
 
     private function receiveItems(HollowEarthPlayer $player, Pet $pet, PetChanges $petChanges, $items, ?PetActivityLog $activityLog)

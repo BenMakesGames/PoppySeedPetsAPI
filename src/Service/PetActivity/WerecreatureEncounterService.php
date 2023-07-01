@@ -61,14 +61,14 @@ class WerecreatureEncounterService
                     ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
                 ;
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
-
                 $message .= 'However, upon seeing %pet:' . $pet->getId() . '.name%\'s silver ' . $hat->getItem()->getName() . ', the creature ran off, dropping ' . $lootItem->getNameWithArticle() . ' as it went!';
 
                 $activityLog = $this->responseService->createActivityLog($pet, $message, '')
                     ->addTags($this->petActivityLogTagRepository->findByNames(array_merge($tags, [ 'Werecreature', 'Fighting' ])))
                 ;
+
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
 
                 $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' scared off a werecreature, and received this.', $activityLog);
 
@@ -93,14 +93,14 @@ class WerecreatureEncounterService
                     ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
                 ;
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ]);
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
-
                 $message .= '%pet:' . $pet->getId() . '.name% brandished their silver ' . $tool->getItem()->getName() . '; the creature ran off at the sight of it, dropping ' . $lootItem->getNameWithArticle() . ' as it went!';
 
                 $activityLog = $this->responseService->createActivityLog($pet, $message, '')
                     ->addTags($this->petActivityLogTagRepository->findByNames(array_merge($tags, [ 'Werecreature', 'Fighting' ])))
                 ;
+
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
 
                 $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' chased off a werecreature, and received this.', $activityLog);
 
@@ -125,12 +125,12 @@ class WerecreatureEncounterService
 
             $message .= '%pet:' . $pet->getId() . '.name% beat the creature back, and received ' . $lootItem->getNameWithArticle() . ', but also received a bite during the encounter... (Uh oh...)';
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
-
             $activityLog = $this->responseService->createActivityLog($pet, $message, '')
                 ->addTags($this->petActivityLogTagRepository->findByNames(array_merge($tags, [ 'Werecreature', 'Fighting' ])))
             ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
 
             $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' received this from a fight with a werecreature.', $activityLog);
 
@@ -145,14 +145,16 @@ class WerecreatureEncounterService
 
             $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::BITTEN_BY_A_WERECREATURE, 1);
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
-
             $message .= '%pet:' . $pet->getId() . '.name% eventually escaped the creature, but not before being scratched and bitten! (Uh oh!)';
 
-            return $this->responseService->createActivityLog($pet, $message, '')
+            $activityLog = $this->responseService->createActivityLog($pet, $message, '')
                 ->addTags($this->petActivityLogTagRepository->findByNames(array_merge($tags, [ 'Werecreature', 'Fighting' ])))
             ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
+
+            return $activityLog;
         }
     }
 

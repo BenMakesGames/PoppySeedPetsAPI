@@ -712,7 +712,7 @@ class FishingService
 
             $this->inventoryService->petCollectsItem('Fish', $pet, 'From a Crawfish that ' . $pet->getName() . ' fished at a Flooded Paddy Field.', $activityLog);
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
 
             $this->creditLackOfReflection($activityLog);
 
@@ -733,8 +733,7 @@ class FishingService
                 ;
             }
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
-
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
         }
 
@@ -744,7 +743,7 @@ class FishingService
                 $this->inventoryService->petCollectsItem('Nón Lá', $pet, $pet->getName() . ' found this at a Flooded Paddy Field while fishing.', $activityLog);
 
             $this->inventoryService->petCollectsItem('Rice', $pet, $pet->getName() . ' found this at a Flooded Paddy Field while fishing.', $activityLog);
-            $this->petExperienceService->gainExp($pet, $foundNonLa ? 2 : 1, [ PetSkillEnum::NATURE ]);
+            $this->petExperienceService->gainExp($pet, $foundNonLa ? 2 : 1, [ PetSkillEnum::NATURE ], $activityLog);
         }
 
         return $activityLog;

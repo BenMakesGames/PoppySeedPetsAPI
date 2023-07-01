@@ -66,9 +66,6 @@ class NotReallyCraftsService
         if($activityLog)
         {
             $activityLog->setChanges($changes->compare($pet));
-
-            if($activityLog->getChanges()->containsLevelUp())
-                $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
         }
 
         return $activityLog;

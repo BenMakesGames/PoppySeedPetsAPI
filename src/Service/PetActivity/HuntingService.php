@@ -188,9 +188,6 @@ class HuntingService
         if($activityLog)
         {
             $activityLog->setChanges($changes->compare($pet));
-
-            if($activityLog->getChanges()->containsLevelUp())
-                $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
         }
 
         if($this->squirrel3->rngNextInt(1, 100) === 1)
@@ -652,7 +649,7 @@ class HuntingService
 
                 if($this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal()) >= 10)
                 {
-                    $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+                    $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
                     $pet->increaseEsteem(1);
 
                     if($this->squirrel3->rngNextInt(1, 2) === 1)
@@ -680,7 +677,7 @@ class HuntingService
 
                 if($this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal()) >= 10)
                 {
-                    $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+                    $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
                     $pet->increaseEsteem(1);
 
                     $this->inventoryService->petCollectsItem('Rice', $pet, $pet->getName() . ' took this from a Rice Farm, after beating up its Scarecrow.', $activityLog);

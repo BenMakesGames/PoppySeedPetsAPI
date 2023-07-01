@@ -104,9 +104,6 @@ class MagicBeanstalkService
         if($activityLog)
         {
             $activityLog->setChanges($changes->compare($pet));
-
-            if($activityLog->getChanges()->containsLevelUp())
-                $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
         }
 
         if($this->squirrel3->rngNextInt(1, 75) === 1)
@@ -115,13 +112,14 @@ class MagicBeanstalkService
 
     private function badClimber(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
-
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, false);
-
-        return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to climb the magic bean-stalk in %user:' . $pet->getOwner()->getId() . '.name\'s% greenhouse, but wasn\'t able to make any progress...', 'icons/activity-logs/confused')
+        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to climb the magic bean-stalk in %user:' . $pet->getOwner()->getId() . '.name\'s% greenhouse, but wasn\'t able to make any progress...', 'icons/activity-logs/confused')
             ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk' ]))
         ;
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, false);
+
+        return $activityLog;
     }
 
     private function getBeans(Pet $pet): PetActivityLog
@@ -135,7 +133,7 @@ class MagicBeanstalkService
         $this->inventoryService->petCollectsItem('Beans', $pet, $pet->getName() . ' harvested this from your magic bean-stalk.', $activityLog);
         $this->inventoryService->petCollectsItem('Beans', $pet, $pet->getName() . ' harvested this from your magic bean-stalk.', $activityLog);
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
 
         return $activityLog;
@@ -151,7 +149,7 @@ class MagicBeanstalkService
 
         $this->inventoryService->petCollectsItem('Really Big Leaf', $pet, $pet->getName() . ' harvested this from your magic bean-stalk.', $activityLog);
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
 
         return $activityLog;
@@ -178,7 +176,7 @@ class MagicBeanstalkService
             $this->inventoryService->petCollectsItem('Magic Leaf', $pet, $pet->getName() . ' harvested this from your magic bean-stalk.', $activityLog);
         }
 
-        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
 
         return $activityLog;
@@ -289,7 +287,7 @@ class MagicBeanstalkService
 
         $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 8));
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
 
         return $activityLog;
@@ -310,7 +308,7 @@ class MagicBeanstalkService
 
         $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
 
-        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::GATHER, true);
 
         return $activityLog;
@@ -365,7 +363,6 @@ class MagicBeanstalkService
         if($this->squirrel3->rngNextInt(1, 20 + max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getDexterity()->getTotal()) + $petWithSkills->getBrawl()->getTotal()) >= 18)
         {
             $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
-            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk, getting as high as ~' . $meters . ' meters! They found a white Pegasus\' nest. As a member of High Impact, they jumped at the challenge - literally! - and wrestled the mother Pegasus as she flew! After a while, the Pegasus, exhausted, was forced to land, and %pet:' . $pet->getId() . '.name% made off with an Egg, some Fluff, and some White Feathers!', 'guilds/high-impact')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Fighting' ]))
@@ -377,6 +374,7 @@ class MagicBeanstalkService
 
             $pet->getGuildMembership()->increaseReputation();
 
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::HUNT, true);
         }
         else
@@ -385,8 +383,7 @@ class MagicBeanstalkService
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Fighting' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
-
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::HUNT, false);
         }
 
@@ -408,8 +405,8 @@ class MagicBeanstalkService
             $this->inventoryService->petCollectsItem('Everice', $pet, $pet->getName() . ' pried this off your magic bean-stalk.', $activityLog);
 
             $pet->increaseEsteem($this->squirrel3->rngNextInt(1, 2));
-            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE ]);
 
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::GATHER, true);
         }
         else
@@ -418,8 +415,7 @@ class MagicBeanstalkService
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic Beanstalk', 'Gathering' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
-
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::GATHER, false);
         }
 

@@ -338,12 +338,12 @@ class PlasticPrinterService
             {
                 if($roll >= 30 && $pet->hasMerit(MeritEnum::BEHATTED))
                 {
-                    $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ]);
-
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created ' . $item->getNameWithArticle() . '... and a pair of Googly Eyes with bits of leftover Plastic!', '')
                         ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 30)
                         ->addTags($this->petActivityLogTagRepository->findByNames([ '3D Printing' ]))
                     ;
+
+                    $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
 
                     $this->inventoryService->petCollectsItem('Googly Eyes', $pet, $pet->getName() . ' created this from Plastic.', $activityLog);
                 }
