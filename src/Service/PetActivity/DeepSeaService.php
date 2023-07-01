@@ -407,7 +407,7 @@ class DeepSeaService
             for($i = 0; $i < $tentacles; $i++)
                 $this->inventoryService->petCollectsItem('Tentacle', $pet, $pet->getName() . ' got this by defeating a Giant Squid in the deep sea!', $activityLog);
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $activityLog);
         }
         else if($pet->isInGuild(GuildEnum::HIGH_IMPACT))
         {
@@ -419,7 +419,7 @@ class DeepSeaService
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Submarine', 'Fighting', 'Guild' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
         }
         else
         {
@@ -429,7 +429,7 @@ class DeepSeaService
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Submarine', 'Fighting' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
         }
 
         return $activityLog;
@@ -482,7 +482,7 @@ class DeepSeaService
             foreach($loot as $itemName)
                 $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this near a submarine volcano using their Submarine.', $activityLog);
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ]);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
         }
         else
         {
@@ -491,7 +491,7 @@ class DeepSeaService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine, and found a submarine volcano! They had to resurface before they could collect anything, though.', 'icons/activity-logs/confused')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Submarine', 'Gathering', 'Needs Light' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ]);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
         }
 
         if($this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
