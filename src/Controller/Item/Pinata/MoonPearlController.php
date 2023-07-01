@@ -4,6 +4,7 @@ namespace App\Controller\Item\Pinata;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Pet;
+use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Repository\PetRepository;
@@ -31,9 +32,10 @@ class MoonPearlController extends AbstractController
         Squirrel3 $squirrel3
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'moonPearl/#/smash');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'moonPearl/#/smash');
 
         $location = $inventory->getLocation();
 
