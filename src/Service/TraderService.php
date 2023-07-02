@@ -446,7 +446,16 @@ class TraderService
                 "Enjoy the hat!\n\nIt _is_ a hat, right??",
                 $user,
                 $quantities
-            )
+            ),
+            TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createRecyclingPoints(200)
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Digital Camera'), 1) ],
+                "An aspiring photographer, eh? Have fun!",
+                $user,
+                $quantities
+            ),
         ];
     }
 

@@ -200,6 +200,9 @@ class CraftingService
             if($this->houseSimService->hasInventory('Cooking Buddy') && $this->houseSimService->hasInventory('Antenna'))
                 $possibilities[] = new ActivityCallback($this, 'createAlienCookingBuddy', 10);
 
+            if($this->houseSimService->hasInventory('Painted Camera') && $this->houseSimService->hasInventory('Antenna'))
+                $possibilities[] = new ActivityCallback($this, 'createAlienCamera', 10);
+
             if($this->houseSimService->hasInventory('Iron Sword') && $this->houseSimService->hasInventory('Laser Pointer'))
                 $possibilities[] = new ActivityCallback($this, 'createLaserGuidedSword', 10);
         }
@@ -295,6 +298,9 @@ class CraftingService
 
                 if($this->houseSimService->hasInventory('Dumbbell'))
                     $possibilities[] = new ActivityCallback($this, 'createPaintedDumbbell', 10);
+
+                if($this->houseSimService->hasInventory('Digital Camera'))
+                    $possibilities[] = new ActivityCallback($this, 'createPaintedCamera', 10);
             }
         }
 
@@ -1251,6 +1257,37 @@ class CraftingService
         return $activityLog;
     }
 
+    private function createAlienCamera(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+
+        if($roll >= 10)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::CRAFT, true);
+            $this->houseSimService->getState()->loseItem('Painted Camera', 1);
+            $this->houseSimService->getState()->loseItem('Glue', 1);
+            $this->houseSimService->getState()->loseItem('Antenna', 1);
+            $pet->increaseEsteem(2);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% put together an "Alien" Camera!', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+            ;
+            $this->inventoryService->petCollectsItem('"Alien" Camera', $pet, $pet->getName() . ' created by gluing some Antennae to a Painted Camera.', $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
+        }
+        else
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to do something silly to a Painted Camera, but couldn\'t decide what...', 'icons/activity-logs/confused')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+        }
+
+        return $activityLog;
+    }
+
     private function createBugBow(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
@@ -2076,6 +2113,26 @@ class CraftingService
         $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Painting' ]));
 
         $this->inventoryService->petCollectsItem('Painted Dumbbell', $pet, $pet->getName() . ' painted this, using Yellow Dye.', $activityLog);
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
+
+        return $activityLog;
+    }
+
+    private function createPaintedCamera(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::CRAFT, true);
+        $this->houseSimService->getState()->loseItem('Digital Camera', 1);
+        $this->houseSimService->getState()->loseItem('Yellow Dye', 1);
+        $pet->increaseEsteem(1);
+
+        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% painted a face on a Digital Camera!', '');
+
+        $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Painting' ]));
+
+        $this->inventoryService->petCollectsItem('Painted Camera', $pet, $pet->getName() . ' painted this, using Yellow Dye.', $activityLog);
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
 
