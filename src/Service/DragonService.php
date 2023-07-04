@@ -293,7 +293,7 @@ class DragonService
         }
         else if($extraItem)
         {
-            $message = ', plus ' . $extraItem->getItem()->getNameWithArticle() . ', which they earned from a particularly-lucrative deal (made in no small part due to ' . $dragon->getHelper()->getName() . '\'s help!)';
+            $message .= ', plus ' . $extraItem->getItem()->getNameWithArticle() . ', which they earned from a particularly-lucrative deal (made in no small part due to ' . $dragon->getHelper()->getName() . '\'s help!)';
         }
         else
             $message .= '.';
