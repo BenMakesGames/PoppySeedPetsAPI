@@ -364,6 +364,11 @@ class Pet
     private $location = PetLocationEnum::HOME;
 
     /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     */
+    private $locationMoveDate;
+
+    /**
      * @ORM\Column(type="string", length=3)
      */
     private $affectionExpressions;
@@ -380,6 +385,7 @@ class Pet
 
         $this->birthDate = new \DateTimeImmutable();
         $this->lastInteracted = (new \DateTimeImmutable())->modify('-3 days');
+        $this->locationMoveDate = new \DateTimeImmutable();
         $this->stomachSize = $squirrel3->rngNextInt(16, 30);
         $this->petRelationships = new ArrayCollection();
         $this->statusEffects = new ArrayCollection();
@@ -1797,8 +1803,14 @@ class Pet
             throw new EnumInvalidValueException(PetLocationEnum::class, $location);
 
         $this->location = $location;
+        $this->locationMoveDate = new \DateTimeImmutable();
 
         return $this;
+    }
+
+    public function getLocationMoveDate(): \DateTimeImmutable
+    {
+        return $this->locationMoveDate;
     }
 
     public function isAtHome(): bool

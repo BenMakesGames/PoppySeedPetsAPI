@@ -2,10 +2,12 @@
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
+use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\PetRepository;
 use App\Service\Filter\PetFilterService;
+use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -65,9 +67,11 @@ class DaycareController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function takePetOutOfDaycare(
-        Pet $pet, ResponseService $responseService, PetRepository $petRepository, EntityManagerInterface $em
+        Pet $pet, ResponseService $responseService, PetRepository $petRepository, EntityManagerInterface $em,
+        PetExperienceService $petExperienceService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())
@@ -80,6 +84,28 @@ class DaycareController extends AbstractController
 
         if($petsAtHome >= $user->getMaxPets())
             throw new UnprocessableEntityHttpException('Your house has too many pets as-is.');
+
+        $hoursInDayCare = (\time() - $pet->getLocationMoveDate()->getTimestamp()) / (60 * 60);
+
+        if($hoursInDayCare >= 4)
+        {
+            $fourHoursInDayCare = (int)($hoursInDayCare / 4);
+
+            $petExperienceService->spendTimeOnStatusEffects($pet, $fourHoursInDayCare);
+
+            $pet
+                ->increasePoison(-$fourHoursInDayCare)
+                ->increaseCaffeine(-$fourHoursInDayCare)
+                ->increaseAlcohol(-$fourHoursInDayCare)
+                ->increasePsychedelic(-$fourHoursInDayCare)
+                ->increasePoison(-$fourHoursInDayCare)
+
+                ->increaseFood($fourHoursInDayCare)
+                ->increaseSafety($fourHoursInDayCare)
+                ->increaseLove($fourHoursInDayCare)
+                ->increaseEsteem($fourHoursInDayCare)
+            ;
+        }
 
         $pet->setLocation(PetLocationEnum::HOME);
 
