@@ -100,10 +100,10 @@ class DaycareController extends AbstractController
                 ->increasePsychedelic(-$fourHoursInDayCare)
                 ->increasePoison(-$fourHoursInDayCare)
 
-                ->increaseFood($fourHoursInDayCare)
-                ->increaseSafety($fourHoursInDayCare)
-                ->increaseLove($fourHoursInDayCare)
-                ->increaseEsteem($fourHoursInDayCare)
+                ->increaseFood($fourHoursInDayCare, 12)
+                ->increaseSafety($fourHoursInDayCare, 10)
+                ->increaseLove($fourHoursInDayCare, 8)
+                ->increaseEsteem($fourHoursInDayCare, 6)
             ;
         }
 

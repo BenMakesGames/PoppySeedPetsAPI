@@ -478,14 +478,14 @@ class Pet
         return $this->food;
     }
 
-    public function increaseFood(int $amount): self
+    public function increaseFood(int $amount, ?int $max = null): self
     {
         if($amount === 0) return $this;
 
         $this->food = NumberFunctions::clamp(
             $this->food + $amount,
             -16,                                            // minimum
-            $this->getStomachSize() - max(0, $this->junk)   // maximum
+            $max ?? $this->getStomachSize() - max(0, $this->junk)   // maximum
         );
 
         return $this;
@@ -496,7 +496,7 @@ class Pet
         return $this->safety;
     }
 
-    public function increaseSafety(int $amount): self
+    public function increaseSafety(int $amount, ?int $max = null): self
     {
         if($amount === 0) return $this;
 
@@ -508,7 +508,7 @@ class Pet
 
         if($amount == 0) return $this;
 
-        $this->safety = NumberFunctions::clamp($this->safety + $amount, $this->getMinSafety(), $this->getMaxSafety());
+        $this->safety = NumberFunctions::clamp($this->safety + $amount, $this->getMinSafety(), $max ?? $this->getMaxSafety());
 
         return $this;
     }
@@ -528,7 +528,7 @@ class Pet
         return $this->love;
     }
 
-    public function increaseLove(int $amount): self
+    public function increaseLove(int $amount, ?int $max = null): self
     {
         if($amount === 0) return $this;
 
@@ -541,7 +541,7 @@ class Pet
 
         if($amount == 0) return $this;
 
-        $this->love = NumberFunctions::clamp($this->love + $amount, $this->getMinLove(), $this->getMaxLove());
+        $this->love = NumberFunctions::clamp($this->love + $amount, $this->getMinLove(), $max ?? $this->getMaxLove());
 
         return $this;
     }
@@ -561,7 +561,7 @@ class Pet
         return $this->esteem;
     }
 
-    public function increaseEsteem(int $amount): self
+    public function increaseEsteem(int $amount, ?int $max = null): self
     {
         if($amount === 0) return $this;
 
@@ -575,7 +575,7 @@ class Pet
 
         if($amount == 0) return $this;
 
-        $this->esteem = NumberFunctions::clamp($this->esteem + $amount, $this->getMinEsteem(), $this->getMaxEsteem());
+        $this->esteem = NumberFunctions::clamp($this->esteem + $amount, $this->getMinEsteem(), $max ?? $this->getMaxEsteem());
 
         return $this;
     }
