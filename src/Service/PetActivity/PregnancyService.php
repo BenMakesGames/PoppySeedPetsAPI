@@ -7,6 +7,7 @@ use App\Entity\PetRelationship;
 use App\Entity\PetSpecies;
 use App\Entity\SpiritCompanion;
 use App\Enum\FlavorEnum;
+use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetLocationEnum;
@@ -166,6 +167,9 @@ class PregnancyService
             FlavorEnum::getRandomValue($this->squirrel3),
             $this->meritRepository->getRandomStartingMerit()
         );
+
+        if($pregnancy->getSpiritParent())
+            $baby->addMerit($this->meritRepository->getMeritByName(MeritEnum::NATURAL_CHANNEL));
 
         $smallestParent = min($pregnancy->getParent()->getScale(), $pregnancy->getOtherParent() == null ? 50 : $pregnancy->getOtherParent()->getScale());
         $largestParent = max($pregnancy->getParent()->getScale(), $pregnancy->getOtherParent() == null ? 50 : $pregnancy->getOtherParent()->getScale());
