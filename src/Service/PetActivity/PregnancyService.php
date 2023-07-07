@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Entity\PetBaby;
 use App\Entity\PetRelationship;
 use App\Entity\PetSpecies;
+use App\Entity\SpiritCompanion;
 use App\Enum\FlavorEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
@@ -103,6 +104,40 @@ class PregnancyService
         $this->em->persist($petPregnancy);
     }
 
+    public function getPregnantViaSpiritCompanion(Pet $mother)
+    {
+        if(!$mother->getSpiritCompanion())
+            throw new \Exception("Spirit companion not found! This is a bug! Ben has been notified...");
+
+        $r = $this->squirrel3->rngNextInt(1, 100);
+
+        if($r <= 80)
+            $species = $mother->getSpecies();
+        else
+            $species = $this->getRandomBreedingSpecies();
+
+        $colorA = PetColorFunctions::generateColorFromParentColors($this->squirrel3, $mother->getColorA(), $mother->getColorA());
+        $colorB = PetColorFunctions::generateColorFromParentColors($this->squirrel3, $mother->getColorB(), $mother->getColorB());
+
+        // 20% of the time, swap colorA and colorB around
+        if($this->squirrel3->rngNextInt(1, 5) === 1)
+        {
+            $temp = $colorA;
+            $colorA = $colorB;
+            $colorB = $temp;
+        }
+
+        $petPregnancy = (new PetBaby())
+            ->setSpecies($species)
+            ->setColorA($colorA)
+            ->setColorB($colorB)
+            ->setParent($mother)
+            ->setSpiritParent($mother->getSpiritCompanion())
+        ;
+
+        $this->em->persist($petPregnancy);
+    }
+
     public function getRandomBreedingSpecies(): PetSpecies
     {
         $species = $this->petSpeciesRepository->findBy([ 'availableFromBreeding' => true ]);
@@ -118,7 +153,9 @@ class PregnancyService
         $user = $pet->getOwner();
         $pregnancy = $pet->getPregnancy();
 
-        $name = $this->combineNames($pregnancy->getParent()->getName(), $pregnancy->getOtherParent()->getName());
+        $name = $pregnancy->getSpiritParent()
+            ? $this->combineNames($pregnancy->getParent()->getName(), $pregnancy->getSpiritParent()->getName())
+            : $this->combineNames($pregnancy->getParent()->getName(), $pregnancy->getOtherParent()->getName());
 
         $baby = $this->petFactory->createPet(
             $user,
@@ -130,8 +167,8 @@ class PregnancyService
             $this->meritRepository->getRandomStartingMerit()
         );
 
-        $smallestParent = min($pregnancy->getParent()->getScale(), $pregnancy->getOtherParent()->getScale());
-        $largestParent = max($pregnancy->getParent()->getScale(), $pregnancy->getOtherParent()->getScale());
+        $smallestParent = min($pregnancy->getParent()->getScale(), $pregnancy->getOtherParent() == null ? 50 : $pregnancy->getOtherParent()->getScale());
+        $largestParent = max($pregnancy->getParent()->getScale(), $pregnancy->getOtherParent() == null ? 50 : $pregnancy->getOtherParent()->getScale());
 
         $min = $smallestParent === 80 ? 80 : $this->squirrel3->rngNextInt(min($smallestParent, 80), max($smallestParent, 80));
         $max = $largestParent === 120 ? 120 : $this->squirrel3->rngNextInt(min($largestParent, 120), max($largestParent, 120));
@@ -146,6 +183,7 @@ class PregnancyService
         $baby
             ->setMom($pregnancy->getParent())
             ->setDad($pregnancy->getOtherParent())
+            ->setSpiritDad($pregnancy->getSpiritParent())
             ->setScale($babySize)
             ->setRenamingCharges(1)
         ;
@@ -199,8 +237,12 @@ class PregnancyService
         // grandparents get cool stuff :P
         if($pregnancy->getParent()->getMom()) $pregnancy->getParent()->getMom()->setIsGrandparent(true);
         if($pregnancy->getParent()->getDad()) $pregnancy->getParent()->getDad()->setIsGrandparent(true);
-        if($pregnancy->getOtherParent()->getMom()) $pregnancy->getOtherParent()->getMom()->setIsGrandparent(true);
-        if($pregnancy->getOtherParent()->getDad()) $pregnancy->getOtherParent()->getDad()->setIsGrandparent(true);
+
+        if($pregnancy->getOtherParent())
+        {
+            if($pregnancy->getOtherParent()->getMom()) $pregnancy->getOtherParent()->getMom()->setIsGrandparent(true);
+            if($pregnancy->getOtherParent()->getDad()) $pregnancy->getOtherParent()->getDad()->setIsGrandparent(true);
+        }
 
         $this->em->remove($pregnancy);
 
@@ -305,7 +347,7 @@ class PregnancyService
      * @param Pet $mother
      * @param Pet $father
      */
-    private function createParentalRelationships(Pet $baby, Pet $mother, Pet $father)
+    private function createParentalRelationships(Pet $baby, Pet $mother, ?Pet $father)
     {
         $petWithMother = (new PetRelationship())
             ->setRelationship($mother)
@@ -318,16 +360,23 @@ class PregnancyService
 
         $baby->addPetRelationship($petWithMother);
 
-        $petWithFather = (new PetRelationship())
-            ->setRelationship($father)
-            ->setCurrentRelationship(RelationshipEnum::BFF)
-            ->setPet($baby)
-            ->setRelationshipGoal(RelationshipEnum::BFF)
-            ->setMetDescription('%relationship.name% fathered %pet.name%!')
-            ->setCommitment(90) // BFF + BFF
-        ;
+        $this->em->persist($petWithMother);
 
-        $baby->addPetRelationship($petWithFather);
+        if($father)
+        {
+            $petWithFather = (new PetRelationship())
+                ->setRelationship($father)
+                ->setCurrentRelationship(RelationshipEnum::BFF)
+                ->setPet($baby)
+                ->setRelationshipGoal(RelationshipEnum::BFF)
+                ->setMetDescription('%relationship.name% fathered %pet.name%!')
+                ->setCommitment(90) // BFF + BFF
+            ;
+
+            $baby->addPetRelationship($petWithFather);
+
+            $this->em->persist($petWithFather);
+        }
 
         $motherWithBaby = (new PetRelationship())
             ->setRelationship($baby)
@@ -340,20 +389,22 @@ class PregnancyService
 
         $mother->addPetRelationship($motherWithBaby);
 
-        $fatherWithBaby = (new PetRelationship())
-            ->setRelationship($baby)
-            ->setCurrentRelationship(RelationshipEnum::BFF)
-            ->setPet($father)
-            ->setRelationshipGoal(RelationshipEnum::BFF)
-            ->setMetDescription('%pet.name% fathered %relationship.name%!')
-            ->setCommitment(90) // BFF + BFF
-        ;
-
-        $father->addPetRelationship($fatherWithBaby);
-
-        $this->em->persist($petWithMother);
-        $this->em->persist($petWithFather);
         $this->em->persist($motherWithBaby);
-        $this->em->persist($fatherWithBaby);
+
+        if($father)
+        {
+            $fatherWithBaby = (new PetRelationship())
+                ->setRelationship($baby)
+                ->setCurrentRelationship(RelationshipEnum::BFF)
+                ->setPet($father)
+                ->setRelationshipGoal(RelationshipEnum::BFF)
+                ->setMetDescription('%pet.name% fathered %relationship.name%!')
+                ->setCommitment(90) // BFF + BFF
+            ;
+
+            $father->addPetRelationship($fatherWithBaby);
+
+            $this->em->persist($fatherWithBaby);
+        }
     }
 }

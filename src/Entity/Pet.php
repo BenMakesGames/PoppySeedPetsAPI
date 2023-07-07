@@ -248,6 +248,11 @@ class Pet
     private $fatheredPets;
 
     /**
+     * @ORM\ManyToOne(targetEntity=SpiritCompanion::class, inversedBy="fatheredPets")
+     */
+    private $spiritDad;
+
+    /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Merit")
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petGroupDetails", "parkEvent", "petFriend", "hollowEarth", "petActivityLogAndPublicPet", "helperPet"})
      */
@@ -1838,6 +1843,18 @@ class Pet
     public function setRenamingCharges(int $renamingCharges): self
     {
         $this->renamingCharges = $renamingCharges;
+
+        return $this;
+    }
+
+    public function getSpiritDad(): ?SpiritCompanion
+    {
+        return $this->spiritDad;
+    }
+
+    public function setSpiritDad(?SpiritCompanion $spiritDad): self
+    {
+        $this->spiritDad = $spiritDad;
 
         return $this;
     }

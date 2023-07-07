@@ -47,9 +47,13 @@ class PetBaby
 
     /**
      * @ORM\ManyToOne(targetEntity=Pet::class)
-     * @ORM\JoinColumn(nullable=false)
      */
     private $otherParent;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=SpiritCompanion::class)
+     */
+    private $spiritParent;
 
     /**
      * @ORM\Column(type="string", length=6)
@@ -206,5 +210,17 @@ class PetBaby
             return $this->getColorA();
         else
             return null;
+    }
+
+    public function getSpiritParent(): ?SpiritCompanion
+    {
+        return $this->spiritParent;
+    }
+
+    public function setSpiritParent(?SpiritCompanion $spiritParent): self
+    {
+        $this->spiritParent = $spiritParent;
+
+        return $this;
     }
 }

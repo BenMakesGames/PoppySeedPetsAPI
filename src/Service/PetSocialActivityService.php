@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Entity\Pet;
+use App\Entity\PetBaby;
 use App\Entity\PetGroup;
 use App\Entity\PetRelationship;
 use App\Enum\EnumInvalidValueException;
@@ -19,6 +20,7 @@ use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
 use App\Service\PetActivity\HoliService;
+use App\Service\PetActivity\PregnancyService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetSocialActivityService
@@ -34,12 +36,14 @@ class PetSocialActivityService
     private WeatherService $weatherService;
     private HoliService $holiService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private PregnancyService $pregnancyService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, PetRelationshipService $petRelationshipService,
         PetRepository $petRepository, Squirrel3 $squirrel3, PetGroupService $petGroupService,
         PetExperienceService $petExperienceService, PetRelationshipRepository $petRelationshipRepository,
-        WeatherService $weatherService, HoliService $holiService, PetActivityLogTagRepository $petActivityLogTagRepository
+        WeatherService $weatherService, HoliService $holiService, PetActivityLogTagRepository $petActivityLogTagRepository,
+        PregnancyService $pregnancyService
     )
     {
         $this->em = $em;
@@ -53,6 +57,7 @@ class PetSocialActivityService
         $this->weatherService = $weatherService;
         $this->holiService = $holiService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->pregnancyService = $pregnancyService;
     }
 
     public function runSocialTime(Pet $pet): bool
@@ -251,9 +256,24 @@ class PetSocialActivityService
         return ArrayFunctions::pick_one_weighted($relationships, fn(PetRelationship $r) => $r->getCommitment() + 1);
     }
 
+    private static function getPregnancyViaSpiritCompanion(Pet $pet, IRandom $rng): bool
+    {
+        $companion = $pet->getSpiritCompanion();
+
+        if($pet->getPregnancy() || !$pet->getIsFertile())
+            return false;
+
+        if($companion->getStar() === SpiritCompanionStarEnum::SAGITTARIUS)
+            return $rng->rngNextInt(1, 1000) === 1;
+
+        return $rng->rngNextInt(1, 2000) === 1;
+    }
+
     private function hangOutWithSpiritCompanion(Pet $pet)
     {
         $teachingStat = null;
+        $activityTags = [ 'Spirit Companion' ];
+        $activityInterestingness = PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT;
 
         $changes = new PetChanges($pet);
 
@@ -363,6 +383,15 @@ class PetSocialActivityService
                     ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
                 ;
             }
+
+            if(self::getPregnancyViaSpiritCompanion($pet, $this->squirrel3))
+            {
+                $this->pregnancyService->getPregnantViaSpiritCompanion($pet);
+                $activityTags[] = 'Pregnancy';
+                $activityInterestingness = PetActivityLogInterestingnessEnum::RARE_ACTIVITY;
+                $message .= ' When the two touched, they felt a mysterious spark of energy! Somehow, %pet:' . $pet->getId() . '.name% knows... they\'re going to have a baby!';
+            }
+
         }
         else if($pet->getSafety() <= 0)
         {
@@ -500,8 +529,8 @@ class PetSocialActivityService
         }
 
         $activityLog = $this->responseService->createActivityLog($pet, $message, 'companions/' . $companion->getImage(), $changes->compare($pet))
-            ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Spirit Companion' ]))
+            ->addInterestingness($activityInterestingness)
+            ->addTags($this->petActivityLogTagRepository->findByNames($activityTags))
         ;
 
         if($teachingStat)

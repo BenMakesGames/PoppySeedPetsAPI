@@ -29,6 +29,7 @@ final class SerializationGroupEnum
     public const KNOWN_RECIPE = 'knownRecipe';
     public const PARK_EVENT = 'parkEvent';
     public const PET_FRIEND = 'petFriend';
+    public const PET_SPIRIT_ANCESTOR = 'petSpiritAncestor';
     public const PET_GROUP = 'petGroup';
     public const PET_GROUP_DETAILS = 'petGroupDetails';
     public const PET_GROUP_INDEX = 'petGroupIndex';

@@ -119,7 +119,9 @@ class ForgettingScrollController extends AbstractController
             {
                 $responseService->addFlashMessage($pet->getSpiritCompanion()->getName() . ' fades away...');
 
-                $em->remove($pet->getSpiritCompanion());
+                if($pet->getSpiritCompanion()->getFatheredPets()->count() == 0)
+                    $em->remove($pet->getSpiritCompanion());
+
                 $pet->setSpiritCompanion(null);
             }
         }

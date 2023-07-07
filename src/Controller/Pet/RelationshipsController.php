@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
+use App\Repository\SpiritCompanionRepository;
 use App\Service\Filter\PetRelationshipFilterService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -63,22 +64,34 @@ class RelationshipsController extends AbstractController
     /**
      * @Route("/{pet}/familyTree", methods={"GET"})
      */
-    public function getFamilyTree(Pet $pet, ResponseService $responseService, PetRepository $petRepository)
+    public function getFamilyTree(
+        Pet $pet, ResponseService $responseService, PetRepository $petRepository,
+        SpiritCompanionRepository $spiritCompanionRepository
+    )
     {
         $siblings = $petRepository->findSiblings($pet);
         $parents = $petRepository->findParents($pet);
 
         $grandparents = [];
+        $spiritGrandparents = [];
+
         foreach($parents as $parent)
+        {
             $grandparents = array_merge($grandparents, $petRepository->findParents($parent));
+
+            if($parent->getSpiritDad())
+                $spiritGrandparents[] = $parent->getSpiritDad();
+        }
 
         $children = $petRepository->findChildren($pet);
 
         return $responseService->success([
             'grandparents' => $grandparents,
             'parents' => $parents,
+            'spiritGrandparents' => $spiritGrandparents,
+            'spiritParent' => $pet->getSpiritDad(),
             'siblings' => $siblings,
             'children' => $children,
-        ], [ SerializationGroupEnum::PET_FRIEND ]);
+        ], [ SerializationGroupEnum::PET_FRIEND, SerializationGroupEnum::PET_SPIRIT_ANCESTOR ]);
     }
 }
