@@ -3,6 +3,7 @@
 namespace App\Functions;
 
 use App\Entity\Pet;
+use App\Entity\SpiritCompanion;
 use App\Enum\MeritEnum;
 use App\Service\ResponseService;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -27,18 +28,18 @@ final class PetRenamingHelpers
         $pet->setName($petName);
     }
 
-    public static function renameSpiritCompanion(ResponseService $responseService, Pet $pet, string $newName)
+    public static function renameSpiritCompanion(ResponseService $responseService, SpiritCompanion $spiritCompanion, string $newName)
     {
         $companionName = ProfanityFilterFunctions::filter(trim($newName));
 
-        if($companionName === $pet->getSpiritCompanion()->getName())
+        if($companionName === $spiritCompanion->getName())
             throw new UnprocessableEntityHttpException('That\'s the spirit companion\'s current name!');
 
         if(\mb_strlen($companionName) < 1 || \mb_strlen($companionName) > 30)
             throw new UnprocessableEntityHttpException('Spirit companion names must be between 1 and 30 characters long.');
 
-        $responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . "'s spirit companion has been renamed to {$companionName}!", '');
+        $responseService->createActivityLog($spiritCompanion->getPet(), ActivityHelpers::PetName($spiritCompanion->getPet()) . "'s spirit companion has been renamed to {$companionName}!", '');
 
-        $pet->getSpiritCompanion()->setName($companionName);
+        $spiritCompanion->setName($companionName);
     }
 }
