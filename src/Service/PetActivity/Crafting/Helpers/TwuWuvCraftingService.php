@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
+use App\Enum\MeritEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\ComputedPetSkills;
@@ -84,6 +85,9 @@ class TwuWuvCraftingService
     {
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($pet->hasMerit(MeritEnum::SILVERBLOOD))
+            $roll += 5;
 
         $makingItem = $this->itemRepository->findOneByName('Cupid');
 

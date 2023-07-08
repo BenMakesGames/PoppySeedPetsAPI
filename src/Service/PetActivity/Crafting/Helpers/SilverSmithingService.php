@@ -4,6 +4,7 @@ namespace App\Service\PetActivity\Crafting\Helpers;
 use App\Entity\Item;
 use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
+use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
@@ -70,6 +71,9 @@ class SilverSmithingService
 
         $silverKey = $this->itemRepository->findOneByName('Silver Key');
 
+        if($pet->hasMerit(MeritEnum::SILVERBLOOD))
+            $roll += 5;
+
         if($roll <= 2)
         {
             $reRoll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
@@ -127,6 +131,9 @@ class SilverSmithingService
 
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
+        if($pet->hasMerit(MeritEnum::SILVERBLOOD))
+            $roll += 5;
+
         if($roll <= 2)
         {
             $reRoll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
@@ -169,6 +176,9 @@ class SilverSmithingService
     {
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($pet->hasMerit(MeritEnum::SILVERBLOOD))
+            $roll += 5;
 
         if($roll <= 2)
         {
@@ -214,6 +224,9 @@ class SilverSmithingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
+        if($pet->hasMerit(MeritEnum::SILVERBLOOD))
+            $roll += 5;
+
         if($roll <= 2)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
@@ -256,6 +269,9 @@ class SilverSmithingService
     {
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($pet->hasMerit(MeritEnum::SILVERBLOOD))
+            $roll += 5;
 
         $makingItem = $this->itemRepository->findOneByName('Sylvan Fishing Rod');
 
@@ -301,6 +317,9 @@ class SilverSmithingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getStamina()->getTotal(), $petWithSkills->getDexterity()->getTotal()) + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
+        if($pet->hasMerit(MeritEnum::SILVERBLOOD))
+            $roll += 5;
+
         if($roll <= 3)
         {
             $this->houseSimService->getState()->loseItem('Glass', 1);
@@ -344,6 +363,9 @@ class SilverSmithingService
     {
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($pet->hasMerit(MeritEnum::SILVERBLOOD))
+            $roll += 5;
 
         $makingItem = $this->itemRepository->findOneByName('Sharktooth Axe');
 
@@ -419,6 +441,9 @@ class SilverSmithingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
+        if($pet->hasMerit(MeritEnum::SILVERBLOOD))
+            $roll += 5;
+
         if($roll <= 2)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
@@ -463,6 +488,9 @@ class SilverSmithingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
+        if($pet->hasMerit(MeritEnum::SILVERBLOOD))
+            $roll += 5;
+
         $makingItem = $this->itemRepository->findOneByName('Lightning Axe');
 
         if($roll <= 2)
@@ -506,6 +534,9 @@ class SilverSmithingService
     {
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($pet->hasMerit(MeritEnum::SILVERBLOOD))
+            $roll += 5;
 
         if($roll >= 22)
         {

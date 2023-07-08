@@ -12,6 +12,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\DateFunctions;
@@ -170,7 +171,7 @@ class GatheringService
             $activityLog->setChanges($changes->compare($pet));
         }
 
-        if($this->squirrel3->rngNextInt(1, 75) === 1)
+        if(AdventureMath::petAttractsBug($this->squirrel3, $pet, 75))
             $this->inventoryService->petAttractsRandomBug($pet);
     }
 
@@ -822,7 +823,7 @@ class GatheringService
             $activityLog = $this->doNormalMicroJungle($petWithSkills);
 
         // more chances to get bugs in the jungle!
-        if($this->squirrel3->rngNextInt(1, 25) === 1)
+        if(AdventureMath::petAttractsBug($this->squirrel3, $petWithSkills->getPet(), 25))
             $this->inventoryService->petAttractsRandomBug($petWithSkills->getPet());
 
         return $activityLog;
@@ -1211,7 +1212,7 @@ class GatheringService
             $activityLog = $this->doNormalDeepMicroJungle($petWithSkills);
 
         // more chances to get bugs in the jungle!
-        if($this->squirrel3->rngNextInt(1, 20) === 1)
+        if(AdventureMath::petAttractsBug($this->squirrel3, $petWithSkills->getPet(), 20))
             $this->inventoryService->petAttractsRandomBug($petWithSkills->getPet());
 
         return $activityLog;

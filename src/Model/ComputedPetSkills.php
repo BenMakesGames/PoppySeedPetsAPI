@@ -209,6 +209,7 @@ class ComputedPetSkills
         $skill = new TotalPetSkill();
         $skill->base = $this->pet->getSkills()->getUmbra();
         $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->umbraBonus() : 0;
+        $skill->merits = ($this->pet->hasMerit(MeritEnum::LUMINARY_ESSENCE) ? 1 : 0);
         $skill->statusEffects =
             ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 3 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::HEX_HEXED) ? 6 - $this->pet->getSkills()->getUmbra() : 0) +

@@ -11,6 +11,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\AdventureMath;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
@@ -118,7 +119,7 @@ class ChocolateMansion
             $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Le Manoir de Chocolat', $this->getEntryDescription($pet));
         }
 
-        if($this->rng->rngNextInt(1, 75) === 1)
+        if(AdventureMath::petAttractsBug($this->rng, $pet, 75))
             $this->inventoryService->petAttractsRandomBug($pet);
     }
 

@@ -30,6 +30,7 @@ class MeritRepository extends ServiceEntityRepository
         MeritEnum::GREGARIOUS,
         MeritEnum::SHEDS,
         MeritEnum::DARKVISION,
+        MeritEnum::LUMINARY_ESSENCE,
     ];
 
     public const POSSIBLE_FIRST_PET_STARTING_MERITS = [

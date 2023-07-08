@@ -858,13 +858,15 @@ class SmithingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
+        if($pet->hasMerit(MeritEnum::SILVERBLOOD))
+            $roll += 5;
+
         if($roll <= 3)
         {
-            $lost = $this->squirrel3->rngNextFromArray([ 'Gold Bar', 'Silver Bar' ]);
             $moneys = $this->squirrel3->rngNextInt(10, 30);
 
-            $this->houseSimService->getState()->loseItem($lost, 1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Ceremonial Trident, but melted the heck out of the ' . $lost . '! :( ' . $pet->getName() . ' decided to make some coins out of it, instead, and got ' . $moneys . '~~m~~.', '')
+            $this->houseSimService->getState()->loseItem('Silver Bar', 1);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Ceremonial Trident, but melted the heck out of the Silver Bar! :( ' . $pet->getName() . ' decided to make some coins out of it, instead, and got ' . $moneys . '~~m~~.', '')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
             ;
 
@@ -1340,6 +1342,9 @@ class SmithingService
     {
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($pet->hasMerit(MeritEnum::SILVERBLOOD))
+            $roll += 5;
 
         if($roll <= 2)
         {

@@ -2,6 +2,7 @@
 namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
+use App\Enum\MeritEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
@@ -116,6 +117,8 @@ class WerecreatureEncounterService
                 'Talon', 'Fluff'
             ]));
 
+            $silverblood = $pet->hasMerit(MeritEnum::SILVERBLOOD);
+
             $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::BITTEN_BY_A_WERECREATURE, 1);
 
             $pet
@@ -123,7 +126,10 @@ class WerecreatureEncounterService
                 ->increaseSafety(-$this->squirrel3->rngNextInt(2, 4))
             ;
 
-            $message .= '%pet:' . $pet->getId() . '.name% beat the creature back, and received ' . $lootItem->getNameWithArticle() . ', but also received a bite during the encounter... (Uh oh...)';
+            if($silverblood)
+                $message .= '%pet:' . $pet->getId() . '.name% beat the creature back, and received ' . $lootItem->getNameWithArticle() . ', but also received a bite during the encounter... (Good thing they\'re a silverblood!)';
+            else
+                $message .= '%pet:' . $pet->getId() . '.name% beat the creature back, and received ' . $lootItem->getNameWithArticle() . ', but also received a bite during the encounter... (Uh oh...)';
 
             $activityLog = $this->responseService->createActivityLog($pet, $message, '')
                 ->addTags($this->petActivityLogTagRepository->findByNames(array_merge($tags, [ 'Werecreature', 'Fighting' ])))

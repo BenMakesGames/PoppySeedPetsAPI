@@ -1922,6 +1922,9 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $skillCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + ceil($petWithSkills->getScience()->getTotal() / 2));
 
+        if($pet->hasMerit(MeritEnum::SILVERBLOOD))
+            $skillCheck += 5;
+
         if($skillCheck < 14)
         {
             if($this->squirrel3->rngNextInt(1, 2) === 1)
@@ -2380,6 +2383,9 @@ class MagicBindingService
     {
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
+
+        if($uniqueIngredient == 'Silver Bar' && $pet->hasMerit(MeritEnum::SILVERBLOOD))
+            $umbraCheck += 5;
 
         $scrollItem = $this->itemRepository->findOneByName($scroll);
 
@@ -2952,6 +2958,9 @@ class MagicBindingService
     {
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($pet->hasMerit(MeritEnum::SILVERBLOOD))
+            $roll += 5;
 
         if($roll <= 2)
         {

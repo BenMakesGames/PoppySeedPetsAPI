@@ -7,6 +7,7 @@ use App\Enum\GatheringHolidayEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\AdventureMath;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -116,7 +117,7 @@ class GatheringHolidayAdventureService
             ;
         }
 
-        if($this->squirrel3->rngNextInt(1, 75) === 1)
+        if(AdventureMath::petAttractsBug($this->squirrel3, $pet, 75))
             $this->inventoryService->petAttractsRandomBug($pet);
 
         return $activityLog;

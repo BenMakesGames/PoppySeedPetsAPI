@@ -60,6 +60,8 @@ final class MeritEnum
     public const GREGARIOUS = 'Gregarious'; // can be in up to 4 groups
     public const SHEDS = 'Sheds';
     public const DARKVISION = 'Darkvision'; // can see in the dark
+    public const LUMINARY_ESSENCE = 'Luminary Essence'; // +1 to umbra + attracts more bugs
+    public const SILVERBLOOD = 'Silverblood'; // cannot become a werecreature; +5 when crafting with silver
 
     // not yet implemented
     //public const PAST_LIFE = 'Past Life';

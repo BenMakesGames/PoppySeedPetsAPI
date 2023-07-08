@@ -12,6 +12,7 @@ use App\Enum\PetSkillEnum;
 use App\Enum\SpiritCompanionStarEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
+use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
 use App\Functions\EquipmentFunctions;
 use App\Functions\GrammarFunctions;
@@ -107,7 +108,7 @@ class TreasureMapService
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
         ;
 
-        if($this->squirrel3->rngNextInt(1, 5) === 1)
+        if(AdventureMath::petAttractsBug($this->squirrel3, $pet, 5))
             $this->inventoryService->petAttractsRandomBug($pet);
     }
 
@@ -131,7 +132,7 @@ class TreasureMapService
 
         $activityLog->setChanges($changes->compare($pet));
 
-        if($this->squirrel3->rngNextInt(1, 20) === 1)
+        if(AdventureMath::petAttractsBug($this->squirrel3, $pet, 20))
             $this->inventoryService->petAttractsRandomBug($pet);
     }
 
@@ -239,7 +240,7 @@ class TreasureMapService
             ->setChanges($changes->compare($pet))
         ;
 
-        if($this->squirrel3->rngNextInt(1, 20) === 1)
+        if(AdventureMath::petAttractsBug($this->squirrel3, $pet, 20))
             $this->inventoryService->petAttractsRandomBug($pet);
     }
 

@@ -8,6 +8,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
 use App\Functions\EquipmentFunctions;
 use App\Model\ComputedPetSkills;
@@ -103,7 +104,7 @@ class HeartDimensionService
             ->setChanges($changes->compare($pet))
         ;
 
-        if($this->squirrel3->rngNextInt(1, 10) === 1)
+        if(AdventureMath::petAttractsBug($this->squirrel3, $pet, 10))
             $this->inventoryService->petAttractsRandomBug($pet, 'Heart Beetle');
 
         return $activityLog;

@@ -6,6 +6,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -61,7 +62,7 @@ class Caerbannog
             ->setChanges($changes->compare($pet))
         ;
 
-        if($this->rng->rngNextInt(1, 75) === 1)
+        if(AdventureMath::petAttractsBug($this->rng, $pet, 75))
             $this->inventoryService->petAttractsRandomBug($pet);
 
         return $activityLog;

@@ -1,8 +1,10 @@
 <?php
 namespace App\Service;
 
+use App\Entity\Merit;
 use App\Entity\Pet;
 use App\Entity\StatusEffect;
+use App\Enum\MeritEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\EquipmentFunctions;
@@ -23,6 +25,9 @@ class StatusEffectService
 
     public function applyStatusEffect(Pet $pet, string $status, int $durationInMinutes)
     {
+        if(($status == StatusEffectEnum::BITTEN_BY_A_WERECREATURE || $status == StatusEffectEnum::WEREFORM) && $pet->hasMerit(MeritEnum::SILVERBLOOD))
+            return;
+
         $maxDuration = StatusEffectService::getStatusEffectMaxDuration($status);
 
         $statusEffect = $pet->getStatusEffect($status);

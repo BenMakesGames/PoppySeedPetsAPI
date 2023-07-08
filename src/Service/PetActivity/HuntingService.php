@@ -13,6 +13,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
+use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\InventoryModifierFunctions;
@@ -190,7 +191,7 @@ class HuntingService
             $activityLog->setChanges($changes->compare($pet));
         }
 
-        if($this->squirrel3->rngNextInt(1, 100) === 1)
+        if(AdventureMath::petAttractsBug($this->squirrel3, $pet, 100))
             $this->inventoryService->petAttractsRandomBug($pet);
     }
 

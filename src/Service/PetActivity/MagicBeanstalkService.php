@@ -7,6 +7,7 @@ use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
@@ -106,7 +107,7 @@ class MagicBeanstalkService
             $activityLog->setChanges($changes->compare($pet));
         }
 
-        if($this->squirrel3->rngNextInt(1, 75) === 1)
+        if(AdventureMath::petAttractsBug($this->squirrel3, $pet, 75))
             $this->inventoryService->petAttractsRandomBug($pet);
     }
 

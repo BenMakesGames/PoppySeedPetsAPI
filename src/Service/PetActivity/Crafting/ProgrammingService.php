@@ -282,6 +282,14 @@ class ProgrammingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
+        $metalToUse = [ 'Silver Bar', 'Gold Bar' ];
+
+        if($pet->hasMerit(MeritEnum::SILVERBLOOD) && $this->houseSimService->hasInventory('Silver Bar'))
+        {
+            $roll += 5;
+            $metalToUse = [ 'Silver Bar' ];
+        }
+
         if($roll <= 2)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Laser Pointer, but the 3D Printer started acting, and %pet:' . $pet->getId() . '.name% ended up spending all their time rechecking wires and software settings...', '')
@@ -296,7 +304,7 @@ class ProgrammingService
             $this->houseSimService->getState()->loseItem('Plastic', 1);
             $this->houseSimService->getState()->loseItem('Glass', 1);
 
-            $this->houseSimService->getState()->loseOneOf([ 'Silver Bar', 'Gold Bar' ]);
+            $this->houseSimService->getState()->loseOneOf($metalToUse);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% 3D printed & wired a Laser Pointer.', 'items/resource/string')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
@@ -326,6 +334,14 @@ class ProgrammingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
+        $metalToUse = [ 'Silver Bar', 'Iron Bar' ];
+
+        if($pet->hasMerit(MeritEnum::SILVERBLOOD) && $this->houseSimService->hasInventory('Silver Bar'))
+        {
+            $roll += 5;
+            $metalToUse = [ 'Silver Bar' ];
+        }
+
         if($roll <= 2)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Metal Detector, but the 3D Printer started acting, and %pet:' . $pet->getId() . '.name% ended up spending all their time rechecking wires and software settings...', '')
@@ -342,20 +358,30 @@ class ProgrammingService
             $this->houseSimService->getState()->loseItem('Plastic', 1);
             $this->houseSimService->getState()->loseItem('Magic Smoke', 1);
 
-            $this->houseSimService->getState()->loseOneOf([ 'Silver Bar', 'Iron Bar' ]);
+            $this->houseSimService->getState()->loseOneOf($metalToUse);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% 3D printed & wired up a Metal Detector.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
                 ->addTags($this->petActivityLogTagRepository->findByNames([ '3D Printing', 'Electronics' ]))
             ;
 
-            $metalDetector = $this->squirrel3->rngNextFromArray([
-                'Metal Detector (Iron)',
-                'Metal Detector (Silver)',
-                'Metal Detector (Gold)'
-            ]);
+            if($pet->hasMerit(MeritEnum::SILVERBLOOD))
+            {
+                $metalDetector = 'Metal Detector (Silver)';
 
-            $this->inventoryService->petCollectsItem($metalDetector, $pet, $pet->getName() . ' 3D printed & wired this up.', $activityLog);
+                $this->inventoryService->petCollectsItem($metalDetector, $pet, $pet->getName() . ' 3D printed & wired this up, setting it to Silver, because that\'s the best metal. Obviously.', $activityLog);
+            }
+            else
+            {
+                $metalDetector = $this->squirrel3->rngNextFromArray([
+                    'Metal Detector (Iron)',
+                    'Metal Detector (Silver)',
+                    'Metal Detector (Gold)'
+                ]);
+
+                $this->inventoryService->petCollectsItem($metalDetector, $pet, $pet->getName() . ' 3D printed & wired this up.', $activityLog);
+            }
+
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ], $activityLog);
         }
         else
