@@ -53,6 +53,38 @@ class RenamingController extends AbstractController
     }
 
     /**
+     * @Route("/{inventory}/readToSpiritCompanion", methods={"PATCH"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function renameSpiritCompanion(
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
+        PetRepository $petRepository
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'renamingScroll');
+
+        $petId = $request->request->getInt('pet', 0);
+        $pet = $petRepository->find($petId);
+
+        if(!$pet || $pet->getOwner()->getId() !== $user->getId())
+            throw new NotFoundHttpException('There is no such pet.');
+
+        if(!$pet->getSpiritCompanion())
+            throw new NotFoundHttpException('That pet does not have a spirit companion.');
+
+        PetRenamingHelpers::renameSpiritCompanion($responseService, $pet->getSpiritCompanion(), $request->request->get('name', ''));
+
+        $em->remove($inventory);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
+    }
+
+    /**
      * @Route("/{inventory}/readToSelf", methods={"PATCH"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */

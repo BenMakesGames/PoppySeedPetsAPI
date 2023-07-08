@@ -16,24 +16,25 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class SpiritCompanion
 {
     const NAMES = [
-        'Achak', 'Anda', 'Arima', 'Avira',
+        'Achak', 'Âme', 'Anda', 'Arima', 'Atma', 'Avira',
         'Cheveyo',
         'Drogo', 'Du\'an', 'Duša', 'Dvasia',
         'Efrit', 'Enid', 'Espiridión', 'Euthymios',
         'Fravardin',
-        'Gogo', 'Gees',
-        'Hew',
+        'Gogo', 'Gees', 'Geist', 'Gwisin',
+        'Hew', 'Huànyǐng',
         'Imamu',
         'Janan', 'Jīngshén',
         'Kneph',
         'Mamua', 'Matoatoa', 'Menos', 'Muuqasho',
-        'Pneuma', 'Psykhe', 'Púca', 'Pӯҳ',
-        'Rei', 'Roho',
-        'Spøgelse', 'Spyridon',
+        'Nafs',
+        'Pneuma', 'Pret', 'Psykhe', 'Púca', 'Pӯҳ',
+        'Rei', 'Roho', 'Ruh',
+        'Seele', 'Spøgelse', 'Spyridon',
         'Tien', 'Tinh Thần',
         'Umoya',
         'Wairua',
-        'Ysbryd',
+        'Ysbryd', 'Yūrei',
     ];
 
     const IMAGES = [
@@ -98,9 +99,15 @@ class SpiritCompanion
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+        return $this;
     }
 
     public function getImage(): ?string

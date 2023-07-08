@@ -26,4 +26,19 @@ final class PetRenamingHelpers
 
         $pet->setName($petName);
     }
+
+    public static function renameSpiritCompanion(ResponseService $responseService, Pet $pet, string $newName)
+    {
+        $companionName = ProfanityFilterFunctions::filter(trim($newName));
+
+        if($companionName === $pet->getSpiritCompanion()->getName())
+            throw new UnprocessableEntityHttpException('That\'s the spirit companion\'s current name!');
+
+        if(\mb_strlen($companionName) < 1 || \mb_strlen($companionName) > 30)
+            throw new UnprocessableEntityHttpException('Spirit companion names must be between 1 and 30 characters long.');
+
+        $responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . "'s spirit companion has been renamed to {$companionName}!", '');
+
+        $pet->getSpiritCompanion()->setName($companionName);
+    }
 }
