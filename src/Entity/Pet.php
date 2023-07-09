@@ -486,6 +486,7 @@ class Pet
     public function increaseFood(int $amount, ?int $max = null): self
     {
         if($amount === 0) return $this;
+        if($max && $amount > 0 && $this->food >= $max) return $this;
 
         $this->food = NumberFunctions::clamp(
             $this->food + $amount,
@@ -504,6 +505,7 @@ class Pet
     public function increaseSafety(int $amount, ?int $max = null): self
     {
         if($amount === 0) return $this;
+        if($max && $amount > 0 && $this->safety >= $max) return $this;
 
         $divisor = 1;
 
@@ -536,6 +538,7 @@ class Pet
     public function increaseLove(int $amount, ?int $max = null): self
     {
         if($amount === 0) return $this;
+        if($max && $amount > 0 && $this->love >= $max) return $this;
 
         $divisor = 1;
 
@@ -569,6 +572,7 @@ class Pet
     public function increaseEsteem(int $amount, ?int $max = null): self
     {
         if($amount === 0) return $this;
+        if($max && $amount > 0 && $this->esteem >= $max) return $this;
 
         $divisor = 1;
 
