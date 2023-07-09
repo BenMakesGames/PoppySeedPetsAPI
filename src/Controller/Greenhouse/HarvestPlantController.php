@@ -213,18 +213,21 @@ class HarvestPlantController extends AbstractController
             if($user->getGreenhouse()->getHelper())
                 $eligiblePets[] = $user->getGreenhouse()->getHelper();
 
-            $chanceOfHelp = sqrt(count($eligiblePets)) * 100;
-
-            if($squirrel3->rngNextInt(1, 550) <= $chanceOfHelp || $plant->getPlant()->getName() === 'Earth Tree')
+            if(count($eligiblePets) > 0)
             {
-                /** @var Pet $helper */
-                $helper = $squirrel3->rngNextFromArray($eligiblePets);
+                $chanceOfHelp = sqrt(count($eligiblePets)) * 100;
 
-                $activity = $greenhouseAdventureService->adventure($helper->getComputedSkills(), $plant);
-
-                if(($pollinators === PollinatorEnum::BEES_1 || $pollinators === PollinatorEnum::BEES_2) && $helper->hasMerit(MeritEnum::BEHATTED))
+                if($squirrel3->rngNextInt(1, 550) <= $chanceOfHelp || $plant->getPlant()->getName() === 'Earth Tree')
                 {
-                    $greenhouseAdventureService->maybeUnlockBeeAura($helper, $activity);
+                    /** @var Pet $helper */
+                    $helper = $squirrel3->rngNextFromArray($eligiblePets);
+
+                    $activity = $greenhouseAdventureService->adventure($helper->getComputedSkills(), $plant);
+
+                    if(($pollinators === PollinatorEnum::BEES_1 || $pollinators === PollinatorEnum::BEES_2) && $helper->hasMerit(MeritEnum::BEHATTED))
+                    {
+                        $greenhouseAdventureService->maybeUnlockBeeAura($helper, $activity);
+                    }
                 }
             }
         }
