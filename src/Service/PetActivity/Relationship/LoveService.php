@@ -204,22 +204,22 @@ class LoveService
         ];
 
         if($pet->getMom())
-        {
             $ancestorIds[] = $pet->getMom()->getId();
+
+        if($pet->getDad())
             $ancestorIds[] = $pet->getDad()->getId();
-        }
 
         if($pet->getMom() && $pet->getMom()->getMom())
-        {
             $ancestorIds[] = $pet->getMom()->getMom()->getId();
+
+        if($pet->getMom() && $pet->getMom()->getDad())
             $ancestorIds[] = $pet->getMom()->getDad()->getId();
-        }
 
         if($pet->getDad() && $pet->getDad()->getMom())
-        {
             $ancestorIds[] = $pet->getDad()->getMom()->getId();
+
+        if($pet->getDad() && $pet->getDad()->getDad())
             $ancestorIds[] = $pet->getDad()->getDad()->getId();
-        }
 
         return $ancestorIds;
     }
