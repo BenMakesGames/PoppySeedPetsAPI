@@ -93,7 +93,7 @@ class PetShelterPet
         'Osterbaum', 'Bunny', 'Rabbit', 'Daffodil', 'Lamb', 'Pastel',
     ];
 
-    public const PET_SOLSTICE_NAMES = [
+    public const PET_WINTER_SOLSTICE_NAMES = [
         'Solstice', 'Midwinter', 'Makara', 'Yaldā', 'Yule', 'Dongzhi',
     ];
 

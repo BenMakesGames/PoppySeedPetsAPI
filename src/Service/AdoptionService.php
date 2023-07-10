@@ -298,11 +298,11 @@ class AdoptionService
             return PetShelterPet::PET_WHITE_DAY_NAMES;
 
         // winter solstice, more or less
-        if($monthDay === 1221 || $monthDay === 1222)
-            return PetShelterPet::PET_SOLSTICE_NAMES;
+        if($this->calendarService->isWinterSolstice())
+            return PetShelterPet::PET_WINTER_SOLSTICE_NAMES;
 
-        // Christmas colors
-        if($monthDay >= 1223 && $monthDay <= 1225)
+        // Christmas colors (would normally do a 3-day range, but dec 23 isWinterSolstice())
+        if($monthDay >= 1224 && $monthDay <= 1225)
             return PetShelterPet::PET_CHRISTMAS_NAMES;
 
         if($this->calendarService->isHanukkah())
