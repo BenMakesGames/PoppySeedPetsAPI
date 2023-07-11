@@ -62,12 +62,16 @@ class EncyclopediaController extends AbstractController
      */
     public function getItemByName(string $itemName, ItemRepository $itemRepository, ResponseService $responseService)
     {
-        $item = $itemRepository->findOneByName($itemName);
+        try
+        {
+            $item = $itemRepository->findOneByName($itemName);
 
-        if(!$item)
+            return $responseService->success($item, [ SerializationGroupEnum::ITEM_ENCYCLOPEDIA ]);
+        }
+        catch(\InvalidArgumentException $e)
+        {
             throw new NotFoundHttpException('There is no such item.');
-
-        return $responseService->success($item, [ SerializationGroupEnum::ITEM_ENCYCLOPEDIA ]);
+        }
     }
 
     /**
