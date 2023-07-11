@@ -37,4 +37,5 @@ final class StatusEffectEnum
     public const RAWR = 'Rawr!';
     public const MOONSTRUCK = 'Moonstruck';
     public const CORDIAL = 'Cordial';
+    public const DANCING_LIKE_A_FOOL = 'Dancing Like a Fool';
 }

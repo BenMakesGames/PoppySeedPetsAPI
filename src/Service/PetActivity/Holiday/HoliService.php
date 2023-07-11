@@ -1,5 +1,5 @@
 <?php
-namespace App\Service\PetActivity;
+namespace App\Service\PetActivity\Holiday;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;

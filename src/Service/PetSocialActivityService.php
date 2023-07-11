@@ -2,7 +2,6 @@
 namespace App\Service;
 
 use App\Entity\Pet;
-use App\Entity\PetBaby;
 use App\Entity\PetGroup;
 use App\Entity\PetRelationship;
 use App\Enum\EnumInvalidValueException;
@@ -19,7 +18,8 @@ use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
-use App\Service\PetActivity\HoliService;
+use App\Service\PetActivity\Holiday\AwaOdoriService;
+use App\Service\PetActivity\Holiday\HoliService;
 use App\Service\PetActivity\PregnancyService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -35,6 +35,7 @@ class PetSocialActivityService
     private IRandom $squirrel3;
     private WeatherService $weatherService;
     private HoliService $holiService;
+    private AwaOdoriService $awaOdoriService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
     private PregnancyService $pregnancyService;
 
@@ -43,7 +44,7 @@ class PetSocialActivityService
         PetRepository $petRepository, Squirrel3 $squirrel3, PetGroupService $petGroupService,
         PetExperienceService $petExperienceService, PetRelationshipRepository $petRelationshipRepository,
         WeatherService $weatherService, HoliService $holiService, PetActivityLogTagRepository $petActivityLogTagRepository,
-        PregnancyService $pregnancyService
+        PregnancyService $pregnancyService, AwaOdoriService $awaOdoriService
     )
     {
         $this->em = $em;
@@ -58,6 +59,7 @@ class PetSocialActivityService
         $this->holiService = $holiService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->pregnancyService = $pregnancyService;
+        $this->awaOdoriService = $awaOdoriService;
     }
 
     public function runSocialTime(Pet $pet): bool
@@ -82,11 +84,15 @@ class PetSocialActivityService
 
         $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet);
 
-        if(!$pet->hasStatusEffect(StatusEffectEnum::WEREFORM) && $weather->isHoliday(HolidayEnum::HOLI))
+        if(!$pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
         {
-            if($this->holiService->adventure($pet))
+            if($weather->isHoliday(HolidayEnum::HOLI) && $this->holiService->adventure($pet))
                 return true;
         }
+
+        // were creatures can dance with other were creatures
+        if($pet->getFood() > 0 && $weather->isHoliday(HolidayEnum::AWA_ODORI) && $this->awaOdoriService->adventure($pet))
+            return true;
 
         $wants = [];
 

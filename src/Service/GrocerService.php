@@ -94,6 +94,10 @@ class GrocerService
         {
             $special = [ 'Pi Pie', 46 ];
         }
+        else if($this->calendarService->isAwaOdori())
+        {
+            $special = [ 'Odori 0.0%', 12 ];
+        }
         else
         {
             $specialIndex = RandomFunctions::squirrel3Noise($day, 78934) % count(self::SPECIALS);

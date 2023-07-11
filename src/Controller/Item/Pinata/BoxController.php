@@ -240,6 +240,7 @@ class BoxController extends AbstractController
                     'Chinese New Year Box',
                     'Bastille Day Box',
                     'Cinco de Mayo Box',
+                    'Awa Odori Box',
                     // TODO: other holiday boxes
                 ]);
             }

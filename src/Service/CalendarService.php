@@ -175,6 +175,11 @@ class CalendarService
         return $this->monthAndDay === 504;
     }
 
+    public function isAwaOdori(): bool
+    {
+        return $this->monthAndDay >= 812 && $this->monthAndDay <= 815;
+    }
+
     public function isTalkLikeAPirateDay(): bool
     {
         return $this->monthAndDay === 919;
@@ -350,6 +355,9 @@ class CalendarService
 
         if($this->isBastilleDay())
             $events[] = HolidayEnum::BASTILLE_DAY;
+
+        if($this->isAwaOdori())
+            $events[] = HolidayEnum::AWA_ODORI;
 
         if($this->isEarthDay())
             $events[] = HolidayEnum::EARTH_DAY;

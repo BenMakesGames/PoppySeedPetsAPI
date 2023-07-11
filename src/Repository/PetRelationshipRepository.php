@@ -44,7 +44,7 @@ class PetRelationshipRepository extends ServiceEntityRepository
             ->setMaxResults($maxFriendsToConsider)
             ->setParameter('petId', $pet->getId())
             ->setParameter('excludedRelationshipTypes', [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ])
-            ->setParameter('minimumFriendSocialEnergy', (PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * 3) >> 1)
+            ->setParameter('minimumFriendSocialEnergy', (PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * 3) / 2)
         ;
 
         $friends = $qb->getQuery()->execute();

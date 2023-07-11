@@ -5,32 +5,33 @@ class HolidayEnum
 {
     use Enum;
 
+    public const APRIL_FOOLS = 'April Fools\'';
+    public const AWA_ODORI = 'Awa Odori';
     public const BASTILLE_DAY = 'Bastille Day';
     public const BLACK_FRIDAY = 'Black Friday';
     public const CHINESE_NEW_YEAR = 'Chinese New Year';
+    public const CINCO_DE_MAYO = 'Cinco de Mayo';
     public const CYBER_MONDAY = 'Cyber Monday';
+    public const EARTH_DAY = 'Earth Day';
     public const EASTER = 'Easter';
     public const FOURTH_OF_JULY = '4th of July';
     public const HALLOWEEN = 'Halloween';
     public const HANUKKAH = 'Hanukkah';
     public const HOLI = 'Holi';
+    public const JELEPHANT_DAY = 'Jelephant Day';
     public const NEW_YEARS_DAY = 'New Year\'s Day';
+    public const NOOMBAT_DAY = 'Noombat Day';
     public const PI_DAY = 'Pi Day';
     public const PSP_BIRTHDAY = 'PSP Birthday';
-    public const SUMMER_SOLSTICE = 'Summer Solstice';
-    public const WINTER_SOLSTICE = 'Winter Solstice';
     public const PSYPETS_BIRTHDAY = 'PsyPets\' Birthday';
     public const SAINT_PATRICKS = 'Saint Patrick\'s';
     public const STOCKING_STUFFING_SEASON = 'Stocking Stuffing Season';
+    public const SUMMER_SOLSTICE = 'Summer Solstice';
     public const TALK_LIKE_A_PIRATE_DAY = 'Talk Like a Pirate Day';
     public const THANKSGIVING = 'Thanksgiving';
     public const VALENTINES = 'Valentine\'s';
     public const WHITE_DAY = 'White Day';
-    public const APRIL_FOOLS = 'April Fools\'';
-    public const EARTH_DAY = 'Earth Day';
-    public const CINCO_DE_MAYO = 'Cinco de Mayo';
-    public const NOOMBAT_DAY = 'Noombat Day';
-    public const JELEPHANT_DAY = 'Jelephant Day';
+    public const WINTER_SOLSTICE = 'Winter Solstice';
 
     // weird events?
     public const LEONIDS = 'The Leonids Meteor Shower';

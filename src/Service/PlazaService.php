@@ -97,7 +97,6 @@ class PlazaService
             }
         }
 
-
         if($this->calendarService->isJuly4th())
         {
             $gotBox = $this->userQuestRepository->findOrCreate($user, '4th of July, ' . $year, false);
@@ -113,7 +112,8 @@ class PlazaService
                 );
             }
         }
-        else if($this->calendarService->isBastilleDay())
+
+        if($this->calendarService->isBastilleDay())
         {
             $gotBox = $this->userQuestRepository->findOrCreate($user, 'Bastille Day, ' . $year, false);
 
@@ -128,7 +128,8 @@ class PlazaService
                 );
             }
         }
-        else if($this->calendarService->isCincoDeMayo())
+
+        if($this->calendarService->isCincoDeMayo())
         {
             $gotBox = $this->userQuestRepository->findOrCreate($user, 'Cinco de Mayo, ' . $year, false);
 
@@ -143,7 +144,8 @@ class PlazaService
                 );
             }
         }
-        else if($this->calendarService->isNewYearsHoliday())
+
+        if($this->calendarService->isNewYearsHoliday())
         {
             $newYearYear = $month === 12 ? ($year + 1) : $year;
 
@@ -156,6 +158,22 @@ class PlazaService
                     'New Year Box',
                     'New Year Box', 1,
                     'Received on the ' . $now->format('jS') . ' of ' . $now->format('F') . ', ' . $year . '.',
+                    $gotBox
+                );
+            }
+        }
+
+        if($this->calendarService->isAwaOdori())
+        {
+            $gotBox = $this->userQuestRepository->findOrCreate($user, 'Awa Odori, ' . $year, false);
+
+            if(!$gotBox->getValue())
+            {
+                $boxes[] = new AvailableHolidayBox(
+                    'an Awa Odori Box',
+                    'Awa Odori Box',
+                    'Awa Odori Box', 1,
+                    'Received on the ' . $now->format('jS') . ' of August, ' . $year . '.',
                     $gotBox
                 );
             }
