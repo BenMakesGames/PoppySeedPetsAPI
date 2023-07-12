@@ -4,12 +4,14 @@ namespace App\Controller\Item\PetAlteration;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\StatusEffectEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\PetRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -35,10 +37,10 @@ class WerebaneController extends AbstractController
         $pet = $petRepository->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException('There is no such pet.');
+            throw new PSPPetNotFoundException();
 
         if(!$pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_WERECREATURE))
-            throw new NotFoundHttpException('But it tastes, like, REALLY gross, and ' . $pet->getName() . ' hasn\'t been bitten by a werecreature, anyway, so... not worth!');
+            throw new PSPInvalidOperationException('But it tastes, like, REALLY gross, and ' . $pet->getName() . ' hasn\'t been bitten by a werecreature, anyway, so... not worth!');
 
         $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::BITTEN_BY_A_WERECREATURE));
 

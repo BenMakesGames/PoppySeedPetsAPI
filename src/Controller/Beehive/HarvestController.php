@@ -5,6 +5,7 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
@@ -39,7 +40,7 @@ class HarvestController extends AbstractController
         $user = $this->getUser();
 
         if(!$user->getUnlockedBeehive() || !$user->getBeehive())
-            throw new AccessDeniedHttpException('You haven\'t got a Beehive, yet!');
+            throw new PSPNotUnlockedException('Beehive');
 
         $beehive = $user->getBeehive();
         $itemNames = [];

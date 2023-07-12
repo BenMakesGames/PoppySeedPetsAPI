@@ -4,6 +4,7 @@ namespace App\Controller\Beehive;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\ItemRepository;
 use App\Service\BeehiveService;
 use App\Service\InventoryService;
@@ -34,7 +35,7 @@ class FeedController extends AbstractController
         $user = $this->getUser();
 
         if(!$user->getUnlockedBeehive() || !$user->getBeehive())
-            throw new AccessDeniedHttpException('You haven\'t got a Beehive, yet!');
+            throw new PSPNotUnlockedException('Beehive');
 
         $beehive = $user->getBeehive();
 

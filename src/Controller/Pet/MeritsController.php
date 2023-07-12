@@ -3,6 +3,7 @@ namespace App\Controller\Pet;
 
 use App\Entity\Pet;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -23,7 +24,7 @@ class MeritsController extends AbstractController
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())
-            throw new AccessDeniedHttpException('That\'s not your pet.');
+            throw new PSPPetNotFoundException();
 
         return $responseService->success($pet->getMerits(), [ SerializationGroupEnum::MERIT_ENCYCLOPEDIA ]);
     }

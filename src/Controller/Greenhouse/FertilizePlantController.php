@@ -6,6 +6,7 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\GrammarFunctions;
 use App\Functions\PlayerLogHelpers;
 use App\Repository\InventoryRepository;
@@ -17,7 +18,6 @@ use PHPUnit\Util\Json;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -41,7 +41,7 @@ class FertilizePlantController extends AbstractController
         $user = $this->getUser();
 
         if($plant->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException('That plant does not exist.');
+            throw new PSPNotFoundException('That plant does not exist.');
 
         if(new \DateTimeImmutable() < $plant->getCanNextInteract())
             throw new UnprocessableEntityHttpException('This plant is not yet ready to fertilize.');

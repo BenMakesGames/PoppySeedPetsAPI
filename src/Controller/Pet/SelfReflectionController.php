@@ -8,6 +8,8 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotFoundException;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\GuildRepository;
 use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
@@ -19,7 +21,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -40,7 +41,7 @@ class SelfReflectionController extends AbstractController
     {
         // just to prevent scraping (this endpoint is currently - 2020-06-29 - used only for changing a pet's guild)
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
-            throw new AccessDeniedHttpException('That pet doesn\'t belong to you.');
+            throw new PSPPetNotFoundException();
 
         $guildData = array_map(
             function(Guild $g) {
@@ -102,7 +103,7 @@ class SelfReflectionController extends AbstractController
         $user = $this->getUser();
 
         if($user->getId() !== $pet->getOwner()->getId())
-            throw new AccessDeniedHttpException();
+            throw new PSPPetNotFoundException();
 
         if($pet->getSelfReflectionPoint() < 1)
             throw new UnprocessableEntityHttpException($pet->getName() . ' does not have any Self-reflection Points remaining.');
@@ -121,7 +122,7 @@ class SelfReflectionController extends AbstractController
         $guild = $guildRepository->find($guildId);
 
         if(!$guild)
-            throw new NotFoundHttpException();
+            throw new PSPNotFoundException('That guild does not exist!');
 
         if($pet->getGuildMembership()->getGuild()->getId() === $guild->getId())
             throw new UnprocessableEntityHttpException($pet->getName() . ' is already a member of ' . $guild->getName() . '...');
@@ -155,7 +156,7 @@ class SelfReflectionController extends AbstractController
         $user = $this->getUser();
 
         if($user->getId() !== $pet->getOwner()->getId())
-            throw new AccessDeniedHttpException();
+            throw new PSPPetNotFoundException();
 
         if($pet->getSelfReflectionPoint() < 1)
             throw new UnprocessableEntityHttpException($pet->getName() . ' does not have any Self-reflection Points remaining.');
@@ -174,7 +175,7 @@ class SelfReflectionController extends AbstractController
         ]);
 
         if(!$relationship)
-            throw new NotFoundHttpException();
+            throw new PSPNotFoundException('Those pets don\'t seem to have a relationship of any kind...');
 
         if($relationship->getCurrentRelationship() !== RelationshipEnum::BROKE_UP && $relationship->getCurrentRelationship() !== RelationshipEnum::DISLIKE)
             throw new UnprocessableEntityHttpException('Those pets are totally okay with each other already!');
@@ -252,7 +253,7 @@ class SelfReflectionController extends AbstractController
         $pet = $petRepository->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException();
+            throw new PSPPetNotFoundException();
 
         $petRelationshipTypeaheadService->setParameters($pet, [
             RelationshipEnum::BROKE_UP,

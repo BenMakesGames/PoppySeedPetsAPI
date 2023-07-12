@@ -5,6 +5,8 @@ use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\ParkEventTypeEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Service\Filter\ParkEventHistoryFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,13 +33,13 @@ class ParkController extends AbstractController
         if($parkEventType === '') $parkEventType = null;
 
         if($parkEventType !== null && !ParkEventTypeEnum::isAValue($parkEventType))
-            throw new UnprocessableEntityHttpException('"' . $parkEventType . '" is not a valid park event type!');
+            throw new PSPFormValidationException('"' . $parkEventType . '" is not a valid park event type!');
 
         /** @var User $user */
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())
-            throw new AccessDeniedHttpException('This is not your pet??? Reload and try again.');
+            throw new PSPPetNotFoundException();
 
         $pet->setParkEventType($parkEventType);
 

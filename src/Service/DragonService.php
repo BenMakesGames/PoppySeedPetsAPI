@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\UserStatEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\PlayerLogHelpers;
 use App\Repository\DragonRepository;
@@ -16,7 +17,6 @@ use App\Repository\SpiceRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\PetActivity\TreasureMapService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class DragonService
@@ -107,7 +107,7 @@ class DragonService
         $dragon = $this->dragonRepository->findAdult($user);
 
         if(!$dragon)
-            throw new NotFoundHttpException('You don\'t have an adult dragon!');
+            throw new PSPNotFoundException('You don\'t have an adult dragon!');
 
         $user = $dragon->getOwner();
 

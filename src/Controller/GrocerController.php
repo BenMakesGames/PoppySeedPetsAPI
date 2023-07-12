@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Exceptions\PSPFormValidationException;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
@@ -65,10 +66,10 @@ class GrocerController extends AbstractController
         $payWith = strtolower($request->request->getAlpha('payWith', 'moneys'));
 
         if($buyTo !== LocationEnum::HOME && $buyTo !== LocationEnum::BASEMENT)
-            throw new UnprocessableEntityHttpException('You must select a location to put the purchased items.');
+            throw new PSPFormValidationException('You must select a location to put the purchased items.');
 
         if($payWith !== 'moneys' && $payWith !== 'recycling')
-            throw new UnprocessableEntityHttpException('You must choose whether to pay with moneys or with recycling points.');
+            throw new PSPFormValidationException('You must choose whether to pay with moneys or with recycling points.');
 
         $inventory = $grocerService->getInventory();
 
@@ -113,7 +114,7 @@ class GrocerController extends AbstractController
             throw new UnprocessableEntityHttpException('Only ' . GrocerService::MAX_CAN_PURCHASE_PER_DAY . ' items per day, please.');
 
         if(count($buyingInventory) === 0)
-            throw new UnprocessableEntityHttpException('Did you forget to select something to buy?');
+            throw new PSPFormValidationException('Did you forget to select something to buy?');
 
         $existingInventoryCount = $inventoryService->countTotalInventory($user, $buyTo);
         $maxInventory = $buyTo === LocationEnum::BASEMENT ? User::MAX_BASEMENT_INVENTORY : User::MAX_HOUSE_INVENTORY;

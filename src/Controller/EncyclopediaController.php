@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Annotations\DoesNotRequireHouseHours;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Repository\ItemRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Service\Filter\ItemFilterService;
@@ -12,7 +13,6 @@ use App\Service\ResponseService;
 use App\Service\Typeahead\ItemTypeaheadService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -70,7 +70,7 @@ class EncyclopediaController extends AbstractController
         }
         catch(\InvalidArgumentException $e)
         {
-            throw new NotFoundHttpException('There is no such item.');
+            throw new PSPNotFoundException('There is no such item.');
         }
     }
 
@@ -97,7 +97,7 @@ class EncyclopediaController extends AbstractController
         $species = $petSpeciesRepository->findOneBy([ 'name' => $speciesName ]);
 
         if(!$species)
-            throw new NotFoundHttpException('There is no such species.');
+            throw new PSPNotFoundException('There is no such species.');
 
         return $responseService->success($species, [ SerializationGroupEnum::PET_ENCYCLOPEDIA ]);
     }

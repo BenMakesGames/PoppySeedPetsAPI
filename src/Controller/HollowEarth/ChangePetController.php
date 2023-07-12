@@ -2,7 +2,11 @@
 namespace App\Controller\HollowEarth;
 
 use App\Entity\Pet;
+use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotUnlockedException;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Service\HollowEarthService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,17 +29,18 @@ class ChangePetController extends AbstractController
         Pet $pet, ResponseService $responseService, EntityManagerInterface $em, HollowEarthService $hollowEarthService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
         $player = $user->getHollowEarthPlayer();
 
         if($player === null)
-            throw new AccessDeniedHttpException();
+            throw new PSPNotUnlockedException('Portal');
 
         if($pet->getOwner()->getId() !== $user->getId())
-            throw new AccessDeniedHttpException();
+            throw new PSPPetNotFoundException();
 
         if($player->getCurrentAction() !== null || $player->getMovesRemaining() > 0)
-            throw new UnprocessableEntityHttpException('Pet cannot be changed at this time.');
+            throw new PSPInvalidOperationException('Pet cannot be changed at this time.');
 
         $player->setChosenPet($pet);
 

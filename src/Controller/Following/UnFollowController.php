@@ -2,11 +2,11 @@
 namespace App\Controller\Following;
 
 use App\Entity\User;
+use App\Exceptions\PSPNotFoundException;
 use App\Repository\UserFollowingRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Annotations\DoesNotRequireHouseHours;
@@ -34,7 +34,7 @@ class UnFollowController extends AbstractController
         ]);
 
         if(!$followingRecord)
-            throw new NotFoundHttpException('You\'re not following that person...');
+            throw new PSPNotFoundException('You\'re not following that person...');
 
         $em->remove($followingRecord);
         $em->flush();

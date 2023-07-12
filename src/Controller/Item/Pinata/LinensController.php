@@ -5,6 +5,8 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Repository\TraderRepository;
 use App\Service\InventoryService;
@@ -81,12 +83,12 @@ class LinensController extends AbstractController
         $user = $this->getUser();
 
         if(!$user->getUnlockedTrader())
-            throw new UnprocessableEntityHttpException('On second thought, you realize you don\'t know anyone like that...');
+            throw new PSPNotUnlockedException('Trader');
 
         $trader = $traderRepository->findOneBy([ 'user' => $user->getId() ]);
 
         if(!$trader)
-            throw new UnprocessableEntityHttpException('You should probably go visit the Trader first... at least once...');
+            throw new PSPInvalidOperationException('You should probably go visit the Trader first... at least once...');
 
         TraderService::recolorTrader($rng, $trader);
 

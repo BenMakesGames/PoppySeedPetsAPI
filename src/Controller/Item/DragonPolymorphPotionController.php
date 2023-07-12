@@ -3,12 +3,12 @@ namespace App\Controller\Item;
 
 use App\Entity\Dragon;
 use App\Entity\Inventory;
+use App\Exceptions\PSPNotFoundException;
 use App\Repository\DragonRepository;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -33,10 +33,10 @@ class DragonPolymorphPotionController extends AbstractController
         $dragon = $dragonRepository->findOneBy([ 'owner' => $user ]);
 
         if(!$dragon)
-            throw new NotFoundHttpException('You don\'t know any dragons to give the potion to...');
+            throw new PSPNotFoundException('You don\'t know any dragons to give the potion to...');
 
         if(!$dragon->getIsAdult())
-            throw new NotFoundHttpException('Your fireplace dragon, ' . $dragon->getName() . ', is too young to drink. Potions.');
+            throw new PSPNotFoundException('Your fireplace dragon, ' . $dragon->getName() . ', is too young to drink. Potions.');
 
         $em->remove($inventory);
 

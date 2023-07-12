@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\UserActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Functions\PlayerLogHelpers;
 use App\Functions\RequestFunctions;
@@ -43,7 +44,7 @@ class FeedController extends AbstractController
         $user = $this->getUser();
 
         if(!$user->getUnlockedFireplace() || !$user->getFireplace())
-            throw new AccessDeniedHttpException('You haven\'t got a Fireplace, yet!');
+            throw new PSPNotUnlockedException('Fireplace');
 
         $itemIds = RequestFunctions::getUniqueIdsOrThrow($request, 'fuel', 'No items were selected as fuel???');
 

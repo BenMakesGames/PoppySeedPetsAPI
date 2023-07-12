@@ -2,15 +2,17 @@
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
+use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotFoundException;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\PetRepository;
 use App\Service\Filter\PetFilterService;
 use App\Service\ResponseService;
 use App\Service\Typeahead\PetTypeaheadService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -61,7 +63,7 @@ class GetController extends AbstractController
         ]);
 
         if(!$pet)
-            throw new NotFoundHttpException();
+            throw new PSPPetNotFoundException();
 
         return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
     }
@@ -82,7 +84,10 @@ class GetController extends AbstractController
         Request $request, ResponseService $responseService, PetTypeaheadService $petTypeaheadService
     )
     {
-        $petTypeaheadService->setUser($this->getUser());
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $petTypeaheadService->setUser($user);
 
         try
         {

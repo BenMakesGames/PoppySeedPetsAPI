@@ -4,6 +4,7 @@ namespace App\Controller\Beehive;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\InventoryRepository;
 use App\Service\HollowEarthService;
 use App\Service\ResponseService;
@@ -29,7 +30,7 @@ class DiceController extends AbstractController
         $user = $this->getUser();
 
         if(!$user->getUnlockedBeehive() || !$user->getBeehive())
-            throw new AccessDeniedHttpException('You haven\'t got a Beehive, yet!');
+            throw new PSPNotUnlockedException('Beehive');
 
         $inventory = $inventoryRepository->createQueryBuilder('i')
             ->andWhere('i.owner=:owner')

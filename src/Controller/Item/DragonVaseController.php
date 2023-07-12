@@ -7,6 +7,8 @@ use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
@@ -24,7 +26,6 @@ use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -133,10 +134,10 @@ class DragonVaseController extends AbstractController
         ]);
 
         if(!$dippedItem)
-            throw new NotFoundHttpException('Could not find that item!? Reload, and try again...');
+            throw new PSPNotFoundException('Could not find that item!? Reload, and try again...');
 
         if(!$dippedItem->getItem()->getTool())
-            throw new UnprocessableEntityHttpException('That item is not a tool! Dipping it into the vase would accomplish NOTHING.');
+            throw new PSPInvalidOperationException('That item is not a tool! Dipping it into the vase would accomplish NOTHING.');
 
         $today = (new \DateTimeImmutable())->format('Y-m-d');
         $usedDragonVase = $userQuestRepository->findOrCreate($user, 'Used Dragon Vase', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));

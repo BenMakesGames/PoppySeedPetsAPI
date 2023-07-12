@@ -4,6 +4,8 @@ namespace App\Controller\Item\Pinata;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Repository\PetRepository;
 use App\Repository\SpiceRepository;
@@ -47,9 +49,9 @@ class HeartstoneController extends AbstractController
         if($numberThatCanBeTransformed <= 0)
         {
             if($numberTransformed == 0)
-                throw new UnprocessableEntityHttpException('You cannot transform a Heartstone until one of your pets has completed all of the Heartstone Dimension challenges.');
+                throw new PSPInvalidOperationException('You cannot transform a Heartstone until one of your pets has completed all of the Heartstone Dimension challenges.');
             else
-                throw new UnprocessableEntityHttpException('You cannot transform any more Heartstone until another one of your pets has completed all of the Heartstone Dimension challenges.');
+                throw new PSPInvalidOperationException('You cannot transform any more Heartstones until another one of your pets has completed all of the Heartstone Dimension challenges.');
         }
 
         $location = $inventory->getLocation();

@@ -2,6 +2,7 @@
 namespace App\Controller\Account;
 
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPFormValidationException;
 use App\Functions\PlayerLogHelpers;
 use App\Repository\UserRepository;
 use App\Repository\UserStyleRepository;
@@ -37,7 +38,7 @@ class LogInController extends AbstractController
         $sessionHours = $request->request->getInt('sessionHours', 0);
 
         if(!$email || !$password)
-            throw new UnprocessableEntityHttpException('"email" and "passphrase" are both required.');
+            throw new PSPFormValidationException('"email" and "passphrase" are both required.');
 
         $user = $userRepository->findOneBy([ 'email' => $email ]);
 

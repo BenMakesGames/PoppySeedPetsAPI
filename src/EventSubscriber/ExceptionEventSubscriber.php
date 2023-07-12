@@ -1,6 +1,11 @@
 <?php
 namespace App\EventSubscriber;
 
+use App\Exceptions\PSPException;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\StringFunctions;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityNotFoundException;
@@ -81,6 +86,22 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
                     [ $message ]
                 ));
             }
+        }
+        else if($e instanceof PSPNotFoundException) // includes PSPPetNotFoundExceptions
+        {
+            $event->setResponse($this->responseService->error(Response::HTTP_NOT_FOUND, [ $e->getMessage() ]));
+        }
+        else if($e instanceof PSPNotUnlockedException)
+        {
+            $event->setResponse($this->responseService->error(Response::HTTP_FORBIDDEN, [ $e->getMessage() ]));
+        }
+        else if($e instanceof PSPInvalidOperationException)
+        {
+            $event->setResponse($this->responseService->error(Response::HTTP_UNPROCESSABLE_ENTITY, [ $e->getMessage() ]));
+        }
+        else if($e instanceof PSPFormValidationException)
+        {
+            $event->setResponse($this->responseService->error(Response::HTTP_UNPROCESSABLE_ENTITY, [ $e->getMessage() ]));
         }
         else if($this->kernel->getEnvironment() !== 'dev')
         {

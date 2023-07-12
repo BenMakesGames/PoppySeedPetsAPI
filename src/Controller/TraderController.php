@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Repository\TraderRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\FieldGuideService;
@@ -15,7 +16,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -89,7 +89,7 @@ class TraderController extends AbstractController
             throw new UnprocessableEntityHttpException('You can only make this trade up to ' . $exchange->canMakeExchange . ' times.');
 
         if(!$exchange)
-            throw new NotFoundHttpException('There is no such exchange available.');
+            throw new PSPNotFoundException('There is no such exchange available.');
 
         if(!$traderService->userCanMakeExchange($user, $exchange))
             throw new UnprocessableEntityHttpException('The items you need to make this exchange could not be found in your house.');

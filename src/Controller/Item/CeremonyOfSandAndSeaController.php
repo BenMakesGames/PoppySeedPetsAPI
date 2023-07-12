@@ -2,6 +2,9 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\User;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
@@ -27,17 +30,18 @@ class CeremonyOfSandAndSeaController extends AbstractController
         UserQuestRepository $userQuestRepository, ItemRepository $itemRepository
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'ceremonyOfSandAndSea/#');
-
+        /** @var User $user */
         $user = $this->getUser();
 
+        ItemControllerHelpers::validateInventory($user, $inventory, 'ceremonyOfSandAndSea/#');
+
         if(!$user->getUnlockedGreenhouse())
-            throw new UnprocessableEntityHttpException('You need a Greenhouse to summon the sea to!');
+            throw new PSPNotUnlockedException('Greenhouse');
 
         $expandedGreenhouseWithShovel = $userQuestRepository->findOrCreate($user, 'Expanded Greenhouse with Ceremony of Sand and Sea', false);
 
         if($expandedGreenhouseWithShovel->getValue())
-            throw new UnprocessableEntityHttpException('The sea has already been summoned to your Greenhouse!');
+            throw new PSPInvalidOperationException('The sea has already been summoned to your Greenhouse!');
 
         $expandedGreenhouseWithShovel->setValue(true);
 

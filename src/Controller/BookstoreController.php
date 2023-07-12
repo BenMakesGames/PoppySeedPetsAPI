@@ -5,6 +5,8 @@ use App\Entity\Item;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Service\BookstoreService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -35,7 +37,7 @@ class BookstoreController extends AbstractController
         $user = $this->getUser();
 
         if($user->getUnlockedBookstore() === null)
-            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+            throw new PSPNotUnlockedException('Bookstore');
 
         $data = $bookstoreService->getResponseData($user);
 
@@ -54,7 +56,7 @@ class BookstoreController extends AbstractController
         $user = $this->getUser();
 
         if($user->getUnlockedBookstore() === null)
-            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+            throw new PSPNotUnlockedException('Bookstore');
 
         $bookstoreService->advanceBookstoreQuest($user, $item);
 
@@ -80,7 +82,7 @@ class BookstoreController extends AbstractController
         $user = $this->getUser();
 
         if($user->getUnlockedBookstore() === null)
-            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+            throw new PSPNotUnlockedException('Bookstore');
 
         $bookPrices = $bookstoreService->getAvailableBooks($user);
         $gamePrices = $bookstoreService->getAvailableGames($user);
@@ -89,7 +91,7 @@ class BookstoreController extends AbstractController
         $allPrices = array_merge($bookPrices, $gamePrices, $cafePrices);
 
         if(!array_key_exists($item->getName(), $allPrices))
-            throw new UnprocessableEntityHttpException('That item cannot be purchased.');
+            throw new PSPFormValidationException('That item cannot be purchased.');
 
         if($user->getMoneys() < $allPrices[$item->getName()])
             throw new UnprocessableEntityHttpException('You don\'t have enough money to buy ' . $item->getName() . '.');

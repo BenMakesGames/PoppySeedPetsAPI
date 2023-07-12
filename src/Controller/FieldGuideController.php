@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\FieldGuideEntryRepository;
 use App\Service\Filter\UserFieldGuideEntryFilterService;
 use App\Service\ResponseService;
@@ -30,7 +31,7 @@ class FieldGuideController extends AbstractController
         $user = $this->getUser();
 
         if($user->getUnlockedFieldGuide() === null)
-            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+            throw new PSPNotUnlockedException('Field Guide');
 
         $userFieldGuideEntryFilterService->addRequiredFilter('user', $user->getId());
 

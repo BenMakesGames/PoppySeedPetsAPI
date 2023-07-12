@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Functions\PlayerLogHelpers;
 use App\Functions\RequestFunctions;
@@ -53,10 +54,10 @@ class FeedComposterController extends AbstractController
         $user = $this->getUser();
 
         if(!$user->getGreenhouse())
-            throw new AccessDeniedHttpException('You haven\'t purchased a Greenhouse plot yet!');
+            throw new PSPNotUnlockedException('Greenhouse');
 
         if(!$user->getGreenhouse()->getHasComposter())
-            throw new AccessDeniedHttpException('Your don\'t have a composter yet!');
+            throw new PSPNotUnlockedException('Composter');
 
         $itemIds = RequestFunctions::getUniqueIdsOrThrow($request, 'food', 'No items were selected as fuel???');
 

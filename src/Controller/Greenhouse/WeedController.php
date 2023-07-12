@@ -4,6 +4,7 @@ namespace App\Controller\Greenhouse;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
 use App\Functions\PlayerLogHelpers;
 use App\Model\PetChanges;
@@ -18,7 +19,6 @@ use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -45,7 +45,7 @@ class WeedController extends AbstractController
         $greenhouse = $user->getGreenhouse();
 
         if(!$greenhouse)
-            throw new NotFoundHttpException('You don\'t have a Greenhouse plot.');
+            throw new PSPNotFoundException('You don\'t have a Greenhouse plot.');
 
         $weeds = $userQuestRepository->findOrCreate($user, 'Greenhouse Weeds', (new \DateTimeImmutable())->modify('-1 minutes')->format('Y-m-d H:i:s'));
 

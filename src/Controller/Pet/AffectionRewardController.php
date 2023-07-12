@@ -7,6 +7,9 @@ use App\Entity\SpiritCompanion;
 use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\MeritFunctions;
 use App\Repository\MeritRepository;
@@ -33,7 +36,7 @@ class AffectionRewardController extends AbstractController
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())
-            throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
+            throw new PSPPetNotFoundException();
 
         $merits = $meritRepository->findBy([ 'name' => MeritFunctions::getAvailableMerits($pet) ]);
 
@@ -52,13 +55,13 @@ class AffectionRewardController extends AbstractController
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())
-            throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
+            throw new PSPPetNotFoundException();
 
         if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
-            throw new UnprocessableEntityHttpException($pet->getName() . ' is Affectionless. It cannot gain Merits from affection.');
+            throw new PSPInvalidOperationException($pet->getName() . ' is Affectionless. It cannot gain Merits from affection.');
 
         if($pet->getAffectionRewardsClaimed() >= $pet->getAffectionLevel())
-            throw new UnprocessableEntityHttpException('You\'ll have to raise ' . $pet->getName() . '\'s affection, first.');
+            throw new PSPInvalidOperationException('You\'ll have to raise ' . $pet->getName() . '\'s affection, first.');
 
         $meritName = $request->request->get('merit');
 
@@ -68,7 +71,7 @@ class AffectionRewardController extends AbstractController
         $merit = ArrayFunctions::find_one($availableMerits, fn(Merit $m) => $m->getName() === $meritName);
 
         if(!$merit)
-            throw new UnprocessableEntityHttpException('That merit is not available.');
+            throw new PSPNotFoundException('That merit is not available.');
 
         $pet
             ->addMerit($merit)
@@ -111,13 +114,13 @@ class AffectionRewardController extends AbstractController
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())
-            throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
+            throw new PSPPetNotFoundException();
 
         if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
-            throw new UnprocessableEntityHttpException($pet->getName() . ' is Affectionless. It cannot gain Merits from affection.');
+            throw new PSPInvalidOperationException($pet->getName() . ' is Affectionless. It cannot gain Merits from affection.');
 
         if($pet->getAffectionRewardsClaimed() >= $pet->getAffectionLevel())
-            throw new UnprocessableEntityHttpException('You\'ll have to raise ' . $pet->getName() . '\'s affection, first.');
+            throw new PSPInvalidOperationException('You\'ll have to raise ' . $pet->getName() . '\'s affection, first.');
 
         $skillName = $request->request->get('skill');
 

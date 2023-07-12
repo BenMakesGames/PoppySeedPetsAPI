@@ -5,6 +5,10 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\MeritEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetRenamingHelpers;
 use App\Functions\PlayerLogHelpers;
 use App\Functions\ProfanityFilterFunctions;
@@ -13,7 +17,6 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -41,7 +44,7 @@ class RenamingController extends AbstractController
         $pet = $petRepository->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException('There is no such pet.');
+            throw new PSPPetNotFoundException();
 
         PetRenamingHelpers::renamePet($responseService, $pet, $request->request->get('name', ''));
 
@@ -70,10 +73,10 @@ class RenamingController extends AbstractController
         $pet = $petRepository->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException('There is no such pet.');
+            throw new PSPPetNotFoundException();
 
         if(!$pet->getSpiritCompanion())
-            throw new NotFoundHttpException('That pet does not have a spirit companion.');
+            throw new PSPNotFoundException('That pet does not have a spirit companion.');
 
         PetRenamingHelpers::renameSpiritCompanion($responseService, $pet->getSpiritCompanion(), $request->request->get('name', ''));
 
@@ -105,10 +108,10 @@ class RenamingController extends AbstractController
         $newName = ProfanityFilterFunctions::filter(trim($request->request->get('name', '')));
 
         if($newName === $user->getName())
-            throw new UnprocessableEntityHttpException('That\'s already your name! (What a waste of the scroll that would be...)');
+            throw new PSPInvalidOperationException('That\'s already your name! (What a waste of the scroll that would be...)');
 
         if(\mb_strlen($newName) < 2 || \mb_strlen($newName) > 30)
-            throw new UnprocessableEntityHttpException('Name must be between 2 and 30 characters long.');
+            throw new PSPFormValidationException('Name must be between 2 and 30 characters long.');
 
         $em->remove($inventory);
 

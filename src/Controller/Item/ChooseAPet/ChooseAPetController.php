@@ -3,10 +3,10 @@
 namespace App\Controller\Item\ChooseAPet;
 
 use App\Entity\Pet;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\PetRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ChooseAPetController extends AbstractController
 {
@@ -16,7 +16,7 @@ class ChooseAPetController extends AbstractController
         $pet = $petRepository->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $this->getUser()->getId())
-            throw new NotFoundHttpException('There is no such pet.');
+            throw new PSPPetNotFoundException();
 
         return $pet;
     }

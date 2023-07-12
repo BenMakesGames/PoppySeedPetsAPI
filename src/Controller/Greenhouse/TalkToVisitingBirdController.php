@@ -1,12 +1,13 @@
 <?php
 namespace App\Controller\Greenhouse;
 
+use App\Exceptions\PSPNotFoundException;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Service\GreenhouseService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -26,10 +27,10 @@ class TalkToVisitingBirdController extends AbstractController
         $user = $this->getUser();
 
         if(!$user->getGreenhouse())
-            throw new AccessDeniedHttpException('You haven\'t purchased a Greenhouse plot yet.');
+            throw new PSPNotUnlockedException('Greenhouse');
 
         if(!$user->getGreenhouse()->getVisitingBird())
-            throw new NotFoundHttpException('Hm... there\'s no bird here. Reload, maybe??');
+            throw new PSPNotFoundException('Hm... there\'s no bird here. Reload, maybe??');
 
         $message = $greenhouseService->approachBird($user->getGreenhouse());
 

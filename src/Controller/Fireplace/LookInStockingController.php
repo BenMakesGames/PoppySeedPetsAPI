@@ -3,6 +3,7 @@ namespace App\Controller\Fireplace;
 
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\JewishCalendarFunctions;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
@@ -11,7 +12,6 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -36,12 +36,12 @@ class LookInStockingController extends AbstractController
         $monthAndDay = $now->format('md');
 
         if($monthAndDay < 1201)
-            throw new AccessDeniedHttpException('It\'s not December!');
+            throw new PSPInvalidOperationException('It\'s not December!');
 
         $gotStockingPresent = $userQuestRepository->findOrCreate($user, 'Got a Stocking Present', null);
 
         if($gotStockingPresent->getValue() === $now->format('Y-m-d'))
-            throw new AccessDeniedHttpException('There\'s nothing else in the stocking. Maybe tomorrow?');
+            throw new PSPInvalidOperationException('There\'s nothing else in the stocking. Maybe tomorrow?');
 
         $randomRewards = [
             'Mint', 'Chocolate Bar', 'Charcoal', 'Cheese', 'Crystal Ball', 'Fruit Basket',

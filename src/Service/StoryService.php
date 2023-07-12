@@ -2,28 +2,25 @@
 namespace App\Service;
 
 use App\Entity\Inventory;
-use App\Entity\MuseumItem;
 use App\Entity\Story;
 use App\Entity\StorySection;
 use App\Entity\User;
 use App\Entity\UserQuest;
 use App\Enum\LocationEnum;
 use App\Enum\StoryActionTypeEnum;
-use App\Enum\UserStatEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Model\ItemQuantity;
 use App\Model\StoryStep;
 use App\Model\StoryStepChoice;
 use App\Repository\InventoryRepository;
-use App\Repository\ItemRepository;
 use App\Repository\StoryRepository;
 use App\Repository\StorySectionRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class StoryService
 {
@@ -73,7 +70,7 @@ class StoryService
         $this->story = $this->storyRepository->find($storyId);
 
         if (!$this->story)
-            throw new NotFoundHttpException('That Story doesn\'t exist! (Uh oh! Is something broken? Maybe reload and try again?)');
+            throw new PSPNotFoundException('That Story doesn\'t exist! (Uh oh! Is something broken? Maybe reload and try again?)');
 
         $this->callingInventory = $callingInventory;
         $this->user = $user;
@@ -86,7 +83,7 @@ class StoryService
             $choice = trim($request->get('choice', ''));
 
             if($choice === '')
-                throw new UnprocessableEntityHttpException('You didn\'t choose a choice!');
+                throw new PSPFormValidationException('You didn\'t choose a choice!');
 
             $response = $this->makeChoice($choice);
         }
@@ -120,7 +117,7 @@ class StoryService
         });
 
         if(!$choice || !$this->choiceIsChoosable($choice))
-            throw new UnprocessableEntityHttpException('There is no such option. (Maybe reload and try again?)');
+            throw new PSPFormValidationException('There is no such option. (Maybe reload and try again?)');
 
         // in case we had to create new stuff before interpreting the actions, flush the DB
         $this->em->flush();

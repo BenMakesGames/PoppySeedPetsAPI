@@ -4,14 +4,14 @@ namespace App\Controller\Item\PetAlteration;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\SpiritCompanion;
+use App\Exceptions\PSPNotFoundException;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\PetRepository;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -37,10 +37,10 @@ class SpiritPolymorphPotionController extends AbstractController
         $pet = $petRepository->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException('There is no such pet.');
+            throw new PSPPetNotFoundException();
 
         if(!$pet->getSpiritCompanion())
-            throw new UnprocessableEntityHttpException($pet->getName() . ' doesn\'t have a spirit companion! Let\'s not waste a perfectly-good potion!');
+            throw new PSPNotFoundException($pet->getName() . ' doesn\'t have a spirit companion! (Let\'s not waste a perfectly-good potion!)');
 
         $em->remove($inventory);
 

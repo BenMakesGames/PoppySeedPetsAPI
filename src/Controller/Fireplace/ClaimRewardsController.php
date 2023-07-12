@@ -5,6 +5,8 @@ use App\Entity\User;
 use App\Entity\UserActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\PlayerLogHelpers;
@@ -39,12 +41,12 @@ class ClaimRewardsController extends AbstractController
         $user = $this->getUser();
 
         if(!$user->getUnlockedFireplace() || !$user->getFireplace())
-            throw new AccessDeniedHttpException('You haven\'t got a Fireplace, yet!');
+            throw new PSPNotUnlockedException('Fireplace');
 
         $fireplace = $user->getFireplace();
 
         if(!$fireplace->getHasReward())
-            throw new AccessDeniedHttpException('There\'s nothing unusual in the fireplace right now... (That\'s odd. Reload and try again?)');
+            throw new PSPInvalidOperationException('There\'s nothing unusual in the fireplace right now... (That\'s odd. Reload and try again?)');
 
         $numItems = min(3, (int)($fireplace->getPoints() / (8 * 60)));
 

@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Model\ItemQuantity;
 use App\Repository\InventoryRepository;
 use App\Repository\UserStatsRepository;
@@ -17,7 +18,6 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -46,7 +46,7 @@ class CookingBuddyController extends AbstractController
         $user = $this->getUser();
 
         if($cookingBuddy->getOwner()->getId() !== $user->getId() || ($cookingBuddy->getItem()->getName() !== 'Cooking Buddy' && $cookingBuddy->getItem()->getName() !== 'Cooking "Alien"'))
-            throw new NotFoundHttpException('404 Cooking Buddy Not Found');
+            throw new PSPNotFoundException('Cooking Buddy Not Found');
 
         $knownRecipesFilterService->addRequiredFilter('user', $user->getId());
 
@@ -119,10 +119,10 @@ class CookingBuddyController extends AbstractController
         $user = $this->getUser();
 
         if($cookingBuddy->getOwner()->getId() !== $user->getId() || ($cookingBuddy->getItem()->getName() !== 'Cooking Buddy' && $cookingBuddy->getItem()->getName() !== 'Cooking "Alien"'))
-            throw new NotFoundHttpException('404 Cooking Buddy Not Found');
+            throw new PSPNotFoundException('Cooking Buddy Not Found');
 
         if($knownRecipe->getUser()->getId() !== $user->getId())
-            throw new NotFoundHttpException('Unknown recipe? Weird. Reload and try again.');
+            throw new PSPNotFoundException('Unknown recipe? Weird. Reload and try again.');
 
         $recipe = $knownRecipe->getRecipe();
 

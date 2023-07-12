@@ -5,6 +5,10 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\EquipmentFunctions;
 use App\Functions\MeritFunctions;
 use App\Repository\MeritRepository;
@@ -13,7 +17,6 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -39,10 +42,10 @@ class ForgettingScrollController extends AbstractController
         $pet = $petRepository->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException('There is no such pet.');
+            throw new PSPPetNotFoundException();
 
         if($pet->getLevel() < 10)
-            throw new UnprocessableEntityHttpException('Only pets of level 10 or greater may use this scroll.');
+            throw new PSPInvalidOperationException('Only pets of level 10 or greater may use this scroll.');
 
         $unlearnableSkills = array_values(array_filter(PetSkillEnum::getValues(), fn(string $skill) =>
             $pet->getSkills()->getStat($skill) > 0
@@ -73,26 +76,26 @@ class ForgettingScrollController extends AbstractController
         $pet = $petRepository->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException('There is no such pet.');
+            throw new PSPPetNotFoundException();
 
         if($pet->getLevel() < 10)
-            throw new UnprocessableEntityHttpException('Only pets of level 10 or greater may use this scroll.');
+            throw new PSPInvalidOperationException('Only pets of level 10 or greater may use this scroll.');
 
         $meritName = $request->request->get('merit', '');
         $merit = $meritRepository->findOneByName($meritName);
 
         if(!$merit)
-            throw new UnprocessableEntityHttpException('You forgot to select a merit!');
+            throw new PSPFormValidationException('You forgot to select a merit!');
 
         if(!$pet->hasMerit($merit->getName()))
-            throw new UnprocessableEntityHttpException($pet->getName() . ' doesn\'t have that Merit.');
+            throw new PSPNotFoundException($pet->getName() . ' doesn\'t have that Merit.');
 
         if(!in_array($merit->getName(), MeritFunctions::getUnlearnableMerits($pet)))
         {
             if($merit->getName() === MeritEnum::VOLAGAMY)
-                throw new UnprocessableEntityHttpException('That merit cannot be unlearned while ' . $pet->getName() . ' ' . ($pet->getSpecies()->getEggImage() ? 'has an egg' : 'is pregnant') . '.');
+                throw new PSPInvalidOperationException('That merit cannot be unlearned while ' . $pet->getName() . ' ' . ($pet->getSpecies()->getEggImage() ? 'has an egg' : 'is pregnant') . '.');
             else
-                throw new UnprocessableEntityHttpException('That merit cannot be unlearned.');
+                throw new PSPInvalidOperationException('That merit cannot be unlearned.');
         }
 
         $em->remove($inventory);
@@ -148,7 +151,7 @@ class ForgettingScrollController extends AbstractController
         $pet = $petRepository->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException('There is no such pet.');
+            throw new PSPPetNotFoundException();
 
         if($pet->getLevel() < 10)
             throw new UnprocessableEntityHttpException('Only pets of level 10 or greater may use this scroll.');

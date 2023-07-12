@@ -3,6 +3,7 @@ namespace App\Controller\Pet;
 
 use App\Entity\Pet;
 use App\Enum\MeritEnum;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,7 +28,7 @@ class SetFertilityController extends AbstractController
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())
-            throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
+            throw new PSPPetNotFoundException();
 
         if(!$pet->hasMerit(MeritEnum::VOLAGAMY))
             throw new AccessDeniedHttpException($pet->getName() . ' does not have the ' . MeritEnum::VOLAGAMY . ' Merit.');

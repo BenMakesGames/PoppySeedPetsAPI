@@ -7,12 +7,14 @@ use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\StatusEffectEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\EquipmentFunctions;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -33,13 +35,13 @@ class EquipController extends AbstractController
         $user = $this->getUser();
 
         if($inventory->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException('That item does not exist.');
+            throw new PSPNotFoundException('That item does not exist.');
 
         if(!$inventory->getItem()->getTool())
-            throw new UnprocessableEntityHttpException('That item\'s not an equipment!');
+            throw new PSPInvalidOperationException('That item\'s not an equipment!');
 
         if($pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException('There is no such pet.');
+            throw new PSPPetNotFoundException();
 
         if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
 
@@ -97,18 +99,18 @@ class EquipController extends AbstractController
         $user = $this->getUser();
 
         if($inventory->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException('That item does not exist.');
+            throw new PSPNotFoundException('That item does not exist.');
 
         if(!$inventory->getItem()->getHat())
-            throw new UnprocessableEntityHttpException('That item\'s not a hat!');
+            throw new PSPInvalidOperationException('That item\'s not a hat!');
 
         if($pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException('There is no such pet.');
+            throw new PSPPetNotFoundException();
 
         if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
 
         if(!$pet->hasMerit(MeritEnum::BEHATTED))
-            throw new UnprocessableEntityHttpException($pet->getName() . ' does not have the Merit required to wear hats.');
+            throw new PSPInvalidOperationException($pet->getName() . ' does not have the Merit required to wear hats.');
 
         if(
             $pet->hasStatusEffect(StatusEffectEnum::WEREFORM) &&
@@ -164,7 +166,7 @@ class EquipController extends AbstractController
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())
-            throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
+            throw new PSPPetNotFoundException();
 
         if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
 
@@ -187,12 +189,13 @@ class EquipController extends AbstractController
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())
-            throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
+            throw new PSPPetNotFoundException();
 
-        if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
+        if(!$pet->isAtHome())
+            throw new PSPInvalidOperationException('Pets that aren\'t home cannot be interacted with.');
 
         if(!$pet->getHat())
-            throw new UnprocessableEntityHttpException($pet->getName() . ' is not currently wearing a hat.');
+            throw new PSPInvalidOperationException($pet->getName() . ' is not currently wearing a hat.');
 
         $pet->getHat()
             ->setLocation(LocationEnum::HOME)

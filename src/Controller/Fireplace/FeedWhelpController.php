@@ -6,6 +6,7 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Functions\RequestFunctions;
 use App\Repository\DragonRepository;
@@ -43,7 +44,7 @@ class FeedWhelpController extends AbstractController
         $whelp = $dragonRepository->findWhelp($user);
 
         if(!$whelp)
-            throw new AccessDeniedHttpException('You haven\'t got a Dragon Whelp, yet!');
+            throw new PSPNotUnlockedException('Dragon Whelp');
 
         $itemIds = RequestFunctions::getUniqueIdsOrThrow($request, 'food', 'No items were selected as food???');
 

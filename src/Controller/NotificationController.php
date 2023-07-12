@@ -5,6 +5,7 @@ use App\Annotations\DoesNotRequireHouseHours;
 use App\Entity\PushSubscription;
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Repository\PushSubscriptionRepository;
 use App\Repository\ReminderRepository;
 use App\Repository\UserNotificationPreferencesRepository;
@@ -12,7 +13,6 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -110,7 +110,7 @@ class NotificationController extends AbstractController
         $user = $this->getUser();
 
         if($subscription->getUser()->getId() !== $user->getId())
-            throw new NotFoundHttpException('That subscription does not exist.');
+            throw new PSPNotFoundException('That subscription does not exist.');
 
         $em->remove($subscription);
         $em->flush();

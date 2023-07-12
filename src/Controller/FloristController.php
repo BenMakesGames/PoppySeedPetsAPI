@@ -3,6 +3,8 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Repository\UserStatsRepository;
 use App\Service\FloristService;
@@ -32,7 +34,7 @@ class FloristController extends AbstractController
         $user = $this->getUser();
 
         if($user->getUnlockedFlorist() === null)
-            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+            throw new PSPNotUnlockedException('Florist');
 
         return $responseService->success($floristService->getInventory($user));
     }
@@ -51,7 +53,7 @@ class FloristController extends AbstractController
         $user = $this->getUser();
 
         if($user->getUnlockedFlorist() === null)
-            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+            throw new PSPNotUnlockedException('Florist');
 
         $offers = $floristService->getInventory($user);
         $userPickName = $request->request->get('item');
@@ -59,7 +61,7 @@ class FloristController extends AbstractController
         $userPick = ArrayFunctions::find_one($offers, fn($o) => $o['item']['name'] === $userPickName);
 
         if(!$userPick)
-            throw new UnprocessableEntityHttpException('That item is not available... (maybe reload the page and try again??)');
+            throw new PSPFormValidationException('That item is not available... (maybe reload the page and try again??)');
 
         if($user->getMoneys() < $userPick['cost'])
             throw new UnprocessableEntityHttpException('"It seems you don\'t have quite enough moneys."');

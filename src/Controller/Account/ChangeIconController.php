@@ -1,12 +1,12 @@
 <?php
 namespace App\Controller\Account;
 
+use App\Exceptions\PSPNotFoundException;
 use App\Repository\MuseumItemRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Annotations\DoesNotRequireHouseHours;
@@ -34,7 +34,7 @@ class ChangeIconController extends AbstractController
         ]);
 
         if(!$donated)
-            throw new NotFoundHttpException('You have not donated that item... YET! (I believe in you!)');
+            throw new PSPNotFoundException('You have not donated that item... YET! (I believe in you!)');
 
         $user->setIcon('items/' . $donated->getItem()->getImage());
 

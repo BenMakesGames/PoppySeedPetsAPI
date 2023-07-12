@@ -5,7 +5,8 @@ use App\Entity\Item;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
-use App\Functions\GrammarFunctions;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
@@ -135,7 +136,7 @@ class BookstoreService
     public function advanceBookstoreQuest(User $user, string $itemToGive)
     {
         if(!$this->renamingScrollAvailable($user))
-            throw new UnprocessableEntityHttpException('What??');
+            throw new PSPNotUnlockedException('Bookstore Renaming Scrolls');
 
         $item = $this->itemRepository->findOneByName($itemToGive);
 
@@ -144,7 +145,7 @@ class BookstoreService
         $questStep = BookstoreService::getBookstoreQuestStep($bookstoreQuestStep->getValue());
 
         if(!$questStep)
-            throw new UnprocessableEntityHttpException('You\'ve brought back everything I need! Thanks!');
+            throw new PSPInvalidOperationException('You\'ve brought back everything I need! Thanks!');
 
         if(!in_array($itemToGive, $questStep['askingFor']))
             throw new UnprocessableEntityHttpException('That\'s not what I\'m looking for right now...');

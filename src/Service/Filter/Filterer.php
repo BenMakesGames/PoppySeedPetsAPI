@@ -1,12 +1,11 @@
 <?php
 namespace App\Service\Filter;
 
+use App\Exceptions\PSPFormValidationException;
 use App\Model\FilterResults;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class Filterer
 {
@@ -53,7 +52,7 @@ class Filterer
 
         $filters = $params->get('filter', []);
         if(!is_array($filters))
-            throw new UnprocessableEntityHttpException('filter must be an array.');
+            throw new PSPFormValidationException('filter must be an array.');
 
         $grandTotal = $this->getGrandTotal($filterService->createQueryBuilder());
 

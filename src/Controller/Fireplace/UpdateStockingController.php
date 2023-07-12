@@ -3,6 +3,7 @@ namespace App\Controller\Fireplace;
 
 use App\Entity\Fireplace;
 use App\Entity\User;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,7 +30,7 @@ class UpdateStockingController extends AbstractController
         $user = $this->getUser();
 
         if(!$user->getUnlockedFireplace() || !$user->getFireplace())
-            throw new AccessDeniedHttpException('You haven\'t got a Fireplace, yet!');
+            throw new PSPNotUnlockedException('Fireplace');
 
         $appearance = $request->request->getAlnum('appearance');
         $colorA = $request->request->getAlnum('colorA');

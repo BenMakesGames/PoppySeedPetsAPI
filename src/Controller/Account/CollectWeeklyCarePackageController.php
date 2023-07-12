@@ -1,9 +1,11 @@
 <?php
 namespace App\Controller\Account;
 
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
+use App\Exceptions\PSPFormValidationException;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -29,6 +31,7 @@ class CollectWeeklyCarePackageController extends AbstractController
         InventoryService $inventoryService, UserStatsRepository $userStatsRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $type = $request->request->getInt('type');
@@ -65,7 +68,7 @@ class CollectWeeklyCarePackageController extends AbstractController
             $newInventory = $inventoryService->receiveItem('Fish Bag', $user, $user, $user->getName() . ' got this as a weekly Care... Bag??', LocationEnum::HOME, true);
         }
         else
-            throw new UnprocessableEntityHttpException('Must specify a Care Package "type".');
+            throw new PSPFormValidationException('Must specify a Care Package "type".');
 
         $user->setLastAllowanceCollected($user->getLastAllowanceCollected()->modify('+' . (floor($days / 7) * 7) . ' days'));
 

@@ -1,6 +1,7 @@
 <?php
 namespace App\Service\Filter;
 
+use App\Exceptions\PSPFormValidationException;
 use App\Repository\PetActivityLogRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -44,7 +45,7 @@ class PetActivityLogsFilterService
         $date = $date->setTime(0, 0, 0);
 
         if($date === false)
-            throw new UnprocessableEntityHttpException('"date" must be in yyyy-mm-dd format.');
+            throw new PSPFormValidationException('"date" must be in yyyy-mm-dd format.');
 
         $this->filterer->setPageSize(200);
 

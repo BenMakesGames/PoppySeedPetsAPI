@@ -3,6 +3,7 @@ namespace App\Controller\HollowEarth;
 
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Service\HollowEarthService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,7 +26,7 @@ class GetController extends AbstractController
         $user = $this->getUser();
 
         if($user->getHollowEarthPlayer() === null)
-            throw new AccessDeniedHttpException();
+            throw new PSPNotUnlockedException('Portal');
 
         return $responseService->success($hollowEarthService->getResponseData($user), [ SerializationGroupEnum::HOLLOW_EARTH ]);
     }

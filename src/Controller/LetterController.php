@@ -1,15 +1,16 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\UserLetter;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Service\FieldGuideService;
 use App\Service\Filter\UserLetterFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -48,10 +49,11 @@ class LetterController extends AbstractController
         FieldGuideService $fieldGuideService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($letter->getUser()->getId() !== $user->getId())
-            throw new NotFoundHttpException();
+            throw new PSPNotFoundException('That letter does not exist??!?');
 
         $letter->setIsRead();
 

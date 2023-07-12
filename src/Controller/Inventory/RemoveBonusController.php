@@ -3,10 +3,10 @@ namespace App\Controller\Inventory;
 
 use App\Entity\Inventory;
 use App\Entity\User;
+use App\Exceptions\PSPNotFoundException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -25,7 +25,7 @@ class RemoveBonusController extends AbstractController
         $user = $this->getUser();
 
         if($inventory->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException('That item does not belong to you.');
+            throw new PSPNotFoundException('That item does not belong to you.');
 
         $inventory->setEnchantment(null);
 

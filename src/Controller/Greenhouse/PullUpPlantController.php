@@ -5,6 +5,7 @@ use App\Entity\GreenhousePlant;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PollinatorEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\PlayerLogHelpers;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -12,7 +13,6 @@ use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -34,7 +34,7 @@ class PullUpPlantController extends AbstractController
         $user = $this->getUser();
 
         if($plant->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException('That plant does not exist.');
+            throw new PSPNotFoundException('That plant does not exist.');
 
         $logMessage = 'You pulled up the ' . $plant->getPlant()->getName() . '.';
 

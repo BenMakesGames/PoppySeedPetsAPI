@@ -6,6 +6,8 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Model\FoodWithSpice;
 use App\Repository\InventoryRepository;
 use App\Repository\PetActivityLogTagRepository;
@@ -21,7 +23,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -113,13 +114,13 @@ class HalloweenController extends AbstractController
         $toGivingTree = $request->request->getBoolean('toGivingTree', false);
 
         if(!$candy || $candy->getOwner()->getId() !== $user->getId() || $candy->getLocation() !== LocationEnum::HOME)
-            throw new NotFoundHttpException('The selected candy could not be found... reload and try again?');
+            throw new PSPNotFoundException('The selected candy could not be found... reload and try again?');
 
         if(!$candy->getItem()->getFood())
-            throw new UnprocessableEntityHttpException($candy->getItem()->getName() . ' isn\'t even edible!');
+            throw new PSPInvalidOperationException($candy->getItem()->getName() . ' isn\'t even edible!');
 
         if(!$candy->getItem()->getFood()->getIsCandy())
-            throw new UnprocessableEntityHttpException($candy->getItem()->getName() . ' isn\'t quiiiiiiite a candy.');
+            throw new PSPInvalidOperationException($candy->getItem()->getName() . ' isn\'t quiiiiiiite a candy.');
 
         $nextTrickOrTreater = $halloweenService->getNextTrickOrTreater($user);
 

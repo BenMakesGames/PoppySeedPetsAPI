@@ -2,6 +2,8 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,10 +29,10 @@ class TwilightFertilizerController extends AbstractController
         $user = $this->getUser();
 
         if(!$user->getUnlockedGreenhouse())
-            throw new UnprocessableEntityHttpException('You need a Greenhouse to summon the night to!');
+            throw new PSPNotUnlockedException('Greenhouse');
 
         if($user->getGreenhouse()->getMaxDarkPlants() >= 2)
-            throw new UnprocessableEntityHttpException('There\'s nowhere else to put the fertilizer!');
+            throw new PSPInvalidOperationException('There\'s nowhere else to put the fertilizer!');
 
         $user->getGreenhouse()->increaseMaxDarkPlants(1);
 

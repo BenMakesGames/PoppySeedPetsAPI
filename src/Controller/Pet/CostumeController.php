@@ -3,15 +3,14 @@ namespace App\Controller\Pet;
 
 use App\Entity\Pet;
 use App\Entity\User;
-use App\Functions\ActivityHelpers;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\ProfanityFilterFunctions;
-use App\Service\FieldGuideService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -32,12 +31,12 @@ class CostumeController extends AbstractController
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())
-            throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
+            throw new PSPPetNotFoundException();
 
         $costume = trim($request->request->get('costume'));
 
         if(\mb_strlen($costume) > 30)
-            throw new UnprocessableEntityHttpException('Costume description cannot be longer than 30 characters.');
+            throw new PSPFormValidationException('Costume description cannot be longer than 30 characters.');
 
         $costume = ProfanityFilterFunctions::filter($costume);
 

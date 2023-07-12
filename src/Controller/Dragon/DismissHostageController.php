@@ -4,6 +4,7 @@ namespace App\Controller\Dragon;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\PlayerLogHelpers;
 use App\Repository\DragonRepository;
 use App\Service\DragonHostageService;
@@ -11,7 +12,6 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -35,7 +35,7 @@ class DismissHostageController extends AbstractController
         $dragon = $dragonRepository->findAdult($user);
 
         if(!$dragon || !$dragon->getHostage())
-            throw new NotFoundHttpException('You don\'t have a dragon hostage...');
+            throw new PSPNotFoundException('You don\'t have a dragon hostage...');
 
         $hostage = $dragon->getHostage();
 

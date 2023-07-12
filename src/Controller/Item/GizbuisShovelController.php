@@ -2,14 +2,14 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\User;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
-use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -27,17 +27,18 @@ class GizbuisShovelController extends AbstractController
         UserQuestRepository $userQuestRepository, ItemRepository $itemRepository
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'gizubisShovel/#/dig');
-
+        /** @var User $user */
         $user = $this->getUser();
 
+        ItemControllerHelpers::validateInventory($user, $inventory, 'gizubisShovel/#/dig');
+
         if(!$user->getUnlockedGreenhouse())
-            throw new UnprocessableEntityHttpException('You don\'t have a Greenhouse to bless...');
+            throw new PSPNotUnlockedException('Greenhouse');
 
         $expandedGreenhouseWithShovel = $userQuestRepository->findOrCreate($user, 'Expanded Greenhouse with Gizubi\'s Shovel', false);
 
         if($expandedGreenhouseWithShovel->getValue())
-            throw new UnprocessableEntityHttpException('Your Greenhouse has already received Gizbui\'s blessings. It can\'t be blessed twice! (Don\'t be silly!)');
+            throw new PSPInvalidOperationException('Your Greenhouse has already received Gizbui\'s blessings. It can\'t be blessed twice! (Don\'t be silly!)');
 
         $expandedGreenhouseWithShovel->setValue(true);
 

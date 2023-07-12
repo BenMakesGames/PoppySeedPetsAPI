@@ -3,6 +3,7 @@ namespace App\Controller\Beehive;
 
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,7 +26,7 @@ class GetController extends AbstractController
         $user = $this->getUser();
 
         if(!$user->getUnlockedBeehive() || !$user->getBeehive())
-            throw new AccessDeniedHttpException('You haven\'t got a Beehive, yet!');
+            throw new PSPNotUnlockedException('Beehive');
 
         $user->getBeehive()->setInteractionPower();
 

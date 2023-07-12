@@ -2,10 +2,13 @@
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
+use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -31,16 +34,17 @@ class GuessFavoriteFlavorController extends AbstractController
         InventoryService $inventoryService, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())
-            throw new AccessDeniedHttpException('That\'s not your pet.');
+            throw new PSPPetNotFoundException();
 
         if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
-            throw new UnprocessableEntityHttpException($pet->getName() . ' is Affectionless. It\'s not interested in revealing its favorite flavor to you.');
+            throw new PSPInvalidOperationException($pet->getName() . ' is Affectionless. It\'s not interested in revealing its favorite flavor to you.');
 
         if($pet->getRevealedFavoriteFlavor())
-            throw new UnprocessableEntityHttpException($pet->getName() . '\'s favorite flavor has already been revealed!');
+            throw new PSPInvalidOperationException($pet->getName() . '\'s favorite flavor has already been revealed!');
 
         $guess = strtolower(trim($request->request->getAlpha('flavor')));
 

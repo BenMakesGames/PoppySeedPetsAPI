@@ -8,6 +8,8 @@ use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\StoryEnum;
 use App\Enum\UserStatEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\ColorFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
@@ -103,10 +105,10 @@ class BugController extends AbstractController
         $item = $inventoryRepository->find($request->request->getInt('food'));
 
         if(!$item || $item->getOwner()->getId() !== $user->getId())
-            throw new UnprocessableEntityHttpException('Must select an item to feed.');
+            throw new PSPNotFoundException('Must select an item to feed.');
 
         if(!$item->getItem()->getFood())
-            throw new UnprocessableEntityHttpException('Bugs won\'t eat that item. (Bugs are bougie like that, I guess.)');
+            throw new PSPInvalidOperationException('Bugs won\'t eat that item. (Bugs are bougie like that, I guess.)');
 
         switch($inventory->getItem()->getName())
         {

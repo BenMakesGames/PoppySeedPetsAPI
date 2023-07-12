@@ -12,6 +12,8 @@ use App\Enum\PetLocationEnum;
 use App\Enum\PollinatorEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\GrammarFunctions;
@@ -30,7 +32,6 @@ use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -57,13 +58,13 @@ class HarvestPlantController extends AbstractController
         $user = $this->getUser();
 
         if($plant->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException('That plant does not exist.');
+            throw new PSPNotFoundException('That plant does not exist.');
 
         if(new \DateTimeImmutable() < $plant->getCanNextInteract())
-            throw new UnprocessableEntityHttpException('This plant is not yet ready to harvest.');
+            throw new PSPInvalidOperationException('This plant is not yet ready to harvest.');
 
         if(!$plant->getIsAdult() || $plant->getProgress() < 1)
-            throw new UnprocessableEntityHttpException('This plant is not yet ready to harvest.');
+            throw new PSPInvalidOperationException('This plant is not yet ready to harvest.');
 
         if($plant->getPlant()->getFieldGuideEntry())
             $fieldGuideService->maybeUnlock($user, $plant->getPlant()->getFieldGuideEntry(), '%user:' . $user->getId() . '.Name% harvested a ' . $plant->getPlant()->getName() . '.');

@@ -5,9 +5,7 @@ namespace App\Controller\MonthlyStoryAdventure;
 use App\Entity\MonthlyStoryAdventureStep;
 use App\Entity\User;
 use App\Enum\LocationEnum;
-use App\Enum\StoryAdventureTypeEnum;
-use App\Repository\MonthlyStoryAdventureRepository;
-use App\Repository\MonthlyStoryAdventureStepRepository;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
@@ -16,7 +14,6 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -41,6 +38,7 @@ class GoOnAdventure extends AbstractController
         UserQuestRepository $userQuestRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $today = (new \DateTimeImmutable())->format('Y-m-d');
@@ -76,7 +74,7 @@ class GoOnAdventure extends AbstractController
         ]);
 
         if(count($pets) != count($petIds))
-            throw new NotFoundHttpException('One or more of the selected pets could not be found.');
+            throw new PSPPetNotFoundException();
 
         $message = $adventureService->completeStep($user, $step, $pets);
 

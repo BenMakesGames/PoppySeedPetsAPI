@@ -4,11 +4,11 @@ namespace App\Controller\Style;
 use App\Entity\User;
 use App\Entity\UserStyle;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Repository\UserStyleRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -30,7 +30,7 @@ class SetCurrentController extends AbstractController
         $user = $this->getUser();
 
         if($theme->getName() === UserStyle::CURRENT)
-            throw new NotFoundHttpException();
+            throw new PSPInvalidOperationException('You\'re already using that theme!');
 
         $current = $userStyleRepository->findCurrent($user);
 

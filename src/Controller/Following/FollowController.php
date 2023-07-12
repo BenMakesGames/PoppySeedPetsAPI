@@ -1,14 +1,15 @@
 <?php
 namespace App\Controller\Following;
 
+use App\Entity\User;
 use App\Entity\UserFollowing;
+use App\Exceptions\PSPNotFoundException;
 use App\Repository\UserFollowingRepository;
 use App\Repository\UserRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -29,6 +30,7 @@ class FollowController extends AbstractController
         ResponseService $responseService, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
         $followingId = $request->request->getInt('following');
         $note = $request->request->get('note', null);
@@ -39,7 +41,7 @@ class FollowController extends AbstractController
         $following = $userRepository->find($followingId);
 
         if(!$following)
-            throw new NotFoundHttpException('Could not find a person with that number.');
+            throw new PSPNotFoundException('Could not find a person with that number.');
 
         $alreadyFollowing = $userFollowingRepository->findOneBy([
             'user' => $user,

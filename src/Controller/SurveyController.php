@@ -4,12 +4,12 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Service\ResponseService;
 use App\Service\SurveyService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -33,7 +33,7 @@ class SurveyController extends AbstractController
         $questions = $surveyService->getSurveyQuestions($guid, $now);
 
         if(!$questions)
-            throw new NotFoundHttpException('Survey not found.');
+            throw new PSPNotFoundException('Survey not found.');
 
         /** @var User $user */
         $user = $this->getUser();
@@ -61,7 +61,7 @@ class SurveyController extends AbstractController
         $questions = $surveyService->getSurveyQuestions($guid, $now);
 
         if(!$questions)
-            throw new NotFoundHttpException('Survey not found.');
+            throw new PSPNotFoundException('Survey not found.');
 
         /** @var User $user */
         $user = $this->getUser();

@@ -2,15 +2,14 @@
 namespace App\Controller\HollowEarth;
 
 use App\Entity\HollowEarthPlayerTile;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\HollowEarthPlayerTileRepository;
 use App\Repository\HollowEarthTileRepository;
-use App\Repository\InventoryRepository;
-use App\Service\HollowEarthService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -26,18 +25,17 @@ class RemoveTileCardController extends AbstractController
      */
     public function removeTileCard(
         Request $request, HollowEarthPlayerTileRepository $hollowEarthPlayerTileRepository,
-        ResponseService $responseService, EntityManagerInterface $em, HollowEarthTileRepository $hollowEarthTileRepository,
-        InventoryRepository $inventoryRepository, HollowEarthService $hollowEarthService
+        ResponseService $responseService, EntityManagerInterface $em, HollowEarthTileRepository $hollowEarthTileRepository
     )
     {
         $user = $this->getUser();
         $player = $user->getHollowEarthPlayer();
 
         if($player === null)
-            throw new AccessDeniedHttpException();
+            throw new PSPNotUnlockedException('Portal');
 
         if($player->getCurrentAction())
-            throw new UnprocessableEntityHttpException('You can\'t change the map while you\'re moving!');
+            throw new PSPInvalidOperationException('You can\'t change the map while you\'re moving!');
 
         $tileId = $request->request->getInt('tile', 0);
 

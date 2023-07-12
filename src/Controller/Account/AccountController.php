@@ -5,6 +5,9 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\PlayerLogHelpers;
 use App\Repository\InventoryRepository;
 use App\Repository\PassphraseResetRequestRepository;
@@ -19,7 +22,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -52,10 +54,10 @@ class AccountController extends AbstractController
         $newEmail = trim($request->request->get('newEmail'));
 
         if($newEmail === '' || !filter_var($newEmail, FILTER_VALIDATE_EMAIL))
-            throw new UnprocessableEntityHttpException('Email address is not valid.');
+            throw new PSPFormValidationException('Email address is not valid.');
 
         if(strtoupper($oldEmail) == strtoupper($newEmail))
-            throw new UnprocessableEntityHttpException('B-- but that\'s _already_ your email address...');
+            throw new PSPInvalidOperationException('B-- but that\'s _already_ your email address...');
 
         if(str_ends_with($newEmail, '@poppyseedpets.com') || str_ends_with($newEmail, '.poppyseedpets.com'))
             throw new UnprocessableEntityHttpException('poppyseedpets.com e-mail addresses cannot be used.');
@@ -98,7 +100,7 @@ class AccountController extends AbstractController
         $newPassphrase = trim($request->request->get('newPassphrase'));
 
         if(\mb_strlen($newPassphrase) < 10)
-            throw new UnprocessableEntityHttpException('Passphrase must be at least 10 characters long.');
+            throw new PSPFormValidationException('Passphrase must be at least 10 characters long.');
 
         $user->setPassword($passwordEncoder->hashPassword($user, $newPassphrase));
 
@@ -150,15 +152,15 @@ class AccountController extends AbstractController
         $email = trim($request->request->get('email', ''));
 
         if($email === '')
-            throw new UnprocessableEntityHttpException('E-mail address is required.');
+            throw new PSPFormValidationException('E-mail address is required.');
 
         if(!filter_var($email, FILTER_VALIDATE_EMAIL))
-            throw new UnprocessableEntityHttpException('E-mail address is invalid.');
+            throw new PSPFormValidationException('E-mail address is invalid.');
 
         $user = $userRepository->findOneBy([ 'email' => $email ]);
 
         if(!$user)
-            throw new UnprocessableEntityHttpException('There is no user with that e-mail address.');
+            throw new PSPNotFoundException('There is no user with that e-mail address.');
 
         $passphraseResetService->requestReset($user);
 
@@ -177,12 +179,12 @@ class AccountController extends AbstractController
         $passphrase = trim($request->request->get('passphrase', ''));
 
         if(\mb_strlen($passphrase) < 10)
-            throw new UnprocessableEntityHttpException('Passphrase must be at least 10 characters long. (Pro tip: try using an actual phrase, or short sentence!)');
+            throw new PSPFormValidationException('Passphrase must be at least 10 characters long. (Pro tip: try using an actual phrase, or short sentence!)');
 
         $resetRequest = $passwordResetRequestRepository->findOneBy([ 'code' => $code ]);
 
         if(!$resetRequest || $resetRequest->getExpiresOn() <= new \DateTimeImmutable())
-            throw new NotFoundHttpException('This reset URL is invalid, or expired.');
+            throw new PSPNotFoundException('This reset URL is invalid, or expired.');
 
         $user = $resetRequest->getUser();
 

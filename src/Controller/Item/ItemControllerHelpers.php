@@ -4,6 +4,8 @@ namespace App\Controller\Item;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Service\InventoryService;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -11,8 +13,11 @@ class ItemControllerHelpers
 {
     public static function validateInventory(?User $user, Inventory $inventory, string $action)
     {
-        if(!$user || $user->getId() !== $inventory->getOwner()->getId() || !$inventory->getItem()->hasUseAction($action))
-            throw new UnprocessableEntityHttpException('That item no longer exists, or cannot be used in that way.');
+        if(!$user || $user->getId() !== $inventory->getOwner()->getId())
+            throw new PSPNotFoundException('That item does not exist.');
+
+        if(!$inventory->getItem()->hasUseAction($action))
+            throw new PSPInvalidOperationException('That item cannot be used in that way!');
     }
 
     public static function validateHouseSpace(Inventory $inventory, InventoryService $inventoryService)

@@ -4,6 +4,7 @@ namespace App\Controller\Fireplace;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\DragonRepository;
 use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
@@ -31,7 +32,7 @@ class FireplaceController extends AbstractController
         $user = $this->getUser();
 
         if(!$user->getUnlockedFireplace() || !$user->getFireplace())
-            throw new AccessDeniedHttpException('You haven\'t got a Fireplace, yet!');
+            throw new PSPNotUnlockedException('Fireplace');
 
         $mantle = $inventoryRepository->findBy([
             'owner' => $user,
@@ -61,7 +62,7 @@ class FireplaceController extends AbstractController
         $user = $this->getUser();
 
         if(!$user->getUnlockedFireplace() || !$user->getFireplace())
-            throw new AccessDeniedHttpException('You haven\'t got a Fireplace, yet!');
+            throw new PSPNotUnlockedException('Fireplace');
 
         $fuel = $inventoryRepository->findFuel($user);
 
@@ -82,7 +83,7 @@ class FireplaceController extends AbstractController
         $whelp = $dragonRepository->findWhelp($user);
 
         if(!$whelp)
-            throw new AccessDeniedHttpException('You haven\'t got a Dragon Whelp, yet!');
+            throw new PSPNotUnlockedException('Dragon Whelp');
 
         $food = $inventoryRepository->createQueryBuilder('i')
             ->andWhere('i.owner=:user')->setParameter('user', $user->getId())

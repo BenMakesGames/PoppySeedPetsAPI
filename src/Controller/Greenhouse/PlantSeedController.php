@@ -3,8 +3,11 @@ namespace App\Controller\Greenhouse;
 
 use App\Entity\GreenhousePlant;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\PlantTypeEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotFoundException;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Repository\InventoryRepository;
 use App\Service\GreenhouseService;
@@ -13,7 +16,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -32,11 +34,12 @@ class PlantSeedController extends AbstractController
         EntityManagerInterface $em, GreenhouseService $greenhouseService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
         $greenhouse = $user->getGreenhouse();
 
         if($greenhouse === null)
-            throw new AccessDeniedHttpException('You don\'t have a greenhouse!');
+            throw new PSPNotUnlockedException('Greenhouse');
 
         $seedId = $request->request->getInt('seed', 0);
 
@@ -50,7 +53,7 @@ class PlantSeedController extends AbstractController
         ]);
 
         if($seed === null || $seed->getItem()->getPlant() === null)
-            throw new NotFoundHttpException('There is no such seed. That\'s super-weird. Can you reload and try again?');
+            throw new PSPNotFoundException('There is no such seed. That\'s super-weird. Can you reload and try again?');
 
         $largestOrdinal = ArrayFunctions::max($user->getGreenhousePlants(), fn(GreenhousePlant $gp) => $gp->getOrdinal());
         $lastOrdinal = $largestOrdinal === null ? 1 : ($largestOrdinal->getOrdinal() + 1);

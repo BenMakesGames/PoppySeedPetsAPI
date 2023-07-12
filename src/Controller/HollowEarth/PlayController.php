@@ -2,8 +2,11 @@
 namespace App\Controller\HollowEarth;
 
 use App\Entity\HollowEarthPlayer;
+use App\Entity\User;
 use App\Enum\HollowEarthActionTypeEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\InventoryRepository;
 use App\Service\HollowEarthService;
 use App\Service\ResponseService;
@@ -33,14 +36,15 @@ class PlayController extends AbstractController
         Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
         $player = $user->getHollowEarthPlayer();
 
         if($player === null)
-            throw new AccessDeniedHttpException();
+            throw new PSPNotUnlockedException('Portal');
 
         if($player->getChosenPet() === null)
-            throw new UnprocessableEntityHttpException('You must choose a pet to lead the group.');
+            throw new PSPInvalidOperationException('You must choose a pet to lead the group.');
 
         $action = $player->getCurrentAction();
 

@@ -3,6 +3,7 @@ namespace App\Controller\Article;
 
 use App\Controller\AdminController;
 use App\Entity\Article;
+use App\Exceptions\PSPFormValidationException;
 use App\Repository\DesignGoalRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,10 +36,10 @@ class CreateController extends AdminController
         $imageUrl = trim($request->request->get('imageUrl', ''));
 
         if($title === '' || $body === '')
-            throw new UnprocessableEntityHttpException('title and body are both required.');
+            throw new PSPFormValidationException('title and body are both required.');
 
         if(\mb_strlen($title) > 255)
-            throw new UnprocessableEntityHttpException('title may not be longer than 255 characters.');
+            throw new PSPFormValidationException('title may not be longer than 255 characters.');
 
         $designGoals = $designGoalRepository->findByIdsFromParameters($request->request, 'designGoals');
 

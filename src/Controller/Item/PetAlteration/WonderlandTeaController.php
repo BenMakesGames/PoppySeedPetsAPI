@@ -3,14 +3,15 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\PetRepository;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -36,10 +37,10 @@ class WonderlandTeaController extends AbstractController
         $pet = $petRepository->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException('There is no such pet.');
+            throw new PSPPetNotFoundException();
 
         if($pet->getScale() <= 50)
-            throw new UnprocessableEntityHttpException($pet->getName() . ' can\'t get any smaller!');
+            throw new PSPInvalidOperationException($pet->getName() . ' can\'t get any smaller!');
 
         $pet->setScale(max(
             50,
@@ -72,10 +73,10 @@ class WonderlandTeaController extends AbstractController
         $pet = $petRepository->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException('There is no such pet.');
+            throw new PSPPetNotFoundException();
 
         if($pet->getScale() >= 150)
-            throw new UnprocessableEntityHttpException($pet->getName() . ' can\'t get any bigger!');
+            throw new PSPInvalidOperationException($pet->getName() . ' can\'t get any bigger!');
 
         $pet->setScale(min(
             150,
@@ -108,10 +109,10 @@ class WonderlandTeaController extends AbstractController
         $pet = $petRepository->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException('There is no such pet.');
+            throw new PSPPetNotFoundException();
 
         if($pet->getScale() === 100)
-            throw new UnprocessableEntityHttpException($pet->getName() . ' is already totally-normally sized.');
+            throw new PSPInvalidOperationException($pet->getName() . ' is already totally-normally sized.');
 
         $pet->setScale(100);
 

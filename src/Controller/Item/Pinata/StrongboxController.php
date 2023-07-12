@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\InventoryModifierFunctions;
 use App\Model\PetChanges;
@@ -55,7 +56,7 @@ class StrongboxController extends AbstractController
         $key = $inventoryRepository->findOneToConsume($user, 'Iron Key');
 
         if(!$key)
-            throw new UnprocessableEntityHttpException('You need an Iron Key to do that.');
+            throw new PSPNotFoundException('You need an Iron Key to do that.');
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
@@ -107,7 +108,7 @@ class StrongboxController extends AbstractController
         $key = $inventoryRepository->findOneToConsume($user, 'Silver Key');
 
         if(!$key)
-            throw new UnprocessableEntityHttpException('You need a Silver Key to do that.');
+            throw new PSPNotFoundException('You need a Silver Key to do that.');
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
@@ -168,7 +169,7 @@ class StrongboxController extends AbstractController
         $key = $inventoryRepository->findOneToConsume($user, 'Gold Key');
 
         if(!$key)
-            throw new UnprocessableEntityHttpException('You need a Gold Key to do that.');
+            throw new PSPNotFoundException('You need a Gold Key to do that.');
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 

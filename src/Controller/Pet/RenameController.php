@@ -3,6 +3,8 @@ namespace App\Controller\Pet;
 
 use App\Entity\Pet;
 use App\Enum\MeritEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetRenamingHelpers;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,10 +30,10 @@ class RenameController extends AbstractController
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())
-            throw new AccessDeniedHttpException($pet->getName() . ' is not your pet.');
+            throw new PSPPetNotFoundException();
 
         if($pet->getRenamingCharges() <= 0)
-            throw new AccessDeniedHttpException($pet->getName() . ' does not have any Renaming Charges.');
+            throw new PSPInvalidOperationException($pet->getName() . ' does not have any Renaming Charges.');
 
         PetRenamingHelpers::renamePet($responseService, $pet, $request->request->get('name', ''));
 

@@ -7,6 +7,7 @@ use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Repository\InventoryRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
@@ -18,7 +19,6 @@ use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -46,6 +46,7 @@ class PhilosophersStoneController extends AbstractController
         UserStatsRepository $userStatsRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'philosophersStone');
@@ -59,7 +60,7 @@ class PhilosophersStoneController extends AbstractController
         ]);
 
         if(!$plushy || !array_key_exists($plushy->getItem()->getName(), self::PLUSHIES))
-            throw new NotFoundHttpException('Could not find that item!? Reload, and try again...');
+            throw new PSPNotFoundException('Could not find that item!? Reload, and try again...');
 
         $speciesInfo = self::PLUSHIES[$plushy->getItem()->getName()];
 

@@ -4,6 +4,7 @@ namespace App\Controller\Article;
 use App\Controller\AdminController;
 use App\Entity\Article;
 use App\Entity\DesignGoal;
+use App\Exceptions\PSPFormValidationException;
 use App\Functions\ArrayFunctions;
 use App\Repository\DesignGoalRepository;
 use App\Service\ResponseService;
@@ -37,7 +38,7 @@ class UpdateController extends AdminController
         $imageUrl = trim($request->request->get('imageUrl', ''));
 
         if($title === '' || $body === '')
-            throw new UnprocessableEntityHttpException('title and body are both required.');
+            throw new PSPFormValidationException('title and body are both required.');
 
         $designGoals = $designGoalRepository->findByIdsFromParameters($request->request, 'designGoals');
 

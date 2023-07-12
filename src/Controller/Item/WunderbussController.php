@@ -2,6 +2,10 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\User;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Repository\ItemRepository;
 use App\Repository\MuseumItemRepository;
 use App\Repository\UserQuestRepository;
@@ -11,7 +15,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -28,9 +31,10 @@ class WunderbussController extends AbstractController
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'wunderbuss');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'wunderbuss');
 
         $usedAWunderbuss = $userQuestRepository->findOrCreate($user, 'Used a Wunderbuss', false);
 
@@ -47,24 +51,25 @@ class WunderbussController extends AbstractController
         MuseumService $museumService
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'wunderbuss');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'wunderbuss');
 
         $usedAWunderbuss = $userQuestRepository->findOrCreate($user, 'Used a Wunderbuss', false);
 
         if($usedAWunderbuss->getValue())
-            throw new UnprocessableEntityHttpException('You\'ve already wished for something from the Wunderboss. (You only get one wish, remember?)');
+            throw new PSPInvalidOperationException('You\'ve already wished for something from the Wunderbuss. (You only get one wish, remember?)');
 
         $searchForId = $request->request->get('itemId');
 
         if(!$searchForId)
-            throw new UnprocessableEntityHttpException('An item to search for must be selected!');
+            throw new PSPFormValidationException('An item to search for must be selected!');
 
         $itemToFind = $itemRepository->find($searchForId);
 
         if(!$itemToFind)
-            throw new NotFoundHttpException('The item you selected could not be found... that\'s really weird. Reload and try again??');
+            throw new PSPNotFoundException('The item you selected could not be found... that\'s really weird. Reload and try again??');
 
         $donatedItem = $museumItemRepository->findOneBy([
             'item' => $itemToFind,
@@ -72,7 +77,7 @@ class WunderbussController extends AbstractController
         ]);
 
         if($donatedItem)
-            throw new UnprocessableEntityHttpException('You\'ve already donated ' . $itemToFind->getNameWithArticle() . '.');
+            throw new PSPInvalidOperationException('You\'ve already donated ' . $itemToFind->getNameWithArticle() . '.');
 
         // 1. donate the item
         $museumService->forceDonateItem($user, $itemToFind, 'This item was created by wishing for it from Wunderboss!');

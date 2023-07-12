@@ -2,13 +2,14 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Repository\ItemRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -31,12 +32,12 @@ class RijndaelController extends AbstractController
         $searchForId = $request->request->get('itemId');
 
         if(!$searchForId)
-            throw new UnprocessableEntityHttpException('An item to search for must be selected!');
+            throw new PSPFormValidationException('An item to search for must be selected!');
 
         $itemToFind = $itemRepository->find($searchForId);
 
         if(!$itemToFind)
-            throw new NotFoundHttpException('The item you selected could not be found... that\'s really weird. Reload and try again??');
+            throw new PSPNotFoundException('The item you selected could not be found... that\'s really weird. Reload and try again??');
 
         $results = $em->createQueryBuilder()
             ->select('u.name', 'u.id', 'count(i.id) AS quantity')

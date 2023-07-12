@@ -9,6 +9,9 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemGroupRepository;
@@ -20,7 +23,6 @@ use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -129,7 +131,7 @@ class BlueprintController extends AbstractController
 
         if($user->getUnlockedBeehive())
         {
-            throw new UnprocessableEntityHttpException('You\'ve already got a Beehive!');
+            throw new PSPInvalidOperationException('You\'ve already got a Beehive!');
         }
 
         $magnifyingGlass = $inventoryRepository->findAnyOneFromItemGroup($user, 'Magnifying Glass', [
@@ -191,7 +193,7 @@ class BlueprintController extends AbstractController
 
         if($user->getGreenhouse())
         {
-            throw new UnprocessableEntityHttpException('You\'ve already claimed a plot in the Greenhouse.');
+            throw new PSPInvalidOperationException('You\'ve already claimed a plot in the Greenhouse.');
         }
 
         $pet = $this->getPet($request, $petRepository);
@@ -277,7 +279,7 @@ class BlueprintController extends AbstractController
         $pet = $petRepository->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $this->getUser()->getId())
-            throw new NotFoundHttpException('There is no such pet.');
+            throw new PSPPetNotFoundException();
 
         return $pet;
     }

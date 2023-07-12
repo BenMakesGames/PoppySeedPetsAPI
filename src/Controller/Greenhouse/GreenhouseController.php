@@ -3,8 +3,10 @@ namespace App\Controller\Greenhouse;
 
 use App\Entity\GreenhousePlant;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\PlantTypeEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Repository\InventoryRepository;
 use App\Service\GreenhouseService;
@@ -30,10 +32,11 @@ class GreenhouseController extends AbstractController
         ResponseService $responseService, GreenhouseService $greenhouseService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if(!$user->getGreenhouse())
-            throw new AccessDeniedHttpException('You haven\'t purchased a Greenhouse plot yet.');
+            throw new PSPNotUnlockedException('Greenhouse');
 
         $greenhouseService->maybeAssignPollinators($user);
 
@@ -87,7 +90,7 @@ class GreenhouseController extends AbstractController
         $greenhouse = $user->getGreenhouse();
 
         if($greenhouse === null)
-            throw new AccessDeniedHttpException('You don\'t have a greenhouse!');
+            throw new PSPNotUnlockedException('Greenhouse');
 
         $plantIds = $request->request->get('order');
 

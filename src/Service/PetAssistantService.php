@@ -4,11 +4,12 @@ namespace App\Service;
 use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\PetLocationEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotUnlockedException;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\DragonRepository;
 use App\Repository\PetRepository;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class PetAssistantService
 {
@@ -24,13 +25,13 @@ class PetAssistantService
     private static function assertOwnership(User $user, Pet $pet)
     {
         if($pet->getOwner()->getId() !== $user->getId())
-            throw new NotFoundHttpException('That pet does not exist, or does not belong to you.');
+            throw new PSPPetNotFoundException();
     }
 
     private static function assertAvailability(Pet $pet)
     {
         if($pet->getLocation() != PetLocationEnum::HOME && $pet->getLocation() != PetLocationEnum::DAYCARE)
-            throw new UnprocessableEntityHttpException('That pet is currently at the ' . $pet->getLocation() . '.');
+            throw new PSPInvalidOperationException('That pet is currently at the ' . $pet->getLocation() . '.');
     }
 
     private static function assertCanAssignHelpers(User $user)
@@ -44,15 +45,15 @@ class PetAssistantService
         self::assertOwnership($user, $pet);
 
         if(!$user->getUnlockedBeehive() || !$user->getBeehive())
-            throw new AccessDeniedHttpException('You haven\'t got a Beehive, yet!');
+            throw new PSPNotUnlockedException('Beehive');
 
         $beehive = $user->getBeehive();
 
         if($beehive->getWorkers() < 2000)
-            throw new AccessDeniedHttpException('A helper cannot be assigned to your Beehive... yet.');
+            throw new PSPNotUnlockedException('Beehive Helpers');
 
         if($beehive->getHelper())
-            throw new UnprocessableEntityHttpException('Your beehive already has a helper! ' . $beehive->getHelper()->getName() . '!');
+            throw new PSPInvalidOperationException('Your beehive already has a helper! ' . $beehive->getHelper()->getName() . '!');
 
         self::assertAvailability($pet);
 
@@ -68,14 +69,14 @@ class PetAssistantService
         self::assertOwnership($user, $pet);
 
         if(!$user->getUnlockedGreenhouse() || !$user->getGreenhouse())
-            throw new AccessDeniedHttpException('You haven\'t got a Greenhouse, yet!');
+            throw new PSPNotUnlockedException('Greenhouse');
 
         self::assertCanAssignHelpers($user);
 
         $greenhouse = $user->getGreenhouse();
 
         if($greenhouse->getHelper())
-            throw new UnprocessableEntityHttpException('Your Greenhouse already has a helper! ' . $greenhouse->getHelper()->getName() . '!');
+            throw new PSPInvalidOperationException('Your Greenhouse already has a helper! ' . $greenhouse->getHelper()->getName() . '!');
 
         self::assertAvailability($pet);
 
@@ -95,7 +96,7 @@ class PetAssistantService
         $fireplace = $user->getFireplace();
 
         if($fireplace->getHelper())
-            throw new UnprocessableEntityHttpException('Your Fireplace already has a helper! ' . $fireplace->getHelper()->getName() . '!');
+            throw new PSPInvalidOperationException('Your Fireplace already has a helper! ' . $fireplace->getHelper()->getName() . '!');
 
         $whelp = $this->dragonRepository->findWhelp($user);
 
@@ -120,7 +121,7 @@ class PetAssistantService
         self::assertCanAssignHelpers($user);
 
         if($dragon->getHelper())
-            throw new UnprocessableEntityHttpException('Your Dragon Den already has a helper! ' . $dragon->getHelper()->getName() . '!');
+            throw new PSPInvalidOperationException('Your Dragon Den already has a helper! ' . $dragon->getHelper()->getName() . '!');
 
         self::assertAvailability($pet);
 
@@ -155,7 +156,7 @@ class PetAssistantService
                 $dragon->setHelper(null);
         }
         else
-            throw new UnprocessableEntityHttpException('That pet is not currently helping out anywhere...');
+            throw new PSPInvalidOperationException('That pet is not currently helping out anywhere...');
 
         $numberOfPetsAtHome = $this->petRepository->getNumberAtHome($user);
 

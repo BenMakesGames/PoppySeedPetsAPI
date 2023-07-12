@@ -5,6 +5,8 @@ use App\Entity\Pet;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\MeritRepository;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -31,10 +33,10 @@ class TalentAndExpertiseController extends AbstractController
     )
     {
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
-            throw new AccessDeniedHttpException('That\'s not your pet.');
+            throw new PSPPetNotFoundException();
 
         if($pet->getCanPickTalent() !== 'talent')
-            throw new AccessDeniedHttpException('This pet is not ready to have a talent picked.');
+            throw new PSPInvalidOperationException('This pet is not ready to have a talent picked.');
 
         $talent = $request->request->get('talent', '');
 
@@ -102,7 +104,7 @@ class TalentAndExpertiseController extends AbstractController
     )
     {
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
-            throw new AccessDeniedHttpException('That\'s not your pet.');
+            throw new PSPPetNotFoundException();
 
         if($pet->getCanPickTalent() !== 'expertise')
             throw new AccessDeniedHttpException('This pet is not ready to have a talent picked.');
