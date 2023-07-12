@@ -2,6 +2,7 @@
 namespace App\Controller\Inventory;
 
 use App\Entity\User;
+use App\Exceptions\PSPNotFoundException;
 use App\Repository\InventoryRepository;
 use App\Service\RecyclingService;
 use App\Service\ResponseService;
@@ -41,7 +42,7 @@ class ThrowAwayController extends AbstractController
         ]);
 
         if(count($inventory) !== count($inventoryIds))
-            throw new UnprocessableEntityHttpException('Some of the items could not be found??');
+            throw new PSPNotFoundException('Some of the items could not be found??');
 
         $idsNotRecycled = $recyclingService->recycleInventory($user, $inventory);
 

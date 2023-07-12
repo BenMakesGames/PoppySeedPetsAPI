@@ -4,6 +4,7 @@ namespace App\Controller\Inventory;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -63,7 +64,7 @@ class MoveController extends AbstractController
         ;
 
         if(count($inventory) !== count($inventoryIds))
-            throw new UnprocessableEntityHttpException('Some of the items could not be found??');
+            throw new PSPNotFoundException('Some of the items could not be found??');
 
         $itemsInTargetLocation = $inventoryRepository->countItemsInLocation($user, $location);
 

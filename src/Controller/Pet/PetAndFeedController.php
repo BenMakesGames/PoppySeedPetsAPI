@@ -2,9 +2,11 @@
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\InventoryRepository;
 use App\Service\PetActivity\EatingService;
 use App\Service\PetAndPraiseService;
@@ -13,7 +15,6 @@ use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -33,7 +34,7 @@ class PetAndFeedController extends AbstractController
     )
     {
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
-            throw new AccessDeniedHttpException('You can\'t pet that pet.');
+            throw new PSPPetNotFoundException();
 
         if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
 
@@ -70,10 +71,11 @@ class PetAndFeedController extends AbstractController
         EntityManagerInterface $em, EatingService $eatingService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
-            throw new AccessDeniedHttpException('You can\'t feed that pet.');
+            throw new PSPPetNotFoundException();
 
         if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
 

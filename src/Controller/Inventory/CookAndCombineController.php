@@ -4,6 +4,8 @@ namespace App\Controller\Inventory;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\InventoryModifierFunctions;
@@ -40,7 +42,7 @@ class CookAndCombineController extends AbstractController
         if(!\is_array($inventoryIds)) $inventoryIds = [ $inventoryIds ];
 
         if(count($inventoryIds) > 100)
-            throw new UnprocessableEntityHttpException('Oh, goodness, please don\'t try to Cook or Combine more than 100 items at a time! (Sorry for the inconvenience...)');
+            throw new PSPFormValidationException('Oh, goodness, please don\'t try to Cook or Combine more than 100 items at a time! (Sorry for the inconvenience...)');
 
         $inventory = $inventoryRepository->findBy([
             'owner' => $user,
@@ -48,13 +50,13 @@ class CookAndCombineController extends AbstractController
         ]);
 
         if(count($inventory) !== count($inventoryIds))
-            throw new UnprocessableEntityHttpException('Some of the items could not be found??');
+            throw new PSPNotFoundException('Some of the items could not be found??');
 
         if(count($inventory) === 0)
-            throw new UnprocessableEntityHttpException('You gotta\' select at least ONE item!');
+            throw new PSPFormValidationException('You gotta\' select at least ONE item!');
 
         if(!InventoryService::inventoryInSameLocation($inventory))
-            throw new UnprocessableEntityHttpException('All of the items must be in the same location.');
+            throw new PSPFormValidationException('All of the items must be in the same location.');
 
         if(count($inventory) === 2)
         {
