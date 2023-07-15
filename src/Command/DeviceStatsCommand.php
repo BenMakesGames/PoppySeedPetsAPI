@@ -72,7 +72,7 @@ class DeviceStatsCommand extends Command
         arsort($browsers);
         arsort($widths);
 
-        echo \GuzzleHttp\json_encode([
+        echo \json_encode([
             'languages' => $languages,
             'browsers' => $browsers,
             'windowWidths' => $widths,
