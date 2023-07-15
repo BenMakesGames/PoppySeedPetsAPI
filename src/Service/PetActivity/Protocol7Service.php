@@ -450,7 +450,29 @@ class Protocol7Service
         $loot = $this->squirrel3->rngNextFromArray($monster['loot']);
         $success = $roll >= 15;
 
-        if($success)
+        if($this->squirrel3->rngNextInt(1, 200) == 1)
+        {
+            $pet->increaseSafety(2);
+            $pet->increaseEsteem(8);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was assaulted by ' . $baddie . ' in a protected sector of Project-E, but defeated it, and took its Pynʞ! Whoa!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Project-E' ]))
+            ;
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->inventoryService->petCollectsItem('Pynʞ', $pet, $pet->getName() . ' defeated ' . $baddie . ', and got _this!_', $activityLog);
+        }
+        else if($pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 200) == 1)
+        {
+            $pet->increaseSafety(2);
+            $pet->increaseEsteem(8);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was assaulted by ' . $baddie . ' in a protected sector of Project-E, but defeated it, and took its Pynʞ! (Lucky~!)', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Project-E' ]))
+            ;
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->inventoryService->petCollectsItem('Pynʞ', $pet, $pet->getName() . ' defeated ' . $baddie . ', and got _this!_ (Lucky~!)', $activityLog);
+        }
+        else if($success)
         {
             $pet->increaseSafety(2);
             $pet->increaseEsteem(2);
@@ -540,7 +562,29 @@ class Protocol7Service
         $loot = $this->squirrel3->rngNextFromArray($monster['loot']);
         $success = $roll >= 17;
 
-        if($success)
+        if($this->squirrel3->rngNextInt(1, 200) == 1)
+        {
+            $pet->increaseSafety(2);
+            $pet->increaseEsteem(8);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was assaulted by ' . $baddie . ' on an insecure port in Project-E, but defeated it, and took its Pynʞ! Whoa!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Project-E' ]))
+            ;
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->inventoryService->petCollectsItem('Pynʞ', $pet, $pet->getName() . ' defeated ' . $baddie . ', and got _this!_', $activityLog);
+        }
+        else if($pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 200) == 1)
+        {
+            $pet->increaseSafety(2);
+            $pet->increaseEsteem(8);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was assaulted by ' . $baddie . ' on an insecure port in Project-E, but defeated it, and took its Pynʞ! (Lucky~!)', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Project-E' ]))
+            ;
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->inventoryService->petCollectsItem('Pynʞ', $pet, $pet->getName() . ' defeated ' . $baddie . ', and got _this!_ (Lucky~!)', $activityLog);
+        }
+        else if($success)
         {
             $pet->increaseSafety(2);
             $pet->increaseEsteem(2);
@@ -647,6 +691,7 @@ class Protocol7Service
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% ' . $snuck . ' into a Walled Garden, but ran into a Pirate doing the same! ' . $pet->getName() . ' defeated the Pirate, stole its Jolliest Roger, and ran off before the Walled Garden\'s security system detected them! Yarr!', '')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Project-E', 'Fighting', 'Stealth' ]))
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ;
 
             $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
