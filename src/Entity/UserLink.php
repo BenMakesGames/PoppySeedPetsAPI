@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Enum\UserLinkVisibilityEnum;
+use App\Enum\UserLinkWebsiteEnum;
 use App\Repository\UserLinkRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -20,11 +22,6 @@ class UserLink
     /**
      * @ORM\Column(type="string", length=40)
      */
-    private $category;
-
-    /**
-     * @ORM\Column(type="string", length=40)
-     */
     private $website;
 
     /**
@@ -38,36 +35,31 @@ class UserLink
      */
     private $user;
 
+    /**
+     * @ORM\Column(type="string", length=20)
+     */
+    private $visibility;
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getCategory(): ?string
-    {
-        return $this->category;
-    }
-
-    public function setCategory(string $category): self
-    {
-        $this->category = $category;
-
-        return $this;
-    }
-
-    public function getWebsite(): ?string
+    public function getWebsite(): string
     {
         return $this->website;
     }
 
     public function setWebsite(string $website): self
     {
+        if(!UserLinkWebsiteEnum::isAValue($website)) throw new \InvalidArgumentException();
+
         $this->website = $website;
 
         return $this;
     }
 
-    public function getNameOrId(): ?string
+    public function getNameOrId(): string
     {
         return $this->nameOrId;
     }
@@ -87,6 +79,20 @@ class UserLink
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getVisibility(): string
+    {
+        return $this->visibility;
+    }
+
+    public function setVisibility(string $visibility): self
+    {
+        if(!UserLinkVisibilityEnum::isAValue($visibility)) throw new \InvalidArgumentException();
+
+        $this->visibility = $visibility;
 
         return $this;
     }

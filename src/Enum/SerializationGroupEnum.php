@@ -12,7 +12,6 @@ final class SerializationGroupEnum
     public const MY_INVENTORY = 'myInventory';
     public const MY_DONATABLE_INVENTORY = 'myDonatableInventory';
     public const MY_STATS = 'myStats';
-    public const NOTIFICATION_PREFERENCES = 'notificationPreferences';
     public const PET_ACTIVITY_LOGS = 'petActivityLogs';
     public const PET_ACTIVITY_LOGS_AND_PUBLIC_PET = 'petActivityLogAndPublicPet';
     public const PET_PUBLIC_PROFILE = 'petPublicProfile';

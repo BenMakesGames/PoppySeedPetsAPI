@@ -116,11 +116,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $defaultSessionLengthInHours = 72;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\UserNotificationPreferences", mappedBy="user", cascade={"persist", "remove"})
-     */
-    private $userNotificationPreferences;
-
-    /**
      * @ORM\Column(type="integer")
      * @Groups({"myAccount"})
      */
@@ -176,11 +171,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @Groups({"myAccount"})
      */
     private $unlockedBasement;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\PushSubscription", mappedBy="user", fetch="EXTRA_LAZY")
-     */
-    private $pushSubscriptions;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\HollowEarthPlayer", mappedBy="user", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
@@ -338,7 +328,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->stats = new ArrayCollection();
         $this->greenhousePlants = new ArrayCollection();
         $this->userSessions = new ArrayCollection();
-        $this->pushSubscriptions = new ArrayCollection();
         $this->unlockedAuras = new ArrayCollection();
         $this->fate = mt_rand(0, 2147483647);
     }
@@ -583,23 +572,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getUserNotificationPreferences(): ?UserNotificationPreferences
-    {
-        return $this->userNotificationPreferences;
-    }
-
-    public function setUserNotificationPreferences(UserNotificationPreferences $userNotificationPreferences): self
-    {
-        $this->userNotificationPreferences = $userNotificationPreferences;
-
-        // set the owning side of the relation if necessary
-        if ($this !== $userNotificationPreferences->getUser()) {
-            $userNotificationPreferences->setUser($this);
-        }
-
-        return $this;
-    }
-
     public function getMaxSellPrice(): ?int
     {
         return $this->maxSellPrice;
@@ -775,14 +747,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $this->unlockedBasement = new \DateTimeImmutable();
 
         return $this;
-    }
-
-    /**
-     * @return Collection|PushSubscription[]
-     */
-    public function getPushSubscriptions(): Collection
-    {
-        return $this->pushSubscriptions;
     }
 
     public function getHollowEarthPlayer(): ?HollowEarthPlayer

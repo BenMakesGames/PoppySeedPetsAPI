@@ -2,7 +2,6 @@
 namespace App\Controller\Account;
 
 use App\Entity\User;
-use App\Entity\UserNotificationPreferences;
 use App\Entity\UserStyle;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
@@ -123,12 +122,6 @@ class RegisterController extends AbstractController
         ;
 
         $inventoryService->receiveItem('Welcome Note', $user, null, 'This Welcome Note was waiting for ' . $user->getName() . ' in their house.', LocationEnum::HOME, true);
-
-        $preferences = (new UserNotificationPreferences())
-            ->setUser($user)
-        ;
-
-        $em->persist($preferences);
 
         $myTheme = (new UserStyle())
             ->setUser($user)
