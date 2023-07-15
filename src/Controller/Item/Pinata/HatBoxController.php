@@ -67,6 +67,7 @@ class HatBoxController extends AbstractController
             'Horsey Hat',
             'Dark Horsey Hat',
             'Eccentric Top Hat',
+            'Pizzaface',
         ]));
 
         $userStatsRepository->incrementStat($user, 'Opened ' . $box->getItem()->getNameWithArticle());
