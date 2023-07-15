@@ -1,6 +1,6 @@
 #!/bin/sh
 git checkout main
-git checkout bin/deploy
+git checkout bin/*
 
 git pull
 
@@ -25,4 +25,6 @@ sudo chown ec2-user:apache -R var/cache
 sudo chmod 777 -R var/cache
 sudo chmod 777 -R var/log
 
+chmod +x bin/backup
+chmod +x bin/clear-caches
 chmod +x bin/deploy
