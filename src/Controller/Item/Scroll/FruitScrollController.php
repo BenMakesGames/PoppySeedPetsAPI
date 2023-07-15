@@ -60,7 +60,7 @@ class FruitScrollController extends AbstractController
             $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
             $item = $squirrel3->rngNextFromArray([
-                'Pamplemousse', 'Blackberries', 'Naner', 'Blueberries',
+                'Pamplemousse', 'Blackberries', 'Naner', 'Bunch of Naners', 'Blueberries',
                 'Red', 'Orange', 'Apricot', 'Melowatern', 'Honeydont', 'Tomato', 'Spicy Peps',
                 'Pineapple', 'Yellowy Lime', 'Ponzu'
             ]);

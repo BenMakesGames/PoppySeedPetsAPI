@@ -64,7 +64,7 @@ class LookInStockingController extends AbstractController
             'Liquid-hot Magma', // 11th - International Mountain Day
             'Bungee Cord', // 12th - Jamhuri Day
             null, // 13th
-            'Naner', // 14th - Monkey Day
+            'Bunch of Naners', // 14th - Monkey Day
             'Tea Leaves', // 15th - International Tea Day
             'Red Firework', // 16th - Day of Reconciliation
             'Red Umbrella', // 17th - International Day to End Violence Against Sex Workers

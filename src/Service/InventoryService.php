@@ -527,6 +527,8 @@ class InventoryService
                 return $this->itemRepository->findOneByName('Rainbow Toad Legs');
             else if($itemName === 'Stink Bug')
                 return $this->itemRepository->findOneByName('Stinkier Bug');
+            else if($itemName === 'Naner')
+                return $this->itemRepository->findOneByName('Bunch of Naners');
             else
                 return $itemIsString ? $this->itemRepository->findOneByName($item) : $item;
         }
