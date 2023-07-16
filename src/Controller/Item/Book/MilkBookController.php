@@ -3,6 +3,7 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Service\CookingService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,9 +23,12 @@ class MilkBookController extends AbstractController
         Inventory $inventory, ResponseService $responseService, CookingService $cookingService
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'milkBook/#/upload');
+        /** @var User $user */
+        $user = $this->getUser();
 
-        $message = $cookingService->showRecipeNamesToCookingBuddy($this->getUser(), [
+        ItemControllerHelpers::validateInventory($user, $inventory, 'milkBook/#/upload');
+
+        $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Chocolate Cream Pie',
             'Chocomilk',
             'Creamed Corn',
@@ -56,6 +60,9 @@ class MilkBookController extends AbstractController
             'Coffee Bean Tea with Mammal Extract',
             'Coffee Bean Tea with Mammal Extract (B)',
             'Sweet Coffee Bean Tea with Mammal Extract',
+            'Vichyssoise (with Butter)',
+            'Vichyssoise (with Milk)',
+            'Vichyssoise (with both)',
         ]);
 
         return $responseService->itemActionSuccess($message);
@@ -89,6 +96,7 @@ Whatever the circumstances that lead to your overabundance of milk, fret not! Th
 * Plain Bread
 * Qatayef
 * Teas
+* Vichyssoise
 * Yogurt
 
 ## Recipes
@@ -204,6 +212,14 @@ A tasty Arabic dessert filled with nuts and cream! (It\'s a little involved, but
 #### Teas
 
 Add Creamy Milk to any tea for a richer, creamier tea!
+
+#### Vichyssoise
+
+* Creamy Milk and/or Butter
+* Onion
+* Potato
+
+Served cold - that\'s how you know it\'s fancy! Well: that and the French name...
 
 #### Yogurt Begets Yogurt
 
