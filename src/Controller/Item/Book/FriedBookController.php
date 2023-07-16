@@ -3,6 +3,8 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
+use App\Service\CookingService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,6 +15,50 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class FriedBookController extends AbstractController
 {
+    /**
+     * @Route("/{inventory}/upload", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function upload(
+        Inventory $inventory, ResponseService $responseService, CookingService $cookingService
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'friedBook/#/upload');
+
+        $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
+            'Sunflower Oil',
+            'Coconut Oil',
+            'Nut Oil',
+            'Loaf of Plain Bread',
+            'Battered, Fried Fish (without Egg)',
+            'Battered, Fried Fish (with Egg)',
+            'Chili Calamari with Onion',
+            'Deep-fried Toad Legs (Creamy Milk)',
+            'Deep-fried Toad Legs (Egg)',
+            'Spicy Deep-fried Toad Legs (Creamy Milk)',
+            'Spicy Deep-fried Toad Legs (Egg)',
+            'Falafel',
+            'Plain Donut',
+            'Fried Egg (Oil)',
+            'Fried Egg (Butter)',
+            'Fried Tomato (with Oil)',
+            'Hash Brown (with Oil)',
+            'Hash Brown (with Butter)',
+            'Laufabrauð',
+            'Onion Rings',
+
+            'Pan-fried Fish (with Butter)',
+            'Pan-fried Fish (with Oil)',
+            'Pan-fried Tofu (with Butter)',
+            'Pan-fried Tofu (with Oil)',
+        ]);
+
+        return $responseService->itemActionSuccess($message);
+    }
+
     /**
      * @Route("/{inventory}/read", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
@@ -51,9 +97,10 @@ class FriedBookController extends AbstractController
 
 It should not surprise you to learn that frying involves _Oil_. And I\'m not talking about the black stuff found all over the Oil Zone! (That oil\'s poisonous to hedgehogs and humans alike! DO NOT EAT!)
 
-To make edible Oil (not that you should eat it straight - gross), squeeze a Sunflower, and its seeds. That\'s all you need!
-
-Need Sunflowers? They\'re available from the Trader on Sundays.
+To make edible Oil (not that you should eat it straight - gross), you can extract it from any of the following oil-rich foods:
+1. Coconut Milk
+2. Mixed Nuts
+3. Sunflower (it\'s all those seeds!)
 
 #### Plain Bread
 
