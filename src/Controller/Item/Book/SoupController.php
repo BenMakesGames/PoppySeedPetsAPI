@@ -49,7 +49,8 @@ class SoupController extends AbstractController
             'Minestrone',
             'Miso Soup',
             'Pumpkin Soup',
-            'Tomato Soup'
+            'Tomato Soup',
+            'Vishyssoise',
         ]);
 
         return $responseService->itemActionSuccess(strtoupper($message));
@@ -150,6 +151,15 @@ Makes three smallish bowls!
 
 * Butter
 * Onion
-* Tomato');
+* Tomato
+
+#### Vishyssoise
+
+* Creamy Milk
+* Onion
+* Potato
+
+A cold soup, best served chilled. (But not frozen!)
+');
     }
 }

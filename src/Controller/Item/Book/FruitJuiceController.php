@@ -3,6 +3,7 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Repository\RecipeRepository;
 use App\Service\CookingService;
 use App\Service\ResponseService;
@@ -33,6 +34,7 @@ class FruitJuiceController extends AbstractController
         Inventory $inventory, ResponseService $responseService, CookingService $cookingService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'fruitJuice/#/upload');

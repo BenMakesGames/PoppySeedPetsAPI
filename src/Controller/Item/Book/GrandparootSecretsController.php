@@ -3,6 +3,8 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
+use App\Service\CookingService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,6 +15,44 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class GrandparootSecretsController extends AbstractController
 {
+    /**
+     * @Route("/{inventory}/upload", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function upload(
+        Inventory $inventory, ResponseService $responseService, CookingService $cookingService
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'grandparootSecrets/#/upload');
+
+        $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
+            'Aging Powder',
+            'Blackberry Wine',
+            'Blueberry Wine',
+            'Red Wine',
+            'Fig Wine',
+            'Cheese and Sour Cream',
+            'Ginger Beer',
+            'Mushrooms',
+            'Mushrooms (Crooked Fishing Rod)',
+            'Mushrooms (Wooden Sword)',
+            'Plain Yogurt',
+            'Charcoal (from Torch)',
+            'Century Egg',
+            'Kombucha (from Sweet Black Tea)',
+            'Kombucha (from Black Tea)',
+            'Kombucha (from scratch)',
+            'Soy Sauce',
+            'Kumis',
+            'Kilju',
+        ]);
+
+        return $responseService->itemActionSuccess($message);
+    }
+
     /**
      * @Route("/{inventory}/read", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
@@ -41,7 +81,7 @@ The reason for using a particular amount of water is to control the amount of ti
 
 It\'s time to separate out the actual Aging Powder!
 
-Remove the dessicated root from the saucepan. Try to avoid contact with any water remaining in the saucepan. We won\'t restart the aging process (heat is needed for that), but the root is easier to work with when dry.
+Remove the desiccated root from the saucepan. Try to avoid contact with any water remaining in the saucepan. We won\'t restart the aging process (heat is needed for that), but the root is easier to work with when dry.
 
 Grind the root in a spice grinder or mortar and pestle.
 
@@ -63,6 +103,12 @@ You can make a glass of wine by combining Aging Powder with many fruits, and eve
 
 You will get a small amount of foam around the edge of your glass; scoop that off, but don\'t throw it away! That\'s tartaric acid - dried, it\'s known as Cream of Tartar - very useful in baking!
 
+### Cheese
+
+Of course, if you\'re going to make wine, you _gotta_ make cheese to go with it!
+
+No waiting days for your Creamy Milk to age into cheese! Just add Aging Powder, and you\'re good to go!
+
 ### Ginger Beer
 
 Age Ginger root and Sugar with Aging Powder for instant Ginger Beer!
@@ -75,7 +121,7 @@ You can easily grow a variety of mushrooms on wood with the help of Aging Powder
  
 First, mix some Aging Powder with some water, to form a thin sludge.
 
-Take a bit of wood (even a Wooden Sword you\'re no longer using will work!) to a dimly-lit place, and pour the sludge on.
+Take a bit of wood (even a Wooden Sword or fishing rod you\'re no longer using will work!) to a dimly-lit place, and pour the sludge on.
 
 Et voilà! Mushrooms!
 
@@ -93,7 +139,7 @@ If you\'ve got a fireplace, you\'ve probably already incidentally done so... and
 
 For shame! You can use that the next time you want to grill! (Don\'t even talk to me about gas grills!)
 
-If you\'re looking for Charcoal in a pinch, set some wood on fire, place it in something that can withstand the temperature of burning wood, and sprinkle some Aging Powder in!
+If you\'re looking for Charcoal in a pinch, set some wood on fire (or maybe just find an extra Stereotypical Torch you have lying around), place it in something that can withstand the temperature of burning wood, and sprinkle some Aging Powder in!
 
 ### Century Egg
 
@@ -135,6 +181,10 @@ An ancient fermented drink made from milk! I don\'t know if I believe that Scyth
 * Creamy Milk
 * Sugar (to aid fermentation)
 * Aging Powder
+
+### Kilju
+
+Perhaps the simplest fermented drink is Kilju, a Finnish drink. Age some Sugar in water... that\'s literally it!
 
 ### Conclusion
 
