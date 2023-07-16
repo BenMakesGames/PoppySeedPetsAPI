@@ -61,6 +61,9 @@ class MyLinksController extends AbstractController
      */
     public function createLink(Request $request, ResponseService $responseService, EntityManagerInterface $em)
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
         $website = trim($request->request->get('website'));
         $nameOrId = trim($request->request->get('nameOrId'));
         $visibility = trim($request->request->get('visibility'));
@@ -81,6 +84,7 @@ class MyLinksController extends AbstractController
             throw new PSPFormValidationException('Slashes are not allowed.');
 
         $link = (new UserLink())
+            ->setUser($user)
             ->setWebsite($website)
             ->setNameOrId($nameOrId)
             ->setVisibility($visibility);
