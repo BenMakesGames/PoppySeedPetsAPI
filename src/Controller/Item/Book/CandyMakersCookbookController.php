@@ -35,7 +35,8 @@ class CandyMakersCookbookController extends AbstractController
             'Orange Juice, and Pectin',
             'Carrot Juice, and Pectin',
             'Pamplemousse Juice, and Pectin',
-            'Sugar (Sweet Beet)',
+            'Sugar (from Sweet Beet)',
+            'Sugar (from Honeycomb)',
             'Candied Lotus Petals',
             'Chocolate Bar',
             'Spicy Chocolate Bar',
@@ -146,6 +147,8 @@ Quick method:
 2. Select one Sweet Beet
 3. Click "Cook or Combine" again
 4. Dries instantly, because reasons; don\'t worry about it
+
+Pro tip: Sugar can also be extracted from Honeycomb!
 
 ## Recipes
 

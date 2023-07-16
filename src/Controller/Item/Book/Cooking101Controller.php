@@ -3,7 +3,9 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Repository\RecipeRepository;
+use App\Service\CookingService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,6 +16,40 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class Cooking101Controller extends AbstractController
 {
+    /**
+     * @Route("/{inventory}/upload", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function upload(
+        Inventory $inventory, ResponseService $responseService, CookingService $cookingService
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'cooking101/#/upload');
+
+        $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
+            'Matzah Bread',
+            'Matzah Bread (with Oil)',
+            'Red Juice, and Pectin',
+            'Orange Juice, and Pectin',
+            'Carrot Juice, and Pectin',
+            'Pamplemousse Juice, and Pectin',
+            'Orange Hard Candy',
+            'Red Hard Candy',
+            'Blue Hard Candy',
+            'Purple Hard Candy',
+            'Yellow Hard Candy',
+            'Sugar (from Sweet Beet)',
+            'Butter',
+            'Pan-fried Fish (with Butter)',
+            'Pan-fried Fish (with Oil)',
+        ]);
+
+        return $responseService->itemActionSuccess($message);
+    }
+
     /**
      * @Route("/{inventory}/read", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
@@ -64,6 +100,10 @@ Sugar can be extracted from Sweet Beets by preparing Sweet Beet on its own.
 #### Butter
 
 Prepare Milk on its own.
+
+#### Pan-fried Fish
+
+Combine Fish and Butter (or Oil, if you happen to find any of that).
 
 ## Learn More
 
