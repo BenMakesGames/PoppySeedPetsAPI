@@ -3,6 +3,8 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
+use App\Service\CookingService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,6 +15,64 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class CandyMakersCookbookController extends AbstractController
 {
+    /**
+     * @Route("/{inventory}/upload", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function upload(
+        Inventory $inventory, ResponseService $responseService, CookingService $cookingService
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'candyMakerCookbook/#/upload');
+
+        $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
+            'Agar-agar',
+            'Corn Syrup',
+            'Red Juice, and Pectin',
+            'Orange Juice, and Pectin',
+            'Carrot Juice, and Pectin',
+            'Pamplemousse Juice, and Pectin',
+            'Sugar (Sweet Beet)',
+            'Candied Lotus Petals',
+            'Chocolate Bar',
+            'Spicy Chocolate Bar',
+            'Orange Chocolate Bar',
+            'Everybeans (yellow)',
+            'Everybeans (green)',
+            'Everybeans (magenta)',
+            'Orange Hard Candy',
+            'Red Hard Candy',
+            'Blue Hard Candy',
+            'Purple Hard Candy',
+            'Yellow Hard Candy',
+            'Honeycomb (candy)',
+            'Konpeitō',
+            'Mixed Nut Brittle',
+            'Rock Candy',
+            'Orange Gummies (with Corn Syrup)',
+            'Red Gummies (with Corn Syrup)',
+            'Blue Gummies (with Corn Syrup)',
+            'Purple Gummies (with Corn Syrup)',
+            'Yellow Gummies (with Corn Syrup)',
+            'Green Gummies (Melowatern)',
+            'Green Gummies (Honeydont)',
+            'Orange Gummies (with Agar-agar)',
+            'Red Gummies (with Agar-agar)',
+            'Blue Gummies (with Agar-agar)',
+            'Purple Gummies (with Agar-agar)',
+            'Yellow Gummies (with Agar-agar)',
+            'Green Gummies (Melowatern & Agar-agar)',
+            'Green Gummies (Honeydont & Agar-agar)',
+            'Apricot Gummies (using Corn Syrup)',
+            'Apricot Gummies (using Agar-Agar)',
+        ]);
+
+        return $responseService->itemActionSuccess($message);
+    }
+
     /**
      * @Route("/{inventory}/read", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
