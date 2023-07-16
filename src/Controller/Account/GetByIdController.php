@@ -2,11 +2,15 @@
 namespace App\Controller\Account;
 
 use App\Entity\User;
+use App\Entity\UserLink;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UserLinkVisibilityEnum;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
+use App\Repository\UserFollowingRepository;
+use App\Repository\UserLinkRepository;
 use App\Repository\UserStyleRepository;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +30,8 @@ class GetByIdController extends AbstractController
      */
     public function getProfile(
         User $user, ResponseService $responseService, PetRepository $petRepository, InventoryRepository $inventoryRepository,
-        NormalizerInterface $normalizer, UserStyleRepository $userStyleRepository
+        NormalizerInterface $normalizer, UserStyleRepository $userStyleRepository, UserLinkRepository $userLinkRepository,
+        UserFollowingRepository $userFollowingRepository
     )
     {
         $pets = $petRepository->findBy([ 'owner' => $user, 'location' => PetLocationEnum::HOME ]);
@@ -43,6 +48,8 @@ class GetByIdController extends AbstractController
             $data['stocking'] = $user->getFireplace()->getStocking();
         }
 
+        $data['links'] = $this->getLinks($user, $userFollowingRepository, $userLinkRepository);
+
         if($user->getUnlockedFireplace())
         {
             $mantle = $inventoryRepository->findBy(['owner' => $user, 'location' => LocationEnum::MANTLE]);
@@ -51,6 +58,40 @@ class GetByIdController extends AbstractController
         }
 
         return $responseService->success($data);
+    }
+
+    private function getLinks(User $user, UserFollowingRepository $userFollowingRepository, UserLinkRepository $userLinkRepository)
+    {
+        /** @var User|null $currentUser */
+        $currentUser = $this->getUser();
+
+        if(!$currentUser)
+            return [];
+
+        $showPrivateLinks =
+            $user->getId() == $currentUser->getId() ||
+            $userFollowingRepository->count([
+                'user' => $user,
+                'following' => $currentUser,
+            ]) > 0
+        ;
+
+        if($showPrivateLinks)
+        {
+            $links = $userLinkRepository->findBy([ 'user' => $user ]);
+        }
+        else
+        {
+            $links = $userLinkRepository->findBy([
+                'user' => $user,
+                'visibility' => UserLinkVisibilityEnum::FOLLOWED,
+            ]);
+        }
+
+        return array_map(fn(UserLink $link) => [
+            'website' => $link->getWebsite(),
+            'nameOrId' => $link->getNameOrId(),
+        ], $links);
     }
 
     /**

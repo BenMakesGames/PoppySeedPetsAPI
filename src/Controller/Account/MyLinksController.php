@@ -59,7 +59,10 @@ class MyLinksController extends AbstractController
      * @Route("/my/interwebs", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function createLink(Request $request, ResponseService $responseService, EntityManagerInterface $em)
+    public function createLink(
+        Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        UserLinkRepository $userLinkRepository
+    )
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -82,6 +85,11 @@ class MyLinksController extends AbstractController
 
         if(strpos($nameOrId, '/') !== false || strpos($nameOrId, '\\') !== false)
             throw new PSPFormValidationException('Slashes are not allowed.');
+
+        $existingLinks = $userLinkRepository->count([ 'user' => $user ]);
+
+        if($existingLinks >= 5)
+            throw new PSPFormValidationException('You can only have up to 5 links.');
 
         $link = (new UserLink())
             ->setUser($user)
