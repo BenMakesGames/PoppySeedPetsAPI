@@ -498,7 +498,7 @@ class TraderService
             ),
             TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createItem($stickInsect, 10), TraderOfferCostOrYield::createRecyclingPoints(10) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fish Fountain'), 1) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fish Statue'), 1) ],
                 'Useful little fellas, these Stick Insects! Thanks a lot!',
                 $user,
                 $quantities

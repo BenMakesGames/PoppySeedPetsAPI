@@ -350,8 +350,8 @@ class BlueprintController extends AbstractController
         $squirrel3 = new Squirrel3();
         $changes = new PetChanges($pet);
 
-        if($skill)
-            $pet->getSkills()->increaseStat($skill);
+        if($skill && $pet->getSkills()->getStat($skill) >= 20)
+            $skill = null;
 
         $pet
             ->increaseLove($squirrel3->rngNextInt(3, 6))
@@ -367,6 +367,13 @@ class BlueprintController extends AbstractController
         ;
 
         if($skill)
-            $activityLog->addTags($activityLogTagRepository->findByNames([ 'Level-up' ]));
+        {
+            $pet->getSkills()->increaseStat($skill);
+
+            $activityLog
+                ->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP)
+                ->setEntry($activityLog->getEntry() . ' +1 ' . ucfirst($skill) . '!')
+                ->addTags($activityLogTagRepository->findByNames([ 'Level-up' ]));
+        }
     }
 }

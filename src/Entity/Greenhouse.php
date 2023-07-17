@@ -93,6 +93,7 @@ class Greenhouse
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"myGreenhouse"})
      */
     private $hasFishStatue = false;
 
