@@ -109,9 +109,9 @@ class Beehive
         return $this->workers;
     }
 
-    public function setWorkers(int $workers): self
+    public function addWorkers(int $workers): self
     {
-        $this->workers = $workers;
+        $this->workers += $workers;
 
         return $this;
     }

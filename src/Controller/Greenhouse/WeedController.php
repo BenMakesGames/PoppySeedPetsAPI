@@ -11,6 +11,7 @@ use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
+use App\Service\CalendarService;
 use App\Service\InventoryService;
 use App\Service\PetAssistantService;
 use App\Service\ResponseService;
@@ -36,7 +37,7 @@ class WeedController extends AbstractController
         ResponseService $responseService, UserQuestRepository $userQuestRepository, EntityManagerInterface $em,
         InventoryService $inventoryService, Squirrel3 $squirrel3,
         WeatherService $weatherService, ItemRepository $itemRepository,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        PetActivityLogTagRepository $petActivityLogTagRepository, CalendarService $calendarService
     ): JsonResponse
     {
         /** @var User $user */
@@ -63,7 +64,22 @@ class WeedController extends AbstractController
 
         $foundItem = $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this while weeding their Greenhouse.', LocationEnum::HOME);
 
-        $message = 'You found ' . $foundItem->getItem()->getNameWithArticle() .' while cleaning up!';
+        if($greenhouse->isHasFishStatue())
+        {
+            $possibleItem2s = $calendarService->isSaintPatricksDay()
+                ? [ '1-leaf Clover', '2-leaf Clover' ]
+                : [ 'Algae', 'Scales', 'Freshly-squeezed Fish Oil', 'Silica Grounds' ]
+            ;
+
+            $foundItem2 = $inventoryService->receiveItem($squirrel3->rngNextFromArray($possibleItem2s), $user, $user, $user->getName() . ' found this while cleaning their Fish Statue.', LocationEnum::HOME);
+
+            $message = 'You found ' . $foundItem->getItem()->getNameWithArticle() . ' while cleaning up, plus ' . $foundItem2->getItem()->getNameWithArticle() . ' near the Fish Statue!';
+
+        }
+        else
+        {
+            $message = 'You found ' . $foundItem->getItem()->getNameWithArticle() .' while cleaning up!';
+        }
 
         if($greenhouse->getHelper())
         {

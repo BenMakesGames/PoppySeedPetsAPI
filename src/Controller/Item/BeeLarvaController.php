@@ -111,7 +111,7 @@ class BeeLarvaController extends AbstractController
             return $responseService->itemActionSuccess('Hey, that\'s spoilers! You don\'t have the... thing you need... to be able to do that! Yet!');
 
         $user->getBeehive()
-            ->setWorkers($user->getBeehive()->getWorkers() + 1)
+            ->addWorkers(1)
             ->setFlowerPower(36)
             ->setInteractionPower()
         ;

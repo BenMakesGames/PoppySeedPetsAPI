@@ -15,12 +15,15 @@ use App\Exceptions\PSPPetNotFoundException;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemGroupRepository;
+use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
 use App\Service\BeehiveService;
+use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Location;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -38,7 +41,8 @@ class BlueprintController extends AbstractController
      */
     public function installComposter(
         Inventory $inventory, ResponseService $responseService, PetRepository $petRepository, Request $request,
-        PetExperienceService $petExperienceService, EntityManagerInterface $em
+        PetExperienceService $petExperienceService, EntityManagerInterface $em,
+        PetActivityLogTagRepository $activityLogTagRepository
     )
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'installComposter');
@@ -60,7 +64,7 @@ class BlueprintController extends AbstractController
         $flashMessage = 'You install the Composter with ' . $pet->getName() . '!';
 
         $this->rewardHelper(
-            $petExperienceService, $responseService,
+            $petExperienceService, $responseService, $activityLogTagRepository,
             $pet,
             null,
             $flashMessage,
@@ -81,7 +85,8 @@ class BlueprintController extends AbstractController
      */
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, PetExperienceService $petExperienceService
+        PetRepository $petRepository, PetExperienceService $petExperienceService,
+        PetActivityLogTagRepository $activityLogTagRepository
     )
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'basementBlueprint');
@@ -99,7 +104,7 @@ class BlueprintController extends AbstractController
         $em->remove($inventory);
 
         $this->rewardHelper(
-            $petExperienceService, $responseService,
+            $petExperienceService, $responseService, $activityLogTagRepository,
             $pet,
             PetSkillEnum::CRAFTS,
             $pet->getName() . ' helps you build the Basement. Together, you\'re done in no time! (Video game logic!) ("Basement" has been added to the menu!)',
@@ -121,7 +126,7 @@ class BlueprintController extends AbstractController
     public function buildBeehive(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         InventoryRepository $inventoryRepository, BeehiveService $beehiveService, PetExperienceService $petExperienceService,
-        PetRepository $petRepository
+        PetRepository $petRepository, PetActivityLogTagRepository $activityLogTagRepository
     )
     {
         /** @var User $user */
@@ -165,7 +170,7 @@ class BlueprintController extends AbstractController
             $your = $magnifyingGlass->getWearer()->getName() . '\'s';
 
         $this->rewardHelper(
-            $petExperienceService, $responseService,
+            $petExperienceService, $responseService, $activityLogTagRepository,
             $pet,
             PetSkillEnum::CRAFTS,
             'The blueprint is _super_ tiny, but with the help of ' . $your . ' ' . $magnifyingGlass->getFullItemName() . ', you\'re able to make it all out, and you and ' . $pet->getName() . ' put the thing together! ("Beehive" has been added to the menu!)',
@@ -183,7 +188,8 @@ class BlueprintController extends AbstractController
      */
     public function claim(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, PetExperienceService $petExperienceService
+        PetRepository $petRepository, PetExperienceService $petExperienceService,
+        PetActivityLogTagRepository $activityLogTagRepository
     )
     {
         /** @var User $user */
@@ -206,7 +212,7 @@ class BlueprintController extends AbstractController
         ;
 
         $this->rewardHelper(
-            $petExperienceService, $responseService,
+            $petExperienceService, $responseService, $activityLogTagRepository,
             $pet,
             PetSkillEnum::CRAFTS,
             'You and ' . $pet->getName() . ' clear out a space in the public Greenhouse! ("Greenhouse" has been added to the menu!)',
@@ -226,7 +232,8 @@ class BlueprintController extends AbstractController
      */
     public function buildBirdBath(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, InventoryRepository $inventoryRepository, PetExperienceService $petExperienceService
+        PetRepository $petRepository, InventoryRepository $inventoryRepository, PetExperienceService $petExperienceService,
+        PetActivityLogTagRepository $activityLogTagRepository
     )
     {
         /** @var User $user */
@@ -258,11 +265,65 @@ class BlueprintController extends AbstractController
             $flashMessage .= ' (How alliterative!)';
 
         $this->rewardHelper(
-            $petExperienceService, $responseService,
+            $petExperienceService, $responseService, $activityLogTagRepository,
             $pet,
             PetSkillEnum::CRAFTS,
             $flashMessage,
             $pet->getName() . ' built a Bird Bath in the Greenhouse with ' . $user->getName() . '!'
+        );
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess(
+            null,
+            [ 'itemDeleted' => true ]
+        );
+    }
+
+    /**
+     * @Route("/fishStatue/{inventory}", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function installFishStatue(
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
+        PetRepository $petRepository, InventoryRepository $inventoryRepository, PetExperienceService $petExperienceService,
+        InventoryService $inventoryService, PetActivityLogTagRepository $activityLogTagRepository
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'fishStatue');
+
+        if(!$user->getUnlockedGreenhouse())
+            return $responseService->error(400, [ 'You need a Greenhouse to install a Fish Statue!' ]);
+
+        if($user->getGreenhouse()->isHasFishStatue())
+            return $responseService->error(200, [ 'Your Greenhouse already has a Fish State!' ]);
+
+        $pet = $this->getPet($request, $petRepository);
+
+        if($inventoryService->countInventory($user, '3D Printer', LocationEnum::HOME) < 1)
+            return $responseService->itemActionSuccess('The statue appears to be a fountain! You and ' . $pet->getName() . ' are going to need a 3D Printer at home, and some Plastic to make some pipes...');
+
+        $plastic = $inventoryRepository->findOneToConsume($user, 'Plastic');
+
+        if(!$plastic)
+            return $responseService->itemActionSuccess('The statue appears to be a fountain! You and ' . $pet->getName() . ' are going to need a 3D Printer at home, and some Plastic to make some pipes...');
+
+        $em->remove($plastic);
+        $em->remove($inventory);
+
+        $user->getGreenhouse()->setHasFishStatue(true);
+
+        $flashMessage = 'You install a Fish Statue with ' . $pet->getName() . '!';
+
+        $this->rewardHelper(
+            $petExperienceService, $responseService, $activityLogTagRepository,
+            $pet,
+            PetSkillEnum::CRAFTS,
+            $flashMessage,
+            $pet->getName() . ' installed a Fish Statue in the Greenhouse with ' . $user->getName() . '!'
         );
 
         $em->flush();
@@ -284,7 +345,7 @@ class BlueprintController extends AbstractController
         return $pet;
     }
 
-    private function rewardHelper(PetExperienceService $petExperienceService, ResponseService $responseService, Pet $pet, ?string $skill, string $flashMessage, string $logMessage)
+    private function rewardHelper(PetExperienceService $petExperienceService, ResponseService $responseService, PetActivityLogTagRepository $activityLogTagRepository, Pet $pet, ?string $skill, string $flashMessage, string $logMessage)
     {
         $squirrel3 = new Squirrel3();
         $changes = new PetChanges($pet);
@@ -301,8 +362,11 @@ class BlueprintController extends AbstractController
 
         $responseService->addFlashMessage($flashMessage);
 
-        $responseService->createActivityLog($pet, $logMessage, 'ui/affection', $changes->compare($pet))
+        $activityLog = $responseService->createActivityLog($pet, $logMessage, 'ui/affection', $changes->compare($pet))
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
         ;
+
+        if($skill)
+            $activityLog->addTags($activityLogTagRepository->findByNames([ 'Level-up' ]));
     }
 }

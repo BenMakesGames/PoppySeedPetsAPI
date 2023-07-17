@@ -187,6 +187,10 @@ class TraderService
                     $title = 'Digital';
                     $trades = $this->getDigitalOffers($user, $quantities);
                     break;
+                case TradeGroupEnum::BUGS:
+                    $title = 'Bugs';
+                    $trades = $this->getBugOffers($user, $quantities);
+                    break;
                 case 3: // old "FOODS" group unlock
                 case 5: // old "BOX-BOX" group unlock
                     continue 2; // why "2"? see https://www.php.net/manual/en/control-structures.continue.php >_>
@@ -453,6 +457,70 @@ class TraderService
                 ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Digital Camera'), 1) ],
                 "An aspiring photographer, eh? Have fun!",
+                $user,
+                $quantities
+            ),
+        ];
+    }
+
+    private function getBugOffers(User $user, array $quantities): array
+    {
+        $stickInsect = $this->itemRepository->findOneByName('Stick Insect');
+
+        return [
+            TraderOffer::createTradeOffer(
+                [ TraderOfferCostOrYield::createItem($stickInsect, 1), TraderOfferCostOrYield::createRecyclingPoints(1) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Yeast'), 3) ],
+                'Useful little fellas, these Stick Insects! Thanks a lot!',
+                $user,
+                $quantities
+            ),
+            TraderOffer::createTradeOffer(
+                [ TraderOfferCostOrYield::createItem($stickInsect, 1), TraderOfferCostOrYield::createRecyclingPoints(1) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Sunflower'), 1) ],
+                'Useful little fellas, these Stick Insects! Thanks a lot!',
+                $user,
+                $quantities
+            ),
+            TraderOffer::createTradeOffer(
+                [ TraderOfferCostOrYield::createItem($stickInsect, 3), TraderOfferCostOrYield::createRecyclingPoints(3) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Quintessence'), 1) ],
+                'Useful little fellas, these Stick Insects! Thanks a lot!',
+                $user,
+                $quantities
+            ),
+            TraderOffer::createTradeOffer(
+                [ TraderOfferCostOrYield::createItem($stickInsect, 6), TraderOfferCostOrYield::createRecyclingPoints(6) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Wrapped Sword'), 1) ],
+                'Useful little fellas, these Stick Insects! Thanks a lot!',
+                $user,
+                $quantities
+            ),
+            TraderOffer::createTradeOffer(
+                [ TraderOfferCostOrYield::createItem($stickInsect, 10), TraderOfferCostOrYield::createRecyclingPoints(10) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Fish Fountain'), 1) ],
+                'Useful little fellas, these Stick Insects! Thanks a lot!',
+                $user,
+                $quantities
+            ),
+            TraderOffer::createTradeOffer(
+                [ TraderOfferCostOrYield::createItem($stickInsect, 14), TraderOfferCostOrYield::createRecyclingPoints(14) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Hat Box'), 1) ],
+                'Useful little fellas, these Stick Insects! Thanks a lot!',
+                $user,
+                $quantities
+            ),
+            TraderOffer::createTradeOffer(
+                [ TraderOfferCostOrYield::createItem($stickInsect, 18), TraderOfferCostOrYield::createRecyclingPoints(15) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Gold Chest'), 1) ],
+                'Useful little fellas, these Stick Insects! Thanks a lot!',
+                $user,
+                $quantities
+            ),
+            TraderOffer::createTradeOffer(
+                [ TraderOfferCostOrYield::createItem($stickInsect, 20), TraderOfferCostOrYield::createRecyclingPoints(20) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Ruby Chest'), 1) ],
+                'Useful little fellas, these Stick Insects! Thanks a lot!',
                 $user,
                 $quantities
             ),

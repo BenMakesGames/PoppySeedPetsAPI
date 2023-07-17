@@ -214,6 +214,7 @@ class ChocolateMansion
     private function exploreCellar(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
+
         $description = $this->getEntryDescription($pet) . 'They entered the cellar, where a vampire was lying in wait! ';
         $loot = [];
         $tags = [];

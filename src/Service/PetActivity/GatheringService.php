@@ -1157,26 +1157,33 @@ class GatheringService
                 'Gypsum'
             ];
 
-            if($check >= 20)
-                $loot[] = $this->squirrel3->rngNextFromArray([ 'Iron Ore', 'Toadstool', 'Gypsum', 'Gypsum', 'Gypsum', 'Limestone' ]);
+            if($petWithSkills->getCanSeeInTheDark()->getTotal() >= 0)
+            {
+                if($check >= 20)
+                    $loot[] = $this->squirrel3->rngNextFromArray([ 'Iron Ore', 'Toadstool', 'Gypsum', 'Gypsum', 'Gypsum', 'Limestone' ]);
 
-            if($check >= 30)
-                $loot[] = $this->squirrel3->rngNextFromArray([ 'Silver Ore', 'Silver Ore', 'Gypsum', 'Gold Ore' ]);
+                if($check >= 30)
+                    $loot[] = $this->squirrel3->rngNextFromArray([ 'Silver Ore', 'Silver Ore', 'Gypsum', 'Gold Ore' ]);
+
+                if($eideticMemory)
+                {
+                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored a huge cave, perfectly memorizing its layout as they went, and found ' . ArrayFunctions::list_nice($loot) . '.', '')
+                        ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                    ;
+                }
+                else
+                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored a huge cave, and found ' . ArrayFunctions::list_nice($loot) . '.', '');
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a huge cave! It was too dark to explore very far, but they found ' . ArrayFunctions::list_nice($loot) . ' near the entrance.', '');
+            }
 
             if($this->squirrel3->rngNextInt(1, 2000) < $petWithSkills->getPerception()->getTotal())
             {
                 $loot[] = 'Striped Microcline';
                 $pet->increaseEsteem(4);
             }
-
-            if($eideticMemory)
-            {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored a huge cave, perfectly memorizing its layout as they went, and found ' . ArrayFunctions::list_nice($loot) . '.', '')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ;
-            }
-            else
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored a huge cave, and found ' . ArrayFunctions::list_nice($loot) . '.', '');
 
             $activityLog
                 ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Mining' ]))
@@ -1190,10 +1197,22 @@ class GatheringService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored a huge cave, and got lost for a while!', 'icons/activity-logs/confused')
-                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Mining' ]))
-            ;
-            $pet->increaseSafety(-4);
+            if($petWithSkills->getCanSeeInTheDark()->getTotal() >= 0)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored a huge cave, and tried to explore it, but got lost for a while!', 'icons/activity-logs/confused')
+                    ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Mining' ]))
+                ;
+
+                $pet->increaseSafety(-4);
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a huge cave, and tried to explore it, but got lost in the dark for a while!', 'icons/activity-logs/confused')
+                    ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Mining' ]))
+                ;
+
+                $pet->increaseSafety(-8);
+            }
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::GATHER, false);

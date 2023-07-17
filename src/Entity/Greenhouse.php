@@ -91,6 +91,11 @@ class Greenhouse
      */
     private $bees2DismissedOn;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $hasFishStatue = false;
+
     public function __construct()
     {
         $this->setComposterBonusCountdown();
@@ -266,6 +271,18 @@ class Greenhouse
     public function setBees2DismissedOn(\DateTimeImmutable $bees2DismissedOn): self
     {
         $this->bees2DismissedOn = $bees2DismissedOn;
+
+        return $this;
+    }
+
+    public function isHasFishStatue(): bool
+    {
+        return $this->hasFishStatue;
+    }
+
+    public function setHasFishStatue(bool $hasFishStatue): self
+    {
+        $this->hasFishStatue = $hasFishStatue;
 
         return $this;
     }

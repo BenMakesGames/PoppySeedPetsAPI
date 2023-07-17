@@ -2,6 +2,7 @@
 namespace App\Service\PetActivity\Crafting\Helpers;
 
 use App\Entity\PetActivityLog;
+use App\Entity\PetSkills;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
@@ -55,8 +56,11 @@ class StickCraftingService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Crooked Fishing Rod.', '')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
             ;
+
+            $exp = $this->maybeSpotAStickBug($petWithSkills, $activityLog) ? 3 : 2;
+
             $this->inventoryService->petCollectsItem('Crooked Fishing Rod', $pet, $pet->getName() . ' created this from String and a Crooked Stick.', $activityLog);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ], $activityLog);
         }
         else
         {
@@ -85,8 +89,11 @@ class StickCraftingService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Sunflower Stick.', '')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
             ;
+
+            $exp = $this->maybeSpotAStickBug($petWithSkills, $activityLog) ? 3 : 2;
+
             $this->inventoryService->petCollectsItem('Sunflower Stick', $pet, $pet->getName() . ' created this by affixing a Sunflower to the end of a Crooked Stick.', $activityLog);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ], $activityLog);
         }
         else
         {
@@ -119,8 +126,12 @@ class StickCraftingService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created ' . $making->getNameWithArticle() . '.', '')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
+
+            $exp = $this->maybeSpotAStickBug($petWithSkills, $activityLog) ? 2 : 1;
+
             $this->inventoryService->petCollectsItem($making, $pet, $pet->getName() . ' created this from White Cloth and a Crooked Stick.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::CRAFTS ], $activityLog);
         }
         else
         {
@@ -151,8 +162,11 @@ class StickCraftingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
             ;
+
+            $exp = $this->maybeSpotAStickBug($petWithSkills, $activityLog) ? 3 : 2;
+
             $this->inventoryService->petCollectsItem('Hunting Spear', $pet, $pet->getName() . ' created this.', $activityLog);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ], $activityLog);
+            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ], $activityLog);
         }
         else
         {
@@ -193,7 +207,10 @@ class StickCraftingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
+
+            $exp = $this->maybeSpotAStickBug($petWithSkills, $activityLog) ? 3 : 2;
+
+            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->inventoryService->petCollectsItem('Red Flail', $pet, $pet->getName() . ' created this.', $activityLog);
         }
         else
@@ -246,7 +263,10 @@ class StickCraftingService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Straw Broom.', '')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
+
+            $exp = $this->maybeSpotAStickBug($petWithSkills, $activityLog) ? 3 : 2;
+
+            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->inventoryService->petCollectsItem('Straw Broom', $pet, $pet->getName() . ' created this.', $activityLog);
         }
         else
@@ -277,7 +297,10 @@ class StickCraftingService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Bug-catcher\'s Net.', '')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
+
+            $exp = $this->maybeSpotAStickBug($petWithSkills, $activityLog) ? 3 : 2;
+
+            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->inventoryService->petCollectsItem('Bug-catcher\'s Net', $pet, $pet->getName() . ' created this.', $activityLog);
         }
         else
@@ -305,7 +328,6 @@ class StickCraftingService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a Harvest Staff, but got hungry, and ate the ' . $foodEaten . ' :(', '')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Eating' ]))
             ;
-
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
         }
@@ -321,7 +343,10 @@ class StickCraftingService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Harvest Staff.', '')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
+
+            $exp = $this->maybeSpotAStickBug($petWithSkills, $activityLog) ? 3 : 2;
+
+            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->inventoryService->petCollectsItem('Harvest Staff', $pet, $pet->getName() . ' created this.', $activityLog);
         }
         else
@@ -351,9 +376,11 @@ class StickCraftingService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created an Overly-long Spear.', '')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
             ;
-            $this->inventoryService->petCollectsItem('Overly-long Spear', $pet, $pet->getName() . ' created this.', $activityLog);
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ], $activityLog);
+            $exp = $this->maybeSpotAStickBug($petWithSkills, $activityLog) ? 3 : 2;
+
+            $this->inventoryService->petCollectsItem('Overly-long Spear', $pet, $pet->getName() . ' created this.', $activityLog);
+            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
         }
         else
@@ -384,9 +411,11 @@ class StickCraftingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
             ;
-            $this->inventoryService->petCollectsItem('This is Getting Ridiculous', $pet, $pet->getName() . ' created this.', $activityLog);
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ], $activityLog);
+            $exp = $this->maybeSpotAStickBug($petWithSkills, $activityLog) ? 3 : 2;
+
+            $this->inventoryService->petCollectsItem('This is Getting Ridiculous', $pet, $pet->getName() . ' created this.', $activityLog);
+            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
         }
         else
@@ -418,8 +447,11 @@ class StickCraftingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Magic-binding' ]))
             ;
+
+            $exp = $this->maybeSpotAStickBug($petWithSkills, $activityLog) ? 3 : 2;
+
             $this->inventoryService->petCollectsItem('Champignon', $pet, $pet->getName() . ' created this from a Crooked Stick, Toadstool, and bit of Quintessence.', $activityLog);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS,  PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::CRAFTS,  PetSkillEnum::UMBRA ], $activityLog);
         }
         else
         {
@@ -449,8 +481,11 @@ class StickCraftingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
             ;
+
+            $exp = $this->maybeSpotAStickBug($petWithSkills, $activityLog) ? 3 : 2;
+
             $this->inventoryService->petCollectsItem('Wooden Sword', $pet, $pet->getName() . ' created this from some ' . $itemLost . ' and a Crooked Stick.', $activityLog);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ], $activityLog);
+            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ], $activityLog);
         }
         else
         {
@@ -490,7 +525,10 @@ class StickCraftingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
+
+            $exp = $this->maybeSpotAStickBug($petWithSkills, $activityLog) ? 3 : 2;
+
+            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->inventoryService->petCollectsItem('"Rustic" Magnifying Glass', $pet, $pet->getName() . ' created this.', $activityLog);
         }
         else
@@ -522,7 +560,10 @@ class StickCraftingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
+
+            $exp = $this->maybeSpotAStickBug($petWithSkills, $activityLog) ? 3 : 2;
+
+            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->inventoryService->petCollectsItem('Sweet Beat', $pet, $pet->getName() . ' created this by gluing a Sweet Beet to a Stick. Because that makes sense.', $activityLog);
         }
         else
@@ -553,8 +594,11 @@ class StickCraftingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
+
+            $exp = $this->maybeSpotAStickBug($petWithSkills, $activityLog) ? 2 : 1;
+
             $this->inventoryService->petCollectsItem('Naner-picker', $pet, $pet->getName() . ' created this by mounting a bucket on the end of a stick.' . ($this->squirrel3->rngNextInt(1, 5) === 1 ? ' Few things could be simpler!' : ''), $activityLog);
+            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::CRAFTS ], $activityLog);
         }
         else
         {
@@ -566,5 +610,22 @@ class StickCraftingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
         }
         return $activityLog;
+    }
+
+    private function maybeSpotAStickBug(ComputedPetSkills $petWithSkills, PetActivityLog $activityLog): bool
+    {
+        $spottedIt = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() * 2) >= 20;
+
+        if(!$spottedIt) return false;
+
+        $extraLoot = $this->squirrel3->rngNextFromArray([
+            'Bee', 'Line of Ants', 'Stick Insect'
+        ]);
+
+        $activityLog->setEntry($activityLog->getEntry() . ' While they were doing that, they spotted a ' . $extraLoot . '! They grabbed it before it could get away!')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+        ;
+
+        return true;
     }
 }
