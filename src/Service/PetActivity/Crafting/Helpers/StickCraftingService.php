@@ -622,6 +622,10 @@ class StickCraftingService
             'Bee', 'Line of Ants', 'Stick Insect'
         ]);
 
+        $pet = $petWithSkills->getPet();
+
+        $this->inventoryService->petCollectsItem($extraLoot, $pet, $pet->getName() . ' found this on a stick!', $activityLog);
+
         $activityLog->setEntry($activityLog->getEntry() . ' While they were doing that, they spotted a ' . $extraLoot . '! They grabbed it before it could get away!')
             ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
         ;
