@@ -619,7 +619,7 @@ class StickCraftingService
         if(!$spottedIt) return false;
 
         $extraLoot = $this->squirrel3->rngNextFromArray([
-            'Bee', 'Line of Ants', 'Stick Insect'
+            'Worker Bee', 'Line of Ants', 'Stick Insect'
         ]);
 
         $pet = $petWithSkills->getPet();
