@@ -12,6 +12,7 @@ class UserLinkWebsiteEnum
     public const FUR_AFFINITY = 'FurAffinity';
     public const GAIA_ONLINE = 'GaiaOnline';
     public const GITHUB = 'GitHub';
+    public const MASTADON = 'Mastadon';
     public const NINTENDO = 'Nintendo';
     public const PIXEL_CATS_END = 'PixelCatsEnd';
     public const POPPY_SEED_PETS = 'PSP';
