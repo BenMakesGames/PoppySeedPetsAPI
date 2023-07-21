@@ -614,21 +614,50 @@ class StickCraftingService
 
     private function maybeSpotAStickBug(ComputedPetSkills $petWithSkills, PetActivityLog $activityLog): bool
     {
+        $pet = $petWithSkills->getPet();
+
+        $repelsBugs =
+            $pet->getTool() && (
+                ($pet->getTool()->getItem()->getTool() && $pet->getTool()->getItem()->getTool()->getPreventsBugs()) ||
+                ($pet->getTool()->getEnchantment() && $pet->getTool()->getEnchantment()->getEffects()->getPreventsBugs())
+            )
+        ;
+
+        if($repelsBugs)
+            return false;
+
         $spottedIt = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() * 2) >= 20;
 
-        if(!$spottedIt) return false;
+        if(!$spottedIt)
+            return false;
 
         $extraLoot = $this->squirrel3->rngNextFromArray([
             'Worker Bee', 'Line of Ants', 'Stick Insect'
         ]);
 
-        $pet = $petWithSkills->getPet();
-
         $this->inventoryService->petCollectsItem($extraLoot, $pet, $pet->getName() . ' found this on a stick!', $activityLog);
 
-        $activityLog->setEntry($activityLog->getEntry() . ' While they were doing that, they spotted a ' . $extraLoot . '! They grabbed it before it could get away!')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+        $attractsBugs =
+            $pet->getTool() && (
+                ($pet->getTool()->getItem()->getTool() && $pet->getTool()->getItem()->getTool()->getAttractsBugs()) ||
+                ($pet->getTool()->getEnchantment() && $pet->getTool()->getEnchantment()->getEffects()->getAttractsBugs())
+            )
         ;
+
+        if($attractsBugs)
+        {
+            $this->inventoryService->petCollectsItem($extraLoot, $pet, $pet->getName() . ' found this on a stick!', $activityLog);
+
+            $activityLog->setEntry($activityLog->getEntry() . ' While they were doing that, they spotted a ' . $extraLoot . '! ... wait, make that TWO! They grabbed both before they could get away!')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+            ;
+        }
+        else
+        {
+            $activityLog->setEntry($activityLog->getEntry() . ' While they were doing that, they spotted a ' . $extraLoot . '! They grabbed it before it could get away!')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+            ;
+        }
 
         return true;
     }
