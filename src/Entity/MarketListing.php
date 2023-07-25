@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass=MarketListingRepository::class)
  * @ORM\Table(
  *     uniqueConstraints={
- *         @ORM\UniqueConstraint(name="market_listing_unique", columns={"item_id", "enchantment_id", "spice_id"})
+ *         @ORM\UniqueConstraint(name="market_listing_unique", columns={"item_id", "non_nullable_enchantment", "non_nullable_spice"})
  *     }
  * )
  */
@@ -37,10 +37,20 @@ class MarketListing
     private $enchantment;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $nonNullableEnchantment = -1;
+
+    /**
      * @ORM\ManyToOne(targetEntity=Spice::class)
      * @Groups("marketItem")
      */
     private $spice;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $nonNullableSpice = -1;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -78,6 +88,7 @@ class MarketListing
     public function setEnchantment(?Enchantment $enchantment): self
     {
         $this->enchantment = $enchantment;
+        $this->nonNullableEnchantment = $enchantment ? $enchantment->getId() : -1;
 
         return $this;
     }
@@ -90,6 +101,7 @@ class MarketListing
     public function setSpice(?Spice $spice): self
     {
         $this->spice = $spice;
+        $this->nonNullableSpice = $spice ? $spice->getId() : -1;
 
         return $this;
     }
