@@ -8,6 +8,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=MarketListingRepository::class)
+ * @ORM\Table(
+ *     uniqueConstraints={
+ *         @ORM\UniqueConstraint(name="market_listing_unique", columns={"item_id", "enchantment_id", "spice_id"})
+ *     }
+ * )
  */
 class MarketListing
 {
