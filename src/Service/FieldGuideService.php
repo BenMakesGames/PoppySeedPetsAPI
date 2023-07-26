@@ -45,7 +45,8 @@ class FieldGuideService
             $message = 'You unlocked the Field Guide! (Check it out in the main menu!)';
         }
 
-        $this->responseService->addFlashMessage($message);
+        if($message)
+            $this->responseService->addFlashMessage($message);
     }
 
     /**
