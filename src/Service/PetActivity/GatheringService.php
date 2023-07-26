@@ -743,7 +743,7 @@ class GatheringService
     {
         $pet = $petWithSkills->getPet();
 
-        if($this->squirrel3->rngNextInt(1, 4) === 1 && $petWithSkills->getCanSeeInTheDark()->getTotal() <= 0)
+        if($petWithSkills->getCanSeeInTheDark()->getTotal() <= 0)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found an Old Iron Mine, but all the ore must have been hidden deep inside, and ' . $pet->getName() . ' didn\'t have a light.', '')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Mining', 'Dark' ]))
