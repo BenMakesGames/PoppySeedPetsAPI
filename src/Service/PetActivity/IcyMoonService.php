@@ -282,7 +282,7 @@ class IcyMoonService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::GATHER, false);
 
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found an entrance to the core of an Icy Moon, but it was too dark to see anything...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Icy Moon', 'Gathering', 'Needs Light' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Icy Moon', 'Gathering', 'Dark' ]))
             ;
         }
 
@@ -303,8 +303,8 @@ class IcyMoonService
             else
                 $period = '.';
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found an entrance to the core of an Icy Moon! They looked around for a little while and scooped up some ' . ArrayFunctions::list_nice($loot) . $period, '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Icy Moon', 'Gathering', 'Needs Light' ]))
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found an entrance to the core of an Icy Moon! It was dark inside, but thanks to their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ' they found some ' . ArrayFunctions::list_nice($loot) . $period, '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Icy Moon', 'Gathering', 'Dark' ]))
             ;
 
             foreach($loot as $itemName)
@@ -318,7 +318,7 @@ class IcyMoonService
                 {
                     $activityLog->setEntry($activityLog->getEntry() . ' The core was hot, but their ' . $pet->getTool()->getItem()->getName() . ' protected them.')
                         ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                        ->addTags($this->petActivityLogTagRepository->findByNames([ 'Icy Moon', 'Gathering', 'Needs Light', 'Heatstroke' ]))
+                        ->addTags($this->petActivityLogTagRepository->findByNames([ 'Icy Moon', 'Gathering', 'Dark', 'Heatstroke' ]))
                     ;
                 }
                 else
@@ -331,7 +331,7 @@ class IcyMoonService
                     else
                         $activityLog->setEntry($activityLog->getEntry() . ' The core was CRAZY hot, and %pet:' . $pet->getId() . '.name% got a bit light-headed while while crawling through the tunnels.');
 
-                    $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Icy Moon', 'Gathering', 'Needs Light', 'Heatstroke' ]));
+                    $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Icy Moon', 'Gathering', 'Dark', 'Heatstroke' ]));
                 }
             }
 
@@ -339,7 +339,7 @@ class IcyMoonService
             {
                 $this->houseSimService->getState()->loseItem('Icy Moon', 1);
 
-                $activityLog->setEntry($activityLog->getEntry() . ' As they were leaving, the caves began to shake violenty! %pet:' . $pet->getId() . '.name% managed to start up the Tiny Rocketship, and shot out of the moon as it crumbled into pieces!')
+                $activityLog->setEntry($activityLog->getEntry() . ' As they were leaving, the caves began to shake violently! %pet:' . $pet->getId() . '.name% managed to start up the Tiny Rocketship, and shot out of the moon as it crumbled into pieces!')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ;
 
@@ -353,8 +353,8 @@ class IcyMoonService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::GATHER, false);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found the entrance to the core of an Icy Moon! They got lost in the tunnels for a while, but fortunately found their way out after a while...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Icy Moon', 'Gathering', 'Needs Light' ]))
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found the entrance to the core of an Icy Moon! It was dark inside, and even with their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ' they were unable to find anything...', 'icons/activity-logs/confused')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Icy Moon', 'Gathering', 'Dark' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::NATURE ], $activityLog);
         }

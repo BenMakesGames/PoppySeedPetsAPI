@@ -913,7 +913,7 @@ class UmbraService
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a deep, dark part of the Umbra, but they didn\'t have a light, so turned back...', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Light Needed' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Dark' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
@@ -930,7 +930,7 @@ class UmbraService
             {
                 $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra. A fox spirit leapt out of nowhere and attacked, and %pet:' . $pet->getId() . '.name% fought back, liberating the creature\'s Quintessence, and... its nuts?', '')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Light Needed', 'Fighting' ]))
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Dark', 'Fighting' ]))
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ], $activityLog);
@@ -942,7 +942,7 @@ class UmbraService
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra until a fox spirit leapt out of nowhere and attacked! %pet:' . $pet->getId() . '.name% was taken aback by the creature\'s ferocity, and fled the quag...', '')
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Light Needed', 'Fighting' ]))
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Dark', 'Fighting' ]))
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ], $activityLog);
@@ -955,7 +955,7 @@ class UmbraService
         if($this->squirrel3->rngNextInt(1, 20) + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getPerception()->getTotal() < 18)
         {
             $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra, but all they found was a Crooked Stick.', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Light Needed', 'Gathering' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Dark', 'Gathering' ]))
             ;
             $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' found this in a frozen quag in the deep Umbra.', $activityLog);
 
@@ -971,7 +971,7 @@ class UmbraService
 
             $activityLog
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Light Needed', 'Gathering' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Dark', 'Gathering' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Marshmallows', $pet, $pet->getName() . ' found this in a frozen quag in the deep Umbra.', $activityLog);
@@ -982,7 +982,7 @@ class UmbraService
 
             $activityLog
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Light Needed', 'Gathering' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Dark', 'Gathering' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Everice', $pet, $pet->getName() . ' found this in a frozen quag in the deep Umbra.', $activityLog);
