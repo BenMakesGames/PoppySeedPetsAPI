@@ -23,11 +23,16 @@ class UserFieldGuideEntryRepository extends ServiceEntityRepository
 
     private $userEntryPerRequestCache = [];
 
-    public function findOrCreate(User $user, FieldGuideEntry $entry, string $comment): UserFieldGuideEntry
+    public function findOrCreate(User $user, FieldGuideEntry $entry, string $comment): FindOrCreateResponse
     {
         $cacheKey = $user->getId() . '-' . $entry->getId();
+        $created = false;
 
-        if(!array_key_exists($cacheKey, $this->userEntryPerRequestCache))
+        if(array_key_exists($cacheKey, $this->userEntryPerRequestCache))
+        {
+            $record = $this->userEntryPerRequestCache[$cacheKey];
+        }
+        else
         {
             $record = $this->findOneBy([
                 'user' => $user,
@@ -35,16 +40,15 @@ class UserFieldGuideEntryRepository extends ServiceEntityRepository
             ]);
 
             if(!$record)
+            {
                 $record = $this->create($user, $entry, $comment);
+                $created = true;
+            }
 
             $this->userEntryPerRequestCache[$cacheKey] = $record;
         }
-        else if($this->userEntryPerRequestCache[$cacheKey] === null)
-        {
-            $this->userEntryPerRequestCache[$cacheKey] = $this->create($user, $entry, $comment);
-        }
 
-        return $this->userEntryPerRequestCache[$cacheKey];
+        return new FindOrCreateResponse($record, $created);
     }
 
     private function create(User $user, FieldGuideEntry $entry, string $comment): UserFieldGuideEntry
@@ -75,5 +79,17 @@ class UserFieldGuideEntryRepository extends ServiceEntityRepository
         }
 
         return $this->userEntryPerRequestCache[$cacheKey] !== null;
+    }
+}
+
+class FindOrCreateResponse
+{
+    public bool $wasCreated;
+    public UserFieldGuideEntry $entry;
+
+    public function __construct(UserFieldGuideEntry $entry, bool $wasCreated)
+    {
+        $this->entry = $entry;
+        $this->wasCreated = $wasCreated;
     }
 }

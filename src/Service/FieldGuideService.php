@@ -10,13 +10,17 @@ class FieldGuideService
 {
     private FieldGuideEntryRepository $fieldGuideEntryRepository;
     private UserFieldGuideEntryRepository $userFieldGuideEntryRepository;
+    private ResponseService $responseService;
 
     public function __construct(
-        FieldGuideEntryRepository $fieldGuideEntryRepository, UserFieldGuideEntryRepository $userFieldGuideEntryRepository
+        FieldGuideEntryRepository $fieldGuideEntryRepository,
+        UserFieldGuideEntryRepository $userFieldGuideEntryRepository,
+        ResponseService $responseService
     )
     {
         $this->fieldGuideEntryRepository = $fieldGuideEntryRepository;
         $this->userFieldGuideEntryRepository = $userFieldGuideEntryRepository;
+        $this->responseService = $responseService;
     }
 
     /**
@@ -30,10 +34,18 @@ class FieldGuideService
         if(!$entry)
             throw new \InvalidArgumentException('There is no such Field Guide Entry.');
 
-        $this->userFieldGuideEntryRepository->findOrCreate($user, $entry, $unlockComment);
+        $message = null;
+
+        if($this->userFieldGuideEntryRepository->findOrCreate($user, $entry, $unlockComment)->wasCreated)
+            $message = 'You unlocked a new entry in the Field Guide!';
 
         if(!$user->getUnlockedFieldGuide())
+        {
             $user->setUnlockedFieldGuide();
+            $message = 'You unlocked the Field Guide! (Check it out in the main menu!)';
+        }
+
+        $this->responseService->addFlashMessage($message);
     }
 
     /**
