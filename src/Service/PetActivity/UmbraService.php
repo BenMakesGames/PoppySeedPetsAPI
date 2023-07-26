@@ -928,7 +928,7 @@ class UmbraService
         {
             if($this->squirrel3->rngNextInt(1, 20) + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() >= 18)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was creeping through a frozen quag deep in the Umbra, a fox spirit leapt out of nowhere and attacked! %pet:' . $pet->getId() . '.name% fought back, liberating the creature\'s Quintessence, and... its nuts?', '')
+                $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra. A fox spirit leapt out of nowhere and attacked, and %pet:' . $pet->getId() . '.name% fought back, liberating the creature\'s Quintessence, and... its nuts?', '')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
                     ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Light Needed', 'Fighting' ]))
                 ;
@@ -941,61 +941,55 @@ class UmbraService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was creeping through a frozen quag deep in the Umbra, a fox spirit leapt out of nowhere and attacked! %pet:' . $pet->getId() . '.name% was taken aback by the creature\'s ferocity, and fled the quag...', '')
+                $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra until a fox spirit leapt out of nowhere and attacked! %pet:' . $pet->getId() . '.name% was taken aback by the creature\'s ferocity, and fled the quag...', '')
                     ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Light Needed', 'Fighting' ]))
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::HUNT, false);
             }
+
+            return $activityLog;
+        }
+
+        if($this->squirrel3->rngNextInt(1, 20) + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getPerception()->getTotal() < 18)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra, but all they found was a Crooked Stick.', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Light Needed', 'Gathering' ]))
+            ;
+            $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' found this in a frozen quag in the deep Umbra.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::GATHER, false);
+
+            return $activityLog;
+        }
+
+        if($this->squirrel3->rngNextBool())
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra. Their eyes caught the glint of some frost-covered Marshmallows, which they took!', '');
+
+            $activityLog
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Light Needed', 'Gathering' ]))
+            ;
+
+            $this->inventoryService->petCollectsItem('Marshmallows', $pet, $pet->getName() . ' found this in a frozen quag in the deep Umbra.', $activityLog);
         }
         else
         {
-            if($this->squirrel3->rngNextInt(1, 20) + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getPerception()->getTotal() >= 18)
-            {
-                if($this->squirrel3->rngNextBool())
-                {
-                    if($pet->getTool() && $pet->getTool()->providesLight())
-                        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra. The light of their ' . InventoryModifierFunctions::getNameWithModifiers($pet->getTool()) . ' caught on some frost-covered Marshmallows, which ' . $pet->getName() . ' took!', '');
-                    else
-                        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra, and happened to spot some Marshmallows!', '');
+            $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra. Their eyes caught the glint of some Everice, which they took!', '');
 
-                    $activityLog
-                        ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
-                        ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Light Needed', 'Gathering' ]))
-                    ;
+            $activityLog
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Light Needed', 'Gathering' ]))
+            ;
 
-                    $this->inventoryService->petCollectsItem('Marshmallows', $pet, $pet->getName() . ' found this in a frozen quag in the deep Umbra.', $activityLog);
-                }
-                else
-                {
-                    if($pet->getTool() && $pet->getTool()->providesLight())
-                        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra. The light of their ' . InventoryModifierFunctions::getNameWithModifiers($pet->getTool()) . ' caught on a cube of Everice, which ' . $pet->getName() . ' took!', '');
-                    else
-                        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a frozen quag deep in the Umbra, and happened to spot a cube of Everice!', '');
-
-                    $activityLog
-                        ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
-                        ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Light Needed', 'Gathering' ]))
-                    ;
-
-                    $this->inventoryService->petCollectsItem('Everice', $pet, $pet->getName() . ' found this in a frozen quag in the deep Umbra.', $activityLog);
-                }
-
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::GATHER, true);
-            }
-            else
-            {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% crept through a frozen quag deep in the Umbra, but all they found was a Crooked Stick.', '')
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Light Needed', 'Gathering' ]))
-                ;
-                $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' found this in a frozen quag in the deep Umbra.', $activityLog);
-
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::GATHER, false);
-            }
+            $this->inventoryService->petCollectsItem('Everice', $pet, $pet->getName() . ' found this in a frozen quag in the deep Umbra.', $activityLog);
         }
+
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::GATHER, true);
 
         return $activityLog;
     }
