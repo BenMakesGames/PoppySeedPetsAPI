@@ -21,6 +21,9 @@ final class Version20230726140000 extends AbstractMigration
 
         $this->addSql("UPDATE `hollow_earth_tile_card` SET `image` = 'torch' WHERE `hollow_earth_tile_card`.`id` = 30;");
         $this->addSql("UPDATE `item` SET `image` = 'tile/stereotypical-torch' WHERE `item`.`id` = 1035;");
+
+        $this->addSql("UPDATE `hollow_earth_tile_card` SET `image` = 'noisy-goblin' WHERE `hollow_earth_tile_card`.`id` = 14;");
+        $this->addSql("UPDATE `item` SET `image` = 'tile/noisy-goblin' WHERE `item`.`id` = 1023;");
     }
 
     public function down(Schema $schema): void
