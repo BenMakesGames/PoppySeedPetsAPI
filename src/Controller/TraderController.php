@@ -5,6 +5,7 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\TraderRepository;
@@ -88,7 +89,7 @@ class TraderController extends AbstractController
         $exchange = $traderService->getOfferById($user, $id);
 
         if($quantity > $exchange->canMakeExchange)
-            throw new UnprocessableEntityHttpException('You can only make this trade up to ' . $exchange->canMakeExchange . ' times.');
+            throw new PSPInvalidOperationException('You only have the stuff to do this exchange up to ' . $exchange->canMakeExchange . ' times.');
 
         if(!$exchange)
             throw new PSPNotFoundException('There is no such exchange available.');

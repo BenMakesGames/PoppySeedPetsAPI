@@ -75,7 +75,7 @@ class AdoptController extends AbstractController
         // let's not worry about this for now... it's a suboptimal solution
         /*
         if(!StringFunctions::isISO88591(str_replace($petToAdopt->name, '', $petName)))
-            throw new UnprocessableEntityHttpException('Your pet\'s name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
+            throw new PSPFormValidationException('Your pet\'s name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
         */
 
         $newPet = $petFactory->createPet(

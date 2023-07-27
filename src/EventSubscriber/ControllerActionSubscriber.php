@@ -3,6 +3,7 @@ namespace App\EventSubscriber;
 
 use App\Annotations\DoesNotRequireHouseHours;
 use App\Entity\User;
+use App\Exceptions\PSPHoursMustBeRun;
 use App\Service\HouseService;
 use Doctrine\Common\Annotations\Reader;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -88,7 +89,7 @@ class ControllerActionSubscriber implements EventSubscriberInterface
         if(!$this->houseService->needsToBeRun($user))
             return;
 
-        throw new HttpException(470, 'House hours must be run.');
+        throw new PSPHoursMustBeRun();
     }
 
     private function convertJsonStringToArray(ControllerEvent $event)

@@ -148,7 +148,7 @@ class BlueprintController extends AbstractController
 
         if(!$magnifyingGlass)
         {
-            throw new UnprocessableEntityHttpException('Goodness! It\'s so small! You\'ll need a magnifying glass of some kind...');
+            throw new PSPInvalidOperationException('Goodness! It\'s so small! You\'ll need a magnifying glass of some kind...');
         }
 
         $pet = $this->getPet($request, $petRepository);

@@ -3,10 +3,12 @@ namespace App\EventSubscriber;
 
 use App\Exceptions\PSPException;
 use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPHoursMustBeRun;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
+use App\Exceptions\PSPTooManyRequests;
 use App\Functions\StringFunctions;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityNotFoundException;
@@ -52,40 +54,38 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
 
         if($e instanceof HttpException)
         {
-            if($e->getStatusCode() === 470)
+            switch($e->getStatusCode())
             {
-                $event->setResponse($this->responseService->error(470, [ 'House hours must be run before you can continue playing.' ]));
-            }
-            else if($e->getStatusCode() === 429)
-            {
-                $event->setResponse($this->responseService->error(429, [ "You've made an awful lot of requests recently! Too many to be human! (The game thinks you're a bot; if you're not a bot, please let Ben know! https://docs.google.com/forms/d/e/1FAIpQLSczeBLNsktkSBbPZjyooHw5sEVJOBimJDS6xgEgIgFJvgqM8A/viewform?usp=sf_link )" ]));
-            }
-            else if($e->getStatusCode() === 422 || $e->getStatusCode() == 403 || $e->getStatusCode() == 401)
-            {
-                $event->setResponse($this->responseService->error($e->getStatusCode(), [ $e->getMessage() ]));
-            }
-            else if($e->getStatusCode() === 404)
-            {
-                $message = 'Classic 404! The thing you were trying to do or interact with couldn\'t be found! That generally shouldn\'t happen... reload and try again?';
+                case 429:
+                    $message = "You've made an awful lot of requests recently! Too many to be human! (The game thinks you're a bot; if you're not a bot, please let Ben know! https://docs.google.com/forms/d/e/1FAIpQLSczeBLNsktkSBbPZjyooHw5sEVJOBimJDS6xgEgIgFJvgqM8A/viewform?usp=sf_link )";
+                    break;
 
-                $event->setResponse($this->responseService->error(
-                    Response::HTTP_NOT_FOUND,
-                    [ $message ]
-                ));
-            }
-            else
-            {
-                $message = 'Hrm: something\'s gone awry. Reload and try again; if the problem persists, let Ben know, so he can fix it!';
+                case 403:
+                case 401:
+                    $message = $e->getMessage();
+                    break;
 
-                $event->setResponse($this->responseService->error(
-                    $e->getStatusCode(),
-                    [ $message ]
-                ));
+                case 404:
+                    $message = 'Classic 404! The thing you were trying to do or interact with couldn\'t be found! That generally shouldn\'t happen... reload and try again?';
+                    break;
+
+                default:
+                    $message = 'Hrm: something\'s gone awry. Reload and try again; if the problem persists, let Ben know, so he can fix it!';
             }
+
+            $event->setResponse($this->responseService->error($e->getStatusCode(), [ $message ]));
         }
         else if($e instanceof PSPNotFoundException) // includes PSPPetNotFoundExceptions
         {
             $event->setResponse($this->responseService->error(Response::HTTP_NOT_FOUND, [ $e->getMessage() ]));
+        }
+        else if($e instanceof PSPHoursMustBeRun)
+        {
+            $event->setResponse($this->responseService->error(470, [ $e->getMessage() ]));
+        }
+        else if($e instanceof PSPTooManyRequests)
+        {
+            $event->setResponse($this->responseService->error(420, [ $e->getMessage() ]));
         }
         else if($e instanceof PSPNotUnlockedException)
         {

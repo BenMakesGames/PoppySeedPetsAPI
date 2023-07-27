@@ -1,6 +1,7 @@
 <?php
 namespace App\EventSubscriber;
 
+use App\Exceptions\PSPTooManyRequests;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -46,7 +47,7 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
         if($item->isHit())
         {
             $this->user = null;
-            throw new HttpException(420, 'Too many simultaneous requests. Please try again in a few seconds.');
+            throw new PSPTooManyRequests();
         }
 
         $item
