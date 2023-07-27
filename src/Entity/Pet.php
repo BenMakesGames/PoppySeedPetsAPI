@@ -384,6 +384,12 @@ class Pet
      */
     private $renamingCharges = 0;
 
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"myPet"})
+     */
+    private $lunchboxIndex;
+
     public function __construct()
     {
         $squirrel3 = new Squirrel3();
@@ -415,6 +421,8 @@ class Pet
         $this->affectionExpressions = join('', $squirrel3->rngNextSubsetFromArray(AffectionExpressionEnum::getValues(), 3));
 
         $this->assignActivityPersonality($squirrel3);
+
+        $this->lunchboxIndex = $squirrel3->rngNextInt(0, 13);
     }
 
     public function assignActivityPersonality(IRandom $squirrel3)
@@ -1859,6 +1867,18 @@ class Pet
     public function setSpiritDad(?SpiritCompanion $spiritDad): self
     {
         $this->spiritDad = $spiritDad;
+
+        return $this;
+    }
+
+    public function getLunchboxIndex(): ?int
+    {
+        return $this->lunchboxIndex;
+    }
+
+    public function setLunchboxIndex(int $lunchboxIndex): self
+    {
+        $this->lunchboxIndex = $lunchboxIndex;
 
         return $this;
     }
