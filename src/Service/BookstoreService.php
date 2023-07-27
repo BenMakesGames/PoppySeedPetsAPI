@@ -5,6 +5,7 @@ use App\Entity\Item;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
+use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
@@ -149,7 +150,7 @@ class BookstoreService
             throw new PSPInvalidOperationException('You\'ve brought back everything I need! Thanks!');
 
         if(!in_array($itemToGive, $questStep['askingFor']))
-            throw new UnprocessableEntityHttpException('That\'s not what I\'m looking for right now...');
+            throw new PSPFormValidationException('That\'s not what I\'m looking for right now...');
 
         if($this->inventoryService->loseItem($item, $user, [ LocationEnum::HOME, LocationEnum::BASEMENT ], 1) === 0)
         {

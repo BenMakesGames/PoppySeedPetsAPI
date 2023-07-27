@@ -71,7 +71,7 @@ class TradesController extends AbstractController
         $quantity = $request->request->getInt('quantity', 1);
 
         if($trade['maxQuantity'] < $quantity)
-            throw new UnprocessableEntityHttpException('You do not have enough goods to make ' . $quantity . ' trade' . ($quantity == 1 ? '' : 's') . '; you can do up to ' . $trade['maxQuantity'] . ', at most.');
+            throw new PSPInvalidOperationException('You do not have enough goods to make ' . $quantity . ' trade' . ($quantity == 1 ? '' : 's') . '; you can do up to ' . $trade['maxQuantity'] . ', at most.');
 
         $itemsAtHome = $inventoryService->countTotalInventory($user, LocationEnum::HOME);
 

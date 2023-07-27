@@ -2,6 +2,7 @@
 
 namespace App\Functions;
 
+use App\Exceptions\PSPFormValidationException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -13,7 +14,7 @@ final class RequestFunctions
     public static function getUniqueIdsOrThrow(Request $request, string $keyName, string $exceptionMessage): array
     {
         if(!$request->request->has($keyName))
-            throw new UnprocessableEntityHttpException($exceptionMessage);
+            throw new PSPFormValidationException($exceptionMessage);
 
         $itemIds = $request->request->get($keyName);
 
@@ -24,7 +25,7 @@ final class RequestFunctions
         $itemIds = array_unique($itemIds);
 
         if(count($itemIds) < 1)
-            throw new UnprocessableEntityHttpException($exceptionMessage);
+            throw new PSPFormValidationException($exceptionMessage);
 
         return $itemIds;
     }

@@ -149,7 +149,7 @@ class CookingBuddyController extends AbstractController
             );
 
             if(count($inventory) !== $ingredient->quantity * $quantity)
-                throw new UnprocessableEntityHttpException('You do not have enough ' . $ingredient->item->getName() . ' to make ' . $recipe->getName() . '.');
+                throw new PSPInvalidOperationException('You do not have enough ' . $ingredient->item->getName() . ' to make ' . $recipe->getName() . '.');
 
             $inventoryToUse = array_merge($inventoryToUse, $inventory);
         }

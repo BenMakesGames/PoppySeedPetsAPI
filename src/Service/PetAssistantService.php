@@ -37,7 +37,7 @@ class PetAssistantService
     private static function assertCanAssignHelpers(User $user)
     {
         if(!$user->getCanAssignHelpers())
-            throw new AccessDeniedHttpException('A helper cannot be assigned here... yet.');
+            throw new PSPNotUnlockedException('Helpers');
     }
 
     public static function helpBeehive(User $user, Pet $pet)

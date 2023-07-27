@@ -4,6 +4,7 @@ namespace App\Controller\Style;
 use App\Entity\User;
 use App\Entity\UserStyle;
 use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Repository\UserStyleRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -37,7 +38,7 @@ class ShareController extends AbstractController
         $current = $userStyleRepository->findCurrent($user);
 
         if(!$current)
-            throw new UnprocessableEntityHttpException('You have to save your current theme, first.');
+            throw new PSPInvalidOperationException('You have to save your current theme, first.');
 
         $theme = $userStyleRepository->findOneBy([ 'user' => $user, 'name' => $name ]);
 
@@ -45,8 +46,8 @@ class ShareController extends AbstractController
         {
             $numberOfThemes = $userStyleRepository->countThemesByUser($user);
 
-            if($numberOfThemes === 10)
-                throw new UnprocessableEntityHttpException('You already have 10 themes! Sorry...');
+            if($numberOfThemes >= 10)
+                throw new PSPInvalidOperationException('You may not have more than 10 themes! Sorry...');
 
             $theme = (new UserStyle())
                 ->setUser($user)

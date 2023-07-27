@@ -127,7 +127,7 @@ class SelfReflectionController extends AbstractController
             throw new PSPNotFoundException('That guild does not exist!');
 
         if($pet->getGuildMembership()->getGuild()->getId() === $guild->getId())
-            throw new UnprocessableEntityHttpException($pet->getName() . ' is already a member of ' . $guild->getName() . '...');
+            throw new PSPInvalidOperationException($pet->getName() . ' is already a member of ' . $guild->getName() . '...');
 
         $oldGuildName = $pet->getGuildMembership()->getGuild()->getName();
 
