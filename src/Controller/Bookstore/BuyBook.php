@@ -1,10 +1,9 @@
 <?php
-namespace App\Controller;
+namespace App\Controller\Bookstore;
 
 use App\Entity\Item;
 use App\Entity\User;
 use App\Enum\LocationEnum;
-use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Service\BookstoreService;
@@ -13,62 +12,17 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Routing\Annotation\Route;
 
 // allows player to buy books; inventory grows based on various criteria
 
 /**
  * @Route("/bookstore")
  */
-class BookstoreController extends AbstractController
+class BuyBook extends AbstractController
 {
-    /**
-     * @Route("", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function getAvailableBooks(
-        BookstoreService $bookstoreService, ResponseService $responseService
-    )
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        if($user->getUnlockedBookstore() === null)
-            throw new PSPNotUnlockedException('Bookstore');
-
-        $data = $bookstoreService->getResponseData($user);
-
-        return $responseService->success($data, [ SerializationGroupEnum::MARKET_ITEM ]);
-    }
-
-    /**
-     * @Route("/giveItem/{item}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function giveItem(
-        string $item, BookstoreService $bookstoreService, ResponseService $responseService, EntityManagerInterface $em
-    )
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        if($user->getUnlockedBookstore() === null)
-            throw new PSPNotUnlockedException('Bookstore');
-
-        $bookstoreService->advanceBookstoreQuest($user, $item);
-
-        $em->flush();
-
-        $data = $bookstoreService->getResponseData($user);
-
-        $responseService->addFlashMessage('Thanks! Renaming Scrolls now cost ' . $bookstoreService->getRenamingScrollCost($user) . '~~m~~!');
-
-        return $responseService->success($data, [ SerializationGroupEnum::MARKET_ITEM ]);
-    }
-
     /**
      * @Route("/{item}/buy", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")

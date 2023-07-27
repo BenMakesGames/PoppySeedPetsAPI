@@ -180,16 +180,15 @@ class BookstoreService
     public function getAvailableGames(User $user)
     {
         $gamePrices = [
+            'Formation' => 15,
+            'Lunchbox Paint' => 25,
         ];
 
         if($user->getUnlockedHollowEarth())
-        {
-            $gamePrices['Formation'] = 15;
             $gamePrices['Hollow Earth Booster Pack'] = 200;
 
-            if($this->calendarService->isStockingStuffingSeason())
-                $gamePrices['Tile: Everice Cream'] = 200;
-        }
+        if($this->calendarService->isStockingStuffingSeason())
+            $gamePrices['Tile: Everice Cream'] = 200;
 
         return $gamePrices;
     }
