@@ -2,6 +2,7 @@
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
+use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Service\ResponseService;
@@ -33,7 +34,7 @@ class UpdateNoteController extends AbstractController
         $note = trim($request->request->get('note', ''));
 
         if(\mb_strlen($note) > 1000)
-            throw new UnprocessableEntityHttpException('Note cannot be longer than 1000 characters.');
+            throw new PSPFormValidationException('Note cannot be longer than 1000 characters.');
 
         $pet->setNote($note);
 

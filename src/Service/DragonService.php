@@ -126,7 +126,7 @@ class DragonService
         ;
 
         if(count($items) < count($itemIds))
-            throw new UnprocessableEntityHttpException('Some of the treasures selected... maybe don\'t exist!? That shouldn\'t happen. Reload and try again.');
+            throw new PSPNotFoundException('Some of the treasures selected... maybe don\'t exist!? That shouldn\'t happen. Reload and try again.');
 
         $silver = ArrayFunctions::sum($items, fn(Inventory $i) => $i->getItem()->getTreasure()->getSilver());
         $gold = ArrayFunctions::sum($items, fn(Inventory $i) => $i->getItem()->getTreasure()->getGold());

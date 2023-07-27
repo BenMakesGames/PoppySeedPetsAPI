@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\MeritRepository;
@@ -41,7 +42,7 @@ class TalentAndExpertiseController extends AbstractController
         $talent = $request->request->get('talent', '');
 
         if(!in_array($talent, [ MeritEnum::MIND_OVER_MATTER, MeritEnum::MATTER_OVER_MIND, MeritEnum::MODERATION ]))
-            throw new UnprocessableEntityHttpException('You gotta\' choose one of the talents!');
+            throw new PSPFormValidationException('You gotta\' choose one of the talents!');
 
         $merit = $meritRepository->findOneByName($talent);
 
@@ -107,12 +108,12 @@ class TalentAndExpertiseController extends AbstractController
             throw new PSPPetNotFoundException();
 
         if($pet->getCanPickTalent() !== 'expertise')
-            throw new AccessDeniedHttpException('This pet is not ready to have a talent picked.');
+            throw new PSPInvalidOperationException('This pet is not ready to have a talent picked.');
 
         $expertise = $request->request->get('expertise', '');
 
         if(!in_array($expertise, [ MeritEnum::FORCE_OF_WILL, MeritEnum::FORCE_OF_NATURE, MeritEnum::BALANCE ]))
-            throw new UnprocessableEntityHttpException('You gotta\' choose one of the talents!');
+            throw new PSPFormValidationException('You gotta\' choose one of the talents!');
 
         $merit = $meritRepository->findOneByName($expertise);
 

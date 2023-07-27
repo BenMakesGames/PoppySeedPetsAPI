@@ -4,6 +4,7 @@ namespace App\Controller\Item;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
@@ -47,7 +48,7 @@ class TelephoneController extends AbstractController
         $orderedDeliveryFood->setValue($today);
 
         if($user->getMoneys() < 45)
-            throw new UnprocessableEntityHttpException('You don\'t have enough money to order pizza!');
+            throw new PSPNotEnoughCurrencyException('45~~m~~', $user->getMoneys());
 
         $transactionService->spendMoney($user, 45, 'Got delivery pizza');
 

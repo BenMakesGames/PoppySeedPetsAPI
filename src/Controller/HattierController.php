@@ -5,6 +5,7 @@ use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\PetRepository;
@@ -64,12 +65,12 @@ class HattierController extends AbstractController
         if($payWith === 'moneys')
         {
             if($user->getMoneys() < 200)
-                throw new UnprocessableEntityHttpException('You need 200~~m~~.');
+                throw new PSPNotEnoughCurrencyException('200~~m~~', $user->getMoneys() . '~~m~~');
         }
         else if($payWith === 'recycling')
         {
             if($user->getRecyclePoints() < 100)
-                throw new UnprocessableEntityHttpException('You need 100 recycling points.');
+                throw new PSPNotEnoughCurrencyException('100♺', $user->getRecyclePoints() . '♺');
         }
         else
         {

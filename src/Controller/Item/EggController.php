@@ -44,7 +44,7 @@ class EggController extends AbstractController
         $jelling = $petSpeciesRepository->findOneBy([ 'name' => 'Sága Jelling' ]);
 
         if(!$jelling)
-            throw new HttpException(500, 'The species "Sága Jelling" does not exist! :| Make Ben fix this!');
+            throw new \Exception('The species "Sága Jelling" does not exist! :| Make Ben fix this!');
 
         $location = $inventory->getLocation();
 
@@ -128,7 +128,7 @@ class EggController extends AbstractController
         $starMonkey = $petSpeciesRepository->findOneBy([ 'name' => 'Star Monkey' ]);
 
         if(!$starMonkey)
-            throw new HttpException(500, 'The species "Star Monkey" does not exist! :| Make Ben fix this!');
+            throw new \Exception('The species "Star Monkey" does not exist! :| Make Ben fix this!');
 
         $location = $inventory->getLocation();
 
@@ -207,7 +207,7 @@ class EggController extends AbstractController
         $grabber = $petSpeciesRepository->findOneBy([ 'name' => 'Grabber' ]);
 
         if(!$grabber)
-            throw new HttpException(500, 'The species "Grabber" does not exist! :| Make Ben fix this!');
+            throw new \Exception('The species "Grabber" does not exist! :| Make Ben fix this!');
 
         /** @var User $user */
         $user = $this->getUser();

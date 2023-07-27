@@ -5,6 +5,8 @@ namespace App\Controller\MonthlyStoryAdventure;
 use App\Entity\MonthlyStoryAdventureStep;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
@@ -14,7 +16,6 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -45,27 +46,27 @@ class GoOnAdventure extends AbstractController
         $playedStarKindred = $userQuestRepository->findOrCreate($user, 'Played ★Kindred', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
 
         if($today === $playedStarKindred->getValue())
-            throw new UnprocessableEntityHttpException('There\'s only time for one ★Kindred adventure per day. THEM\'S JUST THE RULES.');
+            throw new PSPInvalidOperationException('There\'s only time for one ★Kindred adventure per day. THEM\'S JUST THE RULES.');
 
         $playedStarKindred->setValue($today);
 
         if($inventoryService->countTotalInventory($user, LocationEnum::HOME) > 150)
-            throw new UnprocessableEntityHttpException('Your house is far too cluttered to play ★Kindred!');
+            throw new PSPInvalidOperationException('Your house is far too cluttered to play ★Kindred!');
 
         if($adventureService->isStepCompleted($user, $step))
-            throw new UnprocessableEntityHttpException('You already completed that step!');
+            throw new PSPInvalidOperationException('You already completed that step!');
 
         if($step->getPreviousStep() && !$adventureService->isPreviousStepCompleted($user, $step))
-            throw new UnprocessableEntityHttpException('You must have completed the previous step in the story!');
+            throw new PSPInvalidOperationException('You must have completed the previous step in the story!');
 
         $petIds = $request->request->get('pets');
 
         if(!is_array($petIds) || count($petIds) < $step->getMinPets() || count($petIds) > $step->getMaxPets())
         {
             if($step->getMinPets() == $step->getMaxPets())
-                throw new UnprocessableEntityHttpException("Exactly {$step->getMinPets()} pets must go.");
+                throw new PSPFormValidationException("Exactly {$step->getMinPets()} pets must go.");
             else
-                throw new UnprocessableEntityHttpException("Between {$step->getMinPets()} and {$step->getMaxPets()} pets must go.");
+                throw new PSPFormValidationException("Between {$step->getMinPets()} and {$step->getMaxPets()} pets must go.");
         }
 
         $pets = $petRepository->findBy([

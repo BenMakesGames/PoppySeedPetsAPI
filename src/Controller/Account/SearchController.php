@@ -38,15 +38,8 @@ class SearchController extends AbstractController
         Request $request, ResponseService $responseService, UserTypeaheadService $userTypeaheadService
     )
     {
-        try
-        {
-            $suggestions = $userTypeaheadService->search('name', $request->query->get('search', ''), 5);
+        $suggestions = $userTypeaheadService->search('name', $request->query->get('search', ''), 5);
 
-            return $responseService->success($suggestions, [ SerializationGroupEnum::USER_TYPEAHEAD ]);
-        }
-        catch(\InvalidArgumentException $e)
-        {
-            throw new UnprocessableEntityHttpException($e->getMessage(), $e);
-        }
+        return $responseService->success($suggestions, [ SerializationGroupEnum::USER_TYPEAHEAD ]);
     }
 }

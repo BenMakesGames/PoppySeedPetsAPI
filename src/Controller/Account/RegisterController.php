@@ -5,6 +5,7 @@ use App\Entity\User;
 use App\Entity\UserStyle;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
+use App\Exceptions\PSPFormValidationException;
 use App\Functions\ProfanityFilterFunctions;
 use App\Functions\StringFunctions;
 use App\Repository\MeritRepository;
@@ -18,7 +19,6 @@ use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -51,48 +51,48 @@ class RegisterController extends AbstractController
         $passPhrase = $request->request->get('playerPassphrase');
 
         if($email === '')
-            throw new UnprocessableEntityHttpException('Email address is required.');
+            throw new PSPFormValidationException('Email address is required.');
 
         if(!\filter_var($email, FILTER_VALIDATE_EMAIL))
-            throw new UnprocessableEntityHttpException('Email address is not valid.');
+            throw new PSPFormValidationException('Email address is not valid.');
 
         if(str_ends_with($email, '@poppyseedpets.com') || str_ends_with($email, '.poppyseedpets.com'))
-            throw new UnprocessableEntityHttpException('poppyseedpets.com e-mail addresses cannot be used.');
+            throw new PSPFormValidationException('poppyseedpets.com e-mail addresses cannot be used.');
 
         if(\mb_strlen($petName) < 1)
-            throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
+            throw new PSPFormValidationException('Pet name must be between 1 and 30 characters long.');
         else if(\mb_strlen($petName) > 30)
             $petName = \mb_substr($petName, 0, 30);
 
         if(!StringFunctions::isISO88591($petName))
-            throw new UnprocessableEntityHttpException('Your pet\'s name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
+            throw new PSPFormValidationException('Your pet\'s name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
 
         $species = $petSpeciesRepository->findOneBy([ 'image' => $petImage ]);
 
         if(!$species || !$species->getAvailableAtSignup())
-            throw new UnprocessableEntityHttpException('Must choose your pet\'s appearance.');
+            throw new PSPFormValidationException('Must choose your pet\'s appearance.');
 
         if(!preg_match('/[A-Fa-f0-9]{6}/', $petColorA))
-            throw new UnprocessableEntityHttpException('Pet color A is not valid.');
+            throw new PSPFormValidationException('Pet color A is not valid.');
 
         if(!preg_match('/[A-Fa-f0-9]{6}/', $petColorB))
-            throw new UnprocessableEntityHttpException('Pet color B is not valid.');
+            throw new PSPFormValidationException('Pet color B is not valid.');
 
         if(\mb_strlen($name) < 2)
-            throw new UnprocessableEntityHttpException('Name must be between 2 and 30 characters long.');
+            throw new PSPFormValidationException('Name must be between 2 and 30 characters long.');
         else if(\mb_strlen($name) > 30)
             $name = \mb_substr($name, 0, 30);
 
         if(!StringFunctions::isISO88591($name))
-            throw new UnprocessableEntityHttpException('Your name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
+            throw new PSPFormValidationException('Your name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
 
         if(\mb_strlen($passPhrase) < 10)
-            throw new UnprocessableEntityHttpException('Pass phrase must be at least 10 characters long.');
+            throw new PSPFormValidationException('Pass phrase must be at least 10 characters long.');
 
         $existingUser = $userRepository->findOneBy([ 'email' => $email ]);
 
         if($existingUser)
-            throw new UnprocessableEntityHttpException('Email address is already in use.');
+            throw new PSPFormValidationException('Email address is already in use.');
 
         $user = (new User())
             ->setEmail($email)

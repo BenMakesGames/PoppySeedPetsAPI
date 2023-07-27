@@ -43,7 +43,8 @@ class EquipController extends AbstractController
         if($pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
 
-        if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
+        if(!$pet->isAtHome())
+            throw new PSPInvalidOperationException('Pets that aren\'t home cannot be interacted with.');
 
         if(
             $pet->hasStatusEffect(StatusEffectEnum::WEREFORM) &&
@@ -51,13 +52,13 @@ class EquipController extends AbstractController
             $inventory->getItem()->getTreasure()->getSilver() > 0
         )
         {
-            throw new UnprocessableEntityHttpException($pet->getName() . ' recoils at the sight of the silvery ' . $inventory->getFullItemName() . '!');
+            throw new PSPInvalidOperationException($pet->getName() . ' recoils at the sight of the silvery ' . $inventory->getFullItemName() . '!');
         }
 
         if($pet->getTool())
         {
             if($inventory->getId() === $pet->getTool()->getId())
-                throw new UnprocessableEntityHttpException($pet->getName() . ' is already equipped with that ' . $pet->getTool()->getFullItemName() . '!');
+                throw new PSPInvalidOperationException($pet->getName() . ' is already equipped with that ' . $pet->getTool()->getFullItemName() . '!');
 
             EquipmentFunctions::unequipPet($pet);
         }
@@ -107,7 +108,8 @@ class EquipController extends AbstractController
         if($pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
 
-        if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
+        if(!$pet->isAtHome())
+            throw new PSPInvalidOperationException('Pets that aren\'t home cannot be interacted with.');
 
         if(!$pet->hasMerit(MeritEnum::BEHATTED))
             throw new PSPInvalidOperationException($pet->getName() . ' does not have the Merit required to wear hats.');
@@ -118,13 +120,13 @@ class EquipController extends AbstractController
             $inventory->getItem()->getTreasure()->getSilver() > 0
         )
         {
-            throw new UnprocessableEntityHttpException($pet->getName() . ' recoils at the sight of the silvery ' . $inventory->getFullItemName() . '!');
+            throw new PSPInvalidOperationException($pet->getName() . ' recoils at the sight of the silvery ' . $inventory->getFullItemName() . '!');
         }
 
         if($pet->getHat())
         {
             if($inventory->getId() === $pet->getHat()->getId())
-                throw new UnprocessableEntityHttpException($pet->getName() . ' is already wearing that ' . $pet->getHat()->getFullItemName() . '!');
+                throw new PSPInvalidOperationException($pet->getName() . ' is already wearing that ' . $pet->getHat()->getFullItemName() . '!');
 
             EquipmentFunctions::unhatPet($pet);
         }
@@ -168,10 +170,10 @@ class EquipController extends AbstractController
         if($pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
 
-        if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
+        if(!$pet->isAtHome()) throw new PSPInvalidOperationException('Pets that aren\'t home cannot be interacted with.');
 
         if(!$pet->getTool())
-            throw new UnprocessableEntityHttpException($pet->getName() . ' is not currently equipped.');
+            throw new PSPInvalidOperationException($pet->getName() . ' is not currently equipped.');
 
         EquipmentFunctions::unequipPet($pet);
 

@@ -7,7 +7,6 @@ use App\Enum\LocationEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Service\InventoryService;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class ItemControllerHelpers
 {
@@ -37,7 +36,7 @@ class ItemControllerHelpers
                 'Whaaaat? You\'re over 150 items already? Dang! You know you\'re technically not supposed to go over 100, right??',
             ][$index % 3];
 
-            throw new UnprocessableEntityHttpException($message);
+            throw new PSPInvalidOperationException($message);
         }
     }
 }

@@ -143,7 +143,7 @@ class DragonVaseController extends AbstractController
         $usedDragonVase = $userQuestRepository->findOrCreate($user, 'Used Dragon Vase', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
 
         if($today === $usedDragonVase->getValue())
-            throw new UnprocessableEntityHttpException('You already dipped something into a Dragon Vase today. You\'ll just have to wait for tomorrow!');
+            throw new PSPInvalidOperationException('You already dipped something into a Dragon Vase today. You\'ll just have to wait for tomorrow!');
 
         $usedDragonVase->setValue($today);
 

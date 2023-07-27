@@ -1,8 +1,12 @@
 <?php
 namespace App\Controller\HollowEarth;
 
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Repository\InventoryRepository;
 use App\Service\CalendarService;
 use App\Service\HollowEarthService;
@@ -32,27 +36,28 @@ class RollDieController extends AbstractController
         InventoryService $inventoryService, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
         $player = $user->getHollowEarthPlayer();
 
         if($player === null)
-            throw new AccessDeniedHttpException();
+            throw new PSPInvalidOperationException('You gotta\' visit the Hollow Earth page at least once before taking this kind of action.');
 
         if($player->getChosenPet() === null)
-            throw new UnprocessableEntityHttpException('You must choose a pet to lead the group.');
+            throw new PSPInvalidOperationException('You must choose a pet to lead the group.');
 
         if($player->getCurrentAction() !== null || $player->getMovesRemaining() > 0)
-            throw new UnprocessableEntityHttpException('Cannot roll a die at this time...');
+            throw new PSPInvalidOperationException('Cannot roll a die at this time...');
 
         $itemName = $request->request->get('die', '');
 
         if(!array_key_exists($itemName, HollowEarthService::DICE_ITEMS))
-            throw new UnprocessableEntityHttpException('You must specify a die to roll.');
+            throw new PSPFormValidationException('You must specify a die to roll.');
 
         $inventory = $inventoryRepository->findOneToConsume($user, $itemName);
 
         if(!$inventory)
-            throw new UnprocessableEntityHttpException('You do not have a ' . $itemName . '!');
+            throw new PSPNotFoundException('You do not have a ' . $itemName . '!');
 
         $sides = HollowEarthService::DICE_ITEMS[$itemName];
         $moves = $squirrel3->rngNextInt(1, $sides);

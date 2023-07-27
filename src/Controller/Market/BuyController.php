@@ -5,6 +5,10 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotEnoughCurrencyException;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\InventoryModifierFunctions;
 use App\Repository\InventoryRepository;
@@ -16,7 +20,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -44,10 +47,10 @@ class BuyController extends AbstractController
         $price = $request->request->getInt('sellPrice', 0);
 
         if($itemId === 0 || $price === 0)
-            throw new UnprocessableEntityHttpException('Item and price are both required.');
+            throw new PSPFormValidationException('Item and price are both required.');
 
         if(Inventory::calculateBuyPrice($price) > $user->getMoneys())
-            throw new UnprocessableEntityHttpException('You do not have enough moneys.');
+            throw new PSPNotEnoughCurrencyException(Inventory::calculateBuyPrice($price) . '~~m~~', $user->getMoneys() . '~~m~~');
 
         $itemsAtHome = $inventoryRepository->countItemsInLocation($user, LocationEnum::HOME);
         $placeItemsIn = LocationEnum::HOME;
@@ -55,7 +58,7 @@ class BuyController extends AbstractController
         if($itemsAtHome >= User::MAX_HOUSE_INVENTORY)
         {
             if(!$user->getUnlockedBasement())
-                throw new UnprocessableEntityHttpException('Your house has ' . $itemsAtHome . ' items; you\'ll need to make some space, first!');
+                throw new PSPInvalidOperationException('Your house has ' . $itemsAtHome . ' items; you\'ll need to make some space, first!');
 
             $itemsInBasement = $inventoryRepository->countItemsInLocation($user, LocationEnum::BASEMENT);
 
@@ -67,7 +70,7 @@ class BuyController extends AbstractController
             ]);
 
             if($itemsInBasement >= User::MAX_BASEMENT_INVENTORY)
-                throw new UnprocessableEntityHttpException('Your house has ' . $itemsAtHome . ', and your basement has ' . $itemsInBasement . ' items! (' . $dang . ') You\'ll need to make some space, first...');
+                throw new PSPInvalidOperationException('Your house has ' . $itemsAtHome . ', and your basement has ' . $itemsInBasement . ' items! (' . $dang . ') You\'ll need to make some space, first...');
 
             $placeItemsIn = LocationEnum::BASEMENT;
         }
@@ -119,7 +122,7 @@ class BuyController extends AbstractController
             $marketService->removeMarketListingForItem($itemId, $bonusId, $spiceId);
             $em->flush();
 
-            throw new UnprocessableEntityHttpException('An item for that price could not be found on the market. Someone may have bought it up just before you did! Sorry :| Reload the page to get the latest prices available!');
+            throw new PSPNotFoundException('An item for that price could not be found on the market. Someone may have bought it up just before you did! Sorry :| Reload the page to get the latest prices available!');
         }
 
         /** @var Inventory $itemToBuy */

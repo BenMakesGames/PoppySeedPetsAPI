@@ -314,7 +314,7 @@ class AdoptionService
         if($this->calendarService->isSaintPatricksDay())
             return PetShelterPet::PET_NAMES;
 
-        throw new \InvalidArgumentException('Today is not a day for seasonal colors.');
+        throw new \Exception('Today is not a day for seasonal colors.');
     }
 
     public function getSeasonalColors(): array
@@ -360,6 +360,6 @@ class AdoptionService
         if($this->calendarService->isSaintPatricksDay())
             return [ '009900', '66CC66', '33AA00', '00AA33' ];
 
-        throw new \InvalidArgumentException('Today is not a day for seasonal colors.');
+        throw new \Exception('Today is not a day for seasonal colors.');
     }
 }

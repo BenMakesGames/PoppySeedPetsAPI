@@ -6,6 +6,9 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\InventoryRepository;
 use App\Service\PetActivity\EatingService;
@@ -36,16 +39,10 @@ class PetAndFeedController extends AbstractController
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
             throw new PSPPetNotFoundException();
 
-        if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
+        if(!$pet->isAtHome())
+            throw new PSPInvalidOperationException('Pets that aren\'t home cannot be interacted with.');
 
-        try
-        {
-            $petAndPraiseService->doPet($pet);
-        }
-        catch(\InvalidArgumentException $e)
-        {
-            throw new UnprocessableEntityHttpException($e->getMessage());
-        }
+        $petAndPraiseService->doPet($pet);
 
         $em->flush();
 
@@ -77,7 +74,8 @@ class PetAndFeedController extends AbstractController
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
             throw new PSPPetNotFoundException();
 
-        if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
+        if(!$pet->isAtHome())
+            throw new PSPInvalidOperationException('Pets that aren\'t home cannot be interacted with.');
 
         $items = $request->request->get('items');
 
@@ -90,16 +88,9 @@ class PetAndFeedController extends AbstractController
         ]);
 
         if(count($items) !== count($inventory))
-            throw new UnprocessableEntityHttpException('At least one of the items selected doesn\'t seem to exist??');
+            throw new PSPNotFoundException('At least one of the items selected doesn\'t seem to exist?? (Reload and try again...)');
 
-        try
-        {
-            $eatingService->doFeed($pet, $inventory);
-        }
-        catch(\Exception $e)
-        {
-            throw new UnprocessableEntityHttpException($e->getMessage());
-        }
+        $eatingService->doFeed($pet, $inventory);
 
         $em->flush();
 

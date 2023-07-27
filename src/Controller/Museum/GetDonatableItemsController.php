@@ -4,6 +4,7 @@ namespace App\Controller\Museum;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Model\FilterResults;
 use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
@@ -31,7 +32,7 @@ class GetDonatableItemsController extends AbstractController
         $user = $this->getUser();
 
         if($user->getUnlockedMuseum() === null)
-            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+            throw new PSPNotUnlockedException('Museum');
 
         $qb = $inventoryRepository->createQueryBuilder('i')
             ->andWhere('i.owner=:user')

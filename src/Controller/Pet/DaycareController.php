@@ -5,6 +5,8 @@ use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\PetRepository;
 use App\Service\Filter\PetFilterService;
 use App\Service\PetExperienceService;
@@ -50,10 +52,10 @@ class DaycareController extends AbstractController
     public function putPetInDaycare(Pet $pet, ResponseService $responseService, EntityManagerInterface $em)
     {
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
-            throw new AccessDeniedHttpException('This isn\'t your pet.');
+            throw new PSPPetNotFoundException();
 
         if(!$pet->isAtHome())
-            throw new UnprocessableEntityHttpException($pet->getName() . ' isn\'t at home...');
+            throw new PSPInvalidOperationException($pet->getName() . ' isn\'t at home...');
 
         $pet->setLocation(PetLocationEnum::DAYCARE);
 
@@ -75,15 +77,15 @@ class DaycareController extends AbstractController
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())
-            throw new AccessDeniedHttpException('This isn\'t your pet.');
+            throw new PSPPetNotFoundException();
 
         if($pet->getLocation() !== PetLocationEnum::DAYCARE)
-            throw new UnprocessableEntityHttpException($pet->getName() . ' isn\'t in Daycare...');
+            throw new PSPInvalidOperationException($pet->getName() . ' isn\'t in Daycare...');
 
         $petsAtHome = $petRepository->getNumberAtHome($user);
 
         if($petsAtHome >= $user->getMaxPets())
-            throw new UnprocessableEntityHttpException('Your house has too many pets as-is.');
+            throw new PSPInvalidOperationException('Your house has too many pets as-is.');
 
         $hoursInDayCare = (\time() - $pet->getLocationMoveDate()->getTimestamp()) / (60 * 60);
 

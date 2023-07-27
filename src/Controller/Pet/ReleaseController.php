@@ -3,7 +3,10 @@ namespace App\Controller\Pet;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\User;
 use App\Enum\PetLocationEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\ActivityHelpers;
 use App\Model\PetChanges;
 use App\Model\PetShelterPet;
@@ -15,7 +18,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -34,15 +36,16 @@ class ReleaseController extends AbstractController
         EntityManagerInterface $em, UserRepository $userRepository, PetRepository $petRepository, Squirrel3 $rng
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())
-            throw new AccessDeniedHttpException('This isn\'t your pet.');
+            throw new PSPPetNotFoundException();
 
         $petCount = $petRepository->getTotalOwned($user);
 
         if($petCount === 1)
-            throw new UnprocessableEntityHttpException('You can\'t release your very last pet! That would be FOOLISH!');
+            throw new PSPInvalidOperationException('You can\'t release your very last pet! That would be FOOLISH!');
 
         if(!$passwordEncoder->isPasswordValid($user, $request->request->get('confirmPassphrase')))
             throw new AccessDeniedHttpException('Passphrase is not correct.');

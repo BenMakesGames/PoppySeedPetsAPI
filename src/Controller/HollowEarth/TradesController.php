@@ -3,6 +3,8 @@ namespace App\Controller\HollowEarth;
 
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Repository\ItemRepository;
 use App\Service\HollowEarthService;
 use App\Service\InventoryService;
@@ -30,10 +32,10 @@ class TradesController extends AbstractController
         $tile = $player->getCurrentTile();
 
         if(!$tile || !$tile->getIsTradingDepot())
-            throw new UnprocessableEntityHttpException('You are not on a trade depot!');
+            throw new PSPInvalidOperationException('You are not on a trade depot!');
 
         if($player->getCurrentAction() || $player->getMovesRemaining() > 0)
-            throw new UnprocessableEntityHttpException('You can\'t trade while you\'re moving!');
+            throw new PSPInvalidOperationException('You can\'t trade while you\'re moving!');
 
         $trades = $hollowEarthService->getTrades($player);
 
@@ -56,15 +58,15 @@ class TradesController extends AbstractController
         $tile = $player->getCurrentTile();
 
         if(!$tile || !$tile->getIsTradingDepot())
-            throw new UnprocessableEntityHttpException('You are not on a trade depot!');
+            throw new PSPInvalidOperationException('You are not on a trade depot!');
 
         if($player->getCurrentAction() || $player->getMovesRemaining() > 0)
-            throw new UnprocessableEntityHttpException('You can\'t trade while you\'re moving!');
+            throw new PSPInvalidOperationException('You can\'t trade while you\'re moving!');
 
         $trade = $hollowEarthService->getTrade($player, $tradeId);
 
         if(!$trade)
-            throw new UnprocessableEntityHttpException('No such trade exists...');
+            throw new PSPNotFoundException('No such trade exists...');
 
         $quantity = $request->request->getInt('quantity', 1);
 
@@ -85,12 +87,12 @@ class TradesController extends AbstractController
 
                 if($itemsInBasement + $quantity > User::MAX_BASEMENT_INVENTORY)
                 {
-                    throw new UnprocessableEntityHttpException('There is not enough room in your house or basement for ' . $quantity . ' more items!');
+                    throw new PSPInvalidOperationException('There is not enough room in your house or basement for ' . $quantity . ' more items!');
                 }
             }
             else
             {
-                throw new UnprocessableEntityHttpException('There is not enough room in your house for ' . $quantity . ' more items!');
+                throw new PSPInvalidOperationException('There is not enough room in your house for ' . $quantity . ' more items!');
             }
         }
 

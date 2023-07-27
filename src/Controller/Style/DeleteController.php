@@ -3,6 +3,7 @@ namespace App\Controller\Style;
 
 use App\Entity\User;
 use App\Entity\UserStyle;
+use App\Exceptions\PSPNotFoundException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,7 +28,7 @@ class DeleteController extends AbstractController
         $user = $this->getUser();
 
         if($theme->getUser()->getId() !== $user->getId())
-            throw new AccessDeniedHttpException('That\'s not your theme!');
+            throw new PSPNotFoundException('That theme could not be found.');
 
         $em->remove($theme);
         $em->flush();

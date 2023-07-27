@@ -45,7 +45,7 @@ class HalloweenController extends AbstractController
         $user = $this->getUser();
 
         if(!$calendarService->isHalloween())
-            throw new AccessDeniedHttpException('It isn\'t Halloween!');
+            throw new PSPInvalidOperationException('It isn\'t Halloween!');
 
         $nextTrickOrTreater = $halloweenService->getNextTrickOrTreater($user);
 
@@ -65,7 +65,7 @@ class HalloweenController extends AbstractController
         $user = $this->getUser();
 
         if(!$calendarService->isHalloween())
-            throw new AccessDeniedHttpException('It isn\'t Halloween!');
+            throw new PSPInvalidOperationException('It isn\'t Halloween!');
 
         $nextTrickOrTreater = $halloweenService->getNextTrickOrTreater($user);
 
@@ -83,7 +83,7 @@ class HalloweenController extends AbstractController
         $em->flush();
 
         if($trickOrTreater === null)
-            throw new UnprocessableEntityHttpException('No one else\'s pets are trick-or-treating right now! (Not many people must be playing :| TELL YOUR FRIENDS TO SIGN IN AND DRESS UP THEIR PETS!)');
+            throw new PSPNotFoundException('No one else\'s pets are trick-or-treating right now! (Not many people must be playing :| TELL YOUR FRIENDS TO SIGN IN AND DRESS UP THEIR PETS!)');
 
         return $responseService->success([
             'trickOrTreater' => $normalizer->normalize($trickOrTreater, null, [ 'groups' => [ SerializationGroupEnum::PET_PUBLIC_PROFILE ] ]),
@@ -108,7 +108,7 @@ class HalloweenController extends AbstractController
         $user = $this->getUser();
 
         if(!$calendarService->isHalloween())
-            throw new AccessDeniedHttpException('It isn\'t Halloween!');
+            throw new PSPInvalidOperationException('It isn\'t Halloween!');
 
         $candy = $inventoryRepository->find($request->request->getInt('candy'));
         $toGivingTree = $request->request->getBoolean('toGivingTree', false);
@@ -135,7 +135,7 @@ class HalloweenController extends AbstractController
         {
             $em->flush();
 
-            throw new UnprocessableEntityHttpException('No one else\'s pets are trick-or-treating right now! (Not many people must be playing :| TELL YOUR FRIENDS TO SIGN IN AND DRESS UP THEIR PETS!');
+            throw new PSPNotFoundException('No one else\'s pets are trick-or-treating right now! (Not many people must be playing :| TELL YOUR FRIENDS TO SIGN IN AND DRESS UP THEIR PETS!');
         }
 
         if($toGivingTree)

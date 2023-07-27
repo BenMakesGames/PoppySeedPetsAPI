@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\UserActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Functions\PlayerLogHelpers;
@@ -51,7 +52,7 @@ class FeedController extends AbstractController
         $items = $inventoryRepository->findFuel($user, $itemIds);
 
         if(count($items) < count($itemIds))
-            throw new UnprocessableEntityHttpException('Some of the fuel items selected could not be used. That shouldn\'t happen. Reload and try again, maybe?');
+            throw new PSPNotFoundException('Some of the fuel items selected could not be found. That shouldn\'t happen. Reload and try again, maybe?');
 
         $fireplace = $user->getFireplace();
 

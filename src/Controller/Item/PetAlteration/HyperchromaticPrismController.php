@@ -4,6 +4,7 @@ namespace App\Controller\Item\PetAlteration;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\MeritEnum;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\MeritRepository;
@@ -41,7 +42,7 @@ class HyperchromaticPrismController extends AbstractController
             throw new PSPPetNotFoundException();
 
         if($pet->hasMerit(MeritEnum::HYPERCHROMATIC))
-            throw new UnprocessableEntityHttpException($pet->getName() . ' is already Hyperchromatic!');
+            throw new PSPInvalidOperationException($pet->getName() . ' is already Hyperchromatic!');
 
         $pet->addMerit($meritRepository->findOneByName(MeritEnum::HYPERCHROMATIC));
 

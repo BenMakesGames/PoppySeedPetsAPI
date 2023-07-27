@@ -3,6 +3,9 @@ namespace App\Controller\Museum;
 
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotEnoughCurrencyException;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
@@ -52,24 +55,24 @@ class GiftShopController extends AbstractController
         $itemName = $request->request->get('item', '');
 
         if(!$categoryName || !$itemName)
-            throw new UnprocessableEntityHttpException('That item couldn\'t be found... reload and try again.');
+            throw new PSPNotFoundException('That item couldn\'t be found... reload and try again.');
 
         $giftShop = $museumService->getGiftShopInventory($user);
 
         $category = ArrayFunctions::find_one($giftShop, fn($c) => $c['category'] === $categoryName);
 
         if(!$category)
-            throw new UnprocessableEntityHttpException('That item couldn\'t be found... reload and try again.');
+            throw new PSPNotFoundException('That item couldn\'t be found... reload and try again.');
 
         $item = ArrayFunctions::find_one($category['inventory'], fn($i) => $i['item']['name'] === $itemName);
 
         if(!$item)
-            throw new UnprocessableEntityHttpException('That item couldn\'t be found... reload and try again.');
+            throw new PSPNotFoundException('That item couldn\'t be found... reload and try again.');
 
         $pointsRemaining = $user->getMuseumPoints() - $user->getMuseumPointsSpent();
 
         if($item['cost'] > $pointsRemaining)
-            throw new UnprocessableEntityHttpException('That would cost ' . $item['cost'] . ' Favor, but you only have ' . $pointsRemaining . '!');
+            throw new PSPNotEnoughCurrencyException($item['cost'] . ' Favor', $pointsRemaining);
 
         $itemObject = $itemRepository->findOneByName($item['item']['name']);
 
@@ -84,7 +87,7 @@ class GiftShopController extends AbstractController
             if($itemsInBuyersBasement < User::MAX_BASEMENT_INVENTORY)
                 $targetLocation = LocationEnum::BASEMENT;
             else
-                throw new UnprocessableEntityHttpException('There\'s not enough space in your house or basement!');
+                throw new PSPInvalidOperationException('There\'s not enough space in your house or basement!');
         }
 
         $user->addMuseumPointsSpent($item['cost']);

@@ -6,6 +6,7 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\PlantTypeEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Repository\InventoryRepository;
@@ -56,7 +57,7 @@ class GreenhouseController extends AbstractController
     )
     {
         if(!PlantTypeEnum::isAValue($type))
-            throw new UnprocessableEntityHttpException('Must provide a valid seed type ("earth", "water", etc...)');
+            throw new PSPFormValidationException('Must provide a valid seed type ("earth", "water", etc...)');
 
         $user = $this->getUser();
 
@@ -95,7 +96,7 @@ class GreenhouseController extends AbstractController
         $plantIds = $request->request->get('order');
 
         if(!is_array($plantIds))
-            throw new UnprocessableEntityHttpException('Must provide a list of plant ids, in the order you wish to save them in.');
+            throw new PSPFormValidationException('Must provide a list of plant ids, in the order you wish to save them in.');
 
         $allPlants = $user->getGreenhousePlants();
 
@@ -104,7 +105,7 @@ class GreenhouseController extends AbstractController
         );
 
         if(count($allPlants) !== count($plantIds))
-            throw new UnprocessableEntityHttpException('The list of plants must include the full list of your plants; no more; no less!');
+            throw new PSPFormValidationException('The list of plants must include the full list of your plants; no more; no less!');
 
         foreach($allPlants as $plant)
         {

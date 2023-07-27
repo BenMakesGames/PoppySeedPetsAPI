@@ -5,6 +5,9 @@ use App\Entity\MuseumItem;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPNotFoundException;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\InventoryRepository;
 use App\Repository\MuseumItemRepository;
 use App\Repository\UserStatsRepository;
@@ -36,12 +39,12 @@ class DonateController extends AbstractController
         $user = $this->getUser();
 
         if($user->getUnlockedMuseum() === null)
-            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+            throw new PSPNotUnlockedException('Museum');
 
         $inventoryIds = $request->request->get('inventory');
 
         if(is_array($inventoryIds) && count($inventoryIds) > 20)
-            throw new UnprocessableEntityHttpException('You may only donate up to 20 items at a time.');
+            throw new PSPFormValidationException('You may only donate up to 20 items at a time.');
 
         $inventory = $inventoryRepository->findBy([
             'id' => $inventoryIds,
@@ -50,7 +53,7 @@ class DonateController extends AbstractController
         ]);
 
         if(count($inventory) === 0)
-            throw new UnprocessableEntityHttpException('No items were selected.');
+            throw new PSPFormValidationException('No items were selected.');
 
         for($i = count($inventory) - 1; $i >= 0; $i--)
         {
@@ -73,7 +76,7 @@ class DonateController extends AbstractController
         }
 
         if(count($inventory) === 0)
-            throw new UnprocessableEntityHttpException('Some of the selected items could not be donated? That\'s weird. Try reloading and trying again.');
+            throw new PSPNotFoundException('Some of the selected items could not be found or donated? That\'s weird. Try reloading and trying again.');
 
         $totalMuseumPoints = 0;
 

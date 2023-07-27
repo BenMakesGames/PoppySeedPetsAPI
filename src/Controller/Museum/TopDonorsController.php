@@ -3,6 +3,7 @@ namespace App\Controller\Museum;
 
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Model\FilterResults;
 use App\Repository\UserRepository;
 use App\Service\ResponseService;
@@ -29,7 +30,7 @@ class TopDonorsController extends AbstractController
     )
     {
         if($this->getUser()->getUnlockedMuseum() === null)
-            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+            throw new PSPNotUnlockedException('Museum');
 
         $qb = $userRepository->createQueryBuilder('u')
             ->select('u AS user,s.value AS itemsDonated')

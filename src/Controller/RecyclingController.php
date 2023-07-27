@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Enum\LocationEnum;
+use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -31,7 +32,7 @@ class RecyclingController extends AbstractController
         $bet = $request->request->getInt('bet');
 
         if($user->getRecyclePoints() < 100)
-            throw new AccessDeniedHttpException('You don\'t have enough !');
+            throw new PSPNotEnoughCurrencyException('100♺', $user->getRecyclePoints() . '♺');
 
         $r1 = $squirrel3->rngNextInt(1, 6);
         $r2 = $squirrel3->rngNextInt(1, 6);

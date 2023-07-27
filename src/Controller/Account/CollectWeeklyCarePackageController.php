@@ -6,6 +6,7 @@ use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -39,7 +40,7 @@ class CollectWeeklyCarePackageController extends AbstractController
         $days = (new \DateTimeImmutable())->diff($user->getLastAllowanceCollected())->days;
 
         if($days < 7)
-            throw new UnprocessableEntityHttpException('It\'s too early to collect your weekly Care Package.');
+            throw new PSPInvalidOperationException('It\'s too early to collect your weekly Care Package.');
 
         $itemsDonated = $userStatsRepository->getStatValue($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM);
 

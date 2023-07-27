@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Model\ItemQuantity;
 use App\Repository\InventoryRepository;
@@ -55,7 +56,7 @@ class CookingBuddyController extends AbstractController
         $location = $request->query->getInt('location', $cookingBuddy->getLocation());
 
         if(!in_array($location, self::ALLOWED_LOCATIONS))
-            throw new UnprocessableEntityHttpException('Cooking Buddies are only usable from the house, Basement, or Fireplace Mantle.');
+            throw new PSPInvalidOperationException('Cooking Buddies are only usable from the house, Basement, or Fireplace Mantle.');
 
         $quantities = $inventoryRepository->getInventoryQuantities($user, $location, 'name');
 
@@ -131,7 +132,7 @@ class CookingBuddyController extends AbstractController
         $location = $request->request->getInt('location', $cookingBuddy->getLocation());
 
         if(!in_array($location, self::ALLOWED_LOCATIONS))
-            throw new UnprocessableEntityHttpException('Cooking Buddies are only usable from the house, Basement, or Fireplace Mantle.');
+            throw new PSPInvalidOperationException('Cooking Buddies are only usable from the house, Basement, or Fireplace Mantle.');
 
         $inventoryToUse = [];
 

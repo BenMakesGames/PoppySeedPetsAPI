@@ -11,6 +11,7 @@ use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Model\FoodWithSpice;
@@ -236,14 +237,14 @@ class EatingService
      * @param Pet $pet
      * @param Inventory[] $inventory
      * @return PetActivityLog
-     * @throws EnumInvalidValueException
      */
     public function doFeed(Pet $pet, array $inventory): PetActivityLog
     {
-        if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
+        if(!$pet->isAtHome())
+            throw new PSPInvalidOperationException('Pets that aren\'t home cannot be interacted with.');
 
         if(ArrayFunctions::any($inventory, fn(Inventory $i) => $i->getItem()->getFood() === null))
-            throw new \InvalidArgumentException('At least one of the items selected is not edible!');
+            throw new PSPInvalidOperationException('One or more of the selected items is not edible! (Yuck!)');
 
         $this->squirrel3->rngNextShuffle($inventory);
 

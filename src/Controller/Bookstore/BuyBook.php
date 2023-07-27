@@ -5,6 +5,7 @@ use App\Entity\Item;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Service\BookstoreService;
 use App\Service\InventoryService;
@@ -12,7 +13,6 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -48,7 +48,7 @@ class BuyBook extends AbstractController
             throw new PSPFormValidationException('That item cannot be purchased.');
 
         if($user->getMoneys() < $allPrices[$item->getName()])
-            throw new UnprocessableEntityHttpException('You don\'t have enough money to buy ' . $item->getName() . '.');
+            throw new PSPNotEnoughCurrencyException($allPrices[$item->getName()] . '~~m~~', $user->getMoneys() . '~~m~~');
 
         $cost = $allPrices[$item->getName()];
         $transactionService->spendMoney($user, $cost, 'You bought ' . $item->getName() . ' from the Bookstore.');

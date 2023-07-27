@@ -52,7 +52,7 @@ class BeehiveService
     public function createBeehive(User $user)
     {
         if($user->getBeehive())
-            throw new \InvalidArgumentException('User already has a beehive!');
+            throw new \Exception('Player #' . $user->getId() . ' already has a beehive!');
 
         $beehive = (new Beehive())
             ->setQueenName($this->squirrel3->rngNextFromArray(self::QUEEN_NAMES))

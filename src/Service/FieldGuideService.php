@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Entity\FieldGuideEntry;
 use App\Entity\User;
+use App\Exceptions\PSPNotFoundException;
 use App\Repository\FieldGuideEntryRepository;
 use App\Repository\UserFieldGuideEntryRepository;
 
@@ -32,7 +33,7 @@ class FieldGuideService
             $entry = $this->fieldGuideEntryRepository->findOneByName($entry);
 
         if(!$entry)
-            throw new \InvalidArgumentException('There is no such Field Guide Entry.');
+            throw new PSPNotFoundException('There is no such Field Guide Entry.');
 
         $message = null;
 

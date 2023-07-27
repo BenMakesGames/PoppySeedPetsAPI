@@ -89,7 +89,7 @@ class PetAssistantService
         self::assertOwnership($user, $pet);
 
         if(!$user->getFireplace())
-            throw new AccessDeniedHttpException('You haven\'t got a Fireplace, yet!');
+            throw new PSPNotUnlockedException('Fireplace');
 
         self::assertCanAssignHelpers($user);
 
@@ -101,7 +101,7 @@ class PetAssistantService
         $whelp = $this->dragonRepository->findWhelp($user);
 
         if($whelp)
-            throw new AccessDeniedHttpException('There\'s already a dragon living here...');
+            throw new PSPInvalidOperationException('There\'s already a dragon living here...');
 
         self::assertAvailability($pet);
 
@@ -116,7 +116,7 @@ class PetAssistantService
         $dragon = $this->dragonRepository->findAdult($user);
 
         if(!$dragon)
-            throw new AccessDeniedHttpException('You haven\'t got a Dragon Den, yet!');
+            throw new PSPNotUnlockedException('Dragon Den');
 
         self::assertCanAssignHelpers($user);
 

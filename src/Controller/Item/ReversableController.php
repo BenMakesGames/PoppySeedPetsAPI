@@ -45,7 +45,7 @@ class ReversableController extends AbstractController
             $newItemName = array_search($oldItemName, self::FLIPS);
 
             if(!$newItemName)
-                throw new HttpException(500, $oldItemName . ' cannot be flipped?? This is a result of programmer oversight. Please let Ben know.');
+                throw new \Exception($oldItemName . ' cannot be flipped?? This is a result of programmer oversight. Please let Ben know.');
         }
 
         $newItem = $itemRepository->findOneByName($newItemName);

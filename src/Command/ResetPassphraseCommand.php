@@ -2,6 +2,8 @@
 
 namespace App\Command;
 
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\StringFunctions;
 use App\Repository\UserRepository;
 use App\Service\Squirrel3;
@@ -48,12 +50,12 @@ class ResetPassphraseCommand extends Command
         $email = trim($input->getArgument('email'));
 
         if($email === '')
-            throw new \InvalidArgumentException('E-mail address may not be blank.');
+            throw new PSPFormValidationException('E-mail address may not be blank.');
 
         $user = $this->userRepository->findOneBy([ 'email' => $email ]);
 
         if(!$user)
-            throw new \InvalidArgumentException('There is no user with that e-mail address.');
+            throw new PSPNotFoundException('There is no user with that e-mail address.');
 
         $password =
             $terminalCharacters[$this->squirrel3->rngNextInt(0, strlen($terminalCharacters) - 1)] .

@@ -3,6 +3,8 @@ namespace App\Controller\Pet;
 
 use App\Entity\Pet;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\PetActivityLogRepository;
 use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\ResponseService;
@@ -36,12 +38,12 @@ class LogsController extends AbstractController
         }
 
         if($month < 1 || $month > 12)
-            throw new UnprocessableEntityHttpException('"month" must be between 1 and 12!');
+            throw new PSPFormValidationException('"month" must be between 1 and 12!');
 
         $user = $this->getUser();
 
         if($user->getId() !== $pet->getOwner()->getId())
-            throw new AccessDeniedHttpException();
+            throw new PSPPetNotFoundException();
 
         $results = $petActivityLogRepository->findLogsForPetByDate($pet, $year, $month);
 
@@ -64,7 +66,7 @@ class LogsController extends AbstractController
         $user = $this->getUser();
 
         if($user->getId() !== $pet->getOwner()->getId())
-            throw new AccessDeniedHttpException();
+            throw new PSPPetNotFoundException();
 
         $petActivityLogsFilterService->addRequiredFilter('pet', $pet->getId());
 

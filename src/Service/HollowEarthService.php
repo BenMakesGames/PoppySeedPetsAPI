@@ -15,8 +15,6 @@ use App\Enum\HollowEarthMoveDirectionEnum;
 use App\Enum\HollowEarthRequiredActionEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
-use App\Model\TraderOffer;
-use App\Model\TraderOfferCostOrYield;
 use App\Repository\HollowEarthPlayerTileRepository;
 use App\Repository\HollowEarthTileRepository;
 use App\Repository\ItemRepository;
@@ -196,7 +194,7 @@ class HollowEarthService
             $tile = $this->hollowEarthTileRepository->find($id);
 
         if(!$tile)
-            throw new \InvalidArgumentException('No tile found for id #' . $id);
+            throw new \Exception('No tile found for id #' . $id);
 
         $this->enterTile($player, $tile);
 

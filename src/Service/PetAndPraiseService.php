@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Entity\Pet;
 use App\Enum\UserStatEnum;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserStatsRepository;
@@ -29,7 +30,8 @@ class PetAndPraiseService
 
     public function doPet(Pet $pet)
     {
-        if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
+        if(!$pet->isAtHome())
+            throw new PSPInvalidOperationException('Pets that aren\'t home cannot be interacted with.');
 
         $now = new \DateTimeImmutable();
 
@@ -63,7 +65,7 @@ class PetAndPraiseService
             $this->petExperienceService->gainAffection($pet, $affection);
         }
         else
-            throw new \InvalidArgumentException('You\'ve already interacted with this pet recently.');
+            throw new PSPInvalidOperationException('You\'ve already interacted with this pet recently.');
 
         $pet->setLastInteracted($now);
 

@@ -3,6 +3,7 @@ namespace App\Controller\Pet;
 
 use App\Entity\Pet;
 use App\Enum\PetActivityStatEnum;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Service\PetActivityStatsService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +27,7 @@ class GetActivityStatsController extends AbstractController
         $user = $this->getUser();
 
         if($user->getId() !== $pet->getOwner()->getId())
-            throw new AccessDeniedHttpException();
+            throw new PSPPetNotFoundException();
 
         $stats = $pet->getPetActivityStats();
 

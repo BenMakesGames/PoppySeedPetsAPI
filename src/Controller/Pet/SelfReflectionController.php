@@ -8,6 +8,8 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\GuildRepository;
@@ -106,18 +108,18 @@ class SelfReflectionController extends AbstractController
             throw new PSPPetNotFoundException();
 
         if($pet->getSelfReflectionPoint() < 1)
-            throw new UnprocessableEntityHttpException($pet->getName() . ' does not have any Self-reflection Points remaining.');
+            throw new PSPInvalidOperationException($pet->getName() . ' does not have any Self-reflection Points remaining.');
 
         if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
-            throw new UnprocessableEntityHttpException($pet->getName() . ' is Affectionless. It\'s uninterested in changing Guilds.');
+            throw new PSPInvalidOperationException($pet->getName() . ' is Affectionless. It\'s uninterested in changing Guilds.');
 
         if(!$pet->getGuildMembership())
-            throw new UnprocessableEntityHttpException($pet->getName() . 'isn\'t in a guild!');
+            throw new PSPInvalidOperationException($pet->getName() . ' isn\'t in a guild!');
 
         $guildId = $request->request->getInt('guildId');
 
         if(!$guildId)
-            throw new UnprocessableEntityHttpException('You gotta\' choose a guild!');
+            throw new PSPFormValidationException('You gotta\' choose a guild!');
 
         $guild = $guildRepository->find($guildId);
 
@@ -159,15 +161,15 @@ class SelfReflectionController extends AbstractController
             throw new PSPPetNotFoundException();
 
         if($pet->getSelfReflectionPoint() < 1)
-            throw new UnprocessableEntityHttpException($pet->getName() . ' does not have any Self-reflection Points remaining.');
+            throw new PSPInvalidOperationException($pet->getName() . ' does not have any Self-reflection Points remaining.');
 
         if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
-            throw new UnprocessableEntityHttpException($pet->getName() . ' is Affectionless. It\'s uninterested in reconciling.');
+            throw new PSPInvalidOperationException($pet->getName() . ' is Affectionless. It\'s uninterested in reconciling.');
 
         $friendId = $request->request->getInt('petId');
 
         if(!$friendId)
-            throw new UnprocessableEntityHttpException('You gotta\' choose a pet to reconcile with!');
+            throw new PSPFormValidationException('You gotta\' choose a pet to reconcile with!');
 
         $relationship = $petRelationshipRepository->findOneBy([
             'pet' => $pet->getId(),
@@ -178,7 +180,7 @@ class SelfReflectionController extends AbstractController
             throw new PSPNotFoundException('Those pets don\'t seem to have a relationship of any kind...');
 
         if($relationship->getCurrentRelationship() !== RelationshipEnum::BROKE_UP && $relationship->getCurrentRelationship() !== RelationshipEnum::DISLIKE)
-            throw new UnprocessableEntityHttpException('Those pets are totally okay with each other already!');
+            throw new PSPInvalidOperationException('Those pets are totally okay with each other already!');
 
         $friend = $relationship->getRelationship();
 
@@ -248,7 +250,10 @@ class SelfReflectionController extends AbstractController
     {
         $user = $this->getUser();
 
-        $petId = $request->query->getInt('petId');
+        $petId = $request->query->getInt('petId', 0);
+
+        if($petId <= 0)
+            throw new PSPFormValidationException('You gotta\' choose a pet!');
 
         $pet = $petRepository->find($petId);
 
@@ -260,25 +265,18 @@ class SelfReflectionController extends AbstractController
             RelationshipEnum::DISLIKE
         ]);
 
-        try
-        {
-            $suggestions = array_map(function(Pet $otherPet) use($petRelationshipService, $pet) {
-                $possibleRelationships = PetRelationshipService::getRelationshipsBetween(
-                    PetRelationshipService::max(RelationshipEnum::FRIEND, $otherPet->getRelationshipWith($pet)->getRelationshipGoal()),
-                    PetRelationshipService::max(RelationshipEnum::FRIEND, $pet->getRelationshipWith($otherPet)->getRelationshipGoal())
-                );
+        $suggestions = array_map(function(Pet $otherPet) use($petRelationshipService, $pet) {
+            $possibleRelationships = PetRelationshipService::getRelationshipsBetween(
+                PetRelationshipService::max(RelationshipEnum::FRIEND, $otherPet->getRelationshipWith($pet)->getRelationshipGoal()),
+                PetRelationshipService::max(RelationshipEnum::FRIEND, $pet->getRelationshipWith($otherPet)->getRelationshipGoal())
+            );
 
-                return [
-                    'pet' => $otherPet,
-                    'possibleRelationships' => $possibleRelationships
-                ];
-            }, $petRelationshipTypeaheadService->search('name', $request->query->get('search', '')));
+            return [
+                'pet' => $otherPet,
+                'possibleRelationships' => $possibleRelationships
+            ];
+        }, $petRelationshipTypeaheadService->search('name', $request->query->get('search', '')));
 
-            return $responseService->success($suggestions, [ SerializationGroupEnum::PET_PUBLIC_PROFILE ]);
-        }
-        catch(\InvalidArgumentException $e)
-        {
-            throw new UnprocessableEntityHttpException($e->getMessage(), $e);
-        }
+        return $responseService->success($suggestions, [ SerializationGroupEnum::PET_PUBLIC_PROFILE ]);
     }
 }

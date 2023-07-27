@@ -8,10 +8,9 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
-use App\Functions\InventoryModifierFunctions;
 use App\Model\PetChanges;
-use App\Repository\EnchantmentRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemGroupRepository;
 use App\Repository\ItemRepository;
@@ -23,11 +22,8 @@ use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
-use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -1028,7 +1024,7 @@ class BoxController extends AbstractController
         $key = $inventoryRepository->findOneToConsume($user, 'Gold Key');
 
         if(!$key)
-            throw new UnprocessableEntityHttpException('You need a Gold Key to unlock a Gold Chest!');
+            throw new PSPNotFoundException('You need a Gold Key to unlock a Gold Chest!');
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 

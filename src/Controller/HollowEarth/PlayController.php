@@ -5,7 +5,10 @@ use App\Entity\HollowEarthPlayer;
 use App\Entity\User;
 use App\Enum\HollowEarthActionTypeEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotEnoughCurrencyException;
+use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\InventoryRepository;
 use App\Service\HollowEarthService;
@@ -59,7 +62,7 @@ class PlayController extends AbstractController
                 return $responseService->success($hollowEarthService->getResponseData($user), [ SerializationGroupEnum::HOLLOW_EARTH ]);
             }
             else
-                throw new UnprocessableEntityHttpException('No moves remaining! Roll a die to continue moving.');
+                throw new PSPInvalidOperationException('No moves remaining! Roll a die to continue moving.');
         }
 
         if(!array_key_exists('type', $action))
@@ -118,12 +121,12 @@ class PlayController extends AbstractController
     )
     {
         if(!$params->has('choice') || !is_numeric($params->get('choice')))
-            throw new UnprocessableEntityHttpException('You must choose one.');
+            throw new PSPFormValidationException('You must choose one.');
 
         $choice = (int)$params->get('choice');
 
         if($choice < 0 || $choice >= count($action['outcomes']))
-            throw new UnprocessableEntityHttpException('You must choose one.');
+            throw new PSPFormValidationException('You must choose one.');
 
         $chosenOutcome = $action['outcomes'][$choice];
 
@@ -137,7 +140,7 @@ class PlayController extends AbstractController
     )
     {
         if(!$params->has('payUp'))
-            throw new UnprocessableEntityHttpException('Will you give up a ' . $action['item'] . ', or no?');
+            throw new PSPFormValidationException('Will you give up a ' . $action['item'] . ', or no?');
 
         $payUp = $params->getBoolean('payUp');
 
@@ -146,7 +149,7 @@ class PlayController extends AbstractController
             $itemToPay = $inventoryRepository->findOneToConsume($player->getUser(), $action['item']);
 
             if(!$itemToPay)
-                throw new UnprocessableEntityHttpException('You do not have a ' . $action['item'] . '...');
+                throw new PSPNotFoundException('You do not have a ' . $action['item'] . '...');
 
             $em->remove($itemToPay);
 
@@ -173,7 +176,7 @@ class PlayController extends AbstractController
     )
     {
         if(!$params->has('payUp'))
-            throw new UnprocessableEntityHttpException('Will you give up a ' . $action['item'] . ' and ' . $action['amount'] . '~~m~~, or no?');
+            throw new PSPFormValidationException('Will you give up a ' . $action['item'] . ' and ' . $action['amount'] . '~~m~~, or no?');
 
         $payUp = $params->getBoolean('payUp');
 
@@ -182,10 +185,10 @@ class PlayController extends AbstractController
             $itemToPay = $inventoryRepository->findOneToConsume($player->getUser(), $action['item']);
 
             if(!$itemToPay)
-                throw new UnprocessableEntityHttpException('You do not have a ' . $action['item'] . '...');
+                throw new PSPNotFoundException('You do not have a ' . $action['item'] . '...');
 
             if($player->getUser()->getMoneys() < $action['amount'])
-                throw new UnprocessableEntityHttpException('You don\'t have enough moneys...');
+                throw new PSPNotEnoughCurrencyException($action['amount'] . '~~m~~', $player->getUser()->getMoneys() . '~~m~~');
 
             $em->remove($itemToPay);
 
@@ -214,14 +217,14 @@ class PlayController extends AbstractController
     )
     {
         if(!$params->has('payUp'))
-            throw new UnprocessableEntityHttpException('Will you give up ' . $action['amount'] . '~~m~~, or no?');
+            throw new PSPFormValidationException('Will you give up ' . $action['amount'] . '~~m~~, or no?');
 
         $payUp = $params->getBoolean('payUp');
 
         if($payUp)
         {
             if($player->getUser()->getMoneys() < $action['amount'])
-                throw new UnprocessableEntityHttpException('You don\'t have enough moneys...');
+                throw new PSPNotEnoughCurrencyException($action['amount'] . '~~m~~', $player->getUser()->getMoneys() . '~~m~~');
 
             $transactionService->spendMoney($player->getUser(), $action['amount'], 'Spent while exploring the Hollow Earth.');
 

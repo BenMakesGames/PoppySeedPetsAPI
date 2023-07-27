@@ -44,10 +44,10 @@ class PandemirrorumController extends AbstractController
         $veryInvertedMerit = $meritRepository->findOneByName(MeritEnum::VERY_INVERTED);
 
         if(!$invertedMerit)
-            throw new HttpException(500, 'The ' . MeritEnum::INVERTED . ' Merit does not exist! This is a terrible programming error. Someone please tell Ben.');
+            throw new \Exception('The ' . MeritEnum::INVERTED . ' Merit does not exist! This is a terrible programming error. Someone please tell Ben.');
 
         if(!$veryInvertedMerit)
-            throw new HttpException(500, 'The ' . MeritEnum::VERY_INVERTED . ' Merit does not exist! This is a terrible programming error. Someone please tell Ben.');
+            throw new \Exception('The ' . MeritEnum::VERY_INVERTED . ' Merit does not exist! This is a terrible programming error. Someone please tell Ben.');
 
         if($pet->hasMerit(MeritEnum::INVERTED))
         {

@@ -4,6 +4,8 @@ namespace App\Controller\Beehive;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\ItemRepository;
 use App\Service\BeehiveService;
@@ -40,7 +42,7 @@ class FeedController extends AbstractController
         $beehive = $user->getBeehive();
 
         if($beehive->getFlowerPower() > 0)
-            throw new UnprocessableEntityHttpException('The colony is still working on the last item you gave them.');
+            throw new PSPInvalidOperationException('The colony is still working on the last item you gave them.');
 
         $alternate = $request->request->getBoolean('alternate');
 
@@ -52,10 +54,10 @@ class FeedController extends AbstractController
         if($inventoryService->loseItem($itemToFeed, $user, LocationEnum::HOME, 1) === 0)
         {
             if(!$user->getUnlockedBasement())
-                throw new UnprocessableEntityHttpException('You do not have ' . $itemToFeed->getNameWithArticle() . ' in your house!');
+                throw new PSPNotFoundException('You do not have ' . $itemToFeed->getNameWithArticle() . ' in your house!');
 
             if($inventoryService->loseItem($itemToFeed, $user, LocationEnum::BASEMENT, 1) === 0)
-                throw new UnprocessableEntityHttpException('You do not have ' . $itemToFeed->getNameWithArticle() . ' in your house, or your basement!');
+                throw new PSPNotFoundException('You do not have ' . $itemToFeed->getNameWithArticle() . ' in your house, or your basement!');
             else
                 $responseService->addFlashMessage('You give the queen ' . $itemToFeed->getNameWithArticle() . ' from your basement. Her bees immediately whisk it away into the hive!');
         }

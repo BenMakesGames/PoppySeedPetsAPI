@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetRenamingHelpers;
@@ -101,7 +102,7 @@ class RenamingController extends AbstractController
         $pointsRemaining = $user->getMuseumPoints() - $user->getMuseumPointsSpent();
 
         if($pointsRemaining < 500)
-            throw new UnprocessableEntityHttpException('That would cost 500 Favor, but you only have ' . $pointsRemaining . '!');
+            throw new PSPNotEnoughCurrencyException('500 Favor', $pointsRemaining);
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'renamingScroll');
 

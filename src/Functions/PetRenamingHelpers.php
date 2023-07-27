@@ -5,6 +5,8 @@ namespace App\Functions;
 use App\Entity\Pet;
 use App\Entity\SpiritCompanion;
 use App\Enum\MeritEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Service\ResponseService;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -13,15 +15,15 @@ final class PetRenamingHelpers
     public static function renamePet(ResponseService $responseService, Pet $pet, string $newName)
     {
         if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
-            throw new UnprocessableEntityHttpException('This pet is Affectionless. It\'s not interested in taking on a new name.');
+            throw new PSPInvalidOperationException('This pet is Affectionless. It\'s not interested in taking on a new name.');
 
         $petName = ProfanityFilterFunctions::filter(trim($newName));
 
         if($petName === $pet->getName())
-            throw new UnprocessableEntityHttpException('That\'s the pet\'s current name!');
+            throw new PSPFormValidationException('That\'s the pet\'s current name!');
 
         if(\mb_strlen($petName) < 1 || \mb_strlen($petName) > 30)
-            throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
+            throw new PSPFormValidationException('Pet name must be between 1 and 30 characters long.');
 
         $responseService->createActivityLog($pet, "{$pet->getName()} has been renamed to {$petName}!", '');
 
@@ -33,10 +35,10 @@ final class PetRenamingHelpers
         $companionName = ProfanityFilterFunctions::filter(trim($newName));
 
         if($companionName === $spiritCompanion->getName())
-            throw new UnprocessableEntityHttpException('That\'s the spirit companion\'s current name!');
+            throw new PSPFormValidationException('That\'s the spirit companion\'s current name!');
 
         if(\mb_strlen($companionName) < 1 || \mb_strlen($companionName) > 30)
-            throw new UnprocessableEntityHttpException('Spirit companion names must be between 1 and 30 characters long.');
+            throw new PSPFormValidationException('Spirit companion names must be between 1 and 30 characters long.');
 
         $responseService->createActivityLog($spiritCompanion->getPet(), ActivityHelpers::PetName($spiritCompanion->getPet()) . "'s spirit companion has been renamed to {$companionName}!", '');
 

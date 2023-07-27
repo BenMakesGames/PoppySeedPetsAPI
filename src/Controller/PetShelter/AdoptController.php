@@ -5,6 +5,10 @@ use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\UserStatEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotEnoughCurrencyException;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\ProfanityFilterFunctions;
 use App\Model\PetShelterPet;
@@ -48,17 +52,17 @@ class AdoptController extends AbstractController
         $lastAdopted = $userQuestRepository->findOneBy([ 'user' => $user, 'name' => 'Last Adopted a Pet' ]);
 
         if($lastAdopted && $lastAdopted->getValue() === $now)
-            throw new AccessDeniedHttpException('You cannot adopt another pet today.');
+            throw new PSPInvalidOperationException('You cannot adopt another pet today.');
 
         $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
 
         if($user->getMoneys() < $costToAdopt)
-            throw new UnprocessableEntityHttpException('It costs ' . $costToAdopt . ' moneys to adopt a pet, but you only have ' . $user->getMoneys() . '.');
+            throw new PSPNotEnoughCurrencyException($costToAdopt . '~~m~~', $user->getMoneys() . '~~m~~');
 
         $petName = ProfanityFilterFunctions::filter(trim($request->request->get('name', '')));
 
         if(\mb_strlen($petName) < 1 || \mb_strlen($petName) > 30)
-            throw new UnprocessableEntityHttpException('Pet name must be between 1 and 30 characters long.');
+            throw new PSPFormValidationException('Pet name must be between 1 and 30 characters long.');
 
         [$pets, $dialog] = $adoptionService->getDailyPets($user);
 
@@ -66,7 +70,7 @@ class AdoptController extends AbstractController
         $petToAdopt = ArrayFunctions::find_one($pets, fn(PetShelterPet $p) => $p->id === $id);
 
         if($petToAdopt === null)
-            throw new UnprocessableEntityHttpException('There is no such pet available for adoption... maybe reload and try again??');
+            throw new PSPFormValidationException('There is no such pet available for adoption... maybe reload and try again??');
 
         // let's not worry about this for now... it's a suboptimal solution
         /*

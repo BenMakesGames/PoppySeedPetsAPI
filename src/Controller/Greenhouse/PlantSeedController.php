@@ -6,6 +6,8 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\PlantTypeEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
@@ -44,7 +46,7 @@ class PlantSeedController extends AbstractController
         $seedId = $request->request->getInt('seed', 0);
 
         if($seedId <= 0)
-            throw new UnprocessableEntityHttpException('"seed" is missing, or invalid.');
+            throw new PSPFormValidationException('"seed" is missing, or invalid.');
 
         $seed = $inventoryRepository->findOneBy([
             'id' => $seedId,
@@ -71,7 +73,7 @@ class PlantSeedController extends AbstractController
         }
 
         if(count($plantsOfSameType) >= $numberOfPlots)
-            throw new UnprocessableEntityHttpException('You can\'t plant anymore plants of this type.');
+            throw new PSPInvalidOperationException('You can\'t plant anymore plants of this type.');
 
         $plant = (new GreenhousePlant())
             ->setOwner($user)

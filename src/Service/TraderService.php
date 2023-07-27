@@ -7,6 +7,8 @@ use App\Entity\User;
 use App\Enum\CostOrYieldTypeEnum;
 use App\Enum\LocationEnum;
 use App\Enum\TradeGroupEnum;
+use App\Exceptions\PSPNotEnoughCurrencyException;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Model\TraderOffer;
@@ -1219,7 +1221,7 @@ class TraderService
                     break;
 
                 default:
-                    throw new \InvalidArgumentException('Unexpected cost type "' . $cost->type . '".');
+                    throw new \Exception('Unexpected cost type "' . $cost->type . '"!? Weird! Ben should fix this!');
             }
         }
 
@@ -1239,13 +1241,13 @@ class TraderService
                     $itemQuantity = $this->inventoryService->loseItem($cost->item, $user, LocationEnum::HOME, $cost->quantity * $quantity);
 
                     if($itemQuantity < $cost->quantity * $quantity)
-                        throw new \InvalidArgumentException('You do not have the items needed to make this exchange. (Expected ' . ($cost->quantity * $quantity) . ' items; only found ' . $itemQuantity . '.)');
+                        throw new PSPNotFoundException('You do not have the items needed to make this exchange. (Expected ' . ($cost->quantity * $quantity) . ' items; only found ' . $itemQuantity . '.)');
 
                     break;
 
                 case CostOrYieldTypeEnum::MONEY:
                     if($user->getMoneys() < $cost->quantity * $quantity)
-                        throw new \InvalidArgumentException('You do not have the moneys needed to make this exchange.');
+                        throw new PSPNotEnoughCurrencyException($cost->quantity * $quantity . '~~m~~', $user->getMoneys() . '~~m~~');
 
                     if($this->rng->rngNextInt(1, 50) === 1)
                         $this->transactionService->spendMoney($user, $cost->quantity * $quantity, 'Traded away at the Trader. (That\'s usually just called "buying", right?)');
@@ -1256,14 +1258,14 @@ class TraderService
 
                 case CostOrYieldTypeEnum::RECYCLING_POINTS:
                     if($user->getRecyclePoints() < $cost->quantity * $quantity)
-                        throw new \InvalidArgumentException('You do not have the ♺ needed to make this exchange.');
+                        throw new PSPNotEnoughCurrencyException($cost->quantity * $quantity . '♺', $user->getRecyclePoints() . '♺');
 
                     $user->increaseRecyclePoints(-$cost->quantity * $quantity);
 
                     break;
 
                 default:
-                    throw new \InvalidArgumentException('Unexpected cost type "' . $cost->type . '".');
+                    throw new \Exception('Unexpected cost type "' . $cost->type . '"!? Weird! Ben should fix this!');
             }
         }
 
@@ -1288,6 +1290,9 @@ class TraderService
                 case CostOrYieldTypeEnum::RECYCLING_POINTS:
                     $user->increaseRecyclePoints($yield->quantity * $quantity);
                     break;
+
+                default:
+                    throw new \Exception('Unexpected yield type "' . $yield->type . '"!? Weird! Ben should fix this!');
             }
         }
     }

@@ -154,15 +154,15 @@ class ForgettingScrollController extends AbstractController
             throw new PSPPetNotFoundException();
 
         if($pet->getLevel() < 10)
-            throw new UnprocessableEntityHttpException('Only pets of level 10 or greater may use this scroll.');
+            throw new PSPInvalidOperationException('Only pets of level 10 or greater may use this scroll.');
 
         $skill = $request->request->get('skill', '');
 
         if(!PetSkillEnum::isAValue($skill))
-            throw new UnprocessableEntityHttpException('You gotta\' select a skill to forget!');
+            throw new PSPFormValidationException('You gotta\' select a skill to forget!');
 
         if($pet->getSkills()->getStat($skill) < 1)
-            throw new UnprocessableEntityHttpException($pet->getName() . ' does not have any points of ' . $skill . ' to unlearn.');
+            throw new PSPInvalidOperationException($pet->getName() . ' does not have any points of ' . $skill . ' to unlearn.');
 
         $em->remove($inventory);
 

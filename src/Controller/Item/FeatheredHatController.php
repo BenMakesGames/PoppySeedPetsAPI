@@ -38,7 +38,7 @@ class FeatheredHatController extends AbstractController
             $newItemName = array_search($oldItemName, self::TWEAKS);
 
             if(!$newItemName)
-                throw new HttpException(500, $oldItemName . ' cannot be tweaked?? This is a result of programmer oversight. Please let Ben know.');
+                throw new \Exception($oldItemName . ' cannot be tweaked?? This is a result of programmer oversight. Please let Ben know.');
         }
 
         $newItem = $itemRepository->findOneByName($newItemName);

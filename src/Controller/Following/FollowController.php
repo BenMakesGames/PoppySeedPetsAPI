@@ -3,6 +3,7 @@ namespace App\Controller\Following;
 
 use App\Entity\User;
 use App\Entity\UserFollowing;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Repository\UserFollowingRepository;
 use App\Repository\UserRepository;
@@ -36,7 +37,7 @@ class FollowController extends AbstractController
         $note = $request->request->get('note', null);
 
         if($followingId === $user->getId())
-            throw new UnprocessableEntityHttpException('I mean... that\'s kind of a given (I hope!?)');
+            throw new PSPInvalidOperationException('You can\'t follow yourself! That\'s so RANDOM! You\'re so RANDOM!');
 
         $following = $userRepository->find($followingId);
 
@@ -49,7 +50,7 @@ class FollowController extends AbstractController
         ]);
 
         if($alreadyFollowing)
-            throw new UnprocessableEntityHttpException('You\'re already following that person.');
+            throw new PSPInvalidOperationException('You\'re already following that person.');
 
         $newFriend = (new UserFollowing())
             ->setUser($user)

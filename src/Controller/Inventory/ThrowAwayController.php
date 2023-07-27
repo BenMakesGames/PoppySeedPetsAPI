@@ -2,6 +2,7 @@
 namespace App\Controller\Inventory;
 
 use App\Entity\User;
+use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Repository\InventoryRepository;
 use App\Service\RecyclingService;
@@ -34,7 +35,7 @@ class ThrowAwayController extends AbstractController
         if(!\is_array($inventoryIds)) $inventoryIds = [ $inventoryIds ];
 
         if(count($inventoryIds) > 200)
-            throw new UnprocessableEntityHttpException('Oh, goodness, please don\'t try to recycle more than 200 items at a time. Sorry.');
+            throw new PSPFormValidationException('Oh, goodness, please don\'t try to recycle more than 200 items at a time. Sorry.');
 
         $inventory = $inventoryRepository->findBy([
             'owner' => $user,

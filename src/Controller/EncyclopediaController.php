@@ -30,16 +30,9 @@ class EncyclopediaController extends AbstractController
         Request $request, ResponseService $responseService, ItemTypeaheadService $itemTypeaheadService
     )
     {
-        try
-        {
-            $suggestions = $itemTypeaheadService->search('name', $request->query->get('search', ''), 5);
+        $suggestions = $itemTypeaheadService->search('name', $request->query->get('search', ''), 5);
 
-            return $responseService->success($suggestions, [ SerializationGroupEnum::ITEM_TYPEAHEAD ]);
-        }
-        catch(\InvalidArgumentException $e)
-        {
-            throw new UnprocessableEntityHttpException($e->getMessage(), $e);
-        }
+        return $responseService->success($suggestions, [ SerializationGroupEnum::ITEM_TYPEAHEAD ]);
     }
 
     /**

@@ -89,15 +89,8 @@ class GetController extends AbstractController
 
         $petTypeaheadService->setUser($user);
 
-        try
-        {
-            $suggestions = $petTypeaheadService->search('name', $request->query->get('search', ''));
+        $suggestions = $petTypeaheadService->search('name', $request->query->get('search', ''));
 
-            return $responseService->success($suggestions, [ SerializationGroupEnum::MY_PET, SerializationGroupEnum::MY_PET_LOCATION ]);
-        }
-        catch(\InvalidArgumentException $e)
-        {
-            throw new UnprocessableEntityHttpException($e->getMessage(), $e);
-        }
+        return $responseService->success($suggestions, [ SerializationGroupEnum::MY_PET, SerializationGroupEnum::MY_PET_LOCATION ]);
     }
 }

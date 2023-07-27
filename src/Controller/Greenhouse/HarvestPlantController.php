@@ -89,7 +89,7 @@ class HarvestPlantController extends AbstractController
                 }
             }
 
-            throw new UnprocessableEntityHttpException($plant->getPlant()->getName() . ' cannot be harvested!');
+            throw new PSPInvalidOperationException($plant->getPlant()->getName() . ' cannot be harvested!');
         }
 
         if($plant->getPlant()->getName() === 'Earth Tree')

@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Repository\UserStatsRepository;
@@ -64,7 +65,7 @@ class FloristController extends AbstractController
             throw new PSPFormValidationException('That item is not available... (maybe reload the page and try again??)');
 
         if($user->getMoneys() < $userPick['cost'])
-            throw new UnprocessableEntityHttpException('"It seems you don\'t have quite enough moneys."');
+            throw new PSPNotEnoughCurrencyException($userPick['cost'] . '~~m~~', $user->getMoneys() . '~~m~~');
 
         $transactionService->spendMoney($user, $userPick['cost'], 'Purchased a ' . $userPick['item']['name'] . ' at The Florist.');
 

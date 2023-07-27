@@ -60,12 +60,12 @@ class AccountController extends AbstractController
             throw new PSPInvalidOperationException('B-- but that\'s _already_ your email address...');
 
         if(str_ends_with($newEmail, '@poppyseedpets.com') || str_ends_with($newEmail, '.poppyseedpets.com'))
-            throw new UnprocessableEntityHttpException('poppyseedpets.com e-mail addresses cannot be used.');
+            throw new PSPFormValidationException('poppyseedpets.com e-mail addresses cannot be used.');
 
         $alreadyInUse = $userRepository->findOneBy([ 'email' => $newEmail ]);
 
         if($alreadyInUse && $alreadyInUse->getId() != $user->getId())
-            throw new UnprocessableEntityHttpException('That e-mail address is already in use.');
+            throw new PSPFormValidationException('That e-mail address is already in use.');
 
         $user->setEmail($newEmail);
 

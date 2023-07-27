@@ -4,7 +4,9 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\TraderRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\FieldGuideService;
@@ -38,7 +40,7 @@ class TraderController extends AbstractController
         $user = $this->getUser();
 
         if(!$user->getUnlockedTrader())
-            throw new AccessDeniedHttpException('You haven\'t unlocked the Trader yet.');
+            throw new PSPNotUnlockedException('Trader');
 
         $offers = $traderService->getOffers($user);
 
@@ -76,12 +78,12 @@ class TraderController extends AbstractController
         $user = $this->getUser();
 
         if(!$user->getUnlockedTrader())
-            throw new AccessDeniedHttpException('You haven\'t unlocked the Trader yet.');
+            throw new PSPNotUnlockedException('Trader');
 
         $quantity = $request->request->getInt('quantity', 1);
 
         if($quantity < 1)
-            throw new UnprocessableEntityHttpException('Quantity must be 1, or more.');
+            throw new PSPFormValidationException('Quantity must be 1, or more.');
 
         $exchange = $traderService->getOfferById($user, $id);
 
@@ -92,16 +94,9 @@ class TraderController extends AbstractController
             throw new PSPNotFoundException('There is no such exchange available.');
 
         if(!$traderService->userCanMakeExchange($user, $exchange))
-            throw new UnprocessableEntityHttpException('The items you need to make this exchange could not be found in your house.');
+            throw new PSPNotFoundException('The items you need to make this exchange could not be found in your house.');
 
-        try
-        {
-            $traderService->makeExchange($user, $exchange, $quantity);
-        }
-        catch(\InvalidArgumentException $e)
-        {
-            throw new UnprocessableEntityHttpException($e->getMessage());
-        }
+        $traderService->makeExchange($user, $exchange, $quantity);
 
         $message = null;
 

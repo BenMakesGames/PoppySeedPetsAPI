@@ -10,6 +10,9 @@ use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\StoryEnum;
 use App\Enum\UserStatEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\DateFunctions;
@@ -58,7 +61,7 @@ class MothController extends AbstractController
             $inventory->getLocation() != LocationEnum::MANTLE
         )
         {
-            throw new UnprocessableEntityHttpException('Moths can only be released from the home, basement, or fireplace mantle.');
+            throw new PSPInvalidOperationException('Moths can only be released from the home, basement, or fireplace mantle.');
         }
 
         $numberOfMoths = $inventoryService->countInventory($user, $inventory->getItem(), $inventory->getLocation());
@@ -91,11 +94,11 @@ class MothController extends AbstractController
             $mothLocation != LocationEnum::MANTLE
         )
         {
-            throw new UnprocessableEntityHttpException('Moths can only be released from the home, basement, or fireplace mantle.');
+            throw new PSPInvalidOperationException('Moths can only be released from the home, basement, or fireplace mantle.');
         }
 
         if($mothCount == 0)
-            throw new UnprocessableEntityHttpException('Must release at least one moth!');
+            throw new PSPFormValidationException('Must release at least one moth!');
 
         $mothItem = $itemRepository->findOneByName('Moth');
 
@@ -106,7 +109,7 @@ class MothController extends AbstractController
         ], [], $mothCount);
 
         if(count($moths) != $mothCount)
-            throw new UnprocessableEntityHttpException('You do not have that many moths to release!');
+            throw new PSPNotFoundException('You do not have that many moths to release!');
 
         foreach($moths as $moth)
             $em->remove($moth);

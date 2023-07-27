@@ -2,6 +2,7 @@
 namespace App\Controller\Following;
 
 use App\Entity\User;
+use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Repository\UserFollowingRepository;
 use App\Service\ResponseService;
@@ -41,7 +42,7 @@ class UpdateNote extends AbstractController
         $note = $request->request->get('note', null);
 
         if($note && \mb_strlen($note) > 255)
-            throw new UnprocessableEntityHttpException('Note may not be longer than 255 characters. Sorry :(');
+            throw new PSPFormValidationException('Note may not be longer than 255 characters. Sorry :(');
 
         $followingRecord->setNote($note);
 

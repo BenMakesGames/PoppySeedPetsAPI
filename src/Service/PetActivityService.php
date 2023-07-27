@@ -14,6 +14,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\InventoryModifierFunctions;
@@ -167,10 +168,11 @@ class PetActivityService
     {
         $hasEventPersonality = $pet->hasActivityPersonality(ActivityPersonalityEnum::EVENTS_AND_MAPS);
 
-        if(!$pet->isAtHome()) throw new \InvalidArgumentException('Pets that aren\'t home cannot be interacted with.');
+        if(!$pet->isAtHome())
+            throw new \InvalidArgumentException('Trying to run activities for a pet that is not at home! (Ben did something horrible; please let him know.)');
 
         if($pet->getHouseTime()->getActivityTime() < 60)
-            throw new \InvalidArgumentException('Pet does not have enough Time. (Ben did something horrible; please let him know.)');
+            throw new \InvalidArgumentException('Trying to run activities for a pet that does not have enough time! (Ben did something horrible; please let him know.)');
 
         $this->responseService->setReloadPets();
 

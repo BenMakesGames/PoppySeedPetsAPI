@@ -5,6 +5,8 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
@@ -111,7 +113,7 @@ class GrocerController extends AbstractController
             $maxCanPurchase = GrocerService::MAX_CAN_PURCHASE_PER_DAY;
 
         if($totalQuantity > $maxCanPurchase)
-            throw new UnprocessableEntityHttpException('Only ' . GrocerService::MAX_CAN_PURCHASE_PER_DAY . ' items per day, please.');
+            throw new PSPInvalidOperationException('Only ' . GrocerService::MAX_CAN_PURCHASE_PER_DAY . ' items per day, please.');
 
         if(count($buyingInventory) === 0)
             throw new PSPFormValidationException('Did you forget to select something to buy?');
@@ -122,22 +124,22 @@ class GrocerController extends AbstractController
         if($existingInventoryCount + $totalQuantity > $maxInventory)
         {
             if($buyTo === LocationEnum::HOME)
-                throw new UnprocessableEntityHttpException('You don\'t have enough space for ' . $totalQuantity . ' more item' . ($totalQuantity === 1 ? '' : 's') . ' in your House.');
+                throw new PSPInvalidOperationException('You don\'t have enough space for ' . $totalQuantity . ' more item' . ($totalQuantity === 1 ? '' : 's') . ' in your House.');
             else
-                throw new UnprocessableEntityHttpException('You don\'t have enough space for ' . $totalQuantity . ' more item' . ($totalQuantity === 1 ? '' : 's') . ' in your Basement.');
+                throw new PSPInvalidOperationException('You don\'t have enough space for ' . $totalQuantity . ' more item' . ($totalQuantity === 1 ? '' : 's') . ' in your Basement.');
         }
 
         if($payWith === 'moneys')
         {
             if($totalCost > $user->getMoneys())
-                throw new UnprocessableEntityHttpException('That would cost a total of ' . $totalCost . '~~m~~, but you only have ' . $user->getMoneys() . '~~m~~...');
+                throw new PSPNotEnoughCurrencyException($totalCost . '~~m~~', $user->getMoneys() . '~~m~~');
 
             $transactionService->spendMoney($user, $totalCost, 'Purchased ' . $totalQuantity . ' thing' . ($totalQuantity === 1 ? '' : 's') . ' from the Grocer.');
         }
         else
         {
             if($totalCost > $user->getRecyclePoints())
-                throw new UnprocessableEntityHttpException('That would cost a total of ' . $totalCost . ' recycling points, but you only have ' . $user->getRecyclePoints() . '...');
+                throw new PSPNotEnoughCurrencyException($totalCost . '♺', $user->getRecyclePoints() . '♺');
 
             $user->increaseRecyclePoints(-$totalCost);
         }

@@ -5,6 +5,7 @@ use App\Entity\Enchantment;
 use App\Entity\Inventory;
 use App\Entity\Item;
 use App\Entity\Spice;
+use App\Exceptions\PSPInvalidOperationException;
 use Doctrine\ORM\EntityManagerInterface;
 
 class InventoryModifierFunctions
@@ -12,7 +13,7 @@ class InventoryModifierFunctions
     public static function enchant(EntityManagerInterface $em, Inventory $tool, Inventory $enchantment)
     {
         if($tool->getEnchantment())
-            throw new \InvalidArgumentException('That tool already has the "' . $tool->getEnchantment()->getName() . '" bonus. Remove it first if you want to apply a new bonus.');
+            throw new PSPInvalidOperationException('That tool already has the "' . $tool->getEnchantment()->getName() . '" bonus. Remove it first if you want to apply a new bonus.');
 
         $tool->setEnchantment($enchantment->getItem()->getEnchants());
 
@@ -22,7 +23,7 @@ class InventoryModifierFunctions
     public static function spiceUp(EntityManagerInterface $em, Inventory $food, Inventory $spice)
     {
         if($food->getSpice())
-            throw new \InvalidArgumentException('That food is already "' . $food->getSpice()->getName() . '". It can\'t be spiced up any further!');
+            throw new PSPInvalidOperationException('That food is already "' . $food->getSpice()->getName() . '". It can\'t be spiced up any further!');
 
         $food->setSpice($spice->getItem()->getSpice());
 

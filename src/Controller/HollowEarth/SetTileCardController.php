@@ -3,7 +3,11 @@ namespace App\Controller\HollowEarth;
 
 use App\Entity\HollowEarthPlayerTile;
 use App\Entity\HollowEarthTileType;
+use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Repository\HollowEarthPlayerTileRepository;
 use App\Repository\HollowEarthTileRepository;
@@ -33,14 +37,15 @@ class SetTileCardController extends AbstractController
         InventoryRepository $inventoryRepository, HollowEarthService $hollowEarthService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
         $player = $user->getHollowEarthPlayer();
 
         if($player === null)
-            throw new AccessDeniedHttpException();
+            throw new PSPInvalidOperationException('You gotta\' visit the Hollow Earth page at least once before taking this kind of action.');
 
         if($player->getCurrentAction())
-            throw new UnprocessableEntityHttpException('You can\'t change the map while you\'re moving!');
+            throw new PSPInvalidOperationException('You can\'t change the map while you\'re moving!');
 
         $tileId = $request->request->getInt('tile', 0);
         $inventoryId = $request->request->getInt('item', 0);
@@ -48,10 +53,10 @@ class SetTileCardController extends AbstractController
         $tile = $hollowEarthTileRepository->find($tileId);
 
         if(!$tile)
-            throw new UnprocessableEntityHttpException('That space in the Hollow Earth does not exist?!?! (Maybe reload and try again...)');
+            throw new PSPNotFoundException('That space in the Hollow Earth does not exist?!?! (Maybe reload and try again...)');
 
         if($tile->getCard() && $tile->getCard()->getType()->getName() === 'Fixed')
-            throw new UnprocessableEntityHttpException('That space in the Hollow Earth cannot be changed!');
+            throw new PSPInvalidOperationException('That space in the Hollow Earth cannot be changed!');
 
         $inventory = $inventoryRepository->findOneBy([
             'id' => $inventoryId,
@@ -60,22 +65,22 @@ class SetTileCardController extends AbstractController
         ]);
 
         if(!$inventory)
-            throw new UnprocessableEntityHttpException('That item couldn\'t be found! (Reload and try again.)');
+            throw new PSPNotFoundException('That item couldn\'t be found! (Reload and try again.)');
 
         $card = $inventory->getItem()->getHollowEarthTileCard();
 
         if(!$card)
-            throw new UnprocessableEntityHttpException('That item isn\'t a Hollow Earth Tile! (Weird! Reload and try again...)');
+            throw new PSPFormValidationException('That item isn\'t a Hollow Earth Tile! (Weird! Reload and try again...)');
 
         $canUseTile = ArrayFunctions::any($tile->getTypes(), fn(HollowEarthTileType $tt) => $tt->getId() === $card->getType()->getId());
 
         if(!$canUseTile)
-            throw new UnprocessableEntityHttpException('You can\'t use that Tile on this space! (The types don\'t match!)');
+            throw new PSPFormValidationException('You can\'t use that Tile on this space! (The types don\'t match!)');
 
         $cardIdsOnMap = $hollowEarthService->getAllCardIdsOnMap($user);
 
         if(array_search($card->getId(), $cardIdsOnMap))
-            throw new UnprocessableEntityHttpException('You already have that Tile on the map! (Each Tile can only appear once!)');
+            throw new PSPInvalidOperationException('You already have that Tile on the map! (Each Tile can only appear once!)');
 
         $existingPlayerTile = $hollowEarthPlayerTileRepository->findOneBy([
             'player' => $user,

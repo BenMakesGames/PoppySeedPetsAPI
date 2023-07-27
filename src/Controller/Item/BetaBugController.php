@@ -9,6 +9,7 @@ use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
@@ -21,7 +22,6 @@ use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -94,7 +94,7 @@ class BetaBugController extends AbstractController
             case 'Cooking "Alien"': self::createCookingBuddy($responseService, $em, $petSpeciesRepository, $petFactory, $rng, $petRepository, $itemRepository, $item, $user, $meritRepository->findOneByName(MeritEnum::BEHATTED), 'Antenna'); break;
             case 'Sentient Beetle': self::makeBeetleEvil($responseService, $itemRepository, $user, $item); break;
             case 'Rainbowsaber': self::makeGlitchedOutRainbowsaber($responseService, $itemRepository, $user, $item); break;
-            default: throw new UnprocessableEntityHttpException("The Beta Bug cannot be used on that item!");
+            default: throw new PSPInvalidOperationException("The Beta Bug cannot be used on that item!");
         }
 
         $em->remove($inventory);

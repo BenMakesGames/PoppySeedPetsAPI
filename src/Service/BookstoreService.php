@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
@@ -152,7 +153,7 @@ class BookstoreService
 
         if($this->inventoryService->loseItem($item, $user, [ LocationEnum::HOME, LocationEnum::BASEMENT ], 1) === 0)
         {
-            throw new UnprocessableEntityHttpException('You don\'t seem to have ' . $item->getNameWithArticle() . '...');
+            throw new PSPNotFoundException('You don\'t seem to have ' . $item->getNameWithArticle() . '...');
         }
 
         $bookstoreQuestStep->setValue($bookstoreQuestStep->getValue() + 1);

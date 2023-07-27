@@ -3,6 +3,8 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
+use App\Exceptions\PSPNotFoundException;
 use App\Repository\InventoryRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
@@ -32,12 +34,13 @@ class CryptocurrencyWalletController extends AbstractController
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'cryptocurrencyWallet/#/unlock');
 
+        /** @var User $user */
         $user = $this->getUser();
 
         $key = $inventoryRepository->findOneToConsume($user, 'Password');
 
         if(!$key)
-            throw new UnprocessableEntityHttpException('It\'s locked! (It\'s got a little lock on it, and everything!) You\'ll need a Password to open it...');
+            throw new PSPNotFoundException('It\'s locked! (It\'s got a little lock on it, and everything!) You\'ll need a Password to open it...');
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 

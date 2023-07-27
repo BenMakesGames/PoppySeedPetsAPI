@@ -4,6 +4,7 @@ namespace App\EventSubscriber;
 use App\Exceptions\PSPException;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\StringFunctions;
@@ -65,12 +66,7 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
             }
             else if($e->getStatusCode() === 404)
             {
-                if(strpos($e->getMessage(), 'App\\Entity\\Inventory') !== false)
-                    $message = 'That item doesn\'t exist... weird. Maybe it got used up? Reload and try again.';
-                else if(strpos($e->getMessage(), 'App\\Entity\\Pet') !== false)
-                    $message = 'That pet doesn\'t exist... weird. Reload and try again?';
-                else
-                    $message = 'The thing you were trying to interact with doesn\'t exist! That generally shouldn\'t happen... reload and try again?';
+                $message = 'Classic 404! The thing you were trying to do or interact with couldn\'t be found! That generally shouldn\'t happen... reload and try again?';
 
                 $event->setResponse($this->responseService->error(
                     Response::HTTP_NOT_FOUND,
@@ -95,11 +91,7 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
         {
             $event->setResponse($this->responseService->error(Response::HTTP_FORBIDDEN, [ $e->getMessage() ]));
         }
-        else if($e instanceof PSPInvalidOperationException)
-        {
-            $event->setResponse($this->responseService->error(Response::HTTP_UNPROCESSABLE_ENTITY, [ $e->getMessage() ]));
-        }
-        else if($e instanceof PSPFormValidationException)
+        else if($e instanceof PSPFormValidationException || $e instanceof PSPInvalidOperationException || $e instanceof PSPNotEnoughCurrencyException)
         {
             $event->setResponse($this->responseService->error(Response::HTTP_UNPROCESSABLE_ENTITY, [ $e->getMessage() ]));
         }

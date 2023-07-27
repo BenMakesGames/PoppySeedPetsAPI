@@ -5,6 +5,8 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\MeritEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetColorFunctions;
@@ -54,10 +56,10 @@ class IridescentHandCannonController extends AbstractController
         if($pet->getTool())
         {
             if($pet->getTool()->isGrayscaling())
-                throw new UnprocessableEntityHttpException('It seems the Ambrotypic magic surrounding ' . $pet->getName() . ' is preventing this from working!');
+                throw new PSPInvalidOperationException('It seems the Ambrotypic magic surrounding ' . $pet->getName() . ' is preventing this from working!');
 
             if($pet->getTool()->isGreenifying())
-                throw new UnprocessableEntityHttpException('It seems the magic of ' . $pet->getName() . '\'s 5-leaf Clover is preventing this from working!');
+                throw new PSPInvalidOperationException('It seems the magic of ' . $pet->getName() . '\'s 5-leaf Clover is preventing this from working!');
         }
 
         // make sure the new hue is some minimum distance away from the old hue:
@@ -73,7 +75,7 @@ class IridescentHandCannonController extends AbstractController
         else if($color === 'B')
             $pet->setColorB($newColor);
         else
-            throw new UnprocessableEntityHttpException('You forgot to choose which color to recolor!');
+            throw new PSPFormValidationException('You forgot to choose which color to recolor!');
 
         if($pet->hasMerit(MeritEnum::HYPERCHROMATIC))
         {

@@ -4,6 +4,7 @@ namespace App\Controller\Beehive;
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\InventoryRepository;
@@ -49,7 +50,7 @@ class ReRollRequestController extends AbstractController
             throw new PSPNotFoundException('The selected item does not exist! (Reload and try again?)');
 
         if(!array_key_exists($item->getItem()->getName(), HollowEarthService::DICE_ITEMS))
-            throw new UnprocessableEntityHttpException('The selected item is not a die! (Reload and try again?)');
+            throw new PSPInvalidOperationException('The selected item is not a die!? (Weird! Reload and try again??)');
 
         $em->remove($item);
 

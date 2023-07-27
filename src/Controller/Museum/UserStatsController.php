@@ -3,12 +3,12 @@ namespace App\Controller\Museum;
 
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Service\Filter\ItemFilterService;
 use App\Service\Filter\MuseumFilterService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -27,7 +27,7 @@ class UserStatsController extends AbstractController
     )
     {
         if($this->getUser()->getUnlockedMuseum() === null)
-            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+            throw new PSPNotUnlockedException('Museum');
 
         $museumFilterService->addRequiredFilter('user', $user->getId());
 
@@ -47,7 +47,7 @@ class UserStatsController extends AbstractController
     )
     {
         if($this->getUser()->getUnlockedMuseum() === null)
-            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+            throw new PSPNotUnlockedException('Museum');
 
         $itemFilterService->addRequiredFilter('notDonatedBy', $user->getId());
 
@@ -67,7 +67,7 @@ class UserStatsController extends AbstractController
     )
     {
         if($this->getUser()->getUnlockedMuseum() === null)
-            throw new AccessDeniedHttpException('You have not unlocked this feature yet.');
+            throw new PSPNotUnlockedException('Museum');
 
         $museumFilterService->addRequiredFilter('user', $user->getId());
 

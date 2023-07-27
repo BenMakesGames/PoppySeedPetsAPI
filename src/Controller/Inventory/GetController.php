@@ -4,12 +4,12 @@ namespace App\Controller\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPFormValidationException;
 use App\Repository\InventoryRepository;
 use App\Service\Filter\InventoryFilterService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -46,7 +46,7 @@ class GetController extends AbstractController
     )
     {
         if(!LocationEnum::isAValue($location))
-            throw new UnprocessableEntityHttpException('Invalid location given.');
+            throw new PSPFormValidationException('Invalid location given.');
 
         /** @var User $user */
         $user = $this->getUser();

@@ -4,6 +4,7 @@ namespace App\Controller\Item;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Service\HollowEarthService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -34,7 +35,7 @@ class DieController extends AbstractController
         $itemName = $inventory->getItem()->getName();
 
         if(!array_key_exists($itemName, HollowEarthService::DICE_ITEMS))
-            throw new UnprocessableEntityHttpException('Selected item is not a die!');
+            throw new PSPInvalidOperationException('The selected item is not a die!? (Weird! Reload and try again??)');
 
         if($itemName === 'Dreidel')
         {

@@ -43,7 +43,7 @@ class MagicMirrorController extends AbstractController
         $merit = $meritRepository->findOneByName(MeritEnum::MIRRORED);
 
         if(!$merit)
-            throw new HttpException(500, 'The ' . MeritEnum::MIRRORED . ' Merit does not exist! This is a terrible programming error. Someone please tell Ben.');
+            throw new \Exception('The ' . MeritEnum::MIRRORED . ' Merit does not exist! This is a terrible programming error. Someone please tell Ben.');
 
         if($pet->hasMerit(MeritEnum::MIRRORED))
         {

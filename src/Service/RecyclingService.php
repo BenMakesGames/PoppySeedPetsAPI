@@ -3,16 +3,14 @@ namespace App\Service;
 
 use App\Entity\Inventory;
 use App\Entity\User;
-use App\Entity\UserActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\PlayerLogHelpers;
-use App\Repository\UserActivityLogTagRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class RecyclingService
 {
@@ -72,7 +70,7 @@ class RecyclingService
         $givingTree = $this->userRepository->findOneByEmail('giving-tree@poppyseedpets.com');
 
         if(!$givingTree)
-            throw new HttpException(500, 'The "Giving Tree" NPC does not exist in the database!');
+            throw new \Exception('The "Giving Tree" NPC does not exist in the database!');
 
         $givingTreeHoliday = $this->calendarService->isValentinesOrAdjacent() || $this->calendarService->isWhiteDay();
         $questItems = [];
@@ -84,7 +82,7 @@ class RecyclingService
         foreach($inventory as $i)
         {
             if($i->getOwner()->getId() !== $user->getId())
-                throw new \Exception('Cannot recycle items that do not belong to you!');
+                throw new PSPNotFoundException('Could not find one or more of the selected items... (Reload and try again?)');
 
             if($i->getItem()->getCannotBeThrownOut())
             {

@@ -3,6 +3,7 @@ namespace App\Controller\HollowEarth;
 
 use App\Entity\HollowEarthPlayerTile;
 use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\HollowEarthPlayerTileRepository;
 use App\Repository\HollowEarthTileRepository;
@@ -42,10 +43,10 @@ class RemoveTileCardController extends AbstractController
         $tile = $hollowEarthTileRepository->find($tileId);
 
         if(!$tile)
-            throw new UnprocessableEntityHttpException('That space in the Hollow Earth does not exist?!?! (Maybe reload and try again...)');
+            throw new PSPNotFoundException('That space in the Hollow Earth does not exist?!?! (Maybe reload and try again...)');
 
         if($tile->getCard() && $tile->getCard()->getType()->getName() === 'Fixed')
-            throw new UnprocessableEntityHttpException('That space in the Hollow Earth cannot be changed!');
+            throw new PSPInvalidOperationException('That space in the Hollow Earth cannot be changed!');
 
         $existingPlayerTile = $hollowEarthPlayerTileRepository->findOneBy([
             'player' => $user,

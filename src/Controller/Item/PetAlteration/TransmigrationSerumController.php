@@ -3,6 +3,7 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
@@ -51,7 +52,7 @@ class TransmigrationSerumController extends AbstractController
         $newSpecies = $petSpeciesRepository->find($speciesId);
 
         if(!$newSpecies)
-            throw new UnprocessableEntityHttpException('The selected species doesn\'t exist?? Try reloading and trying again.');
+            throw new PSPFormValidationException('The selected species doesn\'t exist?? Try reloading and trying again.');
 
         if($newSpecies->getFamily() !== $pet->getSpecies()->getFamily() || !$newSpecies->getAvailableForTransmigration())
             throw new UnprocessableEntityHttpException($pet->getName() . ' can\'t be transmigrated into a ' . $newSpecies->getName() . '.');

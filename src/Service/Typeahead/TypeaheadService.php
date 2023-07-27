@@ -1,6 +1,7 @@
 <?php
 namespace App\Service\Typeahead;
 
+use App\Exceptions\PSPFormValidationException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 
@@ -15,12 +16,12 @@ abstract class TypeaheadService
 
     abstract public function addQueryBuilderConditions(QueryBuilder $qb): QueryBuilder;
 
-    public function search(string $fieldToSearch, string $searchString, int $maxResults = 5)
+    public function search(string $fieldToSearch, string $searchString, int $maxResults = 5): array
     {
         $search = trim($searchString);
 
         if($search === '')
-            throw new \InvalidArgumentException('trim($searchString) must contain at least one character.');
+            throw new PSPFormValidationException('Search text is missing...');
 
         $qb = $this->repository->createQueryBuilder('e')
             ->andWhere('e.' . $fieldToSearch . ' LIKE :searchLike')

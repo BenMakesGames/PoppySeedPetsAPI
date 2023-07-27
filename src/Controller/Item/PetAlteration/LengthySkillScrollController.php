@@ -4,6 +4,8 @@ namespace App\Controller\Item\PetAlteration;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\PetSkillEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\PetActivityLogTagRepository;
@@ -43,13 +45,13 @@ class LengthySkillScrollController extends AbstractController
         $skill = $request->request->get('skill', '');
 
         if(!PetSkillEnum::isAValue($skill))
-            throw new UnprocessableEntityHttpException('You gotta\' select a skill to increase!');
+            throw new PSPFormValidationException('You gotta\' select a skill to increase!');
 
         if($pet->getSkills()->getStat($skill) < 10)
-            throw new UnprocessableEntityHttpException('Only skills with at least 10 points may be selected.');
+            throw new PSPInvalidOperationException('Only skills with at least 10 points may be selected.');
 
         if($pet->getSkills()->getStat($skill) >= 20)
-            throw new UnprocessableEntityHttpException($pet->getName() . ' already has 20 points of ' . $skill . '! It doesn\'t get higher than that!');
+            throw new PSPInvalidOperationException($pet->getName() . ' already has 20 points of ' . $skill . '! It doesn\'t get higher than that!');
 
         $em->remove($inventory);
 

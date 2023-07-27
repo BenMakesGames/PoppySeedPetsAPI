@@ -3,6 +3,8 @@ namespace App\Controller\Market;
 
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\PlayerLogHelpers;
 use App\Service\InventoryService;
 use App\Service\MarketService;
@@ -51,10 +53,10 @@ class LimitsController extends AbstractController
         $itemRequired = $marketService->getItemToRaiseLimit($user);
 
         if(!$itemRequired)
-            throw new UnprocessableEntityHttpException('The market limits don\'t go any higher!');
+            throw new PSPInvalidOperationException('The market limits don\'t go any higher!');
 
         if($inventoryService->loseItem($itemRequired['itemName'], $user, [ LocationEnum::HOME, LocationEnum::BASEMENT ], 1) === 0)
-            throw new UnprocessableEntityHttpException('Come back when you ACTUALLY have the item.');
+            throw new PSPNotFoundException('Come back when you ACTUALLY have the item.');
 
         $user->setMaxSellPrice($user->getMaxSellPrice() + 10);
 

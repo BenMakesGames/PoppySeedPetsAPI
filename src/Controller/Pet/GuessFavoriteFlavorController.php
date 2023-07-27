@@ -7,6 +7,7 @@ use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\UserQuestRepository;
@@ -15,8 +16,6 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -49,12 +48,12 @@ class GuessFavoriteFlavorController extends AbstractController
         $guess = strtolower(trim($request->request->getAlpha('flavor')));
 
         if(!FlavorEnum::isAValue($guess))
-            throw new UnprocessableEntityHttpException('Please pick a flavor.');
+            throw new PSPFormValidationException('Please pick a flavor.');
 
         $flavorGuesses = $userQuestRepository->findOrCreate($user, 'Flavor Guesses for Pet #' . $pet->getId(), 0);
 
         if($flavorGuesses->getValue() > 0 && $flavorGuesses->getLastUpdated()->format('Y-m-d') === date('Y-m-d'))
-            throw new AccessDeniedHttpException('You already guessed today. Try again tomorrow.');
+            throw new PSPInvalidOperationException('You already guessed today. Try again tomorrow.');
 
         $flavorGuesses->setValue($flavorGuesses->getValue() + 1);
 

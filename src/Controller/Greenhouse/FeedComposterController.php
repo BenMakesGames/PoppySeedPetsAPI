@@ -6,6 +6,8 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Functions\PlayerLogHelpers;
@@ -68,7 +70,7 @@ class FeedComposterController extends AbstractController
         });
 
         if(count($items) < count($itemIds))
-            throw new UnprocessableEntityHttpException('Some of the compost items selected could not be used. That shouldn\'t happen. Reload and try again, maybe?');
+            throw new PSPNotFoundException('Some of the compost items selected could not be found. That shouldn\'t happen. Reload and try again, maybe?');
 
         $totalFertilizer = $user->getGreenhouse()->getComposterFood();
 
@@ -101,10 +103,10 @@ class FeedComposterController extends AbstractController
             $itemsAtHome = $inventoryService->countTotalInventory($user, LocationEnum::HOME);
 
             if($itemsAtHome > 100)
-                throw new UnprocessableEntityHttpException('That would leave you with more items at home than you started with, and you\'re already over 100!');
+                throw new PSPInvalidOperationException('That would leave you with more items at home than you started with, and you\'re already over 100!');
 
             if($itemsAtHome + $itemDelta > 100)
-                throw new UnprocessableEntityHttpException('That would leave you with ' . ($itemsAtHome + $itemDelta) . ' items at home. (100 is the usual limit.)');
+                throw new PSPInvalidOperationException('That would leave you with ' . ($itemsAtHome + $itemDelta) . ' items at home. (100 is the usual limit.)');
         }
 
         foreach($items as $item)

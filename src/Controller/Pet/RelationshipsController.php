@@ -3,6 +3,7 @@ namespace App\Controller\Pet;
 
 use App\Entity\Pet;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
 use App\Repository\SpiritCompanionRepository;
@@ -10,7 +11,6 @@ use App\Service\Filter\PetRelationshipFilterService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -48,7 +48,7 @@ class RelationshipsController extends AbstractController
     )
     {
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
-            throw new AccessDeniedHttpException('This isn\'t your pet.');
+            throw new PSPPetNotFoundException();
 
         $relationships = $petRelationshipRepository->getFriends($pet);
 

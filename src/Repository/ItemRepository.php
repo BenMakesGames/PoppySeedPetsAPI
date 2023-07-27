@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Inventory;
 use App\Entity\Item;
 use App\Entity\User;
+use App\Exceptions\PSPNotFoundException;
 use App\Model\ItemQuantity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -31,7 +32,7 @@ class ItemRepository extends ServiceEntityRepository
             ->enableResultCache(24 * 60 * 60, 'ItemRepository_FindOneByName_' . $itemName)
             ->getOneOrNullResult();
 
-        if(!$item) throw new \InvalidArgumentException('There is no item called ' . $itemName . '.');
+        if(!$item) throw new PSPNotFoundException('There is no item called ' . $itemName . '.');
 
         return $item;
     }
@@ -47,7 +48,7 @@ class ItemRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
 
         if(!$itemId)
-            throw new \InvalidArgumentException('There is no item called ' . $itemName . '.');
+            throw new PSPNotFoundException('There is no item called ' . $itemName . '.');
 
         return $itemId;
     }

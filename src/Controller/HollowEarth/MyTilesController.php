@@ -4,6 +4,7 @@ namespace App\Controller\HollowEarth;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
@@ -37,7 +38,7 @@ class MyTilesController extends AbstractController
         $types = $request->query->get('types', []);
 
         if(!is_array($types) || count($types) === 0)
-            throw new UnprocessableEntityHttpException('The types of tiles is missing.');
+            throw new PSPFormValidationException('The types of tiles to look for were not specified.');
 
         $tiles = $inventoryRepository->createQueryBuilder('i')
             ->leftJoin('i.item', 'item')

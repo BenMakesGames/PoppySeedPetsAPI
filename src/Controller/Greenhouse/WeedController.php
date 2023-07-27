@@ -4,6 +4,7 @@ namespace App\Controller\Greenhouse;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
 use App\Functions\PlayerLogHelpers;
@@ -20,7 +21,6 @@ use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -53,7 +53,7 @@ class WeedController extends AbstractController
         $weedTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $weeds->getValue());
 
         if($weedTime > new \DateTimeImmutable())
-            throw new UnprocessableEntityHttpException('Your garden\'s doin\' just fine right now, weed-wise.');
+            throw new PSPInvalidOperationException('Your garden\'s doin\' just fine right now, weed-wise.');
 
         $weeds->setValue((new \DateTimeImmutable())->modify('+18 hours')->format('Y-m-d H:i:s'));
 

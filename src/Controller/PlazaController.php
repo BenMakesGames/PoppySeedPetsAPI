@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ArrayFunctions;
 use App\Model\AvailableHolidayBox;
 use App\Service\InventoryService;
@@ -40,7 +41,7 @@ class PlazaController extends AbstractController
         $box = ArrayFunctions::find_one($availableBoxes, fn(AvailableHolidayBox $box) => $box->nameWithQuantity === $requestedBox);
 
         if(!$box)
-            throw new UnprocessableEntityHttpException('No holiday box is available right now...');
+            throw new PSPInvalidOperationException('No holiday box is available right now...');
 
         if($box->userQuestEntity)
             $box->userQuestEntity->setValue(true);

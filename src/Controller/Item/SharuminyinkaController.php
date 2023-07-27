@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Model\TraderOffer;
 use App\Model\TraderOfferCostOrYield;
@@ -28,9 +29,10 @@ class SharuminyinkaController extends AbstractController
         EntityManagerInterface $em, InventoryRepository $inventoryRepository
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'sharuminyinka/#/createHope');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'sharuminyinka/#/createHope');
 
         $houseInventoryQuantities = $inventoryRepository->getInventoryQuantities($user, LocationEnum::HOME, 'name');
 
@@ -71,9 +73,10 @@ class SharuminyinkaController extends AbstractController
         EntityManagerInterface $em
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'sharuminyinka/#/createMemory');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'sharuminyinka/#/createMemory');
 
         $exchange = TraderOffer::createTradeOffer(
             [

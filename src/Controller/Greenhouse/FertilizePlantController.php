@@ -6,6 +6,8 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\GrammarFunctions;
 use App\Functions\PlayerLogHelpers;
@@ -44,7 +46,7 @@ class FertilizePlantController extends AbstractController
             throw new PSPNotFoundException('That plant does not exist.');
 
         if(new \DateTimeImmutable() < $plant->getCanNextInteract())
-            throw new UnprocessableEntityHttpException('This plant is not yet ready to fertilize.');
+            throw new PSPInvalidOperationException('This plant is not yet ready to fertilize.');
 
         $fertilizerId = $request->request->getInt('fertilizer', 0);
 
@@ -55,7 +57,7 @@ class FertilizePlantController extends AbstractController
         ]);
 
         if(!$fertilizer || $fertilizer->getItem()->getFertilizer() === 0)
-            throw new UnprocessableEntityHttpException('A fertilizer must be selected.');
+            throw new PSPFormValidationException('A fertilizer must be selected.');
 
         $plant->increaseGrowth($fertilizer->getItem()->getFertilizer());
 

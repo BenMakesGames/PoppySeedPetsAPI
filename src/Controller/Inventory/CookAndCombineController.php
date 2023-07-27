@@ -5,6 +5,7 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
@@ -17,7 +18,6 @@ use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -66,65 +66,58 @@ class CookAndCombineController extends AbstractController
             /** @var Inventory $addOn */
             $addOn = ArrayFunctions::find_one($inventory, fn(Inventory $i) => $i->getId() === $inventoryIds[1]);
 
-            try
+            // try enchanting
+            $enchanted = null;
+
+            if($baseItem->getItem()->getTool() && $addOn->getItem()->getEnchants())
             {
-                // try enchanting
-                $enchanted = null;
-
-                if($baseItem->getItem()->getTool() && $addOn->getItem()->getEnchants())
-                {
-                    InventoryModifierFunctions::enchant($em, $baseItem, $addOn);
-                    $enchanted = $baseItem;
-                }
-                else if($addOn->getItem()->getTool() && $baseItem->getItem()->getEnchants())
-                {
-                    InventoryModifierFunctions::enchant($em, $addOn, $baseItem);
-                    $enchanted = $addOn;
-                }
-
-                if($enchanted)
-                {
-                    $newName = InventoryModifierFunctions::getNameWithModifiers($enchanted);
-
-                    $responseService->addFlashMessage('The ' . $enchanted->getItem()->getName() . ' is now ' . GrammarFunctions::indefiniteArticle($newName) . ' ' . $newName . '!');
-
-                    $em->flush();
-
-                    $responseService->setReloadInventory();
-
-                    return $responseService->success($enchanted, [ SerializationGroupEnum::MY_INVENTORY ]);
-                }
-
-                // try spicing up
-                $spiced = null;
-
-                if($baseItem->getItem()->getFood() && $addOn->getItem()->getSpice())
-                {
-                    InventoryModifierFunctions::spiceUp($em, $baseItem, $addOn);
-                    $spiced = $baseItem;
-                }
-                else if($addOn->getItem()->getFood() && $baseItem->getItem()->getSpice())
-                {
-                    InventoryModifierFunctions::spiceUp($em, $addOn, $baseItem);
-                    $spiced = $addOn;
-                }
-
-                if($spiced)
-                {
-                    $newName = InventoryModifierFunctions::getNameWithModifiers($spiced);
-
-                    $responseService->addFlashMessage('The ' . $spiced->getItem()->getName() . ' is now ' . GrammarFunctions::indefiniteArticle($newName) . ' ' . $newName . '!');
-
-                    $em->flush();
-
-                    $responseService->setReloadInventory();
-
-                    return $responseService->success($spiced, [ SerializationGroupEnum::MY_INVENTORY ]);
-                }
+                InventoryModifierFunctions::enchant($em, $baseItem, $addOn);
+                $enchanted = $baseItem;
             }
-            catch(\InvalidArgumentException $exception)
+            else if($addOn->getItem()->getTool() && $baseItem->getItem()->getEnchants())
             {
-                throw new UnprocessableEntityHttpException($exception->getMessage(), $exception);
+                InventoryModifierFunctions::enchant($em, $addOn, $baseItem);
+                $enchanted = $addOn;
+            }
+
+            if($enchanted)
+            {
+                $newName = InventoryModifierFunctions::getNameWithModifiers($enchanted);
+
+                $responseService->addFlashMessage('The ' . $enchanted->getItem()->getName() . ' is now ' . GrammarFunctions::indefiniteArticle($newName) . ' ' . $newName . '!');
+
+                $em->flush();
+
+                $responseService->setReloadInventory();
+
+                return $responseService->success($enchanted, [ SerializationGroupEnum::MY_INVENTORY ]);
+            }
+
+            // try spicing up
+            $spiced = null;
+
+            if($baseItem->getItem()->getFood() && $addOn->getItem()->getSpice())
+            {
+                InventoryModifierFunctions::spiceUp($em, $baseItem, $addOn);
+                $spiced = $baseItem;
+            }
+            else if($addOn->getItem()->getFood() && $baseItem->getItem()->getSpice())
+            {
+                InventoryModifierFunctions::spiceUp($em, $addOn, $baseItem);
+                $spiced = $addOn;
+            }
+
+            if($spiced)
+            {
+                $newName = InventoryModifierFunctions::getNameWithModifiers($spiced);
+
+                $responseService->addFlashMessage('The ' . $spiced->getItem()->getName() . ' is now ' . GrammarFunctions::indefiniteArticle($newName) . ' ' . $newName . '!');
+
+                $em->flush();
+
+                $responseService->setReloadInventory();
+
+                return $responseService->success($spiced, [ SerializationGroupEnum::MY_INVENTORY ]);
             }
         }
 
@@ -135,7 +128,7 @@ class CookAndCombineController extends AbstractController
         $em->flush();
 
         if($results === null)
-            throw new UnprocessableEntityHttpException('You can\'t make anything with those ingredients.');
+            throw new PSPInvalidOperationException('You can\'t make anything with those ingredients.');
 
         $qList = [];
         $totalQuantity = 0;

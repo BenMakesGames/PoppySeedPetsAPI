@@ -7,6 +7,7 @@ use App\Entity\SpiritCompanion;
 use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
@@ -17,8 +18,6 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -125,10 +124,10 @@ class AffectionRewardController extends AbstractController
         $skillName = $request->request->get('skill');
 
         if(!PetSkillEnum::isAValue($skillName))
-            throw new UnprocessableEntityHttpException('"' . $skillName . '" is not a skill!');
+            throw new PSPFormValidationException('"' . $skillName . '" is not a skill!');
 
         if($pet->getSkills()->getStat($skillName) >= 20)
-            throw new UnprocessableEntityHttpException($pet->getName() . '\'s ' . $skillName . ' is already max!');
+            throw new PSPInvalidOperationException($pet->getName() . '\'s ' . $skillName . ' is already max!');
 
         $pet->getSkills()->increaseStat($skillName);
         $pet->increaseAffectionRewardsClaimed();

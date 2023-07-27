@@ -528,6 +528,6 @@ class TreasureMapService
             case FlavorEnum::CHEMICALLY: return [ 'Fermented Fish Onigiri', 'Century Egg', 'Tomato "Sushi"' ];
         }
 
-        throw new \InvalidArgumentException('Ben forgot to code Fluffmonger foods for the flavor "' . $flavor . '"!');
+        throw new \Exception('Ben forgot to code Fluffmonger foods for the flavor "' . $flavor . '"!');
     }
 }

@@ -3,6 +3,7 @@ namespace App\Controller\Style;
 
 use App\Entity\User;
 use App\Entity\UserStyle;
+use App\Exceptions\PSPFormValidationException;
 use App\Repository\UserStyleRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,7 +32,7 @@ class ShareController extends AbstractController
         $name = trim($request->request->get('name'));
 
         if(strlen($name) < 1 || strlen($name) > 15)
-            throw new UnprocessableEntityHttpException('Name must be between 1 and 15 characters.');
+            throw new PSPFormValidationException('Name must be between 1 and 15 characters.');
 
         $current = $userStyleRepository->findCurrent($user);
 

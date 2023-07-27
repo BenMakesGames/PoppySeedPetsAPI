@@ -3,14 +3,16 @@ namespace App\Controller\Inventory;
 
 use App\Entity\Inventory;
 use App\Entity\User;
+use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\InventoryRepository;
 use App\Service\MarketService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -32,25 +34,25 @@ class SellController extends AbstractController
         $user = $this->getUser();
 
         if($user->getUnlockedMarket() === null)
-            throw new AccessDeniedHttpException('You have not yet unlocked this feature.');
+            throw new PSPNotUnlockedException('Market');
 
         $itemIds = $request->request->get('items', []);
 
         if(!is_array($itemIds))
         {
             if(!is_numeric($itemIds))
-                throw new UnprocessableEntityHttpException('You must select at least one item!');
+                throw new PSPFormValidationException('You must select at least one item!');
 
             $itemIds = [ $itemIds ];
         }
 
         if(count($itemIds) === 0)
-            throw new UnprocessableEntityHttpException('You must select at least one item!');
+            throw new PSPFormValidationException('You must select at least one item!');
 
         $price = $request->request->getInt('price', 0);
 
         if($price > $user->getMaxSellPrice())
-            throw new UnprocessableEntityHttpException('You cannot list items for more than ' . $user->getMaxSellPrice() . ' moneys. See the Market Manager to see if you can increase this limit!');
+            throw new PSPInvalidOperationException('You cannot list items for more than ' . $user->getMaxSellPrice() . ' moneys. See the Market Manager to see if you can increase this limit!');
 
         /** @var Inventory[] $inventory */
         $inventory = $inventoryRepository->createQueryBuilder('i')
@@ -70,7 +72,7 @@ class SellController extends AbstractController
         ;
 
         if(count($inventory) !== count($itemIds))
-            throw new UnprocessableEntityHttpException('One or more of the selected items do not exist! Maybe reload and try again??');
+            throw new PSPNotFoundException('One or more of the selected items do not exist! Maybe reload and try again??');
 
         // if you're UNlisting items... EASY: do that:
         if($price <= 0)
