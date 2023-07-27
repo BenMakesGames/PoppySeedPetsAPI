@@ -3,6 +3,8 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
+use App\Service\CookingService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,6 +15,42 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class RiceBookController extends AbstractController
 {
+    private const RECIPES = [
+        'Nigiri',
+        'Onigiri',
+        'Fish Onigiri',
+        'Mini Melowatern Onigiri',
+        'Plain Fried Rice',
+        'Tentacle Fried Rice',
+        'Tofu Fried Rice',
+        'Vegetable Fried Rice',
+        'Rice Vinegar',
+        'Simple Sushi',
+        'TKG',
+        'Tapsilog',
+        'Tomato "Sushi"',
+        'Yaki Onigiri (A)',
+        'Zongzi',
+    ];
+
+    /**
+     * @Route("/{inventory}/upload", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function upload(
+        Inventory $inventory, ResponseService $responseService, CookingService $cookingService
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'riceBook/#/upload');
+
+        $message = $cookingService->showRecipeNamesToCookingBuddy($user, self::RECIPES);
+
+        return $responseService->itemActionSuccess($message);
+    }
+
     /**
      * @Route("/{inventory}/read", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
