@@ -985,6 +985,14 @@ class TraderService
 
         $offers[] = TraderOffer::createTradeOffer(
             [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Moon Pearl'), 1) ],
+            [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Hot Pot'), 1) ],
+            'That\'s no knock-off! Tell Samarzhoustia trades directly with the Eridanus Federation!',
+            $user,
+            $quantities
+        );
+
+        $offers[] = TraderOffer::createTradeOffer(
+            [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Moon Pearl'), 1) ],
             [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Composter'), 1) ],
             'That\'s no knock-off! Tell Samarzhoustia trades directly with the Eridanus Federation!',
             $user,

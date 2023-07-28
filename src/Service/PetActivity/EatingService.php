@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Inventory;
 use App\Entity\Item;
+use App\Entity\ItemGroup;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\EnumInvalidValueException;
@@ -12,6 +13,7 @@ use App\Enum\MeritEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
+use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Model\FoodWithSpice;
@@ -248,6 +250,9 @@ class EatingService
 
         $this->squirrel3->rngNextShuffle($inventory);
 
+        $isThirsty = $pet->hasStatusEffect(StatusEffectEnum::THIRSTY);
+        $gotAColdDrink = null;
+
         $petChanges = new PetChanges($pet);
         $foodsEaten = [];
         /** @var FoodWithSpice[] $favorites */ $favorites = [];
@@ -280,6 +285,9 @@ class EatingService
             $favoriteFlavorStrength = $this->getFavoriteFlavorStrength($pet, $food, $randomFlavor);
 
             $loveAndEsteemGain = $favoriteFlavorStrength + $food->love;
+
+            if($isThirsty && !$gotAColdDrink && ArrayFunctions::any($i->getItem()->getItemGroups(), fn(ItemGroup $ig) => $ig->getName() === 'Cold Drink'))
+                $gotAColdDrink = $i->getItem();
 
             $pet
                 ->increaseLove($loveAndEsteemGain)
@@ -337,6 +345,12 @@ class EatingService
                 $message .= ' ' . $pet->getName() . ' really liked the ' . $this->squirrel3->rngNextFromArray($favorites)->name . '!';
             }
 
+            if($isThirsty && $gotAColdDrink)
+            {
+                $statusEffect = $this->satisfiedThirsty($pet);
+                $message .= ' The ' . $gotAColdDrink->getName() . ' satisfied their Thirst! They\'re feeling ' . $statusEffect . '!';
+            }
+
             if($ateAFortuneCookie)
             {
                 $message .= ' "' . $this->squirrel3->rngNextFromArray(FortuneCookie::MESSAGES) . '"';
@@ -370,5 +384,22 @@ class EatingService
                 ;
             }
         }
+    }
+
+    private function satisfiedThirsty(Pet $pet): string
+    {
+        $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::THIRSTY));
+
+        $this->petExperienceService->gainAffection($pet, 2);
+
+        $statusEffect = $this->squirrel3->rngNextFromArray([
+            StatusEffectEnum::INSPIRED,
+            StatusEffectEnum::ONEIRIC,
+            StatusEffectEnum::VIVACIOUS,
+        ]);
+
+        $this->statusEffectService->applyStatusEffect($pet, $statusEffect, 8 * 60);
+
+        return $statusEffect;
     }
 }

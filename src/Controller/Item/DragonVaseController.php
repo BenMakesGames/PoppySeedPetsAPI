@@ -7,6 +7,7 @@ use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
+use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
@@ -26,7 +27,6 @@ use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -125,7 +125,10 @@ class DragonVaseController extends AbstractController
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'dragonVase');
 
-        $itemId = $request->request->getInt('tool');
+        $itemId = $request->request->getInt('tool', 0);
+
+        if($itemId <= 0)
+            throw new PSPFormValidationException('You forgot to select a tool!');
 
         $dippedItem = $inventoryRepository->findOneBy([
             'id' => $itemId,

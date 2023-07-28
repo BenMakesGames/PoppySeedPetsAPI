@@ -329,6 +329,9 @@ class ComputedPetSkills
     {
         $skill = new TotalPetSkill();
         $skill->tool = $this->pet->getTool() && $this->pet->getTool()->protectsFromHeat() ? 1 : 0;
+        $skill->statusEffects =
+            ($this->pet->hasStatusEffect(StatusEffectEnum::HEAT_RESISTANT) ? 1 : 0)
+        ;
 
         return $skill;
     }

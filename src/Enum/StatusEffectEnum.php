@@ -38,4 +38,6 @@ final class StatusEffectEnum
     public const MOONSTRUCK = 'Moonstruck';
     public const CORDIAL = 'Cordial';
     public const DANCING_LIKE_A_FOOL = 'Dancing Like a Fool';
+    public const THIRSTY = 'Thirsty';
+    public const HEAT_RESISTANT = 'Heat-resistant';
 }
