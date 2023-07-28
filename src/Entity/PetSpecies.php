@@ -333,11 +333,6 @@ class PetSpecies
         return $this->getId() <= 16 || $this->getId() === 96 || $this->getId() === 100;
     }
 
-    public function getAvailableForTransmigration(): bool
-    {
-        return $this->getAvailableAtSignup() || $this->getAvailableFromBreeding() || $this->getAvailableFromPetShelter();
-    }
-
     public function getSheds(): ?Item
     {
         return $this->sheds;
