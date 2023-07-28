@@ -330,7 +330,7 @@ class PetSpecies
      */
     public function getAvailableAtSignup(): bool
     {
-        return $this->getId() <= 16;
+        return $this->getId() <= 16 || $this->getId() === 96 || $this->getId() === 100;
     }
 
     public function getAvailableForTransmigration(): bool
