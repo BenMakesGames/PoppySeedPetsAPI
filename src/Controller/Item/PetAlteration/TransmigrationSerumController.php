@@ -54,7 +54,7 @@ class TransmigrationSerumController extends AbstractController
         if(!$newSpecies)
             throw new PSPFormValidationException('The selected species doesn\'t exist?? Try reloading and trying again.');
 
-        if($newSpecies->getFamily() !== $pet->getSpecies()->getFamily() || !$newSpecies->getAvailableForTransmigration())
+        if($newSpecies->getFamily() !== $pet->getSpecies()->getFamily())
             throw new PSPInvalidOperationException($pet->getName() . ' can\'t be transmigrated into a ' . $newSpecies->getName() . '.');
 
         $em->remove($inventory);

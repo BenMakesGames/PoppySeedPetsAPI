@@ -195,10 +195,23 @@ class GatheringService
         }
         else if($this->squirrel3->rngNextInt(1, $poboChance) === 1)
         {
-            $pobosFound->setValue($pobosFound->getValue() + 1);
-            $pobo = $this->petSpeciesRepository->findOneBy([ 'name' => 'Pobo' ]);
+            $newPetInfo = $this->squirrel3->rngNextFromArray([
+                [
+                    'Species' => 'Pobo',
+                    'FindDescription' => '%pet:' . $pet->getId() . '.name% went to an Abandoned Quarry, and happened to find a Stereotypical Bone! But when they picked it up, it began to move on its own! IT\'S POSSESSED!',
+                    'ColorB' => 'ece8d0',
+                ],
+                [
+                    'Species' => 'Catacomb Spirit',
+                    'FindDescription' => '%pet:' . $pet->getId() . '.name% went to an Abandoned Quarry, and stumbled upon an ancient catacomb! As they were exploring, looking for treasure, a spirit rose from the bones and began to follow them!',
+                    'ColorB' => ColorFunctions::HSL2Hex($this->squirrel3->rngNextFloat(), 0.85, 0.5),
+                ]
+            ]);
 
-            $poboName = $this->squirrel3->rngNextFromArray([
+            $pobosFound->setValue($pobosFound->getValue() + 1);
+            $newPetSpecies = $this->petSpeciesRepository->findOneBy([ 'name' => $newPetInfo['Species'] ]);
+
+            $newPetName = $this->squirrel3->rngNextFromArray([
                 'Flit', 'Waverly', 'Mirage', 'Shadow', 'Calcium',
                 'Kneecap', 'Osteal', 'Papyrus', 'Quint', 'Debris'
             ]);
@@ -206,8 +219,8 @@ class GatheringService
             $colorA = ColorFunctions::HSL2Hex($this->squirrel3->rngNextFloat(), 0.62, 0.53);
 
             $newPet = $this->petFactory->createPet(
-                $pet->getOwner(), $poboName, $pobo,
-                $colorA, 'ece8d0',
+                $pet->getOwner(), $newPetName, $newPetSpecies,
+                $colorA, $newPetInfo['ColorB'],
                 FlavorEnum::getRandomValue($this->squirrel3),
                 $this->meritRepository->findOneByName(MeritEnum::NO_SHADOW_OR_REFLECTION)
             );
@@ -238,7 +251,7 @@ class GatheringService
 
             $this->responseService->setReloadPets($petJoinsHouse);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to an Abandoned Quarry, and happened to find a Stereotypical Bone! But when they picked it up, it began to move on its own! IT\'S POSSESSED! ' . $extraMessage, '')
+            $activityLog = $this->responseService->createActivityLog($pet, $newPetInfo['FindDescription'] . ' ' . $extraMessage, '')
                 ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Gathering' ]))
             ;
 

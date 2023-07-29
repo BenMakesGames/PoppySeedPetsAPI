@@ -28,7 +28,6 @@ class PetSpeciesFilterService
             [
                 'name' => [ $this, 'filterName' ],
                 'family' => [ $this, 'filterFamily' ],
-                'canTransmigrate' => [ $this, 'filterCanTransmigrate' ],
                 'hasPet' => [ $this, 'filterHasPet' ],
             ]
         );
@@ -74,14 +73,6 @@ class PetSpeciesFilterService
             ->andWhere('s.family LIKE :family')
             ->setParameter('family', $value)
         ;
-    }
-
-    public function filterCanTransmigrate(QueryBuilder $qb, $value)
-    {
-        if($value)
-            $qb->andWhere('(s.id<=16 OR s.availableFromBreeding=1 OR s.availableFromPetShelter=1)');
-        else
-            $qb->andWhere('s.id>16 AND s.availableFromBreeding=0 AND s.availableFromPetShelter=0');
     }
 
     function applyResultCache(Query $qb, string $cacheKey): Query

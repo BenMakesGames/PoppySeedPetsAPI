@@ -330,12 +330,7 @@ class PetSpecies
      */
     public function getAvailableAtSignup(): bool
     {
-        return $this->getId() <= 16;
-    }
-
-    public function getAvailableForTransmigration(): bool
-    {
-        return $this->getAvailableAtSignup() || $this->getAvailableFromBreeding() || $this->getAvailableFromPetShelter();
+        return $this->getId() <= 16 || $this->getId() === 96 || $this->getId() === 100;
     }
 
     public function getSheds(): ?Item
