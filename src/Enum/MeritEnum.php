@@ -17,12 +17,13 @@ final class MeritEnum
     public const PROTOCOL_7 = 'Protocol 7';
     public const INTROSPECTIVE = 'Introspective';
     public const VOLAGAMY = 'Volagamy';
-    public const PETALFOOT = 'Petalfoot'; // +1 nature and bonuses when assisting in the greenhouse or beehive
+    public const GREEN_THUMB = 'Green Thumb'; // +1 nature and bonuses when assisting in the greenhouse or beehive
     public const SHOCK_RESISTANT = 'Shock-resistant'; // immune to electric attacks; never fails to get bottles of lightning
     public const DARKVISION = 'Darkvision'; // can see in the dark
     public const GECKO_FINGERS = 'Gecko Fingers'; // +2 climbing
     public const WAY_OF_THE_EMPTY_HAND = 'Way of the Empty Hand'; // +5 brawl when equipped with a weapon that does not provide brawl
     public const ATHENAS_GIFTS = 'Athena\'s Gifts'; // sometimes get a Handicrafts Supply Box
+    public const IRON_STOMACH = 'Iron Stomach'; // receives half as much poison from poisonous foods
 
     // obtained through items
     public const BEHATTED = 'Behatted';
@@ -34,7 +35,7 @@ final class MeritEnum
     public const WONDROUS_DEXTERITY = 'Wondrous Dexterity';
     public const WONDROUS_PERCEPTION = 'Wondrous Perception';
     public const WONDROUS_INTELLIGENCE = 'Wondrous Intelligence';
-    public const ETERNAL = 'Eternal';
+    public const ETERNAL = 'Eternal'; // +1 to all stats
 
     // obtained through house time spent
     public const MIND_OVER_MATTER = 'Mind Over Matter';
@@ -54,7 +55,7 @@ final class MeritEnum
     public const SAGA_SAGA = 'Sága Saga';
     public const AFFECTIONLESS = 'Affectionless';
 
-    // every pet gets one (see additional lists, below)
+    // starting merits; every pet gets one (see additional lists, below)
     public const BURPS_MOTHS = 'Burps Moths';
     public const FRIEND_OF_THE_WORLD = 'Friend of the World'; // treats rivals as friends; treats fwbs as mates; always gives in to relationship changes
     public const GOURMAND = 'Gourmand'; // larger stomach
@@ -102,12 +103,13 @@ final class MeritInfo
     public const AFFECTION_REWARDS = [
         // stat-based:
         MeritEnum::EIDETIC_MEMORY, // int >= 3
-        MeritEnum::MOON_BOUND, // str >= 3 OR sta >= 3
+        MeritEnum::MOON_BOUND, // str >= 3
         MeritEnum::GECKO_FINGERS, // dex => 3
         MeritEnum::DARKVISION, // per >= 3
+        MeritEnum::IRON_STOMACH, // sta >= 3
 
         // skill-based:
-        MeritEnum::PETALFOOT, // nature >= 5
+        MeritEnum::GREEN_THUMB, // nature >= 5
         MeritEnum::SHOCK_RESISTANT, // science >= 5
         MeritEnum::WAY_OF_THE_EMPTY_HAND, // brawl >= 5
         MeritEnum::ATHENAS_GIFTS, // crafts >= 5

@@ -134,7 +134,7 @@ class ComputedPetSkills
             ($this->pet->hasStatusEffect(StatusEffectEnum::HEX_HEXED) ? 6 - $this->pet->getSkills()->getNature() : 0) +
             ($this->pet->getSkills()->getNature() < 10 && $this->pet->hasStatusEffect(StatusEffectEnum::FOCUSED_NATURE) ? 3 : 0)
         ;
-        $skill->merits = ($this->pet->hasMerit(MeritEnum::PETALFOOT) ? 1 : 0);
+        $skill->merits = ($this->pet->hasMerit(MeritEnum::GREEN_THUMB) ? 1 : 0);
 
         return $skill;
     }

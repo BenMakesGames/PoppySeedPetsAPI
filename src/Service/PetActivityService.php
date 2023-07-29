@@ -203,21 +203,40 @@ class PetActivityService
         if($pet->getAlcohol() > 0)
         {
             $pet->increaseAlcohol(-1);
-            $pet->increasePoison(1);
+
+            if($pet->hasMerit(MeritEnum::IRON_STOMACH))
+            {
+                if($this->squirrel3->rngNextInt(1, 2) === 1)
+                    $pet->increasePoison(1);
+            }
+            else
+                $pet->increasePoison(1);
         }
 
         if($pet->getCaffeine() > 0)
         {
             $pet->increaseCaffeine(-1);
 
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-                $pet->increasePoison(1);
+            if($pet->hasMerit(MeritEnum::IRON_STOMACH))
+            {
+                if($this->squirrel3->rngNextInt(1, 4) === 1)
+                    $pet->increasePoison(1);
+            }
+            else
+            {
+                if($this->squirrel3->rngNextInt(1, 2) === 1)
+                    $pet->increasePoison(1);
+            }
         }
 
         if($pet->getPsychedelic() > 0)
         {
             $pet->increasePsychedelic(-1);
-            $pet->increasePoison(2);
+
+            if($pet->hasMerit(MeritEnum::IRON_STOMACH))
+                $pet->increasePoison(1);
+            else
+                $pet->increasePoison(2);
         }
 
         $safetyRestingPoint = $pet->hasMerit(MeritEnum::NOTHING_TO_FEAR) ? 8 : 0;

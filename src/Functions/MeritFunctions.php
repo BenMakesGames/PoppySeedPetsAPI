@@ -57,7 +57,7 @@ class MeritFunctions
                 // stat-based merits:
 
                 case MeritEnum::MOON_BOUND:
-                    $available = $pet->getSkills()->getStamina() >= 3 || $pet->getSkills()->getStrength() >= 3;
+                    $available = $pet->getSkills()->getStrength() >= 3;
                     break;
 
                 case MeritEnum::DARKVISION:
@@ -70,6 +70,10 @@ class MeritFunctions
 
                 case MeritEnum::GECKO_FINGERS:
                     $available = $pet->getSkills()->getDexterity() >= 3;
+                    break;
+
+                case MeritEnum::IRON_STOMACH:
+                    $available = $pet->getSkills()->getStamina() >= 3;
                     break;
 
                 // skill-based merits:
@@ -86,7 +90,7 @@ class MeritFunctions
                     $available = $pet->getSkills()->getUmbra() >= 5;
                     break;
 
-                case MeritEnum::PETALFOOT:
+                case MeritEnum::GREEN_THUMB:
                     $available = $pet->getSkills()->getNature() >= 5;
                     break;
 

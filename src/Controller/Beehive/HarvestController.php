@@ -85,7 +85,7 @@ class HarvestController extends AbstractController
 
                 $changes = new PetChanges($helper);
 
-                if($helper->hasMerit(MeritEnum::PETALFOOT))
+                if($helper->hasMerit(MeritEnum::GREEN_THUMB))
                 {
                     $gathering = $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal();
 

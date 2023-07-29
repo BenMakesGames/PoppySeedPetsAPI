@@ -136,7 +136,7 @@ class WeedController extends AbstractController
 
             $bonusFlower = null;
 
-            if($helper->hasMerit(MeritEnum::PETALFOOT))
+            if($helper->hasMerit(MeritEnum::GREEN_THUMB))
             {
                 $possibleFlowers = [
                     'Agrimony',
