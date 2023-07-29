@@ -9,6 +9,7 @@ use App\Enum\MeritEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
+use App\Functions\GrammarFunctions;
 use App\Functions\PlayerLogHelpers;
 use App\Repository\DragonRepository;
 use App\Repository\EnchantmentRepository;
@@ -217,6 +218,8 @@ class DragonService
         $totalMoneys = 0;
         $extraItem = null;
 
+        $helperAdjectives = [];
+
         if($dragon->getHelper())
         {
             $helper = $dragon->getHelper();
@@ -224,9 +227,13 @@ class DragonService
 
             $businessSkill = $helperSkills->getIntelligence()->getTotal() +
                 ($helper->hasMerit(MeritEnum::EIDETIC_MEMORY) ? 3 : 0) +
-                ($helper->hasMerit(MeritEnum::GREGARIOUS) ? 1 : 0) +
+                ($helper->hasMerit(MeritEnum::GREGARIOUS) ? 2 : 0) +
                 ($helper->hasMerit(MeritEnum::LUCKY) ? 1 : 0)
             ;
+
+            if($helper->hasMerit(MeritEnum::EIDETIC_MEMORY)) $helperAdjectives[] = 'flawlessly-organized';
+            if($helper->hasMerit(MeritEnum::GREGARIOUS)) $helperAdjectives[] = 'incredibly-sociable';
+            if($helper->hasMerit(MeritEnum::LUCKY)) $helperAdjectives[] = 'surprisingly-lucky';
 
             $moneysMultiplier = $gems * 0.5 + $gold * 0.35 + $silver * 0.25;
             $workMultiplier = $gems * 3 + $gold * 2 + $silver;
@@ -273,7 +280,7 @@ class DragonService
 
                 $extraItemName = $this->rng->rngNextFromArray($possibleItems);
 
-                $extraItem = $this->inventoryService->receiveItem($extraItemName, $user, $user, $user->getName() . ' received this from their dragon, ' . $dragon->getName() . ', and pet, ' . $dragon->getHelper()->getName() . '.', LocationEnum::HOME);
+                $extraItem = $this->inventoryService->receiveItem($extraItemName, $user, $user, $user->getName() . ' received this from their dragon, ' . $dragon->getName() . ' (and ' . ArrayFunctions::list_nice($helperAdjectives) . ' helper, ' . $dragon->getHelper()->getName() . ').', LocationEnum::HOME);
             }
         }
 
@@ -287,13 +294,13 @@ class DragonService
         if($totalMoneys > 0)
         {
             if($extraItem)
-                $message .= ', plus ' . $totalMoneys . '~~m~~ and ' . $extraItem->getItem()->getNameWithArticle() . ' earned in investments (thanks to ' . $dragon->getHelper()->getName() . '\'s help!)';
+                $message .= ', plus ' . $totalMoneys . '~~m~~ and ' . $extraItem->getItem()->getNameWithArticle() . ' earned in investments (thanks to their ' . ArrayFunctions::list_nice($helperAdjectives) . ' helper, ' . $dragon->getHelper()->getName() . '!)';
             else
                 $message .= ', plus ' . $totalMoneys . '~~m~~ earned in investments (thanks to ' . $dragon->getHelper()->getName() . '\'s help!)';
         }
         else if($extraItem)
         {
-            $message .= ', plus ' . $extraItem->getItem()->getNameWithArticle() . ', which they earned from a particularly-lucrative deal (made in no small part due to ' . $dragon->getHelper()->getName() . '\'s help!)';
+            $message .= ', plus ' . $extraItem->getItem()->getNameWithArticle() . ', which they earned from a particularly-lucrative deal (thanks to their ' . ArrayFunctions::list_nice($helperAdjectives) . ' helper, ' . $dragon->getHelper()->getName() . '!)';
         }
         else
             $message .= '.';

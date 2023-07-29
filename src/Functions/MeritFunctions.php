@@ -3,117 +3,107 @@ namespace App\Functions;
 
 use App\Entity\Merit;
 use App\Entity\Pet;
-use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
+use App\Enum\MeritInfo;
 
 class MeritFunctions
 {
-    public const AFFECTION_MERITS = [
-        MeritEnum::EIDETIC_MEMORY,
-        MeritEnum::BLACK_HOLE_TUM,
-        MeritEnum::LUCKY,
-        MeritEnum::MOON_BOUND,
-        MeritEnum::NATURAL_CHANNEL,
-        MeritEnum::NO_SHADOW_OR_REFLECTION,
-        MeritEnum::SOOTHING_VOICE,
-        MeritEnum::SPIRIT_COMPANION,
-        MeritEnum::PROTOCOL_7,
-        MeritEnum::INTROSPECTIVE,
-        MeritEnum::VOLAGAMY,
-    ];
-
     /**
      * @return string[]
      */
     public static function getUnlearnableMerits(Pet $pet): array
     {
         $petMerits = array_map(fn(Merit $m) => $m->getName(), $pet->getMerits()->toArray());
-        $canUnlearn = array_values(array_intersect($petMerits, [
-            MeritEnum::INTROSPECTIVE,
-            MeritEnum::PROTOCOL_7,
-            MeritEnum::NATURAL_CHANNEL,
-            MeritEnum::SOOTHING_VOICE,
-            MeritEnum::BLACK_HOLE_TUM,
-            MeritEnum::EIDETIC_MEMORY,
-            MeritEnum::MOON_BOUND,
-            MeritEnum::NO_SHADOW_OR_REFLECTION,
-            MeritEnum::LUCKY,
-            MeritEnum::BURPS_MOTHS,
-            MeritEnum::DARKVISION,
-            MeritEnum::DREAMWALKER,
-            MeritEnum::GOURMAND,
-            MeritEnum::GREGARIOUS,
-            MeritEnum::HYPERCHROMATIC,
-            MeritEnum::LOLLIGOVORE,
-            MeritEnum::FRIEND_OF_THE_WORLD,
-            MeritEnum::PREHENSILE_TONGUE,
-            MeritEnum::SHEDS,
-            MeritEnum::SPECTRAL,
-            MeritEnum::MIRRORED,
-            MeritEnum::BEHATTED,
-            MeritEnum::SPIRIT_COMPANION,
-            MeritEnum::SAGA_SAGA,
-            MeritEnum::AFFECTIONLESS,
-        ]));
+        $canUnlearn = array_values(array_intersect(
+            $petMerits,
+            MeritInfo::FORGETTABLE_MERITS
+        ));
 
-        if(!$pet->getPregnancy() && $pet->hasMerit(MeritEnum::VOLAGAMY))
-            $canUnlearn[] = MeritEnum::VOLAGAMY;
+        if($pet->getPregnancy())
+        {
+            // remove MeritEnum::VOLAGAMY from $canUnlearn:
+            $canUnlearn = array_diff($canUnlearn, [ MeritEnum::VOLAGAMY ]);
+        }
 
         return $canUnlearn;
     }
 
     /**
      * @return string[]
-     * @throws EnumInvalidValueException
      */
     public static function getAvailableMerits(Pet $pet): array
     {
         /** @var string[] $availableMerits */
         $availableMerits = [];
 
-        foreach(MeritEnum::getValues() as $merit)
+        foreach(MeritInfo::AFFECTION_REWARDS as $merit)
         {
             if($pet->hasMerit($merit))
                 continue;
 
+            $petAgeInDays = (new \DateTimeImmutable())->diff($pet->getBirthDate())->days >= 14;
+
+            // some merits have additional requirements:
             switch($merit)
             {
                 case MeritEnum::VOLAGAMY:
-                    $available = (new \DateTimeImmutable())->diff($pet->getBirthDate())->days >= 14;
+                    $available = $petAgeInDays >= 14;
                     break;
 
                 case MeritEnum::INTROSPECTIVE:
                     $available = $pet->getRelationshipCount() >= 3;
                     break;
 
-                case MeritEnum::PROTOCOL_7:
-                    $available = $pet->getSkills()->getScience() > 0 || $pet->getLevel() >= 10;
+                // stat-based merits:
+
+                case MeritEnum::MOON_BOUND:
+                    $available = $pet->getSkills()->getStamina() >= 3 || $pet->getSkills()->getStrength() >= 3;
                     break;
 
-                case MeritEnum::NATURAL_CHANNEL:
-                    $available = $pet->getSkills()->getUmbra() > 0 || $pet->getLevel() >= 10;
+                case MeritEnum::DARKVISION:
+                    $available = $pet->getSkills()->getPerception() >= 3;
                     break;
+
+                case MeritEnum::EIDETIC_MEMORY:
+                    $available = $pet->getSkills()->getIntelligence() >= 3;
+                    break;
+
+                case MeritEnum::GECKO_FINGERS:
+                    $available = $pet->getSkills()->getDexterity() >= 3;
+                    break;
+
+                // skill-based merits:
 
                 case MeritEnum::SOOTHING_VOICE:
-                    $available = $pet->getSkills()->getMusic() > 0 || count($pet->getMerits()) >= 3;
+                    $available = $pet->getSkills()->getMusic() >= 5;
                     break;
 
-                case MeritEnum::BLACK_HOLE_TUM:
-                case MeritEnum::EIDETIC_MEMORY:
                 case MeritEnum::NO_SHADOW_OR_REFLECTION:
-                    $available = $pet->getSkills()->getTalent() !== null;
+                    $available = $pet->getSkills()->getStealth() >= 5;
                     break;
 
-                // these merits are ALWAYS available
-                case MeritEnum::MOON_BOUND:
                 case MeritEnum::SPIRIT_COMPANION:
-                case MeritEnum::LUCKY:
-                    $available = true;
+                    $available = $pet->getSkills()->getUmbra() >= 5;
                     break;
 
-                // all other Merits can NEVER be chosen:
+                case MeritEnum::PETALFOOT:
+                    $available = $pet->getSkills()->getNature() >= 5;
+                    break;
+
+                case MeritEnum::SHOCK_RESISTANT:
+                    $available = $pet->getSkills()->getScience() >= 5;
+                    break;
+
+                case MeritEnum::WAY_OF_THE_EMPTY_HAND:
+                    $available = $pet->getSkills()->getBrawl() >= 5;
+                    break;
+
+                case MeritEnum::ATHENAS_GIFTS:
+                    $available = $pet->getSkills()->getCrafts() >= 5;
+                    break;
+
                 default:
-                    $available = false;
+                    $available = true;
             }
 
             if($available)

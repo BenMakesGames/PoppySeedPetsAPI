@@ -5,7 +5,9 @@ namespace App\Repository;
 use App\Entity\Merit;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
+use App\Enum\MeritInfo;
 use App\Functions\ArrayFunctions;
+use App\Service\IRandom;
 use App\Service\Squirrel3;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -18,34 +20,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class MeritRepository extends ServiceEntityRepository
 {
-    public const POSSIBLE_STARTING_MERITS = [
-        MeritEnum::BURPS_MOTHS,
-        MeritEnum::FRIEND_OF_THE_WORLD,
-        MeritEnum::GOURMAND,
-        MeritEnum::SPECTRAL,
-        MeritEnum::PREHENSILE_TONGUE,
-        MeritEnum::LOLLIGOVORE,
-        MeritEnum::HYPERCHROMATIC,
-        MeritEnum::DREAMWALKER,
-        MeritEnum::GREGARIOUS,
-        MeritEnum::SHEDS,
-        MeritEnum::DARKVISION,
-        MeritEnum::LUMINARY_ESSENCE,
-        MeritEnum::SILVERBLOOD,
-    ];
-
-    public const POSSIBLE_FIRST_PET_STARTING_MERITS = [
-        MeritEnum::BURPS_MOTHS,
-        MeritEnum::GOURMAND,
-        MeritEnum::PREHENSILE_TONGUE,
-        MeritEnum::LOLLIGOVORE,
-        MeritEnum::DREAMWALKER,
-        MeritEnum::GREGARIOUS,
-        MeritEnum::SHEDS,
-        MeritEnum::DARKVISION,
-    ];
-
-    private $squirrel3;
+    private IRandom $squirrel3;
 
     public function __construct(ManagerRegistry $registry, Squirrel3 $squirrel3)
     {
@@ -64,17 +39,17 @@ class MeritRepository extends ServiceEntityRepository
 
     public function getRandomStartingMerit(): Merit
     {
-        return $this->findOneBy([ 'name' => $this->squirrel3->rngNextFromArray(self::POSSIBLE_STARTING_MERITS) ]);
+        return $this->findOneBy([ 'name' => $this->squirrel3->rngNextFromArray(MeritInfo::POSSIBLE_STARTING_MERITS) ]);
     }
 
     public function getRandomFirstPetStartingMerit(): Merit
     {
-        return $this->findOneBy([ 'name' => $this->squirrel3->rngNextFromArray(self::POSSIBLE_FIRST_PET_STARTING_MERITS) ]);
+        return $this->findOneBy([ 'name' => $this->squirrel3->rngNextFromArray(MeritInfo::POSSIBLE_FIRST_PET_STARTING_MERITS) ]);
     }
 
     public function getRandomAdoptedPetStartingMerit(): Merit
     {
-        $possibleMerits = array_filter(self::POSSIBLE_STARTING_MERITS, function(string $m) {
+        $possibleMerits = array_filter(MeritInfo::POSSIBLE_STARTING_MERITS, function(string $m) {
             return $m !== MeritEnum::HYPERCHROMATIC && $m !== MeritEnum::SPECTRAL;
         });
 

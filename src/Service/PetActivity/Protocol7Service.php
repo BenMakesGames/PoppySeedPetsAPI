@@ -649,21 +649,18 @@ class Protocol7Service
 
         if($this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
         {
-            if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
+            if($petWithSkills->getHasProtectionFromElectricity()->getTotal() > 0)
             {
-                $activityLog->setEntry($activityLog->getEntry() . ' Their ' . $pet->getTool()->getItem()->getName() . ' protected them from the sudden burst of energy.')
+                $activityLog->setEntry($activityLog->getEntry() . ' Their shock-resistance protected them from the sudden burst of energy.')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heatstroke' ]))
                 ;
             }
             else
             {
                 $pet->increaseFood(-1);
-                $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 3));
+                $pet->increaseSafety(-$this->squirrel3->rngNextInt(3, 6));
 
-                $activityLog->setEntry($activityLog->getEntry() . ' %pet:' . $pet->getId() . '.name% was unprotected from the sudden burst of energy, and received a minor singe.')
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Heatstroke' ]))
-                ;
+                $activityLog->setEntry($activityLog->getEntry() . ' %pet:' . $pet->getId() . '.name% was unprotected from the sudden burst of energy, and received a minor shock.');
             }
         }
 

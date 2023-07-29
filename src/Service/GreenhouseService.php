@@ -12,6 +12,7 @@ use App\Enum\BirdBathBirdEnum;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
+use App\Enum\MeritInfo;
 use App\Enum\PetLocationEnum;
 use App\Enum\PollinatorEnum;
 use App\Enum\SerializationGroupEnum;
@@ -136,7 +137,7 @@ class GreenhouseService
 
         $numberOfPetsAtHome = $this->petRepository->getNumberAtHome($user);
 
-        $startingMerits = MeritRepository::POSSIBLE_STARTING_MERITS;
+        $startingMerits = MeritInfo::POSSIBLE_STARTING_MERITS;
 
         if($bonusMerit)
         {

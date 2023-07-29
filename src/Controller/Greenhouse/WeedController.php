@@ -3,6 +3,7 @@ namespace App\Controller\Greenhouse;
 
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
@@ -132,7 +133,38 @@ class WeedController extends AbstractController
 
             $changes = new PetChanges($helper);
             $activityLogEntry = $responseService->createActivityLog($helper, ActivityHelpers::PetName($helper) . ' helped ' . $user->getName() . ' weed their Greenhouse, and found ' . $extraItemObject->getNameWithArticle() . $extraDetail, '');
+
+            $bonusFlower = null;
+
+            if($helper->hasMerit(MeritEnum::PETALFOOT))
+            {
+                $possibleFlowers = [
+                    'Agrimony',
+                    'Bird\'s-foot Trefoil',
+                    'Coriander Flower',
+                    'Green Carnation',
+                    'Iris',
+                    'Narcissus',
+                    'Purple Violet',
+                    'Red Clover',
+                    'Rice Flower',
+                    'Viscaria',
+                    'Wheat Flower',
+                    'Witch-hazel'
+                ];
+
+                if($hasWaterPlots)
+                    $possibleFlowers[] = 'Lotus Flower';
+
+                $bonusFlower = $squirrel3->rngNextFromArray($possibleFlowers);
+
+                $activityLogEntry->setEntry($activityLogEntry->getEntry() . ' ... oh! And a ' . $bonusFlower . '!');
+            }
+
             $inventoryService->petCollectsItem($extraItemObject, $helper, $helper->getName() . ' found this while weeding the Greenhouse with ' . $user->getName() . $extraDetail, $activityLogEntry);
+
+            if($bonusFlower)
+                $inventoryService->petCollectsItem($bonusFlower, $helper, $helper->getName() . ' found this while weeding the Greenhouse with ' . $user->getName() . '.', $activityLogEntry);
 
             $activityLogEntry
                 ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)

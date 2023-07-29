@@ -1144,14 +1144,27 @@ class MagicBindingService
 
         if($umbraCheck <= 2)
         {
-            $pet->increaseSafety(-4);
+            if($pet->hasMerit(MeritEnum::SHOCK_RESISTANT))
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' tried to bind some lightning to a Heavy Hammer, but it kept trying to zap them! ' . ActivityHelpers::PetName($pet) . '\'s shock-resistance protected them from any harm, but it was still annoying as heck.', '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                ;
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind some lightning to a Heavy Hammer, but accidentally zapped themselves! :(', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
-            ;
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::MAGIC_BIND, false);
+            }
+            else
+            {
+                $pet->increaseSafety(-4);
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind some lightning to a Heavy Hammer, but accidentally zapped themselves! :(', '')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
+                ;
+
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            }
 
             return $activityLog;
         }
@@ -1159,14 +1172,21 @@ class MagicBindingService
         {
             if($this->squirrel3->rngNextBool())
             {
-                $pet->increaseSafety(-2);
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind lightning to a Heavy Hammer, but the lightning was throwing sparks like crazy! >:|', 'icons/activity-logs/confused')
+                $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' tried to bind lightning to a Heavy Hammer, but the hammer was just NOT having it...', 'icons/activity-logs/confused')
                     ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
+                ;
+            }
+            else if($pet->hasMerit(MeritEnum::SHOCK_RESISTANT))
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' tried to bind lightning to a Heavy Hammer, but the lightning was throwing sparks like crazy. ' . ActivityHelpers::PetName($pet) . '\'s shock-resistance protected them, but it was still annoying...', 'icons/activity-logs/confused')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
                 ;
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind lightning to a Heavy Hammer, but the hammer wasn\'t having it...', 'icons/activity-logs/confused')
+                $pet->increaseSafety(-2);
+                $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' tried to bind lightning to a Heavy Hammer, but the lightning was throwing sparks like crazy, and they kept getting zapped! >:|', 'icons/activity-logs/confused')
                     ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
                 ;
             }

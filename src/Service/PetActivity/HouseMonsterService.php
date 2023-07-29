@@ -74,8 +74,13 @@ class HouseMonsterService
             }
             else if($monster->element === SummoningScrollMonsterElementEnum::ELECTRICITY)
             {
-                $unprotectedPets[] = $pet;
-                $unprotectedPetNames[] = $pet->getName();
+                if($petWithSkills->getHasProtectionFromElectricity()->getTotal() > 0)
+                    $totalSkill += 2;
+                else
+                {
+                    $unprotectedPets[] = $pet;
+                    $unprotectedPetNames[] = $pet->getName();
+                }
             }
             else if($monster->element === SummoningScrollMonsterElementEnum::DARKNESS)
             {

@@ -1348,7 +1348,7 @@ class HuntingService
 
             if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was out hunting in the woods, something started throwing sticks and thorny branches at them! %pet:' . $pet->getId() . '.name% never saw their tormenter, but it was surely an Agropelter.', '')
+                $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was out hunting in the woods, something started throwing sticks and thorny branches at them! %pet:' . $pet->getId() . '.name% never saw their tormenter, but it was surely an Agropelter...', '')
                     ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
                 ;
             }

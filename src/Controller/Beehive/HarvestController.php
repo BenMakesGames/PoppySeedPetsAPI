@@ -3,6 +3,7 @@ namespace App\Controller\Beehive;
 
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPNotUnlockedException;
@@ -82,44 +83,70 @@ class HarvestController extends AbstractController
                 $helper = $beehive->getHelper();
                 $petWithSkills = $helper->getComputedSkills();
 
-                $gathering = $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal();
-                $hunting = $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal();
-
-                $total = $gathering + $hunting;
-
                 $changes = new PetChanges($helper);
 
-                if($total < 2)
-                    $doGatherAction = $squirrel3->rngNextBool();
-                else
-                    $doGatherAction = $squirrel3->rngNextInt(1, $total) <= $gathering;
-
-                if($doGatherAction)
+                if($helper->hasMerit(MeritEnum::PETALFOOT))
                 {
-                    $extraItem = PetAssistantService::getExtraItem($squirrel3, $gathering,
+                    $gathering = $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal();
+
+                    $extraItem1 = PetAssistantService::getExtraItem($squirrel3, $gathering,
                         [ 'Tea Leaves', 'Blueberries', 'Blackberries', 'Grandparoot', 'Orange', 'Red' ],
                         [ 'Onion', 'Paper', 'Naner', 'Iron Ore' ],
                         [ 'Gypsum', 'Mixed Nuts', 'Apricot', 'Silver Ore', ],
-                        [ 'Gold Ore', 'Liquid-hot Magma' ],
+                        [ 'Gold Ore', 'Liquid-hot Magma' ]
                     );
 
-                    $verb = 'gather';
+                    $extraItem2 = PetAssistantService::getExtraItem($squirrel3, $gathering,
+                        [ 'Agrimony', 'Blueberries', 'Blackberries', 'Orange', 'Red' ],
+                        [ 'Onion', 'Tomato', 'Naner', 'Sunflower' ],
+                        [ 'Mint', 'Mixed Nuts', 'Apricot', 'Melowatern', ],
+                        [ 'Goodberries', 'Iris' ]
+                    );
+
+                    $activityLog = $responseService->createActivityLog($helper, ActivityHelpers::PetName($helper) . ' helped ' . $user->getName() . '\'s bees while they were out gathering, and collected ' . $extraItem1 . ' AND ' . $extraItem2 . '.', '');
+
+                    $inventoryService->petCollectsItem($extraItem1, $helper, $helper->getName() . ' helped ' . $user->getName() . '\'s bees gathered this.', $activityLog);
+                    $inventoryService->petCollectsItem($extraItem2, $helper, $helper->getName() . ' helped ' . $user->getName() . '\'s bees gathered this.', $activityLog);
                 }
                 else
                 {
-                    $extraItem = PetAssistantService::getExtraItem($squirrel3, $hunting,
-                        [ 'Scales', 'Feathers', 'Egg' ],
-                        [ 'Toadstool', 'Talon', 'Onion' ],
-                        [ 'Toad Legs', 'Jar of Fireflies' ],
-                        [ 'Silver Bar', 'Gold Bar', 'Quintessence' ],
-                    );
+                    $gathering = $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal();
+                    $hunting = $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal();
 
-                    $verb = 'hunt';
+                    $total = $gathering + $hunting;
+
+                    if($total < 2)
+                        $doGatherAction = $squirrel3->rngNextBool();
+                    else
+                        $doGatherAction = $squirrel3->rngNextInt(1, $total) <= $gathering;
+
+                    if($doGatherAction)
+                    {
+                        $extraItem = PetAssistantService::getExtraItem($squirrel3, $gathering,
+                            [ 'Tea Leaves', 'Blueberries', 'Blackberries', 'Grandparoot', 'Orange', 'Red' ],
+                            [ 'Onion', 'Paper', 'Naner', 'Iron Ore' ],
+                            [ 'Gypsum', 'Mixed Nuts', 'Apricot', 'Silver Ore', ],
+                            [ 'Gold Ore', 'Liquid-hot Magma' ],
+                        );
+
+                        $verb = 'gather';
+                    }
+                    else
+                    {
+                        $extraItem = PetAssistantService::getExtraItem($squirrel3, $hunting,
+                            [ 'Scales', 'Feathers', 'Egg' ],
+                            [ 'Toadstool', 'Talon', 'Onion' ],
+                            [ 'Toad Legs', 'Jar of Fireflies' ],
+                            [ 'Silver Bar', 'Gold Bar', 'Quintessence' ],
+                        );
+
+                        $verb = 'hunt';
+                    }
+
+                    $activityLog = $responseService->createActivityLog($helper, ActivityHelpers::PetName($helper) . ' helped ' . $user->getName() . '\'s bees while they were out ' . $verb . 'ing, and collected ' . $extraItem . '.', '');
+
+                    $inventoryService->petCollectsItem($extraItem, $helper, $helper->getName() . ' helped ' . $user->getName() . '\'s bees ' . $verb . ' this.', $activityLog);
                 }
-
-                $activityLog = $responseService->createActivityLog($helper, ActivityHelpers::PetName($helper) . ' helped ' . $user->getName() . '\'s bees while they were out ' . $verb . 'ing, and collected ' . $extraItem . '.', '');
-
-                $inventoryService->petCollectsItem($extraItem, $helper, $helper->getName() . ' helped ' . $user->getName() . '\'s bees ' . $verb . ' this.', $activityLog);
 
                 $activityLog
                     ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)

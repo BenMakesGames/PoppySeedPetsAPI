@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\Spice;
 use App\Enum\GuildEnum;
+use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
@@ -213,6 +214,8 @@ class IcyMoonService
 
         $roll = $this->squirrel3->rngNextInt(1, 20 + max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getStamina()->getTotal()) + $petWithSkills->getBrawl()->getTotal() - $pet->getAlcohol());
 
+        $roll += $petWithSkills->getHasProtectionFromElectricity()->getTotal() * 2;
+
         if($roll >= 20)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
@@ -248,11 +251,19 @@ class IcyMoonService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
 
-            $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
-
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Mini Crystalline Entity while exploring an Icy Moon! As a member of High Impact, they immediately stepped up to the challenge, but the creature was wildly throwing sparks and electricity, and ' . $pet->getName() . ' was forced to retreat...', '')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Icy Moon', 'Fighting', 'Guild' ]))
             ;
+
+            if($pet->hasMerit(MeritEnum::SHOCK_RESISTANT))
+            {
+                $activityLog
+                    ->setEntry($activityLog->getEntry() . ' (Their shock-resistance helped, but dang, that thing is crazy!)')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                ;
+            }
+            else
+                $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $activityLog);
         }
@@ -264,7 +275,15 @@ class IcyMoonService
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Icy Moon', 'Fighting' ]))
             ;
 
-            $pet->increaseSafety(-$this->squirrel3->rngNextInt(3, 6));
+            if($pet->hasMerit(MeritEnum::SHOCK_RESISTANT))
+            {
+                $activityLog
+                    ->setEntry($activityLog->getEntry() . ' (Their shock-resistance helped, but dang, that thing is crazy!)')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                ;
+            }
+            else
+                $pet->increaseSafety(-$this->squirrel3->rngNextInt(3, 6));
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $activityLog);
         }

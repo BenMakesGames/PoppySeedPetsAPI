@@ -15,6 +15,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
+use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\InventoryModifierFunctions;
@@ -448,6 +449,11 @@ class PetActivityService
         if($this->dream($pet))
         {
             $this->dreamingService->dream($pet);
+            return;
+        }
+
+        if($this->maybeReceiveAthenasGift($pet))
+        {
             return;
         }
 
@@ -1077,6 +1083,28 @@ class PetActivityService
             return true;
 
         return false;
+    }
+
+    private function maybeReceiveAthenasGift(Pet $pet): bool
+    {
+        if(!$pet->hasMerit(MeritEnum::ATHENAS_GIFTS))
+            return false;
+
+        if($this->squirrel3->rngNextInt(1, 300) !== 1)
+            return false;
+
+        $randomExclamation = $this->squirrel3->rngNextFromArray([
+            'Neat-o!', 'Rad!', 'Dope!', 'Sweet!', 'Hot diggity!', 'Epic!', 'Let\'s go!',
+        ]);
+
+        $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' was thinking about what to do, when they spotted a Handicrafts Supply Box nearby! (Athena\'s Gifts! ' . $randomExclamation . ')', '')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+        ;
+
+        $this->inventoryService->petCollectsItem('Handicrafts Supply Box', $pet, $pet->getName() . ' received this - a gift from the gods!', $activityLog);
+        $this->petExperienceService->spendTime($pet, 30, PetActivityStatEnum::OTHER, null);
+
+        return true;
     }
 
     private function cleanUpStatusEffect(Pet $pet, string $statusEffect, string $itemOnBody): bool

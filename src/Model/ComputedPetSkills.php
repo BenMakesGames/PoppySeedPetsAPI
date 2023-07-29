@@ -134,6 +134,7 @@ class ComputedPetSkills
             ($this->pet->hasStatusEffect(StatusEffectEnum::HEX_HEXED) ? 6 - $this->pet->getSkills()->getNature() : 0) +
             ($this->pet->getSkills()->getNature() < 10 && $this->pet->hasStatusEffect(StatusEffectEnum::FOCUSED_NATURE) ? 3 : 0)
         ;
+        $skill->merits = ($this->pet->hasMerit(MeritEnum::PETALFOOT) ? 1 : 0);
 
         return $skill;
     }
@@ -150,7 +151,10 @@ class ComputedPetSkills
             ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 3 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::RAWR) ? 1 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::HEX_HEXED) ? 6 - $this->pet->getSkills()->getBrawl() : 0) +
-            ($this->pet->getSkills()->getBrawl() < 10 && $this->pet->hasStatusEffect(StatusEffectEnum::FOCUSED_BRAWL) ? 3 : 0)
+            ($skill->base < 10 && $this->pet->hasStatusEffect(StatusEffectEnum::FOCUSED_BRAWL) ? 3 : 0)
+        ;
+        $skill->merits =
+            ($this->pet->hasMerit(MeritEnum::WAY_OF_THE_EMPTY_HAND) && $skill->tool == 0 ? 5 : 0)
         ;
 
         return $skill;
@@ -304,6 +308,7 @@ class ComputedPetSkills
             (($this->pet->hasMerit(MeritEnum::PREHENSILE_TONGUE) && $this->pet->hasStatusEffect(StatusEffectEnum::ANTI_GRAVD)) ? 3 : 0) +
             $this->pet->hasStatusEffect(StatusEffectEnum::HOPPIN) ? 1 : 0
         ;
+        $skill->merits = ($this->pet->hasMerit(MeritEnum::GECKO_FINGERS) ? 2 : 0);
 
         return $skill;
     }
@@ -331,6 +336,19 @@ class ComputedPetSkills
         $skill->tool = $this->pet->getTool() && $this->pet->getTool()->protectsFromHeat() ? 1 : 0;
         $skill->statusEffects =
             ($this->pet->hasStatusEffect(StatusEffectEnum::HEAT_RESISTANT) ? 1 : 0)
+        ;
+
+        return $skill;
+    }
+
+    /**
+     * @Groups({"myPet"})
+     */
+    public function getHasProtectionFromElectricity(): TotalPetSkill
+    {
+        $skill = new TotalPetSkill();
+        $skill->merits =
+            ($this->pet->hasMerit(MeritEnum::SHOCK_RESISTANT) ? 1 : 0)
         ;
 
         return $skill;

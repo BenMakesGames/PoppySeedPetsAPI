@@ -4,6 +4,7 @@ namespace App\Controller\Item\Blueprint;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Fireplace;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\PetColorFunctions;
 use App\Repository\InventoryRepository;
@@ -116,9 +117,10 @@ class HouseFairyController extends AbstractController
         Squirrel3 $squirrel3
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'fairy/#/buildFireplace');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'fairy/#/buildFireplace');
 
         $quint = $inventoryRepository->findOneToConsume($user, 'Quintessence');
 
