@@ -87,7 +87,7 @@ class SagaSagaService
 
         $log = $this->responseService->createActivityLog(
             $pet,
-            ActivityHelpers::PetName($pet) . ' got 7 points in ' . $skill . ', and was transformed into a skill scroll! All that remains is their ghost...',
+            ActivityHelpers::PetName($pet) . ' got 5 points in ' . $skill . ', and was transformed into a skill scroll! All that remains is their ghost...',
             ''
         );
 

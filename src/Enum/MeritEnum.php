@@ -35,7 +35,6 @@ final class MeritEnum
     public const WONDROUS_DEXTERITY = 'Wondrous Dexterity';
     public const WONDROUS_PERCEPTION = 'Wondrous Perception';
     public const WONDROUS_INTELLIGENCE = 'Wondrous Intelligence';
-    public const ETERNAL = 'Eternal'; // +1 to all stats
 
     // obtained through house time spent
     public const MIND_OVER_MATTER = 'Mind Over Matter';
@@ -54,6 +53,9 @@ final class MeritEnum
     // for Sága Jellings, only:
     public const SAGA_SAGA = 'Sága Saga';
     public const AFFECTIONLESS = 'Affectionless';
+
+    // for Phoenixes, only:
+    public const ETERNAL = 'Eternal'; // +1 to all stats
 
     // starting merits; every pet gets one (see additional lists, below)
     public const BURPS_MOTHS = 'Burps Moths';
@@ -144,10 +146,12 @@ final class MeritInfo
         MeritEnum::WONDROUS_DEXTERITY,
         MeritEnum::WONDROUS_PERCEPTION,
         MeritEnum::WONDROUS_INTELLIGENCE,
-        MeritEnum::ETERNAL,
 
         // saga jellings
         MeritEnum::SAGA_SAGA,
         MeritEnum::AFFECTIONLESS,
+
+        // phoenixes
+        MeritEnum::ETERNAL,
     ];
 }
