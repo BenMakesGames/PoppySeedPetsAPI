@@ -1114,15 +1114,18 @@ class PetActivityService
             return false;
 
         $randomChat = $this->squirrel3->rngNextFromArray([
-            'In the face of darkness, remember that your light shines brightest.',
-            'Embrace your uniqueness, for it is the key to unlocking your dreams.',
-            'Believe in yourself, my dear, for magic lies within your heart.',
-            'The power of imagination will lead you to realms where dreams come true.',
-            'Let kindness be your wand, and you\'ll create wonders wherever you go.',
-            'Never underestimate the strength of a kind heart, for it can move mountains.',
-            'In the garden of life, cultivate gratitude, and watch your blessings bloom.',
-            'Every day is a new page in the book of your adventures; write it with joy and wonder.',
-            'In every challenge, there lies a hidden spell of growth and wisdom.',
+            'In the face of darkness, remember that your light shines brightest',
+            'Embrace your uniqueness, for it is the key to unlocking your dreams',
+            'Believe in yourself, my dear, for magic lies within your heart',
+            'The power of imagination will lead you to realms where dreams come true',
+            'Let kindness be your wand, and you\'ll create wonders wherever you go',
+            'Never underestimate the strength of a kind heart, for it can move mountains',
+            'In the garden of life, cultivate gratitude, and watch your blessings bloom',
+            'Every day is a new page in the book of your adventures; write it with joy and wonder',
+            'In every challenge, there lies a hidden spell of growth and wisdom',
+            'The world will try to define you, but remember, you are the only one who can determine your true worth',
+            'Change, like the tides, is inevitable and often unpredictable, but it\'s what keeps life\'s oceans alive and vibrant',
+            'Your dreams are your soul\'s whispers, guiding you to your true destiny; listen to them attentively',
         ]);
 
         $randomGoody = $this->squirrel3->rngNextFromArray([
@@ -1144,9 +1147,9 @@ class PetActivityService
         ]);
 
         $soNice = $this->squirrel3->rngNextFromArray([
-            'Gosh dang she\'s so nice!',
+            'Gosh dang, she\'s so nice!',
             'How\'d she got so friggin\' sweet!',
-            'She\'s just the best!'
+            'She\'s just the best!',
         ]);
 
         $changes = new PetChanges($pet);
