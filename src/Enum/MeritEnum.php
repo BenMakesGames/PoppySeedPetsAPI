@@ -73,6 +73,7 @@ final class MeritEnum
     public const SILVERBLOOD = 'Silverblood'; // cannot become a werecreature; +5 when crafting with silver
     public const DOPPEL_GENE = 'Doppel Gene'; // always gives birth to twins
     public const FAIRY_GODMOTHER = 'Fairy Godmother';
+    public const RUMPELSTILTSKINS_CURSE = 'Rumpelstiltskin\'s Curse'; // gold instead of wheat, and vice-versa
 
     // not yet implemented
     //public const PAST_LIFE = 'Past Life';
@@ -85,6 +86,7 @@ final class MeritInfo
 
         // has pros and cons, so doesn't feel appropriate for a first pet
         MeritEnum::FRIEND_OF_THE_WORLD,
+        MeritEnum::RUMPELSTILTSKINS_CURSE,
 
         // changes appearance, which a player's first pet might not want
         MeritEnum::SPECTRAL,

@@ -220,11 +220,33 @@ class InventoryService
         if($pet->hasStatusEffect(StatusEffectEnum::HOT_TO_THE_TOUCH))
             $spice = (!$spice || $this->squirrel3->rngNextInt(1, 4) == 4) ? $this->spiceRepository->findOneByName('Spicy') : $spice;
 
+        $cancelGather = false;
+        $replacementItemNames = [];
+
+        if($pet->hasMerit(MeritEnum::RUMPELSTILTSKINS_CURSE))
+        {
+            if($item->getName() === 'Gold Bar' || $item->getName() === 'Gold Ore')
+            {
+                $activityLog
+                    ->setEntry($activityLog->getEntry() . ' The ' . $item->getName() . ' was transformed into Wheat by their curse!')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ;
+
+                $item = $this->itemRepository->findOneByName('Wheat');
+            }
+            else if($item->getName() === 'Wheat' || $item->getName() === 'Wheat Flower')
+            {
+                $activityLog
+                    ->setEntry($activityLog->getEntry() . ' The ' . $item->getName() . ' was transformed into a Gold Bar by their curse!')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ;
+
+                $item = $this->itemRepository->findOneByName('Gold Bar');
+            }
+        }
+
         if($pet->getTool())
         {
-            $replacementItemNames = [];
-            $cancelGather = false;
-
             if($pet->getTool()->getSpice())
                 $extraItemSpice = (!$spice || $this->squirrel3->rngNextBool()) ? $pet->getTool()->getSpice() : $spice;
             else
@@ -349,82 +371,82 @@ class InventoryService
                     $this->responseService->setReloadInventory();
                 }
             }
+        }
 
-            if($pet->hasMerit(MeritEnum::CELESTIAL_CHORUSER) && $item->hasItemGroup('Outer Space'))
-            {
-                $itemName = $this->itemRepository->findOneByName('Music Note');
+        if($pet->hasMerit(MeritEnum::CELESTIAL_CHORUSER) && $item->hasItemGroup('Outer Space'))
+        {
+            $itemName = $this->itemRepository->findOneByName('Music Note');
 
-                $extraItem = (new Inventory())
-                    ->setOwner($pet->getOwner())
-                    ->setCreatedBy($pet->getOwner())
-                    ->setItem($itemName)
-                    ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' as a Celestial Choruser.')
-                    ->setLocation(LocationEnum::HOME)
-                    ->setSpice($extraItemSpice)
-                    ->setEnchantment($bonus)
-                ;
+            $extraItem = (new Inventory())
+                ->setOwner($pet->getOwner())
+                ->setCreatedBy($pet->getOwner())
+                ->setItem($itemName)
+                ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' as a Celestial Choruser.')
+                ->setLocation(LocationEnum::HOME)
+                ->setSpice($extraItemSpice)
+                ->setEnchantment($bonus)
+            ;
 
-                $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT);
+            $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT);
 
-                $this->applySeasonalSpiceToNewItem($extraItem);
+            $this->applySeasonalSpiceToNewItem($extraItem);
 
-                if(!$this->houseSimService->getState()->addInventory($extraItem))
-                    $this->em->persist($extraItem);
+            if(!$this->houseSimService->getState()->addInventory($extraItem))
+                $this->em->persist($extraItem);
 
-                $this->responseService->setReloadInventory();
-            }
+            $this->responseService->setReloadInventory();
+        }
 
-            if($pet->hasStatusEffect(StatusEffectEnum::FRUIT_CLOBBERING) && $item->hasItemGroup('Fresh Fruit'))
-            {
-                $pectin = $this->itemRepository->findOneByName('Pectin');
+        if($pet->hasStatusEffect(StatusEffectEnum::FRUIT_CLOBBERING) && $item->hasItemGroup('Fresh Fruit'))
+        {
+            $pectin = $this->itemRepository->findOneByName('Pectin');
 
-                $extraItem = (new Inventory())
-                    ->setOwner($pet->getOwner())
-                    ->setCreatedBy($pet->getOwner())
-                    ->setItem($pectin)
-                    ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' while ' . StatusEffectEnum::FRUIT_CLOBBERING . '.')
-                    ->setLocation(LocationEnum::HOME)
-                    ->setSpice($extraItemSpice)
-                    ->setEnchantment($bonus)
-                ;
+            $extraItem = (new Inventory())
+                ->setOwner($pet->getOwner())
+                ->setCreatedBy($pet->getOwner())
+                ->setItem($pectin)
+                ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' while ' . StatusEffectEnum::FRUIT_CLOBBERING . '.')
+                ->setLocation(LocationEnum::HOME)
+                ->setSpice($extraItemSpice)
+                ->setEnchantment($bonus)
+            ;
 
-                $this->applySeasonalSpiceToNewItem($extraItem);
+            $this->applySeasonalSpiceToNewItem($extraItem);
 
-                if(!$this->houseSimService->getState()->addInventory($extraItem))
-                    $this->em->persist($extraItem);
+            if(!$this->houseSimService->getState()->addInventory($extraItem))
+                $this->em->persist($extraItem);
 
-                $this->responseService->setReloadInventory();
-            }
+            $this->responseService->setReloadInventory();
+        }
 
-            if($pet->hasStatusEffect(StatusEffectEnum::HOPPIN) && str_ends_with($item->getName(), 'Toad Legs'))
-            {
-                $extraItem = (new Inventory())
-                    ->setOwner($pet->getOwner())
-                    ->setCreatedBy($pet->getOwner())
-                    ->setItem($item)
-                    ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' while ' . StatusEffectEnum::HOPPIN . '.')
-                    ->setLocation(LocationEnum::HOME)
-                    ->setSpice($extraItemSpice)
-                    ->setEnchantment($bonus)
-                ;
+        if($pet->hasStatusEffect(StatusEffectEnum::HOPPIN) && str_ends_with($item->getName(), 'Toad Legs'))
+        {
+            $extraItem = (new Inventory())
+                ->setOwner($pet->getOwner())
+                ->setCreatedBy($pet->getOwner())
+                ->setItem($item)
+                ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' while ' . StatusEffectEnum::HOPPIN . '.')
+                ->setLocation(LocationEnum::HOME)
+                ->setSpice($extraItemSpice)
+                ->setEnchantment($bonus)
+            ;
 
-                $this->applySeasonalSpiceToNewItem($extraItem);
+            $this->applySeasonalSpiceToNewItem($extraItem);
 
-                if(!$this->houseSimService->getState()->addInventory($extraItem))
-                    $this->em->persist($extraItem);
+            if(!$this->houseSimService->getState()->addInventory($extraItem))
+                $this->em->persist($extraItem);
 
-                $this->responseService->setReloadInventory();
-            }
+            $this->responseService->setReloadInventory();
+        }
 
-            if($cancelGather)
-            {
-                if(count($replacementItemNames) > 0)
-                    $activityLog->setEntry($activityLog->getEntry() . ' And the ' . $item->getName() . ' transformed into ' . ArrayFunctions::list_nice($replacementItemNames) . '!');
-                else
-                    $activityLog->setEntry($activityLog->getEntry() . ' However, the ' . $item->getName() . ' melted away instantly!');
+        if($cancelGather)
+        {
+            if(count($replacementItemNames) > 0)
+                $activityLog->setEntry($activityLog->getEntry() . ' And the ' . $item->getName() . ' transformed into ' . ArrayFunctions::list_nice($replacementItemNames) . '!');
+            else
+                $activityLog->setEntry($activityLog->getEntry() . ' However, the ' . $item->getName() . ' melted away instantly!');
 
-                return null;
-            }
+            return null;
         }
 
         if($item->getFood() !== null && count($pet->getLunchboxItems()) === 0 && $this->squirrel3->rngNextInt(1, 20) < 10 - $pet->getFood() - $pet->getJunk() / 2)
