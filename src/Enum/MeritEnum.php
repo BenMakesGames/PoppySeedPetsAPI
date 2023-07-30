@@ -91,10 +91,6 @@ final class MeritInfo
         // changes appearance, which a player's first pet might not want
         MeritEnum::SPECTRAL,
         MeritEnum::HYPERCHROMATIC,
-
-        // more-complex merits that we don't want to expect new players to understand:
-        MeritEnum::LUMINARY_ESSENCE,
-        MeritEnum::SILVERBLOOD,
     ];
 
     public const POSSIBLE_FIRST_PET_STARTING_MERITS = [
@@ -107,6 +103,8 @@ final class MeritInfo
         MeritEnum::SHEDS,
         MeritEnum::DOPPEL_GENE,
         MeritEnum::FAIRY_GODMOTHER,
+        MeritEnum::LUMINARY_ESSENCE,
+        MeritEnum::SILVERBLOOD,
     ];
 
     public const AFFECTION_REWARDS = [

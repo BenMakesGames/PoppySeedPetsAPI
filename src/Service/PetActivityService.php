@@ -584,8 +584,13 @@ class PetActivityService
             'umbra' => $this->generateExploreUmbraDesire($petWithSkills),
         ];
 
-        if($pet->hasMerit(MeritEnum::PROTOCOL_7))
+        if(
+            $pet->hasMerit(MeritEnum::PROTOCOL_7) ||
+            ($pet->getTool() && $pet->getTool()->getItem()->getTool() && $pet->getTool()->getItem()->getTool()->getAdventureDescription() === 'Project-E')
+        )
+        {
             $petDesires['hack'] = $this->generateHackingDesire($petWithSkills);
+        }
 
         if($pet->getTool() && $pet->getTool()->getEnchantment() && $pet->getTool()->getEnchantment()->getName() === 'Burnt')
             $petDesires['burntForest'] = $this->generateBurntForestDesire($petWithSkills);
