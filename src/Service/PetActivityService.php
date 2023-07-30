@@ -465,14 +465,17 @@ class PetActivityService
             $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::WEREFORM, 1);
         }
 
+        if($this->maybeReceiveFairyGodmotherItem($pet))
+            return;
+
+        if($this->maybeReceiveAthenasGift($pet))
+            return;
+
         if($this->dream($pet))
         {
             $this->dreamingService->dream($pet);
             return;
         }
-
-        if($this->maybeReceiveAthenasGift($pet) || $this->maybeReceiveFairyGodmotherItem($pet))
-            return;
 
         $itemsInHouse = $this->houseSimService->getState()->getInventoryCount();
 
@@ -1122,9 +1125,48 @@ class PetActivityService
             'In every challenge, there lies a hidden spell of growth and wisdom.',
         ]);
 
-        $randomGoodie = $this->squirrel3->rngNextFromArray([
-
+        $randomGoody = $this->squirrel3->rngNextFromArray([
+            'Quintessence', 'Berry Cobbler', 'Tile: Mushroom Hunting',
+            'Book of Flowers', 'Witch-hazel', 'Blackberry Wine',
+            'Piece of Cetgueli\'s Map', 'World\'s Best Sugar Cookie', 'Champignon',
+            'Scroll of Fruit', 'Bag of Beans', 'Secret Seashell', 'Trout Yogurt',
+            'Sand Dollar', 'Sunflower', 'Sunflower', 'Sunflower',
+            'Magic Hourglass', 'Brownie', 'Flower Basket', 'Fish Stew',
+            'Slice of Pumpkin Pie', 'Mysterious Seed', 'Decorated Flute',
+            'Laufabrauð', 'Fisherman\'s Pie', 'Magic Smoke', 'Wings', 'Wings', 'Wings',
+            'Coreopsis', 'Harvest Staff', 'Pumpkin Bread', 'White Feathers',
+            'Really Big Leaf', 'Caramel-covered Red', 'Largish Bowl of Smallish Pumpkin Soup',
+            'Whisper Stone', 'Everybeans', 'Dreamwalker\'s Tea', 'Dreamwalker\'s Tea',
+            'Dreamwalker\'s Tea', 'Hat Box', 'Tiny Tea', 'Tremendous Tea',
+            'Crystal Ball', 'Moon Dust', 'Magpie Pouch', 'Mericarp',
+            'Wolf\'s Bane', 'Wolf\'s Bane', 'Wolf\'s Bane', 'Tawny Ears',
+            'Tile: Lovely Haberdashers', 'Treat of Crispy Rice',
         ]);
+
+        $soNice = $this->squirrel3->rngNextFromArray([
+            'Gosh dang she\'s so nice!',
+            'How\'d she got so friggin\' sweet!',
+            'She\'s just the best!'
+        ]);
+
+        $changes = new PetChanges($pet);
+
+        $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' was thinking about what to do, when their Fairy Godmother showed up! They chatted for a while before she delivered these parting words: "' . $randomChat . '"... and a parting gift: ' . $randomGoody . '. (' . $soNice . ')', '')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+        ;
+
+        $pet
+            ->increaseSafety(12)
+            ->increaseLove(12)
+            ->increaseEsteem(12)
+        ;
+
+        $this->inventoryService->petCollectsItem($randomGoody, $pet, $pet->getName() . ' received this from their Fairy Godmother!', $activityLog);
+        $this->petExperienceService->spendTime($pet, 90, PetActivityStatEnum::OTHER, null);
+
+        $activityLog->setChanges($changes->compare($pet));
+
+        return true;
     }
 
     private function maybeReceiveAthenasGift(Pet $pet): bool
