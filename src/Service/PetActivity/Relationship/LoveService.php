@@ -3,14 +3,11 @@ namespace App\Service\PetActivity\Relationship;
 
 use App\Entity\Pet;
 use App\Entity\PetRelationship;
-use App\Entity\PetSkills;
 use App\Enum\LoveLanguageEnum;
 use App\Enum\MeritEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\StatusEffectEnum;
-use App\Model\ComputedPetSkills;
 use App\Service\PetActivity\PregnancyService;
-use App\Service\PetRelationshipService;
 use App\Service\Squirrel3;
 
 class LoveService

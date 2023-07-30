@@ -5,7 +5,6 @@ use App\Entity\Pet;
 use App\Entity\PetBaby;
 use App\Entity\PetRelationship;
 use App\Entity\PetSpecies;
-use App\Entity\SpiritCompanion;
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -13,6 +12,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\UserStatEnum;
+use App\Functions\ArrayFunctions;
 use App\Functions\PetColorFunctions;
 use App\Model\PetShelterPet;
 use App\Repository\MeritRepository;
@@ -154,13 +154,17 @@ class PregnancyService
         $user = $pet->getOwner();
         $pregnancy = $pet->getPregnancy();
 
-        $name = $pregnancy->getSpiritParent()
-            ? $this->combineNames($pregnancy->getParent()->getName(), $pregnancy->getSpiritParent()->getName())
-            : $this->combineNames($pregnancy->getParent()->getName(), $pregnancy->getOtherParent()->getName());
+        $names = [
+            $this->combineNames($pregnancy->getParent()->getName(), $pregnancy->getSpiritParent()->getName()),
+            $this->combineNames($pregnancy->getParent()->getName(), $pregnancy->getOtherParent()->getName())
+        ];
+        shuffle($names);
 
-        $baby = $this->petFactory->createPet(
+        $babies = [];
+
+        $babies[] = $this->petFactory->createPet(
             $user,
-            $name,
+            $names[0],
             $pregnancy->getSpecies(),
             $pregnancy->getColorA(),
             $pregnancy->getColorB(),
@@ -168,8 +172,24 @@ class PregnancyService
             $this->meritRepository->getRandomStartingMerit()
         );
 
+        if($pet->hasMerit(MeritEnum::DOPPEL_GENE))
+        {
+            $babies[] = $this->petFactory->createPet(
+                $user,
+                $names[1],
+                $pregnancy->getSpecies(),
+                $pregnancy->getColorA(),
+                $pregnancy->getColorB(),
+                FlavorEnum::getRandomValue($this->squirrel3),
+                $this->meritRepository->getRandomStartingMerit()
+            );
+        }
+
         if($pregnancy->getSpiritParent())
-            $baby->addMerit($this->meritRepository->getMeritByName(MeritEnum::NATURAL_CHANNEL));
+        {
+            foreach($babies as $baby)
+                $baby->addMerit($this->meritRepository->getMeritByName(MeritEnum::NATURAL_CHANNEL));
+        }
 
         $smallestParent = min($pregnancy->getParent()->getScale(), $pregnancy->getOtherParent() == null ? 50 : $pregnancy->getOtherParent()->getScale());
         $largestParent = max($pregnancy->getParent()->getScale(), $pregnancy->getOtherParent() == null ? 50 : $pregnancy->getOtherParent()->getScale());
@@ -184,18 +204,21 @@ class PregnancyService
         else
             $babySize = $this->squirrel3->rngNextInt($max, $min);
 
-        $baby
-            ->setMom($pregnancy->getParent())
-            ->setDad($pregnancy->getOtherParent())
-            ->setSpiritDad($pregnancy->getSpiritParent())
-            ->setScale($babySize)
-            ->setRenamingCharges(1)
-        ;
+        foreach($babies as $baby)
+        {
+            $baby
+                ->setMom($pregnancy->getParent())
+                ->setDad($pregnancy->getOtherParent())
+                ->setSpiritDad($pregnancy->getSpiritParent())
+                ->setScale($babySize)
+                ->setRenamingCharges(1)
+            ;
 
-        if($pregnancy->getAffection() > 0)
-            $baby->increaseAffectionPoints($baby->getAffectionPointsToLevel());
+            if($pregnancy->getAffection() > 0)
+                $baby->increaseAffectionPoints($baby->getAffectionPointsToLevel());
 
-        $this->createParentalRelationships($baby, $pregnancy->getParent(), $pregnancy->getOtherParent());
+            $this->createParentalRelationships($baby, $pregnancy->getParent(), $pregnancy->getOtherParent());
+        }
 
         $numberOfPetsAtHome = $this->petRepository->getNumberAtHome($user);
 
@@ -216,19 +239,26 @@ class PregnancyService
         else
             $increasedPetLimit = false;
 
-        if($numberOfPetsAtHome >= $user->getMaxPets())
+        $describeBabies = count($babies) > 1
+            ? 'two baby ' . $babies[0]->getSpecies()->getName() . 's'
+            : $adjective . ' baby ' . $babies[0]->getSpecies()->getName()
+        ;
+
+        if($numberOfPetsAtHome + count($babies) > $user->getMaxPets())
         {
-            $baby->setLocation(PetLocationEnum::DAYCARE);
+            foreach($babies as $baby)
+                $baby->setLocation(PetLocationEnum::DAYCARE);
+
             $pet->setLocation(PetLocationEnum::DAYCARE);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '! (There wasn\'t enough room at Home, so the birth took place at the Pet Shelter.)', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '! (There wasn\'t enough room at Home, so the birth took place at the Pet Shelter.)', '');
         }
         else
         {
             if($increasedPetLimit)
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '! (Congrats on your first pet birth! The maximum amount of pets you can have at home has been permanently increased by one!)', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '! (Congrats on your first pet birth! The maximum amount of pets you can have at home has been permanently increased by one!)', '');
             else
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $adjective . ' baby ' . $baby->getSpecies()->getName() . '!', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '!', '');
         }
 
         $activityLog
