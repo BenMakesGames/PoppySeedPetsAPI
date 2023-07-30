@@ -4,10 +4,15 @@ namespace App\Controller\Item\Blueprint;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Fireplace;
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\User;
+use App\Enum\MeritEnum;
+use App\Enum\PetLocationEnum;
 use App\Enum\UserStatEnum;
+use App\Functions\ArrayFunctions;
 use App\Functions\PetColorFunctions;
 use App\Repository\InventoryRepository;
+use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\ResponseService;
@@ -62,9 +67,10 @@ class HouseFairyController extends AbstractController
         EntityManagerInterface $em
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'fairy/#/hello');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'fairy/#/hello');
 
         $saidHello = $userQuestRepository->findOrCreate($user, 'Said Hello to House Fairy', false);
 
@@ -114,7 +120,7 @@ class HouseFairyController extends AbstractController
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository,
-        Squirrel3 $squirrel3
+        Squirrel3 $squirrel3, PetRepository $petRepository
     )
     {
         /** @var User $user */
@@ -122,49 +128,63 @@ class HouseFairyController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'fairy/#/buildFireplace');
 
-        $quint = $inventoryRepository->findOneToConsume($user, 'Quintessence');
-
         if($user->getUnlockedFireplace() && $user->getFireplace())
         {
             return $responseService->itemActionSuccess(
                 '"You already have a Fireplace, and it\'s already as fireplacey as a fireplace can be!" says ' . $this->fairyName($inventory) . '.' . "\n\n". 'Fairy nough-- er: fair enough.'
             );
         }
+
+        $petsAtHome = $petRepository->findBy([
+            'user' => $user,
+            'location' => PetLocationEnum::HOME
+        ]);
+
+        $petWithFairyGodmother = ArrayFunctions::find_one($petsAtHome, fn(Pet $p) => $p->hasMerit(MeritEnum::FAIRY_GODMOTHER));
+
+        if($petWithFairyGodmother)
+        {
+            $message = '"Usually I\'d ask for Quintessence, buuuuut..." ' . $this->fairyName($inventory) . ' looks at ' . $petWithFairyGodmother->getName() . ' "I think ' . $petWithFairyGodmother->getName() . '\'s godmother would say I should do it for free, so... let me just... do a little thing here..."' . "\n\n" . $this->fairyName($inventory) . ' wriggles a little, as if something is crawling around inside their... dress? Tunic? Whatever it is.' . "\n\n" . '"Alright! It\'s done!" announces the fairy with a grin.' . "\n\n" . 'And indeed: there\'s now a fireplace in the living room! (But you, dear Poppy Seed Pets player, can find it in the game menu.)';
+        }
         else
         {
+            $quint = $inventoryRepository->findOneToConsume($user, 'Quintessence');
+
             if($quint === null)
             {
                 return $responseService->itemActionSuccess(
-                    '"I\'ll do it... for a _Quintessence!_" ' . $this->fairyName($inventory) . ' screams with excitement. (A scream which would have been annoying were the creature\'s scream not as tiny as the creature itself.)'
+                    '"I\'d like to repay you for saving me, but it\'s gonna take... some _doing_. Can you get me a Quintessence?"'
                 );
             }
 
-            $user->setUnlockedFireplace();
-
-            $stockingColors = PetColorFunctions::generateRandomPetColors($squirrel3);
-
-            $fireplace = (new Fireplace())
-                ->setUser($user)
-                ->setStockingAppearance($squirrel3->rngNextFromArray(Fireplace::STOCKING_APPEARANCES))
-                ->setStockingColorA($stockingColors[0])
-                ->setStockingColorB($stockingColors[1])
-            ;
-
-            if($userStatsRepository->getStatValue($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM) >= 400)
-                $fireplace->setMantleSize(24);
-
-            $em->persist($fireplace);
+            $message = '"Thanks! Oh, but actually: do you also have any Bricks?" asks ' . $this->fairyName($inventory) . '. "I\'m going to need about 20 exactly...' . "\n\n" . '"Hehehe! Your face! Humans are so cute! I\'m going to make the bricks - and everything else - out of a Quintessence! Obviously! Now, let me just... do a little thing here..."' . "\n\n" . $this->fairyName($inventory) . ' wriggles a little, as if something is crawling around inside their... dress? Tunic? Whatever it is.' . "\n\n" . '"Alright! It\'s done!" announces the fairy with a grin.' . "\n\n" . 'And indeed: there\'s now a fireplace in the living room! (But you, dear Poppy Seed Pets player, can find it in the game menu.)';
 
             $em->remove($quint);
-
-            $em->flush();
-
-            $responseService->setReloadInventory(true);
-
-            return $responseService->itemActionSuccess(
-                '"Thanks! Oh, but actually: do you also have any Bricks?" asks ' . $this->fairyName($inventory) . '. "I\'m going to need about 20 exactly...' . "\n\n" . '"Hehehe! Your face! Humans are so cute! I\'m going to make the bricks - and everything else - out of Quintessence! Obviously! Now, let me just... do a little thing here..."' . "\n\n" . $this->fairyName($inventory) . ' wriggles a little, as if something is crawling around inside their... dress? Tunic? Whatever it is.' . "\n\n" . '"Alright! It\'s done!" announces the fairy with a grin.' . "\n\n" . 'And indeed: there\'s now a fireplace in the living room! (But you, dear Poppy Seed Pets player, can find it in the game menu.)'
-            );
         }
+
+        $user->setUnlockedFireplace();
+
+        $stockingColors = PetColorFunctions::generateRandomPetColors($squirrel3);
+
+        $fireplace = (new Fireplace())
+            ->setUser($user)
+            ->setStockingAppearance($squirrel3->rngNextFromArray(Fireplace::STOCKING_APPEARANCES))
+            ->setStockingColorA($stockingColors[0])
+            ->setStockingColorB($stockingColors[1])
+        ;
+
+        if($userStatsRepository->getStatValue($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM) >= 400)
+            $fireplace->setMantleSize(24);
+
+        $em->persist($fireplace);
+
+        $em->flush();
+
+        $responseService->setReloadInventory(true);
+
+        return $responseService->itemActionSuccess(
+            $message
+        );
     }
 
     /**

@@ -72,6 +72,7 @@ final class MeritEnum
     public const LUMINARY_ESSENCE = 'Luminary Essence'; // +1 to umbra + attracts more bugs
     public const SILVERBLOOD = 'Silverblood'; // cannot become a werecreature; +5 when crafting with silver
     public const DOPPEL_GENE = 'Doppel Gene'; // always gives birth to twins
+    public const FAIRY_GODMOTHER = 'Fairy Godmother';
 
     // not yet implemented
     //public const PAST_LIFE = 'Past Life';
@@ -103,6 +104,7 @@ final class MeritInfo
         MeritEnum::GREGARIOUS,
         MeritEnum::SHEDS,
         MeritEnum::DOPPEL_GENE,
+        MeritEnum::FAIRY_GODMOTHER,
     ];
 
     public const AFFECTION_REWARDS = [
