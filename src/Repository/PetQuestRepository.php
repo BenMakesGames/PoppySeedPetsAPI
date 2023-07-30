@@ -22,6 +22,19 @@ class PetQuestRepository extends ServiceEntityRepository
 
     private $petQuestPerRequestCache = [];
 
+    public function exists(Pet $pet, string $name): bool
+    {
+        $cacheKey = $pet->getId() . '-' . $name;
+
+        if(array_key_exists($cacheKey, $this->petQuestPerRequestCache))
+            return true;
+
+        return $this->count([
+            'pet' => $pet,
+            'name' => $name,
+        ]) > 0;
+    }
+
     public function findOrCreate(Pet $pet, string $name, $default): PetQuest
     {
         $cacheKey = $pet->getId() . '-' . $name;
