@@ -4,6 +4,7 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
+use App\Enum\MeritEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
@@ -134,10 +135,20 @@ class HouseMonsterService
         }
         else if($totalSkill < 30)
         {
-            $result .= ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'was' : 'were') . ' completely outmatched! At least they managed to ' . $grab. ' ' . ArrayFunctions::list_nice($loot) . '...';
+            $petWithFairyGodmother = ArrayFunctions::find_one($petsAtHome, fn(Pet $p) => $p->hasMerit(MeritEnum::FAIRY_GODMOTHER));
+
+            $won = $totalSkill >= 27 && $petWithFairyGodmother;
+
+            if($won)
+            {
+                $loot[] = $monster->majorReward;
+
+                $result .= 'It was a tough fight, and ' . ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'was' : 'were') . ' exhausted and about to give up when ' . $petWithFairyGodmother->getName() . '\'s Fairy Godmother flew in and dazzled the beast with flashy magic, distracting it long enough for your ' . (count($petsAtHome) === 1 ? 'pet' : 'pets') . ' to turn the fight in their favor, and collect ' . ArrayFunctions::list_nice($loot) . '!';
+            }
+            else
+                $result .= ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'was' : 'were') . ' completely outmatched! At least they managed to ' . $grab. ' ' . ArrayFunctions::list_nice($loot) . '...';
 
             $exp = 2;
-            $won = false;
         }
         else
         {

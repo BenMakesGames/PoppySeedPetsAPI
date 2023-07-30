@@ -471,10 +471,8 @@ class PetActivityService
             return;
         }
 
-        if($this->maybeReceiveAthenasGift($pet))
-        {
+        if($this->maybeReceiveAthenasGift($pet) || $this->maybeReceiveFairyGodmotherItem($pet))
             return;
-        }
 
         $itemsInHouse = $this->houseSimService->getState()->getInventoryCount();
 
@@ -1102,6 +1100,31 @@ class PetActivityService
             return true;
 
         return false;
+    }
+
+    private function maybeReceiveFairyGodmotherItem(Pet $pet): bool
+    {
+        if(!$pet->hasMerit(MeritEnum::FAIRY_GODMOTHER))
+            return false;
+
+        if($this->squirrel3->rngNextInt(1, 650) !== 1)
+            return false;
+
+        $randomChat = $this->squirrel3->rngNextFromArray([
+            'In the face of darkness, remember that your light shines brightest.',
+            'Embrace your uniqueness, for it is the key to unlocking your dreams.',
+            'Believe in yourself, my dear, for magic lies within your heart.',
+            'The power of imagination will lead you to realms where dreams come true.',
+            'Let kindness be your wand, and you\'ll create wonders wherever you go.',
+            'Never underestimate the strength of a kind heart, for it can move mountains.',
+            'In the garden of life, cultivate gratitude, and watch your blessings bloom.',
+            'Every day is a new page in the book of your adventures; write it with joy and wonder.',
+            'In every challenge, there lies a hidden spell of growth and wisdom.',
+        ]);
+
+        $randomGoodie = $this->squirrel3->rngNextFromArray([
+
+        ]);
     }
 
     private function maybeReceiveAthenasGift(Pet $pet): bool
