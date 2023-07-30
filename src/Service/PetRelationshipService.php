@@ -253,28 +253,9 @@ class PetRelationshipService
             }
         }
 
-        if($pet->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD))
-            $petPossibleRelationships = array_filter($possibleRelationships, fn($r) => $r !== RelationshipEnum::DISLIKE);
-        else
-            $petPossibleRelationships = $possibleRelationships;
+        [ $petRelationship, $otherPetRelationship ] = $this->createRelationship($pet, $howMetSummary, $otherPet, $howMetSummary, $initialRelationship, $possibleRelationships);
 
-        $relationshipGoal = $this->squirrel3->rngNextFromArray($petPossibleRelationships);
-
-        // pet
-        $petRelationship = (new PetRelationship())
-            ->setRelationship($otherPet)
-            ->setMetDescription($howMetSummary)
-            ->setCurrentRelationship($initialRelationship)
-            ->setPet($pet)
-            ->setRelationshipGoal($relationshipGoal)
-            ->setCommitment(self::generateInitialCommitment($this->squirrel3, $initialRelationship, $relationshipGoal))
-        ;
-
-        $pet->addPetRelationship($petRelationship);
-
-        $this->em->persist($petRelationship);
-
-        $meetDescription = str_replace([ '%p1%', '%p2%'], [ '%pet:' . $pet->getId() . '.name%', '%pet:' . $otherPet->getId() . '.name%' ], $metActivityLogTemplate);
+        $meetDescription = str_replace([ '%p1%', '%p2%' ], [ '%pet:' . $pet->getId() . '.name%', '%pet:' . $otherPet->getId() . '.name%' ], $metActivityLogTemplate);
 
         if($petRelationship->getCurrentRelationship() === RelationshipEnum::DISLIKE)
             $activityLog = $this->responseService->createActivityLog($pet, $meetDescription . ' They didn\'t really get along, though...', 'icons/activity-logs/enemy');
@@ -288,27 +269,6 @@ class PetRelationshipService
             ->addTags($this->petActivityLogTagRepository->findByNames($groupTags))
             ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Group Hangout' ]))
         ;
-
-        // other pet
-        if($otherPet->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD))
-            $otherPetPossibleRelationships = array_filter($possibleRelationships, fn($r) => $r !== RelationshipEnum::DISLIKE);
-        else
-            $otherPetPossibleRelationships = $possibleRelationships;
-
-        $relationshipGoal = $this->squirrel3->rngNextFromArray($otherPetPossibleRelationships);
-
-        $otherPetRelationship = (new PetRelationship())
-            ->setRelationship($pet)
-            ->setMetDescription($howMetSummary)
-            ->setCurrentRelationship($initialRelationship)
-            ->setPet($otherPet)
-            ->setRelationshipGoal($relationshipGoal)
-            ->setCommitment(self::generateInitialCommitment($this->squirrel3, $initialRelationship, $relationshipGoal))
-        ;
-
-        $otherPet->addPetRelationship($otherPetRelationship);
-
-        $this->em->persist($otherPetRelationship);
 
         $meetDescription = str_replace([ '%p1%', '%p2%'], [ '%pet:' . $otherPet->getId() . '.name%', '%pet:' . $pet->getId() . '.name%' ], $metActivityLogTemplate);
 
@@ -705,5 +665,54 @@ class PetRelationshipService
     private function hangOutPrivatelyAsMates(PetRelationship $p1, PetRelationship $p2): array
     {
         return $this->hangOutPrivatelyAsFriends($p1, $p2);
+    }
+
+    /**
+     * @return PetRelationship[]
+     */
+    public function createRelationship(Pet $pet, string $howPetMetSummary, Pet $otherPet, string $howOtherPetMetSummary, string $initialRelationship, array $possibleRelationships): array
+    {
+        if($pet->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD))
+            $petPossibleRelationships = array_filter($possibleRelationships, fn($r) => $r !== RelationshipEnum::DISLIKE);
+        else
+            $petPossibleRelationships = $possibleRelationships;
+
+        $relationshipGoal = $this->squirrel3->rngNextFromArray($petPossibleRelationships);
+
+        $petRelationship = (new PetRelationship())
+            ->setRelationship($otherPet)
+            ->setMetDescription($howPetMetSummary)
+            ->setCurrentRelationship($initialRelationship)
+            ->setPet($pet)
+            ->setRelationshipGoal($relationshipGoal)
+            ->setCommitment(self::generateInitialCommitment($this->squirrel3, $initialRelationship, $relationshipGoal))
+        ;
+
+        $pet->addPetRelationship($petRelationship);
+
+        $this->em->persist($petRelationship);
+
+        // other pet
+        if($otherPet->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD))
+            $otherPetPossibleRelationships = array_filter($possibleRelationships, fn($r) => $r !== RelationshipEnum::DISLIKE);
+        else
+            $otherPetPossibleRelationships = $possibleRelationships;
+
+        $relationshipGoal = $this->squirrel3->rngNextFromArray($otherPetPossibleRelationships);
+
+        $otherPetRelationship = (new PetRelationship())
+            ->setRelationship($pet)
+            ->setMetDescription($howOtherPetMetSummary)
+            ->setCurrentRelationship($initialRelationship)
+            ->setPet($otherPet)
+            ->setRelationshipGoal($relationshipGoal)
+            ->setCommitment(self::generateInitialCommitment($this->squirrel3, $initialRelationship, $relationshipGoal))
+        ;
+
+        $otherPet->addPetRelationship($otherPetRelationship);
+
+        $this->em->persist($otherPetRelationship);
+
+        return [ $petRelationship, $otherPetRelationship ];
     }
 }

@@ -4,14 +4,15 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\DistractionLocationEnum;
-use App\Enum\EnumInvalidValueException;
 use App\Enum\FlavorEnum;
+use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\MoonPhaseEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\RelationshipEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
@@ -34,6 +35,7 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\PetFactory;
+use App\Service\PetRelationshipService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
@@ -59,6 +61,7 @@ class GatheringService
     private CalendarService $calendarService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
     private EnchantmentRepository $enchantmentRepository;
+    private PetRelationshipService $petRelationshipService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
@@ -67,7 +70,8 @@ class GatheringService
         PetSpeciesRepository $petSpeciesRepository, PetRepository $petRepository, PetFactory $petFactory,
         MeritRepository $meritRepository, GatheringDistractionService $gatheringDistractions,
         UserQuestRepository $userQuestRepository, CalendarService $calendarService,
-        PetActivityLogTagRepository $petActivityLogTagRepository, EnchantmentRepository $enchantmentRepository
+        PetActivityLogTagRepository $petActivityLogTagRepository, EnchantmentRepository $enchantmentRepository,
+        PetRelationshipService $petRelationshipService
     )
     {
         $this->responseService = $responseService;
@@ -88,6 +92,7 @@ class GatheringService
         $this->calendarService = $calendarService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->enchantmentRepository = $enchantmentRepository;
+        $this->petRelationshipService = $petRelationshipService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -237,7 +242,23 @@ class GatheringService
 
             $petJoinsHouse = $numberOfPetsAtHome < $pet->getOwner()->getMaxPets();
 
-            $extraMessage = 'It followed %pet:' . $pet->getId() . '.name% home';
+            if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
+            {
+                $extraMessage = ActivityHelpers::PetName($pet) . ' recognized the spirit from Light and Shadow texts: a ' . $newPet->getSpecies()->getName() . '! They began to talk - it\'s name was ' . $newPet->getName() . ', and the two formed a quick connection! ';
+
+                $this->petRelationshipService->createRelationship(
+                    $pet,
+                    '%pet.name% found %relationship.name% in an Abandoned Quarry.',
+                    $newPet,
+                    '%relationship.name% found %pet.name% in an Abandoned Quarry.',
+                    RelationshipEnum::FRIEND,
+                    [ RelationshipEnum::FRIENDLY_RIVAL, RelationshipEnum::FRIEND, RelationshipEnum::FRIEND, RelationshipEnum::BFF, RelationshipEnum::BFF, RelationshipEnum::FWB, RelationshipEnum::MATE ]
+                );
+            }
+            else
+                $extraMessage = '';
+
+            $extraMessage .= 'It followed %pet:' . $pet->getId() . '.name% home';
 
             if($petJoinsHouse)
             {
