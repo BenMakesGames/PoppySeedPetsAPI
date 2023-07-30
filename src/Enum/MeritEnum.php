@@ -24,6 +24,7 @@ final class MeritEnum
     public const WAY_OF_THE_EMPTY_HAND = 'Way of the Empty Hand'; // +5 brawl when equipped with a weapon that does not provide brawl
     public const ATHENAS_GIFTS = 'Athena\'s Gifts'; // sometimes get a Handicrafts Supply Box
     public const IRON_STOMACH = 'Iron Stomach'; // receives half as much poison from poisonous foods
+    public const CELESTIAL_CHORUSER = 'Celestial Choruser';
 
     // obtained through items
     public const BEHATTED = 'Behatted';
@@ -116,7 +117,7 @@ final class MeritInfo
         MeritEnum::WAY_OF_THE_EMPTY_HAND, // brawl >= 5
         MeritEnum::ATHENAS_GIFTS, // crafts >= 5
         MeritEnum::NO_SHADOW_OR_REFLECTION, // stealth >= 5
-        MeritEnum::SOOTHING_VOICE, // music >= 5
+        MeritEnum::CELESTIAL_CHORUSER, // music >= 5
         MeritEnum::SPIRIT_COMPANION, // umbra >= 5
 
         // anytime:
@@ -124,6 +125,7 @@ final class MeritInfo
         MeritEnum::BLACK_HOLE_TUM,
         MeritEnum::NATURAL_CHANNEL,
         MeritEnum::PROTOCOL_7,
+        MeritEnum::SOOTHING_VOICE,
 
         MeritEnum::INTROSPECTIVE, // relationship count >= 3
         MeritEnum::VOLAGAMY, // age >= 14 days

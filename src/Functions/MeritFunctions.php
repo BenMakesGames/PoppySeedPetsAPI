@@ -78,7 +78,7 @@ class MeritFunctions
 
                 // skill-based merits:
 
-                case MeritEnum::SOOTHING_VOICE:
+                case MeritEnum::CELESTIAL_CHORUSER:
                     $available = $pet->getSkills()->getMusic() >= 5;
                     break;
 
