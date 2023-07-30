@@ -4,6 +4,7 @@ namespace App\Functions;
 use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\MeritEnum;
+use App\Enum\StatusEffectEnum;
 use App\Model\ComputedPetSkills;
 
 final class ActivityHelpers
@@ -17,6 +18,17 @@ final class ActivityHelpers
             return $petWithSkills->getPet()->getTool()->getFullItemName();
 
         throw new \Exception('No light source found! (Bad game logic!)');
+    }
+
+    public static function SourceOfHeatProtection(ComputedPetSkills $petWithSkills)
+    {
+        if($petWithSkills->getPet()->hasStatusEffect(StatusEffectEnum::HEAT_RESISTANT))
+            return 'heat-resistance';
+
+        if($petWithSkills->getPet()->getTool() && $petWithSkills->getPet()->getTool()->protectsFromHeat())
+            return $petWithSkills->getPet()->getTool()->getItem()->getName();
+
+        throw new \Exception('No source of heat protection found! (Bad game logic!)');
     }
 
     public static function PetName(Pet $pet): string

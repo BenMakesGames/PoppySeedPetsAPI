@@ -335,7 +335,7 @@ class IcyMoonService
             {
                 if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
                 {
-                    $activityLog->setEntry($activityLog->getEntry() . ' The core was hot, but their ' . $pet->getTool()->getItem()->getName() . ' protected them.')
+                    $activityLog->setEntry($activityLog->getEntry() . ' The core was hot, but their ' . ActivityHelpers::SourceOfHeatProtection($petWithSkills) . ' protected them.')
                         ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
                         ->addTags($this->petActivityLogTagRepository->findByNames([ 'Icy Moon', 'Gathering', 'Dark', 'Heatstroke' ]))
                     ;

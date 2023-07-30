@@ -1395,7 +1395,7 @@ class GatheringService
 
             if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
             {
-                $activityLog->setEntry($activityLog->getEntry() . ' ' . ucfirst($locationName) . ' was hot, but their ' . $pet->getTool()->getItem()->getName() . ' protected them.')
+                $activityLog->setEntry($activityLog->getEntry() . ' ' . ucfirst($locationName) . ' was hot, but their ' . ActivityHelpers::SourceOfHeatProtection($petWithSkills) . ' protected them.')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
                 ;
             }
