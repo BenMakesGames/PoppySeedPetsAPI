@@ -183,7 +183,7 @@ class PregnancyService
             $this->meritRepository->getRandomStartingMerit()
         );
 
-        if($pet->hasMerit(MeritEnum::DOPPEL_GENE))
+        if($pet->hasMerit(MeritEnum::DOPPEL_GENE) || $this->squirrel3->rngNextInt(1, 444) === 1)
         {
             $babies[] = $this->petFactory->createPet(
                 $user,
@@ -363,10 +363,7 @@ class PregnancyService
                 $n2Part = \mb_substr($n2, $n2Offset);
         }
 
-        if($this->squirrel3->rngNextBool())
-            $newName = trim($n1Part . $n2Part);
-        else
-            $newName = trim($n2Part . $n1Part);
+        $newName = trim($n1Part . $n2Part);
 
         $newName = preg_replace('/ +/', ' ', mb_strtolower($newName));
 
