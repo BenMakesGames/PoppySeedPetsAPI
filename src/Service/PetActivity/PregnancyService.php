@@ -335,12 +335,12 @@ class PregnancyService
         {
             $n1Offset = $this->squirrel3->rngNextInt(
                 max(0, ceil(\mb_strlen($n1) / 2) - 2),
-                min(\mb_strlen($n1) - 1, (\mb_strlen($n1) >> 1) + 2)
+                min(\mb_strlen($n1) - 1, (\mb_strlen($n1) / 2) + 2)
             );
 
             if($n1Offset === 0 || $n1Offset === \mb_strlen($n1) - 1)
                 $n1Part = $n1;
-            else if($this->squirrel3->rngNextInt(1, 2) === 1)
+            else if($this->squirrel3->rngNextBool())
                 $n1Part = \mb_substr($n1, 0, $n1Offset);
             else
                 $n1Part = \mb_substr($n1, $n1Offset);
@@ -352,28 +352,28 @@ class PregnancyService
         {
             $n2Offset = $this->squirrel3->rngNextInt(
                 max(0, ceil(\mb_strlen($n2) / 2) - 2),
-                min(\mb_strlen($n2) - 1, (\mb_strlen($n2) >> 1) + 2)
+                min(\mb_strlen($n2) - 1, (\mb_strlen($n2) / 2) + 2)
             );
 
             if($n2Offset === 0 || $n2Offset === \mb_strlen($n1) - 1)
                 $n2Part = $n2;
-            else if($this->squirrel3->rngNextInt(1, 2) === 1)
+            else if($this->squirrel3->rngNextBool())
                 $n2Part = \mb_substr($n2, 0, $n2Offset);
             else
                 $n2Part = \mb_substr($n2, $n2Offset);
         }
 
-        if($this->squirrel3->rngNextInt(1, 2) === 1)
+        if($this->squirrel3->rngNextBool())
             $newName = trim($n1Part . $n2Part);
         else
             $newName = trim($n2Part . $n1Part);
 
-        $newName = preg_replace('/ +/', ' ', strtolower($newName));
+        $newName = preg_replace('/ +/', ' ', mb_strtolower($newName));
 
         if(PregnancyService::isForbiddenCombinedName($newName))
             $newName = $this->squirrel3->rngNextFromArray(PetShelterPet::PET_NAMES);
 
-        return ucwords($newName);
+        return mb_convert_case($newName, MB_CASE_TITLE);
     }
 
     private static function isForbiddenCombinedName(string $name): bool
