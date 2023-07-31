@@ -154,10 +154,21 @@ class PregnancyService
         $user = $pet->getOwner();
         $pregnancy = $pet->getPregnancy();
 
-        $names = [
-            $this->combineNames($pregnancy->getParent()->getName(), $pregnancy->getSpiritParent()->getName()),
-            $this->combineNames($pregnancy->getParent()->getName(), $pregnancy->getOtherParent()->getName())
-        ];
+        if($pregnancy->getSpiritParent())
+        {
+            $names = [
+                $this->combineNames($pregnancy->getParent()->getName(), $pregnancy->getSpiritParent()->getName()),
+                $this->combineNames($pregnancy->getSpiritParent()->getName(), $pregnancy->getParent()->getName())
+            ];
+        }
+        else
+        {
+            $names = [
+                $this->combineNames($pregnancy->getParent()->getName(), $pregnancy->getOtherParent()->getName()),
+                $this->combineNames($pregnancy->getOtherParent()->getName(), $pregnancy->getParent()->getName()),
+            ];
+        }
+
         shuffle($names);
 
         $babies = [];
@@ -339,7 +350,6 @@ class PregnancyService
             $n2Part = $n2;
         else
         {
-
             $n2Offset = $this->squirrel3->rngNextInt(
                 max(0, ceil(\mb_strlen($n2) / 2) - 2),
                 min(\mb_strlen($n2) - 1, (\mb_strlen($n2) >> 1) + 2)
