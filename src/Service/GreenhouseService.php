@@ -4,7 +4,6 @@ namespace App\Service;
 use App\Entity\Greenhouse;
 use App\Entity\GreenhousePlant;
 use App\Entity\Inventory;
-use App\Entity\Item;
 use App\Entity\Merit;
 use App\Entity\PetSpecies;
 use App\Entity\User;

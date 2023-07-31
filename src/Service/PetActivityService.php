@@ -14,7 +14,6 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
-use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
