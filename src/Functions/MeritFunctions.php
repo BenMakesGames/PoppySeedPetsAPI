@@ -4,7 +4,7 @@ namespace App\Functions;
 use App\Entity\Merit;
 use App\Entity\Pet;
 use App\Enum\MeritEnum;
-use App\Enum\MeritInfo;
+use App\Model\MeritInfo;
 
 class MeritFunctions
 {
