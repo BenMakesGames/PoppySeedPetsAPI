@@ -11,6 +11,7 @@ use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\EquipmentFunctions;
 use App\Functions\MeritFunctions;
+use App\Model\MeritInfo;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Service\ResponseService;
@@ -104,7 +105,7 @@ class ForgettingScrollController extends AbstractController
 
         $responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% has forgotten the "' . $merit->getName() . '" Merit!', 'items/scroll/unlearning');
 
-        if(in_array($merit->getName(), MeritFunctions::AFFECTION_MERITS))
+        if(in_array($merit->getName(), MeritInfo::AFFECTION_REWARDS))
             $pet->decreaseAffectionRewardsClaimed();
 
         if($merit->getName() === MeritEnum::BEHATTED)
