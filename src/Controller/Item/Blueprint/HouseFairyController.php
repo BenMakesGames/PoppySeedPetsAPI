@@ -136,7 +136,7 @@ class HouseFairyController extends AbstractController
         }
 
         $petsAtHome = $petRepository->findBy([
-            'user' => $user,
+            'owner' => $user,
             'location' => PetLocationEnum::HOME
         ]);
 
