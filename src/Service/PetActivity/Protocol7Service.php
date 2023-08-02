@@ -776,6 +776,7 @@ class Protocol7Service
                 'Password',
                 'Cryptocurrency Wallet',
                 'Egg Book Audiobook',
+                'Lycanthropy Report'
             ]);
 
             $lucky = false;

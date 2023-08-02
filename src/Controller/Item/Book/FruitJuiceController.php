@@ -73,6 +73,6 @@ Finally, a normal one!
 
 If you grow yellow Corn, you may be lucky enough to find some Purple Corn in the mix. (Or you can cheat and dye yellow Corn purple, but don\'t tell anyone I told you!)
 
-Pineapples aren\'t native to Poppy Seed Pets island, so can be hard to find, but they seem to be closely associated with magic, so you might start with scrolls and spirits. I also heard someone dreamed one into existence, once, so... you know... maybe try that??? (Couldn\'t hurt to try!)');
+Pineapples aren\'t native to Poppy Seed Pets Island, so can be hard to find, but they seem to be closely associated with magic, so you might start with scrolls and spirits. I also heard someone dreamed one into existence, once, so... you know... maybe try that??? (Couldn\'t hurt to try!)');
     }
 }

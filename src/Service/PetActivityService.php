@@ -457,7 +457,7 @@ class PetActivityService
         }
         else if(
             $pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_WERECREATURE) &&
-            $this->squirrel3->rngNextInt(1, 100) === 1 &&
+            $this->squirrel3->rngNextInt(1, max(20, 50 + $pet->getFood() + $pet->getSafety() * 2 + $pet->getLove() + $pet->getEsteem())) === 1 &&
             !$pet->hasStatusEffect(StatusEffectEnum::WEREFORM)
         )
         {
