@@ -40,4 +40,5 @@ final class StatusEffectEnum
     public const DANCING_LIKE_A_FOOL = 'Dancing Like a Fool';
     public const THIRSTY = 'Thirsty';
     public const HEAT_RESISTANT = 'Heat-resistant';
+    public const JAUNE = 'Jaune';
 }

@@ -251,7 +251,9 @@ class EatingService
         $this->squirrel3->rngNextShuffle($inventory);
 
         $isThirsty = $pet->hasStatusEffect(StatusEffectEnum::THIRSTY);
+        $isJaune = $pet->hasStatusEffect(StatusEffectEnum::JAUNE);
         $gotAColdDrink = null;
+        $gotButter = null;
 
         $petChanges = new PetChanges($pet);
         $foodsEaten = [];
@@ -288,6 +290,9 @@ class EatingService
 
             if($isThirsty && !$gotAColdDrink && ArrayFunctions::any($i->getItem()->getItemGroups(), fn(ItemGroup $ig) => $ig->getName() === 'Cold Drink'))
                 $gotAColdDrink = $i->getItem();
+
+            if($isJaune && !$gotButter && strpos(strtolower($i->getItem()->getName()), 'butter') !== false)
+                $gotButter = $i->getItem();
 
             $pet
                 ->increaseLove($loveAndEsteemGain)
@@ -347,8 +352,14 @@ class EatingService
 
             if($isThirsty && $gotAColdDrink)
             {
-                $statusEffect = $this->satisfiedThirsty($pet);
+                $statusEffect = $this->satisfiedCravingStatusEffect($pet, StatusEffectEnum::THIRSTY);
                 $message .= ' The ' . $gotAColdDrink->getName() . ' satisfied their Thirst! They\'re feeling ' . $statusEffect . '!';
+            }
+
+            if($isJaune && $gotButter)
+            {
+                $statusEffect = $this->satisfiedCravingStatusEffect($pet, StatusEffectEnum::JAUNE);
+                $message .= ' The ' . $gotButter->getName() . ' satisfied their desire to eat Butter! They\'re feeling ' . $statusEffect . '!';
             }
 
             if($ateAFortuneCookie)
@@ -386,9 +397,9 @@ class EatingService
         }
     }
 
-    private function satisfiedThirsty(Pet $pet): string
+    private function satisfiedCravingStatusEffect(Pet $pet, string $cravingStatusEffect): string
     {
-        $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::THIRSTY));
+        $pet->removeStatusEffect($pet->getStatusEffect($cravingStatusEffect));
 
         $this->petExperienceService->gainAffection($pet, 2);
 

@@ -69,6 +69,7 @@ class CandyMakersCookbookController extends AbstractController
             'Green Gummies (Honeydont & Agar-agar)',
             'Apricot Gummies (using Corn Syrup)',
             'Apricot Gummies (using Agar-Agar)',
+            'Dandelion Syrup',
         ]);
 
         return $responseService->itemActionSuccess($message);
@@ -97,6 +98,7 @@ class CandyMakersCookbookController extends AbstractController
 
 * Candied Lotus Petals
 * Chocolates
+* Dandelion Syrup
 * Everybeans
 * Hard Fruit Candies
 * Honeycomb
@@ -167,6 +169,15 @@ Combine:
 * Cocoa Beans (*not* powder!)
 * Sugar
 * Optionally, add Orange, or Spicy Peps.
+
+#### Dandelion Syrup
+
+Combine:
+* Dandelion
+* Sugar
+* Yellowy Lime
+
+Makes a sweet syrup that\'s delicious to put on just about anything!
 
 #### Everybeans
 
