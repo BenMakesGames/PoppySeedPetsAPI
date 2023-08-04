@@ -40,15 +40,20 @@ class UserUnlockedFeatureRepository extends ServiceEntityRepository
         }
     }
 
-    public function create(User $user, string $feature): UserUnlockedFeature
+    private $createdThisRequest = [];
+
+    public function create(User $user, string $feature)
     {
+        if(in_array($feature, $this->createdThisRequest))
+            return;
+
+        $this->createdThisRequest[] = $feature;
+
         $entity = (new UserUnlockedFeature())
             ->setUser($user)
             ->setFeature($feature)
         ;
 
         $this->add($entity, true);
-
-        return $entity;
     }
 }

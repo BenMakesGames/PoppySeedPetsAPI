@@ -140,12 +140,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $userSessions;
 
     /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * @Groups({"myAccount"})
-     */
-    private $unlockedHollowEarth;
-
-    /**
      * @ORM\OneToOne(targetEntity="App\Entity\Fireplace", mappedBy="user", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
      */
     private $fireplace;

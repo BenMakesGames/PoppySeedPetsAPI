@@ -5,7 +5,6 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
-use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
@@ -23,7 +22,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -240,6 +238,7 @@ class AccountController extends AbstractController
     /**
      * @Route("/menuOrder", methods={"PATCH"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @DoesNotRequireHouseHours()
      */
     public function saveMenuOrder(
         Request $request, UserMenuService $userMenuService, EntityManagerInterface $em,
@@ -249,6 +248,9 @@ class AccountController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         $newOrder = $request->request->get('order');
+
+        if(!is_array($newOrder) || count($newOrder) === 0)
+            throw new PSPFormValidationException('No order info was provided.');
 
         $userMenuService->updateUserMenuSortOrder($user, $newOrder);
 
