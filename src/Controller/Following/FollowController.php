@@ -3,10 +3,12 @@ namespace App\Controller\Following;
 
 use App\Entity\User;
 use App\Entity\UserFollowing;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Repository\UserFollowingRepository;
 use App\Repository\UserRepository;
+use App\Repository\UserUnlockedFeatureRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,7 +30,8 @@ class FollowController extends AbstractController
      */
     public function add(
         Request $request, UserRepository $userRepository, UserFollowingRepository $userFollowingRepository,
-        ResponseService $responseService, EntityManagerInterface $em
+        ResponseService $responseService, EntityManagerInterface $em,
+        UserUnlockedFeatureRepository $userUnlockedFeatureRepository
     )
     {
         /** @var User $user */
@@ -60,8 +63,8 @@ class FollowController extends AbstractController
 
         $em->persist($newFriend);
 
-        if($user->getUnlockedFlorist() === null)
-            $user->setUnlockedFlorist();
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Florist))
+            $userUnlockedFeatureRepository->create($user, UnlockableFeatureEnum::Florist);
 
         $em->flush();
 

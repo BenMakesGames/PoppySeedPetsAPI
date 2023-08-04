@@ -4,6 +4,7 @@ namespace App\Controller\Beehive;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\InventoryRepository;
 use App\Service\HollowEarthService;
@@ -29,7 +30,7 @@ class DiceController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if(!$user->getUnlockedBeehive() || !$user->getBeehive())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Beehive) || !$user->getBeehive())
             throw new PSPNotUnlockedException('Beehive');
 
         $inventory = $inventoryRepository->createQueryBuilder('i')

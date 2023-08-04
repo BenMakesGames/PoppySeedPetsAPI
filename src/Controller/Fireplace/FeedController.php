@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\UserActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
@@ -44,7 +45,7 @@ class FeedController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if(!$user->getUnlockedFireplace() || !$user->getFireplace())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace) || !$user->getFireplace())
             throw new PSPNotUnlockedException('Fireplace');
 
         $itemIds = RequestFunctions::getUniqueIdsOrThrow($request, 'fuel', 'No items were selected as fuel???');

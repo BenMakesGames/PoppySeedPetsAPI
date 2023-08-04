@@ -4,6 +4,7 @@ namespace App\Controller\Item\Pinata;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
+use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\EnchantmentRepository;
 use App\Repository\UserStatsRepository;
@@ -65,7 +66,7 @@ class SolsticeBagController extends AbstractController
 
             $message .= "\n\nAnd oh! There's a summer aura inside!? (Apparently that's possible?!?!)";
 
-            if(!$user->getUnlockedHattier())
+            if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Hattier))
                 $message .= ' You\'re not sure what to do with the thing, at present... maybe it\'ll come in handy later? (You haven\'t unlocked this feature of the game yet... but when you do, the summer aura will be available to you!)';
         }
 
@@ -114,7 +115,7 @@ class SolsticeBagController extends AbstractController
 
             $message .= "\n\nAnd oh! There's a winter aura inside!? (Apparently that's possible?!?!)";
 
-            if(!$user->getUnlockedHattier())
+            if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Hattier))
                 $message .= ' You\'re not sure what to do with the thing, at present... maybe it\'ll come in handy later? (You haven\'t unlocked this feature of the game yet... but when you do, the winter aura will be available to you!)';
         }
 

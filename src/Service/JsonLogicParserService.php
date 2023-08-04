@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Enum\UnlockableFeatureEnum;
 use App\Repository\UserStatsRepository;
 use Psr\Log\LoggerInterface;
 
@@ -76,7 +77,7 @@ class JsonLogicParserService
             else if($expression === '%user.dailySeed%')
                 return $user->getDailySeed();
             else if($expression === '%user.unlockedBeehive%')
-                return $user->getUnlockedBeehive() !== null;
+                return $user->hasUnlockedFeature(UnlockableFeatureEnum::Beehive);
             else if(preg_match('/%user.stat.[^%]+%/', $expression))
             {
                 $stat = substr($expression, 11, strlen($expression) - 12);

@@ -3,6 +3,7 @@ namespace App\Controller\Bookstore;
 
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Service\BookstoreService;
 use App\Service\ResponseService;
@@ -29,7 +30,7 @@ class GiveItem extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if($user->getUnlockedBookstore() === null)
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Bookstore))
             throw new PSPNotUnlockedException('Bookstore');
 
         $bookstoreService->advanceBookstoreQuest($user, $item);

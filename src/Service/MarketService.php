@@ -8,6 +8,7 @@ use App\Entity\Item;
 use App\Entity\Spice;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\InventoryModifierFunctions;
 use App\Repository\MarketBidRepository;
@@ -157,7 +158,7 @@ class MarketService
 
     public function canOfferWingedKey(User $user)
     {
-        if($user->getUnlockedMarket() && $user->getUnlockedMuseum() && $user->getMaxSellPrice() >= 100)
+        if($user->hasUnlockedFeature(UnlockableFeatureEnum::Market) && $user->hasUnlockedFeature(UnlockableFeatureEnum::Museum) && $user->getMaxSellPrice() >= 100)
         {
             $receivedWingedKey = $this->userQuestRepository->findOrCreate($user, 'Received Winged Key', false);
 

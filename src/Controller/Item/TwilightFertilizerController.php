@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Service\ResponseService;
@@ -28,7 +29,7 @@ class TwilightFertilizerController extends AbstractController
 
         $user = $this->getUser();
 
-        if(!$user->getUnlockedGreenhouse())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse))
             throw new PSPNotUnlockedException('Greenhouse');
 
         if($user->getGreenhouse()->getMaxDarkPlants() >= 2)

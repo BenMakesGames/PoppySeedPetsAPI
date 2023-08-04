@@ -4,6 +4,7 @@ namespace App\Service;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
@@ -40,9 +41,6 @@ class RecyclingService
             return;
 
         $user->increaseRecyclePoints($quantity);
-
-        if($user->getUnlockedRecycling() === null)
-            $user->setUnlockedRecycling();
     }
 
     private static function recycledItemShouldGoToGivingTree(IRandom $rng, bool $givingTreeHoliday, Inventory $i): bool

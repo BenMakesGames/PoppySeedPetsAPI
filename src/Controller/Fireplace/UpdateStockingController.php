@@ -3,6 +3,7 @@ namespace App\Controller\Fireplace;
 
 use App\Entity\Fireplace;
 use App\Entity\User;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Service\ResponseService;
@@ -28,7 +29,7 @@ class UpdateStockingController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if(!$user->getUnlockedFireplace() || !$user->getFireplace())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace) || !$user->getFireplace())
             throw new PSPNotUnlockedException('Fireplace');
 
         $appearance = $request->request->getAlnum('appearance');

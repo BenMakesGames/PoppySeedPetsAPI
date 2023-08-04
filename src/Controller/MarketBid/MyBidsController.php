@@ -3,6 +3,7 @@ namespace App\Controller\MarketBid;
 
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\MarketBidRepository;
 use App\Service\ResponseService;
@@ -25,7 +26,7 @@ class MyBidsController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if(!$user->getUnlockedMarket())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Market))
             throw new PSPNotUnlockedException('Market');
 
         $myBids = $marketBidRepository->findBy([ 'user' => $user ], [ 'createdOn' => 'DESC' ]);

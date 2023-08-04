@@ -47,6 +47,8 @@ class TransactionService
 
         $user->increaseMoneys($amount);
 
+        // TODO: maybe unlock the market
+
         $tags = array_merge($additionalTags, [ 'Moneys' ]);
 
         return PlayerLogHelpers::Create($this->em, $user, $description . ' (' . $amount . '~~m~~)', $tags);

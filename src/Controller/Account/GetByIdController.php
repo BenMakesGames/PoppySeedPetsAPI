@@ -6,6 +6,7 @@ use App\Entity\UserLink;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserLinkVisibilityEnum;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
@@ -50,7 +51,7 @@ class GetByIdController extends AbstractController
 
         $data['links'] = $this->getLinks($user, $userFollowingRepository, $userLinkRepository);
 
-        if($user->getUnlockedFireplace())
+        if($user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace))
         {
             $mantle = $inventoryRepository->findBy(['owner' => $user, 'location' => LocationEnum::MANTLE]);
 

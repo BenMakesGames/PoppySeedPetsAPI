@@ -8,6 +8,7 @@ use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetColorFunctions;
@@ -15,6 +16,7 @@ use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
+use App\Repository\UserUnlockedFeatureRepository;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
@@ -119,8 +121,8 @@ class HouseFairyController extends AbstractController
      */
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository,
-        Squirrel3 $squirrel3, PetRepository $petRepository
+        InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3,
+        PetRepository $petRepository, UserUnlockedFeatureRepository $userUnlockedFeatureRepository
     )
     {
         /** @var User $user */
@@ -128,7 +130,7 @@ class HouseFairyController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'fairy/#/buildFireplace');
 
-        if($user->getUnlockedFireplace() && $user->getFireplace())
+        if($user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace) && $user->getFireplace())
         {
             return $responseService->itemActionSuccess(
                 '"You already have a Fireplace, and it\'s already as fireplacey as a fireplace can be!" says ' . $this->fairyName($inventory) . '.' . "\n\n". 'Fairy nough-- er: fair enough.'
@@ -162,7 +164,7 @@ class HouseFairyController extends AbstractController
             $em->remove($quint);
         }
 
-        $user->setUnlockedFireplace();
+        $userUnlockedFeatureRepository->create($user, UnlockableFeatureEnum::Fireplace);
 
         $stockingColors = PetColorFunctions::generateRandomPetColors($squirrel3);
 
@@ -180,7 +182,7 @@ class HouseFairyController extends AbstractController
 
         $em->flush();
 
-        $responseService->setReloadInventory(true);
+        $responseService->setReloadInventory();
 
         return $responseService->itemActionSuccess(
             $message

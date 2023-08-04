@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
@@ -17,6 +18,7 @@ use App\Repository\InventoryRepository;
 use App\Repository\ItemGroupRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
+use App\Repository\UserUnlockedFeatureRepository;
 use App\Service\BeehiveService;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -49,7 +51,7 @@ class BlueprintController extends AbstractController
 
         $user = $this->getUser();
 
-        if(!$user->getUnlockedGreenhouse())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse))
             return $responseService->error(400, [ 'You need a Greenhouse to install a Composter!' ]);
 
         if($user->getGreenhouse()->getHasComposter())
@@ -86,21 +88,21 @@ class BlueprintController extends AbstractController
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository, PetExperienceService $petExperienceService,
-        PetActivityLogTagRepository $activityLogTagRepository
+        PetActivityLogTagRepository $activityLogTagRepository, UserUnlockedFeatureRepository $userUnlockedFeatureRepository
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'basementBlueprint');
-
+        /** @var User $user */
         $user = $this->getUser();
 
-        if($user->getUnlockedBasement())
-        {
+        ItemControllerHelpers::validateInventory($user, $inventory, 'basementBlueprint');
+
+        if($user->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
             return $responseService->itemActionSuccess('You\'ve already got a Basement!');
-        }
 
         $pet = $this->getPet($request, $petRepository);
 
-        $user->setUnlockedBasement();
+        $userUnlockedFeatureRepository->create($user, UnlockableFeatureEnum::Basement);
+
         $em->remove($inventory);
 
         $this->rewardHelper(
@@ -126,7 +128,8 @@ class BlueprintController extends AbstractController
     public function buildBeehive(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         InventoryRepository $inventoryRepository, BeehiveService $beehiveService, PetExperienceService $petExperienceService,
-        PetRepository $petRepository, PetActivityLogTagRepository $activityLogTagRepository
+        PetRepository $petRepository, PetActivityLogTagRepository $activityLogTagRepository,
+        UserUnlockedFeatureRepository $userUnlockedFeatureRepository
     )
     {
         /** @var User $user */
@@ -134,10 +137,8 @@ class BlueprintController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'beehiveBlueprint');
 
-        if($user->getUnlockedBeehive())
-        {
+        if($user->hasUnlockedFeature(UnlockableFeatureEnum::Beehive))
             throw new PSPInvalidOperationException('You\'ve already got a Beehive!');
-        }
 
         $magnifyingGlass = $inventoryRepository->findAnyOneFromItemGroup($user, 'Magnifying Glass', [
             LocationEnum::HOME,
@@ -155,7 +156,7 @@ class BlueprintController extends AbstractController
 
         $em->remove($inventory);
 
-        $user->setUnlockedBeehive();
+        $userUnlockedFeatureRepository->create($user, UnlockableFeatureEnum::Beehive);
 
         if($user->getGreenhouse())
             $user->getGreenhouse()->setBeesDismissedOn(new \DateTimeImmutable());
@@ -189,7 +190,7 @@ class BlueprintController extends AbstractController
     public function claim(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository, PetExperienceService $petExperienceService,
-        PetActivityLogTagRepository $activityLogTagRepository
+        PetActivityLogTagRepository $activityLogTagRepository, UserUnlockedFeatureRepository $userUnlockedFeatureRepository
     )
     {
         /** @var User $user */
@@ -206,10 +207,9 @@ class BlueprintController extends AbstractController
 
         $greenhouse = new Greenhouse();
 
-        $user
-            ->setUnlockedGreenhouse()
-            ->setGreenhouse($greenhouse)
-        ;
+        $user->setGreenhouse($greenhouse);
+
+        $userUnlockedFeatureRepository->create($user, UnlockableFeatureEnum::Greenhouse);
 
         $this->rewardHelper(
             $petExperienceService, $responseService, $activityLogTagRepository,
@@ -241,7 +241,7 @@ class BlueprintController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'birdBathBlueprint');
 
-        if(!$user->getUnlockedGreenhouse())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse))
             return $responseService->error(400, [ 'You need a Greenhouse to build a Bird Bath!' ]);
 
         if($user->getGreenhouse()->getHasBirdBath())
@@ -295,7 +295,7 @@ class BlueprintController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'fishStatue');
 
-        if(!$user->getUnlockedGreenhouse())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse))
             return $responseService->error(400, [ 'You need a Greenhouse to install a Fish Statue!' ]);
 
         if($user->getGreenhouse()->isHasFishStatue())

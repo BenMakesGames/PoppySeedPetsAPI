@@ -4,6 +4,7 @@ namespace App\Service;
 use App\Entity\Item;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
@@ -186,7 +187,7 @@ class BookstoreService
             'Lunchbox Paint' => 25,
         ];
 
-        if($user->getUnlockedHollowEarth())
+        if($user->hasUnlockedFeature(UnlockableFeatureEnum::HollowEarth))
             $gamePrices['Hollow Earth Booster Pack'] = 200;
 
         if($this->calendarService->isStockingStuffingSeason())
@@ -247,10 +248,8 @@ class BookstoreService
             }
         }
 
-        if($user->getUnlockedFireplace())
-        {
+        if($user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace))
             $bookPrices['Melt'] = 25;
-        }
 
         if($itemsDonatedToMuseum)
         {

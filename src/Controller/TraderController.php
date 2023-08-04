@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
@@ -40,7 +41,7 @@ class TraderController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if(!$user->getUnlockedTrader())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Trader))
             throw new PSPNotUnlockedException('Trader');
 
         $offers = $traderService->getOffers($user);
@@ -78,7 +79,7 @@ class TraderController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if(!$user->getUnlockedTrader())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Trader))
             throw new PSPNotUnlockedException('Trader');
 
         $quantity = $request->request->getInt('quantity', 1);

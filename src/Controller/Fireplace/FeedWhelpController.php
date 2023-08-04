@@ -6,12 +6,14 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Functions\RequestFunctions;
 use App\Repository\DragonRepository;
 use App\Repository\InventoryRepository;
+use App\Repository\UserUnlockedFeatureRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -36,7 +38,7 @@ class FeedWhelpController extends AbstractController
     public function feedWhelp(
         Request $request, InventoryRepository $inventoryRepository, ResponseService $responseService,
         InventoryService $inventoryService, EntityManagerInterface $em, DragonRepository $dragonRepository,
-        Squirrel3 $squirrel3
+        Squirrel3 $squirrel3, UserUnlockedFeatureRepository $userUnlockedFeatureRepository
     )
     {
         /** @var User $user */
@@ -121,9 +123,10 @@ class FeedWhelpController extends AbstractController
                 ->setGreetings([ $greetingsAndThanks[0]['greeting'], $greetingsAndThanks[1]['greeting'] ])
                 ->setThanks([ $greetingsAndThanks[0]['thanks'], $greetingsAndThanks[1]['thanks'] ])
             ;
-            $user->setUnlockedDragonDen();
 
-            $responseService->addFlashMessage($whelp->getName() . ' is a whelp no longer! They leave your fireplace and establish a den nearby!');
+            $userUnlockedFeatureRepository->create($user, UnlockableFeatureEnum::DragonDen);
+
+            $responseService->addFlashMessage($whelp->getName() . ' is a whelp no longer! They leave your fireplace and establish a den nearby! (The Dragon Den is now available! Check it out in the menu!)');
         }
 
         $em->flush();

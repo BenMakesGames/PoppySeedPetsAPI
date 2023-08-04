@@ -4,6 +4,7 @@ namespace App\Controller\Inventory;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
@@ -38,10 +39,10 @@ class MoveController extends AbstractController
 
         $allowedLocations = [ LocationEnum::HOME ];
 
-        if($user->getUnlockedFireplace())
+        if($user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace))
             $allowedLocations[] = LocationEnum::MANTLE;
 
-        if($user->getUnlockedBasement())
+        if($user->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
             $allowedLocations[] = LocationEnum::BASEMENT;
 
         if(!in_array($location, $allowedLocations))

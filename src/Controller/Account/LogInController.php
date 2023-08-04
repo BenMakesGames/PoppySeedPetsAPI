@@ -2,6 +2,7 @@
 namespace App\Controller\Account;
 
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Functions\PlayerLogHelpers;
 use App\Repository\UserRepository;
@@ -52,7 +53,8 @@ class LogInController extends AbstractController
 
         $user = $session->getUser();
 
-        if($user->getUnlockedMuseum() === null && $user->getRegisteredOn() <= (new \DateTimeImmutable())->modify('-3 days'))
+        // TODO: get rid of this; have pets discover the museum on day 3
+        if($user->getRegisteredOn() <= (new \DateTimeImmutable())->modify('-3 days') && !$user->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
             $user->setUnlockedMuseum();
 
         $loginFromPath = parse_url($request->server->get('HTTP_REFERER'), PHP_URL_PATH);

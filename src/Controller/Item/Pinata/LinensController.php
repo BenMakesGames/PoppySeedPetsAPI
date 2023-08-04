@@ -5,6 +5,7 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
@@ -82,7 +83,7 @@ class LinensController extends AbstractController
 
         $user = $this->getUser();
 
-        if(!$user->getUnlockedTrader())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Trader))
             throw new PSPNotUnlockedException('Trader');
 
         $trader = $traderRepository->findOneBy([ 'user' => $user->getId() ]);

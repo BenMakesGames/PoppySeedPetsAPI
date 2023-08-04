@@ -12,6 +12,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
@@ -198,7 +199,7 @@ class HuntingService
     private function canRescueAnotherHouseFairy(User $user): bool
     {
         // if you've unlocked the fireplace, then you can't rescue a second
-        if($user->getUnlockedFireplace())
+        if($user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace))
             return false;
 
         // if you haven't donated a fairy, then you can't rescue a second

@@ -13,26 +13,29 @@ use App\Entity\User;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\HollowEarthMoveDirectionEnum;
 use App\Enum\HollowEarthRequiredActionEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\HollowEarthPlayerTileRepository;
 use App\Repository\HollowEarthTileRepository;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
+use App\Repository\UserUnlockedFeatureRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HollowEarthService
 {
     private HollowEarthTileRepository $hollowEarthTileRepository;
-    private $em;
-    private $inventoryService;
-    private $petExperienceService;
-    private $transactionService;
-    private $hollowEarthPlayerTileRepository;
-    private $statusEffectService;
+    private EntityManagerInterface $em;
+    private InventoryService $inventoryService;
+    private PetExperienceService $petExperienceService;
+    private TransactionService $transactionService;
+    private HollowEarthPlayerTileRepository $hollowEarthPlayerTileRepository;
+    private StatusEffectService $statusEffectService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
     private ResponseService $responseService;
     private ItemRepository $itemRepository;
+    private UserUnlockedFeatureRepository $userUnlockedFeatureRepository;
 
     public const DICE_ITEMS = [
         'Glowing "Two-sided Die"' => 2,
@@ -50,7 +53,7 @@ class HollowEarthService
         PetExperienceService $petExperienceService, TransactionService $transactionService,
         HollowEarthPlayerTileRepository $hollowEarthPlayerTileRepository, StatusEffectService $statusEffectService,
         PetActivityLogTagRepository $petActivityLogTagRepository, ResponseService $responseService,
-        ItemRepository $itemRepository
+        ItemRepository $itemRepository, UserUnlockedFeatureRepository $userUnlockedFeatureRepository
     )
     {
         $this->hollowEarthTileRepository = $hollowEarthTileRepository;
@@ -63,12 +66,13 @@ class HollowEarthService
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->responseService = $responseService;
         $this->itemRepository = $itemRepository;
+        $this->userUnlockedFeatureRepository = $userUnlockedFeatureRepository;
     }
 
     public function unlockHollowEarth(User $user): void
     {
-        if($user->getUnlockedHollowEarth() === null)
-            $user->setUnlockedHollowEarth();
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::HollowEarth))
+            $this->userUnlockedFeatureRepository->create($user, UnlockableFeatureEnum::HollowEarth);
 
         if($user->getHollowEarthPlayer() !== null)
             return;

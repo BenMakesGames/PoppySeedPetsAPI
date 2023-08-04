@@ -4,6 +4,7 @@ namespace App\Controller\Beehive;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
@@ -36,7 +37,7 @@ class FeedController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if(!$user->getUnlockedBeehive() || !$user->getBeehive())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Beehive) || !$user->getBeehive())
             throw new PSPNotUnlockedException('Beehive');
 
         $beehive = $user->getBeehive();
@@ -53,7 +54,7 @@ class FeedController extends AbstractController
 
         if($inventoryService->loseItem($itemToFeed, $user, LocationEnum::HOME, 1) === 0)
         {
-            if(!$user->getUnlockedBasement())
+            if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Beehive))
                 throw new PSPNotFoundException('You do not have ' . $itemToFeed->getNameWithArticle() . ' in your house!');
 
             if($inventoryService->loseItem($itemToFeed, $user, LocationEnum::BASEMENT, 1) === 0)

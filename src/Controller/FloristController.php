@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotUnlockedException;
@@ -34,7 +35,7 @@ class FloristController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if($user->getUnlockedFlorist() === null)
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Florist))
             throw new PSPNotUnlockedException('Florist');
 
         return $responseService->success($floristService->getInventory($user));
@@ -53,7 +54,7 @@ class FloristController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if($user->getUnlockedFlorist() === null)
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Florist))
             throw new PSPNotUnlockedException('Florist');
 
         $offers = $floristService->getInventory($user);

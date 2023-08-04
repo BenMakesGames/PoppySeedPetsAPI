@@ -5,6 +5,7 @@ use App\Entity\MarketBid;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
@@ -42,12 +43,12 @@ class CreateBidController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if(!$user->getUnlockedMarket())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Market))
             throw new PSPNotUnlockedException('Market');
 
         $itemsAtHome = $inventoryService->countTotalInventory($user, LocationEnum::HOME);
 
-        if(!$user->getUnlockedBasement())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
             $location = LocationEnum::HOME;
         else
         {
@@ -59,7 +60,7 @@ class CreateBidController extends AbstractController
 
         if($itemsAtHome >= User::MAX_HOUSE_INVENTORY)
         {
-            if(!$user->getUnlockedBasement())
+            if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
                 throw new PSPInvalidOperationException('Your house is already overflowing with items! You\'ll need to clear some out before you can create any new bids.');
 
             $itemsInBasement = $inventoryService->countTotalInventory($user, LocationEnum::BASEMENT);

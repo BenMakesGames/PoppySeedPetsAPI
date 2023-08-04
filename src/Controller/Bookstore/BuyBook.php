@@ -4,6 +4,7 @@ namespace App\Controller\Bookstore;
 use App\Entity\Item;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotUnlockedException;
@@ -35,7 +36,7 @@ class BuyBook extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if($user->getUnlockedBookstore() === null)
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Bookstore))
             throw new PSPNotUnlockedException('Bookstore');
 
         $bookPrices = $bookstoreService->getAvailableBooks($user);

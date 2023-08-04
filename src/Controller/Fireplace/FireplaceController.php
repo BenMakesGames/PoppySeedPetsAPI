@@ -4,6 +4,7 @@ namespace App\Controller\Fireplace;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\DragonRepository;
 use App\Repository\InventoryRepository;
@@ -31,7 +32,7 @@ class FireplaceController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if(!$user->getUnlockedFireplace() || !$user->getFireplace())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace) || !$user->getFireplace())
             throw new PSPNotUnlockedException('Fireplace');
 
         $mantle = $inventoryRepository->findBy([
@@ -61,7 +62,7 @@ class FireplaceController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if(!$user->getUnlockedFireplace() || !$user->getFireplace())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace) || !$user->getFireplace())
             throw new PSPNotUnlockedException('Fireplace');
 
         $fuel = $inventoryRepository->findFuel($user);

@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use App\Enum\EnumInvalidValueException;
+use App\Enum\UnlockableFeatureEnum;
+use App\Functions\ArrayFunctions;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -122,36 +125,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $maxSellPrice = 10;
 
     /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * @Groups({"myAccount"})
-     */
-    private $unlockedFlorist;
-
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * @Groups({"myAccount"})
-     */
-    private $unlockedBookstore;
-
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * @Groups({"myAccount"})
-     */
-    private $unlockedMuseum;
-
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * @Groups({"myAccount"})
-     */
-    private $unlockedPark;
-
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * @Groups({"myAccount"})
-     */
-    private $unlockedGreenhouse;
-
-    /**
      * @ORM\OneToOne(targetEntity="App\Entity\PassphraseResetRequest", mappedBy="user", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
      */
     private $passphraseResetRequest;
@@ -170,41 +143,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="datetime_immutable", nullable=true)
      * @Groups({"myAccount"})
      */
-    private $unlockedBasement;
-
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\HollowEarthPlayer", mappedBy="user", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
-     */
-    private $hollowEarthPlayer;
-
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * @Groups({"myAccount"})
-     */
     private $unlockedHollowEarth;
-
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * @Groups({"myAccount"})
-     */
-    private $unlockedMarket;
-
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * @Groups({"myAccount"})
-     */
-    private $unlockedFireplace;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Fireplace", mappedBy="user", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
      */
     private $fireplace;
-
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * @Groups({"myAccount"})
-     */
-    private $unlockedBeehive;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Beehive", mappedBy="user", cascade={"persist", "remove"})
@@ -223,18 +167,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $recyclePoints = 0;
 
     /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * @Groups({"myAccount"})
-     */
-    private $unlockedRecycling;
-
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * @Groups({"myAccount"})
-     */
-    private $unlockedTrader;
-
-    /**
      * @ORM\Column(type="smallint")
      * @Groups({"myAccount"})
      */
@@ -245,18 +177,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @Groups({"myAccount", "userPublicProfile", "petPublicProfile", "museum", "parkEvent", "publicStyle", "myFollowers"})
      */
     private $icon;
-
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * @Groups({"myAccount"})
-     */
-    private $unlockedMailbox;
-
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * @Groups({"myAccount"})
-     */
-    private $unlockedDragonDen;
 
     /**
      * @ORM\Column(type="smallint")
@@ -270,27 +190,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $menuOrder;
 
     /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * @Groups({"myAccount"})
-     */
-    private $unlockedBulkSelling;
-
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * @Groups({"myAccount"})
-     */
-    private $unlockedHattier;
-
-    /**
      * @ORM\OneToMany(targetEntity=UserUnlockedAura::class, mappedBy="user", orphanRemoval=true)
      */
     private $unlockedAuras;
-
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * @Groups({"myAccount"})
-     */
-    private $unlockedFieldGuide;
 
     /**
      * @ORM\Column(type="integer")
@@ -319,6 +221,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $selectedWallpaper;
 
+    /**
+     * @ORM\OneToMany(targetEntity=UserUnlockedFeature::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $unlockedFeatures;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -330,6 +237,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->userSessions = new ArrayCollection();
         $this->unlockedAuras = new ArrayCollection();
         $this->fate = mt_rand(0, 2147483647);
+        $this->unlockedFeatures = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -480,9 +388,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->moneys += $amount;
 
-        if(!$this->unlockedMarket)
-            $this->setUnlockedMarket();
-
         return $this;
     }
 
@@ -584,58 +489,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getUnlockedFlorist(): ?\DateTimeImmutable
-    {
-        return $this->unlockedFlorist;
-    }
-
-    public function setUnlockedFlorist(): self
-    {
-        if(!$this->unlockedFlorist)
-            $this->unlockedFlorist = new \DateTimeImmutable();
-
-        return $this;
-    }
-
-    public function getUnlockedBookstore(): ?\DateTimeImmutable
-    {
-        return $this->unlockedBookstore;
-    }
-
-    public function setUnlockedBookstore(): self
-    {
-        if(!$this->unlockedBookstore)
-            $this->unlockedBookstore = new \DateTimeImmutable();
-
-        return $this;
-    }
-
-    public function getUnlockedMuseum(): ?\DateTimeImmutable
-    {
-        return $this->unlockedMuseum;
-    }
-
-    public function setUnlockedMuseum(): self
-    {
-        if(!$this->unlockedMuseum)
-            $this->unlockedMuseum = new \DateTimeImmutable();
-
-        return $this;
-    }
-
-    public function getUnlockedPark(): ?\DateTimeImmutable
-    {
-        return $this->unlockedPark;
-    }
-
-    public function setUnlockedPark(): self
-    {
-        if(!$this->unlockedPark)
-            $this->unlockedPark = new \DateTimeImmutable();
-
-        return $this;
-    }
-
     public function getPassphraseResetRequest(): ?PassphraseResetRequest
     {
         return $this->passphraseResetRequest;
@@ -649,19 +502,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this !== $passphraseResetRequest->getUser()) {
             $passphraseResetRequest->setUser($this);
         }
-
-        return $this;
-    }
-
-    public function getUnlockedGreenhouse(): ?\DateTimeImmutable
-    {
-        return $this->unlockedGreenhouse;
-    }
-
-    public function setUnlockedGreenhouse(): self
-    {
-        if(!$this->unlockedGreenhouse)
-            $this->unlockedGreenhouse = new \DateTimeImmutable();
 
         return $this;
     }
@@ -736,19 +576,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getUnlockedBasement(): ?\DateTimeImmutable
-    {
-        return $this->unlockedBasement;
-    }
-
-    public function setUnlockedBasement(): self
-    {
-        if(!$this->unlockedBasement)
-            $this->unlockedBasement = new \DateTimeImmutable();
-
-        return $this;
-    }
-
     public function getHollowEarthPlayer(): ?HollowEarthPlayer
     {
         return $this->hollowEarthPlayer;
@@ -766,45 +593,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getUnlockedHollowEarth(): ?\DateTimeImmutable
-    {
-        return $this->unlockedHollowEarth;
-    }
-
-    public function setUnlockedHollowEarth(): self
-    {
-        if(!$this->unlockedHollowEarth)
-            $this->unlockedHollowEarth = new \DateTimeImmutable();
-
-        return $this;
-    }
-
-    public function getUnlockedMarket(): ?\DateTimeImmutable
-    {
-        return $this->unlockedMarket;
-    }
-
-    public function setUnlockedMarket(): self
-    {
-        if(!$this->unlockedMarket)
-            $this->unlockedMarket = new \DateTimeImmutable();
-
-        return $this;
-    }
-
-    public function getUnlockedFireplace(): ?\DateTimeImmutable
-    {
-        return $this->unlockedFireplace;
-    }
-
-    public function setUnlockedFireplace(): self
-    {
-        if(!$this->unlockedFireplace)
-            $this->unlockedFireplace = new \DateTimeImmutable();
-
-        return $this;
-    }
-
     public function getFireplace(): ?Fireplace
     {
         return $this->fireplace;
@@ -818,18 +606,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this !== $fireplace->getUser()) {
             $fireplace->setUser($this);
         }
-
-        return $this;
-    }
-
-    public function getUnlockedBeehive(): ?\DateTimeImmutable
-    {
-        return $this->unlockedBeehive;
-    }
-
-    public function setUnlockedBeehive(): self
-    {
-        $this->unlockedBeehive = new \DateTimeImmutable();
 
         return $this;
     }
@@ -880,30 +656,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getUnlockedRecycling(): ?\DateTimeImmutable
-    {
-        return $this->unlockedRecycling;
-    }
-
-    public function setUnlockedRecycling(): self
-    {
-        $this->unlockedRecycling = new \DateTimeImmutable();
-
-        return $this;
-    }
-
-    public function getUnlockedTrader(): ?\DateTimeImmutable
-    {
-        return $this->unlockedTrader;
-    }
-
-    public function setUnlockedTrader(): self
-    {
-        $this->unlockedTrader = new \DateTimeImmutable();
-
-        return $this;
-    }
-
     public function getUnreadNews(): int
     {
         return $this->unreadNews;
@@ -924,30 +676,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIcon(?string $icon): self
     {
         $this->icon = $icon;
-
-        return $this;
-    }
-
-    public function getUnlockedMailbox(): ?\DateTimeImmutable
-    {
-        return $this->unlockedMailbox;
-    }
-
-    public function setUnlockedMailbox(): self
-    {
-        $this->unlockedMailbox = new \DateTimeImmutable();
-
-        return $this;
-    }
-
-    public function getUnlockedDragonDen(): ?\DateTimeImmutable
-    {
-        return $this->unlockedDragonDen;
-    }
-
-    public function setUnlockedDragonDen(): self
-    {
-        $this->unlockedDragonDen = new \DateTimeImmutable();
 
         return $this;
     }
@@ -981,30 +709,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getUnlockedBulkSelling(): ?\DateTimeImmutable
-    {
-        return $this->unlockedBulkSelling;
-    }
-
-    public function setUnlockedBulkSelling(): self
-    {
-        $this->unlockedBulkSelling = new \DateTimeImmutable();
-
-        return $this;
-    }
-
-    public function getUnlockedHattier(): ?\DateTimeImmutable
-    {
-        return $this->unlockedHattier;
-    }
-
-    public function setUnlockedHattier(): self
-    {
-        $this->unlockedHattier = new \DateTimeImmutable();
-
-        return $this;
-    }
-
     /**
      * @return Collection|UserUnlockedAura[]
      */
@@ -1031,18 +735,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $unlockedAura->setUser(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getUnlockedFieldGuide(): ?\DateTimeImmutable
-    {
-        return $this->unlockedFieldGuide;
-    }
-
-    public function setUnlockedFieldGuide(): self
-    {
-        $this->unlockedFieldGuide = new \DateTimeImmutable();
 
         return $this;
     }
@@ -1115,5 +807,61 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->selectedWallpaper = $selectedWallpaper;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, UserUnlockedFeature>
+     */
+    public function getUnlockedFeatures(): Collection
+    {
+        return $this->unlockedFeatures;
+    }
+
+    public function addUnlockedFeature(UserUnlockedFeature $unlockedFeature): self
+    {
+        if (!$this->unlockedFeatures->contains($unlockedFeature)) {
+            $this->unlockedFeatures[] = $unlockedFeature;
+            $unlockedFeature->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUnlockedFeature(UserUnlockedFeature $unlockedFeature): self
+    {
+        if ($this->unlockedFeatures->removeElement($unlockedFeature)) {
+            // set the owning side to null (unless already changed)
+            if ($unlockedFeature->getUser() === $this) {
+                $unlockedFeature->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function hasUnlockedFeature(string $feature): bool
+    {
+        if(!UnlockableFeatureEnum::isAValue($feature))
+            throw new EnumInvalidValueException(UnlockableFeatureEnum::class, $feature);
+
+        return $this->unlockedFeatures->exists(
+            fn($key, UserUnlockedFeature $unlockedFeature) => $unlockedFeature->getFeature() === $feature
+        );
+    }
+
+    public function getUnlockedFeatureDate(string $feature)
+    {
+        if(!UnlockableFeatureEnum::isAValue($feature))
+            throw new EnumInvalidValueException(UnlockableFeatureEnum::class, $feature);
+
+        $unlockedFeature = ArrayFunctions::find_one(
+            $this->unlockedFeatures,
+            fn(UserUnlockedFeature $unlockedFeature) => $unlockedFeature->getFeature() === $feature
+        );
+
+        if(!$unlockedFeature)
+            return null;
+
+        return $unlockedFeature->getUnlockedOn();
     }
 }

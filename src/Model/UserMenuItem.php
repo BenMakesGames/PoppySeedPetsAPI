@@ -23,10 +23,10 @@ class UserMenuItem
      */
     public $sortOrder;
 
-    public function __construct(string $location, array $sortOrder, ?\DateTimeImmutable $unlockDate)
+    public function __construct(string $location, int $sortOrder, ?\DateTimeImmutable $unlockDate)
     {
         $this->location = $location;
-        $this->sortOrder = array_search($location, $sortOrder);
+        $this->sortOrder = $sortOrder;
         $this->isNew = $unlockDate >= (new \DateTimeImmutable())->modify('-4 hours');
     }
 }

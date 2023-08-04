@@ -2,6 +2,7 @@
 namespace App\Controller\Museum;
 
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Model\FilterResults;
@@ -29,7 +30,7 @@ class TopDonorsController extends AbstractController
         Request $request, ResponseService $responseService, UserRepository $userRepository, NormalizerInterface $normalizer
     )
     {
-        if($this->getUser()->getUnlockedMuseum() === null)
+        if(!$this->getUser()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
             throw new PSPNotUnlockedException('Museum');
 
         $qb = $userRepository->createQueryBuilder('u')

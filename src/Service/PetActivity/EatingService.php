@@ -11,6 +11,7 @@ use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\StatusEffectEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ActivityHelpers;
@@ -365,7 +366,7 @@ class EatingService
             if($ateAFortuneCookie)
             {
                 $message .= ' "' . $this->squirrel3->rngNextFromArray(FortuneCookie::MESSAGES) . '"';
-                if($this->squirrel3->rngNextInt(1, 20) === 1 && $pet->getOwner()->getUnlockedGreenhouse())
+                if($this->squirrel3->rngNextInt(1, 20) === 1 && $pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse))
                 {
                     $message .= ' ... in bed!';
 

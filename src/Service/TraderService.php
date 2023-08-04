@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Enum\CostOrYieldTypeEnum;
 use App\Enum\LocationEnum;
 use App\Enum\TradeGroupEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
@@ -938,7 +939,7 @@ class TraderService
 
     private function stillOfferingDeedForGreenhousePlot(User $user): bool
     {
-        if(!$user->getUnlockedGreenhouse())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse))
             return true;
 
         $deedForGreenhousePlot = $this->itemRepository->findOneByName('Deed for Greenhouse Plot');

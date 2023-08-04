@@ -9,6 +9,7 @@ use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\RelationshipEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\LetterRepository;
@@ -16,7 +17,9 @@ use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserLetterRepository;
 use App\Repository\UserQuestRepository;
+use App\Repository\UserUnlockedFeatureRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\MuseumService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -25,23 +28,25 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class LetterService
 {
-    private $userQuestRepository;
-    private $inventoryService;
-    private $responseService;
-    private $petRepository;
-    private $petExperienceService;
-    private $museumService;
-    private $letterRepository;
-    private $userLetterRepository;
-    private $em;
-    private $squirrel3;
+    private UserQuestRepository $userQuestRepository;
+    private InventoryService $inventoryService;
+    private ResponseService $responseService;
+    private PetRepository $petRepository;
+    private PetExperienceService $petExperienceService;
+    private MuseumService $museumService;
+    private LetterRepository $letterRepository;
+    private UserLetterRepository $userLetterRepository;
+    private EntityManagerInterface $em;
+    private IRandom $squirrel3;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private UserUnlockedFeatureRepository $userUnlockedFeatureRepository;
 
     public function __construct(
         UserQuestRepository $userQuestRepository, InventoryService $inventoryService, ResponseService $responseService,
         PetRepository $petRepository, PetExperienceService $petExperienceService, MuseumService $museumService,
         LetterRepository $letterRepository, UserLetterRepository $userLetterRepository,
-        EntityManagerInterface $em, Squirrel3 $squirrel3, PetActivityLogTagRepository $petActivityLogTagRepository
+        EntityManagerInterface $em, Squirrel3 $squirrel3, PetActivityLogTagRepository $petActivityLogTagRepository,
+        UserUnlockedFeatureRepository $userUnlockedFeatureRepository
     )
     {
         $this->userQuestRepository = $userQuestRepository;
@@ -55,6 +60,7 @@ class LetterService
         $this->em = $em;
         $this->squirrel3 = $squirrel3;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->userUnlockedFeatureRepository = $userUnlockedFeatureRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): ?PetActivityLog
@@ -295,8 +301,8 @@ class LetterService
 
         $this->em->persist($newLetter);
 
-        if(!$user->getUnlockedMailbox())
-            $user->setUnlockedMailbox();
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Mailbox))
+            $this->userUnlockedFeatureRepository->create($user, UnlockableFeatureEnum::Mailbox);
 
         return $newLetter;
     }

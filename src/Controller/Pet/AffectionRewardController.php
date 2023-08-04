@@ -7,6 +7,7 @@ use App\Entity\SpiritCompanion;
 use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
@@ -14,6 +15,7 @@ use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\MeritFunctions;
 use App\Repository\MeritRepository;
+use App\Repository\UserUnlockedFeatureRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -48,7 +50,7 @@ class AffectionRewardController extends AbstractController
      */
     public function chooseAffectionRewardMerit(
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
-        MeritRepository $meritRepository
+        MeritRepository $meritRepository, UserUnlockedFeatureRepository $userUnlockedFeatureRepository
     )
     {
         $user = $this->getUser();
@@ -94,8 +96,8 @@ class AffectionRewardController extends AbstractController
 
         // you should already unlock the merit when the pet increases in affection, but someone reported that
         // NOT happening, so just in case...
-        if(!$pet->getOwner()->getUnlockedPark())
-            $pet->getOwner()->setUnlockedPark();
+        if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Park))
+            $userUnlockedFeatureRepository->create($pet->getOwner(), UnlockableFeatureEnum::Park);
 
         $em->flush();
 

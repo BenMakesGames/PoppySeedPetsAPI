@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Entity\UserMenuOrder;
+use App\Enum\UnlockableFeatureEnum;
 use App\Model\UserMenuItem;
 use App\Repository\UserMenuOrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -51,6 +52,23 @@ class UserMenuService
         $userSortOrderEntity->setMenuOrder($order);
     }
 
+    private static function maybeAddMenuItem(array &$menuItems, string $name, User $user, array $userSortOrders, ?string $feature)
+    {
+        if(!$feature)
+        {
+            $menuItems[] = new UserMenuItem($name, array_search($name, $userSortOrders), null);
+
+            return;
+        }
+
+        $date = $user->getUnlockedFeatureDate($feature);
+
+        if($date == null)
+            return;
+
+        $menuItems[] = new UserMenuItem($name, array_search($name, $userSortOrders), $date);
+    }
+
     /**
      * @return UserMenuItem[]
      */
@@ -65,65 +83,28 @@ class UserMenuService
 
         $menuItems = [];
 
-        $menuItems[] = new UserMenuItem('home', $userSortOrder, null);
-
-        if($user->getUnlockedBasement())
-            $menuItems[] = new UserMenuItem('basement', $userSortOrder, $user->getUnlockedBasement());
-
-        if($user->getUnlockedGreenhouse())
-            $menuItems[] = new UserMenuItem('greenhouse', $userSortOrder, $user->getUnlockedGreenhouse());
-
-        if($user->getUnlockedBeehive())
-            $menuItems[] = new UserMenuItem('beehive', $userSortOrder, $user->getUnlockedBeehive());
-
-        if($user->getUnlockedDragonDen())
-            $menuItems[] = new UserMenuItem('dragonDen', $userSortOrder, $user->getUnlockedDragonDen());
-
-        if($user->getUnlockedHollowEarth())
-            $menuItems[] = new UserMenuItem('hollowEarth', $userSortOrder, $user->getUnlockedHollowEarth());
-
-        $menuItems[] = new UserMenuItem('starKindred', $userSortOrder, null);
-
-        if($user->getUnlockedFireplace())
-            $menuItems[] = new UserMenuItem('fireplace', $userSortOrder, $user->getUnlockedFireplace());
-
-        if($user->getUnlockedPark())
-            $menuItems[] = new UserMenuItem('park', $userSortOrder, $user->getUnlockedPark());
-
-        $menuItems[] = new UserMenuItem('plaza', $userSortOrder, null);
-
-        if($user->getUnlockedMuseum())
-            $menuItems[] = new UserMenuItem('museum', $userSortOrder, $user->getUnlockedMuseum());
-
-        if($user->getUnlockedMarket())
-        {
-            $menuItems[] = new UserMenuItem('market', $userSortOrder, $user->getUnlockedMarket());
-            $menuItems[] = new UserMenuItem('grocer', $userSortOrder, $user->getUnlockedMarket());
-        }
-
-        $menuItems[] = new UserMenuItem('petShelter', $userSortOrder, null);
-
-        if($user->getUnlockedBookstore())
-            $menuItems[] = new UserMenuItem('bookstore', $userSortOrder, $user->getUnlockedBookstore());
-
-        if($user->getUnlockedTrader())
-            $menuItems[] = new UserMenuItem('trader', $userSortOrder, $user->getUnlockedTrader());
-
-        if($user->getUnlockedHattier())
-            $menuItems[] = new UserMenuItem('hattier', $userSortOrder, $user->getUnlockedHattier());
-
-        if($user->getUnlockedFieldGuide())
-            $menuItems[] = new UserMenuItem('fieldGuide', $userSortOrder, $user->getUnlockedFieldGuide());
-
-        if($user->getUnlockedMailbox())
-            $menuItems[] = new UserMenuItem('mailbox', $userSortOrder, $user->getUnlockedMailbox());
-
-        $menuItems[] = new UserMenuItem('painter', $userSortOrder, null);
-
-        if($user->getUnlockedFlorist())
-            $menuItems[] = new UserMenuItem('florist', $userSortOrder, $user->getUnlockedFlorist());
-
-        $menuItems[] = new UserMenuItem('journal', $userSortOrder, null);
+        $this->maybeAddMenuItem($menuItems, 'home', $user, $userSortOrder, null);
+        $this->maybeAddMenuItem($menuItems, 'basement', $user, $userSortOrder, UnlockableFeatureEnum::Basement);
+        $this->maybeAddMenuItem($menuItems, 'greenhouse', $user, $userSortOrder, UnlockableFeatureEnum::Greenhouse);
+        $this->maybeAddMenuItem($menuItems, 'beehive', $user, $userSortOrder, UnlockableFeatureEnum::Beehive);
+        $this->maybeAddMenuItem($menuItems, 'dragonDen', $user, $userSortOrder, UnlockableFeatureEnum::DragonDen);
+        $this->maybeAddMenuItem($menuItems, 'hollowEarth', $user, $userSortOrder, UnlockableFeatureEnum::HollowEarth);
+        $this->maybeAddMenuItem($menuItems, 'starKindred', $user, $userSortOrder, null);
+        $this->maybeAddMenuItem($menuItems, 'fireplace', $user, $userSortOrder, UnlockableFeatureEnum::Fireplace);
+        $this->maybeAddMenuItem($menuItems, 'park', $user, $userSortOrder, UnlockableFeatureEnum::Park);
+        $this->maybeAddMenuItem($menuItems, 'plaza', $user, $userSortOrder, null);
+        $this->maybeAddMenuItem($menuItems, 'museum', $user, $userSortOrder, UnlockableFeatureEnum::Museum);
+        $this->maybeAddMenuItem($menuItems, 'market', $user, $userSortOrder, UnlockableFeatureEnum::Market);
+        $this->maybeAddMenuItem($menuItems, 'grocer', $user, $userSortOrder, UnlockableFeatureEnum::Market); // also unlocked with Market!
+        $this->maybeAddMenuItem($menuItems, 'petShelter', $user, $userSortOrder, null);
+        $this->maybeAddMenuItem($menuItems, 'bookstore', $user, $userSortOrder, UnlockableFeatureEnum::Bookstore);
+        $this->maybeAddMenuItem($menuItems, 'trader', $user, $userSortOrder, UnlockableFeatureEnum::Trader);
+        $this->maybeAddMenuItem($menuItems, 'hattier', $user, $userSortOrder, UnlockableFeatureEnum::Hattier);
+        $this->maybeAddMenuItem($menuItems, 'fieldGuide', $user, $userSortOrder, UnlockableFeatureEnum::FieldGuide);
+        $this->maybeAddMenuItem($menuItems, 'mailbox', $user, $userSortOrder, UnlockableFeatureEnum::Mailbox);
+        $this->maybeAddMenuItem($menuItems, 'painter', $user, $userSortOrder, null);
+        $this->maybeAddMenuItem($menuItems, 'florist', $user, $userSortOrder, UnlockableFeatureEnum::Florist);
+        $this->maybeAddMenuItem($menuItems, 'journal', $user, $userSortOrder, null);
 
         return $menuItems;
     }

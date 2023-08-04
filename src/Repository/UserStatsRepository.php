@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use App\Entity\UserStats;
+use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -78,7 +79,8 @@ class UserStatsRepository extends ServiceEntityRepository
         }
         else if($name === UserStatEnum::ITEMS_DONATED_TO_MUSEUM)
         {
-            if($user->getUnlockedBookstore() === null)
+            // TODO: remove this; have pets unlock the bookstore by stumbling upon it
+            if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Bookstore))
             {
                 if($stat->getValue() >= 10)
                     $user->setUnlockedBookstore();

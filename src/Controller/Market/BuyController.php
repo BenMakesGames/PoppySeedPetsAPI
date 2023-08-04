@@ -5,6 +5,7 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
@@ -57,7 +58,7 @@ class BuyController extends AbstractController
 
         if($itemsAtHome >= User::MAX_HOUSE_INVENTORY)
         {
-            if(!$user->getUnlockedBasement())
+            if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
                 throw new PSPInvalidOperationException('Your house has ' . $itemsAtHome . ' items; you\'ll need to make some space, first!');
 
             $itemsInBasement = $inventoryRepository->countItemsInLocation($user, LocationEnum::BASEMENT);

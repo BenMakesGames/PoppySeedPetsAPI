@@ -3,6 +3,7 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Entity\User;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\ItemRepository;
@@ -32,7 +33,7 @@ class GizbuisShovelController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'gizubisShovel/#/dig');
 
-        if(!$user->getUnlockedGreenhouse())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse))
             throw new PSPNotUnlockedException('Greenhouse');
 
         $expandedGreenhouseWithShovel = $userQuestRepository->findOrCreate($user, 'Expanded Greenhouse with Gizubi\'s Shovel', false);

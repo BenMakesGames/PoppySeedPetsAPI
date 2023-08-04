@@ -140,6 +140,11 @@ class PetSpecies
      */
     private $physicalDescription;
 
+    /**
+     * @ORM\Column(type="text")
+     */
+    private $zoologistThoughts;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -377,6 +382,18 @@ class PetSpecies
     public function setPhysicalDescription(?string $physicalDescription): self
     {
         $this->physicalDescription = $physicalDescription;
+
+        return $this;
+    }
+
+    public function getZoologistThoughts(): ?string
+    {
+        return $this->zoologistThoughts;
+    }
+
+    public function setZoologistThoughts(string $zoologistThoughts): self
+    {
+        $this->zoologistThoughts = $zoologistThoughts;
 
         return $this;
     }

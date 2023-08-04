@@ -11,6 +11,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SpiritCompanionStarEnum;
 use App\Enum\StatusEffectEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
@@ -24,8 +25,10 @@ use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
+use App\Repository\UserUnlockedFeatureRepository;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -34,24 +37,25 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class TreasureMapService
 {
-    private $responseService;
-    private $inventoryService;
-    private $userStatsRepository;
-    private $em;
-    private $petExperienceService;
-    private $userQuestRepository;
-    private $statusEffectService;
-    private $squirrel3;
-    private $itemRepository;
+    private ResponseService $responseService;
+    private InventoryService $inventoryService;
+    private UserStatsRepository $userStatsRepository;
+    private EntityManagerInterface $em;
+    private PetExperienceService $petExperienceService;
+    private UserQuestRepository $userQuestRepository;
+    private StatusEffectService $statusEffectService;
+    private IRandom $squirrel3;
+    private ItemRepository $itemRepository;
     private HouseSimService $houseSimService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private UserUnlockedFeatureRepository $userUnlockedFeatureRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
         EntityManagerInterface $em, PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
-        StatusEffectService $statusEffectService, Squirrel3 $squirrel3,
-        ItemRepository $itemRepository, HouseSimService $houseSimService,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        StatusEffectService $statusEffectService, Squirrel3 $squirrel3, ItemRepository $itemRepository,
+        HouseSimService $houseSimService, PetActivityLogTagRepository $petActivityLogTagRepository,
+        UserUnlockedFeatureRepository $userUnlockedFeatureRepository
     )
     {
         $this->responseService = $responseService;
@@ -65,6 +69,7 @@ class TreasureMapService
         $this->itemRepository = $itemRepository;
         $this->houseSimService = $houseSimService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->userUnlockedFeatureRepository = $userUnlockedFeatureRepository;
     }
 
     public function doCetguelisTreasureMap(ComputedPetSkills $petWithSkills)
@@ -153,7 +158,7 @@ class TreasureMapService
             ->increaseEsteem(-4)
         ;
 
-        $pet->getOwner()->setUnlockedBulkSelling();
+        $this->userUnlockedFeatureRepository->create($pet->getOwner(), UnlockableFeatureEnum::BulkSelling);
 
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
         $this->petExperienceService->spendTime($pet, 120, PetActivityStatEnum::OTHER, null);
@@ -465,13 +470,13 @@ class TreasureMapService
                         [ 'item' => 'Magic Smoke', 'weight' => 35, 'message' => 'Are you going to make something with that?' ],
                     ]);
 
-                    if($pet->getOwner()->getUnlockedTrader())
+                    if($pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Trader))
                         $possibleTrades[] = [ 'item' => 'Limestone', 'weight' => 20, 'message' => 'You working on a trade with those Tell Samarzhoustia merchants, or something?' ];
 
-                    if($pet->getOwner()->getUnlockedBeehive())
+                    if($pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Beehive))
                         $possibleTrades[] = [ 'item' => 'Red Clover', 'weight' => 40, 'message' => 'You keep bees? Is this Bee Fluff you gave me??' ];
 
-                    if($pet->getOwner()->getUnlockedFireplace())
+                    if($pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace))
                         $possibleTrades[] = [ 'item' => 'Charcoal', 'weight' => 40, 'message' => 'Trying to keep that Fireplace going? Have you got a Fairy Ring, yet?' ];
                 }
 

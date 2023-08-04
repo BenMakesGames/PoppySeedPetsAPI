@@ -3,6 +3,7 @@ namespace App\Controller\HollowEarth;
 
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Repository\ItemRepository;
@@ -79,7 +80,7 @@ class TradesController extends AbstractController
 
         if($itemsAtHome + $quantity > User::MAX_HOUSE_INVENTORY)
         {
-            if($user->getUnlockedBasement())
+            if($user->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
             {
                 $destination = LocationEnum::BASEMENT;
 

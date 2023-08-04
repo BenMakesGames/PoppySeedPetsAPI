@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Enum\UnlockableFeatureEnum;
 use App\Functions\DateFunctions;
 use App\Repository\ItemRepository;
 
@@ -81,7 +82,7 @@ class FloristService
             ];
         }
 
-        if($user->getUnlockedHollowEarth())
+        if($user->hasUnlockedFeature(UnlockableFeatureEnum::HollowEarth))
         {
             $flowerBasketTile = $this->itemRepository->findOneByName('Tile: Flower Basket');
 

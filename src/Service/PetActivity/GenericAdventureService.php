@@ -8,6 +8,7 @@ use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ActivityHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -189,7 +190,7 @@ class GenericAdventureService
             ;
         }
 
-        if($pet->getOwner()->getUnlockedDragonDen() && $this->squirrel3->rngNextInt(1, 20) === 1)
+        if($pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::DragonDen) && $this->squirrel3->rngNextInt(1, 20) === 1)
         {
             $dragon = $this->dragonRepository->findAdult($pet->getOwner());
 

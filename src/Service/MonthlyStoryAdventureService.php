@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Entity\UserMonthlyStoryAdventureStepCompleted;
 use App\Enum\LocationEnum;
 use App\Enum\StoryAdventureTypeEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\MonthlyStoryAdventure\AdventureResult;
@@ -232,7 +233,7 @@ class MonthlyStoryAdventureService
             'While playing ★Kindred, %pet:' . $pet->getId() . '.name% was inspired to create a new hat style!'
         );
 
-        if($pet->getOwner()->getUnlockedHattier())
+        if($pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Hattier))
             return "(Inspired by the story, {$pet->getName()} created a new hat styling: {$step->getAura()->getName()}! Find it at the Hattier!)";
         else
             return "(Inspired by the story, {$pet->getName()} created a new hat styling?! What!? (The Hattier has been unlocked! Check it out in the menu!))";

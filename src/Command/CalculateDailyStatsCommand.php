@@ -2,8 +2,8 @@
 namespace App\Command;
 
 use App\Entity\DailyStats;
+use App\Enum\UnlockableFeatureEnum;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -69,35 +69,35 @@ class CalculateDailyStatsCommand extends Command
             ->setNewPlayers7Day($weekNewPlayers['new_users'])
             ->setNewPlayers28Day($monthNewPlayers['new_users'])
 
-            ->setUnlockedTrader1Day($this->getUnlocked('trader', $oneDay))
-            ->setUnlockedTrader3Day($this->getUnlocked('trader', $threeDay))
-            ->setUnlockedTrader7Day($this->getUnlocked('trader', $week))
-            ->setUnlockedTrader28Day($this->getUnlocked('trader', $month))
-            ->setUnlockedTraderLifetime($this->getLifetimeUnlocked('trader'))
+            ->setUnlockedTrader1Day($this->getUnlocked(UnlockableFeatureEnum::Trader, $oneDay))
+            ->setUnlockedTrader3Day($this->getUnlocked(UnlockableFeatureEnum::Trader, $threeDay))
+            ->setUnlockedTrader7Day($this->getUnlocked(UnlockableFeatureEnum::Trader, $week))
+            ->setUnlockedTrader28Day($this->getUnlocked(UnlockableFeatureEnum::Trader, $month))
+            ->setUnlockedTraderLifetime($this->getLifetimeUnlocked(UnlockableFeatureEnum::Trader))
 
-            ->setUnlockedFireplace1Day($this->getUnlocked('fireplace', $oneDay))
-            ->setUnlockedFireplace3Day($this->getUnlocked('fireplace', $threeDay))
-            ->setUnlockedFireplace7Day($this->getUnlocked('fireplace', $week))
-            ->setUnlockedFireplace28Day($this->getUnlocked('fireplace', $month))
-            ->setUnlockedFireplaceLifetime($this->getLifetimeUnlocked('fireplace'))
+            ->setUnlockedFireplace1Day($this->getUnlocked(UnlockableFeatureEnum::Fireplace, $oneDay))
+            ->setUnlockedFireplace3Day($this->getUnlocked(UnlockableFeatureEnum::Fireplace, $threeDay))
+            ->setUnlockedFireplace7Day($this->getUnlocked(UnlockableFeatureEnum::Fireplace, $week))
+            ->setUnlockedFireplace28Day($this->getUnlocked(UnlockableFeatureEnum::Fireplace, $month))
+            ->setUnlockedFireplaceLifetime($this->getLifetimeUnlocked(UnlockableFeatureEnum::Fireplace))
 
-            ->setUnlockedGreenhouse1Day($this->getUnlocked('greenhouse', $oneDay))
-            ->setUnlockedGreenhouse3Day($this->getUnlocked('greenhouse', $threeDay))
-            ->setUnlockedGreenhouse7Day($this->getUnlocked('greenhouse', $week))
-            ->setUnlockedGreenhouse28Day($this->getUnlocked('greenhouse', $month))
-            ->setUnlockedGreenhouseLifetime($this->getLifetimeUnlocked('greenhouse'))
+            ->setUnlockedGreenhouse1Day($this->getUnlocked(UnlockableFeatureEnum::Greenhouse, $oneDay))
+            ->setUnlockedGreenhouse3Day($this->getUnlocked(UnlockableFeatureEnum::Greenhouse, $threeDay))
+            ->setUnlockedGreenhouse7Day($this->getUnlocked(UnlockableFeatureEnum::Greenhouse, $week))
+            ->setUnlockedGreenhouse28Day($this->getUnlocked(UnlockableFeatureEnum::Greenhouse, $month))
+            ->setUnlockedGreenhouseLifetime($this->getLifetimeUnlocked(UnlockableFeatureEnum::Greenhouse))
 
-            ->setUnlockedBeehive1Day($this->getUnlocked('beehive', $oneDay))
-            ->setUnlockedBeehive3Day($this->getUnlocked('beehive', $threeDay))
-            ->setUnlockedBeehive7Day($this->getUnlocked('beehive', $week))
-            ->setUnlockedBeehive28Day($this->getUnlocked('beehive', $month))
-            ->setUnlockedBeehiveLifetime($this->getLifetimeUnlocked('beehive'))
+            ->setUnlockedBeehive1Day($this->getUnlocked(UnlockableFeatureEnum::Beehive, $oneDay))
+            ->setUnlockedBeehive3Day($this->getUnlocked(UnlockableFeatureEnum::Beehive, $threeDay))
+            ->setUnlockedBeehive7Day($this->getUnlocked(UnlockableFeatureEnum::Beehive, $week))
+            ->setUnlockedBeehive28Day($this->getUnlocked(UnlockableFeatureEnum::Beehive, $month))
+            ->setUnlockedBeehiveLifetime($this->getLifetimeUnlocked(UnlockableFeatureEnum::Beehive))
 
-            ->setUnlockedPortal1Day($this->getUnlocked('hollow_earth', $oneDay))
-            ->setUnlockedPortal3Day($this->getUnlocked('hollow_earth', $threeDay))
-            ->setUnlockedPortal7Day($this->getUnlocked('hollow_earth', $week))
-            ->setUnlockedPortal28Day($this->getUnlocked('hollow_earth', $month))
-            ->setUnlockedPortalLifetime($this->getLifetimeUnlocked('hollow_earth'))
+            ->setUnlockedPortal1Day($this->getUnlocked(UnlockableFeatureEnum::HollowEarth, $oneDay))
+            ->setUnlockedPortal3Day($this->getUnlocked(UnlockableFeatureEnum::HollowEarth, $threeDay))
+            ->setUnlockedPortal7Day($this->getUnlocked(UnlockableFeatureEnum::HollowEarth, $week))
+            ->setUnlockedPortal28Day($this->getUnlocked(UnlockableFeatureEnum::HollowEarth, $month))
+            ->setUnlockedPortalLifetime($this->getLifetimeUnlocked(UnlockableFeatureEnum::HollowEarth))
         ;
 
         $this->em->persist($dailyStats);
@@ -136,10 +136,11 @@ class CalculateDailyStatsCommand extends Command
     {
         return (int)$this->em->getConnection()
             ->executeQuery('
-                SELECT COUNT(user.id) AS qty
-                FROM user
+                SELECT COUNT(id) AS qty
+                FROM user_unlocked_feature
+                LEFT JOIN user ON user.id=user_unlocked_feature.user_id
                 WHERE
-                    unlocked_' . $featureFieldSuffix . ' IS NOT NULL
+                    user_unlocked_feature.feature="' . $featureFieldSuffix . '"
                     AND user.last_activity>="' . $firstDate . '"
             ')
             ->fetchAssociative()['qty']
@@ -150,9 +151,10 @@ class CalculateDailyStatsCommand extends Command
     {
         return (int)$this->em->getConnection()
             ->executeQuery('
-                SELECT COUNT(user.id) AS qty
-                FROM user
-                WHERE unlocked_' . $featureFieldSuffix . ' IS NOT NULL
+                SELECT COUNT(id) AS qty
+                FROM user_unlocked_feature
+                WHERE
+                    user_unlocked_feature.feature="' . $featureFieldSuffix . '"
             ')
             ->fetchAssociative()['qty']
         ;

@@ -4,6 +4,7 @@ namespace App\Service;
 use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\PetLocationEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Exceptions\PSPPetNotFoundException;
@@ -44,7 +45,7 @@ class PetAssistantService
     {
         self::assertOwnership($user, $pet);
 
-        if(!$user->getUnlockedBeehive() || !$user->getBeehive())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Beehive) || !$user->getBeehive())
             throw new PSPNotUnlockedException('Beehive');
 
         $beehive = $user->getBeehive();
@@ -68,7 +69,7 @@ class PetAssistantService
     {
         self::assertOwnership($user, $pet);
 
-        if(!$user->getUnlockedGreenhouse() || !$user->getGreenhouse())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse) || !$user->getGreenhouse())
             throw new PSPNotUnlockedException('Greenhouse');
 
         self::assertCanAssignHelpers($user);
@@ -152,7 +153,7 @@ class PetAssistantService
         {
             $dragon = $this->dragonRepository->findAdult($user);
 
-            if($dragon && $user->getUnlockedDragonDen())
+            if($dragon && $user->hasUnlockedFeature(UnlockableFeatureEnum::DragonDen))
                 $dragon->setHelper(null);
         }
         else

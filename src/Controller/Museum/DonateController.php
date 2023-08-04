@@ -4,6 +4,7 @@ namespace App\Controller\Museum;
 use App\Entity\MuseumItem;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
@@ -38,7 +39,7 @@ class DonateController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if($user->getUnlockedMuseum() === null)
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
             throw new PSPNotUnlockedException('Museum');
 
         $inventoryIds = $request->request->get('inventory');

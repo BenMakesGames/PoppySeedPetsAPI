@@ -4,6 +4,7 @@ namespace App\Controller\Item;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Service\HollowEarthService;
 use App\Service\ResponseService;
@@ -49,7 +50,7 @@ class DieController extends AbstractController
             $roll = $squirrel3->rngNextInt(1, $sides);
         }
 
-        if($user->getUnlockedHollowEarth() !== null)
+        if($user->hasUnlockedFeature(UnlockableFeatureEnum::HollowEarth))
             return $responseService->itemActionSuccess('You got a ' . $roll . '.', []);
 
         $hollowEarthService->unlockHollowEarth($user);

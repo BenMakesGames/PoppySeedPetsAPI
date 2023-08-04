@@ -7,6 +7,7 @@ use App\Enum\LoveLanguageEnum;
 use App\Enum\MeritEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\StatusEffectEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Service\PetActivity\PregnancyService;
 use App\Service\Squirrel3;
 
@@ -126,7 +127,7 @@ class LoveService
                 else if($receiver->getSpecies()->getSheds()->getName() === 'Scales')
                     $services[] = $giver->getName() . ' helped ' . $receiver->getName() . ' clean their scales.';
 
-                if($receiver->getOwner()->getUnlockedBasement())
+                if($receiver->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
                     $services[] = $giver->getName() . ' helped ' . $receiver->getName() . ' tidy up the basement a little.';
 
                 if($receiver->getTool() !== null)

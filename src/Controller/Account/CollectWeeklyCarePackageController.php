@@ -4,6 +4,7 @@ namespace App\Controller\Account;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
@@ -46,7 +47,7 @@ class CollectWeeklyCarePackageController extends AbstractController
 
         $canGetHandicraftsBox = $itemsDonated >= 150;
         $canGetFishBag = $itemsDonated >= 450;
-        $canGetGamingBox = $user->getUnlockedHollowEarth();
+        $canGetGamingBox = $user->hasUnlockedFeature(UnlockableFeatureEnum::HollowEarth);
 
         if($type === 1)
         {

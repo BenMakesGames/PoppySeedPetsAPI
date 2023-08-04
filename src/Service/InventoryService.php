@@ -15,6 +15,7 @@ use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\StatusEffectEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
 use App\Model\FoodWithSpice;
@@ -539,7 +540,7 @@ class InventoryService
 
         for($i = 0; $i < $bugs; $i++)
         {
-            $location = (!$toolAttractsBugs && $pet->getOwner()->getUnlockedBasement() && $this->squirrel3->rngNextInt(1, 4) === 1)
+            $location = (!$toolAttractsBugs && $pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Basement) && $this->squirrel3->rngNextInt(1, 4) === 1)
                 ? LocationEnum::BASEMENT
                 : LocationEnum::HOME
             ;

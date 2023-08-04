@@ -3,6 +3,7 @@ namespace App\Controller\Inventory;
 
 use App\Entity\Inventory;
 use App\Entity\User;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
@@ -33,7 +34,7 @@ class SellController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if($user->getUnlockedMarket() === null)
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Market))
             throw new PSPNotUnlockedException('Market');
 
         $itemIds = $request->request->get('items', []);

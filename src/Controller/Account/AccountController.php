@@ -5,6 +5,7 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
@@ -128,7 +129,8 @@ class AccountController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if($user->getUnlockedMuseum() === null && $user->getRegisteredOn() <= (new \DateTimeImmutable())->modify('-3 days'))
+        // TODO: get rid of this; have pets discover the museum on day 3
+        if($user->getRegisteredOn() <= (new \DateTimeImmutable())->modify('-3 days') && !$user->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
         {
             $user->setUnlockedMuseum();
             $em->flush();

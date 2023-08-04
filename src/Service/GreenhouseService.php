@@ -14,6 +14,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\PollinatorEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\MeritInfo;
@@ -180,11 +181,14 @@ class GreenhouseService
         if($user->getGreenhouse()->getButterfliesDismissedOn() <= $twoHoursAgo)
             $this->maybeAssignPollinator($user, PollinatorEnum::BUTTERFLIES);
 
-        if($user->getUnlockedBeehive() && $user->getGreenhouse()->getBeesDismissedOn() <= $twoHoursAgo)
-            $this->maybeAssignPollinator($user, PollinatorEnum::BEES_1);
+        if($user->hasUnlockedFeature(UnlockableFeatureEnum::Beehive))
+        {
+            if($user->getGreenhouse()->getBeesDismissedOn() <= $twoHoursAgo)
+                $this->maybeAssignPollinator($user, PollinatorEnum::BEES_1);
 
-        if($user->getUnlockedBeehive() && $user->getBeehive()->getWorkers() >= 500 && $user->getGreenhouse()->getBees2DismissedOn() <= $twoHoursAgo)
-            $this->maybeAssignPollinator($user, PollinatorEnum::BEES_2);
+            if($user->getBeehive() && $user->getBeehive()->getWorkers() >= 500 && $user->getGreenhouse()->getBees2DismissedOn() <= $twoHoursAgo)
+                $this->maybeAssignPollinator($user, PollinatorEnum::BEES_2);
+        }
     }
 
     private function maybeAssignPollinator(User $user, string $pollinator): bool

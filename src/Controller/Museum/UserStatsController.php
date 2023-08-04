@@ -3,6 +3,7 @@ namespace App\Controller\Museum;
 
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Service\Filter\ItemFilterService;
 use App\Service\Filter\MuseumFilterService;
@@ -26,7 +27,7 @@ class UserStatsController extends AbstractController
         Request $request, ResponseService $responseService, MuseumFilterService $museumFilterService
     )
     {
-        if($this->getUser()->getUnlockedMuseum() === null)
+        if(!$this->getUser()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
             throw new PSPNotUnlockedException('Museum');
 
         $museumFilterService->addRequiredFilter('user', $user->getId());
@@ -46,7 +47,7 @@ class UserStatsController extends AbstractController
         Request $request, ResponseService $responseService, ItemFilterService $itemFilterService
     )
     {
-        if($this->getUser()->getUnlockedMuseum() === null)
+        if(!$this->getUser()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
             throw new PSPNotUnlockedException('Museum');
 
         $itemFilterService->addRequiredFilter('notDonatedBy', $user->getId());
@@ -66,7 +67,7 @@ class UserStatsController extends AbstractController
         Request $request, ResponseService $responseService, MuseumFilterService $museumFilterService
     )
     {
-        if($this->getUser()->getUnlockedMuseum() === null)
+        if(!$this->getUser()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
             throw new PSPNotUnlockedException('Museum');
 
         $museumFilterService->addRequiredFilter('user', $user->getId());

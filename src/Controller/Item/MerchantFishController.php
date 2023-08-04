@@ -5,6 +5,7 @@ use App\Entity\Inventory;
 use App\Entity\TradesUnlocked;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\StoryEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\StoryStep;
 use App\Service\InventoryService;
@@ -36,7 +37,7 @@ class MerchantFishController extends AbstractController
 
         $user = $this->getUser();
 
-        if($user->getUnlockedTrader() === null)
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Trader))
         {
             $response = $storyService->doStory($user, StoryEnum::MERCHANT_FISH_MERCHANT, $request->request, $inventory);
 

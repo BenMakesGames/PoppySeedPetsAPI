@@ -3,6 +3,7 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Enum\LocationEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\EnchantmentRepository;
 use App\Repository\UserQuestRepository;
@@ -36,7 +37,7 @@ class FireworkController extends AbstractController
 
         $itemName = $inventory->getItem()->getName();
 
-        if(!$user->getUnlockedHattier())
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Hattier))
             return $responseService->itemActionSuccess('It makes a lot of lovely sparkles, and it\'s very nice and all, but something tells you there\'s a secret to this firework you haven\'t quite unlocked yet...' . "\n\n" . '_(Try again when you\'ve discovered the Hattier... whatever _that_ is!)_');
 
         $aura = $enchantmentRepository->findOneByName([

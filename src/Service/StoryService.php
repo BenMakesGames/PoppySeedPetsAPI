@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Entity\UserQuest;
 use App\Enum\LocationEnum;
 use App\Enum\StoryActionTypeEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
@@ -19,6 +20,7 @@ use App\Repository\StoryRepository;
 use App\Repository\StorySectionRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
+use App\Repository\UserUnlockedFeatureRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
@@ -34,6 +36,7 @@ class StoryService
     private UserStatsRepository $userStatsRepository;
     private ResponseService $responseService;
     private MuseumService $museumService;
+    private UserUnlockedFeatureRepository $userUnlockedFeatureRepository;
 
     private User $user;
     private UserQuest $step;
@@ -47,7 +50,8 @@ class StoryService
         EntityManagerInterface $em, StoryRepository $storyRepository, StorySectionRepository $storySectionRepository,
         UserQuestRepository $userQuestRepository, InventoryService $inventoryService,
         JsonLogicParserService $jsonLogicParserService, UserStatsRepository $userStatsRepository,
-        InventoryRepository $inventoryRepository, ResponseService $responseService, MuseumService $museumService
+        InventoryRepository $inventoryRepository, ResponseService $responseService, MuseumService $museumService,
+        UserUnlockedFeatureRepository $userUnlockedFeatureRepository
     )
     {
         $this->em = $em;
@@ -283,7 +287,8 @@ class StoryService
                 break;
 
             case StoryActionTypeEnum::UNLOCK_TRADER:
-                $this->user->setUnlockedTrader();
+                if(!$this->user->hasUnlockedFeature(UnlockableFeatureEnum::Trader))
+                    $this->userUnlockedFeatureRepository->create($this->user, UnlockableFeatureEnum::Trader);
                 break;
 
             case StoryActionTypeEnum::EXIT:
