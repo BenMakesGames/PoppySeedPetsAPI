@@ -119,11 +119,7 @@ Age Ginger root and Sugar with Aging Powder for instant Ginger Beer!
 
 You can easily grow a variety of mushrooms on wood with the help of Aging Powder!
  
-First, mix some Aging Powder with some water, to form a thin sludge.
-
-Take a bit of wood (even a Wooden Sword or fishing rod you\'re no longer using will work!) to a dimly-lit place, and pour the sludge on.
-
-Et voilà! Mushrooms!
+Take a bit of wood (even a Wooden Sword or fishing rod you\'re no longer using will work!) to a dimly-lit place, dust it with some Aging Powder, et voilà: mushrooms!
 
 ### Yogurt
 
