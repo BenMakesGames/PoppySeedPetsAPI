@@ -5,7 +5,6 @@ use App\Entity\User;
 use App\Entity\UserActivityLog;
 use App\Enum\UserStatEnum;
 use App\Functions\PlayerLogHelpers;
-use App\Repository\UserActivityLogTagRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -46,8 +45,6 @@ class TransactionService
             throw new \InvalidArgumentException('$amount must be 1 or greater.');
 
         $user->increaseMoneys($amount);
-
-        // TODO: maybe unlock the market
 
         $tags = array_merge($additionalTags, [ 'Moneys' ]);
 

@@ -49,9 +49,7 @@ class PlazaController extends AbstractController
         for($i = 0; $i < $box->quantity; $i++)
             $inventoryService->receiveItem($box->itemName, $user, $user, $box->comment, LocationEnum::HOME, true);
 
-        // TODO: after 2021-07-05, we can remove the "if" statement (but leave the body!)
-        if((new \DateTimeImmutable())->format('Ymd') > 20210705)
-            $museumService->forceDonateItem($user, $box->itemName, 'Tess donated this to the Museum on your behalf.', null);
+        $museumService->forceDonateItem($user, $box->itemName, 'Tess donated this to the Museum on your behalf.', null);
 
         $em->flush();
 
