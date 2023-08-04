@@ -129,13 +129,6 @@ class AccountController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        // TODO: get rid of this; have pets discover the museum on day 3
-        if($user->getRegisteredOn() <= (new \DateTimeImmutable())->modify('-3 days') && !$user->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
-        {
-            $user->setUnlockedMuseum();
-            $em->flush();
-        }
-
         return $responseService->success(
             [ 'currentTheme' => $userStyleRepository->findCurrent($user) ],
             [ SerializationGroupEnum::MY_STYLE ]

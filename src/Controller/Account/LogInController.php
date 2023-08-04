@@ -53,10 +53,6 @@ class LogInController extends AbstractController
 
         $user = $session->getUser();
 
-        // TODO: get rid of this; have pets discover the museum on day 3
-        if($user->getRegisteredOn() <= (new \DateTimeImmutable())->modify('-3 days') && !$user->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
-            $user->setUnlockedMuseum();
-
         $loginFromPath = parse_url($request->server->get('HTTP_REFERER'), PHP_URL_PATH);
 
         if($loginFromPath === '/')

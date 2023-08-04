@@ -79,13 +79,6 @@ class UserStatsRepository extends ServiceEntityRepository
         }
         else if($name === UserStatEnum::ITEMS_DONATED_TO_MUSEUM)
         {
-            // TODO: remove this; have pets unlock the bookstore by stumbling upon it
-            if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Bookstore))
-            {
-                if($stat->getValue() >= 10)
-                    $user->setUnlockedBookstore();
-            }
-
             if($oldValue < 400 && $stat->getValue() >= 400)
             {
                 if($user->getFireplace())

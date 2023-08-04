@@ -19,6 +19,7 @@ use App\Repository\MeritRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
+use App\Repository\UserUnlockedFeatureRepository;
 use App\Service\DragonHostageService;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
@@ -51,6 +52,7 @@ class GenericAdventureService
     private EntityManagerInterface $em;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
     private FieldGuideService $fieldGuideService;
+    private UserUnlockedFeatureRepository $userUnlockedFeatureRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService,
@@ -60,7 +62,8 @@ class GenericAdventureService
         EnchantmentRepository $enchantmentRepository, HattierService $hattierService,
         UserBirthdayService $userBirthdayService, DragonRepository $dragonRepository,
         DragonHostageService $dragonHostageService, EntityManagerInterface $em,
-        PetActivityLogTagRepository $petActivityLogTagRepository, FieldGuideService $fieldGuideService
+        PetActivityLogTagRepository $petActivityLogTagRepository, FieldGuideService $fieldGuideService,
+        UserUnlockedFeatureRepository $userUnlockedFeatureRepository
     )
     {
         $this->responseService = $responseService;
@@ -81,6 +84,7 @@ class GenericAdventureService
         $this->em = $em;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->fieldGuideService = $fieldGuideService;
+        $this->userUnlockedFeatureRepository = $userUnlockedFeatureRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -93,11 +97,9 @@ class GenericAdventureService
         {
             $pet->getHat()->changeItem($this->itemRepository->findOneByName('William, Shush'));
 
-            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, some random dude jumped out of nowhere and shot an arrow in %pet:' . $pet->getId() . '.name%\'s Red!', '')
+            return $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, some random dude jumped out of nowhere and shot an arrow in %pet:' . $pet->getId() . '.name%\'s Red!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ;
-
-            return $activityLog;
         }
 
         if($pet->getIsGrandparent() && !$pet->getClaimedGrandparentMerit())
@@ -176,6 +178,16 @@ class GenericAdventureService
                 if($activityLog)
                     return $activityLog;
             }
+        }
+
+        if($this->squirrel3->rngNextBool())
+        {
+            if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Market))
+                return $this->discoverFeature($pet, UnlockableFeatureEnum::Market, 'Market, and a Grocer');
+            else if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
+                return $this->discoverFeature($pet, UnlockableFeatureEnum::Museum, 'Museum');
+            else if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Bookstore))
+                return $this->discoverFeature($pet, UnlockableFeatureEnum::Bookstore, 'Bookstore');
         }
 
         if($pet->getOwner()->getGreenhouse() && $pet->getOwner()->getGreenhouse()->getHasBirdBath() && !$pet->getOwner()->getGreenhouse()->getVisitingBird() && $this->squirrel3->rngNextInt(1, 20) === 1)
@@ -323,6 +335,15 @@ class GenericAdventureService
         ;
 
         return $activityLog;
+    }
+
+    private function discoverFeature(Pet $pet, string $feature, string $description): PetActivityLog
+    {
+        $this->userUnlockedFeatureRepository->create($pet->getOwner(), $feature);
+
+        return $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' explored the town a bit, and stumbled upon a ' . $description . '! (Check it out in the menu!)', '')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY)
+        ;
     }
 
     private function maybeHaveBirthdayCelebrated(Pet $pet): ?PetActivityLog
