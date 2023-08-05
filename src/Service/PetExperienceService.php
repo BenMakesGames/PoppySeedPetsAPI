@@ -8,6 +8,7 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ActivityHelpers;
@@ -94,14 +95,14 @@ class PetExperienceService
             $pet->decreaseExperience($pet->getExperienceToLevel());
 
             if($focusStatusEffect && $pet->getSkills()->getStat($focusStatusEffect->skill) >= 10)
-            {
                 $statToLevel = $focusStatusEffect->skill;
-
-                $pet->removeStatusEffect($pet->getStatusEffect($focusStatusEffect->statusEffect));
-            }
             else
-            {
                 $statToLevel = $this->squirrel3->rngNextFromArray($stats);
+
+            if($focusStatusEffect)
+            {
+                $pet->removeStatusEffect($pet->getStatusEffect($focusStatusEffect->statusEffect));
+                $focusStatusEffect = null;
             }
 
             if($pet->getSkills()->getStat($statToLevel) >= 20)
@@ -137,13 +138,13 @@ class PetExperienceService
     private static function getPetFocusingStatusEffect(Pet $pet): ?FocusingStatusEffect
     {
         $possibleEffects = [
-            [ 'brawl', StatusEffectEnum::FOCUSED_BRAWL ],
-            [ 'nature', StatusEffectEnum::FOCUSED_NATURE ],
-            [ 'crafts', StatusEffectEnum::FOCUSED_CRAFTS ],
-            [ 'stealth', StatusEffectEnum::FOCUSED_STEALTH ],
-            [ 'science', StatusEffectEnum::FOCUSED_SCIENCE ],
-            [ 'music', StatusEffectEnum::FOCUSED_MUSIC ],
-            [ 'umbra', StatusEffectEnum::FOCUSED_UMBRA ],
+            [ PetSkillEnum::BRAWL, StatusEffectEnum::FOCUSED_BRAWL ],
+            [ PetSkillEnum::NATURE, StatusEffectEnum::FOCUSED_NATURE ],
+            [ PetSkillEnum::CRAFTS, StatusEffectEnum::FOCUSED_CRAFTS ],
+            [ PetSkillEnum::STEALTH, StatusEffectEnum::FOCUSED_STEALTH ],
+            [ PetSkillEnum::SCIENCE, StatusEffectEnum::FOCUSED_SCIENCE ],
+            [ PetSkillEnum::MUSIC, StatusEffectEnum::FOCUSED_MUSIC ],
+            [ PetSkillEnum::UMBRA, StatusEffectEnum::FOCUSED_UMBRA ],
         ];
 
         foreach($possibleEffects as $effect)
