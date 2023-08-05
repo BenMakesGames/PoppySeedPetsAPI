@@ -77,12 +77,14 @@ class DragonService
     private DragonRepository $dragonRepository;
     private HattierService $hattierService;
     private ResponseService $responseService;
+    private TransactionService $transactionService;
 
     public function __construct(
         EntityManagerInterface $em, InventoryService $inventoryService, ResponseService $responseService,
         EnchantmentRepository $enchantmentRepository, SpiceRepository $spiceRepository,
         UserStatsRepository $userStatsRepository, CalendarService $calendarService, Squirrel3 $rng,
-        InventoryRepository $inventoryRepository, DragonRepository $dragonRepository, HattierService $hattierService
+        InventoryRepository $inventoryRepository, DragonRepository $dragonRepository, HattierService $hattierService,
+        TransactionService $transactionService
     )
     {
         $this->em = $em;
@@ -96,6 +98,7 @@ class DragonService
         $this->dragonRepository = $dragonRepository;
         $this->hattierService = $hattierService;
         $this->responseService = $responseService;
+        $this->transactionService = $transactionService;
     }
 
     /**
@@ -248,7 +251,7 @@ class DragonService
                 $totalMoneys = (int)$dragon->getEarnings();
                 $dragon->addEarnings(-$totalMoneys);
 
-                $user->increaseMoneys($totalMoneys);
+                $this->transactionService->getMoney($user, $totalMoneys, 'Earned by ' . $helper->getName() . ' by investing some of your Dragon\'s wealth.', [ 'Dragon Den' ]);
             }
 
             if($dragon->getByproductProgress() >= 100)
