@@ -183,7 +183,7 @@ class GenericAdventureService
         if($this->squirrel3->rngNextBool())
         {
             if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Market))
-                return $this->discoverFeature($pet, UnlockableFeatureEnum::Market, 'Market, and a Grocer');
+                return $this->discoverFeature($pet, UnlockableFeatureEnum::Market, 'Market');
             else if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
                 return $this->discoverFeature($pet, UnlockableFeatureEnum::Museum, 'Museum');
             else if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Bookstore))

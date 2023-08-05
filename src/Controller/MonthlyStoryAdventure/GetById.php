@@ -3,7 +3,10 @@
 namespace App\Controller\MonthlyStoryAdventure;
 
 use App\Entity\MonthlyStoryAdventure;
+use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
+use App\Enum\UnlockableFeatureEnum;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\MonthlyStoryAdventureRepository;
 use App\Repository\MonthlyStoryAdventureStepRepository;
 use App\Repository\UserMonthlyStoryAdventureStepCompletedRepository;
@@ -30,7 +33,11 @@ class GetById extends AbstractController
     )
 
     {
+        /** @var User $user */
         $user = $this->getUser();
+
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::StarKindred))
+            throw new PSPNotUnlockedException('★Kindred');
 
         $complete = $userMonthlyStoryAdventureStepCompletedRepository->findComplete($user, $story);
         $available = $monthlyStoryAdventureStepRepository->findAvailable($story, $complete);

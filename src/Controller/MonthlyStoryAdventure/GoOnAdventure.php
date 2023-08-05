@@ -5,8 +5,10 @@ namespace App\Controller\MonthlyStoryAdventure;
 use App\Entity\MonthlyStoryAdventureStep;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
@@ -41,6 +43,9 @@ class GoOnAdventure extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
+
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::StarKindred))
+            throw new PSPNotUnlockedException('★Kindred');
 
         $today = (new \DateTimeImmutable())->format('Y-m-d');
         $playedStarKindred = $userQuestRepository->findOrCreate($user, 'Played ★Kindred', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
