@@ -3,6 +3,7 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Entity\TradesUnlocked;
+use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\StoryEnum;
 use App\Enum\UnlockableFeatureEnum;
@@ -33,9 +34,10 @@ class MerchantFishController extends AbstractController
         StoryService $storyService, Request $request, TraderService $traderService, InventoryService $inventoryService
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'merchantFish/#/talk');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'merchantFish/#/talk');
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Trader))
         {

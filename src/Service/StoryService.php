@@ -64,6 +64,7 @@ class StoryService
         $this->inventoryRepository = $inventoryRepository;
         $this->responseService = $responseService;
         $this->museumService = $museumService;
+        $this->userUnlockedFeatureRepository = $userUnlockedFeatureRepository;
     }
 
     /**
