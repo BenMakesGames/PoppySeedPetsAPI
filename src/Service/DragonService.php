@@ -246,7 +246,7 @@ class DragonService
                 ->addByproductProgress(($businessSkill + 4) * $workMultiplier)
             ;
 
-            if($dragon->getEarnings() > 0)
+            if($dragon->getEarnings() >= 1)
             {
                 $totalMoneys = (int)$dragon->getEarnings();
                 $dragon->addEarnings(-$totalMoneys);
