@@ -21,6 +21,7 @@ final class Version20230804235418 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $this->addSql('INSERT INTO user_unlocked_feature (user_id, feature, unlocked_on) SELECT id, \'' . UnlockableFeatureEnum::HollowEarth . '\', unlocked_hollow_earth FROM user WHERE unlocked_hollow_earth IS NOT NULL');
+        $this->addSql('INSERT INTO user_unlocked_feature (user_id, feature, unlocked_on) SELECT id, \'' . UnlockableFeatureEnum::StarKindred . '\', registered_on FROM user');
 
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE user DROP unlocked_hollow_earth');

@@ -22,24 +22,6 @@ class UserUnlockedFeatureRepository extends ServiceEntityRepository
         parent::__construct($registry, UserUnlockedFeature::class);
     }
 
-    public function add(UserUnlockedFeature $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->persist($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-    public function remove(UserUnlockedFeature $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
     private $createdThisRequest = [];
 
     public function create(User $user, string $feature)
@@ -54,6 +36,8 @@ class UserUnlockedFeatureRepository extends ServiceEntityRepository
             ->setFeature($feature)
         ;
 
-        $this->add($entity, true);
+        $user->addUnlockedFeature($entity);
+
+        $this->getEntityManager()->persist($entity);
     }
 }

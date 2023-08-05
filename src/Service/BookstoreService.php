@@ -185,6 +185,7 @@ class BookstoreService
         $gamePrices = [
             'Formation' => 15,
             'Lunchbox Paint' => 25,
+            '★Kindred Player\'s Handbook' => 60,
         ];
 
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::HollowEarth))
