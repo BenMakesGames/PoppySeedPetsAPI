@@ -217,6 +217,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=UserUnlockedFeature::class, mappedBy="user", orphanRemoval=true)
+     * @Groups({"myAccount"})
      */
     private $unlockedFeatures;
 

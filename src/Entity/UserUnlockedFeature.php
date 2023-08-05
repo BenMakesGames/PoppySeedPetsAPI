@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\UnlockableFeatureEnum;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=UserUnlockedFeatureRepository::class)
@@ -31,11 +32,13 @@ class UserUnlockedFeature
 
     /**
      * @ORM\Column(type="string", length=40)
+     * @Groups({"myAccount"})
      */
     private $feature;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"myAccount"})
      */
     private $unlockedOn;
 

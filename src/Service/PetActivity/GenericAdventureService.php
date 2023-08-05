@@ -182,12 +182,12 @@ class GenericAdventureService
 
         if($this->squirrel3->rngNextBool())
         {
-            if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Market))
-                return $this->discoverFeature($pet, UnlockableFeatureEnum::Market, 'Market');
-            else if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
+            if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
                 return $this->discoverFeature($pet, UnlockableFeatureEnum::Museum, 'Museum');
             else if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Bookstore))
                 return $this->discoverFeature($pet, UnlockableFeatureEnum::Bookstore, 'Bookstore');
+            else if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Market))
+                return $this->discoverFeature($pet, UnlockableFeatureEnum::Market, 'Market');
         }
 
         if($pet->getOwner()->getGreenhouse() && $pet->getOwner()->getGreenhouse()->getHasBirdBath() && !$pet->getOwner()->getGreenhouse()->getVisitingBird() && $this->squirrel3->rngNextInt(1, 20) === 1)
