@@ -140,6 +140,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $userSessions;
 
     /**
+     * @ORM\OneToOne(targetEntity="App\Entity\HollowEarthPlayer", mappedBy="user", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
+     */
+    private $hollowEarthPlayer;
+
+    /**
      * @ORM\OneToOne(targetEntity="App\Entity\Fireplace", mappedBy="user", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
      */
     private $fireplace;
