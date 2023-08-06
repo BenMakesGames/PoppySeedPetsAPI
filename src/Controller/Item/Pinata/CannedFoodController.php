@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\UserStatsRepository;
@@ -10,6 +11,7 @@ use App\Service\InventoryService;
 use App\Service\RecyclingService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,9 +28,10 @@ class CannedFoodController extends AbstractController
      */
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, TransactionService $transactionService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'cannedFood/#/open');
@@ -63,7 +66,7 @@ class CannedFoodController extends AbstractController
             $message = 'You open the can; it has ' . $item . ' inside! (You also recycle the can, and get 1♺. Woo.)';
         }
 
-        RecyclingService::giveRecyclingPoints($user, 1);
+        $transactionService->getRecyclingPoints($user, 1, 'You recycled the can from some Canned Food.');
 
         $cansOpened->increaseValue(1);
 
