@@ -1259,9 +1259,9 @@ class TraderService
                         throw new PSPNotEnoughCurrencyException($cost->quantity * $quantity . '~~m~~', $user->getMoneys() . '~~m~~');
 
                     if($this->rng->rngNextInt(1, 50) === 1)
-                        $this->transactionService->spendMoney($user, $cost->quantity * $quantity, 'Traded away at the Trader. (That\'s usually just called "buying", right?)');
+                        $this->transactionService->spendMoney($user, $cost->quantity * $quantity, 'Traded away at the Trader. (That\'s usually just called "buying", right?)', true, [ 'Trader' ]);
                     else
-                        $this->transactionService->spendMoney($user, $cost->quantity * $quantity, 'Traded away at the Trader.');
+                        $this->transactionService->spendMoney($user, $cost->quantity * $quantity, 'Traded away at the Trader.', true, [ 'Trader' ]);
 
                     break;
 
@@ -1269,7 +1269,7 @@ class TraderService
                     if($user->getRecyclePoints() < $cost->quantity * $quantity)
                         throw new PSPNotEnoughCurrencyException($cost->quantity * $quantity . '♺', $user->getRecyclePoints() . '♺');
 
-                    $user->increaseRecyclePoints(-$cost->quantity * $quantity);
+                    $this->transactionService->spendRecyclingPoints($user, $cost->quantity * $quantity, 'Traded away at the Trader.', [ 'Trader' ]);
 
                     break;
 
@@ -1290,14 +1290,14 @@ class TraderService
 
                 case CostOrYieldTypeEnum::MONEY:
                     if($this->rng->rngNextInt(1, 50) === 1)
-                        $this->transactionService->getMoney($user, $yield->quantity * $quantity, 'Traded for at the Trader. (That\'s usually just called "selling", right?)');
+                        $this->transactionService->getMoney($user, $yield->quantity * $quantity, 'Traded for at the Trader. (That\'s usually just called "selling", right?)', [ 'Trader' ]);
                     else
-                        $this->transactionService->getMoney($user, $yield->quantity * $quantity, 'Traded for at the Trader.');
+                        $this->transactionService->getMoney($user, $yield->quantity * $quantity, 'Traded for at the Trader.', [ 'Trader' ]);
 
                     break;
 
                 case CostOrYieldTypeEnum::RECYCLING_POINTS:
-                    $user->increaseRecyclePoints($yield->quantity * $quantity);
+                    $this->transactionService->getRecyclingPoints($user, $yield->quantity * $quantity, 'Traded for at the Trader.', [ 'Trader' ]);
                     break;
 
                 default:

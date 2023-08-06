@@ -134,14 +134,14 @@ class GrocerController extends AbstractController
             if($totalCost > $user->getMoneys())
                 throw new PSPNotEnoughCurrencyException($totalCost . '~~m~~', $user->getMoneys() . '~~m~~');
 
-            $transactionService->spendMoney($user, $totalCost, 'Purchased ' . $totalQuantity . ' thing' . ($totalQuantity === 1 ? '' : 's') . ' from the Grocer.');
+            $transactionService->spendMoney($user, $totalCost, 'Purchased ' . $totalQuantity . ' thing' . ($totalQuantity === 1 ? '' : 's') . ' from the Grocer.', true, [ 'Grocer' ]);
         }
         else
         {
             if($totalCost > $user->getRecyclePoints())
                 throw new PSPNotEnoughCurrencyException($totalCost . '♺', $user->getRecyclePoints() . '♺');
 
-            $user->increaseRecyclePoints(-$totalCost);
+            $transactionService->spendRecyclingPoints($user, $totalCost, 'Purchased ' . $totalQuantity . ' thing' . ($totalQuantity === 1 ? '' : 's') . ' from the Grocer.', [ 'Grocer' ]);
         }
 
         foreach($buyingInventory as $itemName=>$quantity)

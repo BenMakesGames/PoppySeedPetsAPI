@@ -36,7 +36,7 @@ class TransactionService
 
         $tags = array_merge($additionalTags, [ 'Moneys' ]);
 
-        return PlayerLogHelpers::Create($this->em, $user, $description . ' (' . $amount . '~~m~~)', $tags);
+        return PlayerLogHelpers::Create($this->em, $user, $description . ' (-' . $amount . '~~m~~)', $tags);
     }
 
     public function getMoney(User $user, int $amount, string $description, array $additionalTags = []): UserActivityLog
@@ -48,6 +48,61 @@ class TransactionService
 
         $tags = array_merge($additionalTags, [ 'Moneys' ]);
 
-        return PlayerLogHelpers::Create($this->em, $user, $description . ' (' . $amount . '~~m~~)', $tags);
+        return PlayerLogHelpers::Create($this->em, $user, $description . ' (+' . $amount . '~~m~~)', $tags);
+    }
+
+    public function spendRecyclingPoints(User $user, int $amount, string $description, array $additionalTags = [])
+    {
+        if($amount < 1)
+            throw new \InvalidArgumentException('$amount must be 1 or greater.');
+
+        if($user->getRecyclePoints() < $amount)
+            throw new \InvalidArgumentException($user->getName() . ' (#' . $user->getId() . ') does not have enough recycling points.');
+
+        $user->increaseRecyclePoints(-$amount);
+
+        $tags = array_merge($additionalTags, [ 'Recycling' ]);
+
+        return PlayerLogHelpers::Create($this->em, $user, $description . ' (-' . $amount . ' Recycling Point' . ($amount == 1 ? '' : 's') . ')', $tags);
+    }
+
+    public function getRecyclingPoints(User $user, int $amount, string $description, array $additionalTags = [])
+    {
+        if($amount < 0)
+            throw new \InvalidArgumentException('$amount must be 1 or greater.');
+
+        if($amount >= 1)
+            $user->increaseRecyclePoints($amount);
+
+        $tags = array_merge($additionalTags, [ 'Recycling' ]);
+
+        return PlayerLogHelpers::Create($this->em, $user, $description . ' (+' . $amount . ' Recycling Point' . ($amount == 1 ? '' : 's') . ')', $tags);
+    }
+
+    public function spendMuseumFavor(User $user, int $amount, string $description, array $additionalTags = [])
+    {
+        if($amount < 1)
+            throw new \InvalidArgumentException('$amount must be 1 or greater.');
+
+        if($user->getMuseumPoints() - $user->getMuseumPointsSpent() < $amount)
+            throw new \InvalidArgumentException($user->getName() . ' (#' . $user->getId() . ') does not have enough museum favor.');
+
+        $user->addMuseumPointsSpent($amount);
+
+        $tags = array_merge($additionalTags, [ 'Museum' ]);
+
+        return PlayerLogHelpers::Create($this->em, $user, $description . ' (-' . $amount . ' Museum Favor)', $tags);
+    }
+
+    public function getMuseumFavor(User $user, int $amount, string $description, array $additionalTags = [])
+    {
+        if($amount < 1)
+            throw new \InvalidArgumentException('$amount must be 1 or greater.');
+
+        $user->addMuseumPoints($amount);
+
+        $tags = array_merge($additionalTags, [ 'Museum' ]);
+
+        return PlayerLogHelpers::Create($this->em, $user, $description . ' (+' . $amount . ' Museum Favor)', $tags);
     }
 }

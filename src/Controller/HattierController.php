@@ -91,9 +91,9 @@ class HattierController extends AbstractController
             throw new PSPNotFoundException('You haven\'t unlocked that Hattier style.');
 
         if($payWith === 'moneys')
-            $transactionService->spendMoney($user, 200, 'Bought the ' . $unlockedAura->getAura()->getAura()->getName() . ' style from the Hattier.');
+            $transactionService->spendMoney($user, 200, 'Bought the ' . $unlockedAura->getAura()->getAura()->getName() . ' style from the Hattier.', true, [ 'Hattier' ]);
         else
-            $user->increaseRecyclePoints(-100);
+            $transactionService->spendRecyclingPoints($user, 100, 'Bought the ' . $unlockedAura->getAura()->getAura()->getName() . ' style from the Hattier.', [ 'Hattier' ]);
 
         $pet->getHat()->setEnchantment($unlockedAura->getAura());
 

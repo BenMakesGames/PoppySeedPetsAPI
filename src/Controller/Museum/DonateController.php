@@ -9,10 +9,13 @@ use App\Enum\UserStatEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
+use App\Functions\ArrayFunctions;
+use App\Functions\PlayerLogHelpers;
 use App\Repository\InventoryRepository;
 use App\Repository\MuseumItemRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,7 +36,8 @@ class DonateController extends AbstractController
      */
     public function handle(
         ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository,
-        MuseumItemRepository $museumItemRepository, EntityManagerInterface $em, UserStatsRepository $userStatsRepository
+        MuseumItemRepository $museumItemRepository, EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
+        TransactionService $transactionService
     ): JsonResponse
     {
         /** @var User $user */
@@ -80,6 +84,7 @@ class DonateController extends AbstractController
             throw new PSPNotFoundException('Some of the selected items could not be found or donated? That\'s weird. Try reloading and trying again.');
 
         $totalMuseumPoints = 0;
+        $donatedItemNames = [];
 
         foreach($inventory as $i)
         {
@@ -91,12 +96,15 @@ class DonateController extends AbstractController
             ;
 
             $totalMuseumPoints += $i->getItem()->getMuseumPoints();
+            $donatedItemNames[] = $i->getItem()->getNameWithArticle();
 
             $em->persist($museumItem);
             $em->remove($i);
         }
 
-        $user->addMuseumPoints($totalMuseumPoints);
+        $donationSummary = count($inventory) > 5 ? (count($inventory) . ' items') : ArrayFunctions::list_nice($donatedItemNames);
+
+        $transactionService->getMuseumFavor($user, $totalMuseumPoints, 'You donated ' . $donationSummary . ' to the Museum.');
 
         $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM, count($inventory));
 

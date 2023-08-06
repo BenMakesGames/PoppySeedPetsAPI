@@ -7,10 +7,13 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
+use App\Functions\PlayerLogHelpers;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\MuseumService;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -45,7 +48,8 @@ class GiftShopController extends AbstractController
      */
     public function buyFromGiftShop(
         Request $request, ResponseService $responseService, MuseumService $museumService,
-        InventoryService $inventoryService, ItemRepository $itemRepository
+        InventoryService $inventoryService, ItemRepository $itemRepository, EntityManagerInterface $em,
+        TransactionService $transactionService
     )
     {
         /** @var User $user */
@@ -90,7 +94,7 @@ class GiftShopController extends AbstractController
                 throw new PSPInvalidOperationException('There\'s not enough space in your house or basement!');
         }
 
-        $user->addMuseumPointsSpent($item['cost']);
+        $transactionService->spendMuseumFavor($user, $item['cost'], 'You bought ' . $itemObject->getNameWithArticle() . ' from the Museum Gift Shop.');
 
         $inventoryService->receiveItem($itemObject, $user, null, $user->getName() . ' bought this from the Museum Gift Shop.', $targetLocation, true);
 

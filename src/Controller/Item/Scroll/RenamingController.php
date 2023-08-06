@@ -15,6 +15,7 @@ use App\Functions\PlayerLogHelpers;
 use App\Functions\ProfanityFilterFunctions;
 use App\Repository\PetRepository;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -93,7 +94,8 @@ class RenamingController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function renameYourself(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
+        TransactionService $transactionService
     )
     {
         /** @var User $user */
@@ -118,12 +120,9 @@ class RenamingController extends AbstractController
 
         $oldName = $user->getName();
 
-        $user
-            ->addMuseumPointsSpent(500)
-            ->setName($newName)
-        ;
+        $user->setName($newName);
 
-        PlayerLogHelpers::Create($em, $user, 'You renamed yourself, from ' . $oldName . ' to ' . $newName . '!', []);
+        $transactionService->spendMuseumFavor($user, 500, 'You renamed yourself, from ' . $oldName . ' to ' . $newName . '!');
 
         $em->flush();
 

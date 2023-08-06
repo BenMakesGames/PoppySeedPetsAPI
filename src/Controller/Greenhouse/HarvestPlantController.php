@@ -19,7 +19,6 @@ use App\Functions\DateFunctions;
 use App\Functions\GrammarFunctions;
 use App\Repository\EnchantmentRepository;
 use App\Repository\PetRepository;
-use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\FieldGuideService;
@@ -29,10 +28,10 @@ use App\Service\InventoryService;
 use App\Service\PetActivity\GreenhouseAdventureService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -49,9 +48,9 @@ class HarvestPlantController extends AbstractController
         GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService, UserStatsRepository $userStatsRepository, PetRepository $petRepository,
         UserQuestRepository $userQuestRepository, GreenhouseAdventureService $greenhouseAdventureService,
-        GreenhouseService $greenhouseService, SpiceRepository $spiceRepository, Squirrel3 $squirrel3,
-        FieldGuideService $fieldGuideService, EnchantmentRepository $enchantmentRepository,
-        HattierService $hattierService
+        GreenhouseService $greenhouseService, Squirrel3 $squirrel3, FieldGuideService $fieldGuideService,
+        EnchantmentRepository $enchantmentRepository, HattierService $hattierService,
+        TransactionService $transactionService
     ): JsonResponse
     {
         /** @var User $user */
@@ -94,7 +93,7 @@ class HarvestPlantController extends AbstractController
 
         if($plant->getPlant()->getName() === 'Earth Tree')
         {
-            $user->increaseRecyclePoints(25);
+            $transactionService->getRecyclingPoints($user, 25, 'Tess gave you 25 recycling points for replanting the Earth Tree!', [ 'Greenhouse', 'Earth Day' ]);
 
             $responseService->addFlashMessage('You carry the tree out to where Tess is planting new trees on the island, and plant the Earth Tree. She gives you 25 recycling points for your help taking care of the Earth!');
 
@@ -200,7 +199,8 @@ class HarvestPlantController extends AbstractController
             $vinesAura = $enchantmentRepository->findOneByName('of Wild Growth');
 
             $responseService->addFlashMessage('After harvesting the ' . $plant->getPlant()->getName() . ', an odd-looking fairy pops out and bestows a wreath of vines to you. "As you give life to the Earth, you give life to my people. Please, accept this gift for all you have done for us!" (A new style is available at the Hattier\'s! _And_ you somehow got 100 recycling points?! Sure; why not!)');
-            $user->increaseRecyclePoints(100);
+
+            $transactionService->getRecyclingPoints($user, 100, 'A fairy gave you 100 Recycling Points in thanks for growing so many plants!', [ 'Greenhouse', 'Fae-kind' ]);
 
             $hattierService->playerUnlockAura($user, $vinesAura, 'A fairy gave you this after you harvested your 1000th plant!');
         }

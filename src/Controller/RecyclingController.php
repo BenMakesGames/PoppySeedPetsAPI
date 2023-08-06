@@ -1,15 +1,16 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -24,9 +25,10 @@ class RecyclingController extends AbstractController
      */
     public function gamble(
         ResponseService $responseService, EntityManagerInterface $em, InventoryService $inventoryService,
-        Request $request, Squirrel3 $squirrel3
+        Request $request, Squirrel3 $squirrel3, TransactionService $transactionService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $bet = $request->request->getInt('bet');
@@ -90,10 +92,13 @@ class RecyclingController extends AbstractController
 
         sort($items);
 
-        $user->increaseRecyclePoints($points - 100);
+        $transactionService->spendRecyclingPoints($user, 100, 'Spent at a game of Satyr Dice.', [ 'Satyr Dice' ]);
+
+        if($points > 0)
+            $transactionService->getRecyclingPoints($user, $points, 'Earned at a game of Satyr Dice.', [ 'Satyr Dice' ]);
 
         foreach($items as $itemName)
-            $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from a magic Satyr dice roll.', LocationEnum::HOME);
+            $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from a game of Satyr Dice.', LocationEnum::HOME);
 
         $em->flush();
 

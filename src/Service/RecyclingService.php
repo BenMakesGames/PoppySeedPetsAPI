@@ -4,11 +4,9 @@ namespace App\Service;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
-use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
-use App\Functions\PlayerLogHelpers;
 use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,10 +19,12 @@ class RecyclingService
     private UserStatsRepository $userStatsRepository;
     private IRandom $squirrel3;
     private ResponseService $responseService;
+    private TransactionService $transactionService;
 
     public function __construct(
         UserRepository $userRepository, CalendarService $calendarService, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3, ResponseService $responseService
+        UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3, ResponseService $responseService,
+        TransactionService $transactionService
     )
     {
         $this->userRepository = $userRepository;
@@ -33,14 +33,7 @@ class RecyclingService
         $this->userStatsRepository = $userStatsRepository;
         $this->squirrel3 = $squirrel3;
         $this->responseService = $responseService;
-    }
-
-    public static function giveRecyclingPoints(User $user, int $quantity)
-    {
-        if($quantity == 0)
-            return;
-
-        $user->increaseRecyclePoints($quantity);
+        $this->transactionService = $transactionService;
     }
 
     private static function recycledItemShouldGoToGivingTree(IRandom $rng, bool $givingTreeHoliday, Inventory $i): bool
@@ -118,12 +111,13 @@ class RecyclingService
 
         if($totalRecyclingPointsEarned > 0 || $totalItemsRecycled > 0)
         {
-            self::giveRecyclingPoints($user, $totalRecyclingPointsEarned);
-
             $this->userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_RECYCLED, $totalItemsRecycled);
 
-            $log = 'You recycled ' . $totalItemsRecycled . ' item' . ($totalItemsRecycled == 1 ? '' : 's') . ' for ' . $totalRecyclingPointsEarned . ' recycling point' . ($totalRecyclingPointsEarned == 1 ? '' : 's') . '.';
-            PlayerLogHelpers::Create($this->em, $user, $log, [ 'Recycling' ]);
+            $this->transactionService->getRecyclingPoints(
+                $user,
+                $totalRecyclingPointsEarned,
+                'You recycled ' . $totalItemsRecycled . ' item' . ($totalItemsRecycled == 1 ? '' : 's') . '.'
+            );
         }
 
         if(count($questItems) > 0)

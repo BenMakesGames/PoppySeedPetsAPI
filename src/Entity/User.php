@@ -383,7 +383,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->moneys;
     }
 
-    // should only be called from TransactionService
+    /**
+     * @deprecated use TransactionService::getMoneys and spendMoneys instead
+     */
     public function increaseMoneys(int $amount): self
     {
         $this->moneys += $amount;
@@ -649,6 +651,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->recyclePoints;
     }
 
+    /**
+     * @deprecated use TransactionService::getRecyclingPoints and spendRecyclingPoints instead
+     */
     public function increaseRecyclePoints(int $recyclePoints): self
     {
         $this->recyclePoints += $recyclePoints;
@@ -744,6 +749,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->museumPoints;
     }
 
+    /**
+     * @deprecated use TransactionService::getMuseumFavor instead
+     */
     public function addMuseumPoints(int $museumPoints): self
     {
         $this->museumPoints += $museumPoints;
@@ -756,6 +764,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->museumPointsSpent;
     }
 
+    /**
+     * @deprecated use TransactionService::spendMuseumFavor instead
+     */
     public function addMuseumPointsSpent(int $museumPointsSpent): self
     {
         $this->museumPointsSpent += $museumPointsSpent;

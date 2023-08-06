@@ -322,7 +322,7 @@ class DragonService
     {
         $enchantment = $this->enchantmentRepository->findOneByName('with White Diamonds');
 
-        $user->increaseRecyclePoints(100);
+        $this->transactionService->getRecyclingPoints($user, 100, 'You received this from your dragon, for donating 50 gems.', [ 'Dragon Den' ]);
 
         $this->hattierService->playerUnlockAura($user, $enchantment, 'You received this from your dragon, for donating 50 gems.');
 
@@ -333,7 +333,7 @@ class DragonService
     {
         $enchantment = $this->enchantmentRepository->findOneByName('with Black Diamonds');
 
-        $user->increaseRecyclePoints(100);
+        $this->transactionService->getRecyclingPoints($user, 100, 'You received this from your dragon, for donating 100 gems.', [ 'Dragon Den' ]);
 
         $this->hattierService->playerUnlockAura($user, $enchantment, 'You received this from your dragon, for donating 100 gems.');
 
@@ -344,7 +344,7 @@ class DragonService
     {
         $enchantment = $this->enchantmentRepository->findOneByName('Loaded');
 
-        $user->increaseRecyclePoints(100);
+        $this->transactionService->getRecyclingPoints($user, 100, 'You received this from your dragon, for donating 200 gold and 200 silver.', [ 'Dragon Den' ]);
 
         $this->hattierService->playerUnlockAura($user, $enchantment, 'You received this from your dragon, for donating 200 gold and 200 silver.');
 

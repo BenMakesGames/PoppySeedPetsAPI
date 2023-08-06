@@ -5,6 +5,7 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Repository\ItemRepository;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -46,12 +47,16 @@ class AnniversaryMuffinController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function wishFor700MuseumFavor(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        TransactionService $transactionService
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'anniversaryMuffin/#/museumFavor');
+        /** @var User $user */
+        $user = $this->getUser();
 
-        $this->getUser()->addMuseumPoints(700);
+        ItemControllerHelpers::validateInventory($user, $inventory, 'anniversaryMuffin/#/museumFavor');
+
+        $transactionService->getMuseumFavor($user, 700, 'You wished for 700 Museum Favor on a muffin! (What _is_ this game??)');
 
         $em->remove($inventory);
         $em->flush();
