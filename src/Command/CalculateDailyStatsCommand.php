@@ -136,7 +136,7 @@ class CalculateDailyStatsCommand extends Command
     {
         return (int)$this->em->getConnection()
             ->executeQuery('
-                SELECT COUNT(id) AS qty
+                SELECT COUNT(user_unlocked_feature.id) AS qty
                 FROM user_unlocked_feature
                 LEFT JOIN user ON user.id=user_unlocked_feature.user_id
                 WHERE
@@ -151,7 +151,7 @@ class CalculateDailyStatsCommand extends Command
     {
         return (int)$this->em->getConnection()
             ->executeQuery('
-                SELECT COUNT(id) AS qty
+                SELECT COUNT(user_unlocked_feature.id) AS qty
                 FROM user_unlocked_feature
                 WHERE
                     user_unlocked_feature.feature="' . $featureFieldSuffix . '"
