@@ -99,7 +99,8 @@ class PetExperienceService
             else
                 $statToLevel = $this->squirrel3->rngNextFromArray($stats);
 
-            if($focusStatusEffect)
+            // only remove a Focused status effect if the focused stat was leveled-up
+            if($focusStatusEffect && $focusStatusEffect->skill == $statToLevel)
             {
                 $pet->removeStatusEffect($pet->getStatusEffect($focusStatusEffect->statusEffect));
                 $focusStatusEffect = null;
