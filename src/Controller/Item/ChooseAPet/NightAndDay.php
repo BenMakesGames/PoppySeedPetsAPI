@@ -4,6 +4,7 @@ namespace App\Controller\Item\ChooseAPet;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
@@ -15,6 +16,7 @@ use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -22,7 +24,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/nightAndDay")
  */
-class NightAndDay extends ChooseAPetController
+class NightAndDay extends AbstractController
 {
     /**
      * @Route("/{inventory}", methods={"POST"})
@@ -40,9 +42,12 @@ class NightAndDay extends ChooseAPetController
         IRandom $rng
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'nightAndDay');
+        /** @var User $user */
+        $user = $this->getUser();
 
-        $pet = $this->getPet($request, $petRepository);
+        ItemControllerHelpers::validateInventory($user, $inventory, 'nightAndDay');
+
+        $pet = ChooseAPetHelpers::getPet($request, $user, $petRepository);
         $petChanges = new PetChanges($pet);
 
         $pairOfItems = $rng->rngNextFromArray([

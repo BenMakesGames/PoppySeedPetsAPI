@@ -4,7 +4,9 @@ namespace App\Controller\Item\Scroll;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
+use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -24,7 +26,7 @@ class FairyController extends AbstractController
      */
     public function readFairyScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
     )
     {
         /** @var User $user */
@@ -43,6 +45,8 @@ class FairyController extends AbstractController
 
         foreach($loot as $item)
             $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' summoned this by reading a Fairy\'s Scroll.', $inventory->getLocation(), $inventory->getLockedToOwner());
+
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 

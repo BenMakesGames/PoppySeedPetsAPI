@@ -4,6 +4,7 @@ namespace App\Controller\Item\ChooseAPet;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\PetChanges;
@@ -14,6 +15,7 @@ use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -21,7 +23,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/proboscis")
  */
-class Proboscis extends ChooseAPetController
+class Proboscis extends AbstractController
 {
     /**
      * @Route("/{inventory}", methods={"POST"})
@@ -39,9 +41,12 @@ class Proboscis extends ChooseAPetController
         IRandom $rng
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'proboscis');
+        /** @var User $user */
+        $user = $this->getUser();
 
-        $pet = $this->getPet($request, $petRepository);
+        ItemControllerHelpers::validateInventory($user, $inventory, 'proboscis');
+
+        $pet = ChooseAPetHelpers::getPet($request, $user, $petRepository);
         $petChanges = new PetChanges($pet);
         $skills = $pet->getComputedSkills();
 

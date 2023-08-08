@@ -1,20 +1,21 @@
 <?php
-namespace App\Controller\Item\Pinata;
+namespace App\Controller\Item\Scroll;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
+use App\Enum\UserStatEnum;
+use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/scroll")
  */
-class ScrollOfDiceController extends AbstractController
+class DiceController extends AbstractController
 {
     /**
      * @Route("/dice/{inventory}/read", methods={"POST"})
@@ -22,9 +23,10 @@ class ScrollOfDiceController extends AbstractController
      */
     public function readScrollOfDice(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'scroll/dice/#/read');
@@ -69,6 +71,8 @@ class ScrollOfDiceController extends AbstractController
 
             $inventoryService->receiveItem($die, $user, $user, $user->getName() . ' found this in ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
         }
+
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 

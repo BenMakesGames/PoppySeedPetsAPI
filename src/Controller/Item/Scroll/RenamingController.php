@@ -4,22 +4,21 @@ namespace App\Controller\Item\Scroll;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
-use App\Enum\MeritEnum;
+use App\Enum\UserStatEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetRenamingHelpers;
-use App\Functions\PlayerLogHelpers;
 use App\Functions\ProfanityFilterFunctions;
 use App\Repository\PetRepository;
+use App\Repository\UserStatsRepository;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -34,7 +33,7 @@ class RenamingController extends AbstractController
      */
     public function readRenamingScroll(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository
+        PetRepository $petRepository, UserStatsRepository $userStatsRepository
     )
     {
         /** @var User $user */
@@ -50,6 +49,8 @@ class RenamingController extends AbstractController
 
         PetRenamingHelpers::renamePet($responseService, $pet, $request->request->get('name', ''));
 
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+
         $em->remove($inventory);
 
         $em->flush();
@@ -63,7 +64,7 @@ class RenamingController extends AbstractController
      */
     public function renameSpiritCompanion(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository
+        PetRepository $petRepository, UserStatsRepository $userStatsRepository
     )
     {
         /** @var User $user */
@@ -82,6 +83,8 @@ class RenamingController extends AbstractController
 
         PetRenamingHelpers::renameSpiritCompanion($responseService, $pet->getSpiritCompanion(), $request->request->get('name', ''));
 
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+
         $em->remove($inventory);
 
         $em->flush();
@@ -95,7 +98,7 @@ class RenamingController extends AbstractController
      */
     public function renameYourself(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        TransactionService $transactionService
+        TransactionService $transactionService, UserStatsRepository $userStatsRepository
     )
     {
         /** @var User $user */
@@ -115,6 +118,8 @@ class RenamingController extends AbstractController
 
         if(\mb_strlen($newName) < 2 || \mb_strlen($newName) > 30)
             throw new PSPFormValidationException('Name must be between 2 and 30 characters long.');
+
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 

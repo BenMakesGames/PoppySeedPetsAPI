@@ -4,6 +4,7 @@ namespace App\Controller\Item\ChooseAPet;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Model\PetChanges;
@@ -12,6 +13,7 @@ use App\Repository\PetRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -19,7 +21,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item/yggdrasilBranch")
  */
-class YggdrasilBranch extends ChooseAPetController
+class YggdrasilBranch extends AbstractController
 {
     /**
      * @Route("/{inventory}", methods={"POST"})
@@ -35,9 +37,12 @@ class YggdrasilBranch extends ChooseAPetController
         IRandom $rng
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'yggdrasilBranch');
+        /** @var User $user */
+        $user = $this->getUser();
 
-        $pet = $this->getPet($request, $petRepository);
+        ItemControllerHelpers::validateInventory($user, $inventory, 'yggdrasilBranch');
+
+        $pet = ChooseAPetHelpers::getPet($request, $user, $petRepository);
         $petChanges = new PetChanges($pet);
 
         $randomMerit = $rng->rngNextFromArray([

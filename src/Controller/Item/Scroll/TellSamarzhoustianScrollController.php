@@ -1,20 +1,17 @@
 <?php
-namespace App\Controller\Item\Pinata;
+namespace App\Controller\Item\Scroll;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
+use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
-use App\Model\ItemQuantity;
-use App\Repository\EnchantmentRepository;
-use App\Repository\ItemRepository;
+use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
-use App\Service\PetRelationshipService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/tellSamarzhoustianDelights")
@@ -27,9 +24,10 @@ class TellSamarzhoustianScrollController extends AbstractController
      */
     public function read(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService, Squirrel3 $squirrel3
+        ResponseService $responseService, Squirrel3 $squirrel3, UserStatsRepository $userStatsRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'tellSamarzhoustianDelights/#/open');
@@ -79,6 +77,8 @@ class TellSamarzhoustianScrollController extends AbstractController
         {
             $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
         }
+
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $em->flush();
 

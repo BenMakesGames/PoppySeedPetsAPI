@@ -3,11 +3,14 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\MeritEnum;
+use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
+use App\Repository\UserStatsRepository;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,9 +30,11 @@ class BehattingScrollController extends AbstractController
      */
     public function readBehattingScroll(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, MeritRepository $meritRepository, Squirrel3 $squirrel3
+        PetRepository $petRepository, MeritRepository $meritRepository, Squirrel3 $squirrel3,
+        UserStatsRepository $userStatsRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'behattingScroll');
@@ -47,6 +52,8 @@ class BehattingScrollController extends AbstractController
 
         if(!$merit)
             throw new \Exception('The ' . MeritEnum::BEHATTED . ' Merit does not exist! This is a terrible programming error. Someone please tell Ben.');
+
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 

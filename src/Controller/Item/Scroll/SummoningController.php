@@ -32,12 +32,14 @@ class SummoningController extends AbstractController
      */
     public function summonSomethingUnfriendly(
         Inventory $inventory, ResponseService $responseService, PetRepository $petRepository,
-        EntityManagerInterface $em, HouseMonsterService $houseMonsterService, Squirrel3 $squirrel3
+        EntityManagerInterface $em, HouseMonsterService $houseMonsterService, Squirrel3 $squirrel3,
+        UserStatsRepository $userStatsRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'summoningScroll/#/unfriendly');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'summoningScroll/#/unfriendly');
 
         $em->remove($inventory);
 
@@ -61,6 +63,8 @@ class SummoningController extends AbstractController
         ]);
 
         $result = $houseMonsterService->doFight('You read the scroll', $petsAtHome, $monster);
+
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $em->flush();
 

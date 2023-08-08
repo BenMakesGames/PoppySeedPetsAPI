@@ -3,8 +3,10 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\UserStatEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
@@ -14,6 +16,7 @@ use App\Functions\MeritFunctions;
 use App\Model\MeritInfo;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
+use App\Repository\UserStatsRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -66,9 +69,10 @@ class ForgettingScrollController extends AbstractController
      */
     public function forgetMerit(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, MeritRepository $meritRepository
+        PetRepository $petRepository, MeritRepository $meritRepository, UserStatsRepository $userStatsRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'forgettingScroll');
@@ -98,6 +102,8 @@ class ForgettingScrollController extends AbstractController
             else
                 throw new PSPInvalidOperationException('That merit cannot be unlearned.');
         }
+
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 
@@ -141,9 +147,10 @@ class ForgettingScrollController extends AbstractController
      */
     public function forgetSkill(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository
+        PetRepository $petRepository, UserStatsRepository $userStatsRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'forgettingScroll');
@@ -164,6 +171,8 @@ class ForgettingScrollController extends AbstractController
 
         if($pet->getSkills()->getStat($skill) < 1)
             throw new PSPInvalidOperationException($pet->getName() . ' does not have any points of ' . $skill . ' to unlearn.');
+
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 
