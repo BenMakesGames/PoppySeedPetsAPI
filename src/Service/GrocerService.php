@@ -8,8 +8,8 @@ class GrocerService
 {
     public const MAX_CAN_PURCHASE_PER_DAY = 20;
 
-    private $cacheHelper;
-    private $itemRepository;
+    private CacheHelper $cacheHelper;
+    private ItemRepository $itemRepository;
     private CalendarService $calendarService;
 
     public function __construct(
@@ -40,7 +40,7 @@ class GrocerService
     ];
 
     // cost = fertilizer value + 2 + CEIL(chance_for_bonus_item / 50)
-    private const SPECIALS = [
+    private const HOT_BAR_ITEMS = [
         [ 'Basic Fish Taco', 11 ],
         [ 'Battered, Fried Fish', 8 ],
         [ 'Cake Pops', 10 ],
@@ -87,24 +87,17 @@ class GrocerService
         $inventory = [];
 
         if($this->calendarService->isJelephantDay())
-        {
-            $special = [ 'Jelephant Aminal Crackers', 8 ];
-        }
-        else if($this->calendarService->isPiDay())
-        {
-            $special = [ 'Pi Pie', 46 ];
-        }
-        else if($this->calendarService->isAwaOdori())
-        {
-            $special = [ 'Odori 0.0%', 12 ];
-        }
-        else
-        {
-            $specialIndex = RandomFunctions::squirrel3Noise($day, 78934) % count(self::SPECIALS);
-            $special = self::SPECIALS[$specialIndex];
-        }
+            $inventory[] = $this->createInventoryData([ 'Jelephant Aminal Crackers', 8 ], true);
 
-        $inventory[] = $this->createInventoryData($special, true);
+        if($this->calendarService->isPiDay())
+            $inventory[] = $this->createInventoryData([ 'Pi Pie', 46 ], true);
+
+        if($this->calendarService->isAwaOdori())
+            $inventory[] = $this->createInventoryData([ 'Odori 0.0%', 12 ], true);
+
+        $hotBarIndex = RandomFunctions::squirrel3Noise($day, 78934) % count(self::HOT_BAR_ITEMS);
+
+        $inventory[] = $this->createInventoryData(self::HOT_BAR_ITEMS[$hotBarIndex], true);
 
         foreach(self::ITEMS as $item)
             $inventory[] = $this->createInventoryData($item, false);
