@@ -47,7 +47,7 @@ class ControllerActionSubscriber implements EventSubscriberInterface
         if(is_array($event->getController()))
         {
             $this->checkRateLimiters($event);
-            //$this->checkHouseHours($event);
+            $this->checkHouseHours($event);
         }
 
         $this->convertJsonStringToArray($event);
