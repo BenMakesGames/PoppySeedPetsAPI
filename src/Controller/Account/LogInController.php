@@ -36,7 +36,7 @@ class LogInController extends AbstractController
     {
         $email = $request->request->get('email');
         $password = $request->request->get('passphrase');
-        $sessionHours = $request->request->getInt('sessionHours', 0);
+        $sessionHours = $request->request->getBoolean('rememberMe') ? (7 * 24) : 1;
 
         if(!$email || !$password)
             throw new PSPFormValidationException('"email" and "passphrase" are both required.');
