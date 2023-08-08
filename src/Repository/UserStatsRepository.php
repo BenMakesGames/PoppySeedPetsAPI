@@ -58,16 +58,6 @@ class UserStatsRepository extends ServiceEntityRepository
         return $stat->getValue();
     }
 
-    public function getStatTotal(User $user, array $statNames): int
-    {
-        return (int)($this->createQueryBuilder('s')
-            ->select('SUM(s.value)')
-            ->andWhere('s.user = :user')
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getSingleScalarResult());
-    }
-
     public function incrementStat(User $user, string $name, int $change = 1): UserStats
     {
         $stat = $this->findOrCreate($user, $name);

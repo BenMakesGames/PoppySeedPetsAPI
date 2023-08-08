@@ -7,6 +7,7 @@ use App\Enum\UserStatEnum;
 use App\Repository\UserBadgeRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -21,8 +22,7 @@ final class Available extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getAvailable(
-        UserBadgeRepository $userBadgeRepository, UserStatsRepository $userStatsRepository,
-        ResponseService $responseService
+        ResponseService $responseService, EntityManagerInterface $em, UserBadgeRepository $userBadgeRepository
     )
     {
         /** @var User $user */
@@ -35,34 +35,8 @@ final class Available extends AbstractController
         $info = [];
 
         foreach($unclaimed as $badge)
-            $info[] = self::getBadgeProgress($badge, $user, $userStatsRepository);
+            $info[] = BadgeHelpers::getBadgeProgress($badge, $user, $em);
 
         return $responseService->success($info);
-    }
-
-    private static function getBadgeProgress(string $badge, User $user, UserStatsRepository $userStatsRepository): array
-    {
-        switch($badge)
-        {
-            case BadgeEnum::BAABBLES_OPENED_10:
-                $progress = [ 'target' => 10, 'current' => $userStatsRepository->getStatTotal($user, []) ];
-                break;
-
-            case BadgeEnum::BAABBLES_OPENED_100:
-                $progress = [ 'target' => 100, 'current' => $userStatsRepository->getStatTotal($user, []) ];
-                break;
-
-            case BadgeEnum::BAABBLES_OPENED_1000:
-                $progress = [ 'target' => 1000, 'current' => $userStatsRepository->getStatTotal($user, []) ];
-                break;
-
-            default:
-                throw new \Exception('Oops! Badge not implemented! Ben was a bad programmer!');
-        }
-
-        return [
-            'badge' => $badge,
-            'progress' => $progress
-        ];
     }
 }
