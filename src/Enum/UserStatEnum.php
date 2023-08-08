@@ -37,4 +37,5 @@ final class UserStatEnum
     const LOOTED_A_POT_OF_GOLD = 'Looted a Pot of Gold';
     const STRANGE_FIELDS_COLLAPSED = 'Strange Fields Collapsed';
     const COMPLETED_A_SAGA_SAGA = 'Completed a Sága Saga';
+    const TOSSED_A_HOT_POTATO = 'Tossed a Hot Potato';
 }

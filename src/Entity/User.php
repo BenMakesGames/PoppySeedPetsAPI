@@ -226,6 +226,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $unlockedFeatures;
 
+    /**
+     * @ORM\OneToMany(targetEntity=UserBadge::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $badges;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -238,6 +243,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->unlockedAuras = new ArrayCollection();
         $this->fate = mt_rand(0, 2147483647);
         $this->unlockedFeatures = new ArrayCollection();
+        $this->badges = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -874,5 +880,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             return null;
 
         return $unlockedFeature->getUnlockedOn();
+    }
+
+    /**
+     * @return Collection<int, UserBadge>
+     */
+    public function getBadges(): Collection
+    {
+        return $this->badges;
+    }
+
+    public function addBadge(UserBadge $badge): self
+    {
+        if (!$this->badges->contains($badge)) {
+            $this->badges[] = $badge;
+            $badge->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBadge(UserBadge $badge): self
+    {
+        if ($this->badges->removeElement($badge)) {
+            // set the owning side to null (unless already changed)
+            if ($badge->getUser() === $this) {
+                $badge->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

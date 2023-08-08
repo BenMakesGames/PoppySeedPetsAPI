@@ -3,6 +3,8 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Entity\User;
+use App\Enum\UserStatEnum;
+use App\Repository\UserStatsRepository;
 use App\Service\HotPotatoService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -24,7 +26,8 @@ class HotPotatoController extends AbstractController
      */
     public function toss(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, Squirrel3 $squirrel3, HotPotatoService $hotPotatoService
+        InventoryService $inventoryService, Squirrel3 $squirrel3, HotPotatoService $hotPotatoService,
+        UserStatsRepository $userStatsRepository
     )
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'hotPotato/#/toss');
@@ -53,6 +56,8 @@ class HotPotatoController extends AbstractController
         }
         else
         {
+            $userStatsRepository->incrementStat($user, UserStatEnum::TOSSED_A_HOT_POTATO);
+
             return $hotPotatoService->tossItem($inventory);
         }
     }
