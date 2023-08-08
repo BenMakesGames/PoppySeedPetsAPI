@@ -10,9 +10,11 @@ final class BadgeEnum
     public const RECYCLED_100 = 'Recycled100';
     public const RECYCLED_1000 = 'Recycled1000';
     public const RECYCLED_10000 = 'Recycled10000';
+    public const BAABBLES_OPENED_1 = 'BaabblesOpened1';
     public const BAABBLES_OPENED_10 = 'BaabblesOpened10';
     public const BAABBLES_OPENED_100 = 'BaabblesOpened100';
     public const BAABBLES_OPENED_1000 = 'BaabblesOpened1000';
+    public const MONEYS_SPENT_10 = 'MoneysSpent10';
     public const MONEYS_SPENT_100 = 'MoneysSpent100';
     public const MONEYS_SPENT_1000 = 'MoneysSpent1000';
     public const MONEYS_SPENT_10000 = 'MoneysSpent10000';
@@ -29,7 +31,8 @@ final class BadgeEnum
     public const OPENED_PAPER_BAG_100 = 'OpenedPaperBag100';
     public const OPENED_CAN_OF_FOOD_PAPER_BAG_100 = 'OpenedCerealBoxCanOfFoodPaperBag100';
 
-    public const HORRIBLE_EGGPLANT = 'HorribleEggplant';
+    public const HORRIBLE_EGGPLANT_1 = 'HorribleEggplant1';
+    public const HORRIBLE_EGGPLANT_10 = 'HorribleEggplant10';
     public const HOT_POTATO_TOSSED_1 = 'HotPotatoTossed1';
     public const HOT_POTATO_TOSSED_10 = 'HotPotatoTossed10';
     public const HOT_POTATO_TOSSED_100 = 'HotPotatoTossed100';

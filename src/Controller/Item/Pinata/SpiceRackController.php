@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -26,10 +27,11 @@ class SpiceRackController extends AbstractController
         EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'spiceRack/#/loot');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'spiceRack/#/loot');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();

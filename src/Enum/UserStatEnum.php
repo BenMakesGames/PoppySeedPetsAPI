@@ -14,7 +14,6 @@ final class UserStatEnum
     const ITEMS_DONATED_TO_MUSEUM = 'Items Donated to Museum';
     const FOOD_HOURS_FED_TO_PETS = 'Food Hours Fed to Pets';
     const PETTED_A_PET = 'Petted a Pet';
-    const PRAISED_A_PET = 'Praised a Pet';
     const MONEYS_STOLEN_BY_THIEVING_MAGPIES = 'Moneys Stolen by Thieving Magpies';
     const RECIPES_LEARNED_BY_COOKING_BUDDY = 'Recipes Learned by Cooking Buddy';
     const BUGS_SQUISHED = 'Bugs Squished';

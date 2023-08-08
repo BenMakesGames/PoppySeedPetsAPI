@@ -2,6 +2,7 @@
 namespace App\Controller\Badge;
 
 use App\Entity\User;
+use App\Enum\BadgeEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Repository\UserStatsRepository;
@@ -30,7 +31,7 @@ final class Claim extends AbstractController
 
         $badge = trim($request->request->get('badge'));
 
-        if(!$badge)
+        if(!$badge || !BadgeEnum::isAValue($badge))
             throw new PSPFormValidationException('Which badge?');
 
         $progress = BadgeHelpers::getBadgeProgress($badge, $user, $em);
