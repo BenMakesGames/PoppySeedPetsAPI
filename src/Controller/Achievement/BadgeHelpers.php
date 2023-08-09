@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller\Badge;
+namespace App\Controller\Achievement;
 
 use App\Entity\Item;
 use App\Entity\User;
@@ -15,7 +15,7 @@ final class BadgeHelpers
     public static function getCompletedBadges(User $user, array $badgeNames): int
     {
         return array_reduce(
-            $user->getBadges(),
+            $user->getBadges()->getValues(),
             fn(int $carry, UserBadge $badge) => $carry + (int)in_array($badge->getBadge(), $badgeNames),
             0
         );
@@ -110,6 +110,11 @@ final class BadgeHelpers
             case BadgeEnum::MONEYS_SPENT_100000:
                 $progress = [ 'target' => 100000, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::TOTAL_MONEYS_SPENT ]) ];
                 $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Hat Box' ]), 5);
+                break;
+
+            case BadgeEnum::PETTED_10:
+                $progress = [ 'target' => 10, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::PETTED_A_PET ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Fortune Cookie' ]), 1);
                 break;
 
             case BadgeEnum::PETTED_100:
@@ -347,6 +352,41 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Box Box' ]), 1);
                 break;
 
+            case BadgeEnum::ACHIEVEMENTS_10:
+                $progress = [ 'target' => 10, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ACHIEVEMENTS_CLAIMED ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Chocolate Bar' ]), 1);
+                break;
+
+            case BadgeEnum::ACHIEVEMENTS_20:
+                $progress = [ 'target' => 20, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ACHIEVEMENTS_CLAIMED ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Chocolate Meringue' ]), 1);
+                break;
+
+            case BadgeEnum::ACHIEVEMENTS_30:
+                $progress = [ 'target' => 30, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ACHIEVEMENTS_CLAIMED ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Chocolate Toffee Matzah' ]), 1);
+                break;
+
+            case BadgeEnum::ACHIEVEMENTS_40:
+                $progress = [ 'target' => 40, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ACHIEVEMENTS_CLAIMED ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Mini Chocolate Chip Cookies' ]), 1);
+                break;
+
+            case BadgeEnum::ACHIEVEMENTS_50:
+                $progress = [ 'target' => 50, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ACHIEVEMENTS_CLAIMED ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Chocolate Lava Cake' ]), 1);
+                break;
+
+            case BadgeEnum::ACHIEVEMENTS_60:
+                $progress = [ 'target' => 60, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ACHIEVEMENTS_CLAIMED ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Chocolate Cake Pops' ]), 1);
+                break;
+
+            // Chocolate-covered Naner
+            // Slice of Chocolate Cream Pie
+            // Chocolate-frosted Donut
+            // Chocolate-covered Honeycomb
+            // Chocolate Ice Cream Sammy
 
             default:
                 throw new \Exception('Oops! Badge not implemented! Ben was a bad programmer!');

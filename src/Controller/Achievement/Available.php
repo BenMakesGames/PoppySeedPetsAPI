@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller\Badge;
+namespace App\Controller\Achievement;
 
 use App\Entity\User;
 use App\Enum\BadgeEnum;
@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
- * @Route("/badge")
+ * @Route("/achievement")
  */
 final class Available extends AbstractController
 {

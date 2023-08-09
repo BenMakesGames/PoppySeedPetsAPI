@@ -37,24 +37,29 @@ class UserBadge
      */
     private $claimedOn;
 
+    public function __construct()
+    {
+        $this->claimedOn = new \DateTimeImmutable();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(User $user): self
     {
         $this->user = $user;
 
         return $this;
     }
 
-    public function getBadge(): ?string
+    public function getBadge(): string
     {
         return $this->badge;
     }
@@ -66,15 +71,8 @@ class UserBadge
         return $this;
     }
 
-    public function getClaimedOn(): ?\DateTimeImmutable
+    public function getClaimedOn(): \DateTimeImmutable
     {
         return $this->claimedOn;
-    }
-
-    public function setClaimedOn(\DateTimeImmutable $claimedOn): self
-    {
-        $this->claimedOn = $claimedOn;
-
-        return $this;
     }
 }

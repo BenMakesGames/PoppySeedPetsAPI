@@ -105,6 +105,7 @@ class UserMenuService
         $this->maybeAddMenuItem($menuItems, 'painter', $user, $userSortOrder, null);
         $this->maybeAddMenuItem($menuItems, 'florist', $user, $userSortOrder, UnlockableFeatureEnum::Florist);
         $this->maybeAddMenuItem($menuItems, 'journal', $user, $userSortOrder, null);
+        $this->maybeAddMenuItem($menuItems, 'achievements', $user, $userSortOrder, null);
 
         return $menuItems;
     }

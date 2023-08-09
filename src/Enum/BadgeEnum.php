@@ -20,6 +20,7 @@ final class BadgeEnum
     public const MONEYS_SPENT_10000 = 'MoneysSpent10000';
     public const MONEYS_SPENT_100000 = 'MoneysSpent100000';
 
+    public const PETTED_10 = 'Petted10';
     public const PETTED_100 = 'Petted100';
     public const PETTED_1000 = 'Petted1000';
     public const PETTED_10000 = 'Petted10000';
@@ -78,4 +79,11 @@ final class BadgeEnum
     public const OPENED_BOX_BOX_1 = 'OpenedBoxBox1';
     public const OPENED_BOX_BOX_10 = 'OpenedBoxBox10';
     public const BOX_BOX_BOX_BOX = 'BoxBoxBoxBox'; // found a box box inside a box box
+
+    public const ACHIEVEMENTS_10 = 'Achievements10';
+    public const ACHIEVEMENTS_20 = 'Achievements20';
+    public const ACHIEVEMENTS_30 = 'Achievements30';
+    public const ACHIEVEMENTS_40 = 'Achievements40';
+    public const ACHIEVEMENTS_50 = 'Achievements50';
+    public const ACHIEVEMENTS_60 = 'Achievements60';
 }

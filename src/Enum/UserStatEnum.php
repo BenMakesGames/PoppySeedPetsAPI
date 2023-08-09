@@ -37,4 +37,5 @@ final class UserStatEnum
     const STRANGE_FIELDS_COLLAPSED = 'Strange Fields Collapsed';
     const COMPLETED_A_SAGA_SAGA = 'Completed a Sága Saga';
     const TOSSED_A_HOT_POTATO = 'Tossed a Hot Potato';
+    const ACHIEVEMENTS_CLAIMED = 'Achievements Claimed';
 }

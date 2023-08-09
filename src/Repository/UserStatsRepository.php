@@ -70,7 +70,6 @@ class UserStatsRepository extends ServiceEntityRepository
         {
             if($oldValue < 50 && $stat->getValue() >= 50)
                 $user->increaseMaxMarketBids(5);
-
         }
         else if($name === UserStatEnum::ITEMS_SOLD_IN_MARKET)
         {

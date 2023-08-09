@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
@@ -27,10 +28,11 @@ class EggplantController extends AbstractController
         EntityManagerInterface $em, UserStatsRepository $userStatsRepository
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'eggplant/#/clean');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'eggplant/#/clean');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
 
