@@ -3,9 +3,8 @@ namespace App\Controller\Achievement;
 
 use App\Entity\User;
 use App\Enum\BadgeEnum;
-use App\Enum\UserStatEnum;
+use App\Enum\SerializationGroupEnum;
 use App\Repository\UserBadgeRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,6 +36,6 @@ final class Available extends AbstractController
         foreach($unclaimed as $badge)
             $info[] = BadgeHelpers::getBadgeProgress($badge, $user, $em);
 
-        return $responseService->success($info);
+        return $responseService->success($info, [ SerializationGroupEnum::TRADER_OFFER, SerializationGroupEnum::MARKET_ITEM ]);
     }
 }
