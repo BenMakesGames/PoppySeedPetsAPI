@@ -5,7 +5,6 @@ use App\Exceptions\PSPFormValidationException;
 use App\Repository\PetActivityLogRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class PetActivityLogsFilterService
 {

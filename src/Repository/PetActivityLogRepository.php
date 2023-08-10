@@ -41,7 +41,12 @@ class PetActivityLogRepository extends ServiceEntityRepository
     public function findLogsForPetByDate(Pet $pet, int $year, int $month): array
     {
         $firstDayOfMonth = $year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-01';
-        $firstDayOfNextMonth = $year . '-' . str_pad($month + 1, 2, '0', STR_PAD_LEFT) . '-01';
+
+        // ... >_>
+        if($month == 12)
+            $firstDayOfNextMonth = ($year + 1) . '-01-01';
+        else
+            $firstDayOfNextMonth = $year . '-' . str_pad($month + 1, 2, '0', STR_PAD_LEFT) . '-01';
 
         $qb = $this->createQueryBuilder('l')
             ->select('COUNT(l) AS quantity,SUM(l.interestingness)/COUNT(l) AS averageInterestingness, DATE(l.createdOn) AS yearMonthDay')
