@@ -223,6 +223,7 @@ class InventoryService
 
         $cancelGather = false;
         $replacementItemNames = [];
+        $extraItemSpice = null;
 
         if($pet->hasMerit(MeritEnum::RUMPELSTILTSKINS_CURSE))
         {
