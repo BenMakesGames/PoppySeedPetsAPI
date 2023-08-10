@@ -17,7 +17,7 @@ class UserMenuService
         'home', 'basement', 'greenhouse', 'beehive', 'dragonDen', 'hollowEarth', 'starKindred',
         'fireplace', 'park', 'plaza', 'museum', 'market', 'grocer', 'petShelter',
         'bookstore', 'trader', 'hattier', 'fieldGuide', 'mailbox', 'painter', 'florist',
-        'journal'
+        'journal', 'achievements'
     ];
 
     public function __construct(
