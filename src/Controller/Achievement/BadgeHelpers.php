@@ -471,7 +471,7 @@ final class BadgeHelpers
 
             case BadgeEnum::PLAZA_BOX_10:
                 $progress = [ 'target' => 10, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::PLAZA_BOXES_RECEIVED ]) ];
-                $reward = TraderOfferCostOrYield::createMoney(50);
+                $reward = TraderOfferCostOrYield::createMoney(100);
                 break;
 
             case BadgeEnum::PLAZA_BOX_100:
