@@ -376,7 +376,7 @@ final class BadgeHelpers
 
             case BadgeEnum::DEFEATED_SUMMONED_MONSTER_10:
                 $progress = [ 'target' => 10, 'current' => self::getStatTotal($em, $user, [ 'Won Against Something... Unfriendly' ]) ];
-                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Ruby Chest' ]), 2);
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Ruby Chest' ]), 1);
                 break;
 
             case BadgeEnum::DEFEATED_SUMMONED_MONSTER_100:
