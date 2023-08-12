@@ -125,7 +125,7 @@ final class BadgeHelpers
 
             case BadgeEnum::MONEYS_SPENT_100000:
                 $progress = [ 'target' => 100000, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::TOTAL_MONEYS_SPENT ]) ];
-                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Hat Box' ]), 5);
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Hat Box' ]), 2);
                 break;
 
             case BadgeEnum::PETTED_10:
