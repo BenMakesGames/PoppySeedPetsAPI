@@ -25,6 +25,8 @@ final class BadgeEnum
     public const PETTED_1000 = 'Petted1000';
     public const PETTED_10000 = 'Petted10000';
 
+    public const MAX_PETS_4 = 'MaxPets4';
+
     public const OPENED_CEREAL_BOX = 'OpenedCerealBox';
     public const OPENED_CAN_OF_FOOD_10 = 'OpenedCanOfFood10';
     public const OPENED_CAN_OF_FOOD_100 = 'OpenedCanOfFood100';
@@ -87,6 +89,14 @@ final class BadgeEnum
     public const FEED_THE_BEES_10 = 'FedBees10';
     public const FEED_THE_CENTIPEDES_10 = 'FedCentipedes10';
     public const PLAYING_BOTH_SIDES = 'FedAntsAndBees10';
+
+    public const LONGEST_FIRE_1_HOUR = 'LongestFire60';
+    public const LONGEST_FIRE_1_DAY = 'LongestFire1440';
+    public const LONGEST_FIRE_1_WEEK = 'LongestFire10080';
+    public const FIREPLACE_FUEL_10 = 'FireplaceFuel10';
+    public const FIREPLACE_FUEL_100 = 'FireplaceFuel100';
+    public const FIREPLACE_FUEL_1000 = 'FireplaceFuel1000';
+    public const FIREPLACE_FUEL_10000 = 'FireplaceFuel10000';
 
     public const TEACH_COOKING_BUDDY_100 = 'CookingBuddyRecipes100';
     public const TEACH_COOKING_BUDDY_200 = 'CookingBuddyRecipes200';

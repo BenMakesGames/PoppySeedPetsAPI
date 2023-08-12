@@ -41,4 +41,5 @@ final class UserStatEnum
     const COMPLETED_A_SAGA_SAGA = 'Completed a Sága Saga';
     const TOSSED_A_HOT_POTATO = 'Tossed a Hot Potato';
     const ACHIEVEMENTS_CLAIMED = 'Achievements Claimed';
+    const ITEMS_THROWN_INTO_THE_FIREPLACE = 'Items Thrown into the Fireplace';
 }

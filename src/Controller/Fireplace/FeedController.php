@@ -7,6 +7,7 @@ use App\Entity\UserActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
+use App\Enum\UserStatEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
@@ -14,6 +15,7 @@ use App\Functions\PlayerLogHelpers;
 use App\Functions\RequestFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\UserActivityLogTagRepository;
+use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\PetAssistantService;
 use App\Service\ResponseService;
@@ -39,7 +41,7 @@ class FeedController extends AbstractController
     public function feedFireplace(
         Request $request, InventoryRepository $inventoryRepository, ResponseService $responseService,
         EntityManagerInterface $em, InventoryService $inventoryService, Squirrel3 $rng,
-        UserActivityLogTagRepository $userActivityLogTagRepository
+        UserStatsRepository $userStatsRepository
     )
     {
         /** @var User $user */
@@ -84,6 +86,8 @@ class FeedController extends AbstractController
                 : 'You burned the following items for fuel in the Fireplace: ' . ArrayFunctions::list_nice($fuelUsed) . '.';
 
             PlayerLogHelpers::Create($em, $user, $entry, [ 'Fireplace' ]);
+
+            $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_THROWN_INTO_THE_FIREPLACE, count($fuelUsed));
         }
 
         if($fireplace->getHelper() && $fireplace->getSoot() >= 18 * 60)

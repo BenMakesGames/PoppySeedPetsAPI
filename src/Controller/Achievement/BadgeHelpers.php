@@ -148,6 +148,11 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Forgetting Scroll' ]), 1);
                 break;
 
+            case BadgeEnum::MAX_PETS_4:
+                $progress = [ 'target' => 4, 'current' => $user->getMaxPets() ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Goodberries' ]), 4);
+                break;
+
             case BadgeEnum::HATTIER_STYLES_10:
                 $progress = [ 'target' => 10, 'current' => self::getUnlockedAuras($user) ];
                 $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Gravy' ]), 1);
@@ -413,6 +418,43 @@ final class BadgeHelpers
             case BadgeEnum::BOX_BOX_BOX_BOX:
                 $progress = [ 'target' => 1, 'current' => self::getStatTotal($em, $user, [ 'Found a Box Box Inside a Box Box' ]) ];
                 $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Box Box' ]), 1);
+                break;
+
+            // Fireplace
+
+            case BadgeEnum::LONGEST_FIRE_1_HOUR:
+                $progress = [ 'target' => 60, 'current' => $user->getFireplace() ? $user->getFireplace()->getLongestStreak() : 0 ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Blackberry Wine' ]), 2);
+                break;
+
+            case BadgeEnum::LONGEST_FIRE_1_DAY:
+                $progress = [ 'target' => 1440, 'current' => $user->getFireplace() ? $user->getFireplace()->getLongestStreak() : 0 ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Crooked Stick' ]), 2);
+                break;
+
+            case BadgeEnum::LONGEST_FIRE_1_WEEK:
+                $progress = [ 'target' => 10080, 'current' => $user->getFireplace() ? $user->getFireplace()->getLongestStreak() : 0 ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Firestone' ]), 2);
+                break;
+
+            case BadgeEnum::FIREPLACE_FUEL_10:
+                $progress = [ 'target' => 10, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_THROWN_INTO_THE_FIREPLACE ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Kilju' ]), 2);
+                break;
+
+            case BadgeEnum::FIREPLACE_FUEL_100:
+                $progress = [ 'target' => 100, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_THROWN_INTO_THE_FIREPLACE ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Charcoal' ]), 2);
+                break;
+
+            case BadgeEnum::FIREPLACE_FUEL_1000:
+                $progress = [ 'target' => 1000, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_THROWN_INTO_THE_FIREPLACE ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Witch\'s Broom' ]), 2);
+                break;
+
+            case BadgeEnum::FIREPLACE_FUEL_10000:
+                $progress = [ 'target' => 10000, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_THROWN_INTO_THE_FIREPLACE ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Ceremony of Fire' ]), 2);
                 break;
 
             // Bugs
