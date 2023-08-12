@@ -7,6 +7,7 @@ use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\UserStatEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
@@ -150,7 +151,7 @@ class DragonVaseController extends AbstractController
 
         $usedDragonVase->setValue($today);
 
-        $dippingStat = $userStatsRepository->incrementStat($user, 'Tools Dipped in a Dragon Vase');
+        $dippingStat = $userStatsRepository->incrementStat($user, UserStatEnum::TOOLS_DIPPED_IN_A_DRAGON_VASE);
 
         // Dragon Vase-only bonuses
         $possibleBonuses = [

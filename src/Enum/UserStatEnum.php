@@ -44,4 +44,6 @@ final class UserStatEnum
     const ITEMS_THROWN_INTO_THE_FIREPLACE = 'Items Thrown into the Fireplace';
     const PLAZA_BOXES_RECEIVED = 'Boxes (and Bags) Received at the Plaza';
     const HOLLOW_EARTH_SPACES_MOVED = 'Spaces Moved in the Hollow Earth';
+    const TOOLS_DIPPED_IN_A_DRAGON_VASE = 'Tools Dipped in a Dragon Vase';
+    const FOODS_DIPPED_IN_A_HOT_POT = 'Foods Dipped in a Hot Pot';
 }

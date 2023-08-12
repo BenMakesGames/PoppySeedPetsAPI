@@ -4,31 +4,21 @@ namespace App\Controller\Item;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
-use App\Enum\PetLocationEnum;
-use App\Enum\PetSkillEnum;
+use App\Enum\UserStatEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
-use App\Functions\ActivityHelpers;
-use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\InventoryModifierFunctions;
-use App\Model\PetChanges;
-use App\Repository\EnchantmentRepository;
 use App\Repository\InventoryRepository;
-use App\Repository\PetRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
-use App\Service\InventoryService;
-use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -77,7 +67,7 @@ class HotPotController extends AbstractController
 
         $usedHotPot->setValue($today);
 
-        $dippingStat = $userStatsRepository->incrementStat($user, 'Foods Dipped in a Hot Pot');
+        $dippingStat = $userStatsRepository->incrementStat($user, UserStatEnum::FOODS_DIPPED_IN_A_HOT_POT);
 
         // Hot Pot-only spices
         $possibleSpices = [

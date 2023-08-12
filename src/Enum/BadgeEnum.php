@@ -60,6 +60,9 @@ final class BadgeEnum
     public const COOKED_1000 = 'Cooked1000';
     public const COOKED_10000 = 'Cooked10000';
 
+    public const DRAGON_VASE_DIPPING_10 = 'DragonVaseDipping10';
+    public const HOT_POT_DIPPING_10 = 'HotPotDipping10';
+
     public const DEFEATED_SUMMONED_MONSTER_1 = 'DefeatedSummonedMonster1';
     public const DEFEATED_SUMMONED_MONSTER_10 = 'DefeatedSummonedMonster10';
     public const DEFEATED_SUMMONED_MONSTER_100 = 'DefeatedSummonedMonster100';
@@ -120,4 +123,5 @@ final class BadgeEnum
     public const ACHIEVEMENTS_60 = 'Achievements60';
     public const ACHIEVEMENTS_70 = 'Achievements70';
     public const ACHIEVEMENTS_80 = 'Achievements80';
+    public const ACHIEVEMENTS_90 = 'Achievements90';
 }

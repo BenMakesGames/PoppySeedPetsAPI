@@ -289,6 +289,16 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createMoney(1000);
                 break;
 
+            case BadgeEnum::DRAGON_VASE_DIPPING_10:
+                $progress = [ 'target' => 10, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::TOOLS_DIPPED_IN_A_DRAGON_VASE ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Eat Your Fruits and Veggies' ]), 1);
+                break;
+
+            case BadgeEnum::HOT_POT_DIPPING_10:
+                $progress = [ 'target' => 10, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::FOODS_DIPPED_IN_A_HOT_POT ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Chocolate Sword' ]), 1);
+                break;
+
             case BadgeEnum::COOKED_10:
                 $progress = [ 'target' => 10, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::COOKED_SOMETHING ]) ];
                 $reward = TraderOfferCostOrYield::createRecyclingPoints(10);
@@ -549,6 +559,11 @@ final class BadgeHelpers
             case BadgeEnum::ACHIEVEMENTS_80:
                 $progress = [ 'target' => 80, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ACHIEVEMENTS_CLAIMED ]) ];
                 $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Slice of Chocolate Cream Pie' ]), 1);
+                break;
+
+            case BadgeEnum::ACHIEVEMENTS_90:
+                $progress = [ 'target' => 90, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ACHIEVEMENTS_CLAIMED ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Chocolate-frosted Donut' ]), 1);
                 break;
 
             // Chocolate-frosted Donut
