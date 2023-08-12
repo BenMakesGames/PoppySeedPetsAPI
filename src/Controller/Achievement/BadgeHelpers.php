@@ -540,6 +540,11 @@ final class BadgeHelpers
 
             // Meta
 
+            case BadgeEnum::ACCOUNT_AGE_365:
+                $progress = [ 'target' => 365, 'current' => (new \DateTimeImmutable())->diff($user->getRegisteredOn())->days ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Candle' ]), 1);
+                break;
+
             case BadgeEnum::ACHIEVEMENTS_10:
                 $progress = [ 'target' => 10, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ACHIEVEMENTS_CLAIMED ]) ];
                 $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Chocolate Bar' ]), 1);

@@ -120,6 +120,8 @@ final class BadgeEnum
     public const TEACH_COOKING_BUDDY_500 = 'CookingBuddyRecipes500';
     public const TEACH_COOKING_BUDDY_600 = 'CookingBuddyRecipes600';
 
+    public const ACCOUNT_AGE_365 = 'AccountAge365';
+
     public const ACHIEVEMENTS_10 = 'Achievements10';
     public const ACHIEVEMENTS_20 = 'Achievements20';
     public const ACHIEVEMENTS_30 = 'Achievements30';
