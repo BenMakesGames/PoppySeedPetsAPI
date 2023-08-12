@@ -13,6 +13,7 @@ use App\Functions\ArrayFunctions;
 use App\Model\ParkEvent\TriDChessParticipant;
 use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
+use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ParkService;
@@ -41,19 +42,21 @@ class TriDChessService implements ParkEventInterface
 
     private $round = 0;
 
-    private $petExperienceService;
-    private $em;
-    private $petRelationshipService;
-    private $transactionService;
-    private $inventoryService;
+    private PetExperienceService $petExperienceService;
+    private EntityManagerInterface $em;
+    private PetRelationshipService $petRelationshipService;
+    private TransactionService $transactionService;
+    private InventoryService $inventoryService;
     private IRandom $squirrel3;
     private ParkService $parkService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private UserStatsRepository $userStatsRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, PetRelationshipService $petRelationshipService,
         TransactionService $transactionService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        ParkService $parkService, PetActivityLogTagRepository $petActivityLogTagRepository
+        ParkService $parkService, PetActivityLogTagRepository $petActivityLogTagRepository,
+        UserStatsRepository $userStatsRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -64,6 +67,7 @@ class TriDChessService implements ParkEventInterface
         $this->squirrel3 = $squirrel3;
         $this->parkService = $parkService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -267,6 +271,7 @@ class TriDChessService implements ParkEventInterface
                 $comment = $participant->pet->getName() . ' earned this by getting 1st place in a Tri-D Chess tournament!';
                 $this->transactionService->getMoney($participant->pet->getOwner(), $firstPlaceMoneys, $comment);
                 $this->inventoryService->petCollectsItem('Tri-D Chess Gold Trophy', $participant->pet, $comment, null);
+                $this->userStatsRepository->incrementStat($participant->pet->getOwner(), 'Gold Trophies Earned', 1);
 
                 $activityLogEntry = $participant->pet->getName() . ' played in a Tri-D chess tournament, and won! The whole thing!';
             }
@@ -282,6 +287,7 @@ class TriDChessService implements ParkEventInterface
                 $comment = $participant->pet->getName() . ' earned this by getting 2nd place in a Tri-D Chess tournament!';
                 $this->transactionService->getMoney($participant->pet->getOwner(), $secondPlaceMoneys, $comment);
                 $this->inventoryService->petCollectsItem('Tri-D Chess Silver Trophy', $participant->pet, $comment, null);
+                $this->userStatsRepository->incrementStat($participant->pet->getOwner(), 'Silver Trophies Earned', 1);
 
                 $this->results .= $participant->pet->getName() . ' got 2nd place, and ' . $secondPlaceMoneys . '~~m~~!';
             }

@@ -27,6 +27,10 @@ final class BadgeEnum
 
     public const MAX_PETS_4 = 'MaxPets4';
 
+    public const TROPHIES_EARNED_1 = 'TrophiesEarned1';
+    public const TROPHIES_EARNED_10 = 'TrophiesEarned10';
+    public const TROPHIES_EARNED_100 = 'TrophiesEarned100';
+
     public const OPENED_CEREAL_BOX = 'OpenedCerealBox';
     public const OPENED_CAN_OF_FOOD_10 = 'OpenedCanOfFood10';
     public const OPENED_CAN_OF_FOOD_100 = 'OpenedCanOfFood100';
@@ -124,4 +128,5 @@ final class BadgeEnum
     public const ACHIEVEMENTS_70 = 'Achievements70';
     public const ACHIEVEMENTS_80 = 'Achievements80';
     public const ACHIEVEMENTS_90 = 'Achievements90';
+    public const ACHIEVEMENTS_100 = 'Achievements100';
 }

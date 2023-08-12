@@ -13,6 +13,7 @@ use App\Model\ParkEvent\KinBallParticipant;
 use App\Model\ParkEvent\KinBallTeam;
 use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
+use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ParkService;
@@ -49,11 +50,13 @@ class KinBallService implements ParkEventInterface
     private IRandom $squirrel3;
     private ParkService $parkService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private UserStatsRepository $userStatsRepository;
 
     public function __construct(
         EntityManagerInterface $em, PetRelationshipService $petRelationshipService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        ParkService $parkService, PetActivityLogTagRepository $petActivityLogTagRepository
+        ParkService $parkService, PetActivityLogTagRepository $petActivityLogTagRepository,
+        UserStatsRepository $userStatsRepository
     )
     {
         $this->em = $em;
@@ -64,6 +67,7 @@ class KinBallService implements ParkEventInterface
         $this->squirrel3 = $squirrel3;
         $this->parkService = $parkService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -215,6 +219,7 @@ class KinBallService implements ParkEventInterface
                     $comment = $participant->pet->getName() . ' earned this in a game of Kin-Ball!';
                     $this->transactionService->getMoney($participant->pet->getOwner(), $firstPlaceMoneys, $comment);
                     $this->inventoryService->petCollectsItem('Kin-Ball Gold Trophy', $participant->pet, $comment, null);
+                    $this->userStatsRepository->incrementStat($participant->pet->getOwner(), 'Gold Trophies Earned', 1);
                     $activityLogEntry = $participant->pet->getName() . ' played a game of Kin-Ball, and was on the winning team! They received ' . $firstPlaceMoneys . '~~m~~!';
                 }
                 else

@@ -168,6 +168,20 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Jelling Polyp' ]), 1);
                 break;
 
+            case BadgeEnum::TROPHIES_EARNED_1:
+                $progress = [ 'target' => 1, 'current' => self::getStatTotal($em, $user, [ 'Silver Trophies Earned', 'Gold Trophies Earned' ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Little Strongbox' ]), 1);
+                break;
+
+            case BadgeEnum::TROPHIES_EARNED_10:
+                $progress = [ 'target' => 10, 'current' => self::getStatTotal($em, $user, [ 'Silver Trophies Earned', 'Gold Trophies Earned' ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Gold Chest' ]), 1);
+                break;
+
+            case BadgeEnum::TROPHIES_EARNED_100:
+                $progress = [ 'target' => 100, 'current' => self::getStatTotal($em, $user, [ 'Silver Trophies Earned', 'Gold Trophies Earned' ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Ruby Chest' ]), 1);
+                break;
 
             case BadgeEnum::OPENED_CEREAL_BOX:
                 $progress = [ 'target' => 1, 'current' => self::getStatTotal($em, $user, [ 'Opened a Cereal Box' ]) ];
@@ -566,7 +580,11 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Chocolate-frosted Donut' ]), 1);
                 break;
 
-            // Chocolate-frosted Donut
+            case BadgeEnum::ACHIEVEMENTS_100:
+                $progress = [ 'target' => 100, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ACHIEVEMENTS_CLAIMED ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Chocolate Chest' ]), 1);
+                break;
+
             // Chocolate-covered Honeycomb
             // Chocolate Ice Cream Sammy
 
