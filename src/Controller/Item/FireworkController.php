@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
 use App\Repository\EnchantmentRepository;
 use App\Repository\UserQuestRepository;
@@ -26,6 +27,7 @@ class FireworkController extends AbstractController
         EnchantmentRepository $enchantmentRepository, UserQuestRepository $userQuestRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'firework/#/light');
