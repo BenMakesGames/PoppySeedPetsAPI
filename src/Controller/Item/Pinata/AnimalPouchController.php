@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Model\ItemQuantity;
 use App\Repository\EnchantmentRepository;
@@ -31,9 +32,10 @@ class AnimalPouchController extends AbstractController
         Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'animalPouch/magpie/#/open');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'animalPouch/magpie/#/open');
 
         $possibleItems = [
             'Fool\'s Spice',
@@ -73,9 +75,10 @@ class AnimalPouchController extends AbstractController
         ResponseService $responseService, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'animalPouch/raccoon/#/open');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'animalPouch/raccoon/#/open');
 
         $possibleItems = [
             'Beans',

@@ -36,7 +36,7 @@ class SolsticeBagController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $bag, 'summerSolsticeBag/#/open');
+        ItemControllerHelpers::validateInventory($user, $bag, 'summerSolsticeBag/#/open');
         ItemControllerHelpers::validateHouseSpace($bag, $inventoryService);
 
         $location = $bag->getLocation();
@@ -85,7 +85,7 @@ class SolsticeBagController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $bag, 'winterSolsticeBag/#/open');
+        ItemControllerHelpers::validateInventory($user, $bag, 'winterSolsticeBag/#/open');
         ItemControllerHelpers::validateHouseSpace($bag, $inventoryService);
 
         $location = $bag->getLocation();

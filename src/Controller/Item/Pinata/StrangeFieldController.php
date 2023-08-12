@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\UserStatsRepository;
@@ -29,9 +30,11 @@ class StrangeFieldController extends AbstractController
         EntityManagerInterface $em, RecyclingService $recyclingService, UserStatsRepository $userStatsRepository
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'strangeField/#/collapse');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'strangeField/#/collapse');
+
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 

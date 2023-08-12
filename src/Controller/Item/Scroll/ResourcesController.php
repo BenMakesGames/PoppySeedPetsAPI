@@ -32,7 +32,7 @@ class ResourcesController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'scroll/resources/#/invoke');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'scroll/resources/#/invoke');
 
         $numberOfItems = [
             'Tiny Scroll of Resources' => 1,
@@ -82,7 +82,7 @@ class ResourcesController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'scroll/resources/#/invokeFood');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'scroll/resources/#/invokeFood');
 
         $numberOfItems = [
             'Tiny Scroll of Resources' => 1,

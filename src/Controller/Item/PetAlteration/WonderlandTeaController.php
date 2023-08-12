@@ -3,6 +3,7 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
@@ -29,9 +30,10 @@ class WonderlandTeaController extends AbstractController
         PetRepository $petRepository, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'tinyTea');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'tinyTea');
 
         $petId = $request->request->getInt('pet', 0);
         $pet = $petRepository->find($petId);
@@ -65,9 +67,10 @@ class WonderlandTeaController extends AbstractController
         PetRepository $petRepository, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'tremendousTea');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'tremendousTea');
 
         $petId = $request->request->getInt('pet', 0);
         $pet = $petRepository->find($petId);
@@ -101,9 +104,10 @@ class WonderlandTeaController extends AbstractController
         PetRepository $petRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'totallyTea');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'totallyTea');
 
         $petId = $request->request->getInt('pet', 0);
         $pet = $petRepository->find($petId);

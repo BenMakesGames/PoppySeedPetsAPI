@@ -33,7 +33,7 @@ class SandyLumpController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $lump, 'sandyLump/#/clean');
+        ItemControllerHelpers::validateInventory($user, $lump, 'sandyLump/#/clean');
         ItemControllerHelpers::validateHouseSpace($lump, $inventoryService);
 
         $location = $lump->getLocation();

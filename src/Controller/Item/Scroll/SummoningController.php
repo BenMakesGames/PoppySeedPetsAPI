@@ -80,9 +80,10 @@ class SummoningController extends AbstractController
         EntityManagerInterface $em, HouseMonsterService $houseMonsterService, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'summoningScroll/#/unfriendly2');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'summoningScroll/#/unfriendly2');
 
         $em->remove($inventory);
 
@@ -123,7 +124,7 @@ class SummoningController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'summoningScroll/#/friendly');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'summoningScroll/#/friendly');
 
         $em->remove($inventory);
 

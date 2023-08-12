@@ -3,6 +3,7 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\PetSkillEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
@@ -111,12 +112,14 @@ class SkillScrollController extends AbstractController
         Inventory $inventory, Request $request, EntityManagerInterface $em, PetRepository $petRepository, ResponseService $responseService, string $skill
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, $skill . 'SkillScroll');
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, $skill . 'SkillScroll');
 
         if(!PetSkillEnum::isAValue($skill))
             throw new PSPFormValidationException('Not a valid skill.');
 
-        $user = $this->getUser();
         $petId = $request->request->getInt('pet', 0);
         $pet = $petRepository->find($petId);
 

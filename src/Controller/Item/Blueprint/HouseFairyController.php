@@ -72,7 +72,7 @@ class HouseFairyController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'fairy/#/hello');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'fairy/#/hello');
 
         $saidHello = $userQuestRepository->findOrCreate($user, 'Said Hello to House Fairy', false);
 

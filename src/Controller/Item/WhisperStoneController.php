@@ -3,6 +3,7 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Entity\Recipe;
+use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Model\ItemQuantity;
 use App\Repository\ItemRepository;
@@ -31,9 +32,10 @@ class WhisperStoneController extends AbstractController
         UserStatsRepository $userStatsRepository
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'whisperStone/#/listen');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'whisperStone/#/listen');
 
         $inventory->changeItem($itemRepository->findOneByName('Striped Microcline'));
 

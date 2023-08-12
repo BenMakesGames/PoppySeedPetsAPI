@@ -47,9 +47,10 @@ class BlueprintController extends AbstractController
         PetActivityLogTagRepository $activityLogTagRepository
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'installComposter');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'installComposter');
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse))
             return $responseService->error(400, [ 'You need a Greenhouse to install a Composter!' ]);

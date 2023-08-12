@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -25,9 +26,10 @@ class UltimateChefController extends AbstractController
         EntityManagerInterface $em
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'ultimateChef/#/read');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'ultimateChef/#/read');
 
         $location = $inventory->getLocation();
 

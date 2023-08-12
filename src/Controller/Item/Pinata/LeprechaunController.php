@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\UserQuestRepository;
@@ -30,9 +31,10 @@ class LeprechaunController extends AbstractController
         EntityManagerInterface $em, UserStatsRepository $userStatsRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'leprechaun/potOfGold/#/loot');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'leprechaun/potOfGold/#/loot');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $em->remove($inventory);
@@ -64,9 +66,10 @@ class LeprechaunController extends AbstractController
         ResponseService $responseService, UserStatsRepository $userStatsRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'leprechaun/greenScroll/#/read');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'leprechaun/greenScroll/#/read');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);

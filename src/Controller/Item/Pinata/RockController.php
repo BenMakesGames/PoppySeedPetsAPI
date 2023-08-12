@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
@@ -29,9 +30,10 @@ class RockController extends AbstractController
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $rock, 'rock/#/smash');
+        ItemControllerHelpers::validateInventory($user, $rock, 'rock/#/smash');
         ItemControllerHelpers::validateHouseSpace($rock, $inventoryService);
 
         $location = $rock->getLocation();

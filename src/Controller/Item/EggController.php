@@ -202,15 +202,16 @@ class EggController extends AbstractController
         MeritRepository $meritRepository, PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'egg/metalBox/#/open');
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'egg/metalBox/#/open');
 
         $grabber = $petSpeciesRepository->findOneBy([ 'name' => 'Grabber' ]);
 
         if(!$grabber)
             throw new \Exception('The species "Grabber" does not exist! :| Make Ben fix this!');
 
-        /** @var User $user */
-        $user = $this->getUser();
         $location = $inventory->getLocation();
 
         if($location !== LocationEnum::HOME)

@@ -40,7 +40,7 @@ class HotPotController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'hotPot');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'hotPot');
 
         $itemId = $request->request->getInt('food', 0);
 

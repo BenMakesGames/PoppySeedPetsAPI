@@ -32,7 +32,7 @@ class FarmerController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'scroll/farmers/#/invoke');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'scroll/farmers/#/invoke');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $em->remove($inventory);

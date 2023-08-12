@@ -48,7 +48,7 @@ class HatBoxController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $box, 'box/hat/#/open');
+        ItemControllerHelpers::validateInventory($user, $box, 'box/hat/#/open');
 
         $location = $box->getLocation();
         $lockedToOwner = $box->getLockedToOwner();

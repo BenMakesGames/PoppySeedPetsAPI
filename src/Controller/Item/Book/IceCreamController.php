@@ -3,6 +3,7 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Service\CookingService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,9 +23,12 @@ class IceCreamController extends AbstractController
         Inventory $inventory, ResponseService $responseService, CookingService $cookingService
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'iceCream/#/upload');
+        /** @var User $user */
+        $user = $this->getUser();
 
-        $message = $cookingService->showRecipeNamesToCookingBuddy($this->getUser(), [
+        ItemControllerHelpers::validateInventory($user, $inventory, 'iceCream/#/upload');
+
+        $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Blackberry Ice Cream',
             'Chocolate Ice Cream',
             'Honeydont Ice Cream',

@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,10 +25,11 @@ class FishKebabController extends AbstractController
         EntityManagerInterface $em
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'fishKebab/#/takeApart');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'fishKebab/#/takeApart');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();

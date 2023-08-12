@@ -32,10 +32,10 @@ class CryptocurrencyWalletController extends AbstractController
         TransactionService $transactionService, InventoryService $inventoryService
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'cryptocurrencyWallet/#/unlock');
-
         /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'cryptocurrencyWallet/#/unlock');
 
         $key = $inventoryRepository->findOneToConsume($user, 'Password');
 

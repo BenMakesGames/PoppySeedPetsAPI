@@ -44,11 +44,11 @@ class PlasticEggController extends AbstractController
         EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'plasticEgg/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
-
         /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'plasticEgg/#/open');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         switch($inventory->getItem()->getName())
         {

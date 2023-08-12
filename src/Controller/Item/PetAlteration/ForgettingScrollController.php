@@ -40,7 +40,7 @@ class ForgettingScrollController extends AbstractController
     {
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'forgettingScroll');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'forgettingScroll');
 
         $petId = $request->query->getInt('pet', 0);
         $pet = $petRepository->find($petId);
@@ -75,7 +75,7 @@ class ForgettingScrollController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'forgettingScroll');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'forgettingScroll');
 
         $petId = $request->request->getInt('pet', 0);
         $pet = $petRepository->find($petId);
@@ -153,7 +153,7 @@ class ForgettingScrollController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'forgettingScroll');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'forgettingScroll');
 
         $petId = $request->request->getInt('pet', 0);
         $pet = $petRepository->find($petId);

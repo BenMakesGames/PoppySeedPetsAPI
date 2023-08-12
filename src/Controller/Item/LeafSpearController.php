@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
@@ -26,9 +27,10 @@ class LeafSpearController extends AbstractController
         InventoryService $inventoryService, ItemRepository $itemRepository
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'leafSpear/#/unwrap');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'leafSpear/#/unwrap');
 
         $wasEquipped = $inventory->getHolder() !== null;
 

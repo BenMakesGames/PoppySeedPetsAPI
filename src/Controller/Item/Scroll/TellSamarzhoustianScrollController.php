@@ -32,7 +32,7 @@ class TellSamarzhoustianScrollController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'tellSamarzhoustianDelights/#/open');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'tellSamarzhoustianDelights/#/open');
 
         $ingredients = [
             'Algae',

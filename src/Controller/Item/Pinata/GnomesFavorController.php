@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Repository\SpiceRepository;
 use App\Repository\UserStatsRepository;
@@ -39,9 +40,10 @@ class GnomesFavorController extends AbstractController
         EntityManagerInterface $em, Squirrel3 $rng, UserStatsRepository $userStatsRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'gnomesFavor/#/quint');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'gnomesFavor/#/quint');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
@@ -70,9 +72,10 @@ class GnomesFavorController extends AbstractController
         UserStatsRepository $userStatsRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'gnomesFavor/#/food');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'gnomesFavor/#/food');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
@@ -129,9 +132,10 @@ class GnomesFavorController extends AbstractController
         EntityManagerInterface $em, Squirrel3 $rng, UserStatsRepository $userStatsRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'gnomesFavor/#/treasure');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'gnomesFavor/#/treasure');
 
         $location = $inventory->getLocation();
 

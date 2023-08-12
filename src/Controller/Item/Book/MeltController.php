@@ -4,7 +4,7 @@ namespace App\Controller\Item\Book;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Recipe;
-use App\Functions\ArrayFunctions;
+use App\Entity\User;
 use App\Model\ItemQuantity;
 use App\Repository\RecipeRepository;
 use App\Service\CookingService;
@@ -41,11 +41,14 @@ class MeltController extends AbstractController
         RecipeRepository $recipeRepository
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'melt/#/upload');
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'melt/#/upload');
 
         $recipes = $this->getRecipes($recipeRepository);
 
-        $message = $cookingService->showRecipesToCookingBuddy($this->getUser(), $recipes);
+        $message = $cookingService->showRecipesToCookingBuddy($user, $recipes);
 
         return $responseService->itemActionSuccess($message);
     }

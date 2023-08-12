@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -57,9 +58,10 @@ class BaabbleController extends AbstractController
         EntityManagerInterface $em, UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'baabble/black/#/open');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'baabble/black/#/open');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
@@ -110,9 +112,10 @@ class BaabbleController extends AbstractController
         EntityManagerInterface $em, UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'baabble/white/#/open');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'baabble/white/#/open');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
@@ -167,9 +170,10 @@ class BaabbleController extends AbstractController
         EntityManagerInterface $em, UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'baabble/gold/#/open');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'baabble/gold/#/open');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
@@ -227,9 +231,10 @@ class BaabbleController extends AbstractController
         EntityManagerInterface $em, UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'baabble/shiny/#/open');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'baabble/shiny/#/open');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();

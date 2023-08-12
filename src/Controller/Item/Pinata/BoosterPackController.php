@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Repository\ItemGroupRepository;
 use App\Service\InventoryService;
@@ -27,10 +28,12 @@ class BoosterPackController extends AbstractController
         EntityManagerInterface $em, ItemGroupRepository $itemGroupRepository, Squirrel3 $rng
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'boosterPack/one/#/open');
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'boosterPack/one/#/open');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
-        $user = $this->getUser();
         $location = $inventory->getLocation();
 
         $commons = $itemGroupRepository->findOneByName('Hollow Earth Booster Pack: Common');

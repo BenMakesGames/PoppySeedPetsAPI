@@ -49,7 +49,7 @@ class DragonVaseController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'dragonVase/#/smash');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'dragonVase/#/smash');
 
         $petsAtHome = $petRepository->findBy([
             'owner' => $user,
@@ -124,7 +124,7 @@ class DragonVaseController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'dragonVase');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'dragonVase');
 
         $itemId = $request->request->getInt('tool', 0);
 

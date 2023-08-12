@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -53,9 +54,10 @@ class MagpieDealController extends AbstractController
         EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'magpieDeal/#/feathersAndEggs');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'magpieDeal/#/feathersAndEggs');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
@@ -88,9 +90,10 @@ class MagpieDealController extends AbstractController
         EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'magpieDeal/#/sticks');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'magpieDeal/#/sticks');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();
@@ -114,9 +117,10 @@ class MagpieDealController extends AbstractController
         EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'magpieDeal/#/shinyMetals');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'magpieDeal/#/shinyMetals');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();

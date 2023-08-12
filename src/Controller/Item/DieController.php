@@ -29,10 +29,11 @@ class DieController extends AbstractController
         HollowEarthService $hollowEarthService
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'die/#/roll');
-
         /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'die/#/roll');
+
         $itemName = $inventory->getItem()->getName();
 
         if(!array_key_exists($itemName, HollowEarthService::DICE_ITEMS))
@@ -73,10 +74,10 @@ class DieController extends AbstractController
         HollowEarthService $hollowEarthService
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'die/#/changeYourFate');
-
         /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'die/#/changeYourFate');
 
         $user->setFate();
 

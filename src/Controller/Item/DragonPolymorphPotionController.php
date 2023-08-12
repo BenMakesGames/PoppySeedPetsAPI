@@ -30,7 +30,7 @@ class DragonPolymorphPotionController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'dragonPolymorphPotion/#/give');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'dragonPolymorphPotion/#/give');
 
         $dragon = $dragonRepository->findOneBy([ 'owner' => $user ]);
 

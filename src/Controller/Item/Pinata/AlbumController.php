@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Model\ItemQuantity;
 use App\Repository\ItemRepository;
@@ -36,9 +37,10 @@ class AlbumController extends AbstractController
         EntityManagerInterface $em, ItemRepository $itemRepository, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'album/single/#/listen');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'album/single/#/listen');
 
         $location = $inventory->getLocation();
 
@@ -67,9 +69,10 @@ class AlbumController extends AbstractController
         EntityManagerInterface $em, ItemRepository $itemRepository, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'album/EP/#/listen');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'album/EP/#/listen');
 
         $location = $inventory->getLocation();
 
@@ -100,9 +103,10 @@ class AlbumController extends AbstractController
         EntityManagerInterface $em, ItemRepository $itemRepository, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'album/LP/#/listen');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'album/LP/#/listen');
 
         $location = $inventory->getLocation();
 

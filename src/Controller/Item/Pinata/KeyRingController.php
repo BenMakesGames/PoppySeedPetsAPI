@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,9 +26,10 @@ class KeyRingController extends AbstractController
         InventoryService $inventoryService
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'keyRing/#/takeIron');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'keyRing/#/takeIron');
 
         $inventoryService->receiveItem('Iron Key', $user, $user, $user->getName() . ' pulled this off a Key Ring.', $inventory->getLocation(), $inventory->getLockedToOwner());
         $inventoryService->receiveItem('Iron Key', $user, $user, $user->getName() . ' pulled this off a Key Ring.', $inventory->getLocation(), $inventory->getLockedToOwner());
@@ -48,9 +50,10 @@ class KeyRingController extends AbstractController
         InventoryService $inventoryService
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'keyRing/#/takeSilver');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'keyRing/#/takeSilver');
 
         $inventoryService->receiveItem('Silver Key', $user, $user, $user->getName() . ' pulled this off a Key Ring.', $inventory->getLocation(), $inventory->getLockedToOwner());
         $inventoryService->receiveItem('Silver Key', $user, $user, $user->getName() . ' pulled this off a Key Ring.', $inventory->getLocation(), $inventory->getLockedToOwner());
@@ -71,9 +74,10 @@ class KeyRingController extends AbstractController
         InventoryService $inventoryService
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'keyRing/#/takeGold');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'keyRing/#/takeGold');
 
         $inventoryService->receiveItem('Gold Key', $user, $user, $user->getName() . ' pulled this off a Key Ring.', $inventory->getLocation(), $inventory->getLockedToOwner());
         $inventoryService->receiveItem('Gold Key', $user, $user, $user->getName() . ' pulled this off a Key Ring.', $inventory->getLocation(), $inventory->getLockedToOwner());

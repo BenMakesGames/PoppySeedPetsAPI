@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
@@ -25,9 +26,10 @@ class TwilightFertilizerController extends AbstractController
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'twilightFertilizer/#');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'twilightFertilizer/#');
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse))
             throw new PSPNotUnlockedException('Greenhouse');

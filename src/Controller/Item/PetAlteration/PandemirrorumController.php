@@ -3,6 +3,7 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
@@ -30,9 +31,10 @@ class PandemirrorumController extends AbstractController
         PetRepository $petRepository, MeritRepository $meritRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'pandemirrorum');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'pandemirrorum');
 
         $petId = $request->request->getInt('pet', 0);
         $pet = $petRepository->find($petId);

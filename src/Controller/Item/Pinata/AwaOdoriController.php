@@ -29,7 +29,7 @@ class AwaOdoriController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'awaOdori/#/open');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'awaOdori/#/open');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';

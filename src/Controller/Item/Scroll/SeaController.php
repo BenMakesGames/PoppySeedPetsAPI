@@ -32,7 +32,7 @@ class SeaController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'scroll/sea/#/invoke');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'scroll/sea/#/invoke');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $em->remove($inventory);

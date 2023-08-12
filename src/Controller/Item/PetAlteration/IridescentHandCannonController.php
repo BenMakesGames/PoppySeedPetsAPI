@@ -43,7 +43,7 @@ class IridescentHandCannonController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'iridescentHandCannon');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'iridescentHandCannon');
 
         $color = strtoupper(trim($request->request->getAlpha('color', '')));
 

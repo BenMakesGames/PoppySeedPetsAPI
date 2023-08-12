@@ -3,6 +3,7 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\PetSkillEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
@@ -32,9 +33,10 @@ class LengthySkillScrollController extends AbstractController
         PetRepository $petRepository, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'lengthyScrollOfSkill');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'lengthyScrollOfSkill');
 
         $petId = $request->request->getInt('pet', 0);
         $pet = $petRepository->find($petId);

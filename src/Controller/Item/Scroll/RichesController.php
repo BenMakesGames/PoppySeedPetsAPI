@@ -33,7 +33,7 @@ class RichesController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'scroll/minorRiches/#/invoke');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'scroll/minorRiches/#/invoke');
 
         $em->remove($inventory);
 
@@ -70,7 +70,7 @@ class RichesController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'scroll/majorRiches/#/invoke');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'scroll/majorRiches/#/invoke');
 
         $em->remove($inventory);
 

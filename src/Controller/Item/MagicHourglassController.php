@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\UserStatEnum;
@@ -30,14 +31,15 @@ class MagicHourglassController extends AbstractController
         Squirrel3 $squirrel3
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'magicHourglass/#/shatter');
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'magicHourglass/#/shatter');
 
         if($inventory->getLocation() !== LocationEnum::HOME)
         {
             return $responseService->success('Somehow you get the feeling that your pets would like to watch this happen.');
         }
-
-        $user = $this->getUser();
 
         $inventoryService->receiveItem('Aging Powder', $user, $user, $user->getName() . ' smashed a ' . $inventory->getItem()->getName() . ', spilling what was once Silica Grounds on the floor.', $inventory->getLocation());
 

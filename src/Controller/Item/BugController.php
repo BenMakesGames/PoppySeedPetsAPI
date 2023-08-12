@@ -75,7 +75,7 @@ class BugController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'bug/#/putOutside');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'bug/#/putOutside');
 
         $em->remove($inventory);
 
@@ -100,7 +100,7 @@ class BugController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'feedBug');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'feedBug');
 
         $item = $inventoryRepository->find($request->request->getInt('food'));
 
@@ -202,7 +202,7 @@ class BugController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'bug/#/adopt');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'bug/#/adopt');
 
         $petName = $squirrel3->rngNextFromArray([
             'Afrolixa', 'Alcimus', 'Antocha', 'Argyra', 'Asiola', 'Atarba', 'Atissa',
@@ -295,7 +295,7 @@ class BugController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'bug/#/squish');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'bug/#/squish');
 
         $response = $storyService->doStory($user, StoryEnum::STOLEN_PLANS, $request->request, $inventory);
 

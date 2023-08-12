@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -49,9 +50,10 @@ class CosmologerPromiseController extends AbstractController
         EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'cosmologerPromise/#/alienTissue');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'cosmologerPromise/#/alienTissue');
 
         $location = $inventory->getLocation();
         $locked = $inventory->getLockedToOwner();
@@ -74,9 +76,10 @@ class CosmologerPromiseController extends AbstractController
         EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'cosmologerPromise/#/veryStrongbox');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'cosmologerPromise/#/veryStrongbox');
 
         $location = $inventory->getLocation();
         $locked = $inventory->getLockedToOwner();

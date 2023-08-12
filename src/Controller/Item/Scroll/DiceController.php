@@ -31,7 +31,7 @@ class DiceController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'scroll/dice/#/read');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'scroll/dice/#/read');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $location = $inventory->getLocation();

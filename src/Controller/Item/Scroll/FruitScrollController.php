@@ -32,7 +32,7 @@ class FruitScrollController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'scroll/fruit/#/invoke');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'scroll/fruit/#/invoke');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $em->remove($inventory);

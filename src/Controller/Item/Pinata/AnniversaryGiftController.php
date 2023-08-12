@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,10 +26,12 @@ class AnniversaryGiftController extends AbstractController
         EntityManagerInterface $em
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'anniversaryGift/#/open');
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'anniversaryGift/#/open');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
-        $user = $this->getUser();
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 

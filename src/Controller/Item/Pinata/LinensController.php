@@ -79,9 +79,10 @@ class LinensController extends AbstractController
         EntityManagerInterface $em, TraderRepository $traderRepository
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'linensAndThings/#/giveToTrader');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'linensAndThings/#/giveToTrader');
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Trader))
             throw new PSPNotUnlockedException('Trader');

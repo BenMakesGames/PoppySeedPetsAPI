@@ -2,8 +2,8 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Repository\ItemRepository;
-use App\Repository\UserQuestRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,9 +24,10 @@ class GlowingProtojellyController extends AbstractController
         ItemRepository $itemRepository
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'protojelly/#/d4');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'protojelly/#/d4');
 
         $die = $itemRepository->findOneByName('Glowing Four-sided Die');
         $inventory
@@ -48,9 +49,10 @@ class GlowingProtojellyController extends AbstractController
         ItemRepository $itemRepository
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'protojelly/#/d6');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'protojelly/#/d6');
 
         $die = $itemRepository->findOneByName('Glowing Six-sided Die');
         $inventory
@@ -72,9 +74,10 @@ class GlowingProtojellyController extends AbstractController
         ItemRepository $itemRepository
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'protojelly/#/d8');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'protojelly/#/d8');
 
         $die = $itemRepository->findOneByName('Glowing Eight-sided Die');
         $inventory
@@ -85,6 +88,5 @@ class GlowingProtojellyController extends AbstractController
         $responseService->setReloadInventory();
 
         return $responseService->itemActionSuccess('The jelly turns into a Glowing Eight-sided Die, and becomes solid, never to change its shape again!', [ 'itemDeleted' => true ]);
-
     }
 }

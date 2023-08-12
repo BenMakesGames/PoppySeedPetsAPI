@@ -48,7 +48,7 @@ class AliceAndBobController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/alicesSecret/#/teaTime');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'box/alicesSecret/#/teaTime');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $loot = [
@@ -101,7 +101,7 @@ class AliceAndBobController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/alicesSecret/#/hourglass');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'box/alicesSecret/#/hourglass');
 
         $item = $inventoryService->receiveItem('Hourglass', $user, $user, $user->getName() . ' got this from Alice\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
 
@@ -120,7 +120,7 @@ class AliceAndBobController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/alicesSecret/#/cards');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'box/alicesSecret/#/cards');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $loot = [
@@ -147,7 +147,7 @@ class AliceAndBobController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/bobsSecret/#/fish');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'box/bobsSecret/#/fish');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $loot = [
@@ -193,7 +193,7 @@ class AliceAndBobController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/bobsSecret/#/tool');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'box/bobsSecret/#/tool');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         // apply "Bob's" bonus
@@ -227,7 +227,7 @@ class AliceAndBobController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/bobsSecret/#/bbq');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'box/bobsSecret/#/bbq');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $loot = [

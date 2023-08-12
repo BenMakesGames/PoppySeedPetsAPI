@@ -50,7 +50,7 @@ class StrongboxController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/little-strongbox/#/open');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'box/little-strongbox/#/open');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $key = $inventoryRepository->findOneToConsume($user, 'Iron Key');
@@ -102,7 +102,7 @@ class StrongboxController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/very-strongbox/#/open');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'box/very-strongbox/#/open');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $key = $inventoryRepository->findOneToConsume($user, 'Silver Key');
@@ -163,7 +163,7 @@ class StrongboxController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'box/outrageously-strongbox/#/open');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'box/outrageously-strongbox/#/open');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $key = $inventoryRepository->findOneToConsume($user, 'Gold Key');

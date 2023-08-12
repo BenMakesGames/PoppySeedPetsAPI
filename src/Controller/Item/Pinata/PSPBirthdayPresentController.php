@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Service\InventoryService;
@@ -27,9 +28,10 @@ class PSPBirthdayPresentController extends AbstractController
         EntityManagerInterface $em
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'pspBirthdayPresent/#/open');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'pspBirthdayPresent/#/open');
 
         $location = $inventory->getLocation();
 

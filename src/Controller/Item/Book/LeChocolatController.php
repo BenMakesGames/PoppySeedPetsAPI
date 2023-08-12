@@ -5,7 +5,6 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Recipe;
 use App\Entity\User;
-use App\Functions\ArrayFunctions;
 use App\Model\ItemQuantity;
 use App\Repository\RecipeRepository;
 use App\Service\CookingService;

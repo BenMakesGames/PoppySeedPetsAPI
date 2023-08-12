@@ -3,6 +3,7 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
@@ -31,9 +32,10 @@ class HyperchromaticPrismController extends AbstractController
         PetRepository $petRepository, MeritRepository $meritRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'hyperchromaticPrism');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'hyperchromaticPrism');
 
         $petId = $request->request->getInt('pet', 0);
         $pet = $petRepository->find($petId);

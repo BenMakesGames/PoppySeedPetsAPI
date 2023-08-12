@@ -4,6 +4,7 @@ namespace App\Controller\Item\PetAlteration;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\SpiritCompanion;
+use App\Entity\User;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\PetRepository;
@@ -29,9 +30,10 @@ class SpiritPolymorphPotionController extends AbstractController
         PetRepository $petRepository, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'spiritPolymorphPotion');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'spiritPolymorphPotion');
 
         $petId = $request->request->getInt('pet', 0);
         $pet = $petRepository->find($petId);

@@ -3,6 +3,7 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\StatusEffectEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
@@ -28,9 +29,10 @@ class WerebaneController extends AbstractController
         PetRepository $petRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'werebane');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'werebane');
 
         $petId = $request->request->getInt('pet', 0);
         $pet = $petRepository->find($petId);
