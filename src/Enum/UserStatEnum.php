@@ -19,6 +19,9 @@ final class UserStatEnum
     const BUGS_SQUISHED = 'Bugs Squished';
     const BUGS_PUT_OUTSIDE = 'Bugs Put Outside';
     const BUGS_FED = 'Bugs Fed';
+    const FED_A_LINE_OF_ANTS = 'Fed a Line of Ants';
+    const EVOLVED_A_CENTIPEDE = 'Evolved a Centipede';
+    const FED_THE_BEEHIVE = 'Fed the Beehive';
     const FERTILIZED_PLANT = 'Fertilized a Plant';
     const HARVESTED_PLANT = 'Harvested a Plant';
     const PETS_ADOPTED = 'Pets Adopted';

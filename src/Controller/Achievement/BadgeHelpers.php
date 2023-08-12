@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\UserBadge;
 use App\Entity\UserStats;
 use App\Enum\BadgeEnum;
+use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
 use App\Model\TraderOfferCostOrYield;
 use Doctrine\ORM\EntityManagerInterface;
@@ -351,6 +352,30 @@ final class BadgeHelpers
                 $progress = [ 'target' => 1, 'current' => self::getStatTotal($em, $user, [ 'Found a Box Box Inside a Box Box' ]) ];
                 $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Box Box' ]), 1);
                 break;
+
+            // Bugs
+
+            case BadgeEnum::FEED_THE_CENTIPEDES_10:
+                $progress = [ 'target' => 10, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::EVOLVED_A_CENTIPEDE ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Wings' ]), 2);
+                break;
+
+            case BadgeEnum::FEED_THE_ANTS_10:
+                $progress = [ 'target' => 10, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::FED_A_LINE_OF_ANTS ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Sugar' ]), 10);
+                break;
+
+            case BadgeEnum::FEED_THE_BEES_10:
+                $progress = [ 'target' => 10, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::FED_THE_BEEHIVE ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Sugar' ]), 10);
+                break;
+
+            case BadgeEnum::PLAYING_BOTH_SIDES:
+                $progress = [ 'target' => 2, 'current' => self::getCompletedBadges($user, [ BadgeEnum::FEED_THE_ANTS_10, BadgeEnum::FEED_THE_BEES_10 ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Dicerca' ]), 1);
+                break;
+
+            // Meta
 
             case BadgeEnum::ACHIEVEMENTS_10:
                 $progress = [ 'target' => 10, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ACHIEVEMENTS_CLAIMED ]) ];

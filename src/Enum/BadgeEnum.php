@@ -80,6 +80,11 @@ final class BadgeEnum
     public const OPENED_BOX_BOX_10 = 'OpenedBoxBox10';
     public const BOX_BOX_BOX_BOX = 'BoxBoxBoxBox'; // found a box box inside a box box
 
+    public const FEED_THE_ANTS_10 = 'FedAnts10';
+    public const FEED_THE_BEES_10 = 'FedBees10';
+    public const FEED_THE_CENTIPEDES_10 = 'FedCentipedes10';
+    public const PLAYING_BOTH_SIDES = 'FedAntsAndBees10';
+
     public const ACHIEVEMENTS_10 = 'Achievements10';
     public const ACHIEVEMENTS_20 = 'Achievements20';
     public const ACHIEVEMENTS_30 = 'Achievements30';

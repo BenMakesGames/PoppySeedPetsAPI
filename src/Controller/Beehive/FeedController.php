@@ -5,18 +5,17 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
+use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
-use App\Repository\ItemRepository;
+use App\Repository\UserStatsRepository;
 use App\Service\BeehiveService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -31,7 +30,7 @@ class FeedController extends AbstractController
      */
     public function feedItem(
         ResponseService $responseService, EntityManagerInterface $em, BeehiveService $beehiveService,
-        InventoryService $inventoryService, Request $request, ItemRepository $itemRepository
+        InventoryService $inventoryService, Request $request, UserStatsRepository $userStatsRepository
     )
     {
         /** @var User $user */
@@ -67,6 +66,8 @@ class FeedController extends AbstractController
 
         $beehiveService->fedRequestedItem($beehive, $alternate);
         $beehive->setInteractionPower();
+
+        $userStatsRepository->incrementStat($user, UserStatEnum::FED_THE_BEEHIVE);
 
         $em->flush();
 

@@ -113,6 +113,7 @@ class BugController extends AbstractController
         switch($inventory->getItem()->getName())
         {
             case 'Centipede':
+                $userStatsRepository->incrementStat($user, UserStatEnum::EVOLVED_A_CENTIPEDE);
                 $inventory
                     ->changeItem($itemRepository->findOneByName('Moth'))
                     ->addComment($user->getName() . ' fed this Centipede, allowing it to grow up into a beautiful... Moth.')
@@ -127,6 +128,8 @@ class BugController extends AbstractController
                 break;
 
             case 'Line of Ants':
+                $userStatsRepository->incrementStat($user, UserStatEnum::FED_A_LINE_OF_ANTS);
+
                 if($item->getItem()->getName() === 'Ants on a Log')
                 {
                     if($squirrel3->rngNextInt(1, 6) === 6)
