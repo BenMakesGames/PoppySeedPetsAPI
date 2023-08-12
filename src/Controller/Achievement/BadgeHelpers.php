@@ -90,17 +90,17 @@ final class BadgeHelpers
 
             case BadgeEnum::BAABBLES_OPENED_10:
                 $progress = [ 'target' => 10, 'current' => self::getStatTotal($em, $user, [ 'Opened a Black Baabble', 'Opened a White Baabble', 'Opened a Gold Baabble', 'Opened a Shiny Baabble' ]) ];
-                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Diffie-H Key' ]), 1);
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Carrot Key' ]), 1);
                 break;
 
             case BadgeEnum::BAABBLES_OPENED_100:
                 $progress = [ 'target' => 100, 'current' => self::getStatTotal($em, $user, [ 'Opened a Black Baabble', 'Opened a White Baabble', 'Opened a Gold Baabble', 'Opened a Shiny Baabble' ]) ];
-                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Carrot Key' ]), 1);
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Winged Key' ]), 1);
                 break;
 
             case BadgeEnum::BAABBLES_OPENED_1000:
                 $progress = [ 'target' => 1000, 'current' => self::getStatTotal($em, $user, [ 'Opened a Black Baabble', 'Opened a White Baabble', 'Opened a Gold Baabble', 'Opened a Shiny Baabble' ]) ];
-                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Winged Key' ]), 1);
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Skill Scroll: Crafts' ]), 1);
                 break;
 
             case BadgeEnum::MONEYS_SPENT_10:
