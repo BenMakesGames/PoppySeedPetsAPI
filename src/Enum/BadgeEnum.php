@@ -75,6 +75,9 @@ final class BadgeEnum
 
     public const OPENED_HAT_BOX_1 = 'OpenedHatBox1';
     public const OPENED_HAT_BOX_10 = 'OpenedHatBox10';
+    public const HATTIER_STYLES_10 = 'UnlockedHattierStyles10';
+    public const HATTIER_STYLES_20 = 'UnlockedHattierStyles20';
+    public const HATTIER_STYLES_30 = 'UnlockedHattierStyles30';
 
     public const OPENED_BOX_BOX_1 = 'OpenedBoxBox1';
     public const OPENED_BOX_BOX_10 = 'OpenedBoxBox10';

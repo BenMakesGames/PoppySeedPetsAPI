@@ -5,6 +5,7 @@ use App\Entity\Item;
 use App\Entity\User;
 use App\Entity\UserBadge;
 use App\Entity\UserStats;
+use App\Entity\UserUnlockedFeature;
 use App\Enum\BadgeEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
@@ -13,6 +14,20 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class BadgeHelpers
 {
+    public static function getUnlockedFeatures(User $user, array $featureNames): int
+    {
+        return array_reduce(
+            $user->getUnlockedFeatures()->getValues(),
+            fn(int $carry, UserUnlockedFeature $feature) => $carry + (int)in_array($feature->getFeature(), $featureNames),
+            0
+        );
+    }
+
+    public static function getUnlockedAuras(User $user): int
+    {
+        return $user->getUnlockedAuras()->count();
+    }
+
     public static function getCompletedBadges(User $user, array $badgeNames): int
     {
         return array_reduce(
@@ -132,6 +147,22 @@ final class BadgeHelpers
                 $progress = [ 'target' => 10000, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::PETTED_A_PET ]) ];
                 $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Forgetting Scroll' ]), 1);
                 break;
+
+            case BadgeEnum::HATTIER_STYLES_10:
+                $progress = [ 'target' => 10, 'current' => self::getUnlockedAuras($user) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Gravy' ]), 1);
+                break;
+
+            case BadgeEnum::HATTIER_STYLES_20:
+                $progress = [ 'target' => 20, 'current' => self::getUnlockedAuras($user) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Googly Eyes' ]), 1);
+                break;
+
+            case BadgeEnum::HATTIER_STYLES_30:
+                $progress = [ 'target' => 30, 'current' => self::getUnlockedAuras($user) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Jelling Polyp' ]), 1);
+                break;
+
 
             case BadgeEnum::OPENED_CEREAL_BOX:
                 $progress = [ 'target' => 1, 'current' => self::getStatTotal($em, $user, [ 'Opened a Cereal Box' ]) ];
