@@ -7,15 +7,12 @@ use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\EnchantmentRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 

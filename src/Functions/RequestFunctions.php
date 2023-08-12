@@ -4,7 +4,6 @@ namespace App\Functions;
 
 use App\Exceptions\PSPFormValidationException;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 final class RequestFunctions
 {

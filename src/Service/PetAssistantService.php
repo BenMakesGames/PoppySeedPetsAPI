@@ -10,7 +10,6 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\DragonRepository;
 use App\Repository\PetRepository;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class PetAssistantService
 {

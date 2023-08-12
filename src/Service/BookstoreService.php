@@ -13,7 +13,6 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class BookstoreService
 {

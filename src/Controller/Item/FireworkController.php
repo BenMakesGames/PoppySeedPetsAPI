@@ -2,18 +2,13 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Functions\ArrayFunctions;
 use App\Repository\EnchantmentRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\HattierService;
-use App\Service\HollowEarthService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 

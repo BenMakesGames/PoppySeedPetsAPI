@@ -8,8 +8,6 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChangesSummary;
-use App\Model\WeatherData;
-use App\Model\WeatherForecastData;
 use App\Repository\PetActivityLogRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;

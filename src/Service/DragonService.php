@@ -18,7 +18,6 @@ use App\Repository\SpiceRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\PetActivity\TreasureMapService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class DragonService
 {

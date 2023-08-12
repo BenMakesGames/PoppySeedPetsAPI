@@ -8,7 +8,6 @@ use App\Enum\MeritEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Service\ResponseService;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 final class PetRenamingHelpers
 {
