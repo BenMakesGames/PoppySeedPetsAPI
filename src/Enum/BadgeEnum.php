@@ -88,10 +88,19 @@ final class BadgeEnum
     public const FEED_THE_CENTIPEDES_10 = 'FedCentipedes10';
     public const PLAYING_BOTH_SIDES = 'FedAntsAndBees10';
 
+    public const TEACH_COOKING_BUDDY_100 = 'CookingBuddyRecipes100';
+    public const TEACH_COOKING_BUDDY_200 = 'CookingBuddyRecipes200';
+    public const TEACH_COOKING_BUDDY_300 = 'CookingBuddyRecipes300';
+    public const TEACH_COOKING_BUDDY_400 = 'CookingBuddyRecipes400';
+    public const TEACH_COOKING_BUDDY_500 = 'CookingBuddyRecipes500';
+    public const TEACH_COOKING_BUDDY_600 = 'CookingBuddyRecipes600';
+
     public const ACHIEVEMENTS_10 = 'Achievements10';
     public const ACHIEVEMENTS_20 = 'Achievements20';
     public const ACHIEVEMENTS_30 = 'Achievements30';
     public const ACHIEVEMENTS_40 = 'Achievements40';
     public const ACHIEVEMENTS_50 = 'Achievements50';
     public const ACHIEVEMENTS_60 = 'Achievements60';
+    public const ACHIEVEMENTS_70 = 'Achievements70';
+    public const ACHIEVEMENTS_80 = 'Achievements80';
 }

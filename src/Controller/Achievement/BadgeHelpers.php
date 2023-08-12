@@ -304,6 +304,37 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createRecyclingPoints(1000);
                 break;
 
+            case BadgeEnum::TEACH_COOKING_BUDDY_100:
+                $progress = [ 'target' => 100, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::RECIPES_LEARNED_BY_COOKING_BUDDY ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Baker\'s Box' ]), 1);
+                break;
+
+            case BadgeEnum::TEACH_COOKING_BUDDY_200:
+                $progress = [ 'target' => 200, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::RECIPES_LEARNED_BY_COOKING_BUDDY ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Fruits & Veggies Box' ]), 1);
+                break;
+
+            case BadgeEnum::TEACH_COOKING_BUDDY_300:
+                $progress = [ 'target' => 300, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::RECIPES_LEARNED_BY_COOKING_BUDDY ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Farmer\'s Scroll' ]), 1);
+                break;
+
+            case BadgeEnum::TEACH_COOKING_BUDDY_400:
+                $progress = [ 'target' => 400, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::RECIPES_LEARNED_BY_COOKING_BUDDY ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Nature Box' ]), 1);
+                break;
+
+            case BadgeEnum::TEACH_COOKING_BUDDY_500:
+                $progress = [ 'target' => 500, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::RECIPES_LEARNED_BY_COOKING_BUDDY ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Skill Scroll: Nature' ]), 1);
+                break;
+
+            case BadgeEnum::TEACH_COOKING_BUDDY_600:
+                $progress = [ 'target' => 600, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::RECIPES_LEARNED_BY_COOKING_BUDDY ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Tile: Wild Herbs & Vegetables' ]), 1);
+                break;
+
+
             case BadgeEnum::DEFEATED_SUMMONED_MONSTER_1:
                 $progress = [ 'target' => 1, 'current' => self::getStatTotal($em, $user, [ 'Won Against Something... Unfriendly' ]) ];
                 $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Gold Chest' ]), 1);
@@ -438,8 +469,16 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Chocolate Cake Pops' ]), 1);
                 break;
 
-            // Chocolate-covered Naner
-            // Slice of Chocolate Cream Pie
+            case BadgeEnum::ACHIEVEMENTS_70:
+                $progress = [ 'target' => 70, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ACHIEVEMENTS_CLAIMED ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Chocolate-covered Naner' ]), 1);
+                break;
+
+            case BadgeEnum::ACHIEVEMENTS_80:
+                $progress = [ 'target' => 80, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ACHIEVEMENTS_CLAIMED ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Slice of Chocolate Cream Pie' ]), 1);
+                break;
+
             // Chocolate-frosted Donut
             // Chocolate-covered Honeycomb
             // Chocolate Ice Cream Sammy
