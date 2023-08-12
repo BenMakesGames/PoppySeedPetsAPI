@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\StoryEnum;
 use App\Service\ResponseService;
@@ -26,9 +27,10 @@ class TuningForkController extends AbstractController
         StoryService $storyService, Request $request
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'tuningFork/#/listen');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'tuningFork/#/listen');
 
         $response = $storyService->doStory($user, StoryEnum::SHARUMINYINKAS_DESPAIR, $request->request, $inventory);
 

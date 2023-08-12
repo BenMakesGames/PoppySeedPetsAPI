@@ -217,6 +217,7 @@ class AccountController extends AbstractController
         NormalizerInterface $normalizer
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $petsAtHome = $petRepository->findBy([

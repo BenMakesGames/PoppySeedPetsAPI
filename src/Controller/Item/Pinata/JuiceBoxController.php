@@ -4,6 +4,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -27,6 +28,7 @@ class JuiceBoxController extends AbstractController
         EntityManagerInterface $em, Squirrel3 $rng, UserStatsRepository $userStatsRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'juiceBox/#/open');

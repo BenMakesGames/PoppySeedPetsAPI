@@ -2,6 +2,7 @@
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
+use App\Entity\User;
 use App\Service\PetAssistantService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,7 +20,9 @@ class StopHelpingController extends AbstractController
      */
     public function stopHelping(Pet $pet, PetAssistantService $petAssistantService, ResponseService $responseService)
     {
+        /** @var User $user */
         $user = $this->getUser();
+
         $petAssistantService->stopAssisting($user, $pet);
 
         return $responseService->success();

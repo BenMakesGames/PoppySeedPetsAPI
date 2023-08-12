@@ -2,6 +2,7 @@
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
+use App\Entity\User;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
@@ -26,6 +27,7 @@ class UpdateNoteController extends AbstractController
         Pet $pet, Request $request, EntityManagerInterface $em, ResponseService $responseService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())

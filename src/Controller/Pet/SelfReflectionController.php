@@ -4,6 +4,7 @@ namespace App\Controller\Pet;
 use App\Entity\Guild;
 use App\Entity\Pet;
 use App\Entity\PetRelationship;
+use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\RelationshipEnum;
@@ -102,6 +103,7 @@ class SelfReflectionController extends AbstractController
         GuildRepository $guildRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($user->getId() !== $pet->getOwner()->getId())
@@ -155,6 +157,7 @@ class SelfReflectionController extends AbstractController
         EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($user->getId() !== $pet->getOwner()->getId())
@@ -248,6 +251,7 @@ class SelfReflectionController extends AbstractController
         PetRelationshipTypeaheadService $petRelationshipTypeaheadService, PetRelationshipService $petRelationshipService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $petId = $request->query->getInt('petId', 0);

@@ -4,6 +4,7 @@ namespace App\Controller\Pet;
 use App\Entity\Merit;
 use App\Entity\Pet;
 use App\Entity\SpiritCompanion;
+use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SerializationGroupEnum;
@@ -34,6 +35,7 @@ class AffectionRewardController extends AbstractController
      */
     public function getAvailableMerits(Pet $pet, ResponseService $responseService, MeritRepository $meritRepository)
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())
@@ -53,6 +55,7 @@ class AffectionRewardController extends AbstractController
         MeritRepository $meritRepository, UserUnlockedFeatureRepository $userUnlockedFeatureRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())
@@ -112,6 +115,7 @@ class AffectionRewardController extends AbstractController
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())

@@ -2,6 +2,7 @@
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
+use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
@@ -26,6 +27,7 @@ class SetFertilityController extends AbstractController
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())

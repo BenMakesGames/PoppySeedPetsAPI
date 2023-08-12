@@ -28,6 +28,7 @@ class LetterController extends AbstractController
         UserLetterFilterService $userLetterFilterService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $userLetterFilterService->addRequiredFilter('user', $user->getId());

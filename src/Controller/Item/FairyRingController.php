@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -25,10 +26,11 @@ class FairyRingController extends AbstractController
         EntityManagerInterface $em, InventoryService $inventoryService
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'fairyRing/#/takeApart');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'fairyRing/#/takeApart');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
         $inventory->changeItem($itemRepository->findOneByName('Gold Ring'));
 

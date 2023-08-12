@@ -27,10 +27,10 @@ class FlowerbombController extends AbstractController
         InventoryService $inventoryService, UserQuestRepository $userQuestRepository, HotPotatoService $hotPotatoService
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'flowerbomb/#/toss');
-
         /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'flowerbomb/#/toss');
 
         $lastFlowerBombWasNarcissistic = $userQuestRepository->findOrCreate($user, 'Last Flowerbomb was Narcissus', true);
 

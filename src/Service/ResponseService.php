@@ -72,6 +72,7 @@ class ResponseService
      */
     public function success($data = null, array $groups = []): JsonResponse
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($user && $user->getIsAdmin())
@@ -170,6 +171,7 @@ class ResponseService
 
     private function injectUserData(array &$responseData)
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if(!$user)

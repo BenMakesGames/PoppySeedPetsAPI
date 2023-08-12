@@ -32,6 +32,7 @@ class DaycareController extends AbstractController
         ResponseService $responseService, PetFilterService $petFilterService, Request $request
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $petFilterService->addRequiredFilter('owner', $user->getId());

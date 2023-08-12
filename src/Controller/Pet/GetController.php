@@ -39,6 +39,7 @@ class GetController extends AbstractController
      */
     public function getMyPets(ResponseService $responseService, PetRepository $petRepository)
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $petsAtHome = $petRepository->findBy([
@@ -55,6 +56,7 @@ class GetController extends AbstractController
      */
     public function getMyPet(ResponseService $responseService, PetRepository $petRepository, int $id)
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $pet = $petRepository->findOneBy([

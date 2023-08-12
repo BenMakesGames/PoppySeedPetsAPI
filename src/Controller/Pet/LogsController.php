@@ -2,6 +2,7 @@
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
+use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPPetNotFoundException;
@@ -40,6 +41,7 @@ class LogsController extends AbstractController
         if($month < 1 || $month > 12)
             throw new PSPFormValidationException('"month" must be between 1 and 12!');
 
+        /** @var User $user */
         $user = $this->getUser();
 
         if($user->getId() !== $pet->getOwner()->getId())
@@ -63,6 +65,7 @@ class LogsController extends AbstractController
         Request $request
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($user->getId() !== $pet->getOwner()->getId())

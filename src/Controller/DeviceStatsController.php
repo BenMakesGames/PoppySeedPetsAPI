@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Annotations\DoesNotRequireHouseHours;
 use App\Entity\DeviceStats;
+use App\Entity\User;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,6 +23,7 @@ class DeviceStatsController extends AbstractController
      */
     public function about(ResponseService $responseService, Request $request, EntityManagerInterface $em)
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $userAgent = trim($request->request->get('userAgent', ''));

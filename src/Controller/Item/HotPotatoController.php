@@ -30,10 +30,10 @@ class HotPotatoController extends AbstractController
         UserStatsRepository $userStatsRepository
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'hotPotato/#/toss');
-
         /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'hotPotato/#/toss');
 
         if($squirrel3->rngNextInt(1, 5) === 1)
         {
@@ -71,10 +71,10 @@ class HotPotatoController extends AbstractController
         InventoryService $inventoryService, Squirrel3 $squirrel3, HotPotatoService $hotPotatoService
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'hotPotato/#/tossChocolateBomb');
-
         /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'hotPotato/#/tossChocolateBomb');
 
         $numberOfTosses = HotPotatoService::countTosses($inventory);
 

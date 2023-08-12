@@ -2,6 +2,7 @@
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
+use App\Entity\User;
 use App\Enum\PetActivityStatEnum;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Service\PetActivityStatsService;
@@ -24,6 +25,7 @@ class GetActivityStatsController extends AbstractController
         Pet $pet, ResponseService $responseService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($user->getId() !== $pet->getOwner()->getId())

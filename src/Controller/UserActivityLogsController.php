@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\UserActivityLogTagRepository;
 use App\Service\Filter\UserActivityLogsFilterService;
@@ -23,6 +24,7 @@ class UserActivityLogsController extends AbstractController
         Request $request, ResponseService $responseService, UserActivityLogsFilterService $userActivityLogsFilterService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         $userActivityLogsFilterService->addRequiredFilter('user', $user->getId());

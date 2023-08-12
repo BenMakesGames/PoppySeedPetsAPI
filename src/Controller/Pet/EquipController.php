@@ -3,6 +3,7 @@ namespace App\Controller\Pet;
 
 use App\Entity\Inventory;
 use App\Entity\Pet;
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\SerializationGroupEnum;
@@ -32,6 +33,7 @@ class EquipController extends AbstractController
         Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($inventory->getOwner()->getId() !== $user->getId())
@@ -97,6 +99,7 @@ class EquipController extends AbstractController
         Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($inventory->getOwner()->getId() !== $user->getId())
@@ -165,6 +168,7 @@ class EquipController extends AbstractController
         Pet $pet, ResponseService $responseService, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())
@@ -188,6 +192,7 @@ class EquipController extends AbstractController
      */
     public function unhatPet(Pet $pet, ResponseService $responseService, EntityManagerInterface $em)
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())

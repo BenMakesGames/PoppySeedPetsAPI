@@ -3,6 +3,7 @@ namespace App\Controller\Item;
 
 use App\Entity\Dragon;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Exceptions\PSPNotFoundException;
 use App\Repository\DragonRepository;
 use App\Service\ResponseService;
@@ -26,6 +27,7 @@ class DragonPolymorphPotionController extends AbstractController
         DragonRepository $dragonRepository
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'dragonPolymorphPotion/#/give');

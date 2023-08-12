@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Enum\StatusEffectEnum;
 use App\Repository\PetRepository;
@@ -30,9 +31,10 @@ class GlitterBombController extends AbstractController
         StatusEffectService $statusEffectService
     )
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'glitterBomb/#/toss');
-
+        /** @var User $user */
         $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'glitterBomb/#/toss');
 
         if($squirrel3->rngNextInt(1, 5) === 1)
         {

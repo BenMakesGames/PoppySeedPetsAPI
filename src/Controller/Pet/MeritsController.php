@@ -2,6 +2,7 @@
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
+use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Service\ResponseService;
@@ -21,6 +22,7 @@ class MeritsController extends AbstractController
      */
     public function getMerits(Pet $pet, ResponseService $responseService)
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($pet->getOwner()->getId() !== $user->getId())

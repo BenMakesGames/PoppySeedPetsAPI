@@ -4,6 +4,7 @@ namespace App\Controller\Pet;
 use App\Entity\Inventory;
 use App\Entity\LunchboxItem;
 use App\Entity\Pet;
+use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
@@ -27,6 +28,7 @@ class LunchboxController extends AbstractController
         Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($inventory->getOwner()->getId() !== $user->getId())
@@ -75,6 +77,7 @@ class LunchboxController extends AbstractController
         Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         if($inventory->getOwner()->getId() !== $user->getId())
