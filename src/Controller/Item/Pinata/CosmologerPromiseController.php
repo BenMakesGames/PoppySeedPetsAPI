@@ -25,6 +25,7 @@ class CosmologerPromiseController extends AbstractController
         EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'cosmologerPromise/#/secretSeashell');

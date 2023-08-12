@@ -28,6 +28,7 @@ class MagpieDealController extends AbstractController
         EntityManagerInterface $em
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'magpieDeal/#/quint');
