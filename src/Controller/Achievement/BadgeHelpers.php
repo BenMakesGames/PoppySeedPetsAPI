@@ -280,12 +280,12 @@ final class BadgeHelpers
 
             case BadgeEnum::COMPOSTED_100:
                 $progress = [ 'target' => 100, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_COMPOSTED ]) ];
-                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Stinkier Bug' ]), 2);
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Stinkier Bug' ]), 1);
                 break;
 
             case BadgeEnum::COMPOSTED_1000:
                 $progress = [ 'target' => 1000, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_COMPOSTED ]) ];
-                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Ant Queen\'s Favor' ]), 3);
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Ant Queen\'s Favor' ]), 1);
                 break;
 
             case BadgeEnum::FERTILIZED_HARVESTED_COMPOSTED_1000:
