@@ -387,12 +387,12 @@ final class BadgeHelpers
 
             case BadgeEnum::HOLLOW_EARTH_TRAVEL_100:
                 $progress = [ 'target' => 100, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::HOLLOW_EARTH_SPACES_MOVED ]) ];
-                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Monster-summoning Scroll' ]), 1);
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Piece of Cetgueli\'s Map' ]), 1);
                 break;
 
             case BadgeEnum::HOLLOW_EARTH_TRAVEL_1000:
                 $progress = [ 'target' => 1000, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::HOLLOW_EARTH_SPACES_MOVED ]) ];
-                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Blackonite' ]), 10);
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Monster-summoning Scroll' ]), 2);
                 break;
 
             case BadgeEnum::MISREAD_SCROLL:
