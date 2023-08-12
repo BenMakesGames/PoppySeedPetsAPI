@@ -153,6 +153,11 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Goodberries' ]), 4);
                 break;
 
+            case BadgeEnum::COMPLETE_THE_HEARTSTONE_DIMENSION:
+                $progress = [ 'target' => 1, 'current' => self::getStatTotal($em, $user, [ 'Pet Completed the Heartstone Dimension' ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Juice Box' ]), 1);
+                break;
+
             case BadgeEnum::HATTIER_STYLES_10:
                 $progress = [ 'target' => 10, 'current' => self::getUnlockedAuras($user) ];
                 $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Gravy' ]), 1);

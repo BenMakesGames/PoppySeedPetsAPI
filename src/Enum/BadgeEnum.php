@@ -26,6 +26,7 @@ final class BadgeEnum
     public const PETTED_10000 = 'Petted10000';
 
     public const MAX_PETS_4 = 'MaxPets4';
+    public const COMPLETE_THE_HEARTSTONE_DIMENSION = 'HeartstoneDimensionCompleted';
 
     public const TROPHIES_EARNED_1 = 'TrophiesEarned1';
     public const TROPHIES_EARNED_10 = 'TrophiesEarned10';
