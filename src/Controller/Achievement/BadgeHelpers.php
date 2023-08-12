@@ -391,7 +391,7 @@ final class BadgeHelpers
 
             case BadgeEnum::ASCENDED_TOWER_OF_TRIALS_10:
                 $progress = [ 'target' => 10, 'current' => self::getStatTotal($em, $user, [ 'Opened a Tower Chest' ]) ];
-                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Scroll of Dice' ]), 5);
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Scroll of Dice' ]), 2);
                 break;
 
             case BadgeEnum::ASCENDED_TOWER_OF_TRIALS_100:
