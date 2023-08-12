@@ -14,12 +14,14 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\HollowEarthMoveDirectionEnum;
 use App\Enum\HollowEarthRequiredActionEnum;
 use App\Enum\UnlockableFeatureEnum;
+use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\HollowEarthPlayerTileRepository;
 use App\Repository\HollowEarthTileRepository;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
+use App\Repository\UserStatsRepository;
 use App\Repository\UserUnlockedFeatureRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -36,6 +38,7 @@ class HollowEarthService
     private ResponseService $responseService;
     private ItemRepository $itemRepository;
     private UserUnlockedFeatureRepository $userUnlockedFeatureRepository;
+    private UserStatsRepository $userStatsRepository;
 
     public const DICE_ITEMS = [
         'Glowing "Two-sided Die"' => 2,
@@ -53,7 +56,8 @@ class HollowEarthService
         PetExperienceService $petExperienceService, TransactionService $transactionService,
         HollowEarthPlayerTileRepository $hollowEarthPlayerTileRepository, StatusEffectService $statusEffectService,
         PetActivityLogTagRepository $petActivityLogTagRepository, ResponseService $responseService,
-        ItemRepository $itemRepository, UserUnlockedFeatureRepository $userUnlockedFeatureRepository
+        ItemRepository $itemRepository, UserUnlockedFeatureRepository $userUnlockedFeatureRepository,
+        UserStatsRepository $userStatsRepository
     )
     {
         $this->hollowEarthTileRepository = $hollowEarthTileRepository;
@@ -67,6 +71,7 @@ class HollowEarthService
         $this->responseService = $responseService;
         $this->itemRepository = $itemRepository;
         $this->userUnlockedFeatureRepository = $userUnlockedFeatureRepository;
+        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function unlockHollowEarth(User $user): void
@@ -225,6 +230,8 @@ class HollowEarthService
 
         $nextTile = $player->getCurrentTile();
 
+        $movesRemaining = $player->getMovesRemaining();
+
         while($player->getMovesRemaining() > 0 && $player->getCurrentAction() === null)
         {
             $nextTile = $this->getNextTile($player);
@@ -242,6 +249,8 @@ class HollowEarthService
             ->setCurrentTile($nextTile)
             ->setCurrentAction($action)
         ;
+
+        $this->userStatsRepository->incrementStat($player->getUser(), UserStatEnum::HOLLOW_EARTH_SPACES_MOVED, $movesRemaining - $player->getMovesRemaining());
     }
 
     private function getNextTile(HollowEarthPlayer $player): HollowEarthTile

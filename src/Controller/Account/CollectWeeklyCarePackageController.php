@@ -74,6 +74,8 @@ class CollectWeeklyCarePackageController extends AbstractController
 
         $user->setLastAllowanceCollected($user->getLastAllowanceCollected()->modify('+' . (floor($days / 7) * 7) . ' days'));
 
+        $userStatsRepository->incrementStat($user, UserStatEnum::PLAZA_BOXES_RECEIVED, 1);
+
         $em->flush();
 
         return $responseService->success($newInventory, [ SerializationGroupEnum::MY_INVENTORY ]);

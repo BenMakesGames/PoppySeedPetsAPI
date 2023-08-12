@@ -68,6 +68,10 @@ final class BadgeEnum
     public const ASCENDED_TOWER_OF_TRIALS_10 = 'TowerOfTrials10';
     public const ASCENDED_TOWER_OF_TRIALS_100 = 'TowerOfTrials100';
 
+    public const HOLLOW_EARTH_TRAVEL_10 = 'HollowEarthTravel10';
+    public const HOLLOW_EARTH_TRAVEL_100 = 'HollowEarthTravel100';
+    public const HOLLOW_EARTH_TRAVEL_1000 = 'HollowEarthTravel1000';
+
     public const MISREAD_SCROLL = 'MisreadScroll1';
     public const READ_SCROLL_1 = 'ReadScroll1';
     public const READ_SCROLL_10 = 'ReadScroll10';
@@ -84,6 +88,9 @@ final class BadgeEnum
     public const OPENED_BOX_BOX_1 = 'OpenedBoxBox1';
     public const OPENED_BOX_BOX_10 = 'OpenedBoxBox10';
     public const BOX_BOX_BOX_BOX = 'BoxBoxBoxBox'; // found a box box inside a box box
+    public const PLAZA_BOX_1 = 'PlazaBox1';
+    public const PLAZA_BOX_10 = 'PlazaBox10';
+    public const PLAZA_BOX_100 = 'PlazaBox100';
 
     public const FEED_THE_ANTS_10 = 'FedAnts10';
     public const FEED_THE_BEES_10 = 'FedBees10';

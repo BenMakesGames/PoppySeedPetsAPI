@@ -357,17 +357,32 @@ final class BadgeHelpers
 
             case BadgeEnum::ASCENDED_TOWER_OF_TRIALS_1:
                 $progress = [ 'target' => 1, 'current' => self::getStatTotal($em, $user, [ 'Opened a Tower Chest' ]) ];
-                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Scroll of Dice' ]), 1);
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Scroll of Tell Samarzhoustian Delights' ]), 1);
                 break;
 
             case BadgeEnum::ASCENDED_TOWER_OF_TRIALS_10:
                 $progress = [ 'target' => 10, 'current' => self::getStatTotal($em, $user, [ 'Opened a Tower Chest' ]) ];
-                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Scroll of Tell Samarzhoustian Delights' ]), 5);
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Scroll of Dice' ]), 5);
                 break;
 
             case BadgeEnum::ASCENDED_TOWER_OF_TRIALS_100:
                 $progress = [ 'target' => 100, 'current' => self::getStatTotal($em, $user, [ 'Opened a Tower Chest' ]) ];
                 $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Skill Scroll: Brawl' ]), 1);
+                break;
+
+            case BadgeEnum::HOLLOW_EARTH_TRAVEL_10:
+                $progress = [ 'target' => 10, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::HOLLOW_EARTH_SPACES_MOVED ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Megalium' ]), 2);
+                break;
+
+            case BadgeEnum::HOLLOW_EARTH_TRAVEL_100:
+                $progress = [ 'target' => 100, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::HOLLOW_EARTH_SPACES_MOVED ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Monster-summoning Scroll' ]), 1);
+                break;
+
+            case BadgeEnum::HOLLOW_EARTH_TRAVEL_1000:
+                $progress = [ 'target' => 1000, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::HOLLOW_EARTH_SPACES_MOVED ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Blackonite' ]), 10);
                 break;
 
             case BadgeEnum::MISREAD_SCROLL:
@@ -418,6 +433,21 @@ final class BadgeHelpers
             case BadgeEnum::BOX_BOX_BOX_BOX:
                 $progress = [ 'target' => 1, 'current' => self::getStatTotal($em, $user, [ 'Found a Box Box Inside a Box Box' ]) ];
                 $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Box Box' ]), 1);
+                break;
+
+            case BadgeEnum::PLAZA_BOX_1:
+                $progress = [ 'target' => 1, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::PLAZA_BOXES_RECEIVED ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Sand Dollar' ]), 1);
+                break;
+
+            case BadgeEnum::PLAZA_BOX_10:
+                $progress = [ 'target' => 10, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::PLAZA_BOXES_RECEIVED ]) ];
+                $reward = TraderOfferCostOrYield::createMoney(50);
+                break;
+
+            case BadgeEnum::PLAZA_BOX_100:
+                $progress = [ 'target' => 1000, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::PLAZA_BOXES_RECEIVED ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Very Strongbox' ]), 2);
                 break;
 
             // Fireplace

@@ -42,4 +42,6 @@ final class UserStatEnum
     const TOSSED_A_HOT_POTATO = 'Tossed a Hot Potato';
     const ACHIEVEMENTS_CLAIMED = 'Achievements Claimed';
     const ITEMS_THROWN_INTO_THE_FIREPLACE = 'Items Thrown into the Fireplace';
+    const PLAZA_BOXES_RECEIVED = 'Boxes (and Bags) Received at the Plaza';
+    const HOLLOW_EARTH_SPACES_MOVED = 'Spaces Moved in the Hollow Earth';
 }
