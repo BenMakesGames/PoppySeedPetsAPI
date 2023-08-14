@@ -72,12 +72,12 @@ class UserLetter
         return $this;
     }
 
-    public function getLetter(): ?Letter
+    public function getLetter(): Letter
     {
         return $this->letter;
     }
 
-    public function setLetter(?Letter $letter): self
+    public function setLetter(Letter $letter): self
     {
         $this->letter = $letter;
 
@@ -89,7 +89,7 @@ class UserLetter
         return $this->receivedOn;
     }
 
-    public function getComment(): ?string
+    public function getComment(): string
     {
         return $this->comment;
     }
@@ -101,7 +101,7 @@ class UserLetter
         return $this;
     }
 
-    public function getIsRead(): ?bool
+    public function getIsRead(): bool
     {
         return $this->isRead;
     }

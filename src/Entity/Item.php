@@ -25,7 +25,7 @@ class Item
 
     /**
      * @ORM\Column(type="string", length=45, unique=true)
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "fireplaceMantle", "fireplaceFuel", "myBeehive", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet", "myBids", "myHollowEarthTiles"})
+     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "fireplaceMantle", "fireplaceFuel", "myBeehive", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet", "myBids", "myHollowEarthTiles", "myLetters"})
      */
     private $name;
 
@@ -176,7 +176,7 @@ class Item
     }
 
     /**
-     * @Groups({"myBeehive", "itemEncyclopedia"})
+     * @Groups({"myBeehive", "itemEncyclopedia", "myLetters"})
      */
     public function getNameWithArticle(): string
     {

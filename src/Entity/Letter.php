@@ -41,6 +41,7 @@ class Letter
 
     /**
      * @ORM\ManyToOne(targetEntity=Item::class)
+     * @Groups({"myLetters"})
      */
     private $attachment;
 
