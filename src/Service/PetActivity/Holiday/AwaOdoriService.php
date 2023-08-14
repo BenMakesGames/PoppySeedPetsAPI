@@ -74,7 +74,7 @@ class AwaOdoriService
             $numberOfDancingBuddies = $this->rng->rngNextInt(1, 4);
 
             $qb
-                ->setFirstResult($this->rng->rngNextInt(0, $count - $numberOfDancingBuddies))
+                ->setFirstResult($this->rng->rngNextInt(0, max(1, $count - $numberOfDancingBuddies)))
                 ->setMaxResults($numberOfDancingBuddies)
             ;
         }
