@@ -3,6 +3,7 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -26,6 +27,7 @@ class SandDollarController extends AbstractController
         EntityManagerInterface $em, TransactionService $transactionService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'sandDollar/#/loot');
@@ -33,14 +35,15 @@ class SandDollarController extends AbstractController
         $transactionService->getMoney($user, 1, 'Found inside a Sand Dollar.');
 
         $location = $inventory->getLocation();
+        $locked = $inventory->getLockedToOwner();
 
-        $inventoryService->receiveItem('Silica Grounds', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location)
+        $inventoryService->receiveItem('Silica Grounds', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location, $locked)
             ->setSpice($inventory->getSpice())
         ;
 
         if($squirrel3->rngNextInt(1, 10) === 1)
         {
-            $inventoryService->receiveItem('String', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location)
+            $inventoryService->receiveItem('String', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location, $locked)
                 ->setSpice($inventory->getSpice())
             ;
 
@@ -48,7 +51,7 @@ class SandDollarController extends AbstractController
         }
         else if($squirrel3->rngNextInt(1, 10) === 1)
         {
-            $inventoryService->receiveItem('Talon', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location)
+            $inventoryService->receiveItem('Talon', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location, $locked)
                 ->setSpice($inventory->getSpice())
             ;
 
@@ -56,7 +59,7 @@ class SandDollarController extends AbstractController
         }
         else if($squirrel3->rngNextInt(1, 20) === 1)
         {
-            $inventoryService->receiveItem('Mermaid Egg', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location)
+            $inventoryService->receiveItem('Mermaid Egg', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location, $locked)
                 ->setSpice($inventory->getSpice())
             ;
 
@@ -64,7 +67,7 @@ class SandDollarController extends AbstractController
         }
         else if($squirrel3->rngNextInt(1, 20) === 1)
         {
-            $inventoryService->receiveItem('Glowing Six-sided Die', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location)
+            $inventoryService->receiveItem('Glowing Six-sided Die', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location, $locked)
                 ->setSpice($inventory->getSpice())
             ;
 
@@ -72,7 +75,7 @@ class SandDollarController extends AbstractController
         }
         else if($squirrel3->rngNextInt(1, 20) === 1)
         {
-            $inventoryService->receiveItem('Plastic', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location)
+            $inventoryService->receiveItem('Plastic', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location, $locked)
                 ->setSpice($inventory->getSpice())
             ;
 
@@ -80,7 +83,7 @@ class SandDollarController extends AbstractController
         }
         else if($squirrel3->rngNextInt(1, 30) === 1)
         {
-            $inventoryService->receiveItem('Secret Seashell', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location)
+            $inventoryService->receiveItem('Secret Seashell', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location, $locked)
                 ->setSpice($inventory->getSpice())
             ;
 
@@ -88,7 +91,7 @@ class SandDollarController extends AbstractController
         }
         else if($squirrel3->rngNextInt(1, 40) === 1)
         {
-            $inventoryService->receiveItem('Cyan Bow', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location)
+            $inventoryService->receiveItem('Cyan Bow', $user, $user, $user->getName() . ' found this inside a Sand Dollar.', $location, $locked)
                 ->setSpice($inventory->getSpice())
             ;
 
