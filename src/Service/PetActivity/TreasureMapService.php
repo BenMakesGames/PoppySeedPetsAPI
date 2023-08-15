@@ -158,7 +158,8 @@ class TreasureMapService
             ->increaseEsteem(-4)
         ;
 
-        $this->userUnlockedFeatureRepository->create($pet->getOwner(), UnlockableFeatureEnum::BulkSelling);
+        if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::BulkSelling))
+            $this->userUnlockedFeatureRepository->create($pet->getOwner(), UnlockableFeatureEnum::BulkSelling);
 
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
         $this->petExperienceService->spendTime($pet, 120, PetActivityStatEnum::OTHER, null);
