@@ -4,6 +4,7 @@ namespace App\Controller\Item;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
+use App\Functions\ArrayFunctions;
 use App\Repository\UserStatsRepository;
 use App\Service\HotPotatoService;
 use App\Service\InventoryService;
@@ -32,27 +33,47 @@ class HotPotatoController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
+        $numberOfTosses = HotPotatoService::countTosses($inventory);
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'hotPotato/#/toss');
 
-        if($squirrel3->rngNextInt(1, 5) === 1)
+        if($squirrel3->rngNextInt(1, 10 + $numberOfTosses) <= $numberOfTosses + 1)
         {
-            $inventoryService->receiveItem('Smashed Potatoes', $user, $inventory->getCreatedBy(), 'The remains of an exploded Hot Potato.', $inventory->getLocation());
-            $inventoryService->receiveItem('Liquid-hot Magma', $user, $inventory->getCreatedBy(), 'The remains of an exploded Hot Potato.', $inventory->getLocation());
+            $spice = $inventory->getSpice();
 
-            $thirdItem = $squirrel3->rngNextFromArray([
-                'Charcoal',
-                'Glowing Six-sided Die',
-                $squirrel3->rngNextFromArray([ 'Oil', 'Butter' ]),
-                $squirrel3->rngNextFromArray([ 'Sour Cream', 'Cheese' ]),
-            ]);
+            $allItemNames = [
+                'Smashed Potatoes',
+                'Liquid-hot Magma',
+            ];
 
-            $inventoryService->receiveItem($thirdItem, $user, $inventory->getCreatedBy(), 'This exploded out of a Hot Potato.', $inventory->getLocation());
+            for($i = 0; $i < $numberOfTosses; $i++)
+            {
+                $allItemNames[] = $squirrel3->rngNextFromArray([
+                    'Smashed Potatoes',
+                    'Liquid-hot Magma',
+                    'Butter',
+                    'Oil',
+                    'Sour Cream',
+                    'Cheese',
+                    'Vinegar',
+                    'Onion',
+                    'Beans',
+                ]);
+            }
+
+            sort($allItemNames);
+
+            foreach($allItemNames as $itemName)
+            {
+                $inventoryService->receiveItem($itemName, $user, $inventory->getCreatedBy(), 'This exploded out of a Hot Potato.', $inventory->getLocation())
+                    ->setSpice($spice);
+                ;
+            }
 
             $em->remove($inventory);
             $em->flush();
 
-            return $responseService->itemActionSuccess('You get ready to toss the Hot Potato, but it explodes in your hands! It\'s a bit hot, but hey: you got Smashed Potatoes, Liquid-hot Magma, and ' . $thirdItem . '!', [ 'itemDeleted' => true ]);
+            return $responseService->itemActionSuccess('You get ready to toss the Hot Potato, but it explodes in your hands! It\'s a bit hot, but hey: you got ' . ArrayFunctions::list_nice($allItemNames) . '!', [ 'itemDeleted' => true ]);
         }
         else
         {
@@ -81,6 +102,7 @@ class HotPotatoController extends AbstractController
         if($squirrel3->rngNextInt(1, 100) <= 10 + $numberOfTosses * 10)
         {
             $numberOfItems = 5 + $numberOfTosses;
+            $spice = $inventory->getSpice();
 
             $loot = $squirrel3->rngNextSubsetFromArray([
                 'Chocolate Bar',
@@ -103,7 +125,10 @@ class HotPotatoController extends AbstractController
             ], $numberOfItems);
 
             foreach($loot as $itemName)
-                $inventoryService->receiveItem($itemName, $user, $inventory->getCreatedBy(), 'This exploded out of a Chocolate Bomb.', $inventory->getLocation(), $itemName === 'Chocolate Bomb');
+            {
+                $inventoryService->receiveItem($itemName, $user, $inventory->getCreatedBy(), 'This exploded out of a Chocolate Bomb.', $inventory->getLocation(), $itemName === 'Chocolate Bomb')
+                    ->setSpice($spice);
+            }
 
             $em->remove($inventory);
             $em->flush();
