@@ -33,22 +33,18 @@ class FlowerbombController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'flowerbomb/#/toss');
 
         $lastFlowerBombWasNarcissistic = $userQuestRepository->findOrCreate($user, 'Last Flowerbomb was Narcissus', true);
-
         $numberOfTosses = HotPotatoService::countTosses($inventory);
+        $isNarcissusBomb = $numberOfTosses === 0;
 
-        if($numberOfTosses === 0)
-        {
-            $chanceToExplode = $lastFlowerBombWasNarcissistic->getValue() ? 0 : 10;
+        if($isNarcissusBomb && $lastFlowerBombWasNarcissistic->getValue())
+            return $hotPotatoService->tossItem($inventory);
 
-            $possibleFlowers = [
-                'Narcissus'
-            ];
-        }
-        else
-        {
-            $chanceToExplode = 20;
+        if($squirrel3->rngNextInt(1, 100) > 10 + $numberOfTosses * 5)
+            return $hotPotatoService->tossItem($inventory);
 
-            $possibleFlowers = [
+        $possibleFlowers = $isNarcissusBomb
+            ? [ 'Narcissus' ]
+            : [
                 'Agrimony',
                 'Bird\'s-foot Trefoil',
                 'Coriander Flower',
@@ -58,30 +54,22 @@ class FlowerbombController extends AbstractController
                 'Red Clover',
                 'Viscaria',
                 'Witch-hazel',
-                'Wheat',
-            ];
-        }
+                'Wheat Flower',
+                'Rice Flower',
+            ]
+        ;
 
-        $explodes = $squirrel3->rngNextInt(1, 100) <= $chanceToExplode;
+        $lastFlowerBombWasNarcissistic->setValue($isNarcissusBomb);
 
-        $lastFlowerBombWasNarcissistic->setValue($explodes && $numberOfTosses === 0);
-
-        if($explodes)
+        for($i = 0; $i < 10 + $numberOfTosses; $i++)
         {
-            for($i = 0; $i < 10 + $numberOfTosses; $i++)
-            {
-                $flower = $squirrel3->rngNextFromArray($possibleFlowers);
-                $inventoryService->receiveItem($flower, $user, $inventory->getCreatedBy(), 'This exploded out of a Flowerbomb.', $inventory->getLocation());
-            }
-
-            $em->remove($inventory);
-            $em->flush();
-
-            return $responseService->itemActionSuccess('You get ready to toss the Flowerbomb, but it explodes in your hands! Flowers go flying everywhere! (Mostly into your house.)', [ 'itemDeleted' => true ]);
+            $flower = $squirrel3->rngNextFromArray($possibleFlowers);
+            $inventoryService->receiveItem($flower, $user, $inventory->getCreatedBy(), 'This exploded out of a Flowerbomb.', $inventory->getLocation());
         }
-        else
-        {
-            return $hotPotatoService->tossItem($inventory);
-        }
+
+        $em->remove($inventory);
+        $em->flush();
+
+        return $responseService->itemActionSuccess('You get ready to toss the Flowerbomb, but it explodes in your hands! Flowers go flying everywhere! (Mostly into your house.)', [ 'itemDeleted' => true ]);
     }
 }
