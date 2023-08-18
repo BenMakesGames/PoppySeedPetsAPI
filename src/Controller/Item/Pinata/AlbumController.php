@@ -6,6 +6,7 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Model\ItemQuantity;
+use App\Model\Music;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\PetRelationshipService;
@@ -57,7 +58,9 @@ class AlbumController extends AbstractController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You received ' . $musicNotes->quantity . ' music notes, and a ' . $extraItem . '.', [ 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess(
+            '<em>' . $squirrel3->rngNextFromArray(Music::LYRICS) . "</em>\n\n" .
+            'You received ' . $musicNotes->quantity . ' music notes, and a ' . $extraItem . '.', [ 'itemDeleted' => true ]);
     }
 
     /**
@@ -91,7 +94,10 @@ class AlbumController extends AbstractController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('Ah yes: your favorite genre, ' . $genre . '.' . "\n\n" . 'You also received ' . $musicNotes->quantity . ' Music Notes, and a ' . $extraItem . '.', [ 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess(
+            "<em>" . $squirrel3->rngNextFromArray(Music::LYRICS) . "</em>\n\n" .
+            'Ah yes: your favorite genre, ' . $genre . ".\n\n" .
+            "You also received " . $musicNotes->quantity . ' Music Notes, and a ' . $extraItem . '.',[ 'itemDeleted' => true ]);
     }
 
     /**
@@ -134,6 +140,9 @@ class AlbumController extends AbstractController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('Ah yes: your favorite genre, ' . $genre . '.' . "\n\n" . 'You also received ' . $musicNotes->quantity . ' Music Notes, ' . ArrayFunctions::list_nice($extraItems) . '.', [ 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess(
+            "<em>" . $squirrel3->rngNextFromArray(Music::LYRICS) . "</em>\n\n" .
+            'Ah yes: your favorite genre, ' . $genre . ".\n\n" .
+            "You also received " . $musicNotes->quantity . ' Music Notes, ' . ArrayFunctions::list_nice($extraItems) . '.', [ 'itemDeleted' => true ]);
     }
 }
