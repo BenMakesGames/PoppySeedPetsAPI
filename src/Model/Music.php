@@ -4,22 +4,30 @@ namespace App\Model;
 class Music
 {
     const LYRICS = [
-        'Go with the flow - it is said... that if you can\'t groove to this then you are probably dead.',
+        'Go with the flow; it is said: that if you can\'t groove to this then you are probably dead!',
         'Na naaaaaaa... na-na-na-na-na, na naaaaa... na-na na na-na naaaaaaa...',
         'Manha-manha - do dooooo d-do-do.... manha-manha - do do-do do...',
-        // TODO: tom's diner
-        // TODO: continental drift divide, etc
-        'Perfect circles, three-sided squares, and two nested pairs with just one number. Issac Newton\'s fourth law of motion, rivers and oceans on the mooooon...',
+        'There\'s a woman, on the outside, looking inside; does she see me? No she does not really see me, \'cause she sees her own reflection...',
+        'Speed it up a notch, speed, grunt, no strength - the ladder starts to clatter with a fear of height-- down-- height!',
+        'Perfect circles, three-sided squares, and two nested pairs with just one number; Issac Newton\'s fourth law of motion; rivers and oceans on the mooooon...',
         'Nano naaanooo, naaaanoooo - what a wonderful surprise! The ordinary is extraordinary when you make it nano size!',
-        'I said come. On. Fhwqgads - I said come on Fhwqgaaads...',
+        'I don\'t know... who it is... but it probably is Fhqwhgaaaaads. I asked my friend Joe; I asked my friend Jake: they said it was Fhqwhgads!',
         'This was a triumph. I\'m making a note here: huge success. It\'s haarrd to ooooverstaaaate my saaaatisfadtion...',
-        // TODO: a cheech & chong song?
-        // TODO: love shack?
+        'Everybody\'s movin\'; everybody\'s groovin\', baby! Folks linin\' up outside just to get down!',
         'Eeaaat it! Eeaaat it! Open up your mouth and feed it! Have a banana-- have a whole bunch! It doesn\'t matter what you had for lunch! Just eat it! (Eat it, eat it, eat it...)',
-        // TODO: that Earthbound song from the lounge?
         'Running around at the speed of sou-ound... got places to go - gotta\' follow your rain-bow!',
-        // TODO: beck timebomb song?
-        // TODO: Bennassi Bros lights?
-        // TODO: I am your nightmare mirror... ... colder than a steel blade...
+        'We\'re going sideways! Highways! Riding on an elevator - cold just like an alligator - now my baby\'s out of date!',
+        'Love is all and love is round. Like a precious flower. I\'m a spirit floating down. In the universe.',
+        'I\'ll be your nightmare mirror! Dubba-do-what you did do-do to meeeee - ahahahaha! I\'ll be your nightmare mirorrrrr-oh-oh-or... colder than a steel blade, yeah...',
+        'Incredibly long and unbroken; moving from topic to topic; no one had a chance to interrupt. It was quite hypnotic.',
+        'I wanna be the very best, like no one ever was... to catch them is my real test; to train them is my cause!',
+        'Vrei să pleci dar nu mă, nu mă iei! Nu mă, nu mă iei! Nu mă, nu mă, nu mă iei!',
+        'All right, everybody, now here we go! It\'s a brand new version of the do-see-do!',
+        'I want to write you a nooooote... that you\'ll never read. My friends keep telling meeeee... I shouldn\'t beg and plead...',
+        'Let\'s get looooo-o-o-o-o-ooost... at sea-ea-ea-ea... ea-ea-ea ea! Where theeyyy will neeever find us! Got staarrs at niiight to guide us!',
+        'Sooooomewhere! Between the saaacred silence and sleep! Disorder! Disorder! Disooooor-o-o-orrrrr-derrrrrrrrr!',
+        'At night. I sit by your side. Waiting for you... to give me a sign. I\'m counting the daaaay-ays... and have nothing to say-ay...',
+        'When I\'m hi-i-iding... amid theeee throng... but nowhere is safe... from the ancient sooo-ooo-ooooong!',
+        'No one will touch us if we pick up a star. And if you spin out, you can ride in my car. When we slide together we generate sparks in our wheels, and our hearts...',
     ];
 }
