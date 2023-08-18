@@ -13,6 +13,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\StatusEffectEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
@@ -538,6 +539,26 @@ class PetActivityService
             $this->genericAdventureService->adventure($petWithSkills);
             return;
         }
+
+        if($this->squirrel3->rngNextInt(1, 40) === 1)
+        {
+            if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
+            {
+                $this->genericAdventureService->discoverFeature($pet, UnlockableFeatureEnum::Museum, 'Museum');
+                return;
+            }
+            else if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Bookstore))
+            {
+                $this->genericAdventureService->discoverFeature($pet, UnlockableFeatureEnum::Bookstore, 'Bookstore');
+                return;
+            }
+            else if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Market))
+            {
+                $this->genericAdventureService->discoverFeature($pet, UnlockableFeatureEnum::Market, 'Market');
+                return;
+            }
+        }
+
 
         if($pet->getTool())
         {

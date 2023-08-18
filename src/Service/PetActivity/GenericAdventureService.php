@@ -180,16 +180,6 @@ class GenericAdventureService
             }
         }
 
-        if($this->squirrel3->rngNextBool())
-        {
-            if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
-                return $this->discoverFeature($pet, UnlockableFeatureEnum::Museum, 'Museum');
-            else if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Bookstore))
-                return $this->discoverFeature($pet, UnlockableFeatureEnum::Bookstore, 'Bookstore');
-            else if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Market))
-                return $this->discoverFeature($pet, UnlockableFeatureEnum::Market, 'Market');
-        }
-
         if($pet->getOwner()->getGreenhouse() && $pet->getOwner()->getGreenhouse()->getHasBirdBath() && !$pet->getOwner()->getGreenhouse()->getVisitingBird() && $this->squirrel3->rngNextInt(1, 20) === 1)
         {
             $bird = BirdBathBirdEnum::getRandomValue($this->squirrel3);
@@ -337,7 +327,7 @@ class GenericAdventureService
         return $activityLog;
     }
 
-    private function discoverFeature(Pet $pet, string $feature, string $description): PetActivityLog
+    public function discoverFeature(Pet $pet, string $feature, string $description): PetActivityLog
     {
         $this->userUnlockedFeatureRepository->create($pet->getOwner(), $feature);
 
