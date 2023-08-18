@@ -5,7 +5,7 @@ class Music
 {
     const LYRICS = [
         'Go with the flow - it is said... that if you can\'t groove to this then you are probably dead.',
-        'Na naaaaa... na-na-na na-na-na naaa, na-na na na-na naaaaa...',
+        'Na naaaaaaa... na-na-na-na-na, na naaaaa... na-na na na-na naaaaaaa...',
         'Manha-manha - do dooooo d-do-do.... manha-manha - do do-do do...',
         // TODO: tom's diner
         // TODO: continental drift divide, etc
