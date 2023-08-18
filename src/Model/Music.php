@@ -24,7 +24,7 @@ class Music
         'Vrei să pleci dar nu mă, nu mă iei! Nu mă, nu mă iei! Nu mă, nu mă, nu mă iei!',
         'All right, everybody, now here we go! It\'s a brand new version of the do-see-do!',
         'I want to write you a nooooote... that you\'ll never read. My friends keep telling meeeee... I shouldn\'t beg and plead...',
-        'Let\'s get looooo-o-o-o-o-ooost... at sea-ea-ea-ea... ea-ea-ea ea! Where theeyyy will neeever find us! Got staarrs at niiight to guide us!',
+        'Let\'s get looooo-o-o-o-o-ooost... at sea-ea-ea-ea, ea-ea-ea, ea! Where theeyyy will neeever find us! Got staarrs at niiight to guide us!',
         'Sooooomewhere! Between the saaacred silence and sleep! Disorder! Disorder! Disooooor-o-o-orrrrr-derrrrrrrrr!',
         'At night. I sit by your side. Waiting for you... to give me a sign. I\'m counting the daaaay-ays... and have nothing to say-ay...',
         'When I\'m hi-i-iding... amid theeee throng... but nowhere is safe... from the ancient sooo-ooo-ooooong!',
