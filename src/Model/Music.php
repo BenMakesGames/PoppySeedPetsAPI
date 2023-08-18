@@ -29,5 +29,6 @@ class Music
         'At night. I sit by your side. Waiting for you... to give me a sign. I\'m counting the daaaay-ays... and have nothing to say-ay...',
         'When I\'m hi-i-iding... amid theeee throng... but nowhere is safe... from the ancient sooo-ooo-ooooong!',
         'No one will touch us if we pick up a star. And if you spin out, you can ride in my car. When we slide together we generate sparks in our wheels, and our hearts...',
+        'Act like a brother (every day is a miracle). Help one another (connect back with the people). Give it to your lover (and all the people you miss). Let\'s go, already...',
     ];
 }
