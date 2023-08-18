@@ -44,7 +44,7 @@ class CollectWeeklyCarePackageController extends AbstractController
 
         $itemsDonated = $userStatsRepository->getStatValue($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM);
 
-        $canGetHandicraftsBox = $itemsDonated >= 150;
+        $canGetHandicraftsBox = $itemsDonated >= 100;
         $canGetFishBag = $itemsDonated >= 450;
         $canGetGamingBox = $user->hasUnlockedFeature(UnlockableFeatureEnum::HollowEarth);
 
