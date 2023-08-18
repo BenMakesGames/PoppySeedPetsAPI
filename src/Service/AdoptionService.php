@@ -32,28 +32,19 @@ class AdoptionService
         $this->chineseCalendarInfo = $calendarService->getChineseCalendarInfo();
     }
 
+    public function getPetsAdopted(User $user): int
+    {
+        return $this->userStatsRepository->getStatValue($user, UserStatEnum::PETS_ADOPTED);
+    }
+
     public function getAdoptionFee(User $user): int
     {
-        $statValue = $this->userStatsRepository->getStatValue($user, UserStatEnum::PETS_ADOPTED);
+        $fee = 100;
 
-        $itemsDonated = $this->userStatsRepository->getStatValue($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM);
+        $petsAdopted = $this->getPetsAdopted($user);
 
-        if($statValue <= 6)
-            $fee = 50;
-        else if($statValue <= 28)
-            $fee = 75;
-        else if($statValue <= 496)
-            $fee = 100;
-        else if($statValue <= 8128)
-            $fee = 50;
-        else
-            $fee = 20;
-
-        if($itemsDonated >= 300)
-            $fee -= 5;
-
-        if($itemsDonated >= 600)
-            $fee -= 5;
+        if($petsAdopted == 0)
+            $fee = ceil($fee / 2);
 
         if($this->calendarService->isBlackFriday() || $this->calendarService->isCyberMonday())
             $fee = ceil($fee / 10) * 5;
@@ -63,25 +54,11 @@ class AdoptionService
 
     private function getNumberOfPets(User $user, Squirrel3 $squirrel3): int
     {
-        $statValue = $this->userStatsRepository->getStatValue($user, UserStatEnum::PETS_ADOPTED);
+        $bonus = $this->getPetsAdopted($user) > 0 && $squirrel3->rngNextInt(1, 31) === 1 ? 10 : 0;
 
-        $bonus = $statValue > 6 && $squirrel3->rngNextInt(1, 31) === 1 ? 10 : 0;
-
-        if($statValue <= 6)
-            return $squirrel3->rngNextInt(4, 6) + $bonus;
-        else if($statValue <= 28)
-            return $squirrel3->rngNextInt(5, 8) + $bonus;
-        else if($statValue <= 496)
-            return $squirrel3->rngNextInt(6, 10) + $bonus;
-        else if($statValue <= 8128)
-            return $squirrel3->rngNextInt(6, 10) + $bonus;
-        else
-            return $squirrel3->rngNextInt(6, 10) + $bonus;
+        return $squirrel3->rngNextInt(4, 8) + $bonus;
     }
 
-    /**
-     * @return {PetShelterPet[], string}
-     */
     public function getDailyPets(User $user): array
     {
         $now = new \DateTimeImmutable();
@@ -92,11 +69,17 @@ class AdoptionService
 
         $numPets = $this->getNumberOfPets($user, $squirrel3);
         $numSeasonalPets = $this->numberOfSeasonalPets($numPets, $squirrel3);
+        $petsAdopted = $this->getPetsAdopted($user);
 
-        $dialog = $numPets > 10
-            ? "Oh, goodness! A bunch of pets appeared from the Portal today! It just seems to happen now and again; we're still not sure why...\n\n Anyway, if "
-            : "Hello! Here to adopt a new friend?\n\nIf "
-        ;
+        if($petsAdopted == 0)
+            $dialog = "Hello! Here to adopt a new friend? Your first pet is 50% off!\n\n If";
+        else
+        {
+            $dialog = $numPets > 10
+                ? "Oh, goodness! A bunch of pets appeared from the Portal today! It just seems to happen now and again; we're still not sure why...\n\n Anyway, if "
+                : "Hello! Here to adopt a new friend?\n\nIf "
+            ;
+        }
 
         $petCount = $this->petRepository->createQueryBuilder('p')
             ->select('COUNT(p.id)')

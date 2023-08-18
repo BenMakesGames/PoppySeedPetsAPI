@@ -210,7 +210,6 @@ class BookstoreService
             $bookPrices['Book of Flowers'] = 15;
 
         $cookedSomething = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::COOKED_SOMETHING ]);
-        $itemsDonatedToMuseum = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]);
 
         if($cookedSomething)
         {
@@ -226,20 +225,27 @@ class BookstoreService
                 $bookPrices['Of Rice'] = 50;
             }
 
-            if($cookedSomething->getValue() >= 25)
-                $bookPrices['Book of Noods'] = 20;
-
-            if($cookedSomething->getValue() >= 35)
+            if($cookedSomething->getValue() >= 50)
             {
                 $bookPrices['Juice'] = 15;
-                $bookPrices['Pie Recipes'] = 15;
                 $bookPrices['We All Scream'] = 15;
             }
 
-            if($cookedSomething->getValue() >= 50)
+            if($cookedSomething->getValue() >= 100)
             {
+                $bookPrices['Pie Recipes'] = 15;
                 $bookPrices['Milk: The Book'] = 30;
+            }
+
+            if($cookedSomething->getValue() >= 200)
+            {
                 $bookPrices['Fried'] = 25;
+                $bookPrices['The Art of Tofu'] = 25;
+            }
+
+            if($cookedSomething->getValue() >= 300)
+            {
+                $bookPrices['SOUP'] = 25;
             }
 
             if($cookedSomething->getValue() >= 500)
@@ -248,26 +254,25 @@ class BookstoreService
             }
         }
 
-        if($user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace))
-            $bookPrices['Melt'] = 25;
+        $itemsDonatedToMuseum = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]);
 
         if($itemsDonatedToMuseum)
         {
             if($itemsDonatedToMuseum->getValue() >= 100)
-            {
                 $bookPrices['Basement Blueprint'] = 100;
-                $bookPrices['The Umbra'] = 25;
-            }
 
             if($itemsDonatedToMuseum->getValue() >= 150)
                 $bookPrices['Electrical Engineering Textbook'] = 50;
 
-            if($itemsDonatedToMuseum->getValue() >= 200)
-            {
-                $bookPrices['SOUP'] = 25;
-                $bookPrices['The Art of Tofu'] = 25;
-            }
+            if($itemsDonatedToMuseum->getValue() >= 300)
+                $bookPrices['The Umbra'] = 25;
+
+            if($itemsDonatedToMuseum->getValue() >= 600)
+                $bookPrices['Book of Noods'] = 20;
         }
+
+        if($user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace))
+            $bookPrices['Melt'] = 25;
 
         if(
             $user->getGreenhouse() &&
@@ -278,9 +283,7 @@ class BookstoreService
         }
 
         if($this->renamingScrollAvailable($user))
-        {
             $bookPrices['Renaming Scroll'] = $this->getRenamingScrollCost($user);
-        }
 
         ksort($bookPrices);
 
@@ -297,11 +300,17 @@ class BookstoreService
 
     public function renamingScrollAvailable(User $user): bool
     {
-        $petsBirthed = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::PETS_BIRTHED ]);
         $petsAdopted = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::PETS_ADOPTED ]);
-        $petsAcquired = ($petsBirthed ? $petsBirthed->getValue() : 0) + ($petsAdopted ? $petsAdopted->getValue() / 10 : 0);
 
-        return $petsAcquired >= 3;
+        if($petsAdopted && $petsAdopted->getValue() > 0)
+            return true;
+
+        $petsBirthed = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::PETS_BIRTHED ]);
+
+        if($petsBirthed && $petsBirthed->getValue() > 0)
+            return true;
+
+        return false;
     }
 
     public function getResponseData(User $user)
