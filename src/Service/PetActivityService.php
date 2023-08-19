@@ -559,7 +559,6 @@ class PetActivityService
             }
         }
 
-
         if($pet->getTool())
         {
             if($this->considerToolsWhichLeadToAdventure($petWithSkills))
