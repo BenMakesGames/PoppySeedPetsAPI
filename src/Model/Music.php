@@ -15,7 +15,7 @@ class Music
         'This was a triumph. I\'m making a note here: huge success. It\'s haarrd to ooooverstaaaate my saaaatisfadtion...',
         'Everybody\'s movin\'; everybody\'s groovin\', baby! Folks linin\' up outside just to get down!',
         'Eeaaat it! Eeaaat it! Open up your mouth and feed it! Have a banana-- have a whole bunch! It doesn\'t matter what you had for lunch! Just eat it! (Eat it, eat it, eat it...)',
-        'Running around at the speed of sou-ound... got places to go - gotta\' follow your rain-bow!',
+        'Rollin\' around at the speed of sou-ound... got places to go - gotta\' follow my rain-bow!',
         'We\'re going sideways! Highways! Riding on an elevator - cold just like an alligator - now my baby\'s out of date!',
         'Love is all and love is round. Like a precious flower. I\'m a spirit floating down. In the universe.',
         'I\'ll be your nightmare mirror! Dubba-do-what you did do-do to meeeee - ahahahaha! I\'ll be your nightmare mirorrrrr-oh-oh-or... colder than a steel blade, yeah...',
