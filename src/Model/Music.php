@@ -40,5 +40,6 @@ class Music
         'And I\'m he-ere! To remind you! Of the mess you left when you went away!',
         'Ohhh, myyy, liiife... is changing every daaay... in every possible way-ay...',
         'Slide your feet up street, bend your back, shift your arm, then you pull it back. Life is hard, you know - oh-way-oh! - so strike a pose on a Cadillac...',
+        'While you\'re still sleeping, the saints are still weeping, \'cause things you called dead haven\'t yet had the chance to be be born...',
     ];
 }
