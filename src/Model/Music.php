@@ -74,6 +74,7 @@ class Music
         // Infected Mushroom
         'At night. I sit by your side. Waiting for you... to give me a sign. I\'m counting the daaaay-ays... and have nothing to say-ay...',
         'When I\'m hi-i-iding... amid theeee throng... but nowhere is safe... from the ancient sooo-ooo-ooooong!',
+        'I want to move, to lose, to take the grooves... and to give it all back...',
 
         // Mario Kart Lovesong
         'No one will touch us if we pick up a star. And if you spin out, you can ride in my car. When we slide together we generate sparks in our wheels, and our hearts...',
@@ -113,7 +114,7 @@ class Music
         'While you\'re still sleeping, the saints are still weeping, \'cause things you called dead haven\'t yet had the chance to be be born...',
 
         // Gangum Style
-        'Heeeeeyyyyy, sexy la-dy! 오 오 오 오! 오빤 강남스타일!',
+        'Heeeeeyyyyy, sexy la-dy! 오, 오 오 오! 오빤 강남스타일!',
 
         // Courtney Barnett
         'My hands are shaaaky; my knees are weeaak; I can\'t seem to stand on my own two feeet...',
@@ -123,7 +124,7 @@ class Music
         'She\'s a clueless social climber; likes the wrong side of the bed. She\'s a pick-me-up, and she\'s a drink-to-me in the company of friends...',
 
         // Monty Python
-        'For life is quite absurd. And death\'s the final word. You must always face the curtain with a booww...',
+        'For life is quite absurd, and death\'s the final word; you must always face the curtain with a booww...',
         'Just remember that you\'re standing... on a planet... that\'s evolving... and revolving at nine-hundred miles an hour...',
 
         // Tim Minchin
@@ -137,5 +138,17 @@ class Music
 
         // Flobos, Handlebars
         'Me and my friend saw a platypus; me and my friend made a comic book. And guess how long it took? I can do anything that I want, \'cause, look...',
+
+        // Rolling Stones
+        'The floods is threat\'ning my very life today. Gimme-- gimme shelter, or I\'m gonna fade away...',
+
+        // Bad Reputation
+        'I don\'t give a damn \'bout my reputation! ... I\'ve never been afraid of any deviation! ... And I don\'t really care if you think I\'m strange; I ain\'t gonna change!',
+
+        // I Monster, Daydream in Blue
+        'Daydream-- I dream of you amid the flowers. For a couple of hours. Such a beautiful daaaayyyy...',
+
+        // Eiffel 64, Blue
+        'I\'m blue, da-ba-dee, da-ba-die! A da-ba-dee... da-ba-die, a da-ba-dee, da-ba-die...',
     ];
 }
