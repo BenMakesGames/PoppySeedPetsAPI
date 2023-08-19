@@ -31,5 +31,8 @@ class Music
         'No one will touch us if we pick up a star. And if you spin out, you can ride in my car. When we slide together we generate sparks in our wheels, and our hearts...',
         'Act like a brother (every day is a miracle). Help one another (connect back with the people). Give it to your lover (and all the people you miss). Let\'s go, already...',
         'yIja\'Qo\', Bagh Da tuH mogh, ChojaH Duh rHo... yIjah, Qey\' \'oH! yIjah, Qey\' \'oH! yIjah, Qey\' \'oH!',
+        'Chillin\' out, maxin\', relaxin\', all cool... and all shootin\' some b-ball outside of the school...',
+        'Loca in ferna in nocte... loca in ferna in nocte... animae in nebula... Mitternaaaaacht!',
+        'Doctor Jones, Jones, calling Doctor Jones... Doctor Jones, Doctor Jones, get up now (wake up now)...',
     ];
 }

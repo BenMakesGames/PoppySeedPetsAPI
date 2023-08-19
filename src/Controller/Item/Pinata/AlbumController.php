@@ -26,6 +26,7 @@ class AlbumController extends AbstractController
         'Salsa',
         'Meringue',
         'Rock',
+        'Rock',
         'Bubblegum'
     ];
 
@@ -49,7 +50,7 @@ class AlbumController extends AbstractController
         $musicNotes->item = $itemRepository->findOneByName('Music Note');
         $musicNotes->quantity = $squirrel3->rngNextInt(3, 4);
 
-        $extraItem = $squirrel3->rngNextFromArray([ 'Pointer', 'Quintessence' ]);
+        $extraItem = $squirrel3->rngNextFromArray([ 'Pointer', 'NUL', 'Quintessence' ]);
 
         $inventoryService->giveInventoryQuantities($musicNotes, $user, $user, $user->getName() . ' got this by listening to a Single.', $location);
         $inventoryService->receiveItem($extraItem, $user, $user, $user->getName() . ' got this by listening to a Single.', $location);
@@ -59,8 +60,10 @@ class AlbumController extends AbstractController
         $em->flush();
 
         return $responseService->itemActionSuccess(
-            '<em>' . $squirrel3->rngNextFromArray(Music::LYRICS) . "</em>\n\n" .
-            'You received ' . $musicNotes->quantity . ' music notes, and a ' . $extraItem . '.', [ 'itemDeleted' => true ]);
+            'It\'s an experimental instrumental piece.' . "\n\n" .
+            'You received ' . $musicNotes->quantity . ' music notes, and a ' . $extraItem . '.',
+            [ 'itemDeleted' => true ]
+        );
     }
 
     /**
@@ -84,7 +87,7 @@ class AlbumController extends AbstractController
         $musicNotes->quantity = $squirrel3->rngNextInt(4, 6);
 
         $genre = $squirrel3->rngNextFromArray(self::GENRES);
-        $extraItem = $squirrel3->rngNextFromArray([ 'NUL', 'Quintessence' ]);
+        $extraItem = $squirrel3->rngNextFromArray([ 'Pointer', 'NUL', 'Quintessence' ]);
 
         $inventoryService->giveInventoryQuantities($musicNotes, $user, $user, $user->getName() . ' got this by listening to an EP.', $location);
         $inventoryService->receiveItem($genre, $user, $user, $user->getName() . ' got this by listening to a EP.', $location);
@@ -96,8 +99,10 @@ class AlbumController extends AbstractController
 
         return $responseService->itemActionSuccess(
             "<em>" . $squirrel3->rngNextFromArray(Music::LYRICS) . "</em>\n\n" .
-            'Ah yes: your favorite genre, ' . $genre . ".\n\n" .
-            "You also received " . $musicNotes->quantity . ' Music Notes, and a ' . $extraItem . '.',[ 'itemDeleted' => true ]);
+            'What totally and completely original songs these pets have written! In the ' . mb_strtolower($genre) . ' genre, of course... so you get some ' . $genre . "! (Of course!)\n\n" .
+            'You also received ' . $musicNotes->quantity . ' Music Notes, and a ' . $extraItem . '.',
+            [ 'itemDeleted' => true ]
+        );
     }
 
     /**
@@ -120,15 +125,9 @@ class AlbumController extends AbstractController
         $musicNotes->item = $itemRepository->findOneByName('Music Note');
         $musicNotes->quantity = $squirrel3->rngNextInt(4, 6);
 
-        $genre = $squirrel3->rngNextFromArray([ 'Salsa', 'Meringue', 'Rock', 'Rock', 'Bubblegum' ]);
+        $genre = $squirrel3->rngNextFromArray(self::GENRES);
 
-        $extraItems = [
-            $squirrel3->rngNextFromArray([ 'Pointer', 'Quintessence' ]),
-            'Pointer',
-            'Quintessence'
-        ];
-
-        sort($extraItems);
+        $extraItems = [ 'NUL', 'Pointer', 'Quintessence' ];
 
         $inventoryService->giveInventoryQuantities($musicNotes, $user, $user, $user->getName() . ' got this by listening to an LP.', $location);
         $inventoryService->receiveItem($genre, $user, $user, $user->getName() . ' got this by listening to a LP.', $location);
@@ -142,7 +141,9 @@ class AlbumController extends AbstractController
 
         return $responseService->itemActionSuccess(
             "<em>" . $squirrel3->rngNextFromArray(Music::LYRICS) . "</em>\n\n" .
-            'Ah yes: your favorite genre, ' . $genre . ".\n\n" .
-            "You also received " . $musicNotes->quantity . ' Music Notes, ' . ArrayFunctions::list_nice($extraItems) . '.', [ 'itemDeleted' => true ]);
+            'What totally and completely original songs these pets have written! In the ' . mb_strtolower($genre) . ' genre, of course... so you get some ' . $genre . "! (Of course!)\n\n" .
+            'You also received ' . $musicNotes->quantity . ' Music Notes, ' . ArrayFunctions::list_nice($extraItems) . '.',
+            [ 'itemDeleted' => true ]
+        );
     }
 }
