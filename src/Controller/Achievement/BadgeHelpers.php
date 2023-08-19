@@ -475,7 +475,7 @@ final class BadgeHelpers
                 break;
 
             case BadgeEnum::PLAZA_BOX_100:
-                $progress = [ 'target' => 1000, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::PLAZA_BOXES_RECEIVED ]) ];
+                $progress = [ 'target' => 100, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::PLAZA_BOXES_RECEIVED ]) ];
                 $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Very Strongbox' ]), 2);
                 break;
 
