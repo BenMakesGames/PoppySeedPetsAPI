@@ -187,9 +187,6 @@ class BandService
                 $this->receiveFanMail($group);
             else //if ($r <= 75)
                 $this->receiveRoyalties($group);
-            // TODO:
-            //else
-            //    $this->receiveRandomItem($instigatingPet, $group);
         }
         else
             $this->produceAlbum($group);
@@ -307,12 +304,6 @@ class BandService
                 $item = 'EP';
             else //if($totalRoll < 300)
                 $item = 'LP';
-
-            // @TODO:
-            /*
-            else //if($totalRoll < 400)
-                $item = '???';
-            */
 
             foreach($group->getMembers() as $member)
             {
