@@ -34,5 +34,11 @@ class Music
         'Chillin\' out, maxin\', relaxin\', all cool... and all shootin\' some b-ball outside of the school...',
         'Loca in ferna in nocte... loca in ferna in nocte... animae in nebula... Mitternaaaaacht!',
         'Doctor Jones, Jones, calling Doctor Jones... Doctor Jones, Doctor Jones, get up now (wake up now)...',
+        'I found my miiiiind... on the ground belooowww... I was looking dooowwwn... it was looking baaaaack... I was in the sky, all dressed in black!',
+        'Placental, the sister of her brother ma-arsupiaaal... their cousin called Monotreme; dead uncle alotheeerrriaaan...',
+        'I am the eye in the sky... looking at yoo-oou... I can read your mind. I am the maker of rules, dealing with foo-ools... I can cheat you blind.',
+        'And I\'m he-ere! To remind you! Of the mess you left when you went away!',
+        'Ohhh, myyy, liiife... is changing every daaay... in every possible way-ay...',
+        'Slide your feet up street, bend your back, shift your arm, then you pull it back. Life is hard, you know - oh-way-oh! - so strike a pose on a Cadillac...',
     ];
 }
