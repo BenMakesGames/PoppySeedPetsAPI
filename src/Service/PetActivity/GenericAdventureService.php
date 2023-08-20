@@ -370,7 +370,8 @@ class GenericAdventureService
             ActivityHelpers::PetName($pet) . '\'s got so much confetti on them, they were finding bits of confetti on their body all day...'
         );
 
-        $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Special Event', 'Birthday' ]));
+        if($activityLog)
+            $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Special Event', 'Birthday' ]));
 
         return $activityLog;
     }
