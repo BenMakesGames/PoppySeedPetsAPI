@@ -150,5 +150,12 @@ class Music
 
         // Eiffel 64, Blue
         'I\'m blue, da-ba-dee, da-ba-die! A da-ba-dee... da-ba-die, a da-ba-dee, da-ba-die...',
+
+        // Mary Poppins
+        'Now where is there a more happier crew... than thems that sing chim chim cher-ee, chim cher-oo...',
+
+        // Sayonara Wild Hearts
+        'And all the things I need to say... and all the big words seem to stay... on the insiiide... on the insi-i-iiide!',
+        'I don\'t know... where to start... in the search of the beat of your heart... a sooouuund in the deeeaaafening silence...',
     ];
 }
