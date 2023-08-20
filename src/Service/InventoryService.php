@@ -421,13 +421,30 @@ class InventoryService
             $this->responseService->setReloadInventory();
         }
 
+        if($pet->hasStatusEffect(StatusEffectEnum::SPICED) && $item->getSpice())
+        {
+            $extraItem = (new Inventory())
+                ->setOwner($pet->getOwner())
+                ->setCreatedBy($pet->getOwner())
+                ->setItem($item)
+                ->addComment($pet->getName() . ' got this extra ' . $item->getName() . ' thanks to being ' . StatusEffectEnum::SPICED . '.')
+                ->setLocation(LocationEnum::HOME)
+                ->setEnchantment($bonus)
+            ;
+
+            if(!$this->houseSimService->getState()->addInventory($extraItem))
+                $this->em->persist($extraItem);
+
+            $this->responseService->setReloadInventory();
+        }
+
         if($pet->hasStatusEffect(StatusEffectEnum::HOPPIN) && str_ends_with($item->getName(), 'Toad Legs'))
         {
             $extraItem = (new Inventory())
                 ->setOwner($pet->getOwner())
                 ->setCreatedBy($pet->getOwner())
                 ->setItem($item)
-                ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' while ' . StatusEffectEnum::HOPPIN . '.')
+                ->addComment($pet->getName() . ' got this extra ' . $item->getName() . ' thanks to being ' . StatusEffectEnum::HOPPIN . '.')
                 ->setLocation(LocationEnum::HOME)
                 ->setSpice($extraItemSpice)
                 ->setEnchantment($bonus)

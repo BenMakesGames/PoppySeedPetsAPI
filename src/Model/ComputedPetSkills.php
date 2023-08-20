@@ -31,13 +31,14 @@ class ComputedPetSkills
         $skill = new TotalPetSkill();
         $skill->base = $this->pet->getSkills()->getStrength();
         $skill->merits =
-            ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 1 : 0) +
             ($this->pet->hasMerit(MeritEnum::MOON_BOUND) ? DateFunctions::moonStrength(new \DateTimeImmutable()) : 0) +
             ($this->pet->hasMerit(MeritEnum::ETERNAL) ? 1 : 0) +
             ($this->pet->hasMerit(MeritEnum::WONDROUS_STRENGTH) ? 2 : 0)
         ;
 
-        $skill->statusEffects = ($this->pet->hasStatusEffect(StatusEffectEnum::VIVACIOUS) ? 1 : 0);
+        $skill->statusEffects =
+            ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 1 : 0) +
+            ($this->pet->hasStatusEffect(StatusEffectEnum::VIVACIOUS) ? 1 : 0);
 
         return $skill;
     }
@@ -50,13 +51,14 @@ class ComputedPetSkills
         $skill = new TotalPetSkill();
         $skill->base = $this->pet->getSkills()->getStamina();
         $skill->merits =
-            ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 1 : 0) +
             ($this->pet->hasMerit(MeritEnum::MOON_BOUND) ? DateFunctions::moonStrength(new \DateTimeImmutable()) : 0) +
             ($this->pet->hasMerit(MeritEnum::ETERNAL) ? 1 : 0) +
             ($this->pet->hasMerit(MeritEnum::WONDROUS_STAMINA) ? 2 : 0)
         ;
 
-        $skill->statusEffects = ($this->pet->hasStatusEffect(StatusEffectEnum::VIVACIOUS) ? 1 : 0);
+        $skill->statusEffects =
+            ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 1 : 0) +
+            ($this->pet->hasStatusEffect(StatusEffectEnum::VIVACIOUS) ? 1 : 0);
 
         return $skill;
     }
@@ -115,6 +117,7 @@ class ComputedPetSkills
             ($this->pet->hasStatusEffect(StatusEffectEnum::TIRED) ? -2 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::CAFFEINATED) ? 2 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::VIVACIOUS) ? 1 : 0)
+            ($this->pet->hasStatusEffect(StatusEffectEnum::SPICED) ? 2 : 0)
         ;
 
         return $skill;

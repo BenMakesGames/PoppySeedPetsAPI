@@ -41,4 +41,5 @@ final class StatusEffectEnum
     public const THIRSTY = 'Thirsty';
     public const HEAT_RESISTANT = 'Heat-resistant';
     public const JAUNE = 'Jaune';
+    public const SPICED = 'Spiced';
 }

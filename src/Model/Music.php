@@ -157,5 +157,11 @@ class Music
         // Sayonara Wild Hearts
         'And all the things I need to say... and all the big words seem to stay... on the insiiide... on the insi-i-iiide!',
         'I don\'t know... where to start... in the search of the beat of your heart... a sooouuund in the deeeaaafening silence...',
+
+        // Studio Killers, Friday Night Gurus
+        'Theeyy\'ve got a soouund... serious-ly obese in the base frequencies; peerrfectly round, like spiiirals iiin their DNAaa...',
+
+        // Portugal, Feel It Still
+        'Ooh-woo, I\'m a rebel just for kicks, now... I been feeling it since 1966, now...',
     ];
 }
