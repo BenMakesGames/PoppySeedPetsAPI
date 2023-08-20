@@ -53,7 +53,7 @@ class Music
         // Pogo, Data & Picard
         'Incredibly unbroken sentence; moving from topic to topic; no one had a chance to interrupt. It was quite hypnotic.',
 
-        // Pokemon, anime american opening song
+        // Pokémon, anime american opening song
         'I wanna be the very best, like no one ever was... to catch them is my real test; to train them is my cause!',
 
         // Dragostea Din Tei
