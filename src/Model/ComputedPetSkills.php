@@ -38,7 +38,8 @@ class ComputedPetSkills
 
         $skill->statusEffects =
             ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 1 : 0) +
-            ($this->pet->hasStatusEffect(StatusEffectEnum::VIVACIOUS) ? 1 : 0);
+            ($this->pet->hasStatusEffect(StatusEffectEnum::VIVACIOUS) ? 1 : 0)
+        ;
 
         return $skill;
     }
@@ -58,7 +59,8 @@ class ComputedPetSkills
 
         $skill->statusEffects =
             ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 1 : 0) +
-            ($this->pet->hasStatusEffect(StatusEffectEnum::VIVACIOUS) ? 1 : 0);
+            ($this->pet->hasStatusEffect(StatusEffectEnum::VIVACIOUS) ? 1 : 0)
+        ;
 
         return $skill;
     }
@@ -116,7 +118,7 @@ class ComputedPetSkills
         $skill->statusEffects =
             ($this->pet->hasStatusEffect(StatusEffectEnum::TIRED) ? -2 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::CAFFEINATED) ? 2 : 0) +
-            ($this->pet->hasStatusEffect(StatusEffectEnum::VIVACIOUS) ? 1 : 0)
+            ($this->pet->hasStatusEffect(StatusEffectEnum::VIVACIOUS) ? 1 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::SPICED) ? 2 : 0)
         ;
 
