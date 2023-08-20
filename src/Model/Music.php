@@ -146,7 +146,7 @@ class Music
         'I don\'t give a damn \'bout my reputation! ... I\'ve never been afraid of any deviation! ... And I don\'t really care if you think I\'m strange; I ain\'t gonna change!',
 
         // I Monster, Daydream in Blue
-        'Daydream-- I dream of you amid the flowers. For a couple of hours. Such a beautiful daaaayyyy...',
+        'Daydream. I dream of you amid the flowers. For a couple of hours. Such a beautiful daaaayyyy...',
 
         // Eiffel 64, Blue
         'I\'m blue, da-ba-dee, da-ba-die! A da-ba-dee... da-ba-die, a da-ba-dee, da-ba-die...',
