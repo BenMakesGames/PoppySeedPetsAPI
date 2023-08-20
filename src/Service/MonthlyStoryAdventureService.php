@@ -208,9 +208,9 @@ class MonthlyStoryAdventureService
 
         if($step->getAura())
         {
-            if($text != '') $text .= "\n\n";
+            $auraText = $this->awardAura($pets, $step);
 
-            $text .= $this->awardAura($pets, $step);
+            if($text && $auraText) $text .= "\n\n" . $auraText;
         }
 
         return $text;
@@ -219,19 +219,22 @@ class MonthlyStoryAdventureService
     /**
      * @param ComputedPetSkills[] $pets
      */
-    private function awardAura(array $pets, MonthlyStoryAdventureStep $step)
+    private function awardAura(array $pets, MonthlyStoryAdventureStep $step): ?string
     {
         /** @var ComputedPetSkills $petSkills */
         $petSkills = $this->rng->rngNextFromArray($pets);
         $pet = $petSkills->getPet();
 
-        $this->hattierService->petMaybeUnlockAura(
+        $unlocked = $this->hattierService->petMaybeUnlockAura(
             $pet,
             $step->getAura(),
             'While playing ★Kindred, %pet:' . $pet->getId() . '.name% was inspired to create a new hat style!',
             'While playing ★Kindred, %pet:' . $pet->getId() . '.name% was inspired to create a new hat style!',
             'While playing ★Kindred, %pet:' . $pet->getId() . '.name% was inspired to create a new hat style!'
         );
+
+        if(!$unlocked)
+            return null;
 
         if($pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Hattier))
             return "(Inspired by the story, {$pet->getName()} created a new hat styling: {$step->getAura()->getName()}! Find it at the Hattier!)";
@@ -364,9 +367,9 @@ class MonthlyStoryAdventureService
 
         if($step->getAura())
         {
-            if($text != '') $text .= "\n\n";
+            $auraText = $this->awardAura($pets, $step);
 
-            $text .= $this->awardAura($pets, $step);
+            if($text && $auraText) $text .= "\n\n" . $auraText;
         }
 
         return new AdventureResult($text, $loot);
