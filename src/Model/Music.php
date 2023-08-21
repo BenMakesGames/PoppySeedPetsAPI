@@ -9,6 +9,8 @@ class Music
 
         // Katamari Damacy
         'Na naaaaaaa... na-na-na-na-na, na naaaaa... na-na na na-na naaaaaaa...',
+        'Every day, every night, let\'s do the royal rainbow - yes! The cosmic message of looove!',
+        'I love you, iki ga tomaru kurai sou... I miss you, tsuyoku dakishimete itsumademo...',
 
         // Manha-manha
         'Manha-manha - do dooooo d-do-do.... manha-manha - do do-do do...',
