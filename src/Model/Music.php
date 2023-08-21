@@ -136,7 +136,7 @@ class Music
         // Fatboy Slim, Weapon of Choice
         'Halfway between the gutter, and, the stars. Yeah. Halfway between the gutter, and, the stars...',
 
-        // Flobos, Handlebars
+        // Flobots, Handlebars
         'Me and my friend saw a platypus; me and my friend made a comic book. And guess how long it took? I can do anything that I want, \'cause, look...',
 
         // Rolling Stones
@@ -163,5 +163,11 @@ class Music
 
         // Portugal, Feel It Still
         'Ooh-woo, I\'m a rebel just for kicks, now... I been feeling it since 1966, now...',
+
+        // Dirty Vegas, Days Go By
+        'You. You are still a whisper on my lips... a feeling at my fingertips... that\'s pulling at my skin...',
+
+        // Todrick Hall, Nails, Hair, Hips, Heels
+        'Girl, I don\'t dance, I work; I don\'t play, I slay; I don\'t walk, I strut, strut, strut, and then sashay...',
     ];
 }
