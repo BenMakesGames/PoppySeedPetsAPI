@@ -50,7 +50,7 @@ class Filterer
         $orderBy = strtolower($params->getAlnum('orderBy'));
         $orderDir = strtolower($params->getAlpha('orderDir'));
 
-        $filters = $params->get('filter', []);
+        $filters = $params->get('filter') ?? [];
         if(!is_array($filters))
             throw new PSPFormValidationException('filter must be an array.');
 

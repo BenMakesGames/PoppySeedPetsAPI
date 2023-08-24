@@ -37,7 +37,7 @@ class SellController extends AbstractController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Market))
             throw new PSPNotUnlockedException('Market');
 
-        $itemIds = $request->request->get('items', []);
+        $itemIds = $request->request->get('items') ?? [];
 
         if(!is_array($itemIds))
         {
