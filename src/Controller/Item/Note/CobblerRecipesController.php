@@ -1,0 +1,54 @@
+<?php
+namespace App\Controller\Item\Note;
+
+use App\Controller\Item\ItemControllerHelpers;
+use App\Entity\Inventory;
+use App\Entity\User;
+use App\Service\CookingService;
+use App\Service\ResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
+/**
+ * @Route("/item/note/cobblers")
+ */
+class CobblerRecipesController extends AbstractController
+{
+    /**
+     * @Route("/{inventory}/upload", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function upload(
+        Inventory $inventory, ResponseService $responseService, CookingService $cookingService
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'note/cobblers/#/upload');
+
+        $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
+            'Berry Cobbler (Blueberry)',
+            'Berry Cobbler (Blackberry)',
+        ]);
+
+        return $responseService->itemActionSuccess($message);
+    }
+
+    /**
+     * @Route("/{inventory}/read", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function readCobblerRecipes(Inventory $inventory, ResponseService $responseService)
+    {
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'note/cobblers/#/read');
+
+        return $responseService->itemActionSuccess('* flour
+* milk
+* butter
+* sugar
+* baking powder
+* berries');
+    }
+}

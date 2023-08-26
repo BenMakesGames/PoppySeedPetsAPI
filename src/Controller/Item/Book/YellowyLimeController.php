@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Repository\InventoryRepository;
+use App\Service\CookingService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,6 +19,31 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class YellowyLimeController extends AbstractController
 {
+    /**
+     * @Route("/{inventory}/upload", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function upload(
+        Inventory $inventory, ResponseService $responseService, CookingService $cookingService
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'yellowyLime/#/upload');
+
+        $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
+            'Yellowy Key-y Lime Pie',
+            'Essence d\'Assortiment (from Blackberry Wine)',
+            'Essence d\'Assortiment (from Blueberry Wine)',
+            'Essence d\'Assortiment (from Dandelion Wine)',
+            'Essence d\'Assortiment (from Fig Wine)',
+            'Essence d\'Assortiment (from Red Wine)',
+        ]);
+
+        return $responseService->itemActionSuccess($message);
+    }
+
     /**
      * @Route("/{inventory}/read", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
@@ -55,9 +81,9 @@ class YellowyLimeController extends AbstractController
 * Butter
 * Graham Cracker
 
-**Essence d'Assortiment
+**Essence d'Assortiment**
 * Yellowy Lime
-* wine
+* (Almost) any wine
 * Vinegar
 * Chanterelle
 * Onion
