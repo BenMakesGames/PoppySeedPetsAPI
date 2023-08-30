@@ -67,7 +67,7 @@ class PetActivityLogsFilterService
     public function filterUser(QueryBuilder $qb, $value)
     {
         if(!in_array('pet', $qb->getAllAliases()))
-            $qb->leftJoin('l.pet', 'pet');
+            $qb->innerJoin('l.pet', 'pet');
 
         if(is_array($value))
             $qb->andWhere('pet.owner IN (:userId)');
