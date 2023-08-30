@@ -80,7 +80,7 @@ class PetActivityLogsFilterService
     public function filterTags(QueryBuilder $qb, $value)
     {
         if(!in_array('tags', $qb->getAllAliases()))
-            $qb->leftJoin('l.tags', 'tags');
+            $qb->innerJoin('l.tags', 'tags');
 
         if(is_array($value))
             $qb->andWhere('tags.title IN (:tags)');
