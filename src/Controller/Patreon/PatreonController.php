@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use App\Annotations\DoesNotRequireHouseHours;
 
 /**
  * @Route("/patreon")
@@ -16,6 +17,7 @@ class PatreonController extends AbstractController
 {
     /**
      * @Route("/connectAccount", methods={"GET"})
+     * @DoesNotRequireHouseHours()
      */
     public function connectPatreonAccount(
         Request $request, ResponseService $responseService, UserRepository $userRepository
@@ -31,7 +33,10 @@ class PatreonController extends AbstractController
         $patreonTokens = $patreonOauth->get_tokens($code, $_ENV['PATREON_REDIRECT_URI']);
 
         $patreonApi = new \Patreon\API($patreonTokens['access_token']);
-        $patreonUser = $patreonApi->get_data('identity?include=memberships&fields'.urlencode('[member]').'=patron_status,currently_entitled_tiers&fields[tier]=title');
+        $patreonUser = $patreonApi->get_data('identity' .
+            '?fields' . urlencode('[member]') . '=patron_status,currently_entitled_tiers' .
+            '&fields' . urlencode('[tier]') . '=title'
+        );
 
         var_dump(json_encode($patreonUser));
 
