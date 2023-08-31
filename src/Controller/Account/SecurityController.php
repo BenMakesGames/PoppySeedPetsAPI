@@ -1,27 +1,16 @@
 <?php
 namespace App\Controller\Account;
 
-use App\Entity\Inventory;
-use App\Entity\Pet;
 use App\Entity\User;
-use App\Enum\LocationEnum;
-use App\Enum\PetLocationEnum;
-use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\PlayerLogHelpers;
-use App\Repository\InventoryRepository;
 use App\Repository\PassphraseResetRequestRepository;
-use App\Repository\PetRepository;
 use App\Repository\UserRepository;
-use App\Repository\UserStatsRepository;
-use App\Repository\UserStyleRepository;
 use App\Service\PassphraseResetService;
 use App\Service\ResponseService;
-use App\Service\UserMenuService;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -29,12 +18,11 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Annotations\DoesNotRequireHouseHours;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @Route("/account")
  */
-class AccountController extends AbstractController
+class SecurityController extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()
@@ -120,24 +108,6 @@ class AccountController extends AbstractController
 
     /**
      * @DoesNotRequireHouseHours()
-     * @Route("", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function getAccount(
-        ResponseService $responseService, EntityManagerInterface $em, UserStyleRepository $userStyleRepository
-    )
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        return $responseService->success(
-            [ 'currentTheme' => $userStyleRepository->findCurrent($user) ],
-            [ SerializationGroupEnum::MY_STYLE ]
-        );
-    }
-
-    /**
-     * @DoesNotRequireHouseHours()
      * @Route("/requestPassphraseReset", methods={"POST"})
      */
     public function requestPassphraseReset(
@@ -194,72 +164,6 @@ class AccountController extends AbstractController
             'You reset your passphrase.',
             [ 'Account & Security' ]
         );
-
-        $em->flush();
-
-        return $responseService->success();
-    }
-
-    /**
-     * @Route("/stats", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function getStats(ResponseService $responseService, UserStatsRepository $userStatsRepository)
-    {
-        $stats = $userStatsRepository->findBy([ 'user' => $this->getUser() ]);
-
-        return $responseService->success($stats, [ SerializationGroupEnum::MY_STATS ]);
-    }
-
-    /**
-     * @Route("/myHouse", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function getHouse(
-        ManagerRegistry $doctrine, ResponseService $responseService,
-        NormalizerInterface $normalizer
-    )
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        $petRepository = $doctrine->getRepository(Pet::class, 'readonly');
-        $inventoryRepository = $doctrine->getRepository(Inventory::class, 'readonly');
-
-        $petsAtHome = $petRepository->findBy([
-            'owner' => $user->getId(),
-            'location' => PetLocationEnum::HOME
-        ]);
-
-        $inventory = $inventoryRepository->findBy([
-            'owner' => $this->getUser(),
-            'location' => LocationEnum::HOME
-        ]);
-
-        return $responseService->success([
-            'inventory' => $normalizer->normalize($inventory, null, [ 'groups' => [ SerializationGroupEnum::MY_INVENTORY ] ]),
-            'pets' => $normalizer->normalize($petsAtHome, null, [ 'groups' => [ SerializationGroupEnum::MY_PET ] ])
-        ]);
-    }
-
-    /**
-     * @Route("/menuOrder", methods={"PATCH"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     * @DoesNotRequireHouseHours()
-     */
-    public function saveMenuOrder(
-        Request $request, UserMenuService $userMenuService, EntityManagerInterface $em,
-        ResponseService $responseService
-    )
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-        $newOrder = $request->request->get('order');
-
-        if(!is_array($newOrder) || count($newOrder) === 0)
-            throw new PSPFormValidationException('No order info was provided.');
-
-        $userMenuService->updateUserMenuSortOrder($user, $newOrder);
 
         $em->flush();
 
