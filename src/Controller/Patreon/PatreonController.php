@@ -34,7 +34,8 @@ class PatreonController extends AbstractController
 
         $patreonApi = new \Patreon\API($patreonTokens['access_token']);
         $patreonUser = $patreonApi->get_data('identity' .
-            '?fields' . urlencode('[member]') . '=patron_status,currently_entitled_tiers' .
+            '?include=tiers' .
+            '&fields' . urlencode('[member]') . '=patron_status' .
             '&fields' . urlencode('[tier]') . '=title'
         );
 
