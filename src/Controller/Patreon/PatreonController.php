@@ -1,21 +1,19 @@
 <?php
-namespace App\Controller\Account;
+namespace App\Controller\Patreon;
 
 use App\Exceptions\PSPFormValidationException;
 use App\Repository\UserRepository;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
- * @Route("/account/patreon")
+ * @Route("/patreon")
  */
 class PatreonController extends AbstractController
 {
     /**
-     * @Route("/connect", methods={"GET"})
+     * @Route("/connectAccount", methods={"GET"})
      */
     public function connectPatreonAccount(
         Request $request, ResponseService $responseService, UserRepository $userRepository
@@ -30,12 +28,10 @@ class PatreonController extends AbstractController
         $patreonOauth = new \Patreon\OAuth($_ENV['PATREON_CLIENT_ID'], $_ENV['PATREON_CLIENT_SECRET']);
         $patreonTokens = $patreonOauth->get_tokens($code, $_ENV['PATREON_REDIRECT_URI']);
 
-        var_dump($patreonTokens);
-
         $patreonApi = new \Patreon\API($patreonTokens['access_token']);
-        $patreonUser = $patreonApi->fetch_user();
+        $patreonUser = $patreonApi->get_data('identity?include=memberships&fields'.urlencode('[member]').'=patron_status,currently_entitled_tiers&fields[tier]=title');
 
-        var_dump($patreonUser);
+        var_dump(json_encode($patreonUser));
 
         die;
     }
