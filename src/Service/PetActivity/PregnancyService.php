@@ -30,15 +30,15 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PregnancyService
 {
-    private $em;
-    private $petRepository;
-    private $responseService;
-    private $petExperienceService;
-    private $userQuestRepository;
-    private $petSpeciesRepository;
-    private $userStatsRepository;
-    private $meritRepository;
-    private $petFactory;
+    private EntityManagerInterface $em;
+    private PetRepository $petRepository;
+    private ResponseService $responseService;
+    private PetExperienceService $petExperienceService;
+    private UserQuestRepository $userQuestRepository;
+    private PetSpeciesRepository $petSpeciesRepository;
+    private UserStatsRepository $userStatsRepository;
+    private MeritRepository $meritRepository;
+    private PetFactory $petFactory;
     private IRandom $squirrel3;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 
@@ -199,7 +199,7 @@ class PregnancyService
         if($pregnancy->getSpiritParent())
         {
             foreach($babies as $baby)
-                $baby->addMerit($this->meritRepository->getMeritByName(MeritEnum::NATURAL_CHANNEL));
+                $baby->addMerit($this->meritRepository->findOneByName(MeritEnum::NATURAL_CHANNEL));
         }
 
         $smallestParent = min($pregnancy->getParent()->getScale(), $pregnancy->getOtherParent() == null ? 50 : $pregnancy->getOtherParent()->getScale());
