@@ -127,46 +127,60 @@ class HattierService
         return $this->userAurasPerRequestCache[$cacheKey];
     }
 
-    public function petUnlockAura(User $user, Enchantment $enchantment, string $comment, PetActivityLog $activityLog, ?string $customActivityUnlockMessage = null): UserUnlockedAura
+    public function getAuraUnlockedCacheKey(User $user, Enchantment $enchantment): string
     {
-        $cacheKey = $user->getId() . '-' . $enchantment->getId();
+        return $user->getId() . '-' . $enchantment->getId();
+    }
+
+    public function auraAlreadyUnlocked(User $user, Enchantment $enchantment): ?UserUnlockedAura
+    {
+        $cacheKey = $this->getAuraUnlockedCacheKey($user, $enchantment);
 
         if(!array_key_exists($cacheKey, $this->userAurasPerRequestCache) || $this->userAurasPerRequestCache[$cacheKey] === null)
         {
-            $unlockedAura = $this->userUnlockedAuraRepository->findOneBy([
+            $this->userAurasPerRequestCache[$cacheKey] = $this->userUnlockedAuraRepository->findOneBy([
                 'user' => $user,
                 'aura' => $enchantment
             ]);
-
-            if(!$unlockedAura)
-            {
-                $unlockedAura = (new UserUnlockedAura())
-                    ->setUser($user)
-                    ->setAura($enchantment)
-                    ->setComment($comment)
-                ;
-
-                $this->em->persist($unlockedAura);
-
-                if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Hattier))
-                {
-                    $this->userUnlockedFeatureRepository->create($user, UnlockableFeatureEnum::Hattier);
-
-                    if($customActivityUnlockMessage)
-                        $activityLog->setEntry($activityLog->getEntry() . ' ' . $customActivityUnlockMessage);
-                    else
-                        $activityLog->setEntry($activityLog->getEntry() . ' (The Hattier has been unlocked! Check it out in the menu!)');
-
-                    $this->unlockStartingAuras($user);
-                }
-                else
-                    $activityLog->setEntry($activityLog->getEntry() . ' (A new style has been added to the Hattier!)');
-            }
-
-            $this->userAurasPerRequestCache[$cacheKey] = $unlockedAura;
         }
 
         return $this->userAurasPerRequestCache[$cacheKey];
+    }
+
+    public function petUnlockAura(User $user, Enchantment $enchantment, string $comment, PetActivityLog $activityLog, ?string $customActivityUnlockMessage = null): UserUnlockedAura
+    {
+        $alreadyUnlocked = $this->auraAlreadyUnlocked($user, $enchantment);
+
+        if($alreadyUnlocked)
+            return $alreadyUnlocked;
+
+        $unlockedAura = (new UserUnlockedAura())
+            ->setUser($user)
+            ->setAura($enchantment)
+            ->setComment($comment)
+        ;
+
+        $this->em->persist($unlockedAura);
+
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Hattier))
+        {
+            $this->userUnlockedFeatureRepository->create($user, UnlockableFeatureEnum::Hattier);
+
+            if($customActivityUnlockMessage)
+                $activityLog->setEntry($activityLog->getEntry() . ' ' . $customActivityUnlockMessage);
+            else
+                $activityLog->setEntry($activityLog->getEntry() . ' (The Hattier has been unlocked! Check it out in the menu!)');
+
+            $this->unlockStartingAuras($user);
+        }
+        else
+            $activityLog->setEntry($activityLog->getEntry() . ' (A new style has been added to the Hattier!)');
+
+        $cacheKey = $this->getAuraUnlockedCacheKey($user, $enchantment);
+
+        $this->userAurasPerRequestCache[$cacheKey] = $unlockedAura;
+
+        return $unlockedAura;
     }
 
     private function unlockStartingAuras(User $user)
@@ -182,7 +196,8 @@ class HattierService
 
         foreach($startingAuras as $aura)
         {
-            $cacheKey = $user->getId() . '-' . $aura->getId();
+            if($this->auraAlreadyUnlocked($user, $aura))
+                continue;
 
             $unlockedAura = (new UserUnlockedAura())
                 ->setUser($user)
@@ -193,6 +208,7 @@ class HattierService
 
             $this->em->persist($unlockedAura);
 
+            $cacheKey = $this->getAuraUnlockedCacheKey($user, $aura);
             $this->userAurasPerRequestCache[$cacheKey] = $unlockedAura;
         }
     }
