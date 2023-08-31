@@ -1,6 +1,8 @@
 <?php
 namespace App\Controller\Account;
 
+use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
@@ -19,6 +21,7 @@ use App\Service\PassphraseResetService;
 use App\Service\ResponseService;
 use App\Service\UserMenuService;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -213,12 +216,15 @@ class AccountController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getHouse(
-        PetRepository $petRepository, InventoryRepository $inventoryRepository, ResponseService $responseService,
+        ManagerRegistry $doctrine, ResponseService $responseService,
         NormalizerInterface $normalizer
     )
     {
         /** @var User $user */
         $user = $this->getUser();
+
+        $petRepository = $doctrine->getRepository(Pet::class, 'readonly');
+        $inventoryRepository = $doctrine->getRepository(Inventory::class, 'readonly');
 
         $petsAtHome = $petRepository->findBy([
             'owner' => $user->getId(),

@@ -1,15 +1,15 @@
 <?php
 namespace App\Service\Filter;
 
-use App\Entity\ItemFood;
+use App\Entity\Item;
 use App\Entity\ItemTool;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
-use App\Repository\ItemRepository;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 
 class ItemFilterService
 {
@@ -21,9 +21,9 @@ class ItemFilterService
     private $user;
     private $useResultCache;
 
-    public function __construct(ItemRepository $itemRepository)
+    public function __construct(ManagerRegistry $doctrine)
     {
-        $this->repository = $itemRepository;
+        $this->repository = $doctrine->getRepository(Item::class, 'readonly');
         $this->useResultCache = true;
 
         $this->filterer = new Filterer(

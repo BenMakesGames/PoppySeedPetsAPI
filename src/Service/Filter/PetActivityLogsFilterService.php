@@ -1,10 +1,11 @@
 <?php
 namespace App\Service\Filter;
 
+use App\Entity\PetActivityLog;
 use App\Exceptions\PSPFormValidationException;
-use App\Repository\PetActivityLogRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 
 class PetActivityLogsFilterService
 {
@@ -14,9 +15,9 @@ class PetActivityLogsFilterService
 
     private $repository;
 
-    public function __construct(PetActivityLogRepository $petActivityLogRepository)
+    public function __construct(ManagerRegistry $doctrine)
     {
-        $this->repository = $petActivityLogRepository;
+        $this->repository = $doctrine->getRepository(PetActivityLog::class, 'readonly');
 
         $this->filterer = new Filterer(
             self::PAGE_SIZE,

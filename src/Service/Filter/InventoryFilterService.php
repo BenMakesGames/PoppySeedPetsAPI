@@ -1,12 +1,13 @@
 <?php
 namespace App\Service\Filter;
 
+use App\Entity\Inventory;
 use App\Entity\ItemTool;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
-use App\Repository\InventoryRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 
 class InventoryFilterService
 {
@@ -17,9 +18,9 @@ class InventoryFilterService
     private $repository;
     private $user;
 
-    public function __construct(InventoryRepository $inventoryRepository)
+    public function __construct(ManagerRegistry $doctrine)
     {
-        $this->repository = $inventoryRepository;
+        $this->repository = $doctrine->getRepository(Inventory::class, 'readonly');
 
         $this->filterer = new Filterer(
             self::PAGE_SIZE,

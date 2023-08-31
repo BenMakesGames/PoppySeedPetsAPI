@@ -11,6 +11,7 @@ use App\Repository\PetRepository;
 use App\Service\Filter\PetFilterService;
 use App\Service\ResponseService;
 use App\Service\Typeahead\PetTypeaheadService;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -36,10 +37,12 @@ class GetController extends AbstractController
      * @Route("/my", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function getMyPets(ResponseService $responseService, PetRepository $petRepository)
+    public function getMyPets(ResponseService $responseService, ManagerRegistry $doctrine)
     {
         /** @var User $user */
         $user = $this->getUser();
+
+        $petRepository = $doctrine->getRepository(Pet::class, 'readonly');
 
         $petsAtHome = $petRepository->findBy([
             'owner' => $user->getId(),

@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Inventory;
 
+use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
@@ -8,6 +9,7 @@ use App\Exceptions\PSPFormValidationException;
 use App\Repository\InventoryRepository;
 use App\Service\Filter\InventoryFilterService;
 use App\Service\ResponseService;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,9 +25,11 @@ class GetController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getMyHouseInventory(
-        ResponseService $responseService, InventoryRepository $inventoryRepository
+        ResponseService $responseService, ManagerRegistry $doctrine
     )
     {
+        $inventoryRepository = $doctrine->getRepository(Inventory::class, 'readonly');
+
         $inventory = $inventoryRepository->findBy(
             [
                 'owner' => $this->getUser(),

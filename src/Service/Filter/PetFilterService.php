@@ -1,9 +1,10 @@
 <?php
 namespace App\Service\Filter;
 
-use App\Repository\PetRepository;
+use App\Entity\Pet;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 
 class PetFilterService
 {
@@ -13,9 +14,9 @@ class PetFilterService
 
     private $repository;
 
-    public function __construct(PetRepository $petRepository)
+    public function __construct(ManagerRegistry $doctrine)
     {
-        $this->repository = $petRepository;
+        $this->repository = $doctrine->getRepository(Pet::class, 'readonly');
 
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
