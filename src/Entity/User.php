@@ -231,6 +231,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $badges;
 
+    /**
+     * @ORM\OneToOne(targetEntity=UserSubscription::class, mappedBy="user", cascade={"persist", "remove"})
+     * @Groups({"myAccount"})
+     */
+    private $subscription;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -908,6 +914,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $badge->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSubscription(): ?UserSubscription
+    {
+        return $this->subscription;
+    }
+
+    public function setSubscription(UserSubscription $subscription): self
+    {
+        // set the owning side of the relation if necessary
+        if ($subscription->getUser() !== $this) {
+            $subscription->setUser($this);
+        }
+
+        $this->subscription = $subscription;
 
         return $this;
     }

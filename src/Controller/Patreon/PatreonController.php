@@ -1,10 +1,12 @@
 <?php
 namespace App\Controller\Patreon;
 
+use App\Entity\UserSubscription;
 use App\Exceptions\PSPFormValidationException;
 use App\Repository\UserRepository;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -29,6 +31,11 @@ class PatreonController extends AbstractController
         if(!$code || !$userId)
             throw new PSPFormValidationException('Code and state are required.');
 
+        $user = $userRepository->find($userId);
+
+        if(!$user)
+            throw new PSPFormValidationException('Invalid state.');
+
         $patreonOauth = new \Patreon\OAuth($_ENV['PATREON_CLIENT_ID'], $_ENV['PATREON_CLIENT_SECRET']);
         $patreonTokens = $patreonOauth->get_tokens($code, $_ENV['PATREON_REDIRECT_URI']);
 
@@ -39,8 +46,16 @@ class PatreonController extends AbstractController
             '&fields' . urlencode('[tier]') . '=title'
         );
 
-        var_dump(json_encode($patreonUser));
+        // TODO: if user has a subscription, get the tier, and log it
+        $amount = 500;
 
-        die;
+        if(!$user->getSubscription())
+            $user->setSubscription(new UserSubscription());
+
+        $user->getSubscription()
+            ->setMonthlyAmountInCents($amount)
+            ->setUpdatedOn();
+
+        return new RedirectResponse('https://poppyseedpets.com/settings/patreon');
     }
 }
