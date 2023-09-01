@@ -49,20 +49,26 @@ class PatreonController extends AbstractController
         );
 
         // TODO: if user has a subscription, get the tier, and log it
+        var_dump($patreonUser);
+
+        // TODO: incorrect; just testing
         $amount = $patreonUser['included'][0]['type'] === 'member' ? 500 : 0;
-        $patreonId = $patreonUser['data']['id'];
+
+        if(!is_numeric($patreonUser['data']['id']) || $patreonUser['data']['id'] < 1 || $patreonUser['data']['id'] != (int)$patreonUser['data']['id'])
+            throw new \Exception('Patreon user id is not valid! (Expected a natural number; got ' . $patreonUser['data']['id'] . ')');
+
+        $patreonUserId = (int)$patreonUser['data']['id'];
 
         if(!$user->getSubscription())
             $user->setSubscription(new UserSubscription());
 
         $user->getSubscription()
             ->setMonthlyAmountInCents($amount)
-            ->setPatreonId($patreonId)
+            ->setPatreonUserId($patreonUserId)
             ->setUpdatedOn();
 
         $em->flush();
 
-        var_dump($patreonUser);
         die;
 
         return new RedirectResponse('https://poppyseedpets.com/settings/patreon');

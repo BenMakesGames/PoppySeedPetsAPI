@@ -35,9 +35,9 @@ class UserSubscription
     private $updatedOn;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="integer")
      */
-    private $patreonId;
+    private $patreonUserId;
 
     public function __construct()
     {
@@ -85,12 +85,12 @@ class UserSubscription
         return $this;
     }
 
-    public function getPatreonId(): ?string
+    public function getPatreonUserId(): int
     {
         return $this->patreonId;
     }
 
-    public function setPatreonId(string $patreonId): self
+    public function setPatreonUserId(int $patreonId): self
     {
         $this->patreonId = $patreonId;
 
