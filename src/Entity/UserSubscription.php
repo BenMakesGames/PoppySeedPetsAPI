@@ -34,6 +34,11 @@ class UserSubscription
      */
     private $updatedOn;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $patreonId;
+
     public function __construct()
     {
         $this->updatedOn = new \DateTimeImmutable();
@@ -76,6 +81,18 @@ class UserSubscription
     public function setUpdatedOn(): self
     {
         $this->updatedOn = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getPatreonId(): ?string
+    {
+        return $this->patreonId;
+    }
+
+    public function setPatreonId(string $patreonId): self
+    {
+        $this->patreonId = $patreonId;
 
         return $this;
     }

@@ -49,13 +49,15 @@ class PatreonController extends AbstractController
         );
 
         // TODO: if user has a subscription, get the tier, and log it
-        $amount = 500;
+        $amount = $patreonUser['included'][0]['type'] === 'member' ? 500 : 0;
+        $patreonId = $patreonUser['data']['id'];
 
         if(!$user->getSubscription())
             $user->setSubscription(new UserSubscription());
 
         $user->getSubscription()
             ->setMonthlyAmountInCents($amount)
+            ->setPatreonId($patreonId)
             ->setUpdatedOn();
 
         $em->flush();
