@@ -46,19 +46,19 @@ class HouseService
 
     public function needsToBeRun(User $user)
     {
-        $query = $this->petRepository->createQueryBuilder('p')
-            ->select('p.id')
+        $petsWithTime = (int)$this->petRepository->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
             ->join('p.houseTime', 'ht')
             ->andWhere('p.owner=:user')
-            ->andWhere('(ht.activityTime>=60 OR (ht.socialEnergy>=:minimumSocialEnergy AND ht.canAttemptSocialHangoutAfter<CURRENT_TIMESTAMP()))')
+            ->andWhere('(ht.activityTime>=60 OR (ht.socialEnergy>=:minimumSocialEnergy AND ht.canAttemptSocialHangoutAfter<:now))')
             ->andWhere('p.location=:home')
             ->setParameter('user', $user->getId())
             ->setParameter('home', PetLocationEnum::HOME)
             ->setParameter('minimumSocialEnergy', PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
-            ->setMaxResults(1)
-            ->getQuery();
-
-        $petsWithTime = (int)$query->getSingleScalarResult();
+            ->setParameter('now', new \DateTimeImmutable())
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
 
         return $petsWithTime > 0;
     }
