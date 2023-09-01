@@ -54,7 +54,7 @@ class PatreonController extends AbstractController
         // TODO: incorrect; just testing
         $amount = $patreonUser['included'][0]['type'] === 'member' ? 500 : 0;
 
-        if(!is_numeric($patreonUser['data']['id']) || $patreonUser['data']['id'] < 1 || $patreonUser['data']['id'] != (int)$patreonUser['data']['id'])
+        if(preg_match('/^[1-9][0-9]*$/', $patreonUser['data']['id']) !== 1)
             throw new \Exception('Patreon user id is not valid! (Expected a natural number; got ' . $patreonUser['data']['id'] . ')');
 
         $patreonUserId = (int)$patreonUser['data']['id'];

@@ -87,12 +87,12 @@ class UserSubscription
 
     public function getPatreonUserId(): int
     {
-        return $this->patreonId;
+        return $this->patreonUserId;
     }
 
-    public function setPatreonUserId(int $patreonId): self
+    public function setPatreonUserId(int $patreonUserId): self
     {
-        $this->patreonId = $patreonId;
+        $this->patreonUserId = $patreonUserId;
 
         return $this;
     }
