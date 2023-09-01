@@ -5,6 +5,7 @@ use App\Entity\UserSubscription;
 use App\Exceptions\PSPFormValidationException;
 use App\Repository\UserRepository;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +23,8 @@ class PatreonController extends AbstractController
      * @DoesNotRequireHouseHours()
      */
     public function connectPatreonAccount(
-        Request $request, ResponseService $responseService, UserRepository $userRepository
+        Request $request, ResponseService $responseService, UserRepository $userRepository,
+        EntityManagerInterface $em
     )
     {
         $code = $request->query->get('code');
@@ -55,6 +57,11 @@ class PatreonController extends AbstractController
         $user->getSubscription()
             ->setMonthlyAmountInCents($amount)
             ->setUpdatedOn();
+
+        $em->flush();
+
+        var_dump($patreonUser);
+        die;
 
         return new RedirectResponse('https://poppyseedpets.com/settings/patreon');
     }
