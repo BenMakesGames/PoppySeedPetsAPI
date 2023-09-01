@@ -172,9 +172,7 @@ class ResponseService
         /** @var User $user */
         $user = $this->getUser();
 
-        if(!$user)
-            $responseData['user'] = null;
-        else
+        if($user)
         {
             $responseData['user'] = $this->normalizer->normalize($user, null, [ 'groups' => [ SerializationGroupEnum::MY_ACCOUNT ] ]);
             $responseData['user']['menu'] = $this->normalizer->normalize($this->userMenuService->getUserMenuItems($user), null, [ 'groups' => [ SerializationGroupEnum::MY_MENU ] ]);

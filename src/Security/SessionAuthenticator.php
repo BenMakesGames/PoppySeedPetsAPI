@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
@@ -53,7 +53,7 @@ class SessionAuthenticator extends AbstractAuthenticator
         if(!$session || $session->getSessionExpiration() < new \DateTimeImmutable())
         {
             $this->responseService->setSessionId(null);
-            throw new AccessDeniedHttpException('You have been logged out due to inactivity. Please log in again.');
+            throw new UnauthorizedHttpException('You have been logged out due to inactivity. Please log in again.');
         }
 
         $user = $session->getUser();
@@ -61,7 +61,11 @@ class SessionAuthenticator extends AbstractAuthenticator
         if($user->getIsLocked())
         {
             $this->responseService->setSessionId(null);
-            throw new AccessDeniedHttpException('This account has been locked.');
+            // technically, this should be a Forbidden exception, because we know who the user is,
+            // but the client is programmed to auto log a user out when they receive a 401 (Unauthorized).
+            // there are legit reasons a user might be Forbidden that we DON'T want them to be logged
+            // out for (ex: accessing the Fireplace before they unlocked it).
+            throw new UnauthorizedHttpException('This account has been locked.');
         }
 
         $this->sessionService->setCurrentSession($sessionId);
