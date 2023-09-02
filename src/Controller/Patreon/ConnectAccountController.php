@@ -43,10 +43,8 @@ class ConnectAccountController extends AbstractController
 
         $patreonApi = new \Patreon\API($patreonTokens['access_token']);
         $patreonUser = $patreonApi->get_data('identity' .
-            '?include=memberships' .
-            '&fields' . urlencode('[member]') . '=patron_status,currently_entitled_amount_cents' .
-            '&fields' . urlencode('[relationship]') . '=currently_entitled_tiers' .
-            '&fields' . urlencode('[tier]') . '=title'
+            '?include=memberships.currently_entitled_tiers' .
+            '&fields' . urlencode('[member]') . '=patron_status,currently_entitled_amount_cents'
         );
 
         // TODO: if user has a subscription, get the tier, and log it
