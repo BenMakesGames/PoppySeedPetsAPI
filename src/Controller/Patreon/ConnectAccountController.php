@@ -16,7 +16,7 @@ use App\Annotations\DoesNotRequireHouseHours;
 /**
  * @Route("/patreon")
  */
-class PatreonController extends AbstractController
+class ConnectAccountController extends AbstractController
 {
     /**
      * @Route("/connectAccount", methods={"GET"})
@@ -44,7 +44,8 @@ class PatreonController extends AbstractController
         $patreonApi = new \Patreon\API($patreonTokens['access_token']);
         $patreonUser = $patreonApi->get_data('identity' .
             '?include=memberships' .
-            '&fields' . urlencode('[member]') . '=patron_status' .
+            '&fields' . urlencode('[member]') . '=patron_status,currently_entitled_amount_cents' .
+            '&fields' . urlencode('[relationship]') . '=currently_entitled_tiers' .
             '&fields' . urlencode('[tier]') . '=title'
         );
 
