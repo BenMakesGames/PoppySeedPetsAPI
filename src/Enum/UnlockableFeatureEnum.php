@@ -23,4 +23,5 @@ final class UnlockableFeatureEnum
     public const Hattier = 'Hattier';
     public const FieldGuide = 'Field Guide';
     public const StarKindred = 'Star Kindred';
+    public const Zoologist = 'Zoologist';
 }

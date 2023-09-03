@@ -11,7 +11,7 @@ class UserFieldGuideEntryFilterService
 
     public const PAGE_SIZE = 20;
 
-    private $repository;
+    private UserFieldGuideEntryRepository $repository;
 
     public function __construct(UserFieldGuideEntryRepository $userFieldGuideEntryRepository)
     {

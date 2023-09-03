@@ -237,6 +237,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $subscription;
 
+    /**
+     * @ORM\OneToMany(targetEntity=UserFieldGuideEntry::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $fieldGuideEntries;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -250,6 +255,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->fate = mt_rand(0, 2147483647);
         $this->unlockedFeatures = new ArrayCollection();
         $this->badges = new ArrayCollection();
+        $this->fieldGuideEntries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -938,5 +944,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->subscription = $subscription;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, UserFieldGuideEntry>
+     */
+    public function getFieldGuideEntries(): Collection
+    {
+        return $this->fieldGuideEntries;
     }
 }

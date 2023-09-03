@@ -557,6 +557,11 @@ class PetActivityService
                 $this->genericAdventureService->discoverFeature($pet, UnlockableFeatureEnum::Market, 'Market');
                 return;
             }
+            else if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Zoologist))
+            {
+                $this->genericAdventureService->discoverFeature($pet, UnlockableFeatureEnum::Zoologist, 'Zoologist');
+                return;
+            }
         }
 
         if($pet->getTool())

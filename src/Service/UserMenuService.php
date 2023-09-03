@@ -94,6 +94,7 @@ class UserMenuService
         $this->maybeAddMenuItem($menuItems, 'park', $user, $userSortOrder, UnlockableFeatureEnum::Park);
         $this->maybeAddMenuItem($menuItems, 'plaza', $user, $userSortOrder, null);
         $this->maybeAddMenuItem($menuItems, 'museum', $user, $userSortOrder, UnlockableFeatureEnum::Museum);
+        $this->maybeAddMenuItem($menuItems, 'zoologist', $user, $userSortOrder, UnlockableFeatureEnum::Zoologist);
         $this->maybeAddMenuItem($menuItems, 'market', $user, $userSortOrder, UnlockableFeatureEnum::Market);
         $this->maybeAddMenuItem($menuItems, 'grocer', $user, $userSortOrder, null);
         $this->maybeAddMenuItem($menuItems, 'petShelter', $user, $userSortOrder, null);

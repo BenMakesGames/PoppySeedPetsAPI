@@ -120,6 +120,33 @@ final class BadgeEnum
     public const TEACH_COOKING_BUDDY_500 = 'CookingBuddyRecipes500';
     public const TEACH_COOKING_BUDDY_600 = 'CookingBuddyRecipes600';
 
+    public const FIELD_GUIDE_10 = 'FieldGuide10';
+    public const FIELD_GUIDE_20 = 'FieldGuide20';
+
+    public const MUSEUM_100 = 'Museum100';
+    public const MUSEUM_200 = 'Museum200';
+    public const MUSEUM_300 = 'Museum300';
+    public const MUSEUM_400 = 'Museum400';
+    public const MUSEUM_500 = 'Museum500';
+    public const MUSEUM_600 = 'Museum600';
+    public const MUSEUM_700 = 'Museum700';
+    public const MUSEUM_800 = 'Museum800';
+    public const MUSEUM_900 = 'Museum900';
+    public const MUSEUM_1000 = 'Museum1000';
+    public const MUSEUM_1100 = 'Museum1100';
+    public const MUSEUM_1200 = 'Museum1200';
+
+    public const ZOOLOGIST_10 = 'Zoologist10';
+    public const ZOOLOGIST_20 = 'Zoologist20';
+    public const ZOOLOGIST_30 = 'Zoologist30';
+    public const ZOOLOGIST_40 = 'Zoologist40';
+    public const ZOOLOGIST_50 = 'Zoologist50';
+    public const ZOOLOGIST_60 = 'Zoologist60';
+    public const ZOOLOGIST_70 = 'Zoologist70';
+    public const ZOOLOGIST_80 = 'Zoologist80';
+    public const ZOOLOGIST_90 = 'Zoologist90';
+    public const ZOOLOGIST_100 = 'Zoologist100';
+
     public const ACCOUNT_AGE_365 = 'AccountAge365';
 
     public const ACHIEVEMENTS_10 = 'Achievements10';
@@ -132,4 +159,6 @@ final class BadgeEnum
     public const ACHIEVEMENTS_80 = 'Achievements80';
     public const ACHIEVEMENTS_90 = 'Achievements90';
     public const ACHIEVEMENTS_100 = 'Achievements100';
+    public const ACHIEVEMENTS_110 = 'Achievements110';
+    public const ACHIEVEMENTS_120 = 'Achievements120';
 }

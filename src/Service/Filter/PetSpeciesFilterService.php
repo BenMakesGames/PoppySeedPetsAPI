@@ -29,6 +29,7 @@ class PetSpeciesFilterService
                 'name' => [ $this, 'filterName' ],
                 'family' => [ $this, 'filterFamily' ],
                 'hasPet' => [ $this, 'filterHasPet' ],
+                'hasDiscovered' => [ $this, 'filterHasDiscovered' ],
             ]
         );
     }
@@ -52,6 +53,19 @@ class PetSpeciesFilterService
             $qb->andWhere('s.id NOT IN (SELECT IDENTITY(pet.species) FROM App\Entity\Pet pet WHERE pet.owner=:user)');
         else
             $qb->andWhere('s.id IN (SELECT IDENTITY(pet.species) FROM App\Entity\Pet pet WHERE pet.owner=:user)');
+
+        $qb->setParameter('user', $this->user);
+    }
+
+    public function filterHasDiscovered(QueryBuilder $qb, $value)
+    {
+        if(!$this->user || $value === null)
+            return;
+
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('s.id NOT IN (SELECT IDENTITY(collected.species) FROM App\Entity\UserSpeciesCollected collected WHERE collected.user=:user)');
+        else
+            $qb->andWhere('s.id IN (SELECT IDENTITY(collected.species) FROM App\Entity\UserSpeciesCollected collected WHERE collected.user=:user)');
 
         $qb->setParameter('user', $this->user);
     }

@@ -19,7 +19,7 @@ class UserFieldGuideEntry
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class)
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="fieldGuideEntries")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;

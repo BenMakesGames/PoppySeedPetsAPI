@@ -23,6 +23,11 @@ final class BadgeHelpers
         );
     }
 
+    public static function getUnlockedFieldGuideEntries(User $user): int
+    {
+        return $user->getFieldGuideEntries()->count();
+    }
+
     public static function getUnlockedAuras(User $user): int
     {
         return $user->getUnlockedAuras()->count();
@@ -538,6 +543,128 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Dicerca' ]), 1);
                 break;
 
+            // Cataloging
+
+            case BadgeEnum::FIELD_GUIDE_10:
+                $progress = [ 'target' => 10, 'current' => self::getUnlockedFieldGuideEntries($user) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Little Strongbox' ]), 1);
+                break;
+
+            case BadgeEnum::FIELD_GUIDE_20:
+                $progress = [ 'target' => 20, 'current' => self::getUnlockedFieldGuideEntries($user) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Very Strongbox' ]), 1);
+                break;
+
+            case BadgeEnum::MUSEUM_100:
+                $progress = [ 'target' => 100, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]) ];
+                $reward = TraderOfferCostOrYield::createMoney(100);
+                break;
+
+            case BadgeEnum::MUSEUM_200:
+                $progress = [ 'target' => 200, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]) ];
+                $reward = TraderOfferCostOrYield::createMoney(100);
+                break;
+
+            case BadgeEnum::MUSEUM_300:
+                $progress = [ 'target' => 300, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]) ];
+                $reward = TraderOfferCostOrYield::createMoney(100);
+                break;
+
+            case BadgeEnum::MUSEUM_400:
+                $progress = [ 'target' => 400, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]) ];
+                $reward = TraderOfferCostOrYield::createMoney(100);
+                break;
+
+            case BadgeEnum::MUSEUM_500:
+                $progress = [ 'target' => 500, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]) ];
+                $reward = TraderOfferCostOrYield::createMoney(100);
+                break;
+
+            case BadgeEnum::MUSEUM_600:
+                $progress = [ 'target' => 600, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]) ];
+                $reward = TraderOfferCostOrYield::createMoney(100);
+                break;
+
+            case BadgeEnum::MUSEUM_700:
+                $progress = [ 'target' => 700, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]) ];
+                $reward = TraderOfferCostOrYield::createMoney(100);
+                break;
+
+            case BadgeEnum::MUSEUM_800:
+                $progress = [ 'target' => 800, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]) ];
+                $reward = TraderOfferCostOrYield::createMoney(100);
+                break;
+
+            case BadgeEnum::MUSEUM_900:
+                $progress = [ 'target' => 900, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]) ];
+                $reward = TraderOfferCostOrYield::createMoney(100);
+                break;
+
+            case BadgeEnum::MUSEUM_1000:
+                $progress = [ 'target' => 1000, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]) ];
+                $reward = TraderOfferCostOrYield::createMoney(100);
+                break;
+
+            case BadgeEnum::MUSEUM_1100:
+                $progress = [ 'target' => 1100, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]) ];
+                $reward = TraderOfferCostOrYield::createMoney(100);
+                break;
+
+            case BadgeEnum::MUSEUM_1200:
+                $progress = [ 'target' => 1200, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]) ];
+                $reward = TraderOfferCostOrYield::createMoney(100);
+                break;
+
+            case BadgeEnum::ZOOLOGIST_10:
+                $progress = [ 'target' => 10, 'current' => self::getStatTotal($em, $user, [ 'Species Cataloged' ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Algae' ]), 1);
+                break;
+
+            case BadgeEnum::ZOOLOGIST_20:
+                $progress = [ 'target' => 20, 'current' => self::getStatTotal($em, $user, [ 'Species Cataloged' ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Algae' ]), 1);
+                break;
+
+            case BadgeEnum::ZOOLOGIST_30:
+                $progress = [ 'target' => 30, 'current' => self::getStatTotal($em, $user, [ 'Species Cataloged' ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Algae' ]), 1);
+                break;
+
+            case BadgeEnum::ZOOLOGIST_40:
+                $progress = [ 'target' => 40, 'current' => self::getStatTotal($em, $user, [ 'Species Cataloged' ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Jellyfish Jelly' ]), 1);
+                break;
+
+            case BadgeEnum::ZOOLOGIST_50:
+                $progress = [ 'target' => 50, 'current' => self::getStatTotal($em, $user, [ 'Species Cataloged' ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Jellyfish Jelly' ]), 1);
+                break;
+
+            case BadgeEnum::ZOOLOGIST_60:
+                $progress = [ 'target' => 60, 'current' => self::getStatTotal($em, $user, [ 'Species Cataloged' ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Jellyfish Jelly' ]), 1);
+                break;
+
+            case BadgeEnum::ZOOLOGIST_70:
+                $progress = [ 'target' => 70, 'current' => self::getStatTotal($em, $user, [ 'Species Cataloged' ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Egg' ]), 1);
+                break;
+
+            case BadgeEnum::ZOOLOGIST_80:
+                $progress = [ 'target' => 80, 'current' => self::getStatTotal($em, $user, [ 'Species Cataloged' ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Egg' ]), 1);
+                break;
+
+            case BadgeEnum::ZOOLOGIST_90:
+                $progress = [ 'target' => 90, 'current' => self::getStatTotal($em, $user, [ 'Species Cataloged' ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Egg' ]), 1);
+                break;
+
+            case BadgeEnum::ZOOLOGIST_100:
+                $progress = [ 'target' => 100, 'current' => self::getStatTotal($em, $user, [ 'Species Cataloged' ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Alien Tissue' ]), 1);
+                break;
+
             // Meta
 
             case BadgeEnum::ACCOUNT_AGE_365:
@@ -595,8 +722,15 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Chocolate Chest' ]), 1);
                 break;
 
-            // Chocolate-covered Honeycomb
-            // Chocolate Ice Cream Sammy
+            case BadgeEnum::ACHIEVEMENTS_110:
+                $progress = [ 'target' => 110, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ACHIEVEMENTS_CLAIMED ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Chocolate Ice Cream Sammy' ]), 1);
+                break;
+
+            case BadgeEnum::ACHIEVEMENTS_120:
+                $progress = [ 'target' => 120, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ACHIEVEMENTS_CLAIMED ]) ];
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Chocolate-covered Honeycomb' ]), 1);
+                break;
 
             default:
                 throw new \Exception('Oops! Badge not implemented! Ben was a bad programmer!');

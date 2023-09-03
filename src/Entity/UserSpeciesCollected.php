@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserSpeciesCollectedRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=UserSpeciesCollectedRepository::class)
@@ -31,13 +32,39 @@ class UserSpeciesCollected
     /**
      * @ORM\ManyToOne(targetEntity=PetSpecies::class)
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"zoologistCatalog"})
      */
     private $species;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"zoologistCatalog"})
      */
     private $discoveredOn;
+
+    /**
+     * @ORM\Column(type="string", length=40)
+     * @Groups({"zoologistCatalog"})
+     */
+    private $petName;
+
+    /**
+     * @ORM\Column(type="string", length=6)
+     * @Groups({"zoologistCatalog"})
+     */
+    private $colorA;
+
+    /**
+     * @ORM\Column(type="string", length=6)
+     * @Groups({"zoologistCatalog"})
+     */
+    private $colorB;
+
+    /**
+     * @ORM\Column(type="smallint")
+     * @Groups({"zoologistCatalog"})
+     */
+    private $scale;
 
     public function __construct()
     {
@@ -76,5 +103,53 @@ class UserSpeciesCollected
     public function getDiscoveredOn(): \DateTimeImmutable
     {
         return $this->discoveredOn;
+    }
+
+    public function getPetName(): ?string
+    {
+        return $this->petName;
+    }
+
+    public function setPetName(string $petName): self
+    {
+        $this->petName = $petName;
+
+        return $this;
+    }
+
+    public function getColorA(): ?string
+    {
+        return $this->colorA;
+    }
+
+    public function setColorA(string $colorA): self
+    {
+        $this->colorA = $colorA;
+
+        return $this;
+    }
+
+    public function getColorB(): ?string
+    {
+        return $this->colorB;
+    }
+
+    public function setColorB(string $colorB): self
+    {
+        $this->colorB = $colorB;
+
+        return $this;
+    }
+
+    public function getScale(): int
+    {
+        return $this->scale;
+    }
+
+    public function setScale(int $scale): self
+    {
+        $this->scale = $scale;
+
+        return $this;
     }
 }

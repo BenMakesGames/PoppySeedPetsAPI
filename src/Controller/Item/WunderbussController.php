@@ -58,7 +58,7 @@ class WunderbussController extends AbstractController
         $usedAWunderbuss = $userQuestRepository->findOrCreate($user, 'Used a Wunderbuss', false);
 
         if($usedAWunderbuss->getValue())
-            throw new PSPInvalidOperationException('You\'ve already wished for something from the Wunderbuss. (You only get one wish, remember?)');
+            throw new PSPInvalidOperationException('You\'ve already wished for something from the Wunderbuss. (You only get one wish, unfortunately...)');
 
         $searchForId = $request->request->get('itemId');
 
