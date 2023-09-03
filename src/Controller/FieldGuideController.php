@@ -22,7 +22,7 @@ class FieldGuideController extends AbstractController
      * @Route("", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function userDonatedItems(
+    public function getUnlockedEntries(
         Request $request, ResponseService $responseService, UserFieldGuideEntryFilterService $userFieldGuideEntryFilterService,
         FieldGuideEntryRepository $fieldGuideEntryRepository
     )

@@ -8,6 +8,7 @@ use App\Enum\UserLinkVisibilityEnum;
 use App\Enum\UserLinkWebsiteEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
+use App\Functions\SimpleDb;
 use App\Repository\UserLinkRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,19 +23,20 @@ class MyLinksController extends AbstractController
      * @Route("/my/interwebs", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function getMyInterwebs(UserLinkRepository $userLinkRepository, ResponseService $responseService)
+    public function getMyInterwebs(ResponseService $responseService)
     {
         /** @var User $user */
         $user = $this->getUser();
 
-        $myLinks = $userLinkRepository->findBy([ 'user' => $this->getUser() ]);
+        $myLinks = SimpleDb::createReadOnlyConnection()
+            ->query(
+                'SELECT id,website,name_or_id AS nameOrId,visibility FROM user_link WHERE user_id = ?',
+                [ $user->getId() ]
+            )
+            ->getResults()
+        ;
 
-        return $responseService->success(array_map(fn(UserLink $link) => [
-            'id' => $link->getId(),
-            'website' => $link->getWebsite(),
-            'nameOrId' => $link->getNameOrId(),
-            'visibility' => $link->getVisibility(),
-        ], $myLinks));
+        return $responseService->success($myLinks);
     }
 
     /**

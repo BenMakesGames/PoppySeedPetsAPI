@@ -96,22 +96,22 @@ class GoldRingController extends AbstractController
         }
         else if($count < 80)
         {
-            return $responseService->itemActionSuccess('Dang, ' . $count . '?! You\'re really serious about this!');
+            return $responseService->itemActionSuccess('Dang: ' . $count . '! You\'re really serious about this!');
         }
         else if($count < 95)
         {
-            return $responseService->itemActionSuccess('omg! ' . $count . '!');
+            return $responseService->itemActionSuccess('omg! ' . $count . '!?');
         }
         else if($count == 95)
-            return $responseService->itemActionSuccess($count . '!');
-        else if($count == 96)
             return $responseService->itemActionSuccess($count . '!!');
+        else if($count == 96)
+            return $responseService->itemActionSuccess($count . '!!!!!');
         else if($count == 97)
             return $responseService->itemActionSuccess($count . '!! Just 3 more!');
         else if($count == 98)
             return $responseService->itemActionSuccess($count . '!! So close!');
         else if($count == 99)
-            return $responseService->itemActionSuccess($count . '!! AAAAAAAAAAAAAA!!');
+            return $responseService->itemActionSuccess($count . '!! AAAAAAAAAAAAAA!!!');
         else
         {
             $inventoryService->loseItem($goldRingItem, $user, $inventory->getLocation(), 100);
@@ -119,8 +119,8 @@ class GoldRingController extends AbstractController
             $hedgehog = $petSpeciesRepository->findOneBy([ 'name' => 'Hedgehog' ]);
 
             $hedgehogName = $squirrel3->rngNextFromArray([
-                'Speedy', 'Dash', 'Blur', 'Quickly', 'Knuckles', 'Boots', 'Nitro', 'Catalyst', 'Dodger',
-                'Runner', 'Jumps', 'Spins', 'Miles',
+                'Speedy', 'Dash', 'Blur', 'Quickly', 'Quills', 'Boots', 'Nitro', 'Boom', 'Runner', 'Jumper',
+                'Sir Spinsalot', 'Miles', 'Blue'
             ]);
 
             $petColors = PetColorFunctions::generateRandomPetColors($squirrel3);

@@ -30,25 +30,21 @@ class UserStats
 
     /**
      * @ORM\Column(type="string", length=100)
-     * @Groups({"myStats"})
      */
     private $stat;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"myStats"})
      */
     private $value = 0;
 
     /**
      * @ORM\Column(type="datetime_immutable")
-     * @Groups({"myStats"})
      */
     private $firstTime;
 
     /**
      * @ORM\Column(type="datetime_immutable")
-     * @Groups({"myStats"})
      */
     private $lastTime;
 

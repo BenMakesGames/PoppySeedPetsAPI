@@ -208,7 +208,7 @@ class PetGroupService
         $recruits = $this->petRepository->createQueryBuilder('p')
             ->select('p2')
             ->distinct(true)
-            ->innerJoin('App:PetRelationship', 'r', Join::WITH, 'r.pet = p.id')
+            ->leftJoin('App:PetRelationship', 'r', Join::WITH, 'r.pet = p.id')
             ->leftJoin('App:Pet', 'p2', Join::WITH, 'r.relationship = p2.id AND p2.id NOT IN (:groupMembers)')
             ->leftJoin('App:PetRelationship', 'r2', Join::WITH, 'r2.pet = p2.id AND r2.relationship IN (:groupMembers)')
             ->leftJoin('App:PetSkills', 'p2s', Join::WITH, 'p2.skills = p2s.id')
