@@ -1,9 +1,9 @@
 <?php
 namespace App\Controller\Patreon;
 
-use App\Entity\UserSubscription;
 use App\Exceptions\PSPFormValidationException;
 use App\Repository\UserRepository;
+use App\Repository\UserSubscriptionRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,6 +24,7 @@ class ConnectAccountController extends AbstractController
      */
     public function connectPatreonAccount(
         Request $request, ResponseService $responseService, UserRepository $userRepository,
+        UserSubscriptionRepository $userSubscriptionRepository,
         EntityManagerInterface $em
     )
     {
@@ -42,33 +43,21 @@ class ConnectAccountController extends AbstractController
         $patreonTokens = $patreonOauth->get_tokens($code, $_ENV['PATREON_REDIRECT_URI']);
 
         $patreonApi = new \Patreon\API($patreonTokens['access_token']);
-        $patreonUser = $patreonApi->get_data('identity' .
-            '?include=memberships.currently_entitled_tiers' .
-            '&fields' . urlencode('[member]') . '=patron_status,currently_entitled_amount_cents'
-        );
-
-        // TODO: if user has a subscription, get the tier, and log it
-        var_dump($patreonUser);
-
-        // TODO: incorrect; just testing
-        $amount = $patreonUser['included'][0]['type'] === 'member' ? 500 : 0;
+        $patreonUser = $patreonApi->get_data('identity');
 
         if(preg_match('/^[1-9][0-9]*$/', $patreonUser['data']['id']) !== 1)
             throw new \Exception('Patreon user id is not valid! (Expected a natural number; got ' . $patreonUser['data']['id'] . ')');
 
         $patreonUserId = (int)$patreonUser['data']['id'];
 
-        if(!$user->getSubscription())
-            $user->setSubscription(new UserSubscription());
+        $existingSubscription = $userSubscriptionRepository->findOneBy([
+            'patreonUserId' => $patreonUserId
+        ]);
 
-        $user->getSubscription()
-            ->setMonthlyAmountInCents($amount)
-            ->setPatreonUserId($patreonUserId)
-            ->setUpdatedOn();
+        if($existingSubscription)
+            $user->setSubscription($existingSubscription);
 
         $em->flush();
-
-        die;
 
         return new RedirectResponse('https://poppyseedpets.com/settings/patreon');
     }

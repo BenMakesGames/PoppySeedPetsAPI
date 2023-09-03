@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use App\Enum\Enum;
+use App\Enum\EnumInvalidValueException;
+use App\Enum\PatreonTierEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -18,18 +21,6 @@ class UserSubscription
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity=User::class, inversedBy="subscription", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $user;
-
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups({"myAccount"})
-     */
-    private $monthlyAmountInCents;
-
-    /**
      * @ORM\Column(type="datetime_immutable")
      */
     private $updatedOn;
@@ -39,6 +30,17 @@ class UserSubscription
      */
     private $patreonUserId;
 
+    /**
+     * @ORM\Column(type="string", length=100)
+     * @Groups({"myAccount"})
+     */
+    private $tier;
+
+    /**
+     * @ORM\OneToOne(targetEntity=User::class, inversedBy="subscription", cascade={"persist", "remove"})
+     */
+    private $user;
+
     public function __construct()
     {
         $this->updatedOn = new \DateTimeImmutable();
@@ -47,30 +49,6 @@ class UserSubscription
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    public function getMonthlyAmountInCents(): ?int
-    {
-        return $this->monthlyAmountInCents;
-    }
-
-    public function setMonthlyAmountInCents(int $monthlyAmountInCents): self
-    {
-        $this->monthlyAmountInCents = $monthlyAmountInCents;
-
-        return $this;
     }
 
     public function getUpdatedOn(): ?\DateTimeImmutable
@@ -93,6 +71,33 @@ class UserSubscription
     public function setPatreonUserId(int $patreonUserId): self
     {
         $this->patreonUserId = $patreonUserId;
+
+        return $this;
+    }
+
+    public function getTier(): string
+    {
+        return $this->tier;
+    }
+
+    public function setTier(string $tier): self
+    {
+        if(!PatreonTierEnum::isAValue($tier))
+            throw new EnumInvalidValueException(PatreonTierEnum::class, $tier);
+
+        $this->tier = $tier;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }
