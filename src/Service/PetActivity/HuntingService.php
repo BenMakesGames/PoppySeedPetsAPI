@@ -14,6 +14,7 @@ use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
+use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
@@ -710,11 +711,13 @@ class HuntingService
         $pet = $petWithSkills->getPet();
         $skill = 10 + $petWithSkills->getStamina()->getTotal();
 
+        $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Onion Boy', ActivityHelpers::PetName($pet). ' encountered an Onion Boy at the edge of town...');
+
         if($pet->hasMerit(MeritEnum::GOURMAND) && $this->squirrel3->rngNextInt(1, 2) === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' didn\'t even flinch, and swallowed the Onionboy whole! (Ah~! A true Gourmand!)', 'items/veggie/onion')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' didn\'t even flinch, and swallowed the Onion Boy whole! (Ah~! A true Gourmand!)', 'items/veggie/onion')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Eating' ]))
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting', 'Eating' ]))
             ;
 
             $pet
@@ -727,20 +730,41 @@ class HuntingService
         }
         else if($pet->getTool() && $pet->getTool()->rangedOnly())
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' was able to defeat it from a distance thanks to their ' . InventoryModifierFunctions::getNameWithModifiers($pet->getTool()) . '!', 'items/veggie/onion')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' attacked from a distance using their ' . InventoryModifierFunctions::getNameWithModifiers($pet->getTool()) . '! The Onion Boy ran off, dropping an Onion as it ran.', 'items/veggie/onion')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
             ;
-            $this->inventoryService->petCollectsItem('Onion', $pet, 'The remains of an Onion Boy that ' . $pet->getName() . ' encountered.', $activityLog);
+            $this->inventoryService->petCollectsItem('Onion', $pet, 'Dropped by an Onion Boy that ' . $pet->getName() . ' encountered.', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
         }
         else if($this->squirrel3->rngNextInt(1, $skill) >= 7)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' powered through it.', 'items/veggie/onion')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
-            ;
-            $this->inventoryService->petCollectsItem('Onion', $pet, 'The remains of an Onion Boy that ' . $pet->getName() . ' encountered.', $activityLog);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ], $activityLog);
+            $exp = 2;
+
+            $getClothes = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal()) >= 20;
+
+            if($getClothes)
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' powered through it, and grabbed onto its... clothes? The creature ran off, causing it to drop an Onion.', 'items/veggie/onion')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
+                ;
+
+                $loot = $this->squirrel3->rngNextFromArray([ 'Paper', 'Filthy Cloth' ]);
+
+                $this->inventoryService->petCollectsItem($loot, $pet, 'Snatched off an Onion Boy that ' . $pet->getName() . ' encountered.', $activityLog);
+
+                $exp++;
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' powered through it, scaring the creature off, causing it to drop an Onion.', 'items/veggie/onion')
+                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
+                ;
+            }
+
+            $this->inventoryService->petCollectsItem('Onion', $pet, 'Dropped by an Onion Boy that ' . $pet->getName() . ' encountered.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
         }
         else

@@ -86,6 +86,8 @@ class UmbraService
         $activityLog = null;
         $changes = new PetChanges($pet);
 
+        $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'The Umbra', ActivityHelpers::PetName($pet) . ' pushed through the Storm and entered the Umbra!');
+
         if($this->calendarService->isLeonidPeakOrAdjacent() && $this->squirrel3->rngNextInt(1, 4) === 1)
         {
             $activityLog = $this->leonidsService->adventure($petWithSkills);
@@ -1004,6 +1006,8 @@ class UmbraService
         $isRanged = $pet->getTool() && $pet->getTool()->rangedOnly() && $pet->getTool()->brawlBonus() > 0;
 
         $defeated = $isRanged ? 'drew their ' . $pet->getTool()->getItem()->getName() . ' faster' : 'pounced on it before it could fire';
+
+        $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Abandondero', ActivityHelpers::PetName($pet) . ' encountered an Abandondero in the Umbra!');
 
         if($roll >= 20)
         {
