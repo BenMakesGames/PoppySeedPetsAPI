@@ -95,6 +95,9 @@ class LiveUpdatesController extends AbstractController
         if(!$userSubscription)
             return;
 
-        $em->remove($userSubscription);
+        if($userSubscription->getUser() === null)
+            $em->remove($userSubscription);
+        else
+            $userSubscription->setTier(null);
     }
 }
