@@ -31,7 +31,7 @@ class UserSubscription
     private $patreonUserId;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=50, nullable=true)
      * @Groups({"myAccount"})
      */
     private $tier;
@@ -80,9 +80,9 @@ class UserSubscription
         return $this->tier;
     }
 
-    public function setTier(string $tier): self
+    public function setTier(?string $tier): self
     {
-        if(!PatreonTierEnum::isAValue($tier))
+        if($tier !== null && !PatreonTierEnum::isAValue($tier))
             throw new EnumInvalidValueException(PatreonTierEnum::class, $tier);
 
         $this->tier = $tier;

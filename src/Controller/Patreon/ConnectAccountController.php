@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Patreon;
 
+use App\Entity\UserSubscription;
 use App\Exceptions\PSPFormValidationException;
 use App\Repository\UserRepository;
 use App\Repository\UserSubscriptionRepository;
@@ -50,12 +51,17 @@ class ConnectAccountController extends AbstractController
 
         $patreonUserId = (int)$patreonUser['data']['id'];
 
-        $existingSubscription = $userSubscriptionRepository->findOneBy([
+        $subscription = $userSubscriptionRepository->findOneBy([
             'patreonUserId' => $patreonUserId
         ]);
 
-        if($existingSubscription)
-            $user->setSubscription($existingSubscription);
+        if(!$subscription)
+        {
+            $subscription = new UserSubscription();
+            $subscription->setPatreonUserId($patreonUserId);
+        }
+
+        $user->setSubscription($subscription);
 
         $em->flush();
 
