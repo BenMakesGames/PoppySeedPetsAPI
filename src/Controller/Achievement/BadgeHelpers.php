@@ -577,7 +577,7 @@ final class BadgeHelpers
 
             case BadgeEnum::MUSEUM_500:
                 $progress = [ 'target' => 500, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]) ];
-                $reward = TraderOfferCostOrYield::createMoney($em->getRepository(Item::class)->findOneBy([ 'name' => 'Star Dust' ]), 1);
+                $reward = TraderOfferCostOrYield::createMoney($em->getRepository(Item::class)->findOneBy([ 'name' => 'Stardust' ]), 1);
                 break;
 
             case BadgeEnum::MUSEUM_600:
