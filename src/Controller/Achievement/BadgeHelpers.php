@@ -567,7 +567,7 @@ final class BadgeHelpers
 
             case BadgeEnum::MUSEUM_300:
                 $progress = [ 'target' => 300, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]) ];
-                $reward = TraderOfferCostOrYield::createMoney(100);
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Iron Sword' ]), 1);
                 break;
 
             case BadgeEnum::MUSEUM_400:
@@ -577,7 +577,7 @@ final class BadgeHelpers
 
             case BadgeEnum::MUSEUM_500:
                 $progress = [ 'target' => 500, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]) ];
-                $reward = TraderOfferCostOrYield::createMoney(100);
+                $reward = TraderOfferCostOrYield::createMoney($em->getRepository(Item::class)->findOneBy([ 'name' => 'Star Dust' ]), 1);
                 break;
 
             case BadgeEnum::MUSEUM_600:
@@ -597,7 +597,7 @@ final class BadgeHelpers
 
             case BadgeEnum::MUSEUM_900:
                 $progress = [ 'target' => 900, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]) ];
-                $reward = TraderOfferCostOrYield::createMoney(100);
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'Imaginary Number' ]), 1);
                 break;
 
             case BadgeEnum::MUSEUM_1000:
@@ -607,7 +607,7 @@ final class BadgeHelpers
 
             case BadgeEnum::MUSEUM_1100:
                 $progress = [ 'target' => 1100, 'current' => self::getStatTotal($em, $user, [ UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]) ];
-                $reward = TraderOfferCostOrYield::createMoney(100);
+                $reward = TraderOfferCostOrYield::createItem($em->getRepository(Item::class)->findOneBy([ 'name' => 'NUL' ]), 1);
                 break;
 
             case BadgeEnum::MUSEUM_1200:
