@@ -5,6 +5,7 @@ use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
+use App\Functions\SimpleDb;
 use App\Repository\FieldGuideEntryRepository;
 use App\Service\Filter\UserFieldGuideEntryFilterService;
 use App\Service\ResponseService;
@@ -33,15 +34,30 @@ class FieldGuideController extends AbstractController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::FieldGuide))
             throw new PSPNotUnlockedException('Field Guide');
 
-        $userFieldGuideEntryFilterService->addRequiredFilter('user', $user->getId());
+        $entries = SimpleDb::createReadOnlyConnection()
+            ->query(
+                'SELECT ue.discovered_on,ue.comment,e.type,e.name,e.image,e.description
+                FROM user_field_guide_entry AS ue
+                INNER JOIN field_guide_entry AS e ON e.id = ue.entry_id
+                WHERE ue.user_id = ?
+                ORDER BY e.name ASC',
+                [ $user->getId() ]
+            )
+            ->mapResults(function($discoveredOn, $comment, $type, $name, $image, $description) {
+                return [
+                    'discoveredOn' => $discoveredOn,
+                    'comment' => $comment,
+                    'entry' => [
+                        'type' => $type,
+                        'name' => $name,
+                        'image' => $image,
+                        'description' => $description,
+                    ]
 
-        return $responseService->success(
-            [
-                'totalEntries' => $fieldGuideEntryRepository->count([]),
-                'entries' => $userFieldGuideEntryFilterService->getResults($request->query),
-            ],
-            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MY_FIELD_GUIDE ]
-        );
+                ];
+            });
+
+        return $responseService->success($entries);
     }
 
 }
