@@ -3,6 +3,7 @@ namespace App\Controller\Achievement;
 
 use App\Entity\User;
 use App\Entity\UserBadge;
+use App\Functions\SimpleDb;
 use App\Repository\UserBadgeRepository;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,15 +24,9 @@ final class Completed extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $badges = array_map(
-            fn(UserBadge $badge) => [
-                'badge' => $badge->getBadge(),
-                'claimedOn' => $badge->getClaimedOn(),
-            ],
-            $userBadgeRepository->findBy([
-                'user' => $user
-            ])
-        );
+        $badges = SimpleDb::createReadOnlyConnection()
+            ->query('SELECT badge, claimed_on AS claimedOn FROM user_badge WHERE user_id = ?', [ $user->getId() ])
+            ->getResults();
 
         return $responseService->success($badges);
     }
