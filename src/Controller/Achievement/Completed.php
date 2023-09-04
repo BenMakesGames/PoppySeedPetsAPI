@@ -2,9 +2,7 @@
 namespace App\Controller\Achievement;
 
 use App\Entity\User;
-use App\Entity\UserBadge;
 use App\Functions\SimpleDb;
-use App\Repository\UserBadgeRepository;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,7 +17,7 @@ final class Completed extends AbstractController
      * @Route("", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function getCompleted(ResponseService $responseService, UserBadgeRepository $userBadgeRepository)
+    public function getCompleted(ResponseService $responseService)
     {
         /** @var User $user */
         $user = $this->getUser();
