@@ -30,7 +30,7 @@ class GetDiscoveredSpeciesController extends AbstractController
         $user = $this->getUser();
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Zoologist))
-            throw new PSPNotUnlockedException('Museum');
+            throw new PSPNotUnlockedException('Zoologist');
 
         $userSpeciesCollectedFilterService->addRequiredFilter('user', $user->getId());
 

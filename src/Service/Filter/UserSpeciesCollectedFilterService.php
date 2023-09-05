@@ -41,7 +41,7 @@ class UserSpeciesCollectedFilterService
     public function filterUser(QueryBuilder $qb, $value)
     {
         $qb
-            ->andWhere('m.user = :userId')
+            ->andWhere('d.user = :userId')
             ->setParameter('userId', $value)
         ;
     }

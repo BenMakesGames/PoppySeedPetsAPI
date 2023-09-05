@@ -24,13 +24,13 @@ class PetSpecies
 
     /**
      * @ORM\Column(type="string", length=40, unique=true)
-     * @Groups({"myPet", "petEncyclopedia", "petShelterPet"})
+     * @Groups({"myPet", "petEncyclopedia", "petShelterPet", "zoologistCatalog"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet", "userPublicProfile", "petEncyclopedia", "petPublicProfile", "petShelterPet", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "petActivityLogAndPublicPet", "helperPet"})
+     * @Groups({"myPet", "userPublicProfile", "petEncyclopedia", "petPublicProfile", "petShelterPet", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "petActivityLogAndPublicPet", "helperPet", "zoologistCatalog"})
      */
     private $image;
 
@@ -115,12 +115,13 @@ class PetSpecies
     /**
      * @ORM\ManyToOne(targetEntity=Item::class)
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"zoologistCatalog"})
      */
     private $sheds;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"myPet", "petEncyclopedia"})
+     * @Groups({"myPet", "petEncyclopedia", "zoologistCatalog"})
      */
     private $family;
 
@@ -142,6 +143,7 @@ class PetSpecies
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"zoologistCatalog"})
      */
     private $zoologistThoughts;
 

@@ -11,6 +11,8 @@ final class SimpleDb
         $db = self::parseDatabaseUri($connectionUri);
 
         $this->pdo = new \PDO($db['dsn'], $db['user'], $db['password']);
+        $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $this->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
     }
 
     public static function createReadOnlyConnection(): self
@@ -83,7 +85,7 @@ final class SimpleStatement
         return $this->statement->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function getSingleValue(): array
+    public function getSingleValue()
     {
         return $this->statement->fetchColumn();
     }

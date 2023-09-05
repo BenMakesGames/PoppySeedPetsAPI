@@ -29,6 +29,7 @@ class PetFilterService
                 'owner' => [ $this, 'filterOwner' ],
                 'location' => [ $this, 'filterLocation' ],
                 'guild' => [ $this, 'filterGuild' ],
+                'speciesDiscovered' => [ $this, 'filterSpeciesDiscovered' ],
             ]
         );
     }
