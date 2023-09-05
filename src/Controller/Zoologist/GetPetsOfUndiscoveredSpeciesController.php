@@ -55,7 +55,7 @@ class GetPetsOfUndiscoveredSpeciesController extends AbstractController
 
         $pets = SimpleDb::createReadOnlyConnection()
             ->query(
-                'SELECT pet.id,pet.name,pet.color_a,pet.color_b,pet.scale,species.image
+                'SELECT pet.id,pet.name,pet.color_a,pet.color_b,pet.scale,species.id AS speciesId,species.name AS speciesName,species.image
                 FROM pet
                 LEFT JOIN pet_species AS species ON pet.species_id=species.id
                 LEFT JOIN user_species_collected AS discovered ON species.id=discovered.species_id
@@ -69,14 +69,16 @@ class GetPetsOfUndiscoveredSpeciesController extends AbstractController
                     ':offset' => $page * 20,
                 ]
             )
-            ->mapResults(fn($petId, $petName, $petColorA, $petColorB, $petScale, $speciesImage) => [
+            ->mapResults(fn($petId, $petName, $petColorA, $petColorB, $petScale, $speciesId, $speciesName, $speciesImage) => [
                 'id' => $petId,
                 'name' => $petName,
                 'colorA' => $petColorA,
                 'colorB' => $petColorB,
                 'species' => [
-                    'image' => $speciesImage
-                ]
+                    'id' => $speciesId,
+                    'name' => $speciesName,
+                    'image' => $speciesImage,
+                ],
             ]);
 
         $results = new FilterResults();

@@ -22,9 +22,9 @@ class UserSpeciesCollectedFilterService
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
             [
-                'discoveredOn' => [ 'd.discoveredOn' => 'desc' ], // first one is the default
-                'speciesName' => [ 'd.species.nameSort' => 'asc' ],
-                'id' => [ 'species.species.id' => 'asc' ],
+                'discoveredon' => [ 'd.discoveredOn' => 'desc' ], // first one is the default
+                'speciesname' => [ 'species.nameSort' => 'asc' ],
+                'id' => [ 'species.id' => 'asc' ],
             ],
             [
                 'user' => [ $this, 'filterUser' ],

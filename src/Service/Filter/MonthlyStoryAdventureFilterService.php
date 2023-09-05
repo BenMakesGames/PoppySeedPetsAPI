@@ -20,7 +20,7 @@ class MonthlyStoryAdventureFilterService
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
             [
-                'releaseNumber' => [ 'a.releaseNumber' => 'desc' ], // first one is the default
+                'releasenumber' => [ 'a.releaseNumber' => 'desc' ], // first one is the default
             ],
             [
             ]
