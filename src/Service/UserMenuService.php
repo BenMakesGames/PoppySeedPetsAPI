@@ -52,26 +52,25 @@ class UserMenuService
         $userSortOrderEntity->setMenuOrder($order);
     }
 
-    private static function maybeAddMenuItem(array &$menuItems, string $name, User $user, array $userSortOrders, ?string $feature)
+    private static function maybeAddMenuItem(array &$menuItems, string $name, User $user, array $userSortOrders, ?string $feature): bool
     {
         if(!$feature)
         {
             $menuItems[] = new UserMenuItem($name, array_search($name, $userSortOrders), null);
 
-            return;
+            return true;
         }
 
         $date = $user->getUnlockedFeatureDate($feature);
 
         if($date == null)
-            return;
+            return false;
 
         $menuItems[] = new UserMenuItem($name, array_search($name, $userSortOrders), $date);
+
+        return true;
     }
 
-    /**
-     * @return UserMenuItem[]
-     */
     public function getUserMenuItems(User $user): array
     {
         $userSortOrderEntity = $this->userMenuOrderRepository->findOneBy([ 'user' => $user ]);
@@ -82,32 +81,35 @@ class UserMenuService
         ;
 
         $menuItems = [];
+        $locked =
+            ($this->maybeAddMenuItem($menuItems, 'home', $user, $userSortOrder, null) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'basement', $user, $userSortOrder, UnlockableFeatureEnum::Basement) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'greenhouse', $user, $userSortOrder, UnlockableFeatureEnum::Greenhouse) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'beehive', $user, $userSortOrder, UnlockableFeatureEnum::Beehive) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'fireplace', $user, $userSortOrder, UnlockableFeatureEnum::Fireplace) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'dragonDen', $user, $userSortOrder, UnlockableFeatureEnum::DragonDen) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'hollowEarth', $user, $userSortOrder, UnlockableFeatureEnum::HollowEarth) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'starKindred', $user, $userSortOrder, UnlockableFeatureEnum::StarKindred) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'park', $user, $userSortOrder, UnlockableFeatureEnum::Park) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'plaza', $user, $userSortOrder, null) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'museum', $user, $userSortOrder, UnlockableFeatureEnum::Museum) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'zoologist', $user, $userSortOrder, UnlockableFeatureEnum::Zoologist) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'market', $user, $userSortOrder, UnlockableFeatureEnum::Market) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'grocer', $user, $userSortOrder, null) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'petShelter', $user, $userSortOrder, null) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'bookstore', $user, $userSortOrder, UnlockableFeatureEnum::Bookstore) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'trader', $user, $userSortOrder, UnlockableFeatureEnum::Trader) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'hattier', $user, $userSortOrder, UnlockableFeatureEnum::Hattier) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'fieldGuide', $user, $userSortOrder, UnlockableFeatureEnum::FieldGuide) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'mailbox', $user, $userSortOrder, UnlockableFeatureEnum::Mailbox) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'painter', $user, $userSortOrder, null) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'florist', $user, $userSortOrder, UnlockableFeatureEnum::Florist) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'journal', $user, $userSortOrder, null) ? 0 : 1) +
+            ($this->maybeAddMenuItem($menuItems, 'achievements', $user, $userSortOrder, null) ? 0 : 1);
 
-        $this->maybeAddMenuItem($menuItems, 'home', $user, $userSortOrder, null);
-        $this->maybeAddMenuItem($menuItems, 'basement', $user, $userSortOrder, UnlockableFeatureEnum::Basement);
-        $this->maybeAddMenuItem($menuItems, 'greenhouse', $user, $userSortOrder, UnlockableFeatureEnum::Greenhouse);
-        $this->maybeAddMenuItem($menuItems, 'beehive', $user, $userSortOrder, UnlockableFeatureEnum::Beehive);
-        $this->maybeAddMenuItem($menuItems, 'fireplace', $user, $userSortOrder, UnlockableFeatureEnum::Fireplace);
-        $this->maybeAddMenuItem($menuItems, 'dragonDen', $user, $userSortOrder, UnlockableFeatureEnum::DragonDen);
-        $this->maybeAddMenuItem($menuItems, 'hollowEarth', $user, $userSortOrder, UnlockableFeatureEnum::HollowEarth);
-        $this->maybeAddMenuItem($menuItems, 'starKindred', $user, $userSortOrder, UnlockableFeatureEnum::StarKindred);
-        $this->maybeAddMenuItem($menuItems, 'park', $user, $userSortOrder, UnlockableFeatureEnum::Park);
-        $this->maybeAddMenuItem($menuItems, 'plaza', $user, $userSortOrder, null);
-        $this->maybeAddMenuItem($menuItems, 'museum', $user, $userSortOrder, UnlockableFeatureEnum::Museum);
-        $this->maybeAddMenuItem($menuItems, 'zoologist', $user, $userSortOrder, UnlockableFeatureEnum::Zoologist);
-        $this->maybeAddMenuItem($menuItems, 'market', $user, $userSortOrder, UnlockableFeatureEnum::Market);
-        $this->maybeAddMenuItem($menuItems, 'grocer', $user, $userSortOrder, null);
-        $this->maybeAddMenuItem($menuItems, 'petShelter', $user, $userSortOrder, null);
-        $this->maybeAddMenuItem($menuItems, 'bookstore', $user, $userSortOrder, UnlockableFeatureEnum::Bookstore);
-        $this->maybeAddMenuItem($menuItems, 'trader', $user, $userSortOrder, UnlockableFeatureEnum::Trader);
-        $this->maybeAddMenuItem($menuItems, 'hattier', $user, $userSortOrder, UnlockableFeatureEnum::Hattier);
-        $this->maybeAddMenuItem($menuItems, 'fieldGuide', $user, $userSortOrder, UnlockableFeatureEnum::FieldGuide);
-        $this->maybeAddMenuItem($menuItems, 'mailbox', $user, $userSortOrder, UnlockableFeatureEnum::Mailbox);
-        $this->maybeAddMenuItem($menuItems, 'painter', $user, $userSortOrder, null);
-        $this->maybeAddMenuItem($menuItems, 'florist', $user, $userSortOrder, UnlockableFeatureEnum::Florist);
-        $this->maybeAddMenuItem($menuItems, 'journal', $user, $userSortOrder, null);
-        $this->maybeAddMenuItem($menuItems, 'achievements', $user, $userSortOrder, null);
-
-        return $menuItems;
+        return [
+            'items' => $menuItems,
+            'numberLocked' => $locked
+        ];
     }
 }
