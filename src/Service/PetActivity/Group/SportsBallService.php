@@ -22,10 +22,10 @@ class SportsBallService
 {
     public const ACTIVITY_ICON = 'groups/sportsball';
 
-    private $petExperienceService;
-    private $em;
-    private $inventoryService;
-    private $petRelationshipService;
+    private PetExperienceService $petExperienceService;
+    private EntityManagerInterface $em;
+    private InventoryService $inventoryService;
+    private PetRelationshipService $petRelationshipService;
     private IRandom $squirrel3;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
     private ItemRepository $itemRepository;
@@ -57,7 +57,7 @@ class SportsBallService
             'Fighters', 'Reapers', 'Captains', 'Riders', 'Krakens', 'Howlers', 'Oracles', 'Knights', 'Jesters',
             'Giants', 'Wizards', 'Witches', 'Rhinos', 'Sabers', 'Wolves', 'Pelicans', 'Whales', 'Warriors',
             'Rogues', 'Turtles', 'Rats', 'Cats', 'Rams', 'Coyotes', 'Penguins', 'Pirates', 'Dancers', 'Lancers',
-            'Gypsies', 'Braves', 'Jesters', 'Viceroys', 'Margraves'
+            'Wanderers', 'Braves', 'Jesters', 'Viceroys', 'Margraves'
         ],
     ];
 

@@ -306,7 +306,7 @@ class GreenhouseService
 
         $name = $this->squirrel3->rngNextFromArray([
             'Cremini', 'Button', 'Portobello', 'Oyster', 'Porcini', 'Morel', 'Enoki', 'Shimeji',
-            'Shiitake', 'Maitake', 'Reishi', 'Puffball', 'Galerina', 'Gypsy', 'Milkcap', 'Bolete',
+            'Shiitake', 'Maitake', 'Reishi', 'Puffball', 'Galerina', 'Milkcap', 'Bolete',
             'Honey', 'Pinewood', 'Horse', 'Périgord', 'Tooth', 'Blewitt', 'Pom Pom', 'Ear', 'Jelly',
             'Chestnut', 'Khumbhi', 'Helvella', 'Amanita'
         ]);
