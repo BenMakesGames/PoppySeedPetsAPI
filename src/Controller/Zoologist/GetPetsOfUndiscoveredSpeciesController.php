@@ -42,7 +42,8 @@ class GetPetsOfUndiscoveredSpeciesController extends AbstractController
                 'SELECT count(pet.id)
                 FROM pet
                 LEFT JOIN pet_species AS species ON pet.species_id=species.id
-                LEFT JOIN user_species_collected AS discovered ON species.id=discovered.species_id AND discovered.user_id=:userId
+                LEFT JOIN user_species_collected AS discovered
+                    ON species.id=discovered.species_id AND discovered.user_id=pet.owner_id
                 WHERE
                     pet.owner_id=:userId
                     AND discovered.id IS NULL
