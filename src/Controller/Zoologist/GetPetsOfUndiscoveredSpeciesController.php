@@ -59,7 +59,8 @@ class GetPetsOfUndiscoveredSpeciesController extends AbstractController
                 'SELECT pet.id,pet.name,pet.color_a,pet.color_b,pet.scale,species.id AS speciesId,species.name AS speciesName,species.image
                 FROM pet
                 LEFT JOIN pet_species AS species ON pet.species_id=species.id
-                LEFT JOIN user_species_collected AS discovered ON species.id=discovered.species_id
+                LEFT JOIN user_species_collected AS discovered
+                    ON species.id=discovered.species_id AND discovered.user_id=pet.owner_id
                 WHERE
                     pet.owner_id=:userId
                     AND discovered.id IS NULL
