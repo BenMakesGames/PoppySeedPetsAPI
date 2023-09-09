@@ -45,6 +45,7 @@ class GetPetsOfUndiscoveredSpeciesController extends AbstractController
                 LEFT JOIN user_species_collected AS discovered ON species.id=discovered.species_id
                 WHERE
                     pet.owner_id=:userId
+                    AND discovered.user_id=:userId
                     AND discovered.id IS NULL
                 ',
                 [
