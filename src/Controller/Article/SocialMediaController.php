@@ -5,8 +5,6 @@ use App\Controller\AdminController;
 use App\Entity\Article;
 use App\Service\RedditService;
 use App\Service\ResponseService;
-use App\Service\TwitterService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use App\Annotations\DoesNotRequireHouseHours;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,29 +15,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 */
 class SocialMediaController extends AdminController
 {
-    /**
-     * @DoesNotRequireHouseHours()
-     * @Route("/{article}/tweet", methods={"POST"}, requirements={"article"="\d+"})
-     * @IsGranted("ROLE_ADMIN")
-     */
-    public function tweetArticle(
-        Article $article, ResponseService $responseService, TwitterService $twitterService, Request $request
-    )
-    {
-        $this->adminIPsOnly($request);
-
-        try
-        {
-            $twitterService->postArticle($article);
-        }
-        catch(\Exception $e)
-        {
-            return $responseService->error(500, [ $e->getMessage() ]);
-        }
-
-        return $responseService->success();
-    }
-
     /**
      * @DoesNotRequireHouseHours()
      * @Route("/{article}/reddit", methods={"POST"}, requirements={"article"="\d+"})
