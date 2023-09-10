@@ -15,7 +15,7 @@ class UserMenuService
 
     private const DEFAULT_ORDER = [
         'home', 'basement', 'greenhouse', 'beehive', 'dragonDen', 'hollowEarth', 'starKindred',
-        'fireplace', 'park', 'plaza', 'museum', 'market', 'grocer', 'petShelter',
+        'fireplace', 'park', 'plaza', 'museum', 'zoologist', 'market', 'grocer', 'petShelter',
         'bookstore', 'trader', 'hattier', 'fieldGuide', 'mailbox', 'painter', 'florist',
         'journal', 'achievements'
     ];
