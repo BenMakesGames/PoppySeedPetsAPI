@@ -76,6 +76,7 @@ class GetPetsOfUndiscoveredSpeciesController extends AbstractController
                 'name' => $petName,
                 'colorA' => $petColorA,
                 'colorB' => $petColorB,
+                'scale' => $petScale,
                 'species' => [
                     'id' => $speciesId,
                     'name' => $speciesName,
