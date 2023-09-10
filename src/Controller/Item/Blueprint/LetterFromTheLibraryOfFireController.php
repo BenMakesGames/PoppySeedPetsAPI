@@ -4,6 +4,7 @@ namespace App\Controller\Item\Blueprint;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Dragon;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Functions\ColorFunctions;
 use App\Repository\DragonRepository;
 use App\Service\InventoryService;
@@ -73,6 +74,7 @@ The Library of Fire is always open. We look forward to seeing you!');
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'letterFromTheLibraryOfFire/#/meltSeal');
 
+        /** @var User $user */
         $user = $this->getUser();
         $fireplace = $user->getFireplace();
         $dragon = $dragonRepository->findOneBy([ 'owner' => $user ]);

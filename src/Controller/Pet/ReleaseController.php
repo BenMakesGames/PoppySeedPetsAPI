@@ -8,6 +8,7 @@ use App\Enum\PetLocationEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\ActivityHelpers;
+use App\Functions\EquipmentFunctions;
 use App\Model\PetChanges;
 use App\Model\PetShelterPet;
 use App\Repository\PetRepository;
@@ -42,6 +43,9 @@ class ReleaseController extends AbstractController
         if($pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
 
+        if($pet->getLocation() !== PetLocationEnum::DAYCARE && $pet->getLocation() !== PetLocationEnum::HOME)
+            throw new PSPInvalidOperationException('Only pets at home, or in the daycare, may be released to the wilds.');
+
         $petCount = $petRepository->getTotalOwned($user);
 
         if($petCount === 1)
@@ -52,10 +56,11 @@ class ReleaseController extends AbstractController
 
         $state = new PetChanges($pet);
 
+        EquipmentFunctions::unequipPet($pet);
+        EquipmentFunctions::unhatPet($pet);
+
         $pet
             ->setName($rng->rngNextFromArray(PetShelterPet::PET_NAMES)) // to prevent people from releasing rude names for other players to pick up
-            ->setTool(null)
-            ->setHat(null)
             ->setOwner($userRepository->findOneByEmail('the-wilds@poppyseedpets.com'))
             ->setParkEventType(null)
             ->setNote('')
