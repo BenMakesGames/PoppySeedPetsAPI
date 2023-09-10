@@ -177,6 +177,9 @@ class SmithingService
 
             if($this->houseSimService->hasInventory('Warping Wand'))
                 $possibilities[] = new ActivityCallback($this, 'createRedWarpingWand', 10);
+
+            if($this->houseSimService->hasInventory('Dragonstick'))
+                $possibilities[] = new ActivityCallback($this, 'createDragonbreath', 10);
         }
 
         if($this->houseSimService->hasInventory('Silver Bar'))
@@ -299,6 +302,9 @@ class SmithingService
             if($this->houseSimService->hasInventory('Crooked Fishing Rod'))
                 $possibilities[] = new ActivityCallback($this, 'createIceFishing', 10);
         }
+
+        if($this->houseSimService->hasInventory('Poker') && $this->houseSimService->hasInventory('Gypsum Dragon'))
+            $possibilities[] = new ActivityCallback($this, 'createDragonstick', 10);
 
         if($this->houseSimService->hasInventory('Meteorite'))
         {
@@ -1218,6 +1224,73 @@ class SmithingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::SMITH, false);
+        }
+
+        return $activityLog;
+    }
+
+    public function createDragonstick(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($roll >= 15)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->houseSimService->getState()->loseItem('Gypsum Dragon', 1);
+            $this->houseSimService->getState()->loseItem('Poker', 1);
+
+            $pet->increaseEsteem(2);
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Dragonstick!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
+            ;
+            $this->inventoryService->petCollectsItem('Dragonstick', $pet, $pet->getName() . ' created this by affixing the head of a Gypsum Dragon to a Poker!', $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
+        }
+        else
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a dragon-inspired staff, but almost broke the Gypsum Dragon they were working with!', 'icons/activity-logs/confused')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::SMITH, false);
+        }
+
+        return $activityLog;
+    }
+
+    public function createDragonbreath(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($roll >= 22)
+        {
+            $this->houseSimService->getState()->loseItem('Dragonstick', 1);
+            $this->houseSimService->getState()->loseItem('Firestone', 1);
+
+            $pet->increaseEsteem(4);
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% infused Tri-color Scissors with the eternal heat of Firestone!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
+            ;
+            $this->inventoryService->petCollectsItem('Dragonbreath', $pet, $pet->getName() . ' made this by infusing a Dragonstick with the eternal heat of Firestone!', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+        }
+        else
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a dragon-themed staff, but almost burned themselves on the Firestone...', 'icons/activity-logs/confused')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::SMITH, false);
         }
 
