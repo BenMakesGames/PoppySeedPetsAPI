@@ -98,7 +98,7 @@ class AlbumController extends AbstractController
         $em->flush();
 
         return $responseService->itemActionSuccess(
-            "<em>" . $squirrel3->rngNextFromArray(Music::LYRICS) . "</em>\n\n" .
+            "<em>♫ " . $squirrel3->rngNextFromArray(Music::LYRICS) . " ♪</em>\n\n" .
             'What totally and completely original songs these pets have written! In the ' . mb_strtolower($genre) . ' genre, of course... so you get some ' . $genre . "! (Of course!)\n\n" .
             'You also received ' . $musicNotes->quantity . ' Music Notes, and a ' . $extraItem . '.',
             [ 'itemDeleted' => true ]
@@ -140,7 +140,7 @@ class AlbumController extends AbstractController
         $em->flush();
 
         return $responseService->itemActionSuccess(
-            "<em>" . $squirrel3->rngNextFromArray(Music::LYRICS) . "</em>\n\n" .
+            "<em>♫ " . $squirrel3->rngNextFromArray(Music::LYRICS) . " ♪</em>\n\n" .
             'What totally and completely original songs these pets have written! In the ' . mb_strtolower($genre) . ' genre, of course... so you get some ' . $genre . "! (Of course!)\n\n" .
             'You also received ' . $musicNotes->quantity . ' Music Notes, ' . ArrayFunctions::list_nice($extraItems) . '.',
             [ 'itemDeleted' => true ]
