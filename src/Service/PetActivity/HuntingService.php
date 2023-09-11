@@ -151,7 +151,10 @@ class HuntingService
                     $activityLog = $this->huntedScarecrow($petWithSkills);
                     break;
                 case 13:
-                    $activityLog = $this->huntedOnionBoy($petWithSkills);
+                    if($this->squirrel3->rngNextBool())
+                        $activityLog = $this->huntedOnionBoy($petWithSkills);
+                    else
+                        $activityLog = $this->huntedBeaver($petWithSkills);
                     break;
                 case 14:
                 case 15:
@@ -780,6 +783,38 @@ class HuntingService
         return $activityLog;
     }
 
+    private function huntedBeaver(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $skill = 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl(false)->getTotal();
+
+        $pet->increaseFood(-2);
+
+        if($this->squirrel3->rngNextInt(1, $skill) >= 15)
+        {
+            $item = $this->squirrel3->rngNextFromArray([ 'Fluff', 'Castoreum' ]);
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wrestled a beaver! It fled, but not before ' . ActivityHelpers::PetName($pet) . ' took some of its ' . $item . '!', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
+            ;
+            $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' wrestled this from a beaver.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
+        }
+        else
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% picked a fight with a beaver, but lost.', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
+            ;
+            $pet->increaseEsteem(-2);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
+        }
+
+        return $activityLog;
+    }
+
     private function huntedThievingMagpie(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->squirrel3->rngNextInt(1, 20) === 1)
@@ -796,7 +831,12 @@ class HuntingService
             $moneysLost = $this->squirrel3->rngNextInt(1, 2);
 
             if($this->squirrel3->rngNextInt(1, 10) === 1)
-                $description = 'who absquatulated with ' . $moneysLost . ' ' . ($moneysLost === 1 ? 'money' : 'moneys') . '.';
+            {
+                $description = 'who absquatulated with ' . $moneysLost . ' ' . ($moneysLost === 1 ? 'money' : 'moneys') . '!';
+
+                if($this->squirrel3->rngNextInt(1, 10) === 1)
+                    $description = ' (Ugh! Everyone\'s least-favorite kind of squatulation!)';
+            }
             else
                 $description = 'who stole ' . $moneysLost . ' ' . ($moneysLost === 1 ? 'money' : 'moneys') . '.';
 

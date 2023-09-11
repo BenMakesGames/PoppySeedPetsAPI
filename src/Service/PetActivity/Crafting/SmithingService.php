@@ -102,7 +102,7 @@ class SmithingService
 
         if($this->houseSimService->hasInventory('Glass'))
         {
-            $possibilities[] = new ActivityCallback($this, 'createCrystalBall', $weight);
+            $possibilities[] = new ActivityCallback($this, 'createCrystalBall', max(1, $weight - 2));
 
             if($this->houseSimService->hasInventory('Plastic'))
                 $possibilities[] = new ActivityCallback($this, 'createFiberglass', $weight);
