@@ -110,7 +110,10 @@ class FishingService
                     $activityLog = $this->fishedPlazaFountain($petWithSkills, 0);
                     break;
                 case 12:
-                    $activityLog = $this->fishedFloodedPaddyField($petWithSkills);
+                    if($this->squirrel3->rngNextInt(1, 10) === 1)
+                        $activityLog = $this->fishedSeaCucumber($petWithSkills);
+                    else
+                        $activityLog = $this->fishedFloodedPaddyField($petWithSkills);
                     break;
                 case 13:
                     $activityLog = $this->fishedFoggyLake($petWithSkills);
@@ -679,6 +682,35 @@ class FishingService
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::FISH, true);
+
+        return $activityLog;
+    }
+
+    private function fishedSeaCucumber(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getFishingBonus()->getTotal()) >= 15)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing on some rocks in the ocean, and caught a sea Cucumber.', 'items/tool/fishing-rod/crooked')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fishing' ]))
+            ;
+            $this->inventoryService->petCollectsItem('Cucumber', $pet, 'A sea Cucumber that ' . $pet->getName() . ' fished up.', $activityLog);
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
+
+            $this->creditLackOfReflection($activityLog);
+        }
+        else
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing on some rocks in the ocean, and pulled up some Seaweed.', '')
+                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fishing' ]))
+            ;
+
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
+        }
 
         return $activityLog;
     }

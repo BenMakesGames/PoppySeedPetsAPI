@@ -60,9 +60,9 @@ class FruitScrollController extends AbstractController
             $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
             $item = $squirrel3->rngNextFromArray([
-                'Pamplemousse', 'Blackberries', 'Naner', 'Bunch of Naners', 'Blueberries',
-                'Red', 'Orange', 'Apricot', 'Melowatern', 'Honeydont', 'Tomato', 'Spicy Peps',
-                'Pineapple', 'Yellowy Lime', 'Ponzu'
+                'Pamplemousse', 'Blackberries', 'Bunch of Naners', 'Blueberries', 'Red',
+                'Orange', 'Apricot', 'Melowatern', 'Honeydont', 'Pineapple',
+                'Yellowy Lime', 'Ponzu',
             ]);
 
             $numItems = $squirrel3->rngNextInt(5, $squirrel3->rngNextInt(6, 12));
@@ -89,9 +89,12 @@ class FruitScrollController extends AbstractController
             $possibleItems = [
                 'Fruits & Veggies Box',
 
-                'Pamplemousse', 'Blackberries', 'Naner', 'Blueberries',
-                'Red', 'Orange', 'Apricot', 'Melowatern', 'Honeydont', 'Tomato', 'Spicy Peps',
-                'Pineapple', 'Yellowy Lime', 'Ponzu'
+                'Pamplemousse', 'Blackberries', 'Naner', 'Blueberries', 'Red',
+                'Orange', 'Apricot', 'Melowatern', 'Honeydont', 'Pineapple',
+                'Yellowy Lime', 'Ponzu',
+
+                // technically fruit
+                'Tomato', 'Spicy Peps', 'Cucumber',
             ];
 
             $numItems = $squirrel3->rngNextInt(5, $squirrel3->rngNextInt(6, $squirrel3->rngNextInt(7, 15)));

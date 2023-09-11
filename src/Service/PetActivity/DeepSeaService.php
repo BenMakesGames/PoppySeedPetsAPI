@@ -277,31 +277,18 @@ class DeepSeaService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
 
-            $lucky = $pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 50) === 1;
+            $loot = $this->squirrel3->rngNextFromArray([
+                'Crown Coral',
+                'Fish',
+                'Sand Dollar',
+                'Cucumber'
+            ]);
 
-            if($lucky || $this->squirrel3->rngNextInt(1, 100) === 1)
-            {
-                $loot = 'Little Strongbox';
-
-                if($lucky)
-                    $period = '! Lucky~!';
-                else
-                    $period = '!';
-            }
-            else
-            {
-                $loot = $this->squirrel3->rngNextFromArray([
-                    'Crown Coral', 'Fish', 'Sand Dollar'
-                ]);
-
-                $period = '.';
-            }
-
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the Coral Reef using the Submarine, and found ' . $loot . $period, 'items/tool/submarine')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the Coral Reef using the Submarine, and found ' . ($loot === 'Cucumber' ? 'a sea ' : '') . $loot . '.', 'items/tool/submarine')
                 ->addTags($this->petActivityLogTagRepository->findByNames([ 'Submarine', 'Fishing' ]))
             ;
 
-            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while exploring the Coral Reef using the Submarine' . $period, $activityLog);
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while exploring the Coral Reef using the Submarine.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
 
