@@ -18,7 +18,7 @@ class PetSpecies
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"petEncyclopedia"})
+     * @Groups({"petEncyclopedia", "zoologistCatalog"})
      */
     private $id;
 

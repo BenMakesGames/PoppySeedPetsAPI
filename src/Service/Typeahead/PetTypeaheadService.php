@@ -7,7 +7,8 @@ use Doctrine\ORM\QueryBuilder;
 
 class PetTypeaheadService extends TypeaheadService
 {
-    private $user;
+    private ?User $user = null;
+    private ?int $speciesId = null;
 
     public function __construct(PetRepository $petRepository)
     {
@@ -19,11 +20,19 @@ class PetTypeaheadService extends TypeaheadService
         $this->user = $user;
     }
 
+    public function setSpeciesId(int $speciesId)
+    {
+        $this->speciesId = $speciesId;
+    }
+
     public function addQueryBuilderConditions(QueryBuilder $qb): QueryBuilder
     {
-        return $qb
-            ->andWhere('e.owner=:owner')
-            ->setParameter('owner', $this->user)
-        ;
+        if($this->user)
+            $qb->andWhere('e.owner=:owner')->setParameter('owner', $this->user);
+
+        if($this->speciesId)
+            $qb->andWhere('e.species=:species')->setParameter('species', $this->speciesId);
+
+        return $qb;
     }
 }
