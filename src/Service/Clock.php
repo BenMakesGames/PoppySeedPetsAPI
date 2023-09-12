@@ -8,7 +8,7 @@ class Clock
 
     public function __construct()
     {
-        $this->new = new \DateTimeImmutable();
+        $this->now = new \DateTimeImmutable();
     }
 
     public function getMonthAndDay()
