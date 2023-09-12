@@ -14,10 +14,7 @@ class FieldGuideService
     private ResponseService $responseService;
     private EntityManagerInterface $em;
 
-    public function __construct(
-        ResponseService $responseService,
-        EntityManagerInterface $em
-    )
+    public function __construct(ResponseService $responseService, EntityManagerInterface $em)
     {
         $this->responseService = $responseService;
         $this->em = $em;
