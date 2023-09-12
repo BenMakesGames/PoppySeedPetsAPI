@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\ItemTreasureRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass=ItemTreasureRepository::class)
+ * @ORM\Entity()
  */
 class ItemTreasure
 {

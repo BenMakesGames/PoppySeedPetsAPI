@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\FireplaceRepository")
+ * @ORM\Entity()
  * @ORM\Table(indexes={
  *     @ORM\Index(name="heat_index", columns={"heat"}),
  *     @ORM\Index(name="alcohol_index", columns={"alcohol"}),

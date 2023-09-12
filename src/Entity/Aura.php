@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\AuraRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass=AuraRepository::class)
+ * @ORM\Entity()
  */
 class Aura
 {
