@@ -73,7 +73,7 @@ class FieldGuideService
         }
         else
         {
-            $record = $this->em->getRepository(FieldGuideEntry::class)->findOneBy([
+            $record = $this->em->getRepository(UserFieldGuideEntry::class)->findOneBy([
                 'user' => $user,
                 'entry' => $entry,
             ]);
@@ -109,7 +109,7 @@ class FieldGuideService
 
         if(!array_key_exists($cacheKey, $this->userEntryPerRequestCache))
         {
-            $record = $this->em->getRepository(FieldGuideEntry::class)->findOneBy([
+            $record = $this->em->getRepository(UserFieldGuideEntry::class)->findOneBy([
                 'user' => $user,
                 'entry' => $entry,
             ]);
