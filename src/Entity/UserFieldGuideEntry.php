@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\UserFieldGuideEntryRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass=UserFieldGuideEntryRepository::class)
+ * @ORM\Entity()
  */
 class UserFieldGuideEntry
 {

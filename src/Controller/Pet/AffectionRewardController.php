@@ -21,6 +21,8 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/pet")
@@ -50,7 +52,7 @@ class AffectionRewardController extends AbstractController
      */
     public function chooseAffectionRewardMerit(
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
-        MeritRepository $meritRepository, UserUnlockedFeatureHelpers $userUnlockedFeatureRepository
+        MeritRepository $meritRepository
     )
     {
         /** @var User $user */

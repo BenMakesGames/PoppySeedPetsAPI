@@ -21,6 +21,8 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/fairy")
@@ -120,7 +122,7 @@ class HouseFairyController extends AbstractController
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3,
-        PetRepository $petRepository, UserUnlockedFeatureHelpers $userUnlockedFeatureRepository
+        PetRepository $petRepository
     )
     {
         /** @var User $user */

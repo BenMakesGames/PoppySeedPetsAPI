@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass=FieldGuideEntryRepository::class)
+ * @ORM\Entity()
  */
 class FieldGuideEntry
 {

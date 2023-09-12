@@ -13,6 +13,9 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use App\Annotations\DoesNotRequireHouseHours;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/following")
@@ -26,8 +29,7 @@ class FollowController extends AbstractController
      */
     public function add(
         Request $request, UserRepository $userRepository, UserFollowingRepository $userFollowingRepository,
-        ResponseService $responseService, EntityManagerInterface $em,
-        UserUnlockedFeatureHelpers $userUnlockedFeatureRepository
+        ResponseService $responseService, EntityManagerInterface $em
     )
     {
         /** @var User $user */

@@ -20,6 +20,8 @@ use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/fireplace")
@@ -33,7 +35,7 @@ class FeedWhelpController extends AbstractController
     public function feedWhelp(
         Request $request, InventoryRepository $inventoryRepository, ResponseService $responseService,
         InventoryService $inventoryService, EntityManagerInterface $em, DragonRepository $dragonRepository,
-        Squirrel3 $squirrel3, UserUnlockedFeatureHelpers $userUnlockedFeatureRepository
+        Squirrel3 $squirrel3
     )
     {
         /** @var User $user */

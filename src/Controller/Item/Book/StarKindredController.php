@@ -10,6 +10,8 @@ use App\Functions\UserUnlockedFeatureHelpers;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/starKindred")
@@ -22,7 +24,6 @@ class StarKindredController extends AbstractController
      */
     public function read(
         Inventory $inventory, ResponseService $responseService,
-        UserUnlockedFeatureHelpers $userUnlockedFeatureRepository,
         EntityManagerInterface $em
     )
     {

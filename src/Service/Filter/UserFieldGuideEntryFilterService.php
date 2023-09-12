@@ -1,7 +1,9 @@
 <?php
 namespace App\Service\Filter;
 
-use App\Repository\UserFieldGuideEntryRepository;
+use App\Entity\UserFieldGuideEntry;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
@@ -11,11 +13,11 @@ class UserFieldGuideEntryFilterService
 
     public const PAGE_SIZE = 20;
 
-    private UserFieldGuideEntryRepository $repository;
+    private EntityRepository $repository;
 
-    public function __construct(UserFieldGuideEntryRepository $userFieldGuideEntryRepository)
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->repository = $userFieldGuideEntryRepository;
+        $this->repository = $em->getRepository(UserFieldGuideEntry::class);
 
         $this->filterer = new Filterer(
             self::PAGE_SIZE,

@@ -25,6 +25,8 @@ use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item")
@@ -83,7 +85,7 @@ class BlueprintController extends AbstractController
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository, PetExperienceService $petExperienceService,
-        PetActivityLogTagRepository $activityLogTagRepository, UserUnlockedFeatureHelpers $userUnlockedFeatureRepository
+        PetActivityLogTagRepository $activityLogTagRepository
     )
     {
         /** @var User $user */
@@ -123,8 +125,7 @@ class BlueprintController extends AbstractController
     public function buildBeehive(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         InventoryRepository $inventoryRepository, BeehiveService $beehiveService, PetExperienceService $petExperienceService,
-        PetRepository $petRepository, PetActivityLogTagRepository $activityLogTagRepository,
-        UserUnlockedFeatureHelpers $userUnlockedFeatureRepository
+        PetRepository $petRepository, PetActivityLogTagRepository $activityLogTagRepository
     )
     {
         /** @var User $user */
@@ -185,7 +186,7 @@ class BlueprintController extends AbstractController
     public function claim(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository, PetExperienceService $petExperienceService,
-        PetActivityLogTagRepository $activityLogTagRepository, UserUnlockedFeatureHelpers $userUnlockedFeatureRepository
+        PetActivityLogTagRepository $activityLogTagRepository
     )
     {
         /** @var User $user */

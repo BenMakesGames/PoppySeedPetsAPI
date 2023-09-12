@@ -2,12 +2,9 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\SimpleDb;
-use App\Repository\FieldGuideEntryRepository;
-use App\Service\Filter\UserFieldGuideEntryFilterService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,8 +21,7 @@ class FieldGuideController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getUnlockedEntries(
-        Request $request, ResponseService $responseService, UserFieldGuideEntryFilterService $userFieldGuideEntryFilterService,
-        FieldGuideEntryRepository $fieldGuideEntryRepository
+        Request $request, ResponseService $responseService
     )
     {
         /** @var User $user */
