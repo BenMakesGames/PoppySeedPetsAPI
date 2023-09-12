@@ -125,7 +125,7 @@ class PetExperienceService
         }
 
         if($activityLog && $levelUp)
-            $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
+            $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Level-up' ]));
 
         return $levelUp;
     }
