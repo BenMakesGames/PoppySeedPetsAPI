@@ -10,25 +10,19 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\UserUnlockedFeatureHelpers;
-use App\Repository\EnchantmentRepository;
-use App\Repository\UserUnlockedAuraRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HattierService
 {
-    private EnchantmentRepository $enchantmentRepository;
-    private UserUnlockedAuraRepository $userUnlockedAuraRepository;
     private EntityManagerInterface $em;
     private ResponseService $responseService;
     private CommentFormatter $commentFormatter;
 
     public function __construct(
-        EnchantmentRepository $enchantmentRepository, ResponseService $responseService, CommentFormatter $commentFormatter,
-        UserUnlockedAuraRepository $userUnlockedAuraRepository, EntityManagerInterface $em
+        ResponseService $responseService, CommentFormatter $commentFormatter,
+        EntityManagerInterface $em
     )
     {
-        $this->enchantmentRepository = $enchantmentRepository;
-        $this->userUnlockedAuraRepository = $userUnlockedAuraRepository;
         $this->em = $em;
         $this->responseService = $responseService;
         $this->commentFormatter = $commentFormatter;
@@ -40,13 +34,13 @@ class HattierService
     public function userHasUnlocked(User $user, $enchantment): bool
     {
         if(is_string($enchantment))
-            $enchantment = $this->enchantmentRepository->findOneByName($enchantment);
+            $enchantment = $this->em->getRepository(Enchantment::class)->findOneBy([ 'name' => $enchantment ]);
 
         $cacheKey = $user->getId() . '-' . $enchantment->getId();
 
         if(!array_key_exists($cacheKey, $this->userAurasPerRequestCache))
         {
-            $this->userAurasPerRequestCache[$cacheKey] = $this->userUnlockedAuraRepository->findOneBy([
+            $this->userAurasPerRequestCache[$cacheKey] = $this->em->getRepository(UserUnlockedAura::class)->findOneBy([
                 'user' => $user,
                 'aura' => $enchantment
             ]);
@@ -57,7 +51,7 @@ class HattierService
 
     public function getAurasAvailable(User $user): array
     {
-        $allAuras = $this->enchantmentRepository->createQueryBuilder('e')
+        $allAuras = $this->em->getRepository(Enchantment::class)->createQueryBuilder('e')
             ->andWhere('e.aura IS NOT NULL')
             ->getQuery()
             ->execute()
@@ -102,7 +96,7 @@ class HattierService
 
         if(!array_key_exists($cacheKey, $this->userAurasPerRequestCache) || $this->userAurasPerRequestCache[$cacheKey] === null)
         {
-            $unlockedAura = $this->userUnlockedAuraRepository->findOneBy([
+            $unlockedAura = $this->em->getRepository(UserUnlockedAura::class)->findOneBy([
                 'user' => $user,
                 'aura' => $enchantment
             ]);
@@ -135,7 +129,7 @@ class HattierService
 
         if(!array_key_exists($cacheKey, $this->userAurasPerRequestCache) || $this->userAurasPerRequestCache[$cacheKey] === null)
         {
-            $this->userAurasPerRequestCache[$cacheKey] = $this->userUnlockedAuraRepository->findOneBy([
+            $this->userAurasPerRequestCache[$cacheKey] = $this->em->getRepository(UserUnlockedAura::class)->findOneBy([
                 'user' => $user,
                 'aura' => $enchantment
             ]);
@@ -182,7 +176,7 @@ class HattierService
 
     private function unlockStartingAuras(User $user)
     {
-        $startingAuras = $this->enchantmentRepository->findBy([
+        $startingAuras = $this->em->getRepository(Enchantment::class)->findBy([
             'name' => [
                 'Bubbling',
                 '(New!)',
@@ -219,7 +213,7 @@ class HattierService
     ): ?PetActivityLog
     {
         if(is_string($enchantment))
-            $enchantment = $this->enchantmentRepository->findOneByName($enchantment);
+            $enchantment = $this->em->getRepository(Enchantment::class)->findOneBy([ 'name' => $enchantment ]);
 
         if($this->userHasUnlocked($pet->getOwner(), $enchantment))
             return null;

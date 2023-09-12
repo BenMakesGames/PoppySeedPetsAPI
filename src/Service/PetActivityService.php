@@ -793,11 +793,11 @@ class PetActivityService
                 return true;
 
             case 'Cucumber':
-                $this->kappaService->doHuntKappa($pet);
+                $this->kappaService->doHuntKappa($petWithSkills);
                 return true;
 
             case 'Shirikodama':
-                $this->kappaService->doReturnShirikodama($pet);
+                $this->kappaService->doReturnShirikodama($petWithSkills);
                 return true;
         }
 

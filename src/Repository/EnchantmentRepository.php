@@ -20,6 +20,9 @@ class EnchantmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Enchantment::class);
     }
 
+    /**
+     * @deprecated
+     */
     public function findOneByName(string $name)
     {
         return $this->findOneBy([ 'name' => $name ]);

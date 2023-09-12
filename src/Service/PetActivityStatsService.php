@@ -7,7 +7,7 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\PetActivityStatEnum;
 use Doctrine\ORM\EntityManagerInterface;
 
-class PetActivityStatsService
+final class PetActivityStatsService
 {
     public const STATS_THAT_CANT_FAIL = [
         PetActivityStatEnum::PARK_EVENT,
@@ -44,17 +44,10 @@ class PetActivityStatsService
         PetActivityStatEnum::OTHER => 'Other',
     ];
 
-    private EntityManagerInterface $em;
-
-    public function __construct(EntityManagerInterface $em)
-    {
-        $this->em = $em;
-    }
-
     /**
      * @throws EnumInvalidValueException
      */
-    public function logStat(Pet $pet, string $stat, ?bool $success, int $time)
+    public static function logStat(EntityManagerInterface $em, Pet $pet, string $stat, ?bool $success, int $time)
     {
         $stat = strtolower($stat);
 
@@ -81,7 +74,7 @@ class PetActivityStatsService
 
             $pet->setPetActivityStats($petActivityStats);
 
-            $this->em->persist($petActivityStats);
+            $em->persist($petActivityStats);
         }
 
         $pet->getPetActivityStats()

@@ -23,7 +23,6 @@ class PetExperienceService
 {
     public const SOCIAL_ENERGY_PER_HANG_OUT = 576; // 2.5 hangouts per day (for average pets)
 
-    private PetActivityStatsService $petActivityStatsService;
     private IRandom $squirrel3;
     private InventoryService $inventoryService;
     private UserStatsRepository $userStatsRepository;
@@ -35,13 +34,12 @@ class PetExperienceService
     private EntityManagerInterface $em;
 
     public function __construct(
-        PetActivityStatsService $petActivityStatsService, Squirrel3 $squirrel3, CalendarService $calendarService,
+        Squirrel3 $squirrel3, CalendarService $calendarService,
         InventoryService $inventoryService, UserStatsRepository $userStatsRepository, ResponseService $responseService,
         UserQuestRepository $userQuestRepository, PetActivityLogTagRepository $petActivityLogTagRepository,
         HattierService $hattierService, EntityManagerInterface $em
     )
     {
-        $this->petActivityStatsService = $petActivityStatsService;
         $this->squirrel3 = $squirrel3;
         $this->inventoryService = $inventoryService;
         $this->userStatsRepository = $userStatsRepository;
@@ -214,7 +212,7 @@ class PetExperienceService
     public function spendTime(Pet $pet, int $time, string $activityStat, ?bool $success)
     {
         $pet->getHouseTime()->spendActivityTime($time);
-        $this->petActivityStatsService->logStat($pet, $activityStat, $success, $time);
+        PetActivityStatsService::logStat($this->em, $pet, $activityStat, $success, $time);
 
         if($pet->getPregnancy())
             $pet->getPregnancy()->increaseGrowth($time);

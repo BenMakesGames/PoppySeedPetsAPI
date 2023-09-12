@@ -174,7 +174,7 @@ class DragonVaseController extends AbstractController
             );
         }
 
-        $newBonus = $enchantmentRepository->findOneByName($squirrel3->rngNextFromArray($possibleBonuses));
+        $newBonus = $enchantmentRepository->findOneBy([ 'name' => $squirrel3->rngNextFromArray($possibleBonuses) ]);
 
         $hadAnEnchantment = $dippedItem->getEnchantment() !== null;
         $oldName = InventoryModifierFunctions::getNameWithModifiers($dippedItem);

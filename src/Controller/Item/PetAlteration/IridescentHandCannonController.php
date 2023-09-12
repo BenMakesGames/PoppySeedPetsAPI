@@ -111,7 +111,7 @@ class IridescentHandCannonController extends AbstractController
             ;
         }
 
-        $rainbowEye = $enchantmentRepository->findOneByName('Rainboweye');
+        $rainbowEye = $enchantmentRepository->findOneBy([ 'name' => 'Rainboweye' ]);
 
         if(!$hattierService->userHasUnlocked($user, $rainbowEye))
         {
