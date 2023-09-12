@@ -12,17 +12,15 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetColorFunctions;
+use App\Functions\UserUnlockedFeatureHelpers;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
-use App\Repository\UserUnlockedFeatureRepository;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item/fairy")
@@ -122,7 +120,7 @@ class HouseFairyController extends AbstractController
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3,
-        PetRepository $petRepository, UserUnlockedFeatureRepository $userUnlockedFeatureRepository
+        PetRepository $petRepository, UserUnlockedFeatureHelpers $userUnlockedFeatureRepository
     )
     {
         /** @var User $user */
@@ -164,7 +162,7 @@ class HouseFairyController extends AbstractController
             $em->remove($quint);
         }
 
-        $userUnlockedFeatureRepository->create($user, UnlockableFeatureEnum::Fireplace);
+        UserUnlockedFeatureHelpers::create($em, $user, UnlockableFeatureEnum::Fireplace);
 
         $stockingColors = PetColorFunctions::generateRandomPetColors($squirrel3);
 

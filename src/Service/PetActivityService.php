@@ -749,20 +749,12 @@ class PetActivityService
                 break;
 
             case 'Chocolate Key':
-                if($this->squirrel3->rngNextInt(1, 4) === 1)
-                {
-                    $this->chocolateMansion->adventure($petWithSkills);
-                    return true;
-                }
-                break;
+                $this->chocolateMansion->adventure($petWithSkills);
+                return true;
 
             case 'Carrot Key':
-                if($this->squirrel3->rngNextInt(1, 4) === 1)
-                {
-                    $this->caerbannog->adventure($petWithSkills);
-                    return true;
-                }
-                break;
+                $this->caerbannog->adventure($petWithSkills);
+                return true;
 
             case '5-leaf Clover':
                 $this->treasureMapService->doLeprechaun($petWithSkills);
@@ -802,6 +794,10 @@ class PetActivityService
 
             case 'Cucumber':
                 $this->kappaService->doHuntKappa($pet);
+                return true;
+
+            case 'Shirikodama':
+                $this->kappaService->doReturnShirikodama($pet);
                 return true;
         }
 

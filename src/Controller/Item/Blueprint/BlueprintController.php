@@ -12,11 +12,11 @@ use App\Enum\PetSkillEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
+use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
-use App\Repository\UserUnlockedFeatureRepository;
 use App\Service\BeehiveService;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -25,8 +25,6 @@ use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/item")
@@ -85,7 +83,7 @@ class BlueprintController extends AbstractController
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository, PetExperienceService $petExperienceService,
-        PetActivityLogTagRepository $activityLogTagRepository, UserUnlockedFeatureRepository $userUnlockedFeatureRepository
+        PetActivityLogTagRepository $activityLogTagRepository, UserUnlockedFeatureHelpers $userUnlockedFeatureRepository
     )
     {
         /** @var User $user */
@@ -98,7 +96,7 @@ class BlueprintController extends AbstractController
 
         $pet = $this->getPet($request, $petRepository);
 
-        $userUnlockedFeatureRepository->create($user, UnlockableFeatureEnum::Basement);
+        UserUnlockedFeatureHelpers::create($em, $user, UnlockableFeatureEnum::Basement);
 
         $em->remove($inventory);
 
@@ -126,7 +124,7 @@ class BlueprintController extends AbstractController
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         InventoryRepository $inventoryRepository, BeehiveService $beehiveService, PetExperienceService $petExperienceService,
         PetRepository $petRepository, PetActivityLogTagRepository $activityLogTagRepository,
-        UserUnlockedFeatureRepository $userUnlockedFeatureRepository
+        UserUnlockedFeatureHelpers $userUnlockedFeatureRepository
     )
     {
         /** @var User $user */
@@ -153,7 +151,7 @@ class BlueprintController extends AbstractController
 
         $em->remove($inventory);
 
-        $userUnlockedFeatureRepository->create($user, UnlockableFeatureEnum::Beehive);
+        UserUnlockedFeatureHelpers::create($em, $user, UnlockableFeatureEnum::Beehive);
 
         if($user->getGreenhouse())
             $user->getGreenhouse()->setBeesDismissedOn(new \DateTimeImmutable());
@@ -187,7 +185,7 @@ class BlueprintController extends AbstractController
     public function claim(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository, PetExperienceService $petExperienceService,
-        PetActivityLogTagRepository $activityLogTagRepository, UserUnlockedFeatureRepository $userUnlockedFeatureRepository
+        PetActivityLogTagRepository $activityLogTagRepository, UserUnlockedFeatureHelpers $userUnlockedFeatureRepository
     )
     {
         /** @var User $user */
@@ -206,7 +204,7 @@ class BlueprintController extends AbstractController
 
         $user->setGreenhouse($greenhouse);
 
-        $userUnlockedFeatureRepository->create($user, UnlockableFeatureEnum::Greenhouse);
+        UserUnlockedFeatureHelpers::create($em, $user, UnlockableFeatureEnum::Greenhouse);
 
         $this->rewardHelper(
             $petExperienceService, $responseService, $activityLogTagRepository,

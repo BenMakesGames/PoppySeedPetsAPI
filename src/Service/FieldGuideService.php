@@ -5,28 +5,29 @@ use App\Entity\FieldGuideEntry;
 use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotFoundException;
+use App\Functions\UserUnlockedFeatureHelpers;
 use App\Repository\FieldGuideEntryRepository;
 use App\Repository\UserFieldGuideEntryRepository;
-use App\Repository\UserUnlockedFeatureRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 class FieldGuideService
 {
     private FieldGuideEntryRepository $fieldGuideEntryRepository;
     private UserFieldGuideEntryRepository $userFieldGuideEntryRepository;
     private ResponseService $responseService;
-    private UserUnlockedFeatureRepository $userUnlockedFeatureRepository;
+    private EntityManagerInterface $em;
 
     public function __construct(
         FieldGuideEntryRepository $fieldGuideEntryRepository,
         UserFieldGuideEntryRepository $userFieldGuideEntryRepository,
         ResponseService $responseService,
-        UserUnlockedFeatureRepository $userUnlockedFeatureRepository
+        EntityManagerInterface $em
     )
     {
         $this->fieldGuideEntryRepository = $fieldGuideEntryRepository;
         $this->userFieldGuideEntryRepository = $userFieldGuideEntryRepository;
         $this->responseService = $responseService;
-        $this->userUnlockedFeatureRepository = $userUnlockedFeatureRepository;
+        $this->em = $em;
     }
 
     /**
@@ -47,7 +48,7 @@ class FieldGuideService
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::FieldGuide))
         {
-            $this->userUnlockedFeatureRepository->create($user, UnlockableFeatureEnum::FieldGuide);
+            UserUnlockedFeatureHelpers::create($this->em, $user, UnlockableFeatureEnum::FieldGuide);
             $message = 'You unlocked the Field Guide! (Check it out in the main menu!)';
         }
 

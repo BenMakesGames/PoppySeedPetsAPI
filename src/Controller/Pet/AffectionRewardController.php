@@ -15,14 +15,12 @@ use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\MeritFunctions;
+use App\Functions\UserUnlockedFeatureHelpers;
 use App\Repository\MeritRepository;
-use App\Repository\UserUnlockedFeatureRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/pet")
@@ -52,7 +50,7 @@ class AffectionRewardController extends AbstractController
      */
     public function chooseAffectionRewardMerit(
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
-        MeritRepository $meritRepository, UserUnlockedFeatureRepository $userUnlockedFeatureRepository
+        MeritRepository $meritRepository, UserUnlockedFeatureHelpers $userUnlockedFeatureRepository
     )
     {
         /** @var User $user */
@@ -100,7 +98,7 @@ class AffectionRewardController extends AbstractController
         // you should already unlock the merit when the pet increases in affection, but someone reported that
         // NOT happening, so just in case...
         if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Park))
-            $userUnlockedFeatureRepository->create($pet->getOwner(), UnlockableFeatureEnum::Park);
+            UserUnlockedFeatureHelpers::create($em, $pet->getOwner(), UnlockableFeatureEnum::Park);
 
         $em->flush();
 

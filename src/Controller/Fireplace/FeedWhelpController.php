@@ -11,17 +11,15 @@ use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Functions\RequestFunctions;
+use App\Functions\UserUnlockedFeatureHelpers;
 use App\Repository\DragonRepository;
 use App\Repository\InventoryRepository;
-use App\Repository\UserUnlockedFeatureRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/fireplace")
@@ -35,7 +33,7 @@ class FeedWhelpController extends AbstractController
     public function feedWhelp(
         Request $request, InventoryRepository $inventoryRepository, ResponseService $responseService,
         InventoryService $inventoryService, EntityManagerInterface $em, DragonRepository $dragonRepository,
-        Squirrel3 $squirrel3, UserUnlockedFeatureRepository $userUnlockedFeatureRepository
+        Squirrel3 $squirrel3, UserUnlockedFeatureHelpers $userUnlockedFeatureRepository
     )
     {
         /** @var User $user */
@@ -121,7 +119,7 @@ class FeedWhelpController extends AbstractController
                 ->setThanks([ $greetingsAndThanks[0]['thanks'], $greetingsAndThanks[1]['thanks'] ])
             ;
 
-            $userUnlockedFeatureRepository->create($user, UnlockableFeatureEnum::DragonDen);
+            UserUnlockedFeatureHelpers::create($em, $user, UnlockableFeatureEnum::DragonDen);
 
             $responseService->addFlashMessage($whelp->getName() . ' is a whelp no longer! They leave your fireplace and establish a den nearby! (The Dragon Den is now available! Check it out in the menu!)');
         }

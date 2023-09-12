@@ -9,9 +9,9 @@ use App\Entity\UserUnlockedAura;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\UserUnlockedFeatureHelpers;
 use App\Repository\EnchantmentRepository;
 use App\Repository\UserUnlockedAuraRepository;
-use App\Repository\UserUnlockedFeatureRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HattierService
@@ -21,12 +21,10 @@ class HattierService
     private EntityManagerInterface $em;
     private ResponseService $responseService;
     private CommentFormatter $commentFormatter;
-    private UserUnlockedFeatureRepository $userUnlockedFeatureRepository;
 
     public function __construct(
         EnchantmentRepository $enchantmentRepository, ResponseService $responseService, CommentFormatter $commentFormatter,
-        UserUnlockedAuraRepository $userUnlockedAuraRepository, EntityManagerInterface $em,
-        UserUnlockedFeatureRepository $userUnlockedFeatureRepository
+        UserUnlockedAuraRepository $userUnlockedAuraRepository, EntityManagerInterface $em
     )
     {
         $this->enchantmentRepository = $enchantmentRepository;
@@ -34,7 +32,6 @@ class HattierService
         $this->em = $em;
         $this->responseService = $responseService;
         $this->commentFormatter = $commentFormatter;
-        $this->userUnlockedFeatureRepository = $userUnlockedFeatureRepository;
     }
 
     /**
@@ -164,7 +161,7 @@ class HattierService
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Hattier))
         {
-            $this->userUnlockedFeatureRepository->create($user, UnlockableFeatureEnum::Hattier);
+            UserUnlockedFeatureHelpers::create($this->em, $user, UnlockableFeatureEnum::Hattier);
 
             if($customActivityUnlockMessage)
                 $activityLog->setEntry($activityLog->getEntry() . ' ' . $customActivityUnlockMessage);

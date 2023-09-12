@@ -6,16 +6,13 @@ use App\Entity\UserFollowing;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
+use App\Functions\UserUnlockedFeatureHelpers;
 use App\Repository\UserFollowingRepository;
 use App\Repository\UserRepository;
-use App\Repository\UserUnlockedFeatureRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use App\Annotations\DoesNotRequireHouseHours;
 
 /**
  * @Route("/following")
@@ -30,7 +27,7 @@ class FollowController extends AbstractController
     public function add(
         Request $request, UserRepository $userRepository, UserFollowingRepository $userFollowingRepository,
         ResponseService $responseService, EntityManagerInterface $em,
-        UserUnlockedFeatureRepository $userUnlockedFeatureRepository
+        UserUnlockedFeatureHelpers $userUnlockedFeatureRepository
     )
     {
         /** @var User $user */
@@ -63,7 +60,7 @@ class FollowController extends AbstractController
         $em->persist($newFriend);
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Florist))
-            $userUnlockedFeatureRepository->create($user, UnlockableFeatureEnum::Florist);
+            UserUnlockedFeatureHelpers::create($em, $user, UnlockableFeatureEnum::Florist);
 
         $em->flush();
 

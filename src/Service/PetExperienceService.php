@@ -13,11 +13,10 @@ use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
-use App\Repository\ItemRepository;
+use App\Functions\UserUnlockedFeatureHelpers;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
-use App\Repository\UserUnlockedFeatureRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetExperienceService
@@ -33,13 +32,13 @@ class PetExperienceService
     private ResponseService $responseService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
     private HattierService $hattierService;
-    private UserUnlockedFeatureRepository $userUnlockedFeatureRepository;
+    private EntityManagerInterface $em;
 
     public function __construct(
         PetActivityStatsService $petActivityStatsService, Squirrel3 $squirrel3, CalendarService $calendarService,
         InventoryService $inventoryService, UserStatsRepository $userStatsRepository, ResponseService $responseService,
         UserQuestRepository $userQuestRepository, PetActivityLogTagRepository $petActivityLogTagRepository,
-        HattierService $hattierService, UserUnlockedFeatureRepository $userUnlockedFeatureRepository
+        HattierService $hattierService, EntityManagerInterface $em
     )
     {
         $this->petActivityStatsService = $petActivityStatsService;
@@ -51,7 +50,7 @@ class PetExperienceService
         $this->responseService = $responseService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->hattierService = $hattierService;
-        $this->userUnlockedFeatureRepository = $userUnlockedFeatureRepository;
+        $this->em = $em;
     }
 
     /**
@@ -276,7 +275,7 @@ class PetExperienceService
 
         // if a pet's affection level increased, and you haven't unlocked the park, now you get the park!
         if($pet->getAffectionLevel() > $previousAffectionLevel && !$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Park))
-            $this->userUnlockedFeatureRepository->create($pet->getOwner(), UnlockableFeatureEnum::Park);
+            UserUnlockedFeatureHelpers::create($this->em, $pet->getOwner(), UnlockableFeatureEnum::Park);
 
         if($this->calendarService->deprecatedIsValentinesOrAdjacent())
             $this->maybeGivePlayerTwuWuv($pet);

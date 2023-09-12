@@ -19,13 +19,13 @@ use App\Functions\EquipmentFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\InventoryModifierFunctions;
 use App\Functions\NumberFunctions;
+use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
-use App\Repository\UserUnlockedFeatureRepository;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -48,14 +48,12 @@ class TreasureMapService
     private ItemRepository $itemRepository;
     private HouseSimService $houseSimService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
-    private UserUnlockedFeatureRepository $userUnlockedFeatureRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
         EntityManagerInterface $em, PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
         StatusEffectService $statusEffectService, Squirrel3 $squirrel3, ItemRepository $itemRepository,
-        HouseSimService $houseSimService, PetActivityLogTagRepository $petActivityLogTagRepository,
-        UserUnlockedFeatureRepository $userUnlockedFeatureRepository
+        HouseSimService $houseSimService, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->responseService = $responseService;
@@ -69,7 +67,6 @@ class TreasureMapService
         $this->itemRepository = $itemRepository;
         $this->houseSimService = $houseSimService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
-        $this->userUnlockedFeatureRepository = $userUnlockedFeatureRepository;
     }
 
     public function doCetguelisTreasureMap(ComputedPetSkills $petWithSkills)
@@ -159,7 +156,7 @@ class TreasureMapService
         ;
 
         if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::BulkSelling))
-            $this->userUnlockedFeatureRepository->create($pet->getOwner(), UnlockableFeatureEnum::BulkSelling);
+            UserUnlockedFeatureHelpers::create($this->em, $pet->getOwner(), UnlockableFeatureEnum::BulkSelling);
 
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
         $this->petExperienceService->spendTime($pet, 120, PetActivityStatEnum::OTHER, null);

@@ -10,6 +10,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\DragonRepository;
@@ -19,7 +20,6 @@ use App\Repository\MeritRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
-use App\Repository\UserUnlockedFeatureRepository;
 use App\Service\DragonHostageService;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
@@ -52,7 +52,6 @@ class GenericAdventureService
     private EntityManagerInterface $em;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
     private FieldGuideService $fieldGuideService;
-    private UserUnlockedFeatureRepository $userUnlockedFeatureRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService,
@@ -62,8 +61,7 @@ class GenericAdventureService
         EnchantmentRepository $enchantmentRepository, HattierService $hattierService,
         UserBirthdayService $userBirthdayService, DragonRepository $dragonRepository,
         DragonHostageService $dragonHostageService, EntityManagerInterface $em,
-        PetActivityLogTagRepository $petActivityLogTagRepository, FieldGuideService $fieldGuideService,
-        UserUnlockedFeatureRepository $userUnlockedFeatureRepository
+        PetActivityLogTagRepository $petActivityLogTagRepository, FieldGuideService $fieldGuideService
     )
     {
         $this->responseService = $responseService;
@@ -84,7 +82,6 @@ class GenericAdventureService
         $this->em = $em;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->fieldGuideService = $fieldGuideService;
-        $this->userUnlockedFeatureRepository = $userUnlockedFeatureRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -329,7 +326,7 @@ class GenericAdventureService
 
     public function discoverFeature(Pet $pet, string $feature, string $description): PetActivityLog
     {
-        $this->userUnlockedFeatureRepository->create($pet->getOwner(), $feature);
+        UserUnlockedFeatureHelpers::create($this->em, $pet->getOwner(), $feature);
 
         return $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' explored the town a bit, and stumbled upon a ' . $description . '! (Check it out in the menu!)', '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY)
