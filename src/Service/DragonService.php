@@ -69,20 +69,19 @@ class DragonService
     private EnchantmentRepository $enchantmentRepository;
     private SpiceRepository $spiceRepository;
     private UserStatsRepository $userStatsRepository;
-    private CalendarService $calendarService;
     private IRandom $rng;
     private InventoryRepository $inventoryRepository;
     private DragonRepository $dragonRepository;
     private HattierService $hattierService;
     private ResponseService $responseService;
     private TransactionService $transactionService;
+    private Clock $clock;
 
     public function __construct(
         EntityManagerInterface $em, InventoryService $inventoryService, ResponseService $responseService,
-        EnchantmentRepository $enchantmentRepository, SpiceRepository $spiceRepository,
-        UserStatsRepository $userStatsRepository, CalendarService $calendarService, Squirrel3 $rng,
-        InventoryRepository $inventoryRepository, DragonRepository $dragonRepository, HattierService $hattierService,
-        TransactionService $transactionService
+        EnchantmentRepository $enchantmentRepository, SpiceRepository $spiceRepository, Clock $clock,
+        UserStatsRepository $userStatsRepository, Squirrel3 $rng, InventoryRepository $inventoryRepository,
+        DragonRepository $dragonRepository, HattierService $hattierService, TransactionService $transactionService
     )
     {
         $this->em = $em;
@@ -90,13 +89,13 @@ class DragonService
         $this->enchantmentRepository = $enchantmentRepository;
         $this->spiceRepository = $spiceRepository;
         $this->userStatsRepository = $userStatsRepository;
-        $this->calendarService = $calendarService;
         $this->rng = $rng;
         $this->inventoryRepository = $inventoryRepository;
         $this->dragonRepository = $dragonRepository;
         $this->hattierService = $hattierService;
         $this->responseService = $responseService;
         $this->transactionService = $transactionService;
+        $this->clock = $clock;
     }
 
     /**
@@ -150,14 +149,14 @@ class DragonService
         $goldGoodies = self::GOLD_GOODIES;
         $gemGoodies = self::GEM_GOODIES;
 
-        if($this->calendarService->deprecatedIsValentinesOrAdjacent())
+        if(CalendarService::isValentinesOrAdjacent($this->clock->now))
         {
             $silverGoodies[] = [ 'weight' => 10, 'item' => 'Cacao Fruit' ];
             $goldGoodies[] = [ 'weight' => 10, 'item' => 'Chocolate Bar' ];
             $gemGoodies[] = [ 'weight' => 10, 'item' => 'Chocolate Key' ];
         }
 
-        $chineseCalendarInfo = $this->calendarService->getChineseCalendarInfo();
+        $chineseCalendarInfo = CalendarService::getChineseCalendarInfo($this->clock->now);
 
         if($chineseCalendarInfo->month === 1 && $chineseCalendarInfo->day <= 6)
         {

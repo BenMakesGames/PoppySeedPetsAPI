@@ -20,7 +20,7 @@ class BookstoreService
     private UserQuestRepository $userQuestRepository;
     private InventoryService $inventoryService;
     private ItemRepository $itemRepository;
-    private CalendarService $calendarService;
+    private Clock $clock;
 
     const BOOKSTORE_QUEST_NAME = 'Items Given to Bookstore';
 
@@ -117,14 +117,14 @@ class BookstoreService
 
     public function __construct(
         UserStatsRepository $userStatsRepository, UserQuestRepository $userQuestRepository,
-        InventoryService $inventoryService, ItemRepository $itemRepository, CalendarService $calendarService
+        InventoryService $inventoryService, ItemRepository $itemRepository, Clock $clock
     )
     {
         $this->userStatsRepository = $userStatsRepository;
         $this->userQuestRepository = $userQuestRepository;
         $this->inventoryService = $inventoryService;
         $this->itemRepository = $itemRepository;
-        $this->calendarService = $calendarService;
+        $this->clock = $clock;
     }
 
     public static function getBookstoreQuestStep(int $step): ?array
@@ -170,7 +170,7 @@ class BookstoreService
             'Chocomilk' => 11
         ];
 
-        if($this->calendarService->deprecatedIsStockingStuffingSeason())
+        if(CalendarService::isStockingStuffingSeason($this->clock->now))
         {
             $cafePrices['Eggnog'] = 12;
         }
@@ -190,7 +190,7 @@ class BookstoreService
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::HollowEarth))
             $gamePrices['Hollow Earth Booster Pack'] = 200;
 
-        if($this->calendarService->deprecatedIsStockingStuffingSeason())
+        if(CalendarService::isStockingStuffingSeason($this->clock->now))
             $gamePrices['Tile: Everice Cream'] = 200;
 
         return $gamePrices;

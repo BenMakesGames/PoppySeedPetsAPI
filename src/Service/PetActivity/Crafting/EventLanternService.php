@@ -1,9 +1,7 @@
 <?php
 namespace App\Service\PetActivity\Crafting;
 
-use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Enum\LocationEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Model\ActivityCallback;
@@ -12,6 +10,7 @@ use App\Model\HouseSimRecipe;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Service\CalendarService;
+use App\Service\Clock;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -25,14 +24,14 @@ class EventLanternService
     private ResponseService $responseService;
     private PetExperienceService $petExperienceService;
     private ItemRepository $itemRepository;
-    private CalendarService $calendarService;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private Clock $clock;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        ItemRepository $itemRepository, CalendarService $calendarService, Squirrel3 $squirrel3,
+        ItemRepository $itemRepository, Squirrel3 $squirrel3, Clock $clock,
         HouseSimService $houseSimService, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
@@ -40,10 +39,10 @@ class EventLanternService
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
         $this->itemRepository = $itemRepository;
-        $this->calendarService = $calendarService;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->clock = $clock;
     }
 
     /**
@@ -64,16 +63,16 @@ class EventLanternService
 
         if($items)
         {
-            if($this->calendarService->deprecatedIsHalloweenCrafting())
+            if(CalendarService::isHalloweenCrafting($this->clock->now))
                 $possibilities[] = new ActivityCallback($this, 'createMoonlightLantern', 10);
 
-            if($this->calendarService->deprecatedIsPiDayCrafting())
+            if(CalendarService::isPiDayCrafting($this->clock->now))
                 $possibilities[] = new ActivityCallback($this, 'createPiLantern', 10);
 
             if((int)$now->format('n') === 12)
                 $possibilities[] = new ActivityCallback($this, 'createTreelightLantern', 10);
 
-            if($this->calendarService->deprecatedIsSaintMartinsDayCrafting())
+            if(CalendarService::isSaintMartinsDayCrafting($this->clock->now))
                 $possibilities[] = new ActivityCallback($this, 'createDapperSwanLantern', 10);
         }
 

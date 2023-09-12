@@ -115,7 +115,6 @@ final class DateFunctions
         }
     }
 
-    /** @noinspection PhpInconsistentReturnPointsInspection */
     public static function getClosestExactFullMoon(\DateTimeImmutable $dt): \DateTimeImmutable
     {
         if(self::getIsExactFullMoon($dt))

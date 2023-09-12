@@ -58,7 +58,7 @@ class WeatherService
 
         $hourSince2000 = WeatherService::getHourSince2000($dt);
 
-        $weather->holidays = $getHolidays ? $this->calendarService->getEventData($dt) : [];
+        $weather->holidays = $getHolidays ? CalendarService::getEventData($dt) : [];
         $weather->clouds = WeatherService::getClouds($hourSince2000);
         $weather->rainfall = WeatherService::getRainfall($hourSince2000);
         $weather->temperature = WeatherService::getTemperature($hourSince2000, $weather->rainfall);
@@ -238,7 +238,7 @@ class WeatherService
 
         $forecast->date = $date->setTime(0, 0, 0);
 
-        $forecast->holidays = $this->calendarService->getEventData($forecast->date);
+        $forecast->holidays = CalendarService::getEventData($forecast->date);
 
         $forecast->maxRainfall = max($rainfalls);
         $forecast->minRainfall = min($rainfalls);

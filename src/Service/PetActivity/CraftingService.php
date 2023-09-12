@@ -74,6 +74,7 @@ class CraftingService
     public function getCraftingPossibilities(ComputedPetSkills $petWithSkills): array
     {
         $possibilities = [];
+        $now = new \DateTimeImmutable();
 
         if($this->houseSimService->hasInventory('Twu Wuv') && $this->houseSimService->hasInventory('Red Balloon'))
         {
@@ -82,7 +83,7 @@ class CraftingService
 
         if($this->houseSimService->hasInventory('Chocolate Bar'))
         {
-            $weight = $this->calendarService->deprecatedIsValentinesOrAdjacent() ? 80 : 8;
+            $weight = CalendarService::isValentinesOrAdjacent($now) ? 80 : 8;
 
             $possibilities[] = new ActivityCallback($this, 'makeChocolateTool', $weight);
         }
@@ -932,8 +933,9 @@ class CraftingService
     private function makeChocolateTool(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
+        $now = new \DateTimeImmutable();
 
-        if($this->calendarService->deprecatedIsValentinesOrAdjacent())
+        if(CalendarService::isValentinesOrAdjacent($now))
             $making = $this->itemRepository->findOneByName('Chocolate Key');
         else
         {

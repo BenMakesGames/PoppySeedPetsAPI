@@ -14,6 +14,7 @@ use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Repository\PetActivityLogTagRepository;
 use App\Service\CalendarService;
+use App\Service\Clock;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -36,18 +37,18 @@ class SmithingService
     private IronSmithingService $ironSmithingService;
     private MeteoriteSmithingService $meteoriteSmithingService;
     private HalloweenSmithingService $halloweenSmithingService;
-    private CalendarService $calendarService;
     private SilverSmithingService $silverSmithingService;
     private TwuWuvCraftingService $twuWuvCraftingService;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private Clock $clock;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
         GoldSmithingService $goldSmithingService, SilverSmithingService $silverSmithingService, Squirrel3 $squirrel3,
         IronSmithingService $ironSmithingService, MeteoriteSmithingService $meteoriteSmithingService,
-        HalloweenSmithingService $halloweenSmithingService, CalendarService $calendarService,
+        HalloweenSmithingService $halloweenSmithingService, Clock $clock,
         TwuWuvCraftingService $twuWuvCraftingService, HouseSimService $houseSimService,
         PetActivityLogTagRepository $petActivityLogTagRepository
     )
@@ -59,12 +60,12 @@ class SmithingService
         $this->ironSmithingService = $ironSmithingService;
         $this->meteoriteSmithingService = $meteoriteSmithingService;
         $this->halloweenSmithingService = $halloweenSmithingService;
-        $this->calendarService = $calendarService;
         $this->silverSmithingService = $silverSmithingService;
         $this->twuWuvCraftingService = $twuWuvCraftingService;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->clock = $clock;
     }
 
     public function getCraftingPossibilities(ComputedPetSkills $petWithSkills): array
@@ -315,7 +316,7 @@ class SmithingService
                 $possibilities[] = new ActivityCallback($this->meteoriteSmithingService, 'createHorizonMirror', 10);
         }
 
-        if($this->calendarService->deprecatedIsHalloweenCrafting())
+        if(CalendarService::isHalloweenCrafting($this->clock->now))
         {
             if($this->houseSimService->hasInventory('Small, Yellow Plastic Bucket') || $this->houseSimService->hasInventory('Upside-down, Yellow Plastic Bucket'))
                 $possibilities[] = new ActivityCallback($this->halloweenSmithingService, 'createPumpkinBucket', 10);

@@ -14,6 +14,7 @@ use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\CalendarService;
+use App\Service\Clock;
 use App\Service\InventoryService;
 use App\Service\PetAssistantService;
 use App\Service\ResponseService;
@@ -36,9 +37,8 @@ class WeedController extends AbstractController
      */
     public function weedPlants(
         ResponseService $responseService, UserQuestRepository $userQuestRepository, EntityManagerInterface $em,
-        InventoryService $inventoryService, Squirrel3 $squirrel3,
-        WeatherService $weatherService, ItemRepository $itemRepository,
-        PetActivityLogTagRepository $petActivityLogTagRepository, CalendarService $calendarService
+        InventoryService $inventoryService, Squirrel3 $squirrel3, WeatherService $weatherService,
+        ItemRepository $itemRepository, PetActivityLogTagRepository $petActivityLogTagRepository, Clock $clock
     ): JsonResponse
     {
         /** @var User $user */
@@ -67,7 +67,7 @@ class WeedController extends AbstractController
 
         if($greenhouse->isHasFishStatue())
         {
-            $possibleItem2s = $calendarService->deprecatedIsSaintPatricksDay()
+            $possibleItem2s = CalendarService::isSaintPatricksDay($clock->now)
                 ? [ '1-leaf Clover', '2-leaf Clover' ]
                 : [ 'Algae', 'Scales', 'Freshly-squeezed Fish Oil', 'Silica Grounds' ]
             ;

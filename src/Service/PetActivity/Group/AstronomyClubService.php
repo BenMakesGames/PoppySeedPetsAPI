@@ -14,6 +14,7 @@ use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Service\CalendarService;
+use App\Service\Clock;
 use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -34,13 +35,13 @@ class AstronomyClubService
     private EnchantmentRepository $enchantmentRepository;
     private HattierService $hattierService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
-    private CalendarService $calendarService;
+    private Clock $clock;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, InventoryService $inventoryService,
         PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3, HattierService $hattierService,
-        EnchantmentRepository $enchantmentRepository,
-        PetActivityLogTagRepository $petActivityLogTagRepository, CalendarService $calendarService
+        EnchantmentRepository $enchantmentRepository, PetActivityLogTagRepository $petActivityLogTagRepository,
+        Clock $clock
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -51,7 +52,7 @@ class AstronomyClubService
         $this->hattierService = $hattierService;
         $this->enchantmentRepository = $enchantmentRepository;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
-        $this->calendarService = $calendarService;
+        $this->clock = $clock;
     }
 
     private const DICTIONARY = [
@@ -127,7 +128,7 @@ class AstronomyClubService
             ->increaseSkillRollTotal($skill)
         ;
 
-        if($this->calendarService->deprecatedIsLeonidPeakOrAdjacent())
+        if(CalendarService::isLeonidPeakOrAdjacent($this->clock->now))
         {
             $messageTemplate = '%pet% watched the Leonids with %group%, and collected some of their Stardust!';
 

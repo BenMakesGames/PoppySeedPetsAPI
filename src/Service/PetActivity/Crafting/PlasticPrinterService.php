@@ -14,6 +14,7 @@ use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Service\CalendarService;
+use App\Service\Clock;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -27,14 +28,14 @@ class PlasticPrinterService
     private ResponseService $responseService;
     private PetExperienceService $petExperienceService;
     private ItemRepository $itemRepository;
-    private CalendarService $calendarService;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private Clock $clock;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        ItemRepository $itemRepository, CalendarService $calendarService, Squirrel3 $squirrel3,
+        ItemRepository $itemRepository, Clock $clock, Squirrel3 $squirrel3,
         HouseSimService $houseSimService, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
@@ -42,10 +43,10 @@ class PlasticPrinterService
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
         $this->itemRepository = $itemRepository;
-        $this->calendarService = $calendarService;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->clock = $clock;
     }
 
     /**
@@ -305,7 +306,7 @@ class PlasticPrinterService
 
         $beingHalloweeny = false;
 
-        if($this->calendarService->deprecatedIsHalloweenCrafting())
+        if(CalendarService::isHalloweenCrafting($this->clock->now))
         {
             if($this->squirrel3->rngNextInt(1, 2) === 1)
             {

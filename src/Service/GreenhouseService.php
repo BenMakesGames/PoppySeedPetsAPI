@@ -44,13 +44,14 @@ class GreenhouseService
     private NormalizerInterface $normalizer;
     private PetSpeciesRepository $petSpeciesRepository;
     private SpiceRepository $spiceRepository;
+    private Clock $clock;
 
     public function __construct(
         InventoryService $inventoryService, PetRepository $petRepository, PetFactory $petFactory, Squirrel3 $squirrel3,
         EntityManagerInterface $em, MeritRepository $meritRepository, UserStatsRepository $userStatsRepository,
         UserQuestRepository $userQuestRepository, GreenhousePlantRepository $greenhousePlantRepository,
         InventoryRepository $inventoryRepository, NormalizerInterface $normalizer,
-        PetSpeciesRepository $petSpeciesRepository, SpiceRepository $spiceRepository
+        PetSpeciesRepository $petSpeciesRepository, SpiceRepository $spiceRepository, Clock $clock
     )
     {
         $this->inventoryService = $inventoryService;
@@ -66,6 +67,7 @@ class GreenhouseService
         $this->normalizer = $normalizer;
         $this->petSpeciesRepository = $petSpeciesRepository;
         $this->spiceRepository = $spiceRepository;
+        $this->clock = $clock;
     }
 
     public function approachBird(Greenhouse $greenhouse): string
@@ -176,7 +178,7 @@ class GreenhouseService
 
     public function maybeAssignPollinators(User $user)
     {
-        $twoHoursAgo = (new \DateTimeImmutable())->sub(\DateInterval::createFromDateString('2 hours'));
+        $twoHoursAgo = $this->clock->now->sub(\DateInterval::createFromDateString('2 hours'));
 
         if($user->getGreenhouse()->getButterfliesDismissedOn() <= $twoHoursAgo)
             $this->maybeAssignPollinator($user, PollinatorEnum::BUTTERFLIES);
@@ -231,11 +233,11 @@ class GreenhouseService
 
     public function getWeedText(User $user): ?string
     {
-        $weeds = $this->userQuestRepository->findOrCreate($user, 'Greenhouse Weeds', (new \DateTimeImmutable())->modify('-1 minutes')->format('Y-m-d H:i:s'));
+        $weeds = $this->userQuestRepository->findOrCreate($user, 'Greenhouse Weeds', $this->clock->now->modify('-1 minutes')->format('Y-m-d H:i:s'));
 
         $weedTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $weeds->getValue());
 
-        if($weedTime > new \DateTimeImmutable())
+        if($weedTime > $this->clock->now)
             $weedText = null;
         else
         {

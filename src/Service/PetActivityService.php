@@ -80,7 +80,6 @@ class PetActivityService
     private DreamingService $dreamingService;
     private MagicBeanstalkService $beanStalkService;
     private GatheringHolidayAdventureService $gatheringHolidayAdventureService;
-    private CalendarService $calendarService;
     private HeartDimensionService $heartDimensionService;
     private GuildService $guildService;
     private InventoryService $inventoryService;
@@ -103,9 +102,10 @@ class PetActivityService
     private PetActivityLogTagRepository $petActivityLogTagRepository;
     private IcyMoonService $icyMoonService;
     private KappaService $kappaService;
+    private Clock $clock;
 
     public function __construct(
-        EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
+        EntityManagerInterface $em, ResponseService $responseService,
         FishingService $fishingService, HeartDimensionService $heartDimensionService, IcyMoonService $icyMoonService,
         HuntingService $huntingService, GatheringService $gatheringService, CraftingService $craftingService,
         UserStatsRepository $userStatsRepository, PetActivityLogTagRepository $petActivityLogTagRepository,
@@ -121,13 +121,12 @@ class PetActivityService
         StatusEffectService $statusEffectService, EatingService $eatingService, HouseSimService $houseSimService,
         MagicBindingService $magicBindingService, SmithingService $smithingService, CravingService $cravingService,
         PlasticPrinterService $plasticPrinterService, PhilosophersStoneService $philosophersStoneService,
-        KappaService $kappaService
+        KappaService $kappaService, Clock $clock
     )
     {
         $this->em = $em;
         $this->squirrel3 = $squirrel3;
         $this->responseService = $responseService;
-        $this->calendarService = $calendarService;
         $this->fishingService = $fishingService;
         $this->huntingService = $huntingService;
         $this->gatheringService = $gatheringService;
@@ -167,6 +166,7 @@ class PetActivityService
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->icyMoonService = $icyMoonService;
         $this->kappaService = $kappaService;
+        $this->clock = $clock;
     }
 
     public function runHour(Pet $pet)
@@ -581,19 +581,19 @@ class PetActivityService
                 return;
         }
 
-        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 24 : 16) && $this->calendarService->deprecatedIsSaintPatricksDay())
+        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 24 : 16) && CalendarService::isSaintPatricksDay($this->clock->now))
         {
             $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::SAINT_PATRICKS);
             return;
         }
 
-        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 30 : 25) && $this->calendarService->deprecatedIsEaster())
+        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 30 : 25) && CalendarService::isEaster($this->clock->now))
         {
             $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::EASTER);
             return;
         }
 
-        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 9 : 6) && $this->calendarService->deprecatedIsChineseNewYear())
+        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 9 : 6) && CalendarService::isChineseNewYear($this->clock->now))
         {
             $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::CHINESE_NEW_YEAR);
             return;

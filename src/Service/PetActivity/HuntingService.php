@@ -28,6 +28,7 @@ use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\CalendarService;
+use App\Service\Clock;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -43,7 +44,6 @@ class HuntingService
     private ResponseService $responseService;
     private InventoryService $inventoryService;
     private UserStatsRepository $userStatsRepository;
-    private CalendarService $calendarService;
     private MuseumItemRepository $museumItemRepository;
     private ItemRepository $itemRepository;
     private UserQuestRepository $userQuestRepository;
@@ -56,12 +56,13 @@ class HuntingService
     private GatheringDistractionService $gatheringDistractions;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
     private FieldGuideService $fieldGuideService;
+    private Clock $clock;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
-        CalendarService $calendarService, MuseumItemRepository $museumItemRepository, ItemRepository $itemRepository,
+        MuseumItemRepository $museumItemRepository, ItemRepository $itemRepository,
         UserQuestRepository $userQuestRepository, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, Squirrel3 $squirrel3,
+        TransactionService $transactionService, Squirrel3 $squirrel3, Clock $clock,
         WerecreatureEncounterService $werecreatureEncounterService, WeatherService $weatherService,
         StatusEffectService $statusEffectService, GatheringDistractionService $gatheringDistractions,
         PetActivityLogTagRepository $petActivityLogTagRepository, FieldGuideService $fieldGuideService
@@ -70,7 +71,6 @@ class HuntingService
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->userStatsRepository = $userStatsRepository;
-        $this->calendarService = $calendarService;
         $this->museumItemRepository = $museumItemRepository;
         $this->itemRepository = $itemRepository;
         $this->userQuestRepository = $userQuestRepository;
@@ -83,6 +83,7 @@ class HuntingService
         $this->gatheringDistractions = $gatheringDistractions;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->fieldGuideService = $fieldGuideService;
+        $this->clock = $clock;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -92,18 +93,18 @@ class HuntingService
 
         $maxSkill = NumberFunctions::clamp($maxSkill, 1, 22);
 
-        $useThanksgivingPrey = $this->calendarService->deprecatedIsThanksgivingMonsters() && $this->squirrel3->rngNextInt(1, 2) === 1;
-        $usePassoverPrey = $this->calendarService->deprecatedIsEaster();
+        $useThanksgivingPrey = CalendarService::isThanksgivingMonsters($this->clock->now) && $this->squirrel3->rngNextBool();
+        $usePassoverPrey = CalendarService::isEaster($this->clock->now);
 
         $roll = $this->squirrel3->rngNextInt(1, $maxSkill);
 
         $activityLog = null;
         $changes = new PetChanges($pet);
 
-        $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet);
+        $weather = $this->weatherService->getWeather($this->clock->now, $pet);
         $isRaining = $weather->getRainfall() > 0;
 
-        if(DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FULL_MOON && $this->squirrel3->rngNextInt(1, 100) === 1)
+        if(DateFunctions::moonPhase($this->clock->now) === MoonPhaseEnum::FULL_MOON && $this->squirrel3->rngNextInt(1, 100) === 1)
         {
             $activityLog = $this->werecreatureEncounterService->encounterWerecreature($petWithSkills, 'hunting', [ 'Hunting' ]);
         }
@@ -634,7 +635,7 @@ class HuntingService
         }
         else if($brawlRoll >= 8)
         {
-            $foundPinecone = $this->calendarService->getMonthAndDay() > 1225;
+            $foundPinecone = $this->clock->getMonthAndDay() > 1225;
 
             if($this->squirrel3->rngNextInt(1, 2) === 1)
             {

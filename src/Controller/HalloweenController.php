@@ -14,6 +14,7 @@ use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserRepository;
 use App\Service\CalendarService;
+use App\Service\Clock;
 use App\Service\FieldGuideService;
 use App\Service\PetActivity\EatingService;
 use App\Service\Holidays\HalloweenService;
@@ -36,13 +37,13 @@ class HalloweenController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getNextTrickOrTreater(
-        HalloweenService $halloweenService, ResponseService $responseService, CalendarService $calendarService
+        HalloweenService $halloweenService, ResponseService $responseService, Clock $clock
     )
     {
         /** @var User $user */
         $user = $this->getUser();
 
-        if(!$calendarService->deprecatedIsHalloween())
+        if(!CalendarService::isHalloween($clock->now))
             throw new PSPInvalidOperationException('It isn\'t Halloween!');
 
         $nextTrickOrTreater = $halloweenService->getNextTrickOrTreater($user);
@@ -56,13 +57,13 @@ class HalloweenController extends AbstractController
      */
     public function getTrickOrTreater(
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
-        NormalizerInterface $normalizer, CalendarService $calendarService, UserQuestRepository $userQuestRepository
+        NormalizerInterface $normalizer, Clock $clock, UserQuestRepository $userQuestRepository
     )
     {
         /** @var User $user */
         $user = $this->getUser();
 
-        if(!$calendarService->deprecatedIsHalloween())
+        if(!CalendarService::isHalloween($clock->now))
             throw new PSPInvalidOperationException('It isn\'t Halloween!');
 
         $nextTrickOrTreater = $halloweenService->getNextTrickOrTreater($user);
@@ -97,7 +98,7 @@ class HalloweenController extends AbstractController
      */
     public function giveCandy(
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
-        Request $request, InventoryRepository $inventoryRepository, CalendarService $calendarService,
+        Request $request, InventoryRepository $inventoryRepository, Clock $clock,
         UserRepository $userRepository, Squirrel3 $squirrel3, EatingService $eatingService,
         FieldGuideService $fieldGuideService
     )
@@ -105,7 +106,7 @@ class HalloweenController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if(!$calendarService->deprecatedIsHalloween())
+        if(!CalendarService::isHalloween($clock->now))
             throw new PSPInvalidOperationException('It isn\'t Halloween!');
 
         $candy = $inventoryRepository->find($request->request->getInt('candy'));

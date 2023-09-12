@@ -85,14 +85,15 @@ class GrocerService
     private function computeInventory(int $day): array
     {
         $inventory = [];
+        $now = new \DateTimeImmutable();
 
-        if($this->calendarService->deprecatedIsJelephantDay())
+        if(CalendarService::isJelephantDay($now))
             $inventory[] = $this->createInventoryData([ 'Jelephant Aminal Crackers', 8 ], true);
 
-        if($this->calendarService->deprecatedIsPiDay())
+        if($this->calendarService->isPiDay($now))
             $inventory[] = $this->createInventoryData([ 'Pi Pie', 46 ], true);
 
-        if($this->calendarService->deprecatedIsAwaOdori())
+        if($this->calendarService->isAwaOdori($now))
             $inventory[] = $this->createInventoryData([ 'Odori 0.0%', 12 ], true);
 
         $hotBarIndex = RandomFunctions::squirrel3Noise($day, 78934) % count(self::HOT_BAR_ITEMS);

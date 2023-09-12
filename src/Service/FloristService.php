@@ -8,29 +8,30 @@ use App\Repository\ItemRepository;
 
 class FloristService
 {
-    private $calendarService;
-    private $itemRepository;
+    private ItemRepository $itemRepository;
+    private Clock $clock;
 
-    public function __construct(CalendarService $calendarService, ItemRepository $itemRepository)
+    public function __construct(
+        ItemRepository $itemRepository, Clock $clock
+    )
     {
-        $this->calendarService = $calendarService;
         $this->itemRepository = $itemRepository;
+        $this->clock = $clock;
     }
 
     public function getInventory(User $user): array
     {
-        $now = new \DateTimeImmutable();
         $flowerbomb = $this->itemRepository->findOneByName('Flowerbomb');
-        $fullMoonName = DateFunctions::getFullMoonName($now);
+        $fullMoonName = DateFunctions::getFullMoonName($this->clock->now);
 
         $inventory = [
             [
                 'item' => [ 'name' => $flowerbomb->getName(), 'image' => $flowerbomb->getImage() ],
-                'cost' => ($fullMoonName === 'Flower' || $this->calendarService->deprecatedIsAprilFools()) ? 75 : 150,
+                'cost' => ($fullMoonName === 'Flower' || CalendarService::isAprilFools($this->clock->now)) ? 75 : 150,
             ]
         ];
 
-        if($this->calendarService->deprecatedIsAprilFools())
+        if(CalendarService::isAprilFools($this->clock->now))
         {
             $glitterBomb = $this->itemRepository->findOneByName('Glitter Bomb');
 
@@ -55,10 +56,10 @@ class FloristService
         }
 
         if(
-            $this->calendarService->deprecatedIsValentinesOrAdjacent() ||
-            $this->calendarService->deprecatedIsWhiteDay() ||
-            $this->calendarService->deprecatedIsEaster() ||
-            $this->calendarService->deprecatedIsHalloween()
+            CalendarService::isValentinesOrAdjacent($this->clock->now) ||
+            CalendarService::isWhiteDay($this->clock->now) ||
+            CalendarService::isEaster($this->clock->now) ||
+            CalendarService::isHalloween($this->clock->now)
         )
         {
             $chocolateBomb = $this->itemRepository->findOneByName('Chocolate Bomb');
@@ -70,8 +71,8 @@ class FloristService
         }
 
         if(
-            $this->calendarService->deprecatedIsValentinesOrAdjacent() ||
-            $this->calendarService->deprecatedIsWhiteDay()
+            CalendarService::isValentinesOrAdjacent($this->clock->now) ||
+            CalendarService::isWhiteDay($this->clock->now)
         )
         {
             $theLovelyHaberdashers = $this->itemRepository->findOneByName('Tile: Lovely Haberdashers');

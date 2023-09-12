@@ -18,18 +18,20 @@ class AdoptionService
     private CalendarService $calendarService;
     private UserStatsRepository $userStatsRepository;
     private ChineseCalendarInfo $chineseCalendarInfo;
+    private Clock $clock;
 
     public function __construct(
         PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository, CalendarService $calendarService,
-        UserStatsRepository $userStatsRepository
+        UserStatsRepository $userStatsRepository, Clock $clock
     )
     {
         $this->petRepository = $petRepository;
         $this->petSpeciesRepository = $petSpeciesRepository;
         $this->calendarService = $calendarService;
         $this->userStatsRepository = $userStatsRepository;
+        $this->clock = $clock;
 
-        $this->chineseCalendarInfo = $calendarService->getChineseCalendarInfo();
+        $this->chineseCalendarInfo = CalendarService::getChineseCalendarInfo($this->clock->now);
     }
 
     public function getPetsAdopted(User $user): int
@@ -46,7 +48,7 @@ class AdoptionService
         if($petsAdopted == 0)
             $fee = ceil($fee / 2);
 
-        if($this->calendarService->deprecatedIsBlackFriday() || $this->calendarService->deprecatedIsCyberMonday())
+        if(CalendarService::isBlackFriday($this->clock->now) || CalendarService::isCyberMonday($this->clock->now))
             $fee = ceil($fee / 10) * 5;
 
         return $fee;
@@ -61,8 +63,7 @@ class AdoptionService
 
     public function getDailyPets(User $user): array
     {
-        $now = new \DateTimeImmutable();
-        $nowString = $now->format('Y-m-d');
+        $nowString = $this->clock->now->format('Y-m-d');
 
         $squirrel3 = new Squirrel3();
         $squirrel3->setSeed($user->getDailySeed());
@@ -89,7 +90,7 @@ class AdoptionService
             ->getSingleScalarResult()
         ;
 
-        $fullMoonName = DateFunctions::getFullMoonName($now);
+        $fullMoonName = DateFunctions::getFullMoonName($this->clock->now);
         $isBlueMoon = $fullMoonName === 'Blue';
         $isPinkMoon = $fullMoonName === 'Pink';
         $pets = [];
@@ -169,7 +170,7 @@ class AdoptionService
                     $colorB = $squirrel3->rngNextTweakedColor($basePet->getColorB());
                 }
 
-                if($this->calendarService->deprecatedIsPiDay())
+                if(CalendarService::isPiDay($this->clock->now))
                     $name = $squirrel3->rngNextFromArray([ 'Pi',  'Pi', 'Pie', 'Pie', 'Pie', 'Pie', 'Pie', 'Cake' ]);
                 else
                     $name = $squirrel3->rngNextFromArray(PetShelterPet::PET_NAMES);
@@ -177,13 +178,13 @@ class AdoptionService
 
             $pet = new PetShelterPet();
 
-            if($this->calendarService->deprecatedIsHalloweenDay())
+            if(CalendarService::isHalloweenDay($this->clock->now))
             {
                 $pet->species = $this->petSpeciesRepository->findOneBy([ 'name' => 'Fog Elemental' ]);
                 $pet->label = 'spooky!';
                 $dialog = "Uh... I don't know if this is a Halloween thing, or what, but... if you want a Fog Elemental, I guess it's your pick of the litter...\n\nAlthough I guess if ";
             }
-            else if($this->calendarService->deprecatedIsNoombatDay())
+            else if(CalendarService::isNoombatDay($this->clock->now))
             {
                 $pet->species = $this->petSpeciesRepository->findOneBy([ 'name' => 'Noombat' ]);
                 $pet->label = 'noom!';
@@ -216,22 +217,22 @@ class AdoptionService
 
     public function numberOfSeasonalPets(int $totalPets, Squirrel3 $squirrel3): int
     {
-        $monthDay = $this->calendarService->getMonthAndDay();
+        $monthDay = $this->clock->getMonthAndDay();
 
-        if($this->calendarService->deprecatedIsHalloween())
+        if(CalendarService::isHalloween($this->clock->now))
             return $squirrel3->rngNextInt(1, 2);
 
         // PSP Thanksgiving overlaps Black Friday, but for pet adoption purposes, we want Black Friday to win out:
-        if($this->calendarService->deprecatedIsBlackFriday() || $this->calendarService->deprecatedIsCyberMonday())
+        if(CalendarService::isBlackFriday($this->clock->now) || CalendarService::isCyberMonday($this->clock->now))
             return ceil($totalPets / 2);
 
-        if($this->calendarService->deprecatedIsThanksgiving())
+        if(CalendarService::isThanksgiving($this->clock->now))
             return $squirrel3->rngNextInt(1, 2);
 
-        if($this->calendarService->deprecatedIsEaster())
+        if(CalendarService::isEaster($this->clock->now))
             return $squirrel3->rngNextInt(1, 2);
 
-        if($this->calendarService->deprecatedIsValentinesOrAdjacent() || $this->calendarService->deprecatedIsWhiteDay())
+        if(CalendarService::isValentinesOrAdjacent($this->clock->now) || CalendarService::isWhiteDay($this->clock->now))
             return 2;
 
         // winter solstice, more or less
@@ -242,13 +243,13 @@ class AdoptionService
         if($monthDay >= 1223 && $monthDay <= 1225)
             return $squirrel3->rngNextInt(1, 2);
 
-        if($this->calendarService->deprecatedIsHanukkah())
+        if(CalendarService::isHanukkah($this->clock->now))
             return $squirrel3->rngNextInt(1, 2);
 
         if($this->chineseCalendarInfo->month === 1 && $this->chineseCalendarInfo->day <= 6)
             return 2;
 
-        if($this->calendarService->deprecatedIsSaintPatricksDay())
+        if(CalendarService::isSaintPatricksDay($this->clock->now))
             return $squirrel3->rngNextInt(1, 3);
 
         return 0;
@@ -256,45 +257,45 @@ class AdoptionService
 
     public function getSeasonalNames(): array
     {
-        $monthDay = $this->calendarService->getMonthAndDay();
+        $monthDay = $this->clock->getMonthAndDay();
 
-        if($this->calendarService->deprecatedIsHalloween())
+        if(CalendarService::isHalloween($this->clock->now))
             return PetShelterPet::PET_HALLOWEEN_NAMES;
 
         // PSP Thanksgiving overlaps Black Friday, but for pet adoption purposes, we want Black Friday to win out:
-        if($this->calendarService->deprecatedIsBlackFriday())
+        if(CalendarService::isBlackFriday($this->clock->now))
             return PetShelterPet::PET_BLACK_FRIDAY_NAMES;
 
-        if($this->calendarService->deprecatedIsCyberMonday())
+        if(CalendarService::isCyberMonday($this->clock->now))
             return PetShelterPet::PET_CYBER_MONDAY_NAMES;
 
-        if($this->calendarService->deprecatedIsThanksgiving())
+        if(CalendarService::isThanksgiving($this->clock->now))
             return PetShelterPet::PET_THANKSGIVING_NAMES;
 
-        if($this->calendarService->deprecatedIsEaster())
+        if(CalendarService::isEaster($this->clock->now))
             return PetShelterPet::PET_EASTER_NAMES;
 
-        if($this->calendarService->deprecatedIsValentinesOrAdjacent())
+        if(CalendarService::isValentinesOrAdjacent($this->clock->now))
             return PetShelterPet::PET_VALENTINES_NAMES;
 
-        if($this->calendarService->deprecatedIsWhiteDay())
+        if(CalendarService::isWhiteDay($this->clock->now))
             return PetShelterPet::PET_WHITE_DAY_NAMES;
 
         // winter solstice, more or less
-        if($this->calendarService->deprecatedIsWinterSolstice())
+        if(CalendarService::isWinterSolstice($this->clock->now))
             return PetShelterPet::PET_WINTER_SOLSTICE_NAMES;
 
         // Christmas colors (would normally do a 3-day range, but dec 23 isWinterSolstice())
         if($monthDay >= 1224 && $monthDay <= 1225)
             return PetShelterPet::PET_CHRISTMAS_NAMES;
 
-        if($this->calendarService->deprecatedIsHanukkah())
+        if(CalendarService::isHanukkah($this->clock->now))
             return PetShelterPet::PET_HANUKKAH_NAMES;
 
         if($this->chineseCalendarInfo->month === 1 && $this->chineseCalendarInfo->day <= 6)
             return PetShelterPet::PET_CHINESE_ZODIAC_NAMES[$this->chineseCalendarInfo->animal];
 
-        if($this->calendarService->deprecatedIsSaintPatricksDay())
+        if(CalendarService::isSaintPatricksDay($this->clock->now))
             return PetShelterPet::PET_NAMES;
 
         throw new \Exception('Today is not a day for seasonal colors.');
@@ -302,28 +303,28 @@ class AdoptionService
 
     public function getSeasonalColors(): array
     {
-        $monthDay = $this->calendarService->getMonthAndDay();
+        $monthDay = $this->clock->getMonthAndDay();
 
-        if($this->calendarService->deprecatedIsHalloween())
+        if(CalendarService::isHalloween($this->clock->now))
             return [ '333333', 'FF9933' ];
 
         // PSP Thanksgiving overlaps Black Friday, but for pet adoption purposes, we want Black Friday to win out:
-        if($this->calendarService->deprecatedIsBlackFriday())
+        if(CalendarService::isBlackFriday($this->clock->now))
             return [ '000000', '333333', '330000', '003300', '000033' ];
 
-        if($this->calendarService->deprecatedIsCyberMonday())
+        if(CalendarService::isCyberMonday($this->clock->now))
             return [ '000000', '005500', '00aa00', '00ff00' ];
 
-        if($this->calendarService->deprecatedIsThanksgiving())
+        if(CalendarService::isThanksgiving($this->clock->now))
             return [ 'CC6600', 'FFCC00', '009900', 'FF3300' ];
 
-        if($this->calendarService->deprecatedIsEaster())
+        if(CalendarService::isEaster($this->clock->now))
             return [ 'FFCCFF', '99CCFF', 'FFFF99', 'FF9999' ];
 
-        if($this->calendarService->deprecatedIsValentinesOrAdjacent())
+        if(CalendarService::isValentinesOrAdjacent($this->clock->now))
             return [ 'F17B7B', 'F8F8F8', 'FF0000', 'EF85FF' ];
 
-        if($this->calendarService->deprecatedIsWhiteDay())
+        if(CalendarService::isWhiteDay($this->clock->now))
             return [ 'FFFFFF', 'EEEEEE' ];
 
         // winter solstice, more or less
@@ -334,13 +335,13 @@ class AdoptionService
         if($monthDay >= 1223 && $monthDay <= 1225)
             return [ 'F8F8F8', 'CC3300', '009900' ];
 
-        if($this->calendarService->deprecatedIsHanukkah())
+        if(CalendarService::isHanukkah($this->clock->now))
             return [ 'F8F8F8', '0066FF' ];
 
         if($this->chineseCalendarInfo->month === 1 && $this->chineseCalendarInfo->day <= 6)
             return [ 'CC232A', 'F5AC27', 'FFD84B', 'F2888B', 'A3262A', 'CC9902' ];
 
-        if($this->calendarService->deprecatedIsSaintPatricksDay())
+        if(CalendarService::isSaintPatricksDay($this->clock->now))
             return [ '009900', '66CC66', '33AA00', '00AA33' ];
 
         throw new \Exception('Today is not a day for seasonal colors.');

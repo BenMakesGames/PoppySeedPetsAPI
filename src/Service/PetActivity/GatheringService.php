@@ -31,6 +31,7 @@ use App\Repository\PetSpeciesRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\CalendarService;
+use App\Service\Clock;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -59,10 +60,10 @@ class GatheringService
     private MeritRepository $meritRepository;
     private GatheringDistractionService $gatheringDistractions;
     private UserQuestRepository $userQuestRepository;
-    private CalendarService $calendarService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
     private EnchantmentRepository $enchantmentRepository;
     private PetRelationshipService $petRelationshipService;
+    private Clock $clock;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
@@ -70,7 +71,7 @@ class GatheringService
         Squirrel3 $squirrel3, WeatherService $weatherService, FieldGuideService $fieldGuideService,
         PetSpeciesRepository $petSpeciesRepository, PetRepository $petRepository, PetFactory $petFactory,
         MeritRepository $meritRepository, GatheringDistractionService $gatheringDistractions,
-        UserQuestRepository $userQuestRepository, CalendarService $calendarService,
+        UserQuestRepository $userQuestRepository, Clock $clock,
         PetActivityLogTagRepository $petActivityLogTagRepository, EnchantmentRepository $enchantmentRepository,
         PetRelationshipService $petRelationshipService
     )
@@ -90,10 +91,10 @@ class GatheringService
         $this->meritRepository = $meritRepository;
         $this->gatheringDistractions = $gatheringDistractions;
         $this->userQuestRepository = $userQuestRepository;
-        $this->calendarService = $calendarService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->enchantmentRepository = $enchantmentRepository;
         $this->petRelationshipService = $petRelationshipService;
+        $this->clock = $clock;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -378,7 +379,7 @@ class GatheringService
     {
         $pet = $petWithSkills->getPet();
 
-        $getPinecone = $this->calendarService->getMonthAndDay() > 1225 && $this->squirrel3->rngNextInt(1, 3) === 1;
+        $getPinecone = $this->clock->getMonthAndDay() > 1225 && $this->squirrel3->rngNextInt(1, 3) === 1;
 
         if($this->squirrel3->rngNextInt(1, 8) >= 6)
         {
@@ -527,7 +528,7 @@ class GatheringService
 
         if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 10)
         {
-            $foundPinecone = $this->calendarService->getMonthAndDay() > 1225;
+            $foundPinecone = $this->clock->getMonthAndDay() > 1225;
 
             if($foundPinecone)
             {

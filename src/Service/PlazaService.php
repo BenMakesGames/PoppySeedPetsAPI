@@ -8,16 +8,18 @@ use App\Repository\UserQuestRepository;
 
 class PlazaService
 {
-    private CalendarService $calendarService;
     private ChineseCalendarInfo $chineseCalendarInfo;
     private UserQuestRepository $userQuestRepository;
+    private Clock $clock;
 
-    public function __construct(CalendarService $calendarService, UserQuestRepository $userQuestRepository)
+    public function __construct(
+        UserQuestRepository $userQuestRepository, Clock $clock
+    )
     {
-        $this->calendarService = $calendarService;
         $this->userQuestRepository = $userQuestRepository;
+        $this->clock = $clock;
 
-        $this->chineseCalendarInfo = $calendarService->getChineseCalendarInfo();
+        $this->chineseCalendarInfo = CalendarService::getChineseCalendarInfo($clock->now);
     }
 
     /**
@@ -28,11 +30,9 @@ class PlazaService
     {
         $boxes = [];
 
-        $now = new \DateTimeImmutable();
-
-        $year = (int)$now->format('Y');
-        $month = (int)$now->format('m');
-        $day = (int)$now->format('d');
+        $year = (int)$this->clock->now->format('Y');
+        $month = (int)$this->clock->now->format('m');
+        $day = (int)$this->clock->now->format('d');
 
         if($this->chineseCalendarInfo->month === 1 && $this->chineseCalendarInfo->day <= 6)
         {
@@ -50,7 +50,7 @@ class PlazaService
             }
         }
 
-        if($this->calendarService->deprecatedIsEarthDay())
+        if(CalendarService::isEarthDay($this->clock->now))
         {
             $gotEarthDaySeed = $this->userQuestRepository->findOrCreate($user, 'Earth Day, ' . $year, false);
 
@@ -66,7 +66,7 @@ class PlazaService
             }
         }
 
-        if($this->calendarService->deprecatedIsSummerSolstice())
+        if(CalendarService::isSummerSolstice($this->clock->now))
         {
             $gotGoodieBagsThisYear = $this->userQuestRepository->findOrCreate($user, 'Summer Solstice, ' . $year, false);
 
@@ -81,7 +81,7 @@ class PlazaService
                 );
             }
         }
-        else if($this->calendarService->deprecatedIsWinterSolstice())
+        else if(CalendarService::isWinterSolstice($this->clock->now))
         {
             $gotGoodieBagsThisYear = $this->userQuestRepository->findOrCreate($user, 'Winter Solstice, ' . $year, false);
 
@@ -97,7 +97,7 @@ class PlazaService
             }
         }
 
-        if($this->calendarService->deprecatedIsJuly4th())
+        if(CalendarService::isJuly4th($this->clock->now))
         {
             $gotBox = $this->userQuestRepository->findOrCreate($user, '4th of July, ' . $year, false);
 
@@ -107,13 +107,13 @@ class PlazaService
                     'a 4th of July Box',
                     '4th of July Box',
                     '4th of July Box', 1,
-                    'Received on the ' . $now->format('jS') . ' of July, ' . $year . '.',
+                    'Received on the ' . $this->clock->now->format('jS') . ' of July, ' . $year . '.',
                     $gotBox
                 );
             }
         }
 
-        if($this->calendarService->deprecatedIsBastilleDay())
+        if(CalendarService::isBastilleDay($this->clock->now))
         {
             $gotBox = $this->userQuestRepository->findOrCreate($user, 'Bastille Day, ' . $year, false);
 
@@ -123,13 +123,13 @@ class PlazaService
                     'a Bastille Day Box',
                     'Bastille Day Box',
                     'Bastille Day Box', 1,
-                    'Received on the ' . $now->format('jS') . ' of July, ' . $year . '.',
+                    'Received on the ' . $this->clock->now->format('jS') . ' of July, ' . $year . '.',
                     $gotBox
                 );
             }
         }
 
-        if($this->calendarService->deprecatedIsCincoDeMayo())
+        if(CalendarService::isCincoDeMayo($this->clock->now))
         {
             $gotBox = $this->userQuestRepository->findOrCreate($user, 'Cinco de Mayo, ' . $year, false);
 
@@ -139,13 +139,13 @@ class PlazaService
                     'a Cinco de Mayo Box',
                     'Cinco de Mayo Box',
                     'Cinco de Mayo Box', 1,
-                    'Received on the ' . $now->format('jS') . ' of May, ' . $year . '.',
+                    'Received on the ' . $this->clock->now->format('jS') . ' of May, ' . $year . '.',
                     $gotBox
                 );
             }
         }
 
-        if($this->calendarService->deprecatedIsNewYearsHoliday())
+        if(CalendarService::isNewYearsHoliday($this->clock->now))
         {
             $newYearYear = $month === 12 ? ($year + 1) : $year;
 
@@ -157,13 +157,13 @@ class PlazaService
                     'a New Year Box',
                     'New Year Box',
                     'New Year Box', 1,
-                    'Received on the ' . $now->format('jS') . ' of ' . $now->format('F') . ', ' . $year . '.',
+                    'Received on the ' . $this->clock->now->format('jS') . ' of ' . $this->clock->now->format('F') . ', ' . $year . '.',
                     $gotBox
                 );
             }
         }
 
-        if($this->calendarService->deprecatedIsAwaOdori())
+        if(CalendarService::isAwaOdori($this->clock->now))
         {
             $gotBox = $this->userQuestRepository->findOrCreate($user, 'Awa Odori, ' . $year, false);
 
@@ -173,7 +173,7 @@ class PlazaService
                     'an Awa Odori Box',
                     'Awa Odori Box',
                     'Awa Odori Box', 1,
-                    'Received on the ' . $now->format('jS') . ' of August, ' . $year . '.',
+                    'Received on the ' . $this->clock->now->format('jS') . ' of August, ' . $year . '.',
                     $gotBox
                 );
             }

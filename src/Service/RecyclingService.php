@@ -14,26 +14,26 @@ use Doctrine\ORM\EntityManagerInterface;
 class RecyclingService
 {
     private UserRepository $userRepository;
-    private CalendarService $calendarService;
     private EntityManagerInterface $em;
     private UserStatsRepository $userStatsRepository;
     private IRandom $squirrel3;
     private ResponseService $responseService;
     private TransactionService $transactionService;
+    private Clock $clock;
 
     public function __construct(
-        UserRepository $userRepository, CalendarService $calendarService, EntityManagerInterface $em,
+        UserRepository $userRepository, EntityManagerInterface $em,
         UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3, ResponseService $responseService,
-        TransactionService $transactionService
+        TransactionService $transactionService, Clock $clock
     )
     {
         $this->userRepository = $userRepository;
-        $this->calendarService = $calendarService;
         $this->em = $em;
         $this->userStatsRepository = $userStatsRepository;
         $this->squirrel3 = $squirrel3;
         $this->responseService = $responseService;
         $this->transactionService = $transactionService;
+        $this->clock = $clock;
     }
 
     private static function recycledItemShouldGoToGivingTree(IRandom $rng, bool $givingTreeHoliday, Inventory $i): bool
@@ -63,7 +63,7 @@ class RecyclingService
         if(!$givingTree)
             throw new \Exception('The "Giving Tree" NPC does not exist in the database!');
 
-        $givingTreeHoliday = $this->calendarService->deprecatedIsValentinesOrAdjacent() || $this->calendarService->deprecatedIsWhiteDay();
+        $givingTreeHoliday = CalendarService::isValentinesOrAdjacent($this->clock->now) || CalendarService::isWhiteDay($this->clock->now);
         $questItems = [];
         $idsNotRecycled = [];
 

@@ -18,25 +18,25 @@ class ParkService
 {
     private IRandom $squirrel3;
     private InventoryService $inventoryService;
-    private CalendarService $calendarService;
     private UserQuestRepository $userQuestRepository;
     private EntityManagerInterface $em;
     private EnchantmentRepository $enchantmentRepository;
     private HattierService $hattierService;
+    private Clock $clock;
 
     public function __construct(
-        Squirrel3 $squirrel3, InventoryService $inventoryService, CalendarService $calendarService,
-        UserQuestRepository $userQuestRepository, EntityManagerInterface $em, EnchantmentRepository $enchantmentRepository,
-        HattierService $hattierService
+        Squirrel3 $squirrel3, InventoryService $inventoryService, UserQuestRepository $userQuestRepository,
+        EntityManagerInterface $em, EnchantmentRepository $enchantmentRepository, HattierService $hattierService,
+        Clock $clock
     )
     {
         $this->squirrel3 = $squirrel3;
         $this->inventoryService = $inventoryService;
-        $this->calendarService = $calendarService;
         $this->userQuestRepository = $userQuestRepository;
         $this->em = $em;
         $this->enchantmentRepository = $enchantmentRepository;
         $this->hattierService = $hattierService;
+        $this->clock = $clock;
     }
 
     /**
@@ -44,7 +44,6 @@ class ParkService
      */
     public function giveOutParticipationRewards(ParkEvent $parkEvent, array $participants)
     {
-        $now = new \DateTimeImmutable();
         $impressiveAura = $this->enchantmentRepository->findOneByName('Impressive');
 
         $birthdayPresentsByUser = [];
@@ -52,7 +51,7 @@ class ParkService
         $forceBalloon = null;
         $commentExtra = null;
 
-        switch(DateFunctions::getFullMoonName($now))
+        switch(DateFunctions::getFullMoonName($this->clock->now))
         {
             case 'Wolf':
                 $forceBalloon = '"Wolf" Balloon';
@@ -126,7 +125,7 @@ class ParkService
                 );
             }
 
-            if($this->calendarService->deprecatedIsPSPBirthday())
+            if(CalendarService::isPSPBirthday($this->clock->now))
             {
                 $userId = $pet->getOwner()->getId();
 

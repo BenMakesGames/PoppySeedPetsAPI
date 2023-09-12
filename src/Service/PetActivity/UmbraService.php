@@ -23,6 +23,7 @@ use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\SpiceRepository;
 use App\Service\CalendarService;
+use App\Service\Clock;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
 use App\Service\InventoryService;
@@ -49,8 +50,8 @@ class UmbraService
     private PetActivityLogTagRepository $petActivityLogTagRepository;
     private SpiceRepository $spiceRepository;
     private LeonidsService $leonidsService;
-    private CalendarService $calendarService;
     private GuildService $guildService;
+    private Clock $clock;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
@@ -58,7 +59,7 @@ class UmbraService
         ItemRepository $itemRepository, FieldGuideService $fieldGuideService,
         DragonRepository $dragonRepository, Squirrel3 $squirrel3, WeatherService $weatherService,
         HattierService $hattierService, PetActivityLogTagRepository $petActivityLogTagRepository,
-        SpiceRepository $spiceRepository, LeonidsService $leonidsService, CalendarService $calendarService
+        SpiceRepository $spiceRepository, LeonidsService $leonidsService, Clock $clock
     )
     {
         $this->responseService = $responseService;
@@ -76,7 +77,7 @@ class UmbraService
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->spiceRepository = $spiceRepository;
         $this->leonidsService = $leonidsService;
-        $this->calendarService = $calendarService;
+        $this->clock = $clock;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -88,7 +89,7 @@ class UmbraService
 
         $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'The Umbra', ActivityHelpers::PetName($pet) . ' pushed through the Storm and entered the Umbra!');
 
-        if($this->calendarService->deprecatedIsLeonidPeakOrAdjacent() && $this->squirrel3->rngNextInt(1, 4) === 1)
+        if(CalendarService::isLeonidPeakOrAdjacent($this->clock->now) && $this->squirrel3->rngNextInt(1, 4) === 1)
         {
             $activityLog = $this->leonidsService->adventure($petWithSkills);
         }

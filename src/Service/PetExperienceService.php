@@ -26,26 +26,26 @@ class PetExperienceService
     private IRandom $squirrel3;
     private InventoryService $inventoryService;
     private UserStatsRepository $userStatsRepository;
-    private CalendarService $calendarService;
     private UserQuestRepository $userQuestRepository;
     private ResponseService $responseService;
     private HattierService $hattierService;
     private EntityManagerInterface $em;
+    private Clock $clock;
 
     public function __construct(
-        Squirrel3 $squirrel3, CalendarService $calendarService,
-        InventoryService $inventoryService, UserStatsRepository $userStatsRepository, ResponseService $responseService,
-        UserQuestRepository $userQuestRepository, HattierService $hattierService, EntityManagerInterface $em
+        Squirrel3 $squirrel3, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
+        ResponseService $responseService, UserQuestRepository $userQuestRepository, HattierService $hattierService,
+        EntityManagerInterface $em, Clock $clock
     )
     {
         $this->squirrel3 = $squirrel3;
         $this->inventoryService = $inventoryService;
         $this->userStatsRepository = $userStatsRepository;
-        $this->calendarService = $calendarService;
         $this->userQuestRepository = $userQuestRepository;
         $this->responseService = $responseService;
         $this->hattierService = $hattierService;
         $this->em = $em;
+        $this->clock = $clock;
     }
 
     /**
@@ -272,7 +272,7 @@ class PetExperienceService
         if($pet->getAffectionLevel() > $previousAffectionLevel && !$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Park))
             UserUnlockedFeatureHelpers::create($this->em, $pet->getOwner(), UnlockableFeatureEnum::Park);
 
-        if($this->calendarService->deprecatedIsValentinesOrAdjacent())
+        if(CalendarService::isValentinesOrAdjacent($this->clock->now))
             $this->maybeGivePlayerTwuWuv($pet);
     }
 

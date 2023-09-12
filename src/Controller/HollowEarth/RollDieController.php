@@ -30,13 +30,14 @@ class RollDieController extends AbstractController
      */
     public function rollDie(
         ResponseService $responseService, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        HollowEarthService $hollowEarthService, Request $request, CalendarService $calendarService,
-        InventoryService $inventoryService, Squirrel3 $squirrel3
+        HollowEarthService $hollowEarthService, Request $request, InventoryService $inventoryService,
+        Squirrel3 $squirrel3
     )
     {
         /** @var User $user */
         $user = $this->getUser();
         $player = $user->getHollowEarthPlayer();
+        $now = new \DateTimeImmutable();
 
         if($player === null)
             throw new PSPInvalidOperationException('You gotta\' visit the Hollow Earth page at least once before taking this kind of action.');
@@ -68,7 +69,7 @@ class RollDieController extends AbstractController
 
         $hollowEarthService->advancePlayer($player);
 
-        if($calendarService->deprecatedIsEaster() && $squirrel3->rngNextInt(1, 4) === 1)
+        if(CalendarService::isEaster($now) && $squirrel3->rngNextInt(1, 4) === 1)
         {
             if($squirrel3->rngNextInt(1, 6) === 6)
             {
