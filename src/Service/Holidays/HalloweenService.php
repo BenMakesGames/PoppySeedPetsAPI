@@ -9,7 +9,6 @@ use App\Enum\LocationEnum;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
-use App\Service\CalendarService;
 use App\Service\InventoryService;
 
 class HalloweenService

@@ -1,12 +1,10 @@
 <?php
-namespace App\Service;
+namespace App\Functions;
 
 use App\Enum\HolidayEnum;
-use App\Functions\DateFunctions;
-use App\Functions\JewishCalendarFunctions;
 use App\Model\ChineseCalendarInfo;
 
-final class CalendarService
+final class CalendarFunctions
 {
     public static function isJelephantDay(\DateTimeInterface $dt): bool
     {

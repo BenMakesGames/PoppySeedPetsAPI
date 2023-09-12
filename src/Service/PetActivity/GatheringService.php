@@ -30,7 +30,6 @@ use App\Repository\PetRepository;
 use App\Repository\PetSpeciesRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
-use App\Service\CalendarService;
 use App\Service\Clock;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;

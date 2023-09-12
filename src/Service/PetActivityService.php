@@ -17,6 +17,7 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
+use App\Functions\CalendarFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\InventoryModifierFunctions;
 use App\Model\ComputedPetSkills;
@@ -581,19 +582,19 @@ class PetActivityService
                 return;
         }
 
-        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 24 : 16) && CalendarService::isSaintPatricksDay($this->clock->now))
+        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 24 : 16) && CalendarFunctions::isSaintPatricksDay($this->clock->now))
         {
             $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::SAINT_PATRICKS);
             return;
         }
 
-        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 30 : 25) && CalendarService::isEaster($this->clock->now))
+        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 30 : 25) && CalendarFunctions::isEaster($this->clock->now))
         {
             $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::EASTER);
             return;
         }
 
-        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 9 : 6) && CalendarService::isChineseNewYear($this->clock->now))
+        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 9 : 6) && CalendarFunctions::isChineseNewYear($this->clock->now))
         {
             $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::CHINESE_NEW_YEAR);
             return;

@@ -17,6 +17,7 @@ use App\Enum\UserStatEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
+use App\Functions\CalendarFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\InventoryModifierFunctions;
 use App\Functions\NumberFunctions;
@@ -27,7 +28,6 @@ use App\Repository\MuseumItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
-use App\Service\CalendarService;
 use App\Service\Clock;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
@@ -93,8 +93,8 @@ class HuntingService
 
         $maxSkill = NumberFunctions::clamp($maxSkill, 1, 22);
 
-        $useThanksgivingPrey = CalendarService::isThanksgivingMonsters($this->clock->now) && $this->squirrel3->rngNextBool();
-        $usePassoverPrey = CalendarService::isEaster($this->clock->now);
+        $useThanksgivingPrey = CalendarFunctions::isThanksgivingMonsters($this->clock->now) && $this->squirrel3->rngNextBool();
+        $usePassoverPrey = CalendarFunctions::isEaster($this->clock->now);
 
         $roll = $this->squirrel3->rngNextInt(1, $maxSkill);
 

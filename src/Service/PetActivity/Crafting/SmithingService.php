@@ -1,19 +1,16 @@
 <?php
 namespace App\Service\PetActivity\Crafting;
 
-use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Entity\PetSkills;
 use App\Enum\GuildEnum;
-use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\CalendarFunctions;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Repository\PetActivityLogTagRepository;
-use App\Service\CalendarService;
 use App\Service\Clock;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
@@ -316,7 +313,7 @@ class SmithingService
                 $possibilities[] = new ActivityCallback($this->meteoriteSmithingService, 'createHorizonMirror', 10);
         }
 
-        if(CalendarService::isHalloweenCrafting($this->clock->now))
+        if(CalendarFunctions::isHalloweenCrafting($this->clock->now))
         {
             if($this->houseSimService->hasInventory('Small, Yellow Plastic Bucket') || $this->houseSimService->hasInventory('Upside-down, Yellow Plastic Bucket'))
                 $possibilities[] = new ActivityCallback($this->halloweenSmithingService, 'createPumpkinBucket', 10);

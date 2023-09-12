@@ -12,8 +12,8 @@ use App\Enum\SpiritCompanionStarEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
+use App\Functions\CalendarFunctions;
 use App\Functions\GrammarFunctions;
-use App\Functions\InventoryModifierFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -22,7 +22,6 @@ use App\Repository\DragonRepository;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\SpiceRepository;
-use App\Service\CalendarService;
 use App\Service\Clock;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
@@ -89,7 +88,7 @@ class UmbraService
 
         $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'The Umbra', ActivityHelpers::PetName($pet) . ' pushed through the Storm and entered the Umbra!');
 
-        if(CalendarService::isLeonidPeakOrAdjacent($this->clock->now) && $this->squirrel3->rngNextInt(1, 4) === 1)
+        if(CalendarFunctions::isLeonidPeakOrAdjacent($this->clock->now) && $this->squirrel3->rngNextInt(1, 4) === 1)
         {
             $activityLog = $this->leonidsService->adventure($petWithSkills);
         }

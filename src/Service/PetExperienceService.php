@@ -13,6 +13,7 @@ use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
+use App\Functions\CalendarFunctions;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
@@ -272,7 +273,7 @@ class PetExperienceService
         if($pet->getAffectionLevel() > $previousAffectionLevel && !$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Park))
             UserUnlockedFeatureHelpers::create($this->em, $pet->getOwner(), UnlockableFeatureEnum::Park);
 
-        if(CalendarService::isValentinesOrAdjacent($this->clock->now))
+        if(CalendarFunctions::isValentinesOrAdjacent($this->clock->now))
             $this->maybeGivePlayerTwuWuv($pet);
     }
 

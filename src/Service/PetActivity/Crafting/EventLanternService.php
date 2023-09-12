@@ -4,12 +4,12 @@ namespace App\Service\PetActivity\Crafting;
 use App\Entity\PetActivityLog;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\CalendarFunctions;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Model\HouseSimRecipe;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
-use App\Service\CalendarService;
 use App\Service\Clock;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
@@ -63,16 +63,16 @@ class EventLanternService
 
         if($items)
         {
-            if(CalendarService::isHalloweenCrafting($this->clock->now))
+            if(CalendarFunctions::isHalloweenCrafting($this->clock->now))
                 $possibilities[] = new ActivityCallback($this, 'createMoonlightLantern', 10);
 
-            if(CalendarService::isPiDayCrafting($this->clock->now))
+            if(CalendarFunctions::isPiDayCrafting($this->clock->now))
                 $possibilities[] = new ActivityCallback($this, 'createPiLantern', 10);
 
             if((int)$now->format('n') === 12)
                 $possibilities[] = new ActivityCallback($this, 'createTreelightLantern', 10);
 
-            if(CalendarService::isSaintMartinsDayCrafting($this->clock->now))
+            if(CalendarFunctions::isSaintMartinsDayCrafting($this->clock->now))
                 $possibilities[] = new ActivityCallback($this, 'createDapperSwanLantern', 10);
         }
 

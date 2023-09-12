@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
+use App\Functions\CalendarFunctions;
 use App\Functions\DateFunctions;
 use App\Repository\ItemRepository;
 
@@ -27,11 +28,11 @@ class FloristService
         $inventory = [
             [
                 'item' => [ 'name' => $flowerbomb->getName(), 'image' => $flowerbomb->getImage() ],
-                'cost' => ($fullMoonName === 'Flower' || CalendarService::isAprilFools($this->clock->now)) ? 75 : 150,
+                'cost' => ($fullMoonName === 'Flower' || CalendarFunctions::isAprilFools($this->clock->now)) ? 75 : 150,
             ]
         ];
 
-        if(CalendarService::isAprilFools($this->clock->now))
+        if(CalendarFunctions::isAprilFools($this->clock->now))
         {
             $glitterBomb = $this->itemRepository->findOneByName('Glitter Bomb');
 
@@ -56,10 +57,10 @@ class FloristService
         }
 
         if(
-            CalendarService::isValentinesOrAdjacent($this->clock->now) ||
-            CalendarService::isWhiteDay($this->clock->now) ||
-            CalendarService::isEaster($this->clock->now) ||
-            CalendarService::isHalloween($this->clock->now)
+            CalendarFunctions::isValentinesOrAdjacent($this->clock->now) ||
+            CalendarFunctions::isWhiteDay($this->clock->now) ||
+            CalendarFunctions::isEaster($this->clock->now) ||
+            CalendarFunctions::isHalloween($this->clock->now)
         )
         {
             $chocolateBomb = $this->itemRepository->findOneByName('Chocolate Bomb');
@@ -71,8 +72,8 @@ class FloristService
         }
 
         if(
-            CalendarService::isValentinesOrAdjacent($this->clock->now) ||
-            CalendarService::isWhiteDay($this->clock->now)
+            CalendarFunctions::isValentinesOrAdjacent($this->clock->now) ||
+            CalendarFunctions::isWhiteDay($this->clock->now)
         )
         {
             $theLovelyHaberdashers = $this->itemRepository->findOneByName('Tile: Lovely Haberdashers');

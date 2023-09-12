@@ -7,6 +7,7 @@ use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\CalendarFunctions;
 use App\Functions\DateFunctions;
 use App\Model\ParkEvent\ParkEventParticipant;
 use App\Model\PetChanges;
@@ -125,7 +126,7 @@ class ParkService
                 );
             }
 
-            if(CalendarService::isPSPBirthday($this->clock->now))
+            if(CalendarFunctions::isPSPBirthday($this->clock->now))
             {
                 $userId = $pet->getOwner()->getId();
 

@@ -11,6 +11,7 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
+use App\Functions\CalendarFunctions;
 use App\Functions\ColorFunctions;
 use App\Model\TraderOffer;
 use App\Model\TraderOfferCostOrYield;
@@ -18,8 +19,6 @@ use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MuseumItemRepository;
 use App\Repository\TradesUnlockedRepository;
-use App\Repository\UserQuestRepository;
-use App\Repository\UserStatsRepository;
 
 class TraderService
 {
@@ -615,7 +614,7 @@ class TraderService
             );
         }
 
-        if(CalendarService::isPsyPetsBirthday($this->clock->now))
+        if(CalendarFunctions::isPsyPetsBirthday($this->clock->now))
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [
@@ -629,7 +628,7 @@ class TraderService
 
         }
 
-        if(CalendarService::isValentinesOrAdjacent($this->clock->now))
+        if(CalendarFunctions::isValentinesOrAdjacent($this->clock->now))
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [
@@ -647,7 +646,7 @@ class TraderService
             );
         }
 
-        if(CalendarService::isStockingStuffingSeason($this->clock->now))
+        if(CalendarFunctions::isStockingStuffingSeason($this->clock->now))
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Talon'), 2) ],
@@ -666,7 +665,7 @@ class TraderService
             );
         }
 
-        if(CalendarService::isEaster($this->clock->now))
+        if(CalendarFunctions::isEaster($this->clock->now))
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [
@@ -738,7 +737,7 @@ class TraderService
         }
 
         // talk like a pirate day
-        if(CalendarService::isTalkLikeAPirateDay($this->clock->now))
+        if(CalendarFunctions::isTalkLikeAPirateDay($this->clock->now))
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [
@@ -753,7 +752,7 @@ class TraderService
             );
         }
 
-        if(CalendarService::isMayThe4th($this->clock->now))
+        if(CalendarFunctions::isMayThe4th($this->clock->now))
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [

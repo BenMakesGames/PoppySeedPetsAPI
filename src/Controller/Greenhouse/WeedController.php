@@ -8,12 +8,12 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
+use App\Functions\CalendarFunctions;
 use App\Functions\PlayerLogHelpers;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
-use App\Service\CalendarService;
 use App\Service\Clock;
 use App\Service\InventoryService;
 use App\Service\PetAssistantService;
@@ -67,7 +67,7 @@ class WeedController extends AbstractController
 
         if($greenhouse->isHasFishStatue())
         {
-            $possibleItem2s = CalendarService::isSaintPatricksDay($clock->now)
+            $possibleItem2s = CalendarFunctions::isSaintPatricksDay($clock->now)
                 ? [ '1-leaf Clover', '2-leaf Clover' ]
                 : [ 'Algae', 'Scales', 'Freshly-squeezed Fish Oil', 'Silica Grounds' ]
             ;

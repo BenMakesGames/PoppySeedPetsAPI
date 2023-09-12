@@ -3,17 +3,15 @@ namespace App\Service\PetActivity\Crafting;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
-use App\Functions\ArrayFunctions;
+use App\Functions\CalendarFunctions;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
-use App\Service\CalendarService;
 use App\Service\Clock;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
@@ -306,7 +304,7 @@ class PlasticPrinterService
 
         $beingHalloweeny = false;
 
-        if(CalendarService::isHalloweenCrafting($this->clock->now))
+        if(CalendarFunctions::isHalloweenCrafting($this->clock->now))
         {
             if($this->squirrel3->rngNextInt(1, 2) === 1)
             {

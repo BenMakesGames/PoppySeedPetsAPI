@@ -7,6 +7,7 @@ use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
+use App\Functions\CalendarFunctions;
 use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -63,7 +64,7 @@ class RecyclingService
         if(!$givingTree)
             throw new \Exception('The "Giving Tree" NPC does not exist in the database!');
 
-        $givingTreeHoliday = CalendarService::isValentinesOrAdjacent($this->clock->now) || CalendarService::isWhiteDay($this->clock->now);
+        $givingTreeHoliday = CalendarFunctions::isValentinesOrAdjacent($this->clock->now) || CalendarFunctions::isWhiteDay($this->clock->now);
         $questItems = [];
         $idsNotRecycled = [];
 

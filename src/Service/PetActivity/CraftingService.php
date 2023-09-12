@@ -4,11 +4,11 @@ namespace App\Service\PetActivity;
 use App\Entity\PetActivityLog;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\HolidayEnum;
-use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\CalendarFunctions;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Model\ItemQuantity;
@@ -16,13 +16,12 @@ use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\SpiceRepository;
-use App\Service\CalendarService;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetActivity\Crafting\EventLanternService;
-use App\Service\PetActivity\Crafting\Helpers\TwuWuvCraftingService;
 use App\Service\PetActivity\Crafting\Helpers\StickCraftingService;
+use App\Service\PetActivity\Crafting\Helpers\TwuWuvCraftingService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -38,7 +37,6 @@ class CraftingService
     private EventLanternService $eventLanternService;
     private TwuWuvCraftingService $twuWuvCraftingService;
     private IRandom $squirrel3;
-    private CalendarService $calendarService;
     private WeatherService $weatherService;
     private HouseSimService $houseSimService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
@@ -47,7 +45,7 @@ class CraftingService
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         StickCraftingService $stickCraftingService, ItemRepository $itemRepository, EventLanternService $eventLanternService,
-        TwuWuvCraftingService $twuWuvCraftingService, Squirrel3 $squirrel3, CalendarService $calendarService,
+        TwuWuvCraftingService $twuWuvCraftingService, Squirrel3 $squirrel3,
         WeatherService $weatherService, HouseSimService $houseSimService, SpiceRepository $spiceRepository,
         PetActivityLogTagRepository $petActivityLogTagRepository
     )
@@ -60,7 +58,6 @@ class CraftingService
         $this->eventLanternService = $eventLanternService;
         $this->twuWuvCraftingService = $twuWuvCraftingService;
         $this->squirrel3 = $squirrel3;
-        $this->calendarService = $calendarService;
         $this->weatherService = $weatherService;
         $this->houseSimService = $houseSimService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
@@ -83,7 +80,7 @@ class CraftingService
 
         if($this->houseSimService->hasInventory('Chocolate Bar'))
         {
-            $weight = CalendarService::isValentinesOrAdjacent($now) ? 80 : 8;
+            $weight = CalendarFunctions::isValentinesOrAdjacent($now) ? 80 : 8;
 
             $possibilities[] = new ActivityCallback($this, 'makeChocolateTool', $weight);
         }
@@ -935,7 +932,7 @@ class CraftingService
         $pet = $petWithSkills->getPet();
         $now = new \DateTimeImmutable();
 
-        if(CalendarService::isValentinesOrAdjacent($now))
+        if(CalendarFunctions::isValentinesOrAdjacent($now))
             $making = $this->itemRepository->findOneByName('Chocolate Key');
         else
         {

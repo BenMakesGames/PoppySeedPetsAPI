@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Functions\CalendarFunctions;
 use App\Model\AvailableHolidayBox;
 use App\Model\ChineseCalendarInfo;
 use App\Repository\UserQuestRepository;
@@ -19,7 +20,7 @@ class PlazaService
         $this->userQuestRepository = $userQuestRepository;
         $this->clock = $clock;
 
-        $this->chineseCalendarInfo = CalendarService::getChineseCalendarInfo($clock->now);
+        $this->chineseCalendarInfo = CalendarFunctions::getChineseCalendarInfo($clock->now);
     }
 
     /**
@@ -50,7 +51,7 @@ class PlazaService
             }
         }
 
-        if(CalendarService::isEarthDay($this->clock->now))
+        if(CalendarFunctions::isEarthDay($this->clock->now))
         {
             $gotEarthDaySeed = $this->userQuestRepository->findOrCreate($user, 'Earth Day, ' . $year, false);
 
@@ -66,7 +67,7 @@ class PlazaService
             }
         }
 
-        if(CalendarService::isSummerSolstice($this->clock->now))
+        if(CalendarFunctions::isSummerSolstice($this->clock->now))
         {
             $gotGoodieBagsThisYear = $this->userQuestRepository->findOrCreate($user, 'Summer Solstice, ' . $year, false);
 
@@ -81,7 +82,7 @@ class PlazaService
                 );
             }
         }
-        else if(CalendarService::isWinterSolstice($this->clock->now))
+        else if(CalendarFunctions::isWinterSolstice($this->clock->now))
         {
             $gotGoodieBagsThisYear = $this->userQuestRepository->findOrCreate($user, 'Winter Solstice, ' . $year, false);
 
@@ -97,7 +98,7 @@ class PlazaService
             }
         }
 
-        if(CalendarService::isJuly4th($this->clock->now))
+        if(CalendarFunctions::isJuly4th($this->clock->now))
         {
             $gotBox = $this->userQuestRepository->findOrCreate($user, '4th of July, ' . $year, false);
 
@@ -113,7 +114,7 @@ class PlazaService
             }
         }
 
-        if(CalendarService::isBastilleDay($this->clock->now))
+        if(CalendarFunctions::isBastilleDay($this->clock->now))
         {
             $gotBox = $this->userQuestRepository->findOrCreate($user, 'Bastille Day, ' . $year, false);
 
@@ -129,7 +130,7 @@ class PlazaService
             }
         }
 
-        if(CalendarService::isCincoDeMayo($this->clock->now))
+        if(CalendarFunctions::isCincoDeMayo($this->clock->now))
         {
             $gotBox = $this->userQuestRepository->findOrCreate($user, 'Cinco de Mayo, ' . $year, false);
 
@@ -145,7 +146,7 @@ class PlazaService
             }
         }
 
-        if(CalendarService::isNewYearsHoliday($this->clock->now))
+        if(CalendarFunctions::isNewYearsHoliday($this->clock->now))
         {
             $newYearYear = $month === 12 ? ($year + 1) : $year;
 
@@ -163,7 +164,7 @@ class PlazaService
             }
         }
 
-        if(CalendarService::isAwaOdori($this->clock->now))
+        if(CalendarFunctions::isAwaOdori($this->clock->now))
         {
             $gotBox = $this->userQuestRepository->findOrCreate($user, 'Awa Odori, ' . $year, false);
 

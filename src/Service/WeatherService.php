@@ -2,13 +2,13 @@
 namespace App\Service;
 
 use App\Entity\Pet;
+use App\Functions\CalendarFunctions;
 use App\Functions\RandomFunctions;
 use App\Model\WeatherData;
 use App\Model\WeatherForecastData;
 
 class WeatherService
 {
-    private $calendarService;
     private $cache;
 
     private const HOUR_OF_DAY_TEMPERATURE_MODIFIER = [
@@ -20,11 +20,8 @@ class WeatherService
         //       ... 11pm
     ];
 
-    public function __construct(
-        CalendarService  $calendarService, CacheHelper $cache
-    )
+    public function __construct(CacheHelper $cache)
     {
-        $this->calendarService = $calendarService;
         $this->cache = $cache;
     }
 
@@ -58,7 +55,7 @@ class WeatherService
 
         $hourSince2000 = WeatherService::getHourSince2000($dt);
 
-        $weather->holidays = $getHolidays ? CalendarService::getEventData($dt) : [];
+        $weather->holidays = $getHolidays ? CalendarFunctions::getEventData($dt) : [];
         $weather->clouds = WeatherService::getClouds($hourSince2000);
         $weather->rainfall = WeatherService::getRainfall($hourSince2000);
         $weather->temperature = WeatherService::getTemperature($hourSince2000, $weather->rainfall);
@@ -238,7 +235,7 @@ class WeatherService
 
         $forecast->date = $date->setTime(0, 0, 0);
 
-        $forecast->holidays = CalendarService::getEventData($forecast->date);
+        $forecast->holidays = CalendarFunctions::getEventData($forecast->date);
 
         $forecast->maxRainfall = max($rainfalls);
         $forecast->minRainfall = min($rainfalls);

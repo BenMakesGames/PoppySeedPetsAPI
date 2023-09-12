@@ -9,6 +9,7 @@ use App\Enum\MeritEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
+use App\Functions\CalendarFunctions;
 use App\Functions\PlayerLogHelpers;
 use App\Repository\DragonRepository;
 use App\Repository\EnchantmentRepository;
@@ -149,14 +150,14 @@ class DragonService
         $goldGoodies = self::GOLD_GOODIES;
         $gemGoodies = self::GEM_GOODIES;
 
-        if(CalendarService::isValentinesOrAdjacent($this->clock->now))
+        if(CalendarFunctions::isValentinesOrAdjacent($this->clock->now))
         {
             $silverGoodies[] = [ 'weight' => 10, 'item' => 'Cacao Fruit' ];
             $goldGoodies[] = [ 'weight' => 10, 'item' => 'Chocolate Bar' ];
             $gemGoodies[] = [ 'weight' => 10, 'item' => 'Chocolate Key' ];
         }
 
-        $chineseCalendarInfo = CalendarService::getChineseCalendarInfo($this->clock->now);
+        $chineseCalendarInfo = CalendarFunctions::getChineseCalendarInfo($this->clock->now);
 
         if($chineseCalendarInfo->month === 1 && $chineseCalendarInfo->day <= 6)
         {

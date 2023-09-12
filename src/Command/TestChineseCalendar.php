@@ -1,7 +1,6 @@
 <?php
 namespace App\Command;
 
-use App\Service\CalendarService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -18,7 +17,7 @@ class TestChineseCalendar extends PoppySeedPetsCommand
 
     protected function doCommand(): int
     {
-        list($year, $month, $day) = explode('-', $this->input->getArgument('date'));
+        [$year, $month, $day] = explode('-', $this->input->getArgument('date'));
 
         $chineseCalendar = new \Overtrue\ChineseCalendar\Calendar();
 

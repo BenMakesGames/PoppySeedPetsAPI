@@ -9,11 +9,11 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\CalendarFunctions;
 use App\Functions\GroupNameGenerator;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
 use App\Repository\PetActivityLogTagRepository;
-use App\Service\CalendarService;
 use App\Service\Clock;
 use App\Service\HattierService;
 use App\Service\InventoryService;
@@ -128,7 +128,7 @@ class AstronomyClubService
             ->increaseSkillRollTotal($skill)
         ;
 
-        if(CalendarService::isLeonidPeakOrAdjacent($this->clock->now))
+        if(CalendarFunctions::isLeonidPeakOrAdjacent($this->clock->now))
         {
             $messageTemplate = '%pet% watched the Leonids with %group%, and collected some of their Stardust!';
 

@@ -1,6 +1,7 @@
 <?php
 namespace App\Service;
 
+use App\Functions\CalendarFunctions;
 use App\Functions\RandomFunctions;
 use App\Repository\ItemRepository;
 
@@ -10,16 +11,13 @@ class GrocerService
 
     private CacheHelper $cacheHelper;
     private ItemRepository $itemRepository;
-    private CalendarService $calendarService;
 
     public function __construct(
-        CacheHelper $cacheHelper, ItemRepository $itemRepository,
-        CalendarService $calendarService
+        CacheHelper $cacheHelper, ItemRepository $itemRepository
     )
     {
         $this->cacheHelper = $cacheHelper;
         $this->itemRepository = $itemRepository;
-        $this->calendarService = $calendarService;
     }
 
     private const ITEMS = [
@@ -87,13 +85,13 @@ class GrocerService
         $inventory = [];
         $now = new \DateTimeImmutable();
 
-        if(CalendarService::isJelephantDay($now))
+        if(CalendarFunctions::isJelephantDay($now))
             $inventory[] = $this->createInventoryData([ 'Jelephant Aminal Crackers', 8 ], true);
 
-        if($this->calendarService->isPiDay($now))
+        if(CalendarFunctions::isPiDay($now))
             $inventory[] = $this->createInventoryData([ 'Pi Pie', 46 ], true);
 
-        if($this->calendarService->isAwaOdori($now))
+        if(CalendarFunctions::isAwaOdori($now))
             $inventory[] = $this->createInventoryData([ 'Odori 0.0%', 12 ], true);
 
         $hotBarIndex = RandomFunctions::squirrel3Noise($day, 78934) % count(self::HOT_BAR_ITEMS);

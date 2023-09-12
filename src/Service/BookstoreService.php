@@ -10,6 +10,7 @@ use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
+use App\Functions\CalendarFunctions;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
@@ -170,7 +171,7 @@ class BookstoreService
             'Chocomilk' => 11
         ];
 
-        if(CalendarService::isStockingStuffingSeason($this->clock->now))
+        if(CalendarFunctions::isStockingStuffingSeason($this->clock->now))
         {
             $cafePrices['Eggnog'] = 12;
         }
@@ -190,7 +191,7 @@ class BookstoreService
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::HollowEarth))
             $gamePrices['Hollow Earth Booster Pack'] = 200;
 
-        if(CalendarService::isStockingStuffingSeason($this->clock->now))
+        if(CalendarFunctions::isStockingStuffingSeason($this->clock->now))
             $gamePrices['Tile: Everice Cream'] = 200;
 
         return $gamePrices;

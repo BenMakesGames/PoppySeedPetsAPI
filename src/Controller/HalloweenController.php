@@ -8,16 +8,16 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
+use App\Functions\CalendarFunctions;
 use App\Model\FoodWithSpice;
 use App\Repository\InventoryRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserRepository;
-use App\Service\CalendarService;
 use App\Service\Clock;
 use App\Service\FieldGuideService;
-use App\Service\PetActivity\EatingService;
 use App\Service\Holidays\HalloweenService;
+use App\Service\PetActivity\EatingService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
@@ -43,7 +43,7 @@ class HalloweenController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if(!CalendarService::isHalloween($clock->now))
+        if(!CalendarFunctions::isHalloween($clock->now))
             throw new PSPInvalidOperationException('It isn\'t Halloween!');
 
         $nextTrickOrTreater = $halloweenService->getNextTrickOrTreater($user);
@@ -63,7 +63,7 @@ class HalloweenController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if(!CalendarService::isHalloween($clock->now))
+        if(!CalendarFunctions::isHalloween($clock->now))
             throw new PSPInvalidOperationException('It isn\'t Halloween!');
 
         $nextTrickOrTreater = $halloweenService->getNextTrickOrTreater($user);
@@ -106,7 +106,7 @@ class HalloweenController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if(!CalendarService::isHalloween($clock->now))
+        if(!CalendarFunctions::isHalloween($clock->now))
             throw new PSPInvalidOperationException('It isn\'t Halloween!');
 
         $candy = $inventoryRepository->find($request->request->getInt('candy'));

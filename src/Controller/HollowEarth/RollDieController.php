@@ -7,8 +7,8 @@ use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
+use App\Functions\CalendarFunctions;
 use App\Repository\InventoryRepository;
-use App\Service\CalendarService;
 use App\Service\HollowEarthService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -69,7 +69,7 @@ class RollDieController extends AbstractController
 
         $hollowEarthService->advancePlayer($player);
 
-        if(CalendarService::isEaster($now) && $squirrel3->rngNextInt(1, 4) === 1)
+        if(CalendarFunctions::isEaster($now) && $squirrel3->rngNextInt(1, 4) === 1)
         {
             if($squirrel3->rngNextInt(1, 6) === 6)
             {
