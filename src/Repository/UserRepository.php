@@ -24,7 +24,6 @@ class UserRepository extends ServiceEntityRepository
 
     public static function findOneRecentlyActive(EntityManagerInterface $em, User $except, int $hours = 24): ?User
     {
-        $squirrel3 = new Squirrel3();
         $oneDayAgo = (new \DateTimeImmutable())->modify('-' . $hours . ' hours');
 
         $userRepository = $em->getRepository(User::class);
@@ -47,6 +46,8 @@ class UserRepository extends ServiceEntityRepository
 
         if($numberOfUsers === 0)
             return null;
+
+        $squirrel3 = new Squirrel3();
 
         $offset = $squirrel3->rngNextInt(0, $numberOfUsers - 1);
 
