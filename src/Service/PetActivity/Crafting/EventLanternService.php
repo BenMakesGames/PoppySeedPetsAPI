@@ -64,16 +64,16 @@ class EventLanternService
 
         if($items)
         {
-            if($this->calendarService->isHalloweenCrafting())
+            if($this->calendarService->deprecatedIsHalloweenCrafting())
                 $possibilities[] = new ActivityCallback($this, 'createMoonlightLantern', 10);
 
-            if($this->calendarService->isPiDayCrafting())
+            if($this->calendarService->deprecatedIsPiDayCrafting())
                 $possibilities[] = new ActivityCallback($this, 'createPiLantern', 10);
 
             if((int)$now->format('n') === 12)
                 $possibilities[] = new ActivityCallback($this, 'createTreelightLantern', 10);
 
-            if($this->calendarService->isSaintMartinsDayCrafting())
+            if($this->calendarService->deprecatedIsSaintMartinsDayCrafting())
                 $possibilities[] = new ActivityCallback($this, 'createDapperSwanLantern', 10);
         }
 

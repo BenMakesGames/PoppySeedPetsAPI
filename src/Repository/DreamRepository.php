@@ -14,6 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Dream|null findOneBy(array $criteria, array $orderBy = null)
  * @method Dream[]    findAll()
  * @method Dream[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class DreamRepository extends ServiceEntityRepository
 {

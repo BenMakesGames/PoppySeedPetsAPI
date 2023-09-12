@@ -68,7 +68,7 @@ class RollDieController extends AbstractController
 
         $hollowEarthService->advancePlayer($player);
 
-        if($calendarService->isEaster() && $squirrel3->rngNextInt(1, 4) === 1)
+        if($calendarService->deprecatedIsEaster() && $squirrel3->rngNextInt(1, 4) === 1)
         {
             if($squirrel3->rngNextInt(1, 6) === 6)
             {

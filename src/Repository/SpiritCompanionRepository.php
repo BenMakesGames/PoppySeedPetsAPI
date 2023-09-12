@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method SpiritCompanion|null findOneBy(array $criteria, array $orderBy = null)
  * @method SpiritCompanion[]    findAll()
  * @method SpiritCompanion[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class SpiritCompanionRepository extends ServiceEntityRepository
 {

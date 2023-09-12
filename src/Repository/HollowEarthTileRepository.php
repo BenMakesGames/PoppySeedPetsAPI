@@ -13,6 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method HollowEarthTile|null findOneBy(array $criteria, array $orderBy = null)
  * @method HollowEarthTile[]    findAll()
  * @method HollowEarthTile[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class HollowEarthTileRepository extends ServiceEntityRepository
 {

@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Guild|null findOneBy(array $criteria, array $orderBy = null)
  * @method Guild[]    findAll()
  * @method Guild[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class GuildRepository extends ServiceEntityRepository
 {

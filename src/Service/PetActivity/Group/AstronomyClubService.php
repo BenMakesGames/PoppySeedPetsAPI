@@ -127,7 +127,7 @@ class AstronomyClubService
             ->increaseSkillRollTotal($skill)
         ;
 
-        if($this->calendarService->isLeonidPeakOrAdjacent())
+        if($this->calendarService->deprecatedIsLeonidPeakOrAdjacent())
         {
             $messageTemplate = '%pet% watched the Leonids with %group%, and collected some of their Stardust!';
 

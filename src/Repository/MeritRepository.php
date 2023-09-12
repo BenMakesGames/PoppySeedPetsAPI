@@ -16,6 +16,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Merit|null findOneBy(array $criteria, array $orderBy = null)
  * @method Merit[]    findAll()
  * @method Merit[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class MeritRepository extends ServiceEntityRepository
 {

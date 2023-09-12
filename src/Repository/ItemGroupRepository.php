@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method ItemGroup|null findOneBy(array $criteria, array $orderBy = null)
  * @method ItemGroup[]    findAll()
  * @method ItemGroup[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class ItemGroupRepository extends ServiceEntityRepository
 {

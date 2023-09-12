@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method UserFollowing|null findOneBy(array $criteria, array $orderBy = null)
  * @method UserFollowing[]    findAll()
  * @method UserFollowing[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class UserFollowingRepository extends ServiceEntityRepository
 {

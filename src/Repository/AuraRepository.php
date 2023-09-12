@@ -12,6 +12,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Aura|null findOneBy(array $criteria, array $orderBy = null)
  * @method Aura[]    findAll()
  * @method Aura[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class AuraRepository extends ServiceEntityRepository
 {

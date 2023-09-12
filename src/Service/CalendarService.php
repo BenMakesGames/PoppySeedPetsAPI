@@ -1,35 +1,50 @@
 <?php
 namespace App\Service;
 
-use App\Entity\User;
 use App\Enum\HolidayEnum;
 use App\Functions\DateFunctions;
 use App\Functions\JewishCalendarFunctions;
 use App\Model\ChineseCalendarInfo;
-use App\Service\Holidays\HalloweenService;
 
 class CalendarService
 {
     private \DateTimeImmutable $today;
     private int $monthAndDay;
 
+    /**
+     * @deprecated
+     */
     public function __construct()
     {
         $this->setToday(new \DateTimeImmutable());
     }
 
+    /**
+     * @deprecated
+     */
     public function setToday(\DateTimeImmutable $date)
     {
         $this->today = $date->setTime(0, 0, 0);
         $this->monthAndDay = (int)$this->today->format('nd');
     }
 
-    public function isJelephantDay(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsJelephantDay(): bool
     {
         return $this->monthAndDay === 812;
     }
 
-    public function isNoombatDay(): bool
+    public static function isJelephantDay(\DateTimeInterface $dt): bool
+    {
+        return $dt->format('nd') === '812';
+    }
+
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsNoombatDay(): bool
     {
         // if it's not November, just get outta' here
         if($this->monthAndDay < 1100 || $this->monthAndDay >= 1200)
@@ -45,22 +60,34 @@ class CalendarService
         return $this->monthAndDay;
     }
 
-    public function isPSPBirthday(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsPSPBirthday(): bool
     {
         return $this->monthAndDay >= 621 && $this->monthAndDay <= 623;
     }
 
-    public function isSummerSolstice(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsSummerSolstice(): bool
     {
         return $this->monthAndDay >= 619 && $this->monthAndDay <= 622;
     }
 
-    public function isWinterSolstice(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsWinterSolstice(): bool
     {
         return $this->monthAndDay >= 1220 && $this->monthAndDay <= 1223;
     }
 
-    public function isThanksgivingMonsters(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsThanksgivingMonsters(): bool
     {
         // if it's not November, just get outta' here
         if($this->monthAndDay < 1100 || $this->monthAndDay >= 1200)
@@ -74,7 +101,10 @@ class CalendarService
         ;
     }
 
-    public function isThanksgiving(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsThanksgiving(): bool
     {
         // if it's not November, just get outta' here
         if($this->monthAndDay < 1122 || $this->monthAndDay >= 1200)
@@ -86,7 +116,10 @@ class CalendarService
         return abs((int)$fourthThursdayOfNovember->format('md') - $this->monthAndDay) <= 1;
     }
 
-    public function isBlackFriday(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsBlackFriday(): bool
     {
         // if it's not November, just get outta' here
         if($this->monthAndDay < 1122 || $this->monthAndDay >= 1200)
@@ -97,7 +130,10 @@ class CalendarService
         return (int)$blackFriday->format('md') == $this->monthAndDay;
     }
 
-    public function isCyberMonday(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsCyberMonday(): bool
     {
         if($this->monthAndDay < 1125 || $this->monthAndDay >= 1203)
             return false;
@@ -107,22 +143,34 @@ class CalendarService
         return (int)$cyberMonday->format('md') == $this->monthAndDay;
     }
 
-    public function isHalloweenCrafting(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsHalloweenCrafting(): bool
     {
         return $this->monthAndDay >= 1017 && $this->monthAndDay <= 1031;
     }
 
-    public function isSaintMartinsDayCrafting(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsSaintMartinsDayCrafting(): bool
     {
         return $this->monthAndDay >= 1101 && $this->monthAndDay <= 1111;
     }
 
-    public function isSaintPatricksDay(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsSaintPatricksDay(): bool
     {
         return $this->monthAndDay >= 315 && $this->monthAndDay <= 317;
     }
 
-    public function isPiDayCrafting(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsPiDayCrafting(): bool
     {
         return
             ($this->monthAndDay >= 313 && $this->monthAndDay <= 315) ||
@@ -130,72 +178,119 @@ class CalendarService
         ;
     }
 
-    public function isHalloween(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsHalloween(): bool
     {
         return $this->monthAndDay >= 1029 && $this->monthAndDay <= 1031;
     }
 
-    public function isHalloweenDay(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsHalloweenDay(): bool
     {
         return $this->monthAndDay === 1031;
     }
 
-    public function isPiDay(): bool
+    public static function isHalloweenDay(\DateTimeInterface $dt)
+    {
+        return $dt->format('nd') === '1031';
+    }
+
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsPiDay(): bool
     {
         return $this->monthAndDay === 314 || $this->monthAndDay === 722;
     }
 
-    public function isPsyPetsBirthday(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsPsyPetsBirthday(): bool
     {
         return $this->monthAndDay === 321;
     }
 
-    public function isAprilFools(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsAprilFools(): bool
     {
         return $this->monthAndDay === 401;
     }
 
-    public function isBastilleDay(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsBastilleDay(): bool
     {
         return $this->monthAndDay >= 713 && $this->monthAndDay <= 715;
     }
 
-    public function isCincoDeMayo(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsCincoDeMayo(): bool
     {
         return $this->monthAndDay >= 504 && $this->monthAndDay <= 506;
     }
 
-    public function isWhiteDay(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsWhiteDay(): bool
     {
         return $this->monthAndDay === 314;
     }
 
-    public function isMayThe4th(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsMayThe4th(): bool
     {
         return $this->monthAndDay === 504;
     }
 
-    public function isAwaOdori(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsAwaOdori(): bool
     {
         return $this->monthAndDay >= 812 && $this->monthAndDay <= 815;
     }
 
-    public function isTalkLikeAPirateDay(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsTalkLikeAPirateDay(): bool
     {
         return $this->monthAndDay === 919;
     }
 
-    public function isJuly4th(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsJuly4th(): bool
     {
         return $this->monthAndDay >= 703 && $this->monthAndDay <= 705;
     }
 
-    public function isLeapDay(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsLeapDay(): bool
     {
         return $this->monthAndDay === 229;
     }
 
-    public function isEarthDay(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsEarthDay(): bool
     {
         return $this->monthAndDay >= 420 && $this->monthAndDay <= 422;
     }
@@ -217,7 +312,10 @@ class CalendarService
         return $result;
     }
 
-    public function isHanukkah(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsHanukkah(): bool
     {
         $jdCurrent = gregoriantojd($this->today->format('m'), $this->today->format('d'), $this->today->format('Y'));
         [$jewishYear, $jewishMonth, $jewishDay] = JewishCalendarFunctions::getJewishDate($this->today);
@@ -228,12 +326,18 @@ class CalendarService
         return $hanukkahNo >= 1 && $hanukkahNo <= 8;
     }
 
-    public function isValentinesOrAdjacent(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsValentinesOrAdjacent(): bool
     {
         return $this->monthAndDay >= 213 && $this->monthAndDay <= 215;
     }
 
-    public function isEaster(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsEaster(): bool
     {
         $easter = \DateTimeImmutable::createFromFormat('U', easter_date((int)$this->today->format('Y')));
         $easter = $easter->setTime(0, 0, 0);
@@ -246,23 +350,35 @@ class CalendarService
         return $diff < 3;
     }
 
-    public function isHoli(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsHoli(): bool
     {
         // :(
         return $this->monthAndDay == self::HOLI_MONTH_DAYS[(int)$this->today->format('Y')];
     }
 
-    public function isNewYearsHoliday(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsNewYearsHoliday(): bool
     {
         return $this->monthAndDay === 1231 || $this->monthAndDay <= 102;
     }
 
-    public function isStockingStuffingSeason(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsStockingStuffingSeason(): bool
     {
         return $this->monthAndDay >= 1200 && $this->monthAndDay <= 1231;
     }
 
-    public function isLeonidPeakOrAdjacent(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsLeonidPeakOrAdjacent(): bool
     {
         $year = (int)$this->today->format('Y');
 
@@ -274,7 +390,10 @@ class CalendarService
         return abs($this->monthAndDay - $leonidPeakDay) <= 1;
     }
 
-    public function isChineseNewYear(): bool
+    /**
+     * @deprecated
+     */
+    public function deprecatedIsChineseNewYear(): bool
     {
         $chineseCalendarInfo = $this->getChineseCalendarInfo();
 
@@ -296,88 +415,88 @@ class CalendarService
         if($fullMoonName)
             $events[] = $fullMoonName . ' Moon';
 
-        if($this->isStockingStuffingSeason())
+        if($this->deprecatedIsStockingStuffingSeason())
             $events[] = HolidayEnum::STOCKING_STUFFING_SEASON;
 
-        if($this->isHalloween())
+        if($this->deprecatedIsHalloween())
             $events[] = HolidayEnum::HALLOWEEN;
 
-        if($this->isEaster())
+        if($this->deprecatedIsEaster())
             $events[] = HolidayEnum::EASTER;
 
-        if($this->isSaintPatricksDay())
+        if($this->deprecatedIsSaintPatricksDay())
             $events[] = HolidayEnum::SAINT_PATRICKS;
 
-        if($this->isValentinesOrAdjacent())
+        if($this->deprecatedIsValentinesOrAdjacent())
             $events[] = HolidayEnum::VALENTINES;
 
-        if($this->isCyberMonday())
+        if($this->deprecatedIsCyberMonday())
             $events[] = HolidayEnum::CYBER_MONDAY;
 
-        if($this->isBlackFriday())
+        if($this->deprecatedIsBlackFriday())
             $events[] = HolidayEnum::BLACK_FRIDAY;
 
-        if($this->isPiDay())
+        if($this->deprecatedIsPiDay())
             $events[] = HolidayEnum::PI_DAY;
 
-        if($this->isPSPBirthday())
+        if($this->deprecatedIsPSPBirthday())
             $events[] = HolidayEnum::PSP_BIRTHDAY;
 
-        if($this->isSummerSolstice())
+        if($this->deprecatedIsSummerSolstice())
             $events[] = HolidayEnum::SUMMER_SOLSTICE;
 
-        if($this->isWinterSolstice())
+        if($this->deprecatedIsWinterSolstice())
             $events[] = HolidayEnum::WINTER_SOLSTICE;
 
-        if($this->isPsyPetsBirthday())
+        if($this->deprecatedIsPsyPetsBirthday())
             $events[] = HolidayEnum::PSYPETS_BIRTHDAY;
 
-        if($this->isAprilFools())
+        if($this->deprecatedIsAprilFools())
             $events[] = HolidayEnum::APRIL_FOOLS;
 
-        if($this->isHanukkah())
+        if($this->deprecatedIsHanukkah())
             $events[] = HolidayEnum::HANUKKAH;
 
-        if($this->isWhiteDay())
+        if($this->deprecatedIsWhiteDay())
             $events[] = HolidayEnum::WHITE_DAY;
 
-        if($this->isTalkLikeAPirateDay())
+        if($this->deprecatedIsTalkLikeAPirateDay())
             $events[] = HolidayEnum::TALK_LIKE_A_PIRATE_DAY;
 
-        if($this->isThanksgiving())
+        if($this->deprecatedIsThanksgiving())
             $events[] = HolidayEnum::THANKSGIVING;
 
-        if($this->isNewYearsHoliday())
+        if($this->deprecatedIsNewYearsHoliday())
             $events[] = HolidayEnum::NEW_YEARS_DAY;
 
-        if($this->isJuly4th())
+        if($this->deprecatedIsJuly4th())
             $events[] = HolidayEnum::FOURTH_OF_JULY;
 
-        if($this->isBastilleDay())
+        if($this->deprecatedIsBastilleDay())
             $events[] = HolidayEnum::BASTILLE_DAY;
 
-        if($this->isAwaOdori())
+        if($this->deprecatedIsAwaOdori())
             $events[] = HolidayEnum::AWA_ODORI;
 
-        if($this->isEarthDay())
+        if($this->deprecatedIsEarthDay())
             $events[] = HolidayEnum::EARTH_DAY;
 
-        if($this->isCincoDeMayo())
+        if($this->deprecatedIsCincoDeMayo())
             $events[] = HolidayEnum::CINCO_DE_MAYO;
 
-        if($this->isNoombatDay())
+        if($this->deprecatedIsNoombatDay())
             $events[] = HolidayEnum::NOOMBAT_DAY;
 
-        if($this->isJelephantDay())
+        if($this->deprecatedIsJelephantDay())
             $events[] = HolidayEnum::JELEPHANT_DAY;
 
-        if($this->isChineseNewYear())
+        if($this->deprecatedIsChineseNewYear())
             $events[] = HolidayEnum::CHINESE_NEW_YEAR;
 
-        if($this->isHoli())
+        if($this->deprecatedIsHoli())
             $events[] = HolidayEnum::HOLI;
 
-        if($this->isLeonidPeakOrAdjacent())
+        if($this->deprecatedIsLeonidPeakOrAdjacent())
             $events[] = HolidayEnum::LEONIDS;
 
         $this->setToday($oldToday);

@@ -17,6 +17,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Inventory|null findOneBy(array $criteria, array $orderBy = null)
  * @method Inventory[]    findAll()
  * @method Inventory[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class InventoryRepository extends ServiceEntityRepository
 {

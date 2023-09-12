@@ -14,6 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MonthlyStoryAdventureStep|null findOneBy(array $criteria, array $orderBy = null)
  * @method MonthlyStoryAdventureStep[]    findAll()
  * @method MonthlyStoryAdventureStep[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class MonthlyStoryAdventureStepRepository extends ServiceEntityRepository
 {

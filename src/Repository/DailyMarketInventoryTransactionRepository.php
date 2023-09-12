@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method DailyMarketInventoryTransaction|null findOneBy(array $criteria, array $orderBy = null)
  * @method DailyMarketInventoryTransaction[]    findAll()
  * @method DailyMarketInventoryTransaction[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class DailyMarketInventoryTransactionRepository extends ServiceEntityRepository
 {

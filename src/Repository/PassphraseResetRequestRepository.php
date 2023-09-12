@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method PassphraseResetRequest|null findOneBy(array $criteria, array $orderBy = null)
  * @method PassphraseResetRequest[]    findAll()
  * @method PassphraseResetRequest[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class PassphraseResetRequestRepository extends ServiceEntityRepository
 {

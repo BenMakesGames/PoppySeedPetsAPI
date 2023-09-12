@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Fireplace|null findOneBy(array $criteria, array $orderBy = null)
  * @method Fireplace[]    findAll()
  * @method Fireplace[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class FireplaceRepository extends ServiceEntityRepository
 {

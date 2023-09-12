@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method TradesUnlocked|null findOneBy(array $criteria, array $orderBy = null)
  * @method TradesUnlocked[]    findAll()
  * @method TradesUnlocked[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class TradesUnlockedRepository extends ServiceEntityRepository
 {

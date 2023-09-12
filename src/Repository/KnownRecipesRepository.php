@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method KnownRecipes|null findOneBy(array $criteria, array $orderBy = null)
  * @method KnownRecipes[]    findAll()
  * @method KnownRecipes[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class KnownRecipesRepository extends ServiceEntityRepository
 {

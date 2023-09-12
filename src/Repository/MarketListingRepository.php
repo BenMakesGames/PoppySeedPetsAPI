@@ -17,6 +17,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MarketListing|null findOneBy(array $criteria, array $orderBy = null)
  * @method MarketListing[]    findAll()
  * @method MarketListing[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class MarketListingRepository extends ServiceEntityRepository
 {

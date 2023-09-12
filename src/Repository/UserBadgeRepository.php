@@ -14,6 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method UserBadge|null findOneBy(array $criteria, array $orderBy = null)
  * @method UserBadge[]    findAll()
  * @method UserBadge[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class UserBadgeRepository extends ServiceEntityRepository
 {

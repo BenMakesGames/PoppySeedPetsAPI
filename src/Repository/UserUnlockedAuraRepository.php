@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method UserUnlockedAura|null findOneBy(array $criteria, array $orderBy = null)
  * @method UserUnlockedAura[]    findAll()
  * @method UserUnlockedAura[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class UserUnlockedAuraRepository extends ServiceEntityRepository
 {

@@ -170,7 +170,7 @@ class BookstoreService
             'Chocomilk' => 11
         ];
 
-        if($this->calendarService->isStockingStuffingSeason())
+        if($this->calendarService->deprecatedIsStockingStuffingSeason())
         {
             $cafePrices['Eggnog'] = 12;
         }
@@ -190,7 +190,7 @@ class BookstoreService
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::HollowEarth))
             $gamePrices['Hollow Earth Booster Pack'] = 200;
 
-        if($this->calendarService->isStockingStuffingSeason())
+        if($this->calendarService->deprecatedIsStockingStuffingSeason())
             $gamePrices['Tile: Everice Cream'] = 200;
 
         return $gamePrices;

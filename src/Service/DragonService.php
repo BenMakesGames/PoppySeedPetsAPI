@@ -151,7 +151,7 @@ class DragonService
         $goldGoodies = self::GOLD_GOODIES;
         $gemGoodies = self::GEM_GOODIES;
 
-        if($this->calendarService->isValentinesOrAdjacent())
+        if($this->calendarService->deprecatedIsValentinesOrAdjacent())
         {
             $silverGoodies[] = [ 'weight' => 10, 'item' => 'Cacao Fruit' ];
             $goldGoodies[] = [ 'weight' => 10, 'item' => 'Chocolate Bar' ];

@@ -126,7 +126,7 @@ class ParkService
                 );
             }
 
-            if($this->calendarService->isPSPBirthday())
+            if($this->calendarService->deprecatedIsPSPBirthday())
             {
                 $userId = $pet->getOwner()->getId();
 

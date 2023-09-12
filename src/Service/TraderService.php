@@ -617,7 +617,7 @@ class TraderService
             );
         }
 
-        if($this->calendarService->isPsyPetsBirthday())
+        if($this->calendarService->deprecatedIsPsyPetsBirthday())
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [
@@ -631,7 +631,7 @@ class TraderService
 
         }
 
-        if($this->calendarService->isValentinesOrAdjacent())
+        if($this->calendarService->deprecatedIsValentinesOrAdjacent())
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [
@@ -649,7 +649,7 @@ class TraderService
             );
         }
 
-        if($this->calendarService->isStockingStuffingSeason())
+        if($this->calendarService->deprecatedIsStockingStuffingSeason())
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Talon'), 2) ],
@@ -668,7 +668,7 @@ class TraderService
             );
         }
 
-        if($this->calendarService->isEaster())
+        if($this->calendarService->deprecatedIsEaster())
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [
@@ -740,7 +740,7 @@ class TraderService
         }
 
         // talk like a pirate day
-        if($this->calendarService->isTalkLikeAPirateDay())
+        if($this->calendarService->deprecatedIsTalkLikeAPirateDay())
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [
@@ -755,7 +755,7 @@ class TraderService
             );
         }
 
-        if($this->calendarService->isMayThe4th())
+        if($this->calendarService->deprecatedIsMayThe4th())
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [

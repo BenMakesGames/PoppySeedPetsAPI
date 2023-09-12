@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method FieldGuideEntry|null findOneBy(array $criteria, array $orderBy = null)
  * @method FieldGuideEntry[]    findAll()
  * @method FieldGuideEntry[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class FieldGuideEntryRepository extends ServiceEntityRepository
 {

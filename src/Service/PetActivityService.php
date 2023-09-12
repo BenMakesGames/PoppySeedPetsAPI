@@ -46,6 +46,7 @@ use App\Service\PetActivity\GuildService;
 use App\Service\PetActivity\HeartDimensionService;
 use App\Service\PetActivity\HuntingService;
 use App\Service\PetActivity\IcyMoonService;
+use App\Service\PetActivity\KappaService;
 use App\Service\PetActivity\LetterService;
 use App\Service\PetActivity\MagicBeanstalkService;
 use App\Service\PetActivity\PetSummonedAwayService;
@@ -101,6 +102,7 @@ class PetActivityService
     private PhilosophersStoneService $philosophersStoneService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
     private IcyMoonService $icyMoonService;
+    private KappaService $kappaService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, CalendarService $calendarService,
@@ -118,7 +120,8 @@ class PetActivityService
         WeatherService $weatherService, Caerbannog $caerbannog, TreasureMapService $treasureMapService,
         StatusEffectService $statusEffectService, EatingService $eatingService, HouseSimService $houseSimService,
         MagicBindingService $magicBindingService, SmithingService $smithingService, CravingService $cravingService,
-        PlasticPrinterService $plasticPrinterService, PhilosophersStoneService $philosophersStoneService
+        PlasticPrinterService $plasticPrinterService, PhilosophersStoneService $philosophersStoneService,
+        KappaService $kappaService
     )
     {
         $this->em = $em;
@@ -163,6 +166,7 @@ class PetActivityService
         $this->philosophersStoneService = $philosophersStoneService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->icyMoonService = $icyMoonService;
+        $this->kappaService = $kappaService;
     }
 
     public function runHour(Pet $pet)
@@ -577,19 +581,19 @@ class PetActivityService
                 return;
         }
 
-        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 24 : 16) && $this->calendarService->isSaintPatricksDay())
+        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 24 : 16) && $this->calendarService->deprecatedIsSaintPatricksDay())
         {
             $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::SAINT_PATRICKS);
             return;
         }
 
-        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 30 : 25) && $this->calendarService->isEaster())
+        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 30 : 25) && $this->calendarService->deprecatedIsEaster())
         {
             $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::EASTER);
             return;
         }
 
-        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 9 : 6) && $this->calendarService->isChineseNewYear())
+        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 9 : 6) && $this->calendarService->deprecatedIsChineseNewYear())
         {
             $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::CHINESE_NEW_YEAR);
             return;
@@ -794,6 +798,10 @@ class PetActivityService
 
             case 'Fruit Fly on a String':
                 $this->treasureMapService->doFruitHunting($pet);
+                return true;
+
+            case 'Cucumber':
+                $this->kappaService->doHuntKappa($pet);
                 return true;
         }
 

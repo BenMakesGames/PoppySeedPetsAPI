@@ -315,7 +315,7 @@ class SmithingService
                 $possibilities[] = new ActivityCallback($this->meteoriteSmithingService, 'createHorizonMirror', 10);
         }
 
-        if($this->calendarService->isHalloweenCrafting())
+        if($this->calendarService->deprecatedIsHalloweenCrafting())
         {
             if($this->houseSimService->hasInventory('Small, Yellow Plastic Bucket') || $this->houseSimService->hasInventory('Upside-down, Yellow Plastic Bucket'))
                 $possibilities[] = new ActivityCallback($this->halloweenSmithingService, 'createPumpkinBucket', 10);

@@ -13,6 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method DailyMarketItemAverage|null findOneBy(array $criteria, array $orderBy = null)
  * @method DailyMarketItemAverage[]    findAll()
  * @method DailyMarketItemAverage[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class DailyMarketItemAverageRepository extends ServiceEntityRepository
 {

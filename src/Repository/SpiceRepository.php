@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Spice|null findOneBy(array $criteria, array $orderBy = null)
  * @method Spice[]    findAll()
  * @method Spice[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class SpiceRepository extends ServiceEntityRepository
 {

@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method DeviceStats|null findOneBy(array $criteria, array $orderBy = null)
  * @method DeviceStats[]    findAll()
  * @method DeviceStats[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class DeviceStatsRepository extends ServiceEntityRepository
 {

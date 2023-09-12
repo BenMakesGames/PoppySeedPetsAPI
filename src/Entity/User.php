@@ -215,12 +215,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $fate;
 
     /**
-     * @ORM\OneToOne(targetEntity=UserSelectedWallpaper::class, mappedBy="user", cascade={"persist", "remove"})
-     * @Groups({"userPublicProfile", "petPublicProfile"})
-     */
-    private $selectedWallpaper;
-
-    /**
      * @ORM\OneToMany(targetEntity=UserUnlockedFeature::class, mappedBy="user", orphanRemoval=true)
      * @Groups({"myAccount"})
      */
@@ -819,23 +813,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getDailySeed()
     {
         return (($this->fate * date('N')) % (date('nd') * 53)) + date('Yj');
-    }
-
-    public function getSelectedWallpaper(): ?UserSelectedWallpaper
-    {
-        return $this->selectedWallpaper;
-    }
-
-    public function setSelectedWallpaper(UserSelectedWallpaper $selectedWallpaper): self
-    {
-        // set the owning side of the relation if necessary
-        if ($selectedWallpaper->getUser() !== $this) {
-            $selectedWallpaper->setUser($this);
-        }
-
-        $this->selectedWallpaper = $selectedWallpaper;
-
-        return $this;
     }
 
     /**

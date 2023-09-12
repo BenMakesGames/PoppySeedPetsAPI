@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method UserMenuOrder|null findOneBy(array $criteria, array $orderBy = null)
  * @method UserMenuOrder[]    findAll()
  * @method UserMenuOrder[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class UserMenuOrderRepository extends ServiceEntityRepository
 {

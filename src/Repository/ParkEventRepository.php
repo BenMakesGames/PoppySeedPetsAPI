@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method ParkEvent|null findOneBy(array $criteria, array $orderBy = null)
  * @method ParkEvent[]    findAll()
  * @method ParkEvent[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class ParkEventRepository extends ServiceEntityRepository
 {

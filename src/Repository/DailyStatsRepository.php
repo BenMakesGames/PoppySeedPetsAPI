@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method DailyStats|null findOneBy(array $criteria, array $orderBy = null)
  * @method DailyStats[]    findAll()
  * @method DailyStats[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class DailyStatsRepository extends ServiceEntityRepository
 {

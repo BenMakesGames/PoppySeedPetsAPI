@@ -13,6 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method UserSpeciesCollected|null findOneBy(array $criteria, array $orderBy = null)
  * @method UserSpeciesCollected[]    findAll()
  * @method UserSpeciesCollected[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class UserSpeciesCollectedRepository extends ServiceEntityRepository
 {

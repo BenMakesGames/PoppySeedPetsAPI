@@ -12,6 +12,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method UserQuest|null findOneBy(array $criteria, array $orderBy = null)
  * @method UserQuest[]    findAll()
  * @method UserQuest[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class UserQuestRepository extends ServiceEntityRepository
 {

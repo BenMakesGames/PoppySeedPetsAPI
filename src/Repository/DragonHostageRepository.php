@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method DragonHostage|null findOneBy(array $criteria, array $orderBy = null)
  * @method DragonHostage[]    findAll()
  * @method DragonHostage[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class DragonHostageRepository extends ServiceEntityRepository
 {

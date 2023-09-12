@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method HollowEarthPlayerTile|null findOneBy(array $criteria, array $orderBy = null)
  * @method HollowEarthPlayerTile[]    findAll()
  * @method HollowEarthPlayerTile[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class HollowEarthPlayerTileRepository extends ServiceEntityRepository
 {

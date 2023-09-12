@@ -13,6 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method UserActivityLogTag|null findOneBy(array $criteria, array $orderBy = null)
  * @method UserActivityLogTag[]    findAll()
  * @method UserActivityLogTag[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class UserActivityLogTagRepository extends ServiceEntityRepository
 {

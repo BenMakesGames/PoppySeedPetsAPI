@@ -50,7 +50,7 @@ class PlazaService
             }
         }
 
-        if($this->calendarService->isEarthDay())
+        if($this->calendarService->deprecatedIsEarthDay())
         {
             $gotEarthDaySeed = $this->userQuestRepository->findOrCreate($user, 'Earth Day, ' . $year, false);
 
@@ -66,7 +66,7 @@ class PlazaService
             }
         }
 
-        if($this->calendarService->isSummerSolstice())
+        if($this->calendarService->deprecatedIsSummerSolstice())
         {
             $gotGoodieBagsThisYear = $this->userQuestRepository->findOrCreate($user, 'Summer Solstice, ' . $year, false);
 
@@ -81,7 +81,7 @@ class PlazaService
                 );
             }
         }
-        else if($this->calendarService->isWinterSolstice())
+        else if($this->calendarService->deprecatedIsWinterSolstice())
         {
             $gotGoodieBagsThisYear = $this->userQuestRepository->findOrCreate($user, 'Winter Solstice, ' . $year, false);
 
@@ -97,7 +97,7 @@ class PlazaService
             }
         }
 
-        if($this->calendarService->isJuly4th())
+        if($this->calendarService->deprecatedIsJuly4th())
         {
             $gotBox = $this->userQuestRepository->findOrCreate($user, '4th of July, ' . $year, false);
 
@@ -113,7 +113,7 @@ class PlazaService
             }
         }
 
-        if($this->calendarService->isBastilleDay())
+        if($this->calendarService->deprecatedIsBastilleDay())
         {
             $gotBox = $this->userQuestRepository->findOrCreate($user, 'Bastille Day, ' . $year, false);
 
@@ -129,7 +129,7 @@ class PlazaService
             }
         }
 
-        if($this->calendarService->isCincoDeMayo())
+        if($this->calendarService->deprecatedIsCincoDeMayo())
         {
             $gotBox = $this->userQuestRepository->findOrCreate($user, 'Cinco de Mayo, ' . $year, false);
 
@@ -145,7 +145,7 @@ class PlazaService
             }
         }
 
-        if($this->calendarService->isNewYearsHoliday())
+        if($this->calendarService->deprecatedIsNewYearsHoliday())
         {
             $newYearYear = $month === 12 ? ($year + 1) : $year;
 
@@ -163,7 +163,7 @@ class PlazaService
             }
         }
 
-        if($this->calendarService->isAwaOdori())
+        if($this->calendarService->deprecatedIsAwaOdori())
         {
             $gotBox = $this->userQuestRepository->findOrCreate($user, 'Awa Odori, ' . $year, false);
 

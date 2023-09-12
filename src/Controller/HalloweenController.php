@@ -42,7 +42,7 @@ class HalloweenController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if(!$calendarService->isHalloween())
+        if(!$calendarService->deprecatedIsHalloween())
             throw new PSPInvalidOperationException('It isn\'t Halloween!');
 
         $nextTrickOrTreater = $halloweenService->getNextTrickOrTreater($user);
@@ -62,7 +62,7 @@ class HalloweenController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if(!$calendarService->isHalloween())
+        if(!$calendarService->deprecatedIsHalloween())
             throw new PSPInvalidOperationException('It isn\'t Halloween!');
 
         $nextTrickOrTreater = $halloweenService->getNextTrickOrTreater($user);
@@ -105,7 +105,7 @@ class HalloweenController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if(!$calendarService->isHalloween())
+        if(!$calendarService->deprecatedIsHalloween())
             throw new PSPInvalidOperationException('It isn\'t Halloween!');
 
         $candy = $inventoryRepository->find($request->request->getInt('candy'));

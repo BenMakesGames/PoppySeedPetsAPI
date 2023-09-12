@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Greenhouse|null findOneBy(array $criteria, array $orderBy = null)
  * @method Greenhouse[]    findAll()
  * @method Greenhouse[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class GreenhouseRepository extends ServiceEntityRepository
 {

@@ -15,6 +15,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method UserLetter|null findOneBy(array $criteria, array $orderBy = null)
  * @method UserLetter[]    findAll()
  * @method UserLetter[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class UserLetterRepository extends ServiceEntityRepository
 {

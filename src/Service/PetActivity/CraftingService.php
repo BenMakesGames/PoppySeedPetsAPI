@@ -82,7 +82,7 @@ class CraftingService
 
         if($this->houseSimService->hasInventory('Chocolate Bar'))
         {
-            $weight = $this->calendarService->isValentinesOrAdjacent() ? 80 : 8;
+            $weight = $this->calendarService->deprecatedIsValentinesOrAdjacent() ? 80 : 8;
 
             $possibilities[] = new ActivityCallback($this, 'makeChocolateTool', $weight);
         }
@@ -933,7 +933,7 @@ class CraftingService
     {
         $pet = $petWithSkills->getPet();
 
-        if($this->calendarService->isValentinesOrAdjacent())
+        if($this->calendarService->deprecatedIsValentinesOrAdjacent())
             $making = $this->itemRepository->findOneByName('Chocolate Key');
         else
         {

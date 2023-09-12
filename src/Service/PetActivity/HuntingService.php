@@ -92,8 +92,8 @@ class HuntingService
 
         $maxSkill = NumberFunctions::clamp($maxSkill, 1, 22);
 
-        $useThanksgivingPrey = $this->calendarService->isThanksgivingMonsters() && $this->squirrel3->rngNextInt(1, 2) === 1;
-        $usePassoverPrey = $this->calendarService->isEaster();
+        $useThanksgivingPrey = $this->calendarService->deprecatedIsThanksgivingMonsters() && $this->squirrel3->rngNextInt(1, 2) === 1;
+        $usePassoverPrey = $this->calendarService->deprecatedIsEaster();
 
         $roll = $this->squirrel3->rngNextInt(1, $maxSkill);
 

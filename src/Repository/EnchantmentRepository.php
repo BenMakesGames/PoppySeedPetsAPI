@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Enchantment|null findOneBy(array $criteria, array $orderBy = null)
  * @method Enchantment[]    findAll()
  * @method Enchantment[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class EnchantmentRepository extends ServiceEntityRepository
 {

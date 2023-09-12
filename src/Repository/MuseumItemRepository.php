@@ -13,6 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MuseumItem|null findOneBy(array $criteria, array $orderBy = null)
  * @method MuseumItem[]    findAll()
  * @method MuseumItem[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class MuseumItemRepository extends ServiceEntityRepository
 {

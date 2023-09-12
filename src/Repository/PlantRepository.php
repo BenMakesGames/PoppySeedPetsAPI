@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Plant|null findOneBy(array $criteria, array $orderBy = null)
  * @method Plant[]    findAll()
  * @method Plant[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class PlantRepository extends ServiceEntityRepository
 {

@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method HollowEarthTileType|null findOneBy(array $criteria, array $orderBy = null)
  * @method HollowEarthTileType[]    findAll()
  * @method HollowEarthTileType[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class HollowEarthTileTypeRepository extends ServiceEntityRepository
 {

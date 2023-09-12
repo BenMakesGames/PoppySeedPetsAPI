@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
  * @method DesignGoal|null findOneBy(array $criteria, array $orderBy = null)
  * @method DesignGoal[]    findAll()
  * @method DesignGoal[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class DesignGoalRepository extends ServiceEntityRepository
 {

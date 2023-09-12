@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method ItemGrammar|null findOneBy(array $criteria, array $orderBy = null)
  * @method ItemGrammar[]    findAll()
  * @method ItemGrammar[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class ItemGrammarRepository extends ServiceEntityRepository
 {

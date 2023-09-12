@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method UserSession|null findOneBy(array $criteria, array $orderBy = null)
  * @method UserSession[]    findAll()
  * @method UserSession[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class UserSessionRepository extends ServiceEntityRepository
 {

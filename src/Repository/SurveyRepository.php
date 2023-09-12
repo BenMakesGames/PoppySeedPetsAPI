@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Survey|null findOneBy(array $criteria, array $orderBy = null)
  * @method Survey[]    findAll()
  * @method Survey[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class SurveyRepository extends ServiceEntityRepository
 {

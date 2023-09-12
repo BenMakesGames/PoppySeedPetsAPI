@@ -86,13 +86,13 @@ class GrocerService
     {
         $inventory = [];
 
-        if($this->calendarService->isJelephantDay())
+        if($this->calendarService->deprecatedIsJelephantDay())
             $inventory[] = $this->createInventoryData([ 'Jelephant Aminal Crackers', 8 ], true);
 
-        if($this->calendarService->isPiDay())
+        if($this->calendarService->deprecatedIsPiDay())
             $inventory[] = $this->createInventoryData([ 'Pi Pie', 46 ], true);
 
-        if($this->calendarService->isAwaOdori())
+        if($this->calendarService->deprecatedIsAwaOdori())
             $inventory[] = $this->createInventoryData([ 'Odori 0.0%', 12 ], true);
 
         $hotBarIndex = RandomFunctions::squirrel3Noise($day, 78934) % count(self::HOT_BAR_ITEMS);

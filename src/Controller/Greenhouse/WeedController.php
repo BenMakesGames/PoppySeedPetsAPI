@@ -67,7 +67,7 @@ class WeedController extends AbstractController
 
         if($greenhouse->isHasFishStatue())
         {
-            $possibleItem2s = $calendarService->isSaintPatricksDay()
+            $possibleItem2s = $calendarService->deprecatedIsSaintPatricksDay()
                 ? [ '1-leaf Clover', '2-leaf Clover' ]
                 : [ 'Algae', 'Scales', 'Freshly-squeezed Fish Oil', 'Silica Grounds' ]
             ;

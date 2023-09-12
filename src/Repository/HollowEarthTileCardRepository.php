@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method HollowEarthTileCard|null findOneBy(array $criteria, array $orderBy = null)
  * @method HollowEarthTileCard[]    findAll()
  * @method HollowEarthTileCard[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class HollowEarthTileCardRepository extends ServiceEntityRepository
 {

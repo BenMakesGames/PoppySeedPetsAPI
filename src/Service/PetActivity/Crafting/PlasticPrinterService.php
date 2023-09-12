@@ -305,7 +305,7 @@ class PlasticPrinterService
 
         $beingHalloweeny = false;
 
-        if($this->calendarService->isHalloweenCrafting())
+        if($this->calendarService->deprecatedIsHalloweenCrafting())
         {
             if($this->squirrel3->rngNextInt(1, 2) === 1)
             {

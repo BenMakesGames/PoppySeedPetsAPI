@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Trader|null findOneBy(array $criteria, array $orderBy = null)
  * @method Trader[]    findAll()
  * @method Trader[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class TraderRepository extends ServiceEntityRepository
 {

@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method StorySection|null findOneBy(array $criteria, array $orderBy = null)
  * @method StorySection[]    findAll()
  * @method StorySection[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class StorySectionRepository extends ServiceEntityRepository
 {

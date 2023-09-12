@@ -13,6 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method UserLink|null findOneBy(array $criteria, array $orderBy = null)
  * @method UserLink[]    findAll()
  * @method UserLink[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class UserLinkRepository extends ServiceEntityRepository
 {

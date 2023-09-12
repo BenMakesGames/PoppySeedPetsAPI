@@ -12,6 +12,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Dragon|null findOneBy(array $criteria, array $orderBy = null)
  * @method Dragon[]    findAll()
  * @method Dragon[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class DragonRepository extends ServiceEntityRepository
 {

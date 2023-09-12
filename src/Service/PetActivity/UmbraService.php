@@ -88,7 +88,7 @@ class UmbraService
 
         $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'The Umbra', ActivityHelpers::PetName($pet) . ' pushed through the Storm and entered the Umbra!');
 
-        if($this->calendarService->isLeonidPeakOrAdjacent() && $this->squirrel3->rngNextInt(1, 4) === 1)
+        if($this->calendarService->deprecatedIsLeonidPeakOrAdjacent() && $this->squirrel3->rngNextInt(1, 4) === 1)
         {
             $activityLog = $this->leonidsService->adventure($petWithSkills);
         }

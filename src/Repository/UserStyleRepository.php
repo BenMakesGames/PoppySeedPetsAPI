@@ -12,6 +12,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method UserStyle|null findOneBy(array $criteria, array $orderBy = null)
  * @method UserStyle[]    findAll()
  * @method UserStyle[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class UserStyleRepository extends ServiceEntityRepository
 {

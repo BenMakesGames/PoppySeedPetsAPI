@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Beehive|null findOneBy(array $criteria, array $orderBy = null)
  * @method Beehive[]    findAll()
  * @method Beehive[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class BeehiveRepository extends ServiceEntityRepository
 {

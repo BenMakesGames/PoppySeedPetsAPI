@@ -14,6 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method UserUnlockedFeature|null findOneBy(array $criteria, array $orderBy = null)
  * @method UserUnlockedFeature[]    findAll()
  * @method UserUnlockedFeature[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class UserUnlockedFeatureRepository extends ServiceEntityRepository
 {

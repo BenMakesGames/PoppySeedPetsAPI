@@ -26,11 +26,11 @@ class FloristService
         $inventory = [
             [
                 'item' => [ 'name' => $flowerbomb->getName(), 'image' => $flowerbomb->getImage() ],
-                'cost' => ($fullMoonName === 'Flower' || $this->calendarService->isAprilFools()) ? 75 : 150,
+                'cost' => ($fullMoonName === 'Flower' || $this->calendarService->deprecatedIsAprilFools()) ? 75 : 150,
             ]
         ];
 
-        if($this->calendarService->isAprilFools())
+        if($this->calendarService->deprecatedIsAprilFools())
         {
             $glitterBomb = $this->itemRepository->findOneByName('Glitter Bomb');
 
@@ -55,10 +55,10 @@ class FloristService
         }
 
         if(
-            $this->calendarService->isValentinesOrAdjacent() ||
-            $this->calendarService->isWhiteDay() ||
-            $this->calendarService->isEaster() ||
-            $this->calendarService->isHalloween()
+            $this->calendarService->deprecatedIsValentinesOrAdjacent() ||
+            $this->calendarService->deprecatedIsWhiteDay() ||
+            $this->calendarService->deprecatedIsEaster() ||
+            $this->calendarService->deprecatedIsHalloween()
         )
         {
             $chocolateBomb = $this->itemRepository->findOneByName('Chocolate Bomb');
@@ -70,8 +70,8 @@ class FloristService
         }
 
         if(
-            $this->calendarService->isValentinesOrAdjacent() ||
-            $this->calendarService->isWhiteDay()
+            $this->calendarService->deprecatedIsValentinesOrAdjacent() ||
+            $this->calendarService->deprecatedIsWhiteDay()
         )
         {
             $theLovelyHaberdashers = $this->itemRepository->findOneByName('Tile: Lovely Haberdashers');

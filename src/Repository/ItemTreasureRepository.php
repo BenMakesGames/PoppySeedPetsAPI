@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method ItemTreasure|null findOneBy(array $criteria, array $orderBy = null)
  * @method ItemTreasure[]    findAll()
  * @method ItemTreasure[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class ItemTreasureRepository extends ServiceEntityRepository
 {

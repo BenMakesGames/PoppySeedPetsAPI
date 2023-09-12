@@ -14,6 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method PetActivityLog|null findOneBy(array $criteria, array $orderBy = null)
  * @method PetActivityLog[]    findAll()
  * @method PetActivityLog[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @deprecated
  */
 class PetActivityLogRepository extends ServiceEntityRepository
 {

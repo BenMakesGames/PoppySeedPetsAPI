@@ -278,7 +278,7 @@ class PetExperienceService
         if($pet->getAffectionLevel() > $previousAffectionLevel && !$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Park))
             $this->userUnlockedFeatureRepository->create($pet->getOwner(), UnlockableFeatureEnum::Park);
 
-        if($this->calendarService->isValentinesOrAdjacent())
+        if($this->calendarService->deprecatedIsValentinesOrAdjacent())
             $this->maybeGivePlayerTwuWuv($pet);
     }
 
