@@ -63,7 +63,7 @@ class SummoningSomethingFriendlyController extends AbstractController
         {
             $pet = $petRepository->findOneBy(
                 [
-                    'owner' => $userRepository->findOneByEmail('the-wilds@poppyseedpets.com')
+                    'owner' => $userRepository->findOneBy([ 'email' => 'the-wilds@poppyseedpets.com' ])
                 ],
                 [ 'lastInteracted' => 'ASC' ]
             );

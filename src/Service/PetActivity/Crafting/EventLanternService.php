@@ -108,7 +108,7 @@ class EventLanternService
         if($roll < 15)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a seasonal lantern, but couldn\'t come up with a fitting design...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Special Event', $activityTag ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Special Event', $activityTag ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -122,7 +122,7 @@ class EventLanternService
             $this->houseSimService->getState()->loseOneOf([ 'Jar of Fireflies', 'Candle' ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a ' . $lanternName . ' out of a Crooked Fishing Rod!', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Special Event', $activityTag ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Special Event', $activityTag ]))
             ;
 
             $this->inventoryService->petCollectsItem($lanternName, $pet, $pet->getName() . ' created this.', $activityLog);

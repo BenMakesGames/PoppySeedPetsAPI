@@ -47,13 +47,12 @@ class TreasureMapService
     private IRandom $squirrel3;
     private ItemRepository $itemRepository;
     private HouseSimService $houseSimService;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
         EntityManagerInterface $em, PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
         StatusEffectService $statusEffectService, Squirrel3 $squirrel3, ItemRepository $itemRepository,
-        HouseSimService $houseSimService, PetActivityLogTagRepository $petActivityLogTagRepository
+        HouseSimService $houseSimService
     )
     {
         $this->responseService = $responseService;
@@ -66,7 +65,6 @@ class TreasureMapService
         $this->squirrel3 = $squirrel3;
         $this->itemRepository = $itemRepository;
         $this->houseSimService = $houseSimService;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function doCetguelisTreasureMap(ComputedPetSkills $petWithSkills)
@@ -79,7 +77,7 @@ class TreasureMapService
         if($followMapCheck < 14)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to follow Cetgueli\'s Treasure Map, but kept getting lost. (They\'re sure they\'re making progress, though!)', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering', 'Adventure!' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering', 'Adventure!' ]))
             ;
             $pet->increaseEsteem(-1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
@@ -91,7 +89,7 @@ class TreasureMapService
             $prize = 'Outrageously Strongbox';
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% followed Cetgueli\'s Treasure Map, and found a ' . $prize . '! (Also, the map was lost, because video games.)', 'items/map/cetgueli')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering', 'Adventure!' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering', 'Adventure!' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE ], $activityLog);
@@ -122,7 +120,7 @@ class TreasureMapService
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found that Thieving Magpie, and offered it a "Gold" Idol in exchange for something else. The magpie eagerly accepted.', 'items/treasure/magpie-deal')
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Adventure!' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Adventure!' ]))
         ;
 
         $this->em->remove($pet->getTool());
@@ -144,7 +142,7 @@ class TreasureMapService
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% allowed themselves to be carried off by the Winged Key, to Abundantia\'s Vault. Upon arriving, they had to wait in a long line for, like, 2 hours, during which time they filled out some exceptionally-tedious paperwork. At the end of it all, a tired-looking house fairy took the Winged Key, led %pet:' . $pet->getId() . '.name% through a door which somehow took them right back home, performed a blessing on the house (probably their 50th of the day, based on their level of enthusiasm), and left.', '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Adventure!' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Adventure!' ]))
         ;
 
         $this->em->remove($pet->getTool());
@@ -239,7 +237,7 @@ class TreasureMapService
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY + $floor)
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting', 'Adventure!' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting', 'Adventure!' ]))
             ->setChanges($changes->compare($pet))
         ;
 
@@ -254,7 +252,7 @@ class TreasureMapService
         if($pet->getTool()->isGrayscaling())
         {
             $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a Leprechaun approached them... but upon seeing %pet:' . $pet->getId() . '.name%\'s pale visage, fled screaming into the woods! (Oops!) %pet:' . $pet->getId() . '.name% put their ' . $pet->getTool()->getFullItemName() . ' down...', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fae-kind', 'Adventure!' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fae-kind', 'Adventure!' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
             EquipmentFunctions::unequipPet($pet);
@@ -266,7 +264,7 @@ class TreasureMapService
         ]));
 
         $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a Leprechaun approached them, and, without a word, exchanged %pet:' . $pet->getId() . '.name%\'s ' . $pet->getTool()->getFullItemName() . ' for ' . $loot->getNameWithArticle() . '!', '')
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fae-kind', 'Adventure!' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fae-kind', 'Adventure!' ]))
         ;
 
         $newInventory = $this->inventoryService->receiveItem($loot, $pet->getOwner(), $pet->getOwner(), 'Given to ' . $pet->getName() . ' by a Leprechaun.', LocationEnum::WARDROBE, $pet->getTool()->getLockedToOwner());
@@ -288,7 +286,7 @@ class TreasureMapService
 
         $activityLog = $this->responseService
             ->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, a weird, purple energy oozed out of their ' . InventoryModifierFunctions::getNameWithModifiers($pet->getTool()) . ', and enveloped them! (' . $agk . ' It\'s the Eggplant Curse!)', '')
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Adventure!' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Adventure!' ]))
         ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
@@ -332,7 +330,7 @@ class TreasureMapService
         }
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ], $activityLog);
-        $activityLog->addTags($this->petActivityLogTagRepository->findByNames($tags));
+        $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags));
         
         return $activityLog;
     }
@@ -342,7 +340,7 @@ class TreasureMapService
         if(!$pet->hasMerit(MeritEnum::PROTOCOL_7))
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% didn\'t understand what they were supposed to do with the ' . $pet->getTool()->getItem()->getName() . ', so put it down... (The Protocol-7 Merit is needed.)', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Project-E', 'Adventure!' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E', 'Adventure!' ]))
             ;
 
             EquipmentFunctions::unequipPet($pet);
@@ -361,7 +359,7 @@ class TreasureMapService
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found ' . $loot . ' in Project-E by using their Diffie-H Key.', '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Project-E', 'Adventure!' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E', 'Adventure!' ]))
         ;
         $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this in Project-E by using a Diffie-H Key.', $activityLog);
 
@@ -373,6 +371,8 @@ class TreasureMapService
 
     public function doFruitHunting(Pet $pet): PetActivityLog
     {
+        $changes = new PetChanges($pet);
+
         $this->em->remove($pet->getTool());
         $pet->setTool(null);
 
@@ -397,7 +397,7 @@ class TreasureMapService
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% followed a Fruit Fly on a String to ' . $location . ', and retrieved ' . ArrayFunctions::list_nice($loot) . ' after setting the fly free.', 'items/bug/fly-fruit')
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Adventure!' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Adventure!' ]))
         ;
 
         $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::BUGS_PUT_OUTSIDE);
@@ -408,6 +408,8 @@ class TreasureMapService
         $this->petExperienceService->gainExp($pet, 1, [ $skillTrained ], $activityLog);
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+
+        $activityLog->setChanges($changes->compare($pet));
 
         return $activityLog;
     }
@@ -507,7 +509,7 @@ class TreasureMapService
 
         $activityLog
             ->setChanges($changes->compare($pet))
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Adventure!' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Adventure!' ]))
         ;
 
         return $activityLog;

@@ -29,15 +29,13 @@ class PetExperienceService
     private CalendarService $calendarService;
     private UserQuestRepository $userQuestRepository;
     private ResponseService $responseService;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
     private HattierService $hattierService;
     private EntityManagerInterface $em;
 
     public function __construct(
         Squirrel3 $squirrel3, CalendarService $calendarService,
         InventoryService $inventoryService, UserStatsRepository $userStatsRepository, ResponseService $responseService,
-        UserQuestRepository $userQuestRepository, PetActivityLogTagRepository $petActivityLogTagRepository,
-        HattierService $hattierService, EntityManagerInterface $em
+        UserQuestRepository $userQuestRepository, HattierService $hattierService, EntityManagerInterface $em
     )
     {
         $this->squirrel3 = $squirrel3;
@@ -46,7 +44,6 @@ class PetExperienceService
         $this->calendarService = $calendarService;
         $this->userQuestRepository = $userQuestRepository;
         $this->responseService = $responseService;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->hattierService = $hattierService;
         $this->em = $em;
     }
@@ -291,7 +288,7 @@ class PetExperienceService
 
         $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave Twu Wuv to %user:' . $pet->getOwner()->getId() . '.Name% for Valentine\'s Day! (Two of them! Two Twu Wuvs!)', 'items/resource/twu-wuv')
             ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Special Event', 'Valentine\'s' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Special Event', 'Valentine\'s' ]))
         ;
 
         $alreadyReceived->setValue(true);

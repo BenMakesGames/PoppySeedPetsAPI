@@ -113,7 +113,7 @@ class ChocolateMansion
             $activityLog
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->setChanges($changes->compare($pet))
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Le Manoir de Chocolat', 'Adventure!' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Le Manoir de Chocolat', 'Adventure!' ]))
             ;
 
             $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Le Manoir de Chocolat', $this->getEntryDescription($pet));
@@ -200,7 +200,7 @@ class ChocolateMansion
         }
 
         $activityLog = $this->responseService->createActivityLog($pet, $description, '')
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
         ;
 
         foreach($loot as $item)
@@ -284,7 +284,7 @@ class ChocolateMansion
         }
 
         $activityLog = $this->responseService->createActivityLog($pet, $description, '')
-            ->addTags($this->petActivityLogTagRepository->findByNames($tags))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($tags))
             ->addInterestingness($extraInterestingness)
         ;
 
@@ -315,7 +315,7 @@ class ChocolateMansion
             $description .= 'They entered a large study, and searched the shelves for anything interesting. Most of the books just broke into chocolate, but they did find a usable ' . $book . '!';
 
             $activityLog = $this->responseService->createActivityLog($pet, $description, '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering', 'Stealth' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Gathering', 'Stealth' ]))
             ;
 
             $this->inventoryService->petCollectsItem($book, $pet, $pet->getName() . ' found this in the study of le Manoir de Chocolat.', $activityLog);
@@ -327,7 +327,7 @@ class ChocolateMansion
             $description .= 'They entered a large study, and searched the shelves for anything interesting, but every book they checked broke into pieces of chocolate!';
 
             $activityLog = $this->responseService->createActivityLog($pet, $description, '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering', 'Stealth' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Gathering', 'Stealth' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH ], $activityLog);
@@ -371,7 +371,7 @@ class ChocolateMansion
 
             $activityLog
                 ->setEntry($activityLog->getEntry() . ' ' . $chemistryDescription)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Physics' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Physics' ]))
             ;
 
             if($loot)
@@ -403,7 +403,7 @@ class ChocolateMansion
         }
 
         $activityLog = $this->responseService->createActivityLog($pet, $description, '')
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering', 'Stealth' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Gathering', 'Stealth' ]))
         ;
 
         $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this in the master bedroom of le Manoir de Chocolat.', $activityLog);
@@ -444,7 +444,7 @@ class ChocolateMansion
         }
 
         $activityLog = $this->responseService->createActivityLog($pet, $description, '')
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering', 'Stealth' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Gathering', 'Stealth' ]))
         ;
 
         $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this in the parlor of le Manoir de Chocolat.', $activityLog);
@@ -561,7 +561,7 @@ class ChocolateMansion
         }
 
         $activityLog = $this->responseService->createActivityLog($pet, $description, '')
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering', 'Stealth' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Gathering', 'Stealth' ]))
         ;
 
         $this->inventoryService->petCollectsItem($loot, $pet, $comment, $activityLog);
@@ -645,7 +645,7 @@ class ChocolateMansion
             $activityLog = $this->responseService->createActivityLog($pet, $description, '');
         }
 
-        $activityLog->addTags($this->petActivityLogTagRepository->findByNames($tags));
+        $activityLog->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($tags));
 
         if($usedMerit)
             $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT);
@@ -682,7 +682,7 @@ class ChocolateMansion
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
 
             $activityLog = $this->responseService->createActivityLog($pet, $description, '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Gathering' ]))
             ;
             $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
 
@@ -700,7 +700,7 @@ class ChocolateMansion
             $description .= 'they kicked up a pile of finely-ground ' . $loot->getName() . '. They came home covered in the stuff, and shook it off in the kitchen. It\'s... probably still good?';
 
             $activityLog = $this->responseService->createActivityLog($pet, $description, '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Gathering' ]))
             ;
 
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' got dusted with this while exploring the front patio of le Manoir de Chocolat.', $activityLog);
@@ -729,7 +729,7 @@ class ChocolateMansion
                 ]);
 
                 $activityLog = $this->responseService->createActivityLog($pet, $description, '')
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
                 ;
 
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' broke this off of a Chocolate Mastiff at le Manoir de Chocolat.', $activityLog);
@@ -741,7 +741,7 @@ class ChocolateMansion
                 $description .= 'a Chocolate Mastiff spotted them and gave chase! %pet:' . $pet->getId() . '.name% was forced to flee!';
 
                 $activityLog = $this->responseService->createActivityLog($pet, $description, '')
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);

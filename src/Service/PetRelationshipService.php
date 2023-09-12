@@ -266,7 +266,7 @@ class PetRelationshipService
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
-            ->addTags($this->petActivityLogTagRepository->findByNames($groupTags))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($groupTags))
             ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Group Hangout' ]))
         ;
 
@@ -281,7 +281,7 @@ class PetRelationshipService
 
         $otherActivityPet
             ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
-            ->addTags($this->petActivityLogTagRepository->findByNames($groupTags))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($groupTags))
             ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Group Hangout' ]))
         ;
 
@@ -371,14 +371,14 @@ class PetRelationshipService
         if($p1Description)
         {
             $this->responseService->createActivityLog($p1->getPet(), $p1Description, $icon)
-                ->addTags($this->petActivityLogTagRepository->findByNames($groupTags))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($groupTags))
                 ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Group Hangout' ]))
             ;
         }
         if($p2Description)
         {
             $this->responseService->createActivityLog($p2->getPet(), $p2Description, $icon)
-                ->addTags($this->petActivityLogTagRepository->findByNames($groupTags))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($groupTags))
                 ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Group Hangout' ]))
             ;
         }
@@ -626,7 +626,7 @@ class PetRelationshipService
             ->setPet($pet)
             ->setEntry($message)
             ->setIcon('icons/activity-logs/friend')
-            ->addTags($this->petActivityLogTagRepository->findByNames($extraTags))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($extraTags))
         ;
 
         $this->em->persist($p1Log);
@@ -635,7 +635,7 @@ class PetRelationshipService
             ->setPet($friend)
             ->setEntry($message)
             ->setIcon('icons/activity-logs/friend')
-            ->addTags($this->petActivityLogTagRepository->findByNames($extraTags))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($extraTags))
         ;
 
         $this->em->persist($p2Log);

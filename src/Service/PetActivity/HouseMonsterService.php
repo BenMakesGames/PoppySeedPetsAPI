@@ -219,7 +219,7 @@ class HouseMonsterService
                 ->setPet($pet)
                 ->setEntry($result)
                 ->setViewed()
-                ->addTags($this->petActivityLogTagRepository->findByNames($tags))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($tags))
             ;
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(5, 15), PetActivityStatEnum::HUNT, $won);

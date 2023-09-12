@@ -4,17 +4,17 @@ namespace App\Functions;
 
 use App\Entity\User;
 use App\Entity\UserActivityLog;
-use App\Entity\UserActivityLogTag;
+use App\Repository\UserActivityLogTagRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
-class PlayerLogHelpers
+final class PlayerLogHelpers
 {
     /**
      * @param string[] $tagNames
      */
     public static function Create(EntityManagerInterface $em, User $user, string $entry, array $tagNames): UserActivityLog
     {
-        $tags = $em->getRepository(UserActivityLogTag::class)->findByNames($tagNames);
+        $tags = UserActivityLogTagRepository::findByNames($em, $tagNames);
 
         $log = (new UserActivityLog())
             ->setUser($user)

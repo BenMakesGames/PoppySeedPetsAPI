@@ -57,7 +57,7 @@ class GatheringDistractionService
 
         $activityLog = $this->responseService->createActivityLog($pet, $description, '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Gathering' ]))
         ;
 
         $this->petExperienceService->gainExp($pet, 1, $distraction['skills'], $activityLog);

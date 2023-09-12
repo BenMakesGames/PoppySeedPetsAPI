@@ -455,8 +455,8 @@ class RelationshipChangeService
             $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
         }
 
-        $p1Log->addTags($this->petActivityLogTagRepository->findByNames($tags));
-        $p2Log->addTags($this->petActivityLogTagRepository->findByNames($tags));
+        $p1Log->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($tags));
+        $p2Log->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($tags));
 
         return [ $p1Log, $p2Log ];
     }
@@ -609,8 +609,8 @@ class RelationshipChangeService
             $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
         }
 
-        $p1Log->addTags($this->petActivityLogTagRepository->findByNames($tags));
-        $p2Log->addTags($this->petActivityLogTagRepository->findByNames($tags));
+        $p1Log->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($tags));
+        $p2Log->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($tags));
 
         return [ $p1Log, $p2Log ];
     }

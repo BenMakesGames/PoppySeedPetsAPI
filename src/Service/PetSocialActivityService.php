@@ -536,7 +536,7 @@ class PetSocialActivityService
 
         $activityLog = $this->responseService->createActivityLog($pet, $message, 'companions/' . $companion->getImage(), $changes->compare($pet))
             ->addInterestingness($activityInterestingness)
-            ->addTags($this->petActivityLogTagRepository->findByNames($activityTags))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($activityTags))
         ;
 
         if($teachingStat)

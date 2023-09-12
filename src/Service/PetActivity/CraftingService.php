@@ -414,7 +414,7 @@ class CraftingService
             $pet->increaseEsteem(2);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Stereotypical Torch.', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -425,7 +425,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Stereotypical Torch, but couldn\'t figure it out.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -446,7 +446,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Trowel', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Tea Trowel.', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Tea Trowel', $pet, $pet->getName() . ' made this.', $activityLog);
 
@@ -456,7 +456,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Tea Trowel... or was it a Tea _Towel?_ It\'s all very confusing.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -478,7 +478,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Yellow Dye', 1);
             $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created an Owl Trowel.', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Owl Trowel', $pet, $pet->getName() . ' made this.', $activityLog);
 
@@ -488,7 +488,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make an Owl Trowel, but couldn\'t figure it out.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -512,7 +512,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Fiberglass', 1);
             $pet->increaseSafety(-4);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a ' . $item . ', but accidentally cut themselves on the Fiberglass! :(', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -526,7 +526,7 @@ class CraftingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a ' . $item . ' from Fiberglass.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from Fiberglass.', $activityLog);
 
@@ -536,7 +536,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a ' . $item . ', but the Fiberglass wasn\'t cooperating.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -556,7 +556,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('White Cloth', 1);
             $pet->increaseEsteem(-2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried decorate a Flute, but while trying to make ribbons, accidentally tore the White Cloth to shreds...', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -570,7 +570,7 @@ class CraftingService
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Decorated Flute.', 'items/tool/instrument/flute-decorated')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Decorated Flute', $pet, $pet->getName() . ' created this by tying a Glass Pendulum to a Flute.', $activityLog);
 
@@ -580,7 +580,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% thought it might be cool to decorate a Flute, but couldn\'t think of something stylish enough.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -600,7 +600,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Smallish Pumpkin', 1);
             $pet->increaseFood(6);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Drumpkin, but broke the Smallish Pumpkin :( Not wanting to waste it, %pet:' . $pet->getId() . '.name% ate the remains...)', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Smithing', 'Eating' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Smithing', 'Eating' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -614,7 +614,7 @@ class CraftingService
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Drumpkin!', 'items/tool/instrument/drumpkin')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Smithing' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Smithing' ]))
             ;
             $this->inventoryService->petCollectsItem('Drumpkin', $pet, $pet->getName() . ' created this!', $activityLog);
 
@@ -624,7 +624,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Drumpkin, but couldn\'t get the Plastic thin enough...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Smithing' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Smithing' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -644,7 +644,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Potato', 1);
             $pet->increaseFood(4);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make Paper, but messed up the Potato :( (Not wanting to waste it, %pet:' . $pet->getId() . '.name% ate the remains...)', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Eating' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Eating' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -662,7 +662,7 @@ class CraftingService
             $pet->increaseEsteem($paperCount * 2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created ' . $paperCount . ' Paper!', 'items/resource/paper')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 5 + $paperCount * 5)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             for($i = 0; $i < $paperCount; $i++)
@@ -674,7 +674,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make Paper, but almost wasted the Rice Flour...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -695,7 +695,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Hunting Spear', 1);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Decorated Spear.', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Decorated Spear', $pet, $pet->getName() . ' decorated a Hunting Spear with Feathers to make this.', $activityLog);
 
@@ -705,7 +705,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to decorate a Hunting Spear with Feathers, but couldn\'t get the look just right.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -726,7 +726,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('White Feathers', 1);
             $pet->increaseEsteem(4);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Fishing Recorder.', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             if($this->squirrel3->rngNextInt(1, 5) === 1)
@@ -740,7 +740,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make a Fishing Recorder, but couldn\'t figure out where all the holes should go...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::MUSIC ], $activityLog);
@@ -772,7 +772,7 @@ class CraftingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Double Scythe; ' . $and, 'items/tool/scythe/double')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Double Scythe', $pet, $pet->getName() . ' created this by taking the blade from one Scythe and attaching it to another.', $activityLog);
@@ -784,7 +784,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% thought it might be cool to make a Double Scythe, but then doubted themself...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -806,7 +806,7 @@ class CraftingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Fish Head Shovel!', 'items/tool/shovel/fish-head')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Fish Head Shovel', $pet, $pet->getName() . ' created this by adorning a Garden Shovel with some Fish Bones.', $activityLog);
@@ -819,13 +819,13 @@ class CraftingService
             if($this->squirrel3->rngNextInt(1, 10) === 1)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make a Fish Head Shovel, but couldn\'t figure out how to arrange the bones #relatable', 'icons/activity-logs/confused')
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
                 ;
             }
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make a Fish Head Shovel, but couldn\'t figure out how to arrange the bones...', 'icons/activity-logs/confused')
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
                 ;
             }
 
@@ -848,7 +848,7 @@ class CraftingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Farmer\'s Multi-tool!', 'items/tool/shovel/multi-tool')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Farmer\'s Multi-tool', $pet, $pet->getName() . ' created this by combining the best parts of a Scythe and a Garden Shovel.', $activityLog);
@@ -860,7 +860,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to combine a Scythe and a Garden Shovel, but couldn\'t decide which of the two tools to start with?', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -893,7 +893,7 @@ class CraftingService
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% spun some ' . $spunWhat . ' into TWO ' . $making->getName() . '!', 'items/' . $making->getImage())
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $difficulty + 12)
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
                 ;
 
                 $this->inventoryService->petCollectsItem($making, $pet, $pet->getName() . ' spun this from ' . $spunWhat . '.', $activityLog);
@@ -907,7 +907,7 @@ class CraftingService
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% spun some ' . $spunWhat . ' into ' . $making->getName() . '.', 'items/' . $making->getImage())
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $difficulty)
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -919,7 +919,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to spin some ' . $making->getName() . ', but couldn\'t figure it out.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -956,7 +956,7 @@ class CraftingService
             $pet->increaseEsteem(-2);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started making ' . $making->getNameWithArticle() . ', but ended up eating the Chocolate Bar, instead >_>', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Eating' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Eating' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -975,7 +975,7 @@ class CraftingService
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% molded a Chocolate Bar into TWO ' . $making->getName() . 's!', 'items/' . $making->getImage())
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
                 ;
 
                 $this->inventoryService->petCollectsItem($making, $pet, $pet->getName() . ' made this out of a Chocolate Bar.', $activityLog);
@@ -986,7 +986,7 @@ class CraftingService
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% molded a Chocolate Bar into ' . $making->getNameWithArticle() . '.', 'items/' . $making->getImage())
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -997,7 +997,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make ' . $making->getNameWithArticle() . ', but couldn\'t get the mold right...', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1022,7 +1022,7 @@ class CraftingService
                 $message .= ' (Aren\'t the leaves themselves green? Where are all these colors coming from?!)';
 
             $activityLog = $this->responseService->createActivityLog($pet, $message, '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Black Tea', $pet, $pet->getName() . ' accidentally made this while trying to extract Yellow Dye from Tea Leaves.', $activityLog);
 
@@ -1035,7 +1035,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Tea Leaves', 1);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% extracted Yellow Dye from some Tea Leaves.', 'items/resource/dye-yellow')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Yellow Dye', $pet, $pet->getName() . ' extracted this from Tea Leaves.', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::CRAFTS ], $activityLog);
@@ -1043,7 +1043,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to extract Yellow Dye from some Tea Leaves, but wasn\'t sure how to start.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::CRAFTS ], $activityLog);
@@ -1064,7 +1064,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Scales');
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% extracted Green Dye _and_ Glue from some Scales!', 'items/animal/scales')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Green Dye', $pet, $pet->getName() . ' extracted this from Scales.', $activityLog);
             $this->inventoryService->petCollectsItem('Glue', $pet, $pet->getName() . ' extracted this from Scales.', $activityLog);
@@ -1077,7 +1077,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Scales');
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% extracted ' . $itemName . ' from some Scales.', 'items/animal/scales')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' extracted this from Scales.', $activityLog);
 
@@ -1087,7 +1087,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to extract ' . $itemName . ' from some Scales, but wasn\'t sure how to start.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::CRAFTS ], $activityLog);
@@ -1126,14 +1126,14 @@ class CraftingService
                 ]);
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Fabric Mâché Basket. Once they were done, a fairy appeared out of nowhere, and filled the basket up with ' . $transformation['goodies'] . '!', '')
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Fae-kind' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Fae-kind' ]))
                 ;
                 $this->inventoryService->petCollectsItem($transformation['item'], $pet, $pet->getName() . ' created a Fabric Mâché Basket; once they were done, a fairy appeared and filled it with ' . $transformation['goodies'] . '!', $activityLog);
             }
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a ' . $item . '.', '')
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
                 ;
                 $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from White Cloth and Glue.', $activityLog);
             }
@@ -1143,7 +1143,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make some Fabric Mâché, but couldn\'t come up with a good pattern.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1168,7 +1168,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Glue', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Gold Trifecta.', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Gold Trifecta', $pet, $pet->getName() . ' created by gluing together three Gold Triangles.', $activityLog);
 
@@ -1180,7 +1180,7 @@ class CraftingService
         else
         {
             $activityLog =  $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make a Gold Trifecta, but wasn\'t sure how to begin...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1200,7 +1200,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Ruler', 1);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make an L-Square, but accidentally snapped one of the Rulers in two! :|', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
         }
@@ -1211,7 +1211,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Glue', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created an L-Square.', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('L-Square', $pet, $pet->getName() . ' created by gluing together a couple Rulers.', $activityLog);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1219,7 +1219,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make an L-Square, but spent forever trying to make it _exactly_ 90 degrees, and eventually gave up...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1245,7 +1245,7 @@ class CraftingService
                 ->increaseSafety(2)
             ;
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% cracked themselves up by creating a Cooking "Alien".', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Cooking "Alien"', $pet, $pet->getName() . ' created by gluing some Antennae on a Cooking Buddy.', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1253,7 +1253,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to do something silly to a Cooking Buddy, but couldn\'t decide what...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1276,7 +1276,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Antenna', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% put together an "Alien" Camera!', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('"Alien" Camera', $pet, $pet->getName() . ' created by gluing some Antennae to a Painted Camera.', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1284,7 +1284,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to do something silly to a Painted Camera, but couldn\'t decide what...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1307,7 +1307,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Antenna', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% turned a boring ol\' Fiberglass Bow into a Bug Bow!', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Bug Bow', $pet, $pet->getName() . ' created this out of a Fiberglass Bow and some bug bits.', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ], $activityLog);
@@ -1315,7 +1315,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started making a Bug Bow, but kept getting stuck to the Cobweb.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ], $activityLog);
@@ -1340,7 +1340,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Antenna', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% spun a Proboscis from Alien Tissue and Antenna, and there was still plenty of Alien Tissue left over!', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Proboscis', $pet, $pet->getName() . ' created this out of Alien Tissue and some bug bits.', $activityLog);
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1352,7 +1352,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Antenna', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% spun a Proboscis from Alien Tissue and Antenna!', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Proboscis', $pet, $pet->getName() . ' created this out of Alien Tissue and some bug bits.', $activityLog);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1360,7 +1360,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Proboscis, but had trouble spinning the Alien Tissue.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1380,7 +1380,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('White Cloth', 1);
             $pet->increaseEsteem(-2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make a Fiberglass Pan Flute, but while making ribbons, accidentally tore the White Cloth to shreds...', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1396,7 +1396,7 @@ class CraftingService
 
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Fiberglass Pan Flute.', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Fiberglass Pan Flute', $pet, $pet->getName() . ' created this by hacking a Fiberglass Flute into several pieces, and gluing them together with a ribbon of cloth.', $activityLog);
 
@@ -1405,7 +1405,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make a Fiberglass Pan Flute, but didn\'t feel confident about cutting the Fiberglass Flute in half.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1425,7 +1425,7 @@ class CraftingService
             $pet->increaseSafety(-4);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to cut a piece of glass, but cut themselves, instead! :(', 'icons/activity-logs/wounded')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1439,7 +1439,7 @@ class CraftingService
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% cut some Glass to look like a gem, and made a Glass Pendulum.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Glass Pendulum', $pet, $pet->getName() . ' created this.', $activityLog);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1448,7 +1448,7 @@ class CraftingService
         {
             $pet->increaseSafety(-1);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Glass Pendulum, but almost cut themselves on the glass, and gave up.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1468,7 +1468,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Naner', 1);
             $pet->increaseFood(4);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a bow out of a Naner, but was feeling hungry, so... they ate the Naner.', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Eating' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Eating' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1481,7 +1481,7 @@ class CraftingService
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a makeshift bow... out of a Naner.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 11)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Bownaner', $pet, $pet->getName() . ' created this.', $activityLog);
 
@@ -1491,7 +1491,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Bownaner, but the String kept getting all tangled.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1513,7 +1513,7 @@ class CraftingService
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% sculpted some Gypsum into the shape of a dragon!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Gypsum Dragon', $pet, $pet->getName() . ' created this.', $activityLog);
 
@@ -1523,7 +1523,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to sculpt some Gypsum, but had trouble getting it to cooperate...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1544,7 +1544,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Carrot', 1);
             $pet->increaseFood(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make an Eat Your Fruits And Veggies, but was feeling hungry, so... they ate the Carrot.', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Eating' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Eating' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1561,7 +1561,7 @@ class CraftingService
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made an Eat Your Fruits and Veggies, and even had enough Carrot left over to make a Carrot Key!', '')
                     ->addInterestingness($weather->isHoliday(HolidayEnum::EASTER) ? PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT : (PetActivityLogInterestingnessEnum::HO_HUM + 22))
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Special Event', 'Easter' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Special Event', 'Easter' ]))
                 ;
 
                 $this->inventoryService->petCollectsItem('Carrot Key', $pet, $pet->getName() . ' made this.', $activityLog);
@@ -1570,7 +1570,7 @@ class CraftingService
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% loaded a Bownaner with a Carrot...', '')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
                 ;
             }
 
@@ -1581,7 +1581,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to load a Bownaner with a Carrot, but the String kept getting all tangled.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1610,7 +1610,7 @@ class CraftingService
 
             $activityLog = $this->responseService->createActivityLog($pet, $message, '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Leaf Spear', $pet, $pet->getName() . ' created this.', $activityLog);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1619,7 +1619,7 @@ class CraftingService
         {
             $pet->increaseSafety(-1);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Leaf Spear, but the Really Big Leaf is surprisingly strong! ' . $pet->getName() . ' couldn\'t get it to roll up...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1643,7 +1643,7 @@ class CraftingService
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created Benjamin Franklin. (A kite, not the person.)', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Physics' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Physics' ]))
             ;
             $this->inventoryService->petCollectsItem('Benjamin Franklin', $pet, $pet->getName() . ' created this.', $activityLog);
 
@@ -1652,7 +1652,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a kite, but couldn\'t come up with a good design...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Physics' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Physics' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ], $activityLog);
@@ -1672,7 +1672,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('String', 1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a Short-range Telephone, but accidentally broke the String! :(', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1694,7 +1694,7 @@ class CraftingService
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Short-range Telephone, and was even able to squeeze the Yellow Dye out of the Small, Yellow Plastic Bucket they used.' . $extra, '')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
                 ;
 
                 $this->inventoryService->petCollectsItem('Yellow Dye', $pet, $pet->getName() . ' recovered this from a Small, Yellow Plastic Bucket while making a Short-range Telephone', $activityLog);
@@ -1703,7 +1703,7 @@ class CraftingService
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Short-range Telephone. They tried to extract the Yellow Dye from the Small, Yellow Plastic Bucket they used, but wasn\'t able to recover a useful amount of it.', '')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
                 ;
             }
 
@@ -1714,7 +1714,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a bow out of an L-Square, but, ironically, couldn\'t get the measurements right.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1734,7 +1734,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('String', 1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a Crow\'s Eye, but accidentally broke the String they were trying to use! :(', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1750,7 +1750,7 @@ class CraftingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Crow\'s Eye... with Roadkill?!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $roadkill = $this->spiceRepository->findOneByName('with Roadkill');
@@ -1762,7 +1762,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Crow\'s Eye, but felt they were missing a certain... je ne sais quoi.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1786,7 +1786,7 @@ class CraftingService
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created Ribbely\'s Composite.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Ribbely\'s Composite', $pet, $pet->getName() . ' created this.', $activityLog);
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1794,7 +1794,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a bow out of an L-Square, but, ironically, couldn\'t get the measurements right.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1818,7 +1818,7 @@ class CraftingService
             $pet->increaseEsteem(5);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made an Afternoon Hat by shaping some White Cloth, and tying a Ruby Feather to it!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Afternoon Hat', $pet, $pet->getName() . ' created this!', $activityLog);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1826,7 +1826,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make a hat, but couldn\'t come up with a good design...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1849,7 +1849,7 @@ class CraftingService
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created an Ornate Pan Flute.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Ornate Pan Flute', $pet, $pet->getName() . ' created this.', $activityLog);
 
@@ -1859,7 +1859,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to decorate a Fiberglass Pan Flute, but couldn\'t come up with a good design.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::MUSIC ], $activityLog);
@@ -1879,7 +1879,7 @@ class CraftingService
             $pet->increaseEsteem(-2);
             $pet->increaseSafety(-4);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to craft Snakebite, but cut themself on a Talon!', 'icons/activity-logs/wounded')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1893,7 +1893,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Wooden Sword', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Snakebite sword.', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Snakebite', $pet, $pet->getName() . ' made this by improving a Wooden Sword.', $activityLog);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1901,7 +1901,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to improve a Wooden Sword into Snakebite, but failed.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1920,7 +1920,7 @@ class CraftingService
         if($umbraCheck < 15)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Decorated Spear, but couldn\'t get an enchantment to stick.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Magic-binding' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ], $activityLog);
@@ -1936,7 +1936,7 @@ class CraftingService
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a Decorated Spear to be ' . $veilPiercer->getNameWithArticle() . '.', 'items/' . $veilPiercer->getImage())
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Magic-binding' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Magic-binding' ]))
             ;
             $this->inventoryService->petCollectsItem($veilPiercer, $pet, $pet->getName() . ' made this by enchanting a Decorated Spear.', $activityLog);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ], $activityLog);
@@ -1953,7 +1953,7 @@ class CraftingService
         if($craftsCheck < 15)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried decorate a Decorated Spear _even more_, but couldn\'t get the pattern just right...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -1967,7 +1967,7 @@ class CraftingService
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% further decorated a Decorated Spear; now it\'s a Nagatooth!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Nagatooth', $pet, $pet->getName() . ' made this by further decorating a Decorated Spear.', $activityLog);
 
@@ -1985,7 +1985,7 @@ class CraftingService
         if($craftsCheck < 20)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make a Lassoscope, but couldn\'t successfully lasso a Gold Telescope...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2007,7 +2007,7 @@ class CraftingService
 
             $activityLog = $this->responseService->createActivityLog($pet, $activityLogMessage, '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $itemComment = $safelyExamineLions
@@ -2032,7 +2032,7 @@ class CraftingService
         if($craftsCheck < 14)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Carrot lure for a Crooked Fishing Rod, but couldn\'t figure out how best to go about it...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2048,7 +2048,7 @@ class CraftingService
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Carotene Stick, and even had enough Carrot left over to make a Carrot Key!', '')
                     ->addInterestingness($weather->isHoliday(HolidayEnum::EASTER) ? PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT : (PetActivityLogInterestingnessEnum::HO_HUM + 25))
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Special Event', 'Easter' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Special Event', 'Easter' ]))
                 ;
 
                 $this->inventoryService->petCollectsItem('Carrot Key', $pet, $pet->getName() . ' made this.', $activityLog);
@@ -2057,7 +2057,7 @@ class CraftingService
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Carrot Lure for a Crooked Fishing Rod; now it\'s a Carotene Stick!', '')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
                 ;
             }
 
@@ -2079,7 +2079,7 @@ class CraftingService
         $this->houseSimService->getState()->loseItem('Green Dye', 1);
         $pet->increaseEsteem(1);
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Painted Fishing Rod.', '')
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Painting' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Painting' ]))
         ;
         $this->inventoryService->petCollectsItem('Painted Fishing Rod', $pet, $pet->getName() . ' painted this, using Yellow and Green Dye.', $activityLog);
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2095,7 +2095,7 @@ class CraftingService
         $this->houseSimService->getState()->loseItem('Quinacridone Magenta Dye', 1);
         $pet->increaseEsteem(3);
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Painted Boomerang.', '')
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Painting' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Painting' ]))
         ;
         $this->inventoryService->petCollectsItem('Painted Boomerang', $pet, $pet->getName() . ' painted this, using Quinacridone Magenta Dye.', $activityLog);
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2111,7 +2111,7 @@ class CraftingService
         $this->houseSimService->getState()->loseItem('Yellow Dye', 1);
         $pet->increaseEsteem(1);
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a "Gold" Idol.', '')
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Painting' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Painting' ]))
         ;
         $this->inventoryService->petCollectsItem('"Gold" Idol', $pet, $pet->getName() . ' painted this, using Yellow Dye.', $activityLog);
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2127,7 +2127,7 @@ class CraftingService
         $this->houseSimService->getState()->loseItem('Yellow Dye', 1);
         $pet->increaseEsteem(1);
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% dunked a Small Plastic Bucket into some Yellow Dye.', '')
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Painting' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Painting' ]))
         ;
         $this->inventoryService->petCollectsItem('Small, Yellow Plastic Bucket', $pet, $pet->getName() . ' "painted" this, using Yellow Dye.', $activityLog);
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2148,7 +2148,7 @@ class CraftingService
         else
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% painted emojis on a Dumbbell.', '');
 
-        $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Painting' ]));
+        $activityLog->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Painting' ]));
 
         $this->inventoryService->petCollectsItem('Painted Dumbbell', $pet, $pet->getName() . ' painted this, using Yellow Dye.', $activityLog);
 
@@ -2168,7 +2168,7 @@ class CraftingService
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% painted a face on a Digital Camera!', '');
 
-        $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Painting' ]));
+        $activityLog->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Painting' ]));
 
         $this->inventoryService->petCollectsItem('Painted Camera', $pet, $pet->getName() . ' painted this, using Yellow Dye.', $activityLog);
 
@@ -2189,7 +2189,7 @@ class CraftingService
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% repaired a Rusty Blunderbuss. It\'s WAY less rusty now!', 'items/tool/gun/blunderbuss')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Smithing' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Smithing' ]))
             ;
             $this->inventoryService->petCollectsItem('Blunderbuss', $pet, $pet->getName() . ' repaired this Rusty Blunderbuss.', $activityLog);
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2197,7 +2197,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% spent a while trying to repair a Rusty Blunderbuss, but wasn\'t able to make any progress.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Smithing' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Smithing' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2219,7 +2219,7 @@ class CraftingService
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% repaired a Rusty Rapier. It\'s WAY less rusty now!', 'items/tool/sword/rapier')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Smithing' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Smithing' ]))
             ;
             $this->inventoryService->petCollectsItem('Rapier', $pet, $pet->getName() . ' repaired this Rapier.', $activityLog);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ], $activityLog);
@@ -2228,7 +2228,7 @@ class CraftingService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::CRAFT, false);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% spent a while trying to repair a Rusty Rapier, but wasn\'t able to make any progress.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Smithing' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Smithing' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ], $activityLog);
         }
@@ -2252,7 +2252,7 @@ class CraftingService
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% repaired a Rusted, Busted Mechanism; it\'s now a fully-functional ' . $loot . '!', 'items/old-mechanism/busted')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Physics' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Physics' ]))
             ;
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' repaired this.', $activityLog);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ], $activityLog);
@@ -2260,7 +2260,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% spent a while trying to repair a Rusted, Busted Mechanism, but wasn\'t able to make any progress.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Physics' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Physics' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ], $activityLog);
@@ -2282,7 +2282,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Laser Pointer', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Laser-guided Sword.', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Electronics' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Electronics' ]))
             ;
 
             if($this->squirrel3->rngNextInt(1, 4) === 1)
@@ -2296,7 +2296,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to improve an Iron Sword, but wasn\'t sure how to begin...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Electronics' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Electronics' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ], $activityLog);
@@ -2330,7 +2330,7 @@ class CraftingService
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% dyed ' . $makingItem->getNameWithArticle() . '.', 'items/' . $makingItem->getImage())
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Painting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Painting' ]))
             ;
             $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' dyed this flag.', $activityLog);
 
@@ -2340,7 +2340,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to dye a flag, but couldn\'t come up with a good design.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Painting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Painting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2362,7 +2362,7 @@ class CraftingService
             $pet->increaseSafety($this->squirrel3->rngNextInt(2, 4));
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Sun-sun Flag!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Sun-sun Flag', $pet, $pet->getName() . ' made this.', $activityLog);
 
@@ -2372,7 +2372,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make a Sun Flag even sunnier, but wasn\'t sure how...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2394,7 +2394,7 @@ class CraftingService
             $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Sun-sun Flag-flag, Son!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Sun-sun Flag-flag, Son', $pet, $pet->getName() . ' made this.', $activityLog);
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2402,7 +2402,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to combine two Sun-sun Flags, but couldn\'t figure it out...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2426,7 +2426,7 @@ class CraftingService
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Pale Flail!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Pale Flail', $pet, $pet->getName() . ' made this.', $activityLog);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2434,7 +2434,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make a flail, but had trouble shaping the Plastic Fishing Rod.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2458,7 +2458,7 @@ class CraftingService
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% used their Eidetic Memory to perfectly knot _two_ Bindles!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Bindle', $pet, $pet->getName() . ' made this, thanks to their Eidetic Memory.', $activityLog);
             $this->inventoryService->petCollectsItem('Bindle', $pet, $pet->getName() . ' made this, thanks to their Eidetic Memory.', $activityLog);
@@ -2473,7 +2473,7 @@ class CraftingService
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Bindle by tying a White Flag to a stick.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Bindle', $pet, $pet->getName() . ' made this.', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2481,7 +2481,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to tie a Bindle, but couldn\'t remember their knots...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2504,7 +2504,7 @@ class CraftingService
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% used their Eidetic Memory to perfectly knot _two_ Bindles!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Bindle', $pet, $pet->getName() . ' made this, thanks to their Eidetic Memory.', $activityLog);
             $this->inventoryService->petCollectsItem('Bindle', $pet, $pet->getName() . ' made this, thanks to their Eidetic Memory.', $activityLog);
@@ -2518,7 +2518,7 @@ class CraftingService
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Bindle by tying a White Flag to a Crooked Fishing Rod.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Bindle', $pet, $pet->getName() . ' made this.', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2526,7 +2526,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to tie a Bindle, but couldn\'t remember their knots...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2551,7 +2551,7 @@ class CraftingService
 
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Peacock Plushy stuffed with ' . $stuffing . '!', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Peacock Plushy', $pet, $pet->getName() . ' created this.', $activityLog);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2559,7 +2559,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a plushy, but couldn\'t come up with a good pattern...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2582,7 +2582,7 @@ class CraftingService
 
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Grabby Arm!', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Grabby Arm', $pet, $pet->getName() . ' created this.', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2590,7 +2590,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a grabby arm, but couldn\'t get it to grab...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2613,7 +2613,7 @@ class CraftingService
 
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% simply tied a Gold Telescope to a Blue Balloon! Easy!', '')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Spy Balloon', $pet, $pet->getName() . ' created this.', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -2621,7 +2621,7 @@ class CraftingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to tie a Gold Telescope to a Blue Balloon, but their knot kept coming loose...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);

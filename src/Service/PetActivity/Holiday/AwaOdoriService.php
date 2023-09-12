@@ -89,7 +89,7 @@ class AwaOdoriService
             ->getQuery()
             ->execute();
 
-        $awaOdoriTag = $this->petActivityLogTagRepository->findByNames([ 'Awa Odori' ]);
+        $awaOdoriTag = $this->petActivityLogTagRepository->deprecatedFindByNames([ 'Awa Odori' ]);
 
         $petNames = [ '%pet:' . $pet->getId() . '.name%' ];
 

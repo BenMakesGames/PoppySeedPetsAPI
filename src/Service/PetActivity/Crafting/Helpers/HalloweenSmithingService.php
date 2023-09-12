@@ -70,7 +70,7 @@ class HalloweenSmithingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% applied heat to ' . $itemUsedItem->getNameWithArticle() . ', and shaped it into ' . $makes->getNameWithArticle() . '!', 'items/' . $makes->getImage())
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Smithing', 'Special Event', 'Halloween' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Smithing', 'Special Event', 'Halloween' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -80,7 +80,7 @@ class HalloweenSmithingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to shape a bucket into ' . $makes->getNameWithArticle() . ', but couldn\'t get the heat just right.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Crafting', 'Smithing', 'Special Event', 'Halloween' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Smithing', 'Special Event', 'Halloween' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\PetActivityLogTag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -11,7 +12,6 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method PetActivityLogTag|null findOneBy(array $criteria, array $orderBy = null)
  * @method PetActivityLogTag[]    findAll()
  * @method PetActivityLogTag[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- * @deprecated
  */
 class PetActivityLogTagRepository extends ServiceEntityRepository
 {
@@ -23,9 +23,15 @@ class PetActivityLogTagRepository extends ServiceEntityRepository
     /**
      * @param string[] $names
      * @return PetActivityLogTag[]
+     * @deprecated
      */
-    public function findByNames(array $names): array
+    public function deprecatedFindByNames(array $names): array
     {
         return $this->findBy([ 'title' => $names ]);
+    }
+
+    public static function findByNames(EntityManagerInterface $em, array $names): array
+    {
+        return $em->getRepository(PetActivityLogTag::class)->findBy([ 'title' => $names ]);
     }
 }

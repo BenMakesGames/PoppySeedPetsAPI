@@ -169,7 +169,7 @@ class WeedController extends AbstractController
             $activityLogEntry
                 ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
                 ->setChanges($changes->compare($helper))
-                ->addTags($petActivityLogTagRepository->findByNames([ 'Add-on Assistance', 'Greenhouse' ]))
+                ->addTags($petActivityLogTagRepository->deprecatedFindByNames([ 'Add-on Assistance', 'Greenhouse' ]))
             ;
         }
 

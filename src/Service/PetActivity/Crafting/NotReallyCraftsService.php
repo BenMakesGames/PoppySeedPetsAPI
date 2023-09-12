@@ -129,7 +129,7 @@ class NotReallyCraftsService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% sifted through a Planetary Ring, and found ' . $loot . $exclaim, '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
-                ->addTags($this->petActivityLogTagRepository->findByNames($tags))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($tags))
             ;
 
             $this->inventoryService->petCollectsEnhancedItem($loot, null, $spice, $pet, $pet->getName() . ' found this in a Planetary Ring.', $activityLog);
@@ -140,7 +140,7 @@ class NotReallyCraftsService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% sifted through a Planetary Ring, looking for something interesting, but couldn\'t find anything.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Gathering', 'Physics' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Gathering', 'Physics' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::NATURE ], $activityLog);

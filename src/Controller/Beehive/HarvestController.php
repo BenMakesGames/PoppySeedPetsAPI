@@ -151,7 +151,7 @@ class HarvestController extends AbstractController
                 $activityLog
                     ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
                     ->setChanges($changes->compare($helper))
-                    ->addTags($petActivityLogTagRepository->findByNames([ 'Add-on Assistance', 'Beehive' ]))
+                    ->addTags($petActivityLogTagRepository->deprecatedFindByNames([ 'Add-on Assistance', 'Beehive' ]))
                 ;
             }
 

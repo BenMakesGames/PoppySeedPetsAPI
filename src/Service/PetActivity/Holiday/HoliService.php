@@ -97,7 +97,7 @@ class HoliService
             self::HOLI_ACTIVITY_LOG_ICON
         );
 
-        $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Holi', 'Special Event' ]));
+        $activityLog->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Holi', 'Special Event' ]));
 
         return $activityLog;
     }
@@ -135,7 +135,7 @@ class HoliService
             ->increaseEsteem(4)
         ;
 
-        $tags = $this->petActivityLogTagRepository->findByNames([ 'Holi', 'Special Event', '1-on-1 Hangout' ]);
+        $tags = $this->petActivityLogTagRepository->deprecatedFindByNames([ 'Holi', 'Special Event', '1-on-1 Hangout' ]);
 
         $otherPetLog = (new PetActivityLog())
             ->setPet($otherPet)

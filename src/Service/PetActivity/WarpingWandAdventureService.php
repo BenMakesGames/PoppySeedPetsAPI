@@ -75,7 +75,7 @@ class WarpingWandAdventureService
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ->setChanges($changes->compare($petWithSkills->getPet()))
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Adventure!' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Adventure!' ]))
         ;
     }
 
@@ -101,7 +101,7 @@ class WarpingWandAdventureService
         }
 
         $activityLog = $this->responseService->createActivityLog($pet, $description, '')
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Le Manoir de Chocolat' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Le Manoir de Chocolat' ]))
         ;
 
         $this->inventoryService->petCollectsItem('Chocolate Bar', $pet, $itemComment, $activityLog);
@@ -113,7 +113,7 @@ class WarpingWandAdventureService
 
     public function walledGarden(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        // the Project-E one
+        // TODO: the Project-E one
     }
 
     public function kellis(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -190,12 +190,12 @@ class WarpingWandAdventureService
 
     public function ruinedSettlement(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        // remains of 1725 russian settlement on the island (where rusted, busted mechanism is found)
+        // TODO: remains of 1725 russian settlement on the island (where rusted, busted mechanism is found)
     }
 
     public function elfhame(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        // def do something unique if the pet has a fairy godmother...
+        // TODO: def do something unique if the pet has a fairy godmother...
         // if the player doesn't have a fireplace yet, call that out!?
         // fairy swarm hat??!
     }
@@ -335,6 +335,6 @@ class WarpingWandAdventureService
 
     public function insideThemselves(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        // heart dimension-style
+        // TODO: heart dimension-style
     }
 }

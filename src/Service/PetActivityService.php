@@ -193,7 +193,7 @@ class PetActivityService
                 $changes
             );
 
-            $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Eating' ]));
+            $activityLog->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Eating' ]));
         }
         else
             $pet->increaseFood(-1);
@@ -508,7 +508,7 @@ class PetActivityService
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
                 $this->responseService->createActivityLog($pet, $description . ' %pet:' . $pet->getId() . '.name% wanted to make something, but couldn\'t find any materials to work with.', 'icons/activity-logs/house-too-full')
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'House Too Full' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'House Too Full' ]))
                 ;
             }
             else
@@ -1244,7 +1244,7 @@ class PetActivityService
             $this->petExperienceService->spendTime($pet, 5, PetActivityStatEnum::OTHER, null);
 
             $this->responseService->createActivityLog($pet, '%pet:'. $pet->getId() . '.name% eats the ' . $itemOnBody . ' off their body in no time flat! (Ah~! A true Gourmand!)', '', $changes->compare($pet))
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Eating' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Eating' ]))
             ;
             return false;
         }

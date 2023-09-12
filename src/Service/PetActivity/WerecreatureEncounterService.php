@@ -65,7 +65,7 @@ class WerecreatureEncounterService
                 $message .= 'However, upon seeing %pet:' . $pet->getId() . '.name%\'s silver ' . $hat->getItem()->getName() . ', the creature ran off, dropping ' . $lootItem->getNameWithArticle() . ' as it went!';
 
                 $activityLog = $this->responseService->createActivityLog($pet, $message, '')
-                    ->addTags($this->petActivityLogTagRepository->findByNames(array_merge($tags, [ 'Werecreature', 'Fighting' ])))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames(array_merge($tags, [ 'Werecreature', 'Fighting' ])))
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
@@ -97,7 +97,7 @@ class WerecreatureEncounterService
                 $message .= '%pet:' . $pet->getId() . '.name% brandished their silver ' . $tool->getItem()->getName() . '; the creature ran off at the sight of it, dropping ' . $lootItem->getNameWithArticle() . ' as it went!';
 
                 $activityLog = $this->responseService->createActivityLog($pet, $message, '')
-                    ->addTags($this->petActivityLogTagRepository->findByNames(array_merge($tags, [ 'Werecreature', 'Fighting' ])))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames(array_merge($tags, [ 'Werecreature', 'Fighting' ])))
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
@@ -132,7 +132,7 @@ class WerecreatureEncounterService
                 $message .= '%pet:' . $pet->getId() . '.name% beat the creature back, and received ' . $lootItem->getNameWithArticle() . ', but also received a bite during the encounter... (Uh oh...)';
 
             $activityLog = $this->responseService->createActivityLog($pet, $message, '')
-                ->addTags($this->petActivityLogTagRepository->findByNames(array_merge($tags, [ 'Werecreature', 'Fighting' ])))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames(array_merge($tags, [ 'Werecreature', 'Fighting' ])))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
@@ -154,7 +154,7 @@ class WerecreatureEncounterService
             $message .= '%pet:' . $pet->getId() . '.name% eventually escaped the creature, but not before being scratched and bitten! (Uh oh!)';
 
             $activityLog = $this->responseService->createActivityLog($pet, $message, '')
-                ->addTags($this->petActivityLogTagRepository->findByNames(array_merge($tags, [ 'Werecreature', 'Fighting' ])))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames(array_merge($tags, [ 'Werecreature', 'Fighting' ])))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);

@@ -72,7 +72,7 @@ class GuildService
             $pet->getName() . ' accessed Project-E, and stumbled upon The Hall of Nine - a meeting place for members of nine major Guilds.'
         );
 
-        $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Project-E', 'Guild' ]));
+        $activityLog->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Project-E', 'Guild' ]));
 
         return $activityLog;
     }
@@ -95,7 +95,7 @@ class GuildService
             $pet->getName() . ' visited the Library of Fire, and stumbled upon a meeting between members from the nine major Guilds.'
         );
 
-        $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'The Umbra', 'Guild' ]));
+        $activityLog->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra', 'Guild' ]));
 
         return $activityLog;
     }

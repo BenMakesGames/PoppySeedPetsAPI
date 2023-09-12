@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\User;
 use App\Service\Squirrel3;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -21,17 +22,14 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
-    public function findOneByEmail(string $emailAddress): ?User
-    {
-        return $this->findOneBy([ 'email' => $emailAddress ]);
-    }
-
-    public function findOneRecentlyActive(?User $except): ?User
+    public static function findOneRecentlyActive(EntityManagerInterface $em, User $except, int $hours = 24): ?User
     {
         $squirrel3 = new Squirrel3();
-        $oneDayAgo = (new \DateTimeImmutable())->modify('-24 hours');
+        $oneDayAgo = (new \DateTimeImmutable())->modify('-' . $hours . ' hours');
 
-        $numberOfUsersQuery = $this->createQueryBuilder('u')
+        $userRepository = $em->getRepository(User::class);
+
+        $numberOfUsersQuery = $userRepository->createQueryBuilder('u')
             ->select('COUNT(u.id)')
             ->andWhere('u.lastActivity >= :oneDayAgo')
             ->setParameter('oneDayAgo', $oneDayAgo)
@@ -52,7 +50,7 @@ class UserRepository extends ServiceEntityRepository
 
         $offset = $squirrel3->rngNextInt(0, $numberOfUsers - 1);
 
-        $userQuery = $this->createQueryBuilder('u')
+        $userQuery = $userRepository->createQueryBuilder('u')
             ->andWhere('u.lastActivity >= :oneDayAgo')
             ->setParameter('oneDayAgo', $oneDayAgo)
         ;

@@ -47,7 +47,7 @@ class MeteoriteSmithingService
             $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 18));
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make something with a chunk of Meteorite, but burnt themselves trying! :(', 'icons/activity-logs/burn')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Smithing' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -61,7 +61,7 @@ class MeteoriteSmithingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged Ilumetsa from gold, iron, and a chunk of Meteorite.', 'items/tool/hammer/red')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 25)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Smithing' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Ilumetsa', $pet, $pet->getName() . ' forged this from gold, iron, and a chunk of Meteorite.', $activityLog);
@@ -73,7 +73,7 @@ class MeteoriteSmithingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make something with a chunk of Meteorite, but it was being super-difficult to work with!', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Smithing' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -96,7 +96,7 @@ class MeteoriteSmithingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged a Horizon Mirror!', 'items/treasure/space-mirror')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 25)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Smithing' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Horizon Mirror', $pet, $pet->getName() . ' forged this.', $activityLog);
@@ -109,7 +109,7 @@ class MeteoriteSmithingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make something with a chunk of Meteorite, but it was being super-difficult to work with!', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Smithing' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);

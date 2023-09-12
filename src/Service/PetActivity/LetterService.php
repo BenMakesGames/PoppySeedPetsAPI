@@ -245,7 +245,7 @@ class LetterService
 
             $courierActivity = $this->responseService->createActivityLog($courier, '%pet:' . $courier->getId() . '.name% - on a job for Correspondence - delivered a Letter from ' . $sender . ' to ' . $descriptionForCourier, 'icons/activity-logs/letter')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Guild', 'Mail' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Guild', 'Mail' ]))
             ;
 
             $courierActivity->setChanges($courierChanges->compare($courier));
@@ -255,7 +255,7 @@ class LetterService
 
         $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a courier delivered them a Letter from ' . $sender . '! The courier was ' . $descriptionForPet, 'icons/activity-logs/letter')
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Mail' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Mail' ]))
         ;
 
         $activityLog->setChanges($petChanges->compare($pet));

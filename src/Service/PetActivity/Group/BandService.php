@@ -218,7 +218,7 @@ class BandService
                 ->setIcon(self::ACTIVITY_ICON)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->setChanges($changes->compare($pet))
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Group Hangout', 'Band' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Group Hangout', 'Band' ]))
             ;
 
             $this->em->persist($activityLog);
@@ -245,7 +245,7 @@ class BandService
                 ->setIcon(self::ACTIVITY_ICON)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->setChanges($changes->compare($pet))
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Group Hangout', 'Band', 'Moneys' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Group Hangout', 'Band', 'Moneys' ]))
             ;
 
             $this->em->persist($activityLog);
@@ -315,7 +315,7 @@ class BandService
                     ->setIcon(self::ACTIVITY_ICON)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Group Hangout', 'Band' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Group Hangout', 'Band' ]))
                 ;
 
                 $this->em->persist($activityLog);
@@ -347,7 +347,7 @@ class BandService
                     ->setIcon(self::ACTIVITY_ICON)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Group Hangout', 'Band' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Group Hangout', 'Band' ]))
                 ;
 
                 $this->em->persist($activityLog);

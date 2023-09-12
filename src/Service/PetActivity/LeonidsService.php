@@ -54,7 +54,7 @@ class LeonidsService
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Umbra', 'Special Event', 'Leonids' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Umbra', 'Special Event', 'Leonids' ]))
         ;
 
         return $activityLog;
@@ -150,7 +150,7 @@ class LeonidsService
         }
 
         return $activityLog
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Werecreature' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Werecreature' ]))
         ;
     }
 

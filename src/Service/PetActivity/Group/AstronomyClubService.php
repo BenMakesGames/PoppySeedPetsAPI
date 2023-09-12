@@ -141,7 +141,7 @@ class AstronomyClubService
                     ->setIcon(self::ACTIVITY_ICON)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Group Hangout', 'Astronomy Lab' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Group Hangout', 'Astronomy Lab' ]))
                 ;
 
                 $this->inventoryService->petCollectsItem('Stardust', $member, $this->formatMessage($messageTemplate, $member, $group, 'this'), $activityLog);
@@ -232,7 +232,7 @@ class AstronomyClubService
                     ->setIcon(self::ACTIVITY_ICON)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Group Hangout', 'Astronomy Lab' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Group Hangout', 'Astronomy Lab' ]))
                 ;
 
                 $this->inventoryService->petCollectsItem($item, $member, $this->formatMessage($messageTemplate, $member, $group, 'this'), $activityLog);
@@ -261,7 +261,7 @@ class AstronomyClubService
                     ->setIcon(self::ACTIVITY_ICON)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Group Hangout', 'Astronomy Lab' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Group Hangout', 'Astronomy Lab' ]))
                 ;
 
                 $this->em->persist($activityLog);

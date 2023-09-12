@@ -89,7 +89,7 @@ class GreenhouseAdventureService
         }
 
         $activityLog
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Greenhouse' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Greenhouse' ]))
             ->setChanges($changes->compare($pet))
         ;
 

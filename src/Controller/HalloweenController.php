@@ -99,7 +99,7 @@ class HalloweenController extends AbstractController
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
         Request $request, InventoryRepository $inventoryRepository, CalendarService $calendarService,
         UserRepository $userRepository, Squirrel3 $squirrel3, EatingService $eatingService,
-        PetActivityLogTagRepository $petActivityLogTagRepository, FieldGuideService $fieldGuideService
+        FieldGuideService $fieldGuideService
     )
     {
         /** @var User $user */
@@ -138,7 +138,7 @@ class HalloweenController extends AbstractController
 
         if($toGivingTree)
         {
-            $givingTree = $userRepository->findOneByEmail('giving-tree@poppyseedpets.com');
+            $givingTree = $userRepository->findOneBy([ 'email' => 'giving-tree@poppyseedpets.com' ]);
 
             $candy
                 ->setOwner($givingTree)
@@ -168,7 +168,7 @@ class HalloweenController extends AbstractController
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
                 ->setIcon('ui/halloween')
                 ->setEntry($logMessage)
-                ->addTags($petActivityLogTagRepository->findByNames([ 'Special Event', 'Halloween' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($em, [ 'Special Event', 'Halloween' ]))
             ;
 
             $em->persist($log);

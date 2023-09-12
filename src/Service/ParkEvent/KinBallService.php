@@ -234,7 +234,7 @@ class KinBallService implements ParkEventInterface
                     ->setEntry($activityLogEntry)
                     ->setIcon('icons/activity-logs/park')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT)
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Park Event', 'Kin-ball' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Park Event', 'Kin-ball' ]))
                 ;
 
                 $this->petExperienceService->gainExp(

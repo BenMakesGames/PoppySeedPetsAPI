@@ -31,8 +31,7 @@ class ClaimRewardsController extends AbstractController
      */
     public function claimRewards(
         InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
-        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3,
-        UserActivityLogTagRepository $userActivityLogTagRepository
+        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3
     )
     {
         /** @var User $user */

@@ -96,7 +96,7 @@ class EatingService
             else
                 $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' immediately ate the ' . $food->name . '.');
 
-            $activityLog->addTags($this->petActivityLogTagRepository->findByNames([ 'Eating' ]));
+            $activityLog->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Eating' ]));
         }
 
         return true;
@@ -211,7 +211,7 @@ class EatingService
 
             $activityLog
                 ->setChanges($changes->compare($pet))
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Lucky Food' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Lucky Food' ]))
             ;
         }
 
@@ -378,7 +378,7 @@ class EatingService
             }
 
             return $this->responseService->createActivityLog($pet, $message, $icon, $petChanges->compare($pet))
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Eating' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Eating' ]))
             ;
         }
         else
@@ -386,13 +386,13 @@ class EatingService
             if(count($tooPoisonous) > 0)
             {
                 return $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but ' . $this->squirrel3->rngNextFromArray($tooPoisonous) . ' really isn\'t appealing right now.', '')
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Eating' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Eating' ]))
                 ;
             }
             else
             {
                 return $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but they\'re too full to eat anymore.', '')
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Eating' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Eating' ]))
                 ;
             }
         }

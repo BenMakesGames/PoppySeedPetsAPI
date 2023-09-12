@@ -162,7 +162,7 @@ class PhilosophersStoneService
 
         $activityLog
             ->setChanges($changes->compare($pet))
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Adventure!' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Adventure!' ]))
         ;
 
         return $activityLog;
@@ -273,7 +273,7 @@ class PhilosophersStoneService
 
         $activityLog
             ->setChanges($changes->compare($pet))
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Adventure!' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Adventure!' ]))
         ;
 
         return $activityLog;
@@ -386,7 +386,7 @@ class PhilosophersStoneService
 
         $activityLog
             ->setChanges($changes->compare($pet))
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Adventure!' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Adventure!' ]))
         ;
 
         return $activityLog;
@@ -427,7 +427,7 @@ class PhilosophersStoneService
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY)
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Adventure!' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Adventure!' ]))
             ->setChanges($changes->compare($pet))
         ;
 

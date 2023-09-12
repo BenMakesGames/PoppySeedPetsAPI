@@ -43,7 +43,7 @@ class GivingTreeGatheringService
 
     public function gatherFromGivingTree(Pet $pet): ?PetActivityLog
     {
-        $givingTree = $this->userRepository->findOneByEmail('giving-tree@poppyseedpets.com');
+        $givingTree = $this->userRepository->findOneBy([ 'email' => 'giving-tree@poppyseedpets.com' ]);
 
         if(!$givingTree)
             throw new \Exception('The "Giving Tree" NPC does not exist in the database!');
@@ -82,7 +82,7 @@ class GivingTreeGatheringService
 
                 return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited The Giving Tree, and picked up several items that other players had discarded. In honor of Gizubi\'s Tree of Life, they also took a few minutes to water the Giving Tree.', 'icons/activity-logs/giving-tree')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Giving Tree', 'Guild' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Giving Tree', 'Guild' ]))
                 ;
             }
             else
@@ -91,7 +91,7 @@ class GivingTreeGatheringService
 
                 return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited The Giving Tree, and picked up several items that other players had discarded.', 'icons/activity-logs/giving-tree')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                    ->addTags($this->petActivityLogTagRepository->findByNames([ 'Giving Tree' ]))
+                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Giving Tree' ]))
                 ;
             }
         }

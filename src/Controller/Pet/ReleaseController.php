@@ -61,7 +61,7 @@ class ReleaseController extends AbstractController
 
         $pet
             ->setName($rng->rngNextFromArray(PetShelterPet::PET_NAMES)) // to prevent people from releasing rude names for other players to pick up
-            ->setOwner($userRepository->findOneByEmail('the-wilds@poppyseedpets.com'))
+            ->setOwner($userRepository->findOneBy([ 'email' => 'the-wilds@poppyseedpets.com' ]))
             ->setParkEventType(null)
             ->setNote('')
             ->setCostume('')

@@ -459,7 +459,7 @@ class JoustingService implements ParkEventInterface
             ->setEntry($log)
             ->setIcon('icons/activity-logs/park')
             ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT)
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Park Event', 'Jousting' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Park Event', 'Jousting' ]))
         ;
 
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ], $log);

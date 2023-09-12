@@ -299,7 +299,7 @@ class TriDChessService implements ParkEventInterface
                 ->setEntry($activityLogEntry)
                 ->setIcon('icons/activity-logs/park')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Park Event', 'Tri-D Chess' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Park Event', 'Tri-D Chess' ]))
             ;
 
             $this->petExperienceService->gainExp(

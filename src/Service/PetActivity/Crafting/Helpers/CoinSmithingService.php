@@ -47,7 +47,7 @@ class CoinSmithingService
         $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 8));
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $triedToMake->getNameWithArticle() . ', but they accidentally burned themselves! :(', 'icons/activity-logs/burn')
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Smithing' ]))
         ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -67,7 +67,7 @@ class CoinSmithingService
         $pet->increaseFood(-1);
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $triedToMake->getNameWithArticle() . ' from a Silver Bar, but spilled some of the silver, and almost burned themselves! They used the leftovers to make ' . $moneys . '~~m~~ worth of silver coins, instead.', 'icons/activity-logs/moneys')
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing', 'Moneys' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Smithing', 'Moneys' ]))
         ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -87,7 +87,7 @@ class CoinSmithingService
         $pet->increaseFood(-1);
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $triedToMake->getNameWithArticle() . ' from a Gold Bar, but spilled some of the gold, and almost burned themselves! They used the leftovers to make ' . $moneys . '~~m~~ worth of gold coins, instead.', 'icons/activity-logs/moneys')
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Smithing', 'Moneys' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Smithing', 'Moneys' ]))
         ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);

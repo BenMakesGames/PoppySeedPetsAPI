@@ -39,7 +39,7 @@ class HotPotatoService
     {
         $owner = $inventory->getOwner();
 
-        $target = $this->userRepository->findOneRecentlyActive($owner);
+        $target = UserRepository::findOneRecentlyActive($this->em, $owner, 24);
 
         if($target === null)
             return $this->responseService->itemActionSuccess('Hm... there\'s no one to toss it to! (I guess no one\'s been playing Poppy Seed Pets...)');

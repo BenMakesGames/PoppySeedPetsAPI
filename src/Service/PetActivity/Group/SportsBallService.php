@@ -135,7 +135,7 @@ class SportsBallService
                 ->setEntry($this->formatMessage($messageTemplate, $member, $group))
                 ->setIcon(self::ACTIVITY_ICON)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Group Hangout', 'Sportsball' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Group Hangout', 'Sportsball' ]))
             ;
 
             $this->petExperienceService->gainExp($member, 1, [

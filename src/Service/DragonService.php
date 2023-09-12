@@ -9,7 +9,6 @@ use App\Enum\MeritEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
-use App\Functions\GrammarFunctions;
 use App\Functions\PlayerLogHelpers;
 use App\Repository\DragonRepository;
 use App\Repository\EnchantmentRepository;

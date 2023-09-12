@@ -58,7 +58,7 @@ class RecyclingService
      */
     public function recycleInventory(User $user, array $inventory): array
     {
-        $givingTree = $this->userRepository->findOneByEmail('giving-tree@poppyseedpets.com');
+        $givingTree = $this->userRepository->findOneBy([ 'email' => 'giving-tree@poppyseedpets.com' ]);
 
         if(!$givingTree)
             throw new \Exception('The "Giving Tree" NPC does not exist in the database!');

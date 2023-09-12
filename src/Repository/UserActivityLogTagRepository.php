@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\UserActivityLogTag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -44,8 +45,8 @@ class UserActivityLogTagRepository extends ServiceEntityRepository
      * @param string[] $names
      * @return UserActivityLogTag[]
      */
-    public function findByNames(array $names): array
+    public static function findByNames(EntityManagerInterface $em, array $names): array
     {
-        return $this->findBy([ 'title' => $names ]);
+        return $em->getRepository(UserActivityLogTag::class)->findBy([ 'title' => $names ]);
     }
 }

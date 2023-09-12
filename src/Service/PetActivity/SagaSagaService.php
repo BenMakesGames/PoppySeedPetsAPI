@@ -93,7 +93,7 @@ class SagaSagaService
 
         $log
             ->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY)
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Level-up' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Level-up' ]))
         ;
 
         $this->responseService->setReloadPets(true);

@@ -59,7 +59,7 @@ class Caerbannog
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-            ->addTags($this->petActivityLogTagRepository->findByNames([ 'Adventure!' ]))
+            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Adventure!' ]))
             ->setChanges($changes->compare($pet))
         ;
 
@@ -124,7 +124,7 @@ class Caerbannog
 
             $pet->increaseEsteem(ceil($exp / 2) * 2);
             $activityLog = $this->responseService->createActivityLog($pet, $petName . ' went to the Caerbannog Cave, and encountered one of the terrifying creatures living there! ' . $petName . ' proved victorious, returning home with ' . ArrayFunctions::list_nice($loot) . '!', 'items/key/carrot')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
             ;
             $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
@@ -135,7 +135,7 @@ class Caerbannog
             $lootItem = $this->itemRepository->findOneByName($loot[0]);
 
             $activityLog = $this->responseService->createActivityLog($pet, $petName . ' went to the Caerbannog Cave, and encountered one of the terrifying creatures living there, and was forced to flee! (They grabbed ' . $lootItem->getNameWithArticle() . ' on their way out, at least!)', 'items/key/carrot')
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Fighting' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);

@@ -113,7 +113,7 @@ class GatheringHolidayAdventureService
         {
             $activityLog
                 ->setChanges($changes->compare($pet))
-                ->addTags($this->petActivityLogTagRepository->findByNames([ 'Special Event', self::HOLIDAY_TAGS[$holiday] ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Special Event', self::HOLIDAY_TAGS[$holiday] ]))
             ;
         }
 
