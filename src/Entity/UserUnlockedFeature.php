@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass=UserUnlockedFeatureRepository::class)
+ * @ORM\Entity()
  * @ORM\Table(
  *     uniqueConstraints={
  *         @ORM\UniqueConstraint(name="user_id_feature_idx", columns={"user_id", "feature"})
