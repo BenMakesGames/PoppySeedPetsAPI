@@ -8,6 +8,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\PlayerLogHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
@@ -107,6 +108,9 @@ class KappaService
         {
             $owner = UserRepository::findOneRecentlyActive($this->em, $pet->getOwner(), 72);
 
+            $this->em->remove($pet->getTool());
+            $pet->setTool(null);
+
             $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' recognized the Shirikodama as belonging to ' . ActivityHelpers::UserName($owner) . ', so returned it to them. ' . ActivityHelpers::UserName($owner) . ' thanked ' . ActivityHelpers::PetName($pet) . ' with many pets and pats.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Adventure!' ]))
@@ -116,11 +120,19 @@ class KappaService
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
 
             $this->userStatsRepository->incrementStat($owner, UserStatEnum::PETTED_A_PET, 1);
+
+            PlayerLogHelpers::Create($this->em, $owner, ActivityHelpers::PetName($pet) . ' returned your Shirikodama! (Some Kappa must have stolen it!) You thank ' . ActivityHelpers::PetName($pet) . ' with pets and pats before swallowing the Shirikodama.', [
+                'Shirikodama',
+            ]);
+
             $this->userStatsRepository->incrementStat($pet->getOwner(), 'Returned a Shirikodama', 1);
         }
         else if($this->rng->rngNextInt(1, 3) > 1)
         {
             $owner = UserRepository::findOneRecentlyActive($this->em, $pet->getOwner(), 72);
+
+            $this->em->remove($pet->getTool());
+            $pet->setTool(null);
 
             $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' wasn\'t immediately sure who the Shirikodama belonged to, so wandered the town for a little before spotting ' . ActivityHelpers::UserName($owner) . ', and recognizing them as the owner! ' . ActivityHelpers::PetName($pet) . ' returned the Shirikodama to ' . ActivityHelpers::UserName($owner) . ', who thanked them with many pets and pats.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
@@ -131,6 +143,11 @@ class KappaService
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
             $this->userStatsRepository->incrementStat($owner, UserStatEnum::PETTED_A_PET, 1);
+
+            PlayerLogHelpers::Create($this->em, $owner, ActivityHelpers::PetName($pet) . ' returned your Shirikodama! (Some Kappa must have stolen it!) You thank ' . ActivityHelpers::PetName($pet) . ' with pets and pats before swallowing the Shirikodama.', [
+                'Shirikodama',
+            ]);
+
             $this->userStatsRepository->incrementStat($pet->getOwner(), 'Returned a Shirikodama', 1);
         }
         else
