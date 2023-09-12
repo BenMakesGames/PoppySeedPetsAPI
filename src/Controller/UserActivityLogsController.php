@@ -2,10 +2,11 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\UserActivityLogTag;
 use App\Enum\SerializationGroupEnum;
-use App\Repository\UserActivityLogTagRepository;
 use App\Service\Filter\UserActivityLogsFilterService;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -38,9 +39,9 @@ class UserActivityLogsController extends AbstractController
      * @Route("/getAllTags", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function getAllTags(ResponseService $responseService, UserActivityLogTagRepository $userActivityLogTagRepository)
+    public function getAllTags(ResponseService $responseService, EntityManagerInterface $em)
     {
-        $tags = $userActivityLogTagRepository->findAll();
+        $tags = $em->getRepository(UserActivityLogTag::class)->findAll();
 
         return $responseService->success($tags, [ SerializationGroupEnum::USER_ACTIVITY_LOGS ]);
     }
