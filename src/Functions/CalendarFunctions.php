@@ -19,7 +19,8 @@ final class CalendarFunctions
         if($monthAndDay < 1100 || $monthAndDay >= 1200)
             return false;
 
-        $firstSaturdayOfNovember = (int)(new \DateTimeImmutable('first Saturday of this month'))->format('md');
+        $monthAndYear = $dt->format('F Y');
+        $firstSaturdayOfNovember = (int)(new \DateTimeImmutable('first Saturday of ' . $monthAndYear))->format('md');
 
         return $monthAndDay === $firstSaturdayOfNovember;
     }
@@ -50,7 +51,8 @@ final class CalendarFunctions
         if($monthAndDay < 1100 || $monthAndDay >= 1200)
             return false;
 
-        $fourthThursdayOfNovember = new \DateTimeImmutable('fourth Thursday of this month');
+        $monthAndYear = $dt->format('F Y');
+        $fourthThursdayOfNovember = new \DateTimeImmutable('fourth Thursday of ' . $monthAndYear);
 
         return
             $monthAndDay >= (int)$fourthThursdayOfNovember->format('md') - 14 &&
@@ -66,7 +68,8 @@ final class CalendarFunctions
         if($monthAndDay < 1122 || $monthAndDay >= 1200)
             return false;
 
-        $fourthThursdayOfNovember = new \DateTimeImmutable('fourth Thursday of this month');
+        $monthAndYear = $dt->format('F Y');
+        $fourthThursdayOfNovember = new \DateTimeImmutable('fourth Thursday of ' . $monthAndYear);
 
         // within 1 day of thanksgiving
         return abs((int)$fourthThursdayOfNovember->format('md') - $monthAndDay) <= 1;
@@ -80,7 +83,8 @@ final class CalendarFunctions
         if($monthAndDay < 1122 || $monthAndDay >= 1200)
             return false;
 
-        $blackFriday = (new \DateTimeImmutable('fourth Thursday of this month'))->modify('+1 day');
+        $monthAndYear = $dt->format('F Y');
+        $blackFriday = (new \DateTimeImmutable('fourth Thursday of ' . $monthAndYear))->modify('+1 day');
 
         return (int)$blackFriday->format('md') === $monthAndDay;
     }
@@ -92,7 +96,8 @@ final class CalendarFunctions
         if($monthAndDay < 1125 || $monthAndDay >= 1203)
             return false;
 
-        $cyberMonday = (new \DateTimeImmutable('fourth Thursday of this month'))->modify('+4 day');
+        $monthAndYear = $dt->format('F Y');
+        $cyberMonday = (new \DateTimeImmutable('fourth Thursday of ' . $monthAndYear))->modify('+4 day');
 
         return (int)$cyberMonday->format('md') === $monthAndDay;
     }
