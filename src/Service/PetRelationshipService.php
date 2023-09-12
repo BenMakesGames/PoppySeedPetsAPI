@@ -9,9 +9,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\StatusEffectEnum;
-use App\Functions\ArrayFunctions;
 use App\Repository\PetActivityLogTagRepository;
-use App\Repository\PetRelationshipRepository;
 use App\Service\PetActivity\PregnancyService;
 use App\Service\PetActivity\Relationship\FriendlyRivalsService;
 use App\Service\PetActivity\Relationship\LoveService;
@@ -38,13 +36,11 @@ class PetRelationshipService
     private LoveService $loveService;
     private RelationshipChangeService $relationshipChangeService;
     private IRandom $squirrel3;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, PregnancyService $pregnancyService,
         FriendlyRivalsService $friendlyRivalsService, LoveService $loveService,
-        RelationshipChangeService $relationshipChangeService, Squirrel3 $squirrel3,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        RelationshipChangeService $relationshipChangeService, Squirrel3 $squirrel3
     )
     {
         $this->em = $em;
@@ -54,7 +50,6 @@ class PetRelationshipService
         $this->loveService = $loveService;
         $this->relationshipChangeService = $relationshipChangeService;
         $this->squirrel3 = $squirrel3;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public static function min(string $relationship1, string $relationship2): string
@@ -266,8 +261,8 @@ class PetRelationshipService
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($groupTags))
-            ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Group Hangout' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, $groupTags))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout' ]))
         ;
 
         $meetDescription = str_replace([ '%p1%', '%p2%'], [ '%pet:' . $otherPet->getId() . '.name%', '%pet:' . $pet->getId() . '.name%' ], $metActivityLogTemplate);
@@ -281,8 +276,8 @@ class PetRelationshipService
 
         $otherActivityPet
             ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($groupTags))
-            ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Group Hangout' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, $groupTags))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout' ]))
         ;
 
         if($otherActivityPet->getPet()->getOwner()->getId() === $activityLog->getPet()->getOwner()->getId())
@@ -371,15 +366,15 @@ class PetRelationshipService
         if($p1Description)
         {
             $this->responseService->createActivityLog($p1->getPet(), $p1Description, $icon)
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($groupTags))
-                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Group Hangout' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, $groupTags))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout' ]))
             ;
         }
         if($p2Description)
         {
             $this->responseService->createActivityLog($p2->getPet(), $p2Description, $icon)
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($groupTags))
-                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Group Hangout' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, $groupTags))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout' ]))
             ;
         }
     }
@@ -626,7 +621,7 @@ class PetRelationshipService
             ->setPet($pet)
             ->setEntry($message)
             ->setIcon('icons/activity-logs/friend')
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($extraTags))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, $extraTags))
         ;
 
         $this->em->persist($p1Log);
@@ -635,7 +630,7 @@ class PetRelationshipService
             ->setPet($friend)
             ->setEntry($message)
             ->setIcon('icons/activity-logs/friend')
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($extraTags))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, $extraTags))
         ;
 
         $this->em->persist($p2Log);

@@ -33,8 +33,7 @@ class HarvestController extends AbstractController
      */
     public function harvest(
         ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, SpiceRepository $spiceRepository, Squirrel3 $squirrel3,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        InventoryService $inventoryService, SpiceRepository $spiceRepository, Squirrel3 $squirrel3
     )
     {
         /** @var User $user */
@@ -151,7 +150,7 @@ class HarvestController extends AbstractController
                 $activityLog
                     ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
                     ->setChanges($changes->compare($helper))
-                    ->addTags($petActivityLogTagRepository->deprecatedFindByNames([ 'Add-on Assistance', 'Beehive' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($em, [ 'Add-on Assistance', 'Beehive' ]))
                 ;
             }
 

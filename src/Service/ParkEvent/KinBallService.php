@@ -49,14 +49,12 @@ class KinBallService implements ParkEventInterface
     private InventoryService $inventoryService;
     private IRandom $squirrel3;
     private ParkService $parkService;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
     private UserStatsRepository $userStatsRepository;
 
     public function __construct(
         EntityManagerInterface $em, PetRelationshipService $petRelationshipService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        ParkService $parkService, PetActivityLogTagRepository $petActivityLogTagRepository,
-        UserStatsRepository $userStatsRepository
+        ParkService $parkService, UserStatsRepository $userStatsRepository
     )
     {
         $this->em = $em;
@@ -66,7 +64,6 @@ class KinBallService implements ParkEventInterface
         $this->inventoryService = $inventoryService;
         $this->squirrel3 = $squirrel3;
         $this->parkService = $parkService;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->userStatsRepository = $userStatsRepository;
     }
 
@@ -234,7 +231,7 @@ class KinBallService implements ParkEventInterface
                     ->setEntry($activityLogEntry)
                     ->setIcon('icons/activity-logs/park')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT)
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Park Event', 'Kin-ball' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Park Event', 'Kin-ball' ]))
                 ;
 
                 $this->petExperienceService->gainExp(

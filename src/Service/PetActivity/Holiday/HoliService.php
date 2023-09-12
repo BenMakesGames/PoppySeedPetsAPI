@@ -21,17 +21,15 @@ class HoliService
 {
     public const HOLI_ACTIVITY_LOG_ICON = 'ui/holidays/holi';
 
-    private $petRelationshipRepository;
-    private $petQuestRepository;
-    private $responseService;
-    private $em;
-    private $petExperienceService;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private PetRelationshipRepository $petRelationshipRepository;
+    private PetQuestRepository $petQuestRepository;
+    private ResponseService $responseService;
+    private EntityManagerInterface $em;
+    private PetExperienceService $petExperienceService;
 
     public function __construct(
         PetRelationshipRepository $petRelationshipRepository, PetQuestRepository $petQuestRepository,
-        ResponseService $responseService, EntityManagerInterface $em, PetExperienceService $petExperienceService,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        ResponseService $responseService, EntityManagerInterface $em, PetExperienceService $petExperienceService
     )
     {
         $this->petRelationshipRepository = $petRelationshipRepository;
@@ -39,7 +37,6 @@ class HoliService
         $this->responseService = $responseService;
         $this->em = $em;
         $this->petExperienceService = $petExperienceService;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function adventure(Pet $pet): ?PetActivityLog
@@ -97,7 +94,7 @@ class HoliService
             self::HOLI_ACTIVITY_LOG_ICON
         );
 
-        $activityLog->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Holi', 'Special Event' ]));
+        $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Holi', 'Special Event' ]));
 
         return $activityLog;
     }
@@ -135,7 +132,7 @@ class HoliService
             ->increaseEsteem(4)
         ;
 
-        $tags = $this->petActivityLogTagRepository->deprecatedFindByNames([ 'Holi', 'Special Event', '1-on-1 Hangout' ]);
+        $tags = PetActivityLogTagRepository::findByNames($this->em, [ 'Holi', 'Special Event', '1-on-1 Hangout' ]);
 
         $otherPetLog = (new PetActivityLog())
             ->setPet($otherPet)

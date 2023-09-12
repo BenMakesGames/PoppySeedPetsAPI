@@ -22,18 +22,17 @@ class GamingGroupService
 {
     public const ACTIVITY_ICON = 'groups/gaming';
 
-    private $petExperienceService;
-    private $em;
-    private $inventoryService;
-    private $petRelationshipService;
+    private PetExperienceService $petExperienceService;
+    private EntityManagerInterface $em;
+    private InventoryService $inventoryService;
+    private PetRelationshipService $petRelationshipService;
     private IRandom $squirrel3;
     private EnchantmentRepository $enchantmentRepository;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, InventoryService $inventoryService,
         PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3,
-        EnchantmentRepository $enchantmentRepository, PetActivityLogTagRepository $petActivityLogTagRepository
+        EnchantmentRepository $enchantmentRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -42,7 +41,6 @@ class GamingGroupService
         $this->petRelationshipService = $petRelationshipService;
         $this->squirrel3 = $squirrel3;
         $this->enchantmentRepository = $enchantmentRepository;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     private const DICTIONARY = [
@@ -262,7 +260,7 @@ class GamingGroupService
                 ->setEntry($this->formatMessage($messageTemplate, $member, $group))
                 ->setIcon(self::ACTIVITY_ICON)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Group Hangout', 'Gaming Group' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout', 'Gaming Group' ]))
             ;
 
             if($game['exp'])

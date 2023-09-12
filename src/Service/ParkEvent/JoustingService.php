@@ -50,14 +50,12 @@ class JoustingService implements ParkEventInterface
     private $inventoryService;
     private IRandom $squirrel3;
     private ParkService $parkService;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
     private UserStatsRepository $userStatsRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, PetRelationshipService $petRelationshipService,
         TransactionService $transactionService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        ParkService $parkService, PetActivityLogTagRepository $petActivityLogTagRepository,
-        UserStatsRepository $userStatsRepository
+        ParkService $parkService, UserStatsRepository $userStatsRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -67,7 +65,6 @@ class JoustingService implements ParkEventInterface
         $this->inventoryService = $inventoryService;
         $this->squirrel3 = $squirrel3;
         $this->parkService = $parkService;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->userStatsRepository = $userStatsRepository;
     }
 
@@ -459,7 +456,7 @@ class JoustingService implements ParkEventInterface
             ->setEntry($log)
             ->setIcon('icons/activity-logs/park')
             ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT)
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Park Event', 'Jousting' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Park Event', 'Jousting' ]))
         ;
 
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ], $log);

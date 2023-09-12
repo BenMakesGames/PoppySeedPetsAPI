@@ -27,13 +27,11 @@ class SportsBallService
     private InventoryService $inventoryService;
     private PetRelationshipService $petRelationshipService;
     private IRandom $squirrel3;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
     private ItemRepository $itemRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, InventoryService $inventoryService,
-        PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3,
-        PetActivityLogTagRepository $petActivityLogTagRepository, ItemRepository $itemRepository
+        PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3, ItemRepository $itemRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -41,7 +39,6 @@ class SportsBallService
         $this->inventoryService = $inventoryService;
         $this->petRelationshipService = $petRelationshipService;
         $this->squirrel3 = $squirrel3;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->itemRepository = $itemRepository;
     }
 
@@ -135,7 +132,7 @@ class SportsBallService
                 ->setEntry($this->formatMessage($messageTemplate, $member, $group))
                 ->setIcon(self::ACTIVITY_ICON)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Group Hangout', 'Sportsball' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout', 'Sportsball' ]))
             ;
 
             $this->petExperienceService->gainExp($member, 1, [

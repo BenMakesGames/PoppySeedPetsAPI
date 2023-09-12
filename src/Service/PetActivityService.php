@@ -100,7 +100,6 @@ class PetActivityService
     private SmithingService $smithingService;
     private PlasticPrinterService $plasticPrinterService;
     private PhilosophersStoneService $philosophersStoneService;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
     private IcyMoonService $icyMoonService;
     private KappaService $kappaService;
     private Clock $clock;
@@ -109,7 +108,7 @@ class PetActivityService
         EntityManagerInterface $em, ResponseService $responseService,
         FishingService $fishingService, HeartDimensionService $heartDimensionService, IcyMoonService $icyMoonService,
         HuntingService $huntingService, GatheringService $gatheringService, CraftingService $craftingService,
-        UserStatsRepository $userStatsRepository, PetActivityLogTagRepository $petActivityLogTagRepository,
+        UserStatsRepository $userStatsRepository,
         GenericAdventureService $genericAdventureService, PetSummonedAwayService $petSummonedAwayService,
         Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService,
         PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService,
@@ -164,7 +163,6 @@ class PetActivityService
         $this->smithingService = $smithingService;
         $this->plasticPrinterService = $plasticPrinterService;
         $this->philosophersStoneService = $philosophersStoneService;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->icyMoonService = $icyMoonService;
         $this->kappaService = $kappaService;
         $this->clock = $clock;
@@ -194,7 +192,7 @@ class PetActivityService
                 $changes
             );
 
-            $activityLog->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Eating' ]));
+            $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Eating' ]));
         }
         else
             $pet->increaseFood(-1);
@@ -509,7 +507,7 @@ class PetActivityService
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
                 $this->responseService->createActivityLog($pet, $description . ' %pet:' . $pet->getId() . '.name% wanted to make something, but couldn\'t find any materials to work with.', 'icons/activity-logs/house-too-full')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'House Too Full' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'House Too Full' ]))
                 ;
             }
             else
@@ -530,7 +528,7 @@ class PetActivityService
                 $activityLog->setEntry($description . ' ' . $activityLog->getEntry());
 
                 if($activityLog->getChanges()->containsLevelUp())
-                    $activityLog->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]));
+                    $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Level-up' ]));
             }
 
             return;
@@ -1245,7 +1243,7 @@ class PetActivityService
             $this->petExperienceService->spendTime($pet, 5, PetActivityStatEnum::OTHER, null);
 
             $this->responseService->createActivityLog($pet, '%pet:'. $pet->getId() . '.name% eats the ' . $itemOnBody . ' off their body in no time flat! (Ah~! A true Gourmand!)', '', $changes->compare($pet))
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Eating' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Eating' ]))
             ;
             return false;
         }

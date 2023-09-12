@@ -28,12 +28,10 @@ class BandService
     private PetExperienceService $petExperienceService;
     private TransactionService $transactionService;
     private IRandom $squirrel3;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         EntityManagerInterface $em, PetRelationshipService $petRelationshipService, InventoryService $inventoryService,
-        PetExperienceService $petExperienceService, TransactionService $transactionService, Squirrel3 $squirrel3,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        PetExperienceService $petExperienceService, TransactionService $transactionService, Squirrel3 $squirrel3
     )
     {
         $this->em = $em;
@@ -42,7 +40,6 @@ class BandService
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
         $this->squirrel3 = $squirrel3;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     private const ADJECTIVE_LIST = [
@@ -218,7 +215,7 @@ class BandService
                 ->setIcon(self::ACTIVITY_ICON)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->setChanges($changes->compare($pet))
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Group Hangout', 'Band' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout', 'Band' ]))
             ;
 
             $this->em->persist($activityLog);
@@ -245,7 +242,7 @@ class BandService
                 ->setIcon(self::ACTIVITY_ICON)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->setChanges($changes->compare($pet))
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Group Hangout', 'Band', 'Moneys' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout', 'Band', 'Moneys' ]))
             ;
 
             $this->em->persist($activityLog);
@@ -315,7 +312,7 @@ class BandService
                     ->setIcon(self::ACTIVITY_ICON)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Group Hangout', 'Band' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout', 'Band' ]))
                 ;
 
                 $this->em->persist($activityLog);
@@ -347,7 +344,7 @@ class BandService
                     ->setIcon(self::ACTIVITY_ICON)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Group Hangout', 'Band' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout', 'Band' ]))
                 ;
 
                 $this->em->persist($activityLog);

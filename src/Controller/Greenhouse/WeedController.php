@@ -38,7 +38,7 @@ class WeedController extends AbstractController
     public function weedPlants(
         ResponseService $responseService, UserQuestRepository $userQuestRepository, EntityManagerInterface $em,
         InventoryService $inventoryService, Squirrel3 $squirrel3, WeatherService $weatherService,
-        ItemRepository $itemRepository, PetActivityLogTagRepository $petActivityLogTagRepository, Clock $clock
+        ItemRepository $itemRepository, Clock $clock
     ): JsonResponse
     {
         /** @var User $user */
@@ -169,7 +169,7 @@ class WeedController extends AbstractController
             $activityLogEntry
                 ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
                 ->setChanges($changes->compare($helper))
-                ->addTags($petActivityLogTagRepository->deprecatedFindByNames([ 'Add-on Assistance', 'Greenhouse' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($em, [ 'Add-on Assistance', 'Greenhouse' ]))
             ;
         }
 
