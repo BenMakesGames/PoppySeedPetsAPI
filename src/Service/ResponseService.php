@@ -26,7 +26,7 @@ class ResponseService
     private SerializerInterface $serializer;
     private Security $security;
     private NormalizerInterface $normalizer;
-    private $sessionId = 0;
+    private ?string $sessionId = null;
     private WeatherService $weatherService;
     private UserMenuService $userMenuService;
     private PerformanceProfiler $performanceProfiler;
@@ -88,7 +88,7 @@ class ResponseService
         if(count($activity) > 0)
             $responseData['activity'] = $this->normalizer->normalize($activity, null, [ 'groups' => [ SerializationGroupEnum::PET_ACTIVITY_LOGS ] ]);
 
-        if($this->sessionId !== 0)
+        if($this->sessionId !== null)
             $responseData['sessionId'] = $this->sessionId;
 
         $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), null);
