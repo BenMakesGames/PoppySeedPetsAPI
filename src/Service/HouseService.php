@@ -43,6 +43,7 @@ class HouseService
         $this->houseSimService = $houseSimService;
         $this->sagaSagaService = $sagaSagaService;
         $this->petSocialActivityService = $petSocialActivityService;
+        $this->performanceProfiler = $performanceProfiler;
     }
 
     public function needsToBeRun(User $user)
