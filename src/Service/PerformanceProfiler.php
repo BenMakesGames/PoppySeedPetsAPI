@@ -26,8 +26,8 @@ class PerformanceProfiler
             'MetricData' => [
                 [
                     'MetricName' => $METHOD,
-                    'Unit' => 'Seconds',
-                    'Value' => $executionTimeSeconds,
+                    'Unit' => 'Milliseconds',
+                    'Value' => $executionTimeSeconds * 1000,
                 ],
             ],
             'Namespace' => 'PoppySeedPets/Performance',
