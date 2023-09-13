@@ -63,7 +63,7 @@ class HouseService
 
         $petsWithTime = (int)$query->execute();
 
-        //$this->performanceProfiler->logExecutionTime(__CLASS__, __METHOD__, microtime(true) - $time);
+        $this->performanceProfiler->logExecutionTime(__CLASS__, __METHOD__, microtime(true) - $time);
 
         return $petsWithTime > 0;
     }
