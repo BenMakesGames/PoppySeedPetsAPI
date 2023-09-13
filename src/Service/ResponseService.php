@@ -7,42 +7,39 @@ use App\Entity\User;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\SimpleDb;
 use App\Model\PetChangesSummary;
-use App\Repository\PetActivityLogRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class ResponseService
 {
-    /** @var PetActivityLog[] */
-    private $flashMessages = [];
-    private $reloadInventory = false;
-    private $reloadPets = false;
+    /** @var FlashMessage[] */ private $flashMessages = [];
+    private bool $reloadInventory = false;
+    private bool $reloadPets = false;
     private EntityManagerInterface $em;
     private SerializerInterface $serializer;
     private Security $security;
     private NormalizerInterface $normalizer;
-    private $sessionId = 0;
-    private PetActivityLogRepository $petActivityLogRepository;
+    private int $sessionId = 0;
     private WeatherService $weatherService;
     private UserMenuService $userMenuService;
     private PerformanceProfiler $performanceProfiler;
 
     public function __construct(
         SerializerInterface $serializer, NormalizerInterface $normalizer, EntityManagerInterface $em, Security $security,
-        PetActivityLogRepository $petActivityLogRepository, WeatherService $weatherService,
-        UserMenuService $userMenuService, PerformanceProfiler $performanceProfiler
+        WeatherService $weatherService, UserMenuService $userMenuService, PerformanceProfiler $performanceProfiler
     )
     {
         $this->serializer = $serializer;
         $this->normalizer = $normalizer;
         $this->em = $em;
         $this->security = $security;
-        $this->petActivityLogRepository = $petActivityLogRepository;
         $this->weatherService = $weatherService;
         $this->userMenuService = $userMenuService;
         $this->performanceProfiler = $performanceProfiler;
@@ -74,7 +71,6 @@ class ResponseService
     {
         $time = microtime(true);
 
-        /** @var User $user */
         $user = $this->getUser();
 
         if($user && $user->getIsAdmin())
@@ -125,14 +121,14 @@ class ResponseService
     }
 
     /**
-     * @return PetActivityLog[]
+     * @return FlashMessage[]
      */
     private function getUnreadMessages(?User $user): array
     {
         if($user === null)
             return $this->flashMessages;
 
-        $unreadMessages = $this->petActivityLogRepository->findUnreadForUser($user);
+        $unreadMessages = $this->findUnreadForUser($user);
 
         // for whatever reason, doing this results in fewer serialization deadlocks
         // compared to foreach($unreadMessages as $message) $message->setViewed();
@@ -143,7 +139,7 @@ class ResponseService
         ');
 
         $messageIds = array_map(
-            fn(PetActivityLog $l) => $l->getId(),
+            fn(FlashMessage $l) => $l->id,
             $unreadMessages
         );
 
@@ -155,7 +151,7 @@ class ResponseService
 
         return ArrayFunctions::unique(
             array_merge($this->flashMessages, $unreadMessages),
-            fn(PetActivityLog $l) => $l->getEntry(),
+            fn(FlashMessage $l) => $l->entry,
         );
     }
 
@@ -178,9 +174,33 @@ class ResponseService
         return new JsonResponse($json, $httpResponse, [], true);
     }
 
+    /**
+     * @return FlashMessage[]
+     */
+    public function findUnreadForUser(User $user): array
+    {
+        $time = microtime(true);
+
+        $logs = SimpleDb::createReadOnlyConnection()
+            ->query(
+                'SELECT l.id,l.entry,l.icon,l.changes,l.interestingness
+                FROM pet_activity_log AS l
+                INNER JOIN pet AS p ON p.id = l.pet_id
+                WHERE p.owner_id = ? AND l.viewed = 0',
+                [ $user->getId() ]
+            )
+            ->mapResults(
+                fn($id, $entry, $icon, $changes, $interestingness)
+                    => new FlashMessage($id, $entry, $icon, unserialize($changes), $interestingness)
+            );
+
+        $this->performanceProfiler->logExecutionTime(__METHOD__, microtime(true) - $time);
+
+        return $logs;
+    }
+
     private function injectUserData(array &$responseData)
     {
-        /** @var User $user */
         $user = $this->getUser();
 
         if($user)
@@ -233,8 +253,45 @@ class ResponseService
             ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
         ;
 
-        $this->flashMessages[] = $log;
+        $this->flashMessages[] = new FlashMessage(0, $log->getEntry(), $log->getIcon(), $log->getChanges(), $log->getInterestingness());
 
         return $this;
+    }
+}
+
+class FlashMessage
+{
+    /**
+     * @Groups({"petActivityLogs"})
+     */
+    public int $id;
+
+    /**
+     * @Groups({"petActivityLogs"})
+     */
+    public string $entry;
+
+    /**
+     * @Groups({"petActivityLogs"})
+     */
+    public string $icon;
+
+    /**
+     * @Groups({"petActivityLogs"})
+     */
+    public ?PetChangesSummary $changes;
+
+    /**
+     * @Groups({"petActivityLogs"})
+     */
+    public int $interestingness;
+
+    public function __construct(int $id, string $entry, string $icon, ?PetChangesSummary $changes, int $interestingness)
+    {
+        $this->id = $id;
+        $this->entry = $entry;
+        $this->icon = $icon;
+        $this->changes = $changes;
+        $this->interestingness = $interestingness;
     }
 }

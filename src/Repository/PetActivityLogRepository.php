@@ -28,28 +28,6 @@ class PetActivityLogRepository extends ServiceEntityRepository
         $this->performanceProfiler = $performanceProfiler;
     }
 
-    /**
-     * @return PetActivityLog[]
-     */
-    public function findUnreadForUser(User $user): array
-    {
-        $time = microtime(true);
-
-        $logs = $this->createQueryBuilder('l')
-            ->join('l.pet', 'pet')
-            ->andWhere('pet.owner = :user')
-            ->andWhere('l.viewed = 0')
-            ->setParameter('user', $user)
-
-            ->getQuery()
-            ->execute()
-        ;
-
-        $this->performanceProfiler->logExecutionTime(__METHOD__, microtime(true) - $time);
-
-        return $logs;
-    }
-
     public function findLogsForPetByDate(Pet $pet, int $year, int $month): array
     {
         $firstDayOfMonth = $year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-01';

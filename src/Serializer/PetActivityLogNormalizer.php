@@ -4,6 +4,7 @@ namespace App\Serializer;
 use App\Entity\PetActivityLog;
 use App\Enum\SerializationGroupEnum;
 use App\Service\CommentFormatter;
+use App\Service\FlashMessage;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
@@ -21,7 +22,7 @@ class PetActivityLogNormalizer implements ContextAwareNormalizerInterface
     }
 
     /**
-     * @param PetActivityLog $object
+     * @param PetActivityLog|FlashMessage $object
      */
     public function normalize($object, string $format = null, array $context = [])
     {
@@ -35,6 +36,6 @@ class PetActivityLogNormalizer implements ContextAwareNormalizerInterface
 
     public function supportsNormalization($data, string $format = null, array $context = []): bool
     {
-        return $data instanceof PetActivityLog;
+        return $data instanceof PetActivityLog || $data instanceof FlashMessage;
     }
 }
