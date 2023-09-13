@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
+use App\Service\PerformanceProfiler;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\Persistence\ManagerRegistry;
@@ -18,9 +19,13 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PetActivityLogRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private PerformanceProfiler $performanceProfiler;
+
+    public function __construct(ManagerRegistry $registry, PerformanceProfiler $performanceProfiler)
     {
         parent::__construct($registry, PetActivityLog::class);
+
+        $this->performanceProfiler = $performanceProfiler;
     }
 
     /**
@@ -28,7 +33,9 @@ class PetActivityLogRepository extends ServiceEntityRepository
      */
     public function findUnreadForUser(User $user): array
     {
-        return $this->createQueryBuilder('l')
+        $time = microtime(true);
+
+        $logs = $this->createQueryBuilder('l')
             ->join('l.pet', 'pet')
             ->andWhere('pet.owner = :user')
             ->andWhere('l.viewed = 0')
@@ -37,6 +44,10 @@ class PetActivityLogRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute()
         ;
+
+        $this->performanceProfiler->logExecutionTime(__METHOD__, microtime(true) - $time);
+
+        return $logs;
     }
 
     public function findLogsForPetByDate(Pet $pet, int $year, int $month): array
