@@ -22,19 +22,20 @@ class ResponseService
     private $flashMessages = [];
     private $reloadInventory = false;
     private $reloadPets = false;
-    private $em;
-    private $serializer;
-    private $security;
-    private $normalizer;
+    private EntityManagerInterface $em;
+    private SerializerInterface $serializer;
+    private Security $security;
+    private NormalizerInterface $normalizer;
     private $sessionId = 0;
-    private $petActivityLogRepository;
-    private $weatherService;
-    private $userMenuService;
+    private PetActivityLogRepository $petActivityLogRepository;
+    private WeatherService $weatherService;
+    private UserMenuService $userMenuService;
+    private PerformanceProfiler $performanceProfiler;
 
     public function __construct(
         SerializerInterface $serializer, NormalizerInterface $normalizer, EntityManagerInterface $em, Security $security,
         PetActivityLogRepository $petActivityLogRepository, WeatherService $weatherService,
-        UserMenuService $userMenuService
+        UserMenuService $userMenuService, PerformanceProfiler $performanceProfiler
     )
     {
         $this->serializer = $serializer;
@@ -44,6 +45,7 @@ class ResponseService
         $this->petActivityLogRepository = $petActivityLogRepository;
         $this->weatherService = $weatherService;
         $this->userMenuService = $userMenuService;
+        $this->performanceProfiler = $performanceProfiler;
     }
 
     public function setSessionId(?string $sessionId)
@@ -169,6 +171,8 @@ class ResponseService
 
     private function injectUserData(array &$responseData)
     {
+        $time = microtime(true);
+
         /** @var User $user */
         $user = $this->getUser();
 
@@ -177,6 +181,11 @@ class ResponseService
             $responseData['user'] = $this->normalizer->normalize($user, null, [ 'groups' => [ SerializationGroupEnum::MY_ACCOUNT ] ]);
             $responseData['user']['menu'] = $this->normalizer->normalize($this->userMenuService->getUserMenuItems($user), null, [ 'groups' => [ SerializationGroupEnum::MY_MENU ] ]);
         }
+
+        if($user)
+            $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - with user', microtime(true) - $time);
+        else
+            $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - without user', microtime(true) - $time);
     }
 
     public function createActivityLog(Pet $pet, string $entry, string $icon, ?PetChangesSummary $changes = null): PetActivityLog
