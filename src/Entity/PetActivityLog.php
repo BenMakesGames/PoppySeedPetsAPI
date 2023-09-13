@@ -12,7 +12,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PetActivityLogRepository")
  * @ORM\Table(indexes={
- *     @ORM\Index(name="interesingness_idx", columns={"interestingness"})
+ *     @ORM\Index(name="created_on_idx", columns={"created_on"}),
+ *     @ORM\Index(name="viewed_idx", columns={"viewed"})
  * })
  */
 class PetActivityLog
