@@ -16,13 +16,15 @@ class IndexController extends AbstractController
      * @DoesNotRequireHouseHours()
      * @Route("/performanceLoggingTest")
      */
-    public function performanceLoggingTest(PerformanceProfiler $performanceProfiler)
+    public function performanceLoggingTest(PerformanceProfiler $performanceProfiler, ResponseService $responseService)
     {
         $time = microtime(true);
 
         sleep(1);
 
         $performanceProfiler->logExecutionTime(__CLASS__, __FUNCTION__, microtime(true) - $time);
+
+        return $responseService->success([ 'Logged the thing! :D' ]);
     }
 
     /**
