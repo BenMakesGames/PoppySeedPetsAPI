@@ -21,7 +21,6 @@ class HouseSimService
     private ItemRepository $itemRepository;
     private EntityManagerInterface $em;
     private IRandom $squirrel3;
-    private PerformanceProfiler $performanceProfiler;
 
     // data
     private IHouseSim $houseState;
@@ -29,22 +28,19 @@ class HouseSimService
 
     public function __construct(
         InventoryRepository $inventoryRepository, ItemRepository $itemRepository, EntityManagerInterface $em,
-        Squirrel3 $squirrel3, PerformanceProfiler $performanceProfiler
+        Squirrel3 $squirrel3
     )
     {
         $this->inventoryRepository = $inventoryRepository;
         $this->itemRepository = $itemRepository;
         $this->em = $em;
         $this->squirrel3 = $squirrel3;
-        $this->performanceProfiler = $performanceProfiler;
 
         $this->houseState = new NoHouseSim();
     }
 
     public function begin(User $user)
     {
-        $time = microtime(true);
-
         $inventory = $this->inventoryRepository->findBy([
             'owner' => $user,
             'location' => LocationEnum::HOME
@@ -52,14 +48,10 @@ class HouseSimService
 
         $this->houseState = new HouseSim($this->squirrel3, $inventory);
         $this->petIdsThatRanSocialTime = [];
-
-        $this->performanceProfiler->logExecutionTime(__CLASS__, __FUNCTION__, microtime(true) - $time);
     }
 
     public function end()
     {
-        $time = microtime(true);
-
         $toRemove = $this->houseState->getInventoryToRemove();
         $toPersist = $this->houseState->getInventoryToPersist();
 
@@ -70,8 +62,6 @@ class HouseSimService
             $this->em->persist($i);
 
         $this->houseState = new NoHouseSim();
-
-        $this->performanceProfiler->logExecutionTime(__CLASS__, __FUNCTION__, microtime(true) - $time);
     }
 
     public function getState()

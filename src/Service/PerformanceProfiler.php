@@ -20,12 +20,12 @@ class PerformanceProfiler
         ]);
     }
 
-    public function logExecutionTime(string $className, string $methodName, float $executionTimeSeconds)
+    public function logExecutionTime(string $METHOD, float $executionTimeSeconds)
     {
         $this->cloudWatchClient->putMetricData([
             'MetricData' => [
                 [
-                    'MetricName' => $className . '::' . $methodName,
+                    'MetricName' => $METHOD,
                     'Unit' => 'Seconds',
                     'Value' => $executionTimeSeconds,
                 ],

@@ -64,7 +64,7 @@ class HouseService
 
         $petsWithTime = (int)$query->execute();
 
-        $this->performanceProfiler->logExecutionTime(__CLASS__, __METHOD__, microtime(true) - $time);
+        $this->performanceProfiler->logExecutionTime(__METHOD__, microtime(true) - $time);
 
         return $petsWithTime > 0;
     }
@@ -123,7 +123,9 @@ class HouseService
 
             $this->houseSimService->end();
 
+            $time = microtime(true);
             $this->em->flush();
+            $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - Flush', microtime(true) - $time);
         }
     }
 

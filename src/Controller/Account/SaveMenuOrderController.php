@@ -43,7 +43,7 @@ class SaveMenuOrderController extends AbstractController
 
         $response = $responseService->success();
 
-        $performanceProfiler->logExecutionTime(__CLASS__, __FUNCTION__, microtime(true) - $time);
+        $performanceProfiler->logExecutionTime(__METHOD__, microtime(true) - $time);
 
         return $response;
     }
