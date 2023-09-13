@@ -3,6 +3,7 @@ namespace App\Controller\Account;
 
 use App\Entity\User;
 use App\Exceptions\PSPFormValidationException;
+use App\Service\PerformanceProfiler;
 use App\Service\ResponseService;
 use App\Service\UserMenuService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,9 +25,11 @@ class SaveMenuOrderController extends AbstractController
      */
     public function saveMenuOrder(
         Request $request, UserMenuService $userMenuService, EntityManagerInterface $em,
-        ResponseService $responseService
+        ResponseService $responseService, PerformanceProfiler $performanceProfiler
     )
     {
+        $time = microtime(true);
+
         /** @var User $user */
         $user = $this->getUser();
         $newOrder = $request->request->get('order');
@@ -38,6 +41,10 @@ class SaveMenuOrderController extends AbstractController
 
         $em->flush();
 
-        return $responseService->success();
+        $response = $responseService->success();
+
+        $performanceProfiler->logExecutionTime(__CLASS__, __FUNCTION__, microtime(true) - $time);
+
+        return $response;
     }
 }

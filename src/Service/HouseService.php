@@ -24,12 +24,13 @@ class HouseService
     private HouseSimService $houseSimService;
     private SagaSagaService $sagaSagaService;
     private PetSocialActivityService $petSocialActivityService;
+    private PerformanceProfiler $performanceProfiler;
 
     public function __construct(
         PetActivityService $petActivityService, PetRepository $petRepository, CacheItemPoolInterface $cache,
         EntityManagerInterface $em, UserQuestRepository $userQuestRepository, InventoryService $inventoryService,
         Squirrel3 $squirrel3, HouseSimService $houseSimService, SagaSagaService $sagaSagaService,
-        PetSocialActivityService $petSocialActivityService
+        PetSocialActivityService $petSocialActivityService, PerformanceProfiler $performanceProfiler
     )
     {
         $this->petActivityService = $petActivityService;
@@ -46,6 +47,8 @@ class HouseService
 
     public function needsToBeRun(User $user)
     {
+        $time = microtime(true);
+
         $query = $this->petRepository->createQueryBuilder('p')
             ->select('p.id')
             ->join('p.houseTime', 'ht')
@@ -59,6 +62,8 @@ class HouseService
             ->getQuery();
 
         $petsWithTime = (int)$query->execute();
+
+        $this->performanceProfiler->logExecutionTime(__CLASS__, __METHOD__, microtime(true) - $time);
 
         return $petsWithTime > 0;
     }
