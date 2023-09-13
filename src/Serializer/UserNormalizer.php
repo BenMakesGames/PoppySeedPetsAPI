@@ -11,10 +11,10 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class UserNormalizer implements ContextAwareNormalizerInterface
 {
-    private $userFollowingRepository;
-    private $userLetterRepository;
-    private $normalizer;
-    private $security;
+    private UserFollowingRepository $userFollowingRepository;
+    private UserLetterRepository $userLetterRepository;
+    private ObjectNormalizer $normalizer;
+    private Security $security;
 
     public function __construct(
         UserLetterRepository $userLetterRepository, ObjectNormalizer $normalizer, Security $security,
