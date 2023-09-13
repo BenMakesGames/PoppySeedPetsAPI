@@ -53,7 +53,7 @@ class HouseSimService
         $this->houseState = new HouseSim($this->squirrel3, $inventory);
         $this->petIdsThatRanSocialTime = [];
 
-        $this->performanceProfiler->logExecutionTime(__CLASS__, __FUNCTION__, microtime(true) - $time);
+        //$this->performanceProfiler->logExecutionTime(__CLASS__, __FUNCTION__, microtime(true) - $time);
     }
 
     public function end()
@@ -71,7 +71,7 @@ class HouseSimService
 
         $this->houseState = new NoHouseSim();
 
-        $this->performanceProfiler->logExecutionTime(__CLASS__, __FUNCTION__, microtime(true) - $time);
+        //$this->performanceProfiler->logExecutionTime(__CLASS__, __FUNCTION__, microtime(true) - $time);
     }
 
     public function getState()

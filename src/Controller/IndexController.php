@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Annotations\DoesNotRequireHouseHours;
+use App\Service\PerformanceProfiler;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,6 +12,19 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class IndexController extends AbstractController
 {
+    /**
+     * @DoesNotRequireHouseHours()
+     * @Route("/performanceLoggingTest")
+     */
+    public function performanceLoggingTest(PerformanceProfiler $performanceProfiler)
+    {
+        $time = microtime(true);
+
+        sleep(1);
+
+        $performanceProfiler->logExecutionTime(__CLASS__, __FUNCTION__, microtime(true) - $time);
+    }
+
     /**
      * @DoesNotRequireHouseHours()
      * @Route("/about")
