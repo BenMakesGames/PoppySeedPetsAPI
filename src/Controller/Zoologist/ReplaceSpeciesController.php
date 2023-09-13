@@ -1,19 +1,13 @@
 <?php
 namespace App\Controller\Zoologist;
 
-use App\Entity\Pet;
 use App\Entity\User;
 use App\Entity\UserSpeciesCollected;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
-use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Exceptions\PSPPetNotFoundException;
-use App\Functions\GrammarFunctions;
 use App\Repository\PetRepository;
-use App\Repository\UserSpeciesCollectedRepository;
-use App\Repository\UserStatsRepository;
-use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,9 +25,7 @@ class ReplaceSpeciesController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function replace(
-        EntityManagerInterface $em, Request $request, UserSpeciesCollectedRepository $userSpeciesCollectedRepository,
-        PetRepository $petRepository, UserStatsRepository $userStatsRepository, ResponseService $responseService,
-        IRandom $rng
+        EntityManagerInterface $em, Request $request, PetRepository $petRepository, ResponseService $responseService
     )
     {
         /** @var User $user */
@@ -52,7 +44,7 @@ class ReplaceSpeciesController extends AbstractController
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
 
-        $alreadyDiscovered = $userSpeciesCollectedRepository->findOneBy([
+        $alreadyDiscovered = $em->getRepository(UserSpeciesCollected::class)->findOneBy([
             'user' => $user->getId(),
             'species' => $pet->getSpecies()->getId(),
         ]);

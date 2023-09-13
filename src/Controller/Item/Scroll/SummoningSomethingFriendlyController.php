@@ -10,7 +10,6 @@ use App\Enum\UserStatEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\GrammarFunctions;
 use App\Repository\PetRepository;
-use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
@@ -32,7 +31,7 @@ class SummoningSomethingFriendlyController extends AbstractController
      */
     public function summonSomethingFriendly(
         Inventory $inventory, ResponseService $responseService, PetRepository $petRepository,
-        UserRepository $userRepository, UserStatsRepository $userStatsRepository, EntityManagerInterface $em,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em,
         PetFactory $petFactory, Squirrel3 $squirrel3
     ): JsonResponse
     {
@@ -63,7 +62,7 @@ class SummoningSomethingFriendlyController extends AbstractController
         {
             $pet = $petRepository->findOneBy(
                 [
-                    'owner' => $userRepository->findOneBy([ 'email' => 'the-wilds@poppyseedpets.com' ])
+                    'owner' => $em->getRepository(User::class)->findOneBy([ 'email' => 'the-wilds@poppyseedpets.com' ])
                 ],
                 [ 'lastInteracted' => 'ASC' ]
             );

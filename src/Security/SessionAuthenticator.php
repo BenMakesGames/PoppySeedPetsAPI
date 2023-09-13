@@ -1,7 +1,7 @@
 <?php
 namespace App\Security;
 
-use App\Repository\UserSessionRepository;
+use App\Entity\UserSession;
 use App\Service\PerformanceProfiler;
 use App\Service\ResponseService;
 use App\Service\SessionService;
@@ -21,18 +21,16 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 class SessionAuthenticator extends AbstractAuthenticator
 {
     private EntityManagerInterface $em;
-    private UserSessionRepository $userSessionRepository;
     private ResponseService $responseService;
     private SessionService $sessionService;
     private PerformanceProfiler $performanceProfiler;
 
     public function __construct(
-        EntityManagerInterface $em, UserSessionRepository $userSessionRepository, ResponseService $responseService,
-        SessionService $sessionService, PerformanceProfiler $performanceProfiler
+        EntityManagerInterface $em, ResponseService $responseService, SessionService $sessionService,
+        PerformanceProfiler $performanceProfiler
     )
     {
         $this->em = $em;
-        $this->userSessionRepository = $userSessionRepository;
         $this->responseService = $responseService;
         $this->sessionService = $sessionService;
         $this->performanceProfiler = $performanceProfiler;
@@ -60,7 +58,7 @@ class SessionAuthenticator extends AbstractAuthenticator
 
         $sessionId = self::getSessionIdOrThrow($request);
 
-        $session = $this->userSessionRepository->findOneBySessionId($sessionId);
+        $session = $this->em->getRepository(UserSession::class)->findOneBy([ 'sessionId' => $sessionId ]);
 
         if(!$session || $session->getSessionExpiration() < new \DateTimeImmutable())
         {

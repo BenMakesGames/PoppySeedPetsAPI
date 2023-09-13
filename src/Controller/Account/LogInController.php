@@ -1,10 +1,10 @@
 <?php
 namespace App\Controller\Account;
 
+use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Functions\PlayerLogHelpers;
-use App\Repository\UserRepository;
 use App\Repository\UserStyleRepository;
 use App\Service\ResponseService;
 use App\Service\SessionService;
@@ -27,9 +27,8 @@ class LogInController extends AbstractController
      * @Route("/logIn", methods={"POST"})
      */
     public function logIn(
-        Request $request, UserRepository $userRepository, UserPasswordHasherInterface $userPasswordEncoder,
-        SessionService $sessionService, EntityManagerInterface $em, ResponseService $responseService,
-        UserStyleRepository $userStyleRepository
+        Request $request, UserPasswordHasherInterface $userPasswordEncoder, SessionService $sessionService,
+        EntityManagerInterface $em, ResponseService $responseService, UserStyleRepository $userStyleRepository
     )
     {
         $email = $request->request->get('email');
@@ -39,7 +38,7 @@ class LogInController extends AbstractController
         if(!$email || !$password)
             throw new PSPFormValidationException('"email" and "passphrase" are both required.');
 
-        $user = $userRepository->findOneBy([ 'email' => $email ]);
+        $user = $em->getRepository(User::class)->findOneBy([ 'email' => $email ]);
 
         if(!$user || !$userPasswordEncoder->isPasswordValid($user, $password))
             throw new AccessDeniedHttpException('Email and/or passphrase is not correct.');

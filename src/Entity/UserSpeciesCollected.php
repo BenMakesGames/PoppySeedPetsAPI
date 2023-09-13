@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\UserSpeciesCollectedRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass=UserSpeciesCollectedRepository::class)
+ * @ORM\Entity()
  * @ORM\Table(
  *     uniqueConstraints={
  *         @ORM\UniqueConstraint(name="user_species_idx", columns={"user_id", "species_id"})

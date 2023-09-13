@@ -2,10 +2,12 @@
 
 namespace App\Command;
 
+use App\Entity\User;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\StringFunctions;
 use App\Repository\UserRepository;
+use App\Service\IRandom;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -15,18 +17,15 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class ResetPassphraseCommand extends Command
 {
-    private $em;
-    private $userRepository;
-    private $passwordEncoder;
-    private $squirrel3;
+    private EntityManagerInterface $em;
+    private UserPasswordHasherInterface $passwordEncoder;
+    private IRandom $squirrel3;
 
     public function __construct(
-        EntityManagerInterface $em, UserRepository $userRepository, UserPasswordHasherInterface $passwordEncoder,
-        Squirrel3 $squirrel3
+        EntityManagerInterface $em, UserPasswordHasherInterface $passwordEncoder, Squirrel3 $squirrel3
     )
     {
         $this->em = $em;
-        $this->userRepository = $userRepository;
         $this->passwordEncoder = $passwordEncoder;
         $this->squirrel3 = $squirrel3;
 
@@ -52,7 +51,7 @@ class ResetPassphraseCommand extends Command
         if($email === '')
             throw new PSPFormValidationException('E-mail address may not be blank.');
 
-        $user = $this->userRepository->findOneBy([ 'email' => $email ]);
+        $user = $this->em->getRepository(User::class)->findOneBy([ 'email' => $email ]);
 
         if(!$user)
             throw new PSPNotFoundException('There is no user with that e-mail address.');

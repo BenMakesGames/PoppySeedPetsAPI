@@ -8,13 +8,11 @@ use App\Enum\UserStatEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
-use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class RecyclingService
 {
-    private UserRepository $userRepository;
     private EntityManagerInterface $em;
     private UserStatsRepository $userStatsRepository;
     private IRandom $squirrel3;
@@ -23,12 +21,10 @@ class RecyclingService
     private Clock $clock;
 
     public function __construct(
-        UserRepository $userRepository, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3, ResponseService $responseService,
-        TransactionService $transactionService, Clock $clock
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3,
+        ResponseService $responseService, TransactionService $transactionService, Clock $clock
     )
     {
-        $this->userRepository = $userRepository;
         $this->em = $em;
         $this->userStatsRepository = $userStatsRepository;
         $this->squirrel3 = $squirrel3;
@@ -59,7 +55,7 @@ class RecyclingService
      */
     public function recycleInventory(User $user, array $inventory): array
     {
-        $givingTree = $this->userRepository->findOneBy([ 'email' => 'giving-tree@poppyseedpets.com' ]);
+        $givingTree = $this->em->getRepository(User::class)->findOneBy([ 'email' => 'giving-tree@poppyseedpets.com' ]);
 
         if(!$givingTree)
             throw new \Exception('The "Giving Tree" NPC does not exist in the database!');

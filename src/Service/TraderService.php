@@ -19,7 +19,6 @@ use App\Model\TraderOfferCostOrYield;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MuseumItemRepository;
-use App\Repository\TradesUnlockedRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class TraderService
@@ -87,26 +86,23 @@ class TraderService
     ];
 
     private ItemRepository $itemRepository;
-    private $inventoryService;
-    private $transactionService;
-    private $tradesUnlockedRepository;
+    private InventoryService $inventoryService;
+    private TransactionService $transactionService;
     private IRandom $rng;
-    private $inventoryRepository;
+    private InventoryRepository $inventoryRepository;
     private MuseumItemRepository $museumItemRepository;
     private Clock $clock;
     private EntityManagerInterface $em;
 
     public function __construct(
-        ItemRepository $itemRepository, InventoryService $inventoryService,
-        TransactionService $transactionService, TradesUnlockedRepository $tradesUnlockedRepository, Squirrel3 $squirrel3,
-        InventoryRepository $inventoryRepository, MuseumItemRepository $museumItemRepository, Clock $clock,
-        EntityManagerInterface $em
+        ItemRepository $itemRepository, InventoryService $inventoryService, TransactionService $transactionService,
+        Squirrel3 $squirrel3, InventoryRepository $inventoryRepository, MuseumItemRepository $museumItemRepository,
+        Clock $clock, EntityManagerInterface $em
     )
     {
         $this->itemRepository = $itemRepository;
         $this->inventoryService = $inventoryService;
         $this->transactionService = $transactionService;
-        $this->tradesUnlockedRepository = $tradesUnlockedRepository;
         $this->rng = $squirrel3;
         $this->inventoryRepository = $inventoryRepository;
         $this->museumItemRepository = $museumItemRepository;
@@ -119,7 +115,7 @@ class TraderService
      */
     public function getUnlockedTradeGroups(User $user): array
     {
-        $tradesUnlocked = $this->tradesUnlockedRepository->findBy([
+        $tradesUnlocked = $this->em->getRepository(TradesUnlocked::class)->findBy([
             'user' => $user->getId()
         ]);
 

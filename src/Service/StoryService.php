@@ -18,7 +18,6 @@ use App\Model\StoryStep;
 use App\Model\StoryStepChoice;
 use App\Repository\InventoryRepository;
 use App\Repository\StoryRepository;
-use App\Repository\StorySectionRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,7 +27,6 @@ class StoryService
 {
     private EntityManagerInterface $em;
     private StoryRepository $storyRepository;
-    private StorySectionRepository $storySectionRepository;
     private UserQuestRepository $userQuestRepository;
     private InventoryService $inventoryService;
     private InventoryRepository $inventoryRepository;
@@ -46,15 +44,14 @@ class StoryService
     private Inventory $callingInventory;
 
     public function __construct(
-        EntityManagerInterface $em, StoryRepository $storyRepository, StorySectionRepository $storySectionRepository,
-        UserQuestRepository $userQuestRepository, InventoryService $inventoryService,
-        JsonLogicParserService $jsonLogicParserService, UserStatsRepository $userStatsRepository,
-        InventoryRepository $inventoryRepository, ResponseService $responseService, MuseumService $museumService
+        EntityManagerInterface $em, StoryRepository $storyRepository, UserQuestRepository $userQuestRepository,
+        InventoryService $inventoryService, JsonLogicParserService $jsonLogicParserService,
+        UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
+        ResponseService $responseService, MuseumService $museumService
     )
     {
         $this->em = $em;
         $this->storyRepository = $storyRepository;
-        $this->storySectionRepository = $storySectionRepository;
         $this->userQuestRepository = $userQuestRepository;
         $this->inventoryService = $inventoryService;
         $this->jsonLogicParserService = $jsonLogicParserService;
@@ -148,7 +145,7 @@ class StoryService
      */
     private function setCurrentSection(): void
     {
-        $this->currentSection = $this->storySectionRepository->find($this->step->getValue());
+        $this->currentSection = $this->em->getRepository(StorySection::class)->find($this->step->getValue());
 
         if(!$this->currentSection) throw new \Exception('Uh oh! You\'re apparently on a step of the story that doesn\'t exist! This is a terrible error! Please let Ben know!');
     }

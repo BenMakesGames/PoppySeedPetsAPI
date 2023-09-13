@@ -11,7 +11,6 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\GrammarFunctions;
 use App\Repository\PetRepository;
-use App\Repository\UserSpeciesCollectedRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -31,9 +30,8 @@ class ShowPetsController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function showPets(
-        EntityManagerInterface $em, Request $request, UserSpeciesCollectedRepository $userSpeciesCollectedRepository,
-        PetRepository $petRepository, UserStatsRepository $userStatsRepository, ResponseService $responseService,
-        IRandom $rng
+        EntityManagerInterface $em, Request $request, PetRepository $petRepository,
+        UserStatsRepository $userStatsRepository, ResponseService $responseService, IRandom $rng
     )
     {
         /** @var User $user */
@@ -60,7 +58,7 @@ class ShowPetsController extends AbstractController
 
         $petSpecies = array_map(fn(Pet $pet) => $pet->getSpecies()->getId(), $pets);
 
-        $alreadyDiscovered = $userSpeciesCollectedRepository->findBy([
+        $alreadyDiscovered = $em->getRepository(UserSpeciesCollected::class)->findBy([
             'user' => $user->getId(),
             'species' => $petSpecies
         ]);

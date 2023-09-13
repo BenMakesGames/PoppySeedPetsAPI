@@ -6,20 +6,14 @@ use App\Entity\Survey;
 use App\Entity\SurveyQuestion;
 use App\Entity\SurveyQuestionAnswer;
 use App\Entity\User;
-use App\Repository\SurveyQuestionAnswerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class SurveyService
 {
-    private SurveyQuestionAnswerRepository $surveyQuestionAnswerRepository;
     private EntityManagerInterface $em;
 
-    public function __construct(
-        SurveyQuestionAnswerRepository $surveyQuestionAnswerRepository,
-        EntityManagerInterface $em
-    )
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->surveyQuestionAnswerRepository = $surveyQuestionAnswerRepository;
         $this->em = $em;
     }
 
@@ -55,7 +49,7 @@ class SurveyService
         if(!$survey)
             return null;
 
-        $qb = $this->surveyQuestionAnswerRepository->createQueryBuilder('a');
+        $qb = $this->em->getRepository(SurveyQuestionAnswer::class)->createQueryBuilder('a');
 
         return $qb
             ->join('a.question', 'q')
@@ -71,7 +65,7 @@ class SurveyService
 
     public function upsertAnswer(SurveyQuestion $question, User $user, string $answerText): SurveyQuestionAnswer
     {
-        $answer = $this->surveyQuestionAnswerRepository->findOneBy([
+        $answer = $this->em->getRepository(SurveyQuestionAnswer::class)->findOneBy([
             'user' => $user,
             'question' => $question
         ]);
@@ -92,7 +86,7 @@ class SurveyService
 
     public function deleteAnswer(SurveyQuestion $question, User $user)
     {
-        $answer = $this->surveyQuestionAnswerRepository->findOneBy([
+        $answer = $this->em->getRepository(SurveyQuestionAnswer::class)->findOneBy([
             'user' => $user,
             'question' => $question
         ]);
