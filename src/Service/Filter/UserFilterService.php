@@ -2,8 +2,6 @@
 namespace App\Service\Filter;
 
 use App\Entity\User;
-use App\Repository\ItemRepository;
-use App\Repository\PetSpeciesRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;

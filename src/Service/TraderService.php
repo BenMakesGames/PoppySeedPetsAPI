@@ -1,6 +1,7 @@
 <?php
 namespace App\Service;
 
+use App\Entity\Item;
 use App\Entity\Trader;
 use App\Entity\TradesUnlocked;
 use App\Entity\User;
@@ -19,6 +20,7 @@ use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MuseumItemRepository;
 use App\Repository\TradesUnlockedRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 class TraderService
 {
@@ -92,11 +94,13 @@ class TraderService
     private $inventoryRepository;
     private MuseumItemRepository $museumItemRepository;
     private Clock $clock;
+    private EntityManagerInterface $em;
 
     public function __construct(
         ItemRepository $itemRepository, InventoryService $inventoryService,
         TransactionService $transactionService, TradesUnlockedRepository $tradesUnlockedRepository, Squirrel3 $squirrel3,
-        InventoryRepository $inventoryRepository, MuseumItemRepository $museumItemRepository, Clock $clock
+        InventoryRepository $inventoryRepository, MuseumItemRepository $museumItemRepository, Clock $clock,
+        EntityManagerInterface $em
     )
     {
         $this->itemRepository = $itemRepository;
@@ -107,6 +111,7 @@ class TraderService
         $this->inventoryRepository = $inventoryRepository;
         $this->museumItemRepository = $museumItemRepository;
         $this->clock = $clock;
+        $this->em = $em;
     }
 
     /**
@@ -597,7 +602,7 @@ class TraderService
     {
         $offers = [];
 
-        $uniqueOfferItems = $this->itemRepository->findTwoForSpecialTraderOffer($user->getDailySeed());
+        $uniqueOfferItems = $this->findThreeForSpecialTraderOffer($user->getDailySeed());
 
         foreach($uniqueOfferItems as $uniqueOfferItem)
         {
@@ -769,6 +774,34 @@ class TraderService
         }
 
         return $offers;
+    }
+
+    /**
+     * @return Item[]
+     */
+    public function findThreeForSpecialTraderOffer(int $seed): array
+    {
+        $count = $this->em->getRepository(Item::class)->createQueryBuilder('i')
+            ->select('COUNT(i)')
+            ->andWhere('i.recycleValue > 0')
+            ->andWhere('i.treasure IS NULL')
+            ->andWhere('i.fuel = 0')
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+
+        $random = ($seed * 514229) % ($count - 2);
+
+        return $this->em->getRepository(Item::class)->createQueryBuilder('i')
+            ->andWhere('i.recycleValue > 0')
+            ->andWhere('i.treasure IS NULL')
+            ->andWhere('i.fuel = 0')
+            ->orderBy('i.id', 'ASC')
+            ->setFirstResult($random)
+            ->setMaxResults(3)
+            ->getQuery()
+            ->execute()
+        ;
     }
 
     private function getMetalOffers(User $user, array $quantities): array

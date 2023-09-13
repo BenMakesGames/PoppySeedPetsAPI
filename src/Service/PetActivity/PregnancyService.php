@@ -12,13 +12,11 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\UserStatEnum;
-use App\Functions\ArrayFunctions;
 use App\Functions\PetColorFunctions;
 use App\Model\PetShelterPet;
 use App\Repository\MeritRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
-use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\IRandom;
@@ -35,7 +33,6 @@ class PregnancyService
     private ResponseService $responseService;
     private PetExperienceService $petExperienceService;
     private UserQuestRepository $userQuestRepository;
-    private PetSpeciesRepository $petSpeciesRepository;
     private UserStatsRepository $userStatsRepository;
     private MeritRepository $meritRepository;
     private PetFactory $petFactory;
@@ -43,9 +40,8 @@ class PregnancyService
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
-        EntityManagerInterface $em, PetRepository $petRepository,
-        ResponseService $responseService, PetExperienceService $petExperienceService,
-        UserQuestRepository $userQuestRepository, PetSpeciesRepository $petSpeciesRepository,
+        EntityManagerInterface $em, PetRepository $petRepository, ResponseService $responseService,
+        PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
         UserStatsRepository $userStatsRepository, MeritRepository $meritRepository, PetFactory $petFactory,
         Squirrel3 $squirrel3, PetActivityLogTagRepository $petActivityLogTagRepository
     )
@@ -55,7 +51,6 @@ class PregnancyService
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
         $this->userQuestRepository = $userQuestRepository;
-        $this->petSpeciesRepository = $petSpeciesRepository;
         $this->userStatsRepository = $userStatsRepository;
         $this->meritRepository = $meritRepository;
         $this->petFactory = $petFactory;
@@ -141,7 +136,7 @@ class PregnancyService
 
     public function getRandomBreedingSpecies(): PetSpecies
     {
-        $species = $this->petSpeciesRepository->findBy([ 'availableFromBreeding' => true ]);
+        $species = $this->em->getRepository(PetSpecies::class)->findBy([ 'availableFromBreeding' => true ]);
 
         return $this->squirrel3->rngNextFromArray($species);
     }

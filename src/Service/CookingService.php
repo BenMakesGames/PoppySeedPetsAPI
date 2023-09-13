@@ -14,7 +14,6 @@ use App\Functions\NumberFunctions;
 use App\Model\ItemQuantity;
 use App\Model\PrepareRecipeResults;
 use App\Repository\InventoryRepository;
-use App\Repository\KnownRecipesRepository;
 use App\Repository\RecipeAttemptedRepository;
 use App\Repository\RecipeRepository;
 use App\Repository\UserStatsRepository;
@@ -26,23 +25,20 @@ class CookingService
     private InventoryService $inventoryService;
     private EntityManagerInterface $em;
     private UserStatsRepository $userStatsRepository;
-    private KnownRecipesRepository $knownRecipesRepository;
     private InventoryRepository $inventoryRepository;
     private RecipeAttemptedRepository $recipeAttemptedRepository;
     private IRandom $squirrel3;
 
     public function __construct(
         RecipeRepository $recipeRepository, InventoryService $inventoryService, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository, KnownRecipesRepository $knownRecipesRepository,
-        InventoryRepository $inventoryRepository, RecipeAttemptedRepository $recipeAttemptedRepository,
-        Squirrel3 $squirrel3
+        UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
+        RecipeAttemptedRepository $recipeAttemptedRepository, Squirrel3 $squirrel3
     )
     {
         $this->recipeRepository = $recipeRepository;
         $this->inventoryService = $inventoryService;
         $this->em = $em;
         $this->userStatsRepository = $userStatsRepository;
-        $this->knownRecipesRepository = $knownRecipesRepository;
         $this->inventoryRepository = $inventoryRepository;
         $this->recipeAttemptedRepository = $recipeAttemptedRepository;
         $this->squirrel3 = $squirrel3;
@@ -246,7 +242,7 @@ class CookingService
 
     public function learnRecipe(User $user, Recipe $recipe): bool
     {
-        $alreadyKnownRecipe = $this->knownRecipesRepository->count([
+        $alreadyKnownRecipe = $this->em->getRepository(KnownRecipes::class)->count([
             'user' => $user,
             'recipe' => $recipe
         ]) > 0;

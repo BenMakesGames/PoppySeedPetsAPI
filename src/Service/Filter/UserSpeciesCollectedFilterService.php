@@ -1,9 +1,9 @@
 <?php
 namespace App\Service\Filter;
 
-use App\Entity\User;
-use App\Repository\PetSpeciesRepository;
-use App\Repository\UserSpeciesCollectedRepository;
+use App\Entity\UserSpeciesCollected;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
@@ -13,11 +13,11 @@ class UserSpeciesCollectedFilterService
 
     public const PAGE_SIZE = 20;
 
-    private UserSpeciesCollectedRepository $repository;
+    private EntityRepository $repository;
 
-    public function __construct(UserSpeciesCollectedRepository $petSpeciesRepository)
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->repository = $petSpeciesRepository;
+        $this->repository = $em->getRepository(UserSpeciesCollected::class);
 
         $this->filterer = new Filterer(
             self::PAGE_SIZE,

@@ -39,8 +39,7 @@ class BlueprintController extends AbstractController
      */
     public function installComposter(
         Inventory $inventory, ResponseService $responseService, PetRepository $petRepository, Request $request,
-        PetExperienceService $petExperienceService, EntityManagerInterface $em,
-        PetActivityLogTagRepository $activityLogTagRepository
+        PetExperienceService $petExperienceService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -63,7 +62,7 @@ class BlueprintController extends AbstractController
         $flashMessage = 'You install the Composter with ' . $pet->getName() . '!';
 
         $this->rewardHelper(
-            $petExperienceService, $responseService, $activityLogTagRepository,
+            $petExperienceService, $responseService, $em,
             $pet,
             null,
             $flashMessage,
@@ -84,8 +83,7 @@ class BlueprintController extends AbstractController
      */
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, PetExperienceService $petExperienceService,
-        PetActivityLogTagRepository $activityLogTagRepository
+        PetRepository $petRepository, PetExperienceService $petExperienceService
     )
     {
         /** @var User $user */
@@ -103,7 +101,7 @@ class BlueprintController extends AbstractController
         $em->remove($inventory);
 
         $this->rewardHelper(
-            $petExperienceService, $responseService, $activityLogTagRepository,
+            $petExperienceService, $responseService, $em,
             $pet,
             PetSkillEnum::CRAFTS,
             $pet->getName() . ' helps you build the Basement. Together, you\'re done in no time! (Video game logic!) ("Basement" has been added to the menu!)',
@@ -125,7 +123,7 @@ class BlueprintController extends AbstractController
     public function buildBeehive(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         InventoryRepository $inventoryRepository, BeehiveService $beehiveService, PetExperienceService $petExperienceService,
-        PetRepository $petRepository, PetActivityLogTagRepository $activityLogTagRepository
+        PetRepository $petRepository
     )
     {
         /** @var User $user */
@@ -167,7 +165,7 @@ class BlueprintController extends AbstractController
             $your = $magnifyingGlass->getWearer()->getName() . '\'s';
 
         $this->rewardHelper(
-            $petExperienceService, $responseService, $activityLogTagRepository,
+            $petExperienceService, $responseService, $em,
             $pet,
             PetSkillEnum::CRAFTS,
             'The blueprint is _super_ tiny, but with the help of ' . $your . ' ' . $magnifyingGlass->getFullItemName() . ', you\'re able to make it all out, and you and ' . $pet->getName() . ' put the thing together! ("Beehive" has been added to the menu!)',
@@ -185,8 +183,7 @@ class BlueprintController extends AbstractController
      */
     public function claim(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, PetExperienceService $petExperienceService,
-        PetActivityLogTagRepository $activityLogTagRepository
+        PetRepository $petRepository, PetExperienceService $petExperienceService
     )
     {
         /** @var User $user */
@@ -208,7 +205,7 @@ class BlueprintController extends AbstractController
         UserUnlockedFeatureHelpers::create($em, $user, UnlockableFeatureEnum::Greenhouse);
 
         $this->rewardHelper(
-            $petExperienceService, $responseService, $activityLogTagRepository,
+            $petExperienceService, $responseService, $em,
             $pet,
             PetSkillEnum::CRAFTS,
             'You and ' . $pet->getName() . ' clear out a space in the public Greenhouse! ("Greenhouse" has been added to the menu!)',
@@ -228,8 +225,7 @@ class BlueprintController extends AbstractController
      */
     public function buildBirdBath(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, InventoryRepository $inventoryRepository, PetExperienceService $petExperienceService,
-        PetActivityLogTagRepository $activityLogTagRepository
+        PetRepository $petRepository, InventoryRepository $inventoryRepository, PetExperienceService $petExperienceService
     )
     {
         /** @var User $user */
@@ -261,7 +257,7 @@ class BlueprintController extends AbstractController
             $flashMessage .= ' (How alliterative!)';
 
         $this->rewardHelper(
-            $petExperienceService, $responseService, $activityLogTagRepository,
+            $petExperienceService, $responseService, $em,
             $pet,
             PetSkillEnum::CRAFTS,
             $flashMessage,
@@ -283,7 +279,7 @@ class BlueprintController extends AbstractController
     public function installFishStatue(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository, InventoryRepository $inventoryRepository, PetExperienceService $petExperienceService,
-        InventoryService $inventoryService, PetActivityLogTagRepository $activityLogTagRepository
+        InventoryService $inventoryService
     )
     {
         /** @var User $user */
@@ -315,7 +311,7 @@ class BlueprintController extends AbstractController
         $flashMessage = 'You install a Fish Statue with ' . $pet->getName() . '!';
 
         $this->rewardHelper(
-            $petExperienceService, $responseService, $activityLogTagRepository,
+            $petExperienceService, $responseService, $em,
             $pet,
             PetSkillEnum::CRAFTS,
             $flashMessage,
@@ -341,7 +337,10 @@ class BlueprintController extends AbstractController
         return $pet;
     }
 
-    private function rewardHelper(PetExperienceService $petExperienceService, ResponseService $responseService, PetActivityLogTagRepository $activityLogTagRepository, Pet $pet, ?string $skill, string $flashMessage, string $logMessage)
+    private function rewardHelper(
+        PetExperienceService $petExperienceService, ResponseService $responseService,
+        EntityManagerInterface $em, Pet $pet, ?string $skill, string $flashMessage, string $logMessage
+    )
     {
         $squirrel3 = new Squirrel3();
         $changes = new PetChanges($pet);
@@ -369,7 +368,7 @@ class BlueprintController extends AbstractController
             $activityLog
                 ->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP)
                 ->setEntry($activityLog->getEntry() . ' +1 ' . ucfirst($skill) . '!')
-                ->addTags($activityLogTagRepository->deprecatedFindByNames([ 'Level-up' ]));
+                ->addTags(PetActivityLogTagRepository::findByNames($em, [ 'Level-up' ]));
         }
     }
 }

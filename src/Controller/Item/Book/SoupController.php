@@ -3,15 +3,8 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Entity\KnownRecipes;
-use App\Entity\Recipe;
 use App\Entity\User;
-use App\Functions\ArrayFunctions;
-use App\Repository\InventoryRepository;
-use App\Repository\KnownRecipesRepository;
-use App\Repository\RecipeRepository;
 use App\Service\CookingService;
-use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;

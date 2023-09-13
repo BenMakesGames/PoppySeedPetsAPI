@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\PetSpecies;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
@@ -11,7 +12,6 @@ use App\Exceptions\PSPNotFoundException;
 use App\Repository\InventoryRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
-use App\Repository\PetSpeciesRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
@@ -42,8 +42,7 @@ class PhilosophersStoneController extends AbstractController
     public function useStone(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         PetFactory $petFactory, Request $request, InventoryRepository $inventoryRepository,
-        PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository, PetRepository $petRepository,
-        UserStatsRepository $userStatsRepository
+        MeritRepository $meritRepository, PetRepository $petRepository, UserStatsRepository $userStatsRepository
     )
     {
         /** @var User $user */
@@ -64,7 +63,7 @@ class PhilosophersStoneController extends AbstractController
 
         $speciesInfo = self::PLUSHIES[$plushy->getItem()->getName()];
 
-        $species = $petSpeciesRepository->findOneBy([ 'name' => $speciesInfo['species'] ]);
+        $species = $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => $speciesInfo['species'] ]);
 
         if(!$species)
             throw new \Exception('Something has gone terribly wrong. Ben has been notified; hopefully he\'ll fix it within a few hours...');

@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\DragonHostageRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass=DragonHostageRepository::class)
+ * @ORM\Entity()
  */
 class DragonHostage
 {

@@ -1,8 +1,10 @@
 <?php
 namespace App\Service\Filter;
 
+use App\Entity\ParkEvent;
 use App\Entity\User;
-use App\Repository\ParkEventRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
@@ -12,16 +14,12 @@ class ParkEventHistoryFilterService
 
     public const PAGE_SIZE = 20;
 
-    /**
-     * @var User
-     */
-    private $user;
+    private ?User $user;
+    private EntityRepository $repository;
 
-    private $repository;
-
-    public function __construct(ParkEventRepository $parkEventRepository)
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->repository = $parkEventRepository;
+        $this->repository = $em->getRepository(ParkEvent::class);
 
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
@@ -35,6 +33,8 @@ class ParkEventHistoryFilterService
 
     public function createQueryBuilder(): QueryBuilder
     {
+        if(!$this->user) throw new \Exception('User not set.');
+
         return $this->repository->createQueryBuilder('e')
             ->leftJoin('e.participants', 'p')
             ->andWhere('p.owner = :user')

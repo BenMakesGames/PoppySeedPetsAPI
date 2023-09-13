@@ -12,38 +12,39 @@ use App\Functions\GrammarFunctions;
 use App\Repository\DreamRepository;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
-use App\Repository\PetSpeciesRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use Doctrine\ORM\EntityManagerInterface;
 
 class DreamingService
 {
     private InventoryService $inventoryService;
     private ResponseService $responseService;
-    private PetSpeciesRepository $petSpeciesRepository;
     private PetExperienceService $petExperienceService;
     private ItemRepository $itemRepository;
     private IRandom $squirrel3;
     private DreamRepository $dreamRepository;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private EntityManagerInterface $em;
 
     public function __construct(
-        InventoryService $inventoryService, ResponseService $responseService, PetSpeciesRepository $petSpeciesRepository,
+        InventoryService $inventoryService, ResponseService $responseService,
         PetExperienceService $petExperienceService, ItemRepository $itemRepository, Squirrel3 $squirrel3,
-        DreamRepository $dreamRepository, PetActivityLogTagRepository $petActivityLogTagRepository
+        DreamRepository $dreamRepository, PetActivityLogTagRepository $petActivityLogTagRepository,
+        EntityManagerInterface $em
     )
     {
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
-        $this->petSpeciesRepository = $petSpeciesRepository;
         $this->petExperienceService = $petExperienceService;
         $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
         $this->dreamRepository = $dreamRepository;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->em = $em;
     }
 
     private const LOCATIONS = [
@@ -140,7 +141,7 @@ class DreamingService
         $dream = $this->dreamRepository->findRandom($this->squirrel3);
 
         /** @var PetSpecies $species */
-        $species = $this->squirrel3->rngNextFromArray($this->petSpeciesRepository->findAll());
+        $species = $this->squirrel3->rngNextFromArray($this->em->getRepository(PetSpecies::class)->findAll());
 
         $replacements = $this->generateReplacementsDictionary($item, $pet, $species);
 

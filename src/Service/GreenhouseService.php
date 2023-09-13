@@ -18,11 +18,9 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Model\MeritInfo;
-use App\Repository\GreenhousePlantRepository;
 use App\Repository\InventoryRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
-use App\Repository\PetSpeciesRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
@@ -39,19 +37,16 @@ class GreenhouseService
     private UserStatsRepository $userStatsRepository;
     private IRandom $squirrel3;
     private UserQuestRepository $userQuestRepository;
-    private GreenhousePlantRepository $greenhousePlantRepository;
     private InventoryRepository $inventoryRepository;
     private NormalizerInterface $normalizer;
-    private PetSpeciesRepository $petSpeciesRepository;
     private SpiceRepository $spiceRepository;
     private Clock $clock;
 
     public function __construct(
         InventoryService $inventoryService, PetRepository $petRepository, PetFactory $petFactory, Squirrel3 $squirrel3,
         EntityManagerInterface $em, MeritRepository $meritRepository, UserStatsRepository $userStatsRepository,
-        UserQuestRepository $userQuestRepository, GreenhousePlantRepository $greenhousePlantRepository,
-        InventoryRepository $inventoryRepository, NormalizerInterface $normalizer,
-        PetSpeciesRepository $petSpeciesRepository, SpiceRepository $spiceRepository, Clock $clock
+        UserQuestRepository $userQuestRepository, InventoryRepository $inventoryRepository, NormalizerInterface $normalizer,
+        SpiceRepository $spiceRepository, Clock $clock
     )
     {
         $this->inventoryService = $inventoryService;
@@ -62,10 +57,8 @@ class GreenhouseService
         $this->userStatsRepository = $userStatsRepository;
         $this->squirrel3 = $squirrel3;
         $this->userQuestRepository = $userQuestRepository;
-        $this->greenhousePlantRepository = $greenhousePlantRepository;
         $this->inventoryRepository = $inventoryRepository;
         $this->normalizer = $normalizer;
-        $this->petSpeciesRepository = $petSpeciesRepository;
         $this->spiceRepository = $spiceRepository;
         $this->clock = $clock;
     }
@@ -226,7 +219,7 @@ class GreenhouseService
         return [
             'greenhouse' => $user->getGreenhouse(),
             'weeds' => $this->getWeedText($user),
-            'plants' => $this->greenhousePlantRepository->findBy([ 'owner' => $user->getId() ]),
+            'plants' => $this->em->getRepository(GreenhousePlant::class)->findBy([ 'owner' => $user->getId() ]),
             'fertilizer' => $this->normalizer->normalize($fertilizers, null, [ 'groups' => [ SerializationGroupEnum::GREENHOUSE_FERTILIZER ] ]),
         ];
     }
@@ -259,7 +252,7 @@ class GreenhouseService
 
     public function makeDapperSwanPet(GreenhousePlant $plant): string
     {
-        $species = $this->petSpeciesRepository->findOneBy([ 'name' => 'Dapper Swan' ]);
+        $species = $this->em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Dapper Swan' ]);
 
         $colorA = $this->squirrel3->rngNextTweakedColor($this->squirrel3->rngNextFromArray([
             'EEEEEE', 'EEDDCC', 'DDDDBB'
@@ -289,7 +282,7 @@ class GreenhouseService
 
     public function makeMushroomPet(GreenhousePlant $plant)
     {
-        $species = $this->petSpeciesRepository->findOneBy([ 'name' => 'Mushroom' ]);
+        $species = $this->em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Mushroom' ]);
 
         $colorA = $this->squirrel3->rngNextTweakedColor($this->squirrel3->rngNextFromArray([
             'e32c2c', 'e5e5d6', 'dd8a09', 'a8443d'
@@ -320,7 +313,7 @@ class GreenhouseService
 
     public function makeTomatePet(GreenhousePlant $plant)
     {
-        $species = $this->petSpeciesRepository->findOneBy([ 'name' => 'Tomate' ]);
+        $species = $this->em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Tomate' ]);
 
         $colorA = $this->squirrel3->rngNextTweakedColor($this->squirrel3->rngNextFromArray([
             'FF6622', 'FFCC22', '77FF22', 'FF2222', '7722FF'

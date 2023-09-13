@@ -3,13 +3,13 @@ namespace App\Controller\Item\Scroll;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\PetSpecies;
 use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\GrammarFunctions;
 use App\Repository\PetRepository;
-use App\Repository\PetSpeciesRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\PetFactory;
@@ -33,7 +33,7 @@ class SummoningSomethingFriendlyController extends AbstractController
     public function summonSomethingFriendly(
         Inventory $inventory, ResponseService $responseService, PetRepository $petRepository,
         UserRepository $userRepository, UserStatsRepository $userStatsRepository, EntityManagerInterface $em,
-        PetSpeciesRepository $petSpeciesRepository, PetFactory $petFactory, Squirrel3 $squirrel3
+        PetFactory $petFactory, Squirrel3 $squirrel3
     ): JsonResponse
     {
         /** @var User $user */
@@ -53,7 +53,7 @@ class SummoningSomethingFriendlyController extends AbstractController
         {
             $pet = $petFactory->createRandomPetOfSpecies(
                 $user,
-                $petSpeciesRepository->findOneBy([ 'name' => 'Sentinel' ])
+                $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Sentinel' ])
             );
 
             $gotASentinel = true;
@@ -81,7 +81,7 @@ class SummoningSomethingFriendlyController extends AbstractController
 
                     if($squirrel3->rngNextInt(1, 100) <= $percentChanceOfTransformation)
                     {
-                        $species = $squirrel3->rngNextFromArray($petSpeciesRepository->findAll());
+                        $species = $squirrel3->rngNextFromArray($em->getRepository(PetSpecies::class)->findAll());
 
                         if($species->getName() !== 'Sentinel' && $species->getId() != $pet->getSpecies()->getId())
                         {
@@ -101,7 +101,7 @@ class SummoningSomethingFriendlyController extends AbstractController
 
         if($pet === null)
         {
-            $allSpecies = $petSpeciesRepository->findAll();
+            $allSpecies = $em->getRepository(PetSpecies::class)->findAll();
 
             $pet = $petFactory->createRandomPetOfSpecies($user, $squirrel3->rngNextFromArray($allSpecies));
 

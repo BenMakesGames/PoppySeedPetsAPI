@@ -8,6 +8,7 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\HolidayEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SocialTimeWantEnum;
 use App\Enum\SpiritCompanionStarEnum;
@@ -17,7 +18,6 @@ use App\Functions\GrammarFunctions;
 use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRelationshipRepository;
-use App\Repository\PetRepository;
 use App\Service\PetActivity\Holiday\AwaOdoriService;
 use App\Service\PetActivity\Holiday\HoliService;
 use App\Service\PetActivity\PregnancyService;
@@ -26,7 +26,6 @@ use Doctrine\ORM\EntityManagerInterface;
 class PetSocialActivityService
 {
     private EntityManagerInterface $em;
-    private PetRepository $petRepository;
     private ResponseService $responseService;
     private PetRelationshipService $petRelationshipService;
     private PetGroupService $petGroupService;
@@ -36,20 +35,17 @@ class PetSocialActivityService
     private WeatherService $weatherService;
     private HoliService $holiService;
     private AwaOdoriService $awaOdoriService;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
     private PregnancyService $pregnancyService;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, PetRelationshipService $petRelationshipService,
-        PetRepository $petRepository, Squirrel3 $squirrel3, PetGroupService $petGroupService,
-        PetExperienceService $petExperienceService, PetRelationshipRepository $petRelationshipRepository,
-        WeatherService $weatherService, HoliService $holiService, PetActivityLogTagRepository $petActivityLogTagRepository,
+        Squirrel3 $squirrel3, PetGroupService $petGroupService, PetExperienceService $petExperienceService,
+        PetRelationshipRepository $petRelationshipRepository, WeatherService $weatherService, HoliService $holiService,
         PregnancyService $pregnancyService, AwaOdoriService $awaOdoriService
     )
     {
         $this->em = $em;
         $this->squirrel3 = $squirrel3;
-        $this->petRepository = $petRepository;
         $this->responseService = $responseService;
         $this->petRelationshipService = $petRelationshipService;
         $this->petGroupService = $petGroupService;
@@ -57,7 +53,6 @@ class PetSocialActivityService
         $this->petRelationshipRepository = $petRelationshipRepository;
         $this->weatherService = $weatherService;
         $this->holiService = $holiService;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->pregnancyService = $pregnancyService;
         $this->awaOdoriService = $awaOdoriService;
     }
@@ -536,7 +531,7 @@ class PetSocialActivityService
 
         $activityLog = $this->responseService->createActivityLog($pet, $message, 'companions/' . $companion->getImage(), $changes->compare($pet))
             ->addInterestingness($activityInterestingness)
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($activityTags))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, $activityTags))
         ;
 
         if($teachingStat)
@@ -589,12 +584,12 @@ class PetSocialActivityService
 
         $petLog
             ->setChanges($petChanges->compare($pet->getPet()))
-            ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => '1-on-1 Hangout' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ '1-on-1 Hangout' ]))
         ;
 
         $friendLog
             ->setChanges($friendChanges->compare($friend->getPet()))
-            ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => '1-on-1 Hangout' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ '1-on-1 Hangout' ]))
         ;
 
         if($petLog->getPet()->getOwner()->getId() === $friendLog->getPet()->getOwner()->getId())
@@ -607,7 +602,16 @@ class PetSocialActivityService
     private function meetRoommates(Pet $pet): bool
     {
         /** @var Pet[] $otherPets */
-        $otherPets = $this->petRepository->getRoommates($pet);
+        $otherPets = $this->em->getRepository(Pet::class)->createQueryBuilder('p')
+            ->andWhere('p.owner = :owner')
+            ->andWhere('p.location = :home')
+            ->andWhere('p.id != :thisPet')
+            ->setParameter('owner', $pet->getOwner())
+            ->setParameter('thisPet', $pet->getId())
+            ->setParameter('home', PetLocationEnum::HOME)
+            ->getQuery()
+            ->getResult()
+        ;
 
         $metNewPet = false;
 

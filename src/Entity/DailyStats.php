@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\DailyStatsRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass=DailyStatsRepository::class)
+ * @ORM\Entity()
  */
 class DailyStats
 {

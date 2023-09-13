@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\PetSpecies;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
@@ -10,14 +11,12 @@ use App\Enum\PetLocationEnum;
 use App\Functions\PetColorFunctions;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
-use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -31,9 +30,8 @@ class EggController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function hatchPolyp(
-        Inventory $inventory, ResponseService $responseService, Squirrel3 $squirrel3,
-        EntityManagerInterface $em, PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository,
-        MeritRepository $meritRepository, PetFactory $petFactory
+        Inventory $inventory, ResponseService $responseService, Squirrel3 $squirrel3, EntityManagerInterface $em,
+        PetRepository $petRepository, MeritRepository $meritRepository, PetFactory $petFactory
     )
     {
         /** @var User $user */
@@ -41,7 +39,7 @@ class EggController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'egg/jellingPolyp/#/hatch');
 
-        $jelling = $petSpeciesRepository->findOneBy([ 'name' => 'Sága Jelling' ]);
+        $jelling = $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Sága Jelling' ]);
 
         if(!$jelling)
             throw new \Exception('The species "Sága Jelling" does not exist! :| Make Ben fix this!');
@@ -116,8 +114,8 @@ class EggController extends AbstractController
      */
     public function hatchWeirdBlueEgg(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
-        EntityManagerInterface $em, PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository,
-        MeritRepository $meritRepository, PetFactory $petFactory, Squirrel3 $squirrel3
+        EntityManagerInterface $em, PetRepository $petRepository, MeritRepository $meritRepository,
+        PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
         /** @var User $user */
@@ -125,7 +123,7 @@ class EggController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'egg/weird-blue/#/hatch');
 
-        $starMonkey = $petSpeciesRepository->findOneBy([ 'name' => 'Star Monkey' ]);
+        $starMonkey = $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Star Monkey' ]);
 
         if(!$starMonkey)
             throw new \Exception('The species "Star Monkey" does not exist! :| Make Ben fix this!');
@@ -198,8 +196,8 @@ class EggController extends AbstractController
      */
     public function openMetalBox(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
-        EntityManagerInterface $em, PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository,
-        MeritRepository $meritRepository, PetFactory $petFactory, Squirrel3 $squirrel3
+        EntityManagerInterface $em, PetRepository $petRepository, MeritRepository $meritRepository,
+        PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
         /** @var User $user */
@@ -207,7 +205,7 @@ class EggController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'egg/metalBox/#/open');
 
-        $grabber = $petSpeciesRepository->findOneBy([ 'name' => 'Grabber' ]);
+        $grabber = $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Grabber' ]);
 
         if(!$grabber)
             throw new \Exception('The species "Grabber" does not exist! :| Make Ben fix this!');

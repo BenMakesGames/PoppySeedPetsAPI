@@ -11,15 +11,13 @@ use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
 use App\Model\PetShelterPet;
 use App\Repository\MeritRepository;
-use App\Repository\PetRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetFactory
 {
-    private $em;
-    private $petRepository;
-    private $meritRepository;
-    private $squirrel3;
+    private EntityManagerInterface $em;
+    private MeritRepository $meritRepository;
+    private IRandom $squirrel3;
 
     private const SENTINEL_NAMES = [
         'Sentinel',
@@ -40,11 +38,10 @@ class PetFactory
     ];
 
     public function __construct(
-        EntityManagerInterface $em, PetRepository $petRepository, MeritRepository $meritRepository, Squirrel3 $squirrel3
+        EntityManagerInterface $em, MeritRepository $meritRepository, Squirrel3 $squirrel3
     )
     {
         $this->em = $em;
-        $this->petRepository = $petRepository;
         $this->meritRepository = $meritRepository;
         $this->squirrel3 = $squirrel3;
     }
@@ -82,7 +79,7 @@ class PetFactory
     {
         $now = new \DateTimeImmutable();
 
-        $petCount = $this->petRepository->createQueryBuilder('p')
+        $petCount = $this->em->getRepository(Pet::class)->createQueryBuilder('p')
             ->select('COUNT(p.id)')
             ->andWhere('p.birthDate<:today')
             ->setParameter('today', $now)
@@ -90,7 +87,7 @@ class PetFactory
             ->getSingleScalarResult()
         ;
 
-        $basePet = $this->petRepository->createQueryBuilder('p')
+        $basePet = $this->em->getRepository(Pet::class)->createQueryBuilder('p')
             ->andWhere('p.birthDate<:today')
             ->setParameter('today', $now)
             ->setMaxResults(1)

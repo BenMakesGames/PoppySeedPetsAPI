@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\PetSpeciesRepository")
+ * @ORM\Entity()
  * @ORM\Table(indexes={
  *     @ORM\Index(name="name_sort_idx", columns={"name_sort"}),
  *     @ORM\Index(name="family_idx", columns={"family"}),

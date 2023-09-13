@@ -2,13 +2,13 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\PetSpecies;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\PetLocationEnum;
 use App\Functions\PetColorFunctions;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
-use App\Repository\PetSpeciesRepository;
 use App\Service\InventoryService;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
@@ -29,7 +29,7 @@ class BeeLarvaController extends AbstractController
      */
     public function hatch(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, PetSpeciesRepository $petSpeciesRepository, Squirrel3 $rng,
+        InventoryService $inventoryService, Squirrel3 $rng,
         PetFactory $petFactory, MeritRepository $meritRepository, PetRepository $petRepository
     )
     {
@@ -47,7 +47,7 @@ class BeeLarvaController extends AbstractController
 
         $em->flush();
 
-        $giantBeeSpecies = $petSpeciesRepository->findOneBy([ 'name' => 'Giant Bee' ]);
+        $giantBeeSpecies = $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Giant Bee' ]);
 
         $beeName = $rng->rngNextFromArray([
             'Mellifera', 'Bombus', 'Megachile', 'Eucerini', 'Xylocopa', 'Ceratina', 'Osmia', 'Anthidium',

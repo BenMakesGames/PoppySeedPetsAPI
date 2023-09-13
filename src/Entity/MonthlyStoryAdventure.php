@@ -2,14 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\MonthlyStoryAdventureRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass=MonthlyStoryAdventureRepository::class)
+ * @ORM\Entity()
  */
 class MonthlyStoryAdventure
 {

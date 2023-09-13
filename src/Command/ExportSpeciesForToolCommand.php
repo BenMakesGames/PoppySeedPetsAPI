@@ -2,8 +2,6 @@
 namespace App\Command;
 
 use App\Entity\PetSpecies;
-use App\Repository\PetRelationshipRepository;
-use App\Repository\PetSpeciesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -11,11 +9,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ExportSpeciesForToolCommand extends Command
 {
-    private PetSpeciesRepository $petSpeciesRepository;
+    private EntityManagerInterface $em;
 
-    public function __construct(PetSpeciesRepository $petSpeciesRepository)
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->petSpeciesRepository = $petSpeciesRepository;
+        $this->em = $em;
 
         parent::__construct();
     }
@@ -30,7 +28,7 @@ class ExportSpeciesForToolCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $species = $this->petSpeciesRepository->findAll();
+        $species = $this->em->getRepository(PetSpecies::class)->findAll();
 
         $pets = array_map(function(PetSpecies $species) {
             return [

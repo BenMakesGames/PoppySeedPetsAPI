@@ -7,7 +7,6 @@ use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
-use App\Repository\MonthlyStoryAdventureRepository;
 use App\Repository\MonthlyStoryAdventureStepRepository;
 use App\Repository\UserMonthlyStoryAdventureStepCompletedRepository;
 use App\Repository\UserQuestRepository;

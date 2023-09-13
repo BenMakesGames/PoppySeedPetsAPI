@@ -2,11 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\ItemGrammarRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=ItemGrammarRepository::class)
+ * @ORM\Entity()
  */
 class ItemGrammar
 {
