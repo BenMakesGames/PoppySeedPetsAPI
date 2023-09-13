@@ -72,6 +72,8 @@ class ResponseService
      */
     public function success($data = null, array $groups = []): JsonResponse
     {
+        $time = microtime(true);
+
         /** @var User $user */
         $user = $this->getUser();
 
@@ -112,7 +114,11 @@ class ResponseService
             'json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS,
         ]);
 
-        return new JsonResponse($json, Response::HTTP_OK, [], true);
+        $response = new JsonResponse($json, Response::HTTP_OK, [], true);
+
+        $this->performanceProfiler->logExecutionTime(__METHOD__, microtime(true) - $time);
+
+        return $response;
     }
 
     /**
@@ -171,8 +177,6 @@ class ResponseService
 
     private function injectUserData(array &$responseData)
     {
-        $time = microtime(true);
-
         /** @var User $user */
         $user = $this->getUser();
 
@@ -181,11 +185,6 @@ class ResponseService
             $responseData['user'] = $this->normalizer->normalize($user, null, [ 'groups' => [ SerializationGroupEnum::MY_ACCOUNT ] ]);
             $responseData['user']['menu'] = $this->normalizer->normalize($this->userMenuService->getUserMenuItems($user), null, [ 'groups' => [ SerializationGroupEnum::MY_MENU ] ]);
         }
-
-        if($user)
-            $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - with user', microtime(true) - $time);
-        else
-            $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - without user', microtime(true) - $time);
     }
 
     public function createActivityLog(Pet $pet, string $entry, string $icon, ?PetChangesSummary $changes = null): PetActivityLog
