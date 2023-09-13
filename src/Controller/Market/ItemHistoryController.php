@@ -1,9 +1,8 @@
 <?php
 namespace App\Controller\Market;
 
-use App\Entity\DailyMarketItemAverage;
 use App\Entity\Item;
-use App\Enum\SerializationGroupEnum;
+use App\Functions\SimpleDb;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,31 +18,53 @@ class ItemHistoryController extends AbstractController
      * @Route("/history/{item}", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function getItemHistory(
-        ResponseService $responseService, EntityManagerInterface $em,
-
-        Item $item
-    )
+    public function getItemHistory(Item $item, ResponseService $responseService)
     {
         $maxAge = \DateInterval::createFromDateString('7 days');
 
-        $itemHistory = $em->getRepository(DailyMarketItemAverage::class)->createQueryBuilder('h')
-            ->andWhere('h.item=:item')
-            ->andWhere('h.date>=:earliestDate')
-            ->setParameter('item', $item)
-            ->setParameter('earliestDate', (new \DateTimeImmutable())->sub($maxAge)->format('Y-m-d'))
-            ->getQuery()
-            ->execute()
+        $db = SimpleDb::createReadOnlyConnection();
+
+        $itemHistory = $db
+            ->query(
+                'SELECT h.average_price,h.min_price,h.max_price,h.date
+                FROM daily_market_item_average AS h
+                WHERE h.item_id=:itemId AND h.date>:earliestDate',
+                [
+                    ':itemId' => $item->getId(),
+                    ':earliestDate' => (new \DateTimeImmutable())->sub($maxAge)->format('Y-m-d')
+                ]
+            )
+            ->mapResults(fn($average_price, $min_price, $max_price, $date) => [
+                'averagePrice' => $average_price,
+                'minPrice' => $min_price,
+                'maxPrice' => $max_price,
+                'date' => $date
+            ])
         ;
 
-        $lastHistoryItem = $em->getRepository(DailyMarketItemAverage::class)->findOneBy([ 'item' => $item ], [ 'date' => 'DESC' ]);
+        $lastHistoryItem = $db
+            ->query(
+                'SELECT h.average_price,h.min_price,h.max_price,h.date
+                FROM daily_market_item_average AS h
+                WHERE h.item_id=:itemId
+                ORDER BY h.date DESC
+                LIMIT 1',
+                [
+                    ':itemId' => $item->getId(),
+                ]
+            )
+            ->mapResults(fn($average_price, $min_price, $max_price, $date) => [
+                'averagePrice' => $average_price,
+                'minPrice' => $min_price,
+                'maxPrice' => $max_price,
+                'date' => $date
+            ])
+            [0]
+        ;
 
-        return $responseService->success(
-            [
-                'history' => $itemHistory,
-                'lastHistory' => $lastHistoryItem
-            ],
-            [ SerializationGroupEnum::MARKET_ITEM_HISTORY ]
-        );
+        return $responseService->success([
+            'history' => $itemHistory,
+            'lastHistory' => $lastHistoryItem,
+        ]);
     }
 }
