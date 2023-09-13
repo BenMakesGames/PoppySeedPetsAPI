@@ -2,6 +2,7 @@
 namespace App\Security;
 
 use App\Repository\UserSessionRepository;
+use App\Service\PerformanceProfiler;
 use App\Service\ResponseService;
 use App\Service\SessionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,16 +24,18 @@ class SessionAuthenticator extends AbstractAuthenticator
     private UserSessionRepository $userSessionRepository;
     private ResponseService $responseService;
     private SessionService $sessionService;
+    private PerformanceProfiler $performanceProfiler;
 
     public function __construct(
-        EntityManagerInterface $em, UserSessionRepository $userSessionRepository,
-        ResponseService $responseService, SessionService $sessionService
+        EntityManagerInterface $em, UserSessionRepository $userSessionRepository, ResponseService $responseService,
+        SessionService $sessionService, PerformanceProfiler $performanceProfiler
     )
     {
         $this->em = $em;
         $this->userSessionRepository = $userSessionRepository;
         $this->responseService = $responseService;
         $this->sessionService = $sessionService;
+        $this->performanceProfiler = $performanceProfiler;
     }
 
     public function supports(Request $request): bool
@@ -40,7 +43,7 @@ class SessionAuthenticator extends AbstractAuthenticator
         return $request->headers->has('Authorization') && substr($request->headers->get('Authorization'), 0, 7) === 'Bearer ';
     }
 
-    public function authenticate(Request $request): Passport
+    private static function getSessionIdOrThrow(Request $request): string
     {
         $sessionId = substr($request->headers->get('Authorization'), 7);
 
@@ -48,11 +51,21 @@ class SessionAuthenticator extends AbstractAuthenticator
             throw new CustomUserMessageAuthenticationException();
         }
 
+        return $sessionId;
+    }
+
+    public function authenticate(Request $request): Passport
+    {
+        $time = microtime(true);
+
+        $sessionId = self::getSessionIdOrThrow($request);
+
         $session = $this->userSessionRepository->findOneBySessionId($sessionId);
 
         if(!$session || $session->getSessionExpiration() < new \DateTimeImmutable())
         {
             $this->responseService->setSessionId(null);
+            $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - session expired', microtime(true) - $time);
             throw new UnauthorizedHttpException('You have been logged out due to inactivity. Please log in again.');
         }
 
@@ -65,6 +78,9 @@ class SessionAuthenticator extends AbstractAuthenticator
             // but the client is programmed to auto log a user out when they receive a 401 (Unauthorized).
             // there are legit reasons a user might be Forbidden that we DON'T want them to be logged
             // out for (ex: accessing the Fireplace before they unlocked it).
+
+            $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - is locked', microtime(true) - $time);
+
             throw new UnauthorizedHttpException('This account has been locked.');
         }
 
@@ -74,7 +90,11 @@ class SessionAuthenticator extends AbstractAuthenticator
         $user->setLastActivity();
         $this->em->flush();
 
-        return new SelfValidatingPassport(new UserBadge($user->getEmail()));
+        $response = new SelfValidatingPassport(new UserBadge($user->getEmail()));
+
+        $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - success', microtime(true) - $time);
+
+        return $response;
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response

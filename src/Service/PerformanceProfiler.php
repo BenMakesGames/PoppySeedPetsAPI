@@ -6,10 +6,13 @@ use Aws\CloudWatch\CloudWatchClient;
 
 class PerformanceProfiler
 {
-    private CloudWatchClient $cloudWatchClient;
+    private ?CloudWatchClient $cloudWatchClient = null;
 
     public function __construct()
     {
+        if(!$_ENV['PERFORMANCE_LOGGING_AWS_ACCESS_KEY_ID'])
+            return;
+
         $this->cloudWatchClient = new CloudWatchClient([
             'version' => 'latest',
             'region' => $_ENV['PERFORMANCE_LOGGING_AWS_REGION'],
@@ -22,6 +25,9 @@ class PerformanceProfiler
 
     public function logExecutionTime(string $METHOD, float $executionTimeSeconds)
     {
+        if(!$this->cloudWatchClient)
+            return;
+
         $this->cloudWatchClient->putMetricData([
             'MetricData' => [
                 [
