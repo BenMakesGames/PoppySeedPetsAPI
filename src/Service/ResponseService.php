@@ -26,7 +26,7 @@ class ResponseService
     private SerializerInterface $serializer;
     private Security $security;
     private NormalizerInterface $normalizer;
-    private int $sessionId = 0;
+    private $sessionId = 0;
     private WeatherService $weatherService;
     private UserMenuService $userMenuService;
     private PerformanceProfiler $performanceProfiler;
