@@ -7,28 +7,25 @@ use App\Entity\SurveyQuestion;
 use App\Entity\SurveyQuestionAnswer;
 use App\Entity\User;
 use App\Repository\SurveyQuestionAnswerRepository;
-use App\Repository\SurveyRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class SurveyService
 {
-    private SurveyRepository $surveyRepository;
     private SurveyQuestionAnswerRepository $surveyQuestionAnswerRepository;
     private EntityManagerInterface $em;
 
     public function __construct(
-        SurveyRepository $surveyRepository, SurveyQuestionAnswerRepository $surveyQuestionAnswerRepository,
+        SurveyQuestionAnswerRepository $surveyQuestionAnswerRepository,
         EntityManagerInterface $em
     )
     {
-        $this->surveyRepository = $surveyRepository;
         $this->surveyQuestionAnswerRepository = $surveyQuestionAnswerRepository;
         $this->em = $em;
     }
 
     public function getActiveSurvey(string $guid, \DateTimeImmutable $dateTime): ?Survey
     {
-        $qb = $this->surveyRepository->createQueryBuilder('s');
+        $qb = $this->em->getRepository(Survey::class)->createQueryBuilder('s');
 
         return $qb
             ->andWhere('s.guid=:guid')

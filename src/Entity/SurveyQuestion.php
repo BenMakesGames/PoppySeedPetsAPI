@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\SurveyQuestionRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass=SurveyQuestionRepository::class)
+ * @ORM\Entity()
  */
 class SurveyQuestion
 {
