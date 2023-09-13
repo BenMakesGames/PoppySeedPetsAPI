@@ -116,7 +116,10 @@ class ResponseService
 
         $response = new JsonResponse($json, Response::HTTP_OK, [], true);
 
-        $this->performanceProfiler->logExecutionTime(__METHOD__, microtime(true) - $time);
+        if($user)
+            $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - with user', microtime(true) - $time);
+        else
+            $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - without user', microtime(true) - $time);
 
         return $response;
     }
