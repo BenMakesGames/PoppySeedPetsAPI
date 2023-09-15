@@ -53,32 +53,4 @@ class ItemRepository extends ServiceEntityRepository
 
         return $itemId;
     }
-
-    /**
-     * @return Item[]
-     */
-    public function findTwoForSpecialTraderOffer(int $seed): array
-    {
-        $count = $this->createQueryBuilder('i')
-            ->select('COUNT(i)')
-            ->andWhere('i.recycleValue > 0')
-            ->andWhere('i.treasure IS NULL')
-            ->andWhere('i.fuel = 0')
-            ->getQuery()
-            ->getSingleScalarResult()
-        ;
-
-        $random = ($seed * 338959) % ($count - 1);
-
-        return $this->createQueryBuilder('i')
-            ->andWhere('i.recycleValue > 0')
-            ->andWhere('i.treasure IS NULL')
-            ->andWhere('i.fuel = 0')
-            ->orderBy('i.id', 'ASC')
-            ->setFirstResult($random)
-            ->setMaxResults(2)
-            ->getQuery()
-            ->execute()
-        ;
-    }
 }

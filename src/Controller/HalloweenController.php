@@ -13,7 +13,6 @@ use App\Model\FoodWithSpice;
 use App\Repository\InventoryRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
-use App\Repository\UserRepository;
 use App\Service\Clock;
 use App\Service\FieldGuideService;
 use App\Service\Holidays\HalloweenService;
@@ -98,9 +97,8 @@ class HalloweenController extends AbstractController
      */
     public function giveCandy(
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
-        Request $request, InventoryRepository $inventoryRepository, Clock $clock,
-        UserRepository $userRepository, Squirrel3 $squirrel3, EatingService $eatingService,
-        FieldGuideService $fieldGuideService
+        Request $request, InventoryRepository $inventoryRepository, Clock $clock, Squirrel3 $squirrel3,
+        EatingService $eatingService, FieldGuideService $fieldGuideService
     )
     {
         /** @var User $user */
@@ -139,7 +137,7 @@ class HalloweenController extends AbstractController
 
         if($toGivingTree)
         {
-            $givingTree = $userRepository->findOneBy([ 'email' => 'giving-tree@poppyseedpets.com' ]);
+            $givingTree = $em->getRepository(User::class)->findOneBy([ 'email' => 'giving-tree@poppyseedpets.com' ]);
 
             $candy
                 ->setOwner($givingTree)

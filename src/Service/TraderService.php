@@ -1,6 +1,7 @@
 <?php
 namespace App\Service;
 
+use App\Entity\Item;
 use App\Entity\Trader;
 use App\Entity\TradesUnlocked;
 use App\Entity\User;
@@ -18,7 +19,7 @@ use App\Model\TraderOfferCostOrYield;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MuseumItemRepository;
-use App\Repository\TradesUnlockedRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 class TraderService
 {
@@ -85,28 +86,28 @@ class TraderService
     ];
 
     private ItemRepository $itemRepository;
-    private $inventoryService;
-    private $transactionService;
-    private $tradesUnlockedRepository;
+    private InventoryService $inventoryService;
+    private TransactionService $transactionService;
     private IRandom $rng;
-    private $inventoryRepository;
+    private InventoryRepository $inventoryRepository;
     private MuseumItemRepository $museumItemRepository;
     private Clock $clock;
+    private EntityManagerInterface $em;
 
     public function __construct(
-        ItemRepository $itemRepository, InventoryService $inventoryService,
-        TransactionService $transactionService, TradesUnlockedRepository $tradesUnlockedRepository, Squirrel3 $squirrel3,
-        InventoryRepository $inventoryRepository, MuseumItemRepository $museumItemRepository, Clock $clock
+        ItemRepository $itemRepository, InventoryService $inventoryService, TransactionService $transactionService,
+        Squirrel3 $squirrel3, InventoryRepository $inventoryRepository, MuseumItemRepository $museumItemRepository,
+        Clock $clock, EntityManagerInterface $em
     )
     {
         $this->itemRepository = $itemRepository;
         $this->inventoryService = $inventoryService;
         $this->transactionService = $transactionService;
-        $this->tradesUnlockedRepository = $tradesUnlockedRepository;
         $this->rng = $squirrel3;
         $this->inventoryRepository = $inventoryRepository;
         $this->museumItemRepository = $museumItemRepository;
         $this->clock = $clock;
+        $this->em = $em;
     }
 
     /**
@@ -114,7 +115,7 @@ class TraderService
      */
     public function getUnlockedTradeGroups(User $user): array
     {
-        $tradesUnlocked = $this->tradesUnlockedRepository->findBy([
+        $tradesUnlocked = $this->em->getRepository(TradesUnlocked::class)->findBy([
             'user' => $user->getId()
         ]);
 
@@ -597,7 +598,7 @@ class TraderService
     {
         $offers = [];
 
-        $uniqueOfferItems = $this->itemRepository->findTwoForSpecialTraderOffer($user->getDailySeed());
+        $uniqueOfferItems = $this->findThreeForSpecialTraderOffer($user->getDailySeed());
 
         foreach($uniqueOfferItems as $uniqueOfferItem)
         {
@@ -769,6 +770,34 @@ class TraderService
         }
 
         return $offers;
+    }
+
+    /**
+     * @return Item[]
+     */
+    public function findThreeForSpecialTraderOffer(int $seed): array
+    {
+        $count = $this->em->getRepository(Item::class)->createQueryBuilder('i')
+            ->select('COUNT(i)')
+            ->andWhere('i.recycleValue > 0')
+            ->andWhere('i.treasure IS NULL')
+            ->andWhere('i.fuel = 0')
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+
+        $random = ($seed * 514229) % ($count - 2);
+
+        return $this->em->getRepository(Item::class)->createQueryBuilder('i')
+            ->andWhere('i.recycleValue > 0')
+            ->andWhere('i.treasure IS NULL')
+            ->andWhere('i.fuel = 0')
+            ->orderBy('i.id', 'ASC')
+            ->setFirstResult($random)
+            ->setMaxResults(3)
+            ->getQuery()
+            ->execute()
+        ;
     }
 
     private function getMetalOffers(User $user, array $quantities): array

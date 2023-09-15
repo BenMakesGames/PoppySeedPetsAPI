@@ -6,7 +6,7 @@ use App\Functions\NumberFunctions;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\UserSessionRepository")
+ * @ORM\Entity()
  */
 class UserSession
 {

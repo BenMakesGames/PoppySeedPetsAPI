@@ -2,9 +2,8 @@
 namespace App\Service\Filter;
 
 use App\Entity\User;
-use App\Repository\ItemRepository;
-use App\Repository\PetSpeciesRepository;
-use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
@@ -19,11 +18,11 @@ class UserFilterService
      */
     private $user;
 
-    private $repository;
+    private EntityRepository $repository;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->repository = $userRepository;
+        $this->repository = $em->getRepository(User::class);
 
         $this->filterer = new Filterer(
             self::PAGE_SIZE,

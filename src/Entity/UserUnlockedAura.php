@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\UserUnlockedAuraRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass=UserUnlockedAuraRepository::class)
+ * @ORM\Entity()
  * @ORM\Table(
  *     uniqueConstraints={
  *         @ORM\UniqueConstraint(name="user_id_aura_id_idx", columns={"user_id", "aura_id"})

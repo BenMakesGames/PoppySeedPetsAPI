@@ -1,7 +1,8 @@
 <?php
 namespace App\Service\Filter;
 
-use App\Repository\ArticleRepository;
+use App\Entity\Article;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
@@ -13,9 +14,9 @@ class ArticleFilterService
 
     private $repository;
 
-    public function __construct(ArticleRepository $articleRepository)
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->repository = $articleRepository;
+        $this->repository = $em->getRepository(Article::class);
 
         $this->filterer = new Filterer(
             self::PAGE_SIZE,

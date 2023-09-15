@@ -2,19 +2,16 @@
 namespace App\Command;
 
 use App\Entity\ItemGrammar;
-use App\Repository\ItemGrammarRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 
 class UpdateArticlesCommand extends PoppySeedPetsCommand
 {
-    private $itemGrammarRepository;
-    private $em;
+    private EntityManagerInterface $em;
 
-    public function __construct(ItemGrammarRepository $itemGrammarRepository, EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->itemGrammarRepository = $itemGrammarRepository;
         $this->em = $em;
 
         parent::__construct();
@@ -34,7 +31,7 @@ class UpdateArticlesCommand extends PoppySeedPetsCommand
         $firstId = (int)$this->input->getArgument('start');
 
         /** @var ItemGrammar[] $itemGrammars */
-        $itemGrammars = $this->itemGrammarRepository->createQueryBuilder('i')
+        $itemGrammars = $this->em->getRepository(ItemGrammar::class)->createQueryBuilder('i')
             ->andWhere('i.id>:firstId')
             ->setParameter('firstId', $firstId)
             ->addOrderBy('i.item', 'ASC')

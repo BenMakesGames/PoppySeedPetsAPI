@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\PetSpecies;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\PetLocationEnum;
@@ -15,7 +16,6 @@ use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
-use App\Repository\PetSpeciesRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
@@ -193,9 +193,8 @@ class BugController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function adopt(
-        Inventory $inventory, EntityManagerInterface $em, PetSpeciesRepository $petSpeciesRepository,
-        MeritRepository $meritRepository, PetRepository $petRepository, ResponseService $responseService,
-        PetFactory $petFactory, Squirrel3 $squirrel3
+        Inventory $inventory, EntityManagerInterface $em, MeritRepository $meritRepository,
+        PetRepository $petRepository, ResponseService $responseService, PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
         /** @var User $user */
@@ -244,7 +243,7 @@ class BugController extends AbstractController
         $newPet = $petFactory->createPet(
             $user,
             $petName,
-            $petSpeciesRepository->find(40),
+            $em->getRepository(PetSpecies::class)->find(40),
             $colorA,
             $colorB,
             FlavorEnum::getRandomValue($squirrel3),

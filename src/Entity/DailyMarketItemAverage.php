@@ -3,11 +3,9 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\SerializedName;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\DailyMarketItemAverageRepository")
+ * @ORM\Entity()
  * @ORM\Table(indexes={
  *     @ORM\Index(name="date_idx", columns={"date"}),
  * })
@@ -29,7 +27,6 @@ class DailyMarketItemAverage
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"marketItemHistory"})
      */
     private $averagePrice;
 
@@ -40,13 +37,11 @@ class DailyMarketItemAverage
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"marketItemHistory"})
      */
     private $minPrice;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"marketItemHistory"})
      */
     private $maxPrice;
 
@@ -116,15 +111,6 @@ class DailyMarketItemAverage
         $this->maxPrice = $maxPrice;
 
         return $this;
-    }
-
-    /**
-     * @Groups({"marketItemHistory"})
-     * @SerializedName("date")
-     */
-    public function getDateString()
-    {
-        return $this->date->format('Y-m-d');
     }
 
     public function getVolume(): ?int

@@ -128,20 +128,6 @@ class PetRepository extends ServiceEntityRepository
         ;
     }
 
-    public function getRoommates(Pet $pet): array
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.owner = :owner')
-            ->andWhere('p.location = :home')
-            ->andWhere('p.id != :thisPet')
-            ->setParameter('owner', $pet->getOwner())
-            ->setParameter('thisPet', $pet->getId())
-            ->setParameter('home', PetLocationEnum::HOME)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
     public function findRandomTrickOrTreater(User $user): ?Pet
     {
         $squirrel3 = new Squirrel3();

@@ -5,13 +5,11 @@ use App\Entity\User;
 use App\Entity\UserMenuOrder;
 use App\Enum\UnlockableFeatureEnum;
 use App\Model\UserMenuItem;
-use App\Repository\UserMenuOrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class UserMenuService
 {
-    private $userMenuOrderRepository;
-    private $em;
+    private EntityManagerInterface $em;
 
     private const DEFAULT_ORDER = [
         'home', 'basement', 'greenhouse', 'beehive', 'dragonDen', 'hollowEarth', 'starKindred',
@@ -20,11 +18,8 @@ class UserMenuService
         'journal', 'achievements'
     ];
 
-    public function __construct(
-        UserMenuOrderRepository $userMenuOrderRepository, EntityManagerInterface $em
-    )
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->userMenuOrderRepository = $userMenuOrderRepository;
         $this->em = $em;
     }
 
@@ -38,7 +33,7 @@ class UserMenuService
                 $order[] = $o;
         }
 
-        $userSortOrderEntity = $this->userMenuOrderRepository->findOneBy([ 'user' => $user ]);
+        $userSortOrderEntity = $this->em->getRepository(UserMenuOrder::class)->findOneBy([ 'user' => $user ]);
 
         if(!$userSortOrderEntity)
         {
@@ -73,7 +68,7 @@ class UserMenuService
 
     public function getUserMenuItems(User $user): array
     {
-        $userSortOrderEntity = $this->userMenuOrderRepository->findOneBy([ 'user' => $user ]);
+        $userSortOrderEntity = $this->em->getRepository(UserMenuOrder::class)->findOneBy([ 'user' => $user ]);
 
         $userSortOrder = $userSortOrderEntity
             ? $userSortOrderEntity->getMenuOrder()

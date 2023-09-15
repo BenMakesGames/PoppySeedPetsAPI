@@ -1,6 +1,8 @@
 <?php
 namespace App\Service;
 
+use App\Entity\Pet;
+use App\Entity\PetSpecies;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\CalendarFunctions;
@@ -8,25 +10,21 @@ use App\Functions\ColorFunctions;
 use App\Functions\DateFunctions;
 use App\Model\ChineseCalendarInfo;
 use App\Model\PetShelterPet;
-use App\Repository\PetRepository;
-use App\Repository\PetSpeciesRepository;
 use App\Repository\UserStatsRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 class AdoptionService
 {
-    private PetRepository $petRepository;
-    private PetSpeciesRepository $petSpeciesRepository;
+    private EntityManagerInterface $em;
     private UserStatsRepository $userStatsRepository;
     private ChineseCalendarInfo $chineseCalendarInfo;
     private Clock $clock;
 
     public function __construct(
-        PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository,
-        UserStatsRepository $userStatsRepository, Clock $clock
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, Clock $clock
     )
     {
-        $this->petRepository = $petRepository;
-        $this->petSpeciesRepository = $petSpeciesRepository;
+        $this->em = $em;
         $this->userStatsRepository = $userStatsRepository;
         $this->clock = $clock;
 
@@ -81,7 +79,7 @@ class AdoptionService
             ;
         }
 
-        $petCount = $this->petRepository->createQueryBuilder('p')
+        $petCount = $this->em->getRepository(Pet::class)->createQueryBuilder('p')
             ->select('COUNT(p.id)')
             ->andWhere('p.birthDate<:today')
             ->setParameter('today', $nowString)
@@ -94,7 +92,7 @@ class AdoptionService
         $isPinkMoon = $fullMoonName === 'Pink';
         $pets = [];
 
-        $allSpecies = $this->petSpeciesRepository->findBy([ 'availableFromPetShelter' => true ]);
+        $allSpecies = $this->em->getRepository(PetSpecies::class)->findBy([ 'availableFromPetShelter' => true ]);
 
         for($i = 0; $i < $numPets; $i++)
         {
@@ -157,7 +155,7 @@ class AdoptionService
                 }
                 else
                 {
-                    $basePet = $this->petRepository->createQueryBuilder('p')
+                    $basePet = $this->em->getRepository(Pet::class)->createQueryBuilder('p')
                         ->andWhere('p.birthDate<:today')
                         ->setParameter('today', $nowString)
                         ->setMaxResults(1)
@@ -179,19 +177,25 @@ class AdoptionService
 
             if(CalendarFunctions::isHalloweenDay($this->clock->now))
             {
-                $pet->species = $this->petSpeciesRepository->findOneBy([ 'name' => 'Fog Elemental' ]);
+                $pet->species = $this->em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Fog Elemental' ]);
                 $pet->label = 'spooky!';
                 $dialog = "Uh... I don't know if this is a Halloween thing, or what, but... if you want a Fog Elemental, I guess it's your pick of the litter...\n\nAlthough I guess if ";
             }
             else if(CalendarFunctions::isNoombatDay($this->clock->now))
             {
-                $pet->species = $this->petSpeciesRepository->findOneBy([ 'name' => 'Noombat' ]);
+                $pet->species = $this->em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Noombat' ]);
                 $pet->label = 'noom!';
                 $dialog = "Agh! This happens every year at about this time! Noombats everywhere! I don't know if it's Noombat breeding season, or what, but please adopt one of these things! If you insist, though, and ";
             }
             else if($squirrel3->rngNextInt(1, 200) === 1)
             {
-                $pet->species = $squirrel3->rngNextFromArray($this->petSpeciesRepository->findBy([ 'availableFromPetShelter' => false, 'availableFromBreeding' => true ]));
+                $pet->species = $squirrel3->rngNextFromArray(
+                    $this->em->getRepository(PetSpecies::class)->findBy([
+                        'availableFromPetShelter' => false,
+                        'availableFromBreeding' => true
+                    ])
+                );
+
                 $pet->label = $squirrel3->rngNextFromArray([
                     'gasp!',
                     'oh my!',

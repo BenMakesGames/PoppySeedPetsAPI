@@ -4,24 +4,18 @@ namespace App\Service;
 use App\Entity\User;
 use App\Entity\UserSession;
 use App\Functions\StringFunctions;
-use App\Repository\UserSessionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class SessionService
 {
-    private UserSessionRepository $userSessionRepository;
     private EntityManagerInterface $em;
     private TokenStorageInterface $tokenStorage;
     private ?string $currentSessionId;
 
-    public function __construct(
-        UserSessionRepository $userSessionRepository, TokenStorageInterface $tokenStorage,
-        EntityManagerInterface $em
-    )
+    public function __construct(TokenStorageInterface $tokenStorage, EntityManagerInterface $em)
     {
-        $this->userSessionRepository = $userSessionRepository;
         $this->tokenStorage = $tokenStorage;
         $this->em = $em;
     }
@@ -38,7 +32,7 @@ class SessionService
 
     private function sessionIdIsTaken(string $sessionId): bool
     {
-        return $this->userSessionRepository->count([ 'sessionId' => $sessionId ]) > 0;
+        return $this->em->getRepository(UserSession::class)->count([ 'sessionId' => $sessionId ]) > 0;
     }
 
     public function setCurrentSession(string $userSessionId)
@@ -72,7 +66,7 @@ class SessionService
         if(!$this->currentSessionId)
             return false;
 
-        $currentSession = $this->userSessionRepository->findOneBy([ 'sessionId' => $this->currentSessionId ]);
+        $currentSession = $this->em->getRepository(UserSession::class)->findOneBy([ 'sessionId' => $this->currentSessionId ]);
 
         if(!$currentSession)
             return false;

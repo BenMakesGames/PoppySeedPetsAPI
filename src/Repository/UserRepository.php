@@ -31,16 +31,10 @@ class UserRepository extends ServiceEntityRepository
         $numberOfUsersQuery = $userRepository->createQueryBuilder('u')
             ->select('COUNT(u.id)')
             ->andWhere('u.lastActivity >= :oneDayAgo')
+            ->andWhere('u.id != :except')
             ->setParameter('oneDayAgo', $oneDayAgo)
+            ->setParameter('except', $except->getId())
         ;
-
-        if($except !== null)
-        {
-            $numberOfUsersQuery
-                ->andWhere('u.id != :except')
-                ->setParameter('except', $except->getId())
-            ;
-        }
 
         $numberOfUsers = (int)($numberOfUsersQuery->getQuery()->getSingleScalarResult());
 
@@ -53,16 +47,10 @@ class UserRepository extends ServiceEntityRepository
 
         $userQuery = $userRepository->createQueryBuilder('u')
             ->andWhere('u.lastActivity >= :oneDayAgo')
+            ->andWhere('u.id != :except')
             ->setParameter('oneDayAgo', $oneDayAgo)
+            ->setParameter('except', $except->getId())
         ;
-
-        if($except !== null)
-        {
-            $userQuery
-                ->andWhere('u.id != :except')
-                ->setParameter('except', $except->getId())
-            ;
-        }
 
         $userQuery
             ->setFirstResult($offset)

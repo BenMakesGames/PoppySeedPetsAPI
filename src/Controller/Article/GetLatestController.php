@@ -1,8 +1,9 @@
 <?php
 namespace App\Controller\Article;
 
+use App\Entity\Article;
+use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
-use App\Repository\ArticleRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Annotations\DoesNotRequireHouseHours;
@@ -20,17 +21,22 @@ class GetLatestController extends AbstractController
      * @Route("/latest", methods={"GET"})
      */
     public function getLatest(
-        ResponseService $responseService, ArticleRepository $articleRepository, EntityManagerInterface $em
+        ResponseService $responseService, EntityManagerInterface $em
     )
     {
-        if($this->getUser() && $this->getUser()->getUnreadNews() === 1)
+        /** @var User|null $user */
+        $user = $this->getUser();
+
+        if($user && $user->getUnreadNews() === 1)
         {
-            $this->getUser()->setUnreadNews(0);
+            $user->setUnreadNews(0);
             $em->flush();
         }
 
+        $latestArticle = $em->getRepository(Article::class)->findOneBy([], [ 'createdOn' => 'DESC' ]);
+
         return $responseService->success(
-            $articleRepository->findOneBy([], [ 'createdOn' => 'DESC' ]),
+            $latestArticle,
             [ SerializationGroupEnum::ARTICLE ]
         );
     }

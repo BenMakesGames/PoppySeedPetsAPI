@@ -6,7 +6,7 @@ use App\Enum\StorySectionStyleEnum;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\StorySectionRepository")
+ * @ORM\Entity()
  */
 class StorySection
 {

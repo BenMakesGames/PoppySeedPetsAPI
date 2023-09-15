@@ -1,15 +1,11 @@
 <?php
 namespace App\Command;
 
-use App\Entity\PetSpecies;
 use App\Entity\Survey;
 use App\Entity\SurveyQuestion;
+use App\Entity\SurveyQuestionAnswer;
 use App\Entity\User;
-use App\Repository\SurveyQuestionAnswerRepository;
-use App\Repository\SurveyRepository;
-use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Query;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,18 +13,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ExportSurveyAnswersCommand extends Command
 {
-    private SurveyRepository $surveyRepository;
-    private SurveyQuestionAnswerRepository $surveyQuestionAnswerRepository;
-    private UserRepository $userRepository;
+    private EntityManagerInterface $em;
 
     public function __construct(
-        SurveyRepository $surveyRepository, UserRepository $userRepository,
-        SurveyQuestionAnswerRepository $surveyQuestionAnswerRepository
+        EntityManagerInterface $em
     )
     {
-        $this->surveyRepository = $surveyRepository;
-        $this->userRepository = $userRepository;
-        $this->surveyQuestionAnswerRepository = $surveyQuestionAnswerRepository;
+        $this->em = $em;
 
         parent::__construct();
     }
@@ -46,7 +37,7 @@ class ExportSurveyAnswersCommand extends Command
     {
         $guid = $input->getArgument('guid');
 
-        $survey = $this->surveyRepository->findOneBy([ 'guid' => $guid ]);
+        $survey = $this->em->getRepository(Survey::class)->findOneBy([ 'guid' => $guid ]);
 
         if(!$survey)
         {
@@ -54,7 +45,7 @@ class ExportSurveyAnswersCommand extends Command
             return 1;
         }
 
-        $qb = $this->surveyQuestionAnswerRepository->createQueryBuilder('a');
+        $qb = $this->em->getRepository(SurveyQuestionAnswer::class)->createQueryBuilder('a');
         $results = $qb
             ->select('DISTINCT(a.user) AS id')
             ->where('a.id IN (:answerIds)')
@@ -89,7 +80,7 @@ class ExportSurveyAnswersCommand extends Command
 
     private function exportUsers(array $ids, array $questionColumns, OutputInterface $output)
     {
-        $users = $this->userRepository->findBy([ 'id' => $ids ], [ 'id' => 'ASC' ]);
+        $users = $this->em->getRepository(User::class)->findBy([ 'id' => $ids ], [ 'id' => 'ASC' ]);
 
         foreach($users as $user)
         {
@@ -98,7 +89,7 @@ class ExportSurveyAnswersCommand extends Command
             for($i = 0; $i < count($questionColumns); $i++)
                 $row[$i] = '';
 
-            $answers = $this->surveyQuestionAnswerRepository->findBy([
+            $answers = $this->em->getRepository(SurveyQuestionAnswer::class)->findBy([
                 'user' => $user,
                 'question' => array_keys($questionColumns)
             ]);

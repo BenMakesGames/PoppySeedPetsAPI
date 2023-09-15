@@ -2,7 +2,6 @@
 namespace App\Command;
 
 use App\Entity\DeviceStats;
-use App\Repository\DeviceStatsRepository;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -11,11 +10,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DeviceStatsCommand extends Command
 {
-    private DeviceStatsRepository $deviceStatsRepository;
+    private EntityManagerInterface $em;
 
-    public function __construct(DeviceStatsRepository $deviceStatsRepository)
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->deviceStatsRepository = $deviceStatsRepository;
+        $this->em = $em;
 
         parent::__construct();
     }
@@ -34,7 +33,7 @@ class DeviceStatsCommand extends Command
         $oldestDate = (new \DateTimeImmutable())->modify('-28 days');
 
         /** @var DeviceStats[] $latestStats */
-        $latestStats = $this->deviceStatsRepository->createQueryBuilder('s')
+        $latestStats = $this->em->getRepository(DeviceStats::class)->createQueryBuilder('s')
             ->andWhere('s.time > :oldestTime ')
             ->andWhere('s.id IN (SELECT MAX(s2.id) FROM App:DeviceStats s2 WHERE s2.time > :oldestTime AND s2.user=s.user)')
             ->setParameter('oldestTime', $oldestDate->format('Y-m-d H:s:i'))

@@ -3,11 +3,11 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\PetSpecies;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\PetRepository;
-use App\Repository\PetSpeciesRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +26,7 @@ class TransmigrationSerumController extends AbstractController
      */
     public function INJECT(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, PetSpeciesRepository $petSpeciesRepository
+        PetRepository $petRepository
     )
     {
         $user = $this->getUser();
@@ -47,7 +47,7 @@ class TransmigrationSerumController extends AbstractController
         if($speciesId === $pet->getSpecies()->getId())
             throw new PSPInvalidOperationException('That\'s ' . $pet->getName() . '\'s current species! No sense in wasting the serum!');
 
-        $newSpecies = $petSpeciesRepository->find($speciesId);
+        $newSpecies = $em->getRepository(PetSpecies::class)->find($speciesId);
 
         if(!$newSpecies)
             throw new PSPFormValidationException('The selected species doesn\'t exist?? Try reloading and trying again.');

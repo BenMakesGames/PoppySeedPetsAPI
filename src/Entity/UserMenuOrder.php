@@ -2,11 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\UserMenuOrderRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=UserMenuOrderRepository::class)
+ * @ORM\Entity()
  */
 class UserMenuOrder
 {

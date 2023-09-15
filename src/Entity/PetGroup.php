@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\PetGroupRepository")
+ * @ORM\Entity()
  * @ORM\Table(indexes={
  *     @ORM\Index(name="created_on_idx", columns={"created_on"}),
  *     @ORM\Index(name="last_met_on_idx", columns={"last_met_on"}),

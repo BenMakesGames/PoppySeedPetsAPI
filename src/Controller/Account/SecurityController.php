@@ -1,12 +1,12 @@
 <?php
 namespace App\Controller\Account;
 
+use App\Entity\PassphraseResetRequest;
 use App\Entity\User;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\PlayerLogHelpers;
-use App\Repository\PassphraseResetRequestRepository;
 use App\Repository\UserRepository;
 use App\Service\PassphraseResetService;
 use App\Service\ResponseService;
@@ -138,8 +138,8 @@ class SecurityController extends AbstractController
      * @Route("/requestPassphraseReset/{code}", methods={"POST"})
      */
     public function resetPassphrase(
-        string $code, Request $request, PassphraseResetRequestRepository $passwordResetRequestRepository,
-        UserPasswordHasherInterface $userPasswordEncoder, EntityManagerInterface $em, ResponseService $responseService
+        string $code, Request $request, UserPasswordHasherInterface $userPasswordEncoder, EntityManagerInterface $em,
+        ResponseService $responseService
     )
     {
         $passphrase = trim($request->request->get('passphrase', ''));
@@ -147,7 +147,7 @@ class SecurityController extends AbstractController
         if(\mb_strlen($passphrase) < 10)
             throw new PSPFormValidationException('Passphrase must be at least 10 characters long. (Pro tip: try using an actual phrase, or short sentence!)');
 
-        $resetRequest = $passwordResetRequestRepository->findOneBy([ 'code' => $code ]);
+        $resetRequest = $em->getRepository(PassphraseResetRequest::class)->findOneBy([ 'code' => $code ]);
 
         if(!$resetRequest || $resetRequest->getExpiresOn() <= new \DateTimeImmutable())
             throw new PSPNotFoundException('This reset URL is invalid, or expired.');

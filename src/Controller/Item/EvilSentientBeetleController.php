@@ -1,19 +1,12 @@
 <?php
 namespace App\Controller\Item;
 
-use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\PetLocationEnum;
-use App\Enum\UserStatEnum;
-use App\Functions\GrammarFunctions;
 use App\Model\SummoningScrollMonster;
 use App\Repository\PetRepository;
-use App\Repository\PetSpeciesRepository;
-use App\Repository\UserRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\PetActivity\HouseMonsterService;
-use App\Service\PetFactory;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;

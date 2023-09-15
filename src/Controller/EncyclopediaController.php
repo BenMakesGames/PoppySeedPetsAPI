@@ -2,15 +2,16 @@
 namespace App\Controller;
 
 use App\Annotations\DoesNotRequireHouseHours;
+use App\Entity\PetSpecies;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Repository\ItemRepository;
-use App\Repository\PetSpeciesRepository;
 use App\Service\Filter\ItemFilterService;
 use App\Service\Filter\MeritFilterService;
 use App\Service\Filter\PetSpeciesFilterService;
 use App\Service\ResponseService;
 use App\Service\Typeahead\ItemTypeaheadService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -84,9 +85,9 @@ class EncyclopediaController extends AbstractController
      * @DoesNotRequireHouseHours()
      * @Route("/species/{speciesName}", methods={"GET"})
      */
-    public function getSpeciesByName(string $speciesName, PetSpeciesRepository $petSpeciesRepository, ResponseService $responseService)
+    public function getSpeciesByName(string $speciesName, EntityManagerInterface $em, ResponseService $responseService)
     {
-        $species = $petSpeciesRepository->findOneBy([ 'name' => $speciesName ]);
+        $species = $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => $speciesName ]);
 
         if(!$species)
             throw new PSPNotFoundException('There is no such species.');

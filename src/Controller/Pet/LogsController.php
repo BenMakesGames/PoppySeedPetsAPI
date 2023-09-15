@@ -2,13 +2,15 @@
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
+use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPPetNotFoundException;
-use App\Repository\PetActivityLogRepository;
 use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\ResponseService;
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,7 +26,7 @@ class LogsController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function logCalendar(
-        ResponseService $responseService, PetActivityLogRepository $petActivityLogRepository,
+        ResponseService $responseService, EntityManagerInterface $em,
 
         // route arguments:
         Pet $pet, ?int $year = null, ?int $month = null
@@ -45,13 +47,42 @@ class LogsController extends AbstractController
         if($user->getId() !== $pet->getOwner()->getId())
             throw new PSPPetNotFoundException();
 
-        $results = $petActivityLogRepository->findLogsForPetByDate($pet, $year, $month);
+        $results = self::findLogsForPetByDate($em, $pet, $year, $month);
 
         return $responseService->success([
             'year' => $year,
             'month' => $month,
             'calendar' => $results
         ]);
+    }
+
+    private static function findLogsForPetByDate(EntityManagerInterface $em, Pet $pet, int $year, int $month): array
+    {
+        $firstDayOfMonth = $year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-01';
+
+        // ... >_>
+        if($month == 12)
+            $firstDayOfNextMonth = ($year + 1) . '-01-01';
+        else
+            $firstDayOfNextMonth = $year . '-' . str_pad($month + 1, 2, '0', STR_PAD_LEFT) . '-01';
+
+        // TODO: replace with SimpleDb access
+        $qb = $em->getRepository(PetActivityLog::class)->createQueryBuilder('l')
+            ->select('COUNT(l) AS quantity,SUM(l.interestingness)/COUNT(l) AS averageInterestingness, DATE(l.createdOn) AS yearMonthDay')
+            ->andWhere('l.pet = :pet')
+            ->andWhere('l.createdOn >= :firstDayOfMonth')
+            ->andWhere('l.createdOn < :firstDayOfNextMonth')
+            ->addGroupBy('yearMonthDay')
+
+            ->setParameter('pet', $pet)
+            ->setParameter('firstDayOfMonth', $firstDayOfMonth)
+            ->setParameter('firstDayOfNextMonth', $firstDayOfNextMonth)
+        ;
+
+        return $qb
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY)
+        ;
     }
 
     /**

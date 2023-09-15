@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\UserUnlockedAura;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
@@ -9,7 +10,6 @@ use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\PetRepository;
-use App\Repository\UserUnlockedAuraRepository;
 use App\Service\HattierService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
@@ -46,8 +46,8 @@ class HattierController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function applyAura(
-        Request $request, PetRepository $petRepository, UserUnlockedAuraRepository $userUnlockedAuraRepository,
-        TransactionService $transactionService, EntityManagerInterface $em, ResponseService $responseService
+        Request $request, PetRepository $petRepository, TransactionService $transactionService,
+        EntityManagerInterface $em, ResponseService $responseService
     )
     {
         $payWith = strtolower($request->request->getAlpha('payWith', 'moneys'));
@@ -84,7 +84,7 @@ class HattierController extends AbstractController
         if(!$pet->getHat())
             throw new PSPInvalidOperationException('That pet isn\'t wearing a hat!');
 
-        $unlockedAura = $userUnlockedAuraRepository->find($auraId);
+        $unlockedAura = $em->getRepository(UserUnlockedAura::class)->find($auraId);
 
         if(!$unlockedAura || $unlockedAura->getUser()->getId() !== $user->getId())
             throw new PSPNotFoundException('You haven\'t unlocked that Hattier style.');

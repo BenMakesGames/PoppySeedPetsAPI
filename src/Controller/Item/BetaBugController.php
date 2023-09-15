@@ -3,6 +3,7 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Entity\Merit;
+use App\Entity\PetSpecies;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
@@ -15,7 +16,6 @@ use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
-use App\Repository\PetSpeciesRepository;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -70,7 +70,7 @@ class BetaBugController extends AbstractController
     public function useBug(
         Inventory $inventory, Request $request, InventoryRepository $inventoryRepository,
         ResponseService $responseService, EntityManagerInterface $em, PetFactory $petFactory,
-        PetSpeciesRepository $petSpeciesRepository, Squirrel3 $rng, MeritRepository $meritRepository,
+        Squirrel3 $rng, MeritRepository $meritRepository,
         PetRepository $petRepository, ItemRepository $itemRepository
     )
     {
@@ -90,8 +90,8 @@ class BetaBugController extends AbstractController
 
         switch($item->getItem()->getName())
         {
-            case 'Cooking Buddy': self::createCookingBuddy($responseService, $em, $petSpeciesRepository, $petFactory, $rng, $petRepository, $itemRepository, $item, $user, $meritRepository->getRandomStartingMerit(), null); break;
-            case 'Cooking "Alien"': self::createCookingBuddy($responseService, $em, $petSpeciesRepository, $petFactory, $rng, $petRepository, $itemRepository, $item, $user, $meritRepository->findOneByName(MeritEnum::BEHATTED), 'Antenna'); break;
+            case 'Cooking Buddy': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $petRepository, $itemRepository, $item, $user, $meritRepository->getRandomStartingMerit(), null); break;
+            case 'Cooking "Alien"': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $petRepository, $itemRepository, $item, $user, $meritRepository->findOneByName(MeritEnum::BEHATTED), 'Antenna'); break;
             case 'Sentient Beetle': self::makeBeetleEvil($responseService, $itemRepository, $user, $item); break;
             case 'Rainbowsaber': self::makeGlitchedOutRainbowsaber($responseService, $itemRepository, $user, $item); break;
             default: throw new PSPInvalidOperationException("The Beta Bug cannot be used on that item!");
@@ -151,7 +151,7 @@ class BetaBugController extends AbstractController
     ];
 
     private static function createCookingBuddy(
-        ResponseService $responseService, EntityManagerInterface $em, PetSpeciesRepository $petSpeciesRepository,
+        ResponseService $responseService, EntityManagerInterface $em,
         PetFactory $petFactory, Squirrel3 $rng, PetRepository $petRepository, ItemRepository $itemRepository,
         Inventory $inventoryItem, User $user, Merit $startingMerit, ?string $startingHatItem
     )
@@ -159,7 +159,7 @@ class BetaBugController extends AbstractController
         $newPet = $petFactory->createPet(
             $user,
             self::COOKING_BUDDY_NAMES[$inventoryItem->getId() % count(self::COOKING_BUDDY_NAMES)],
-            $petSpeciesRepository->findOneBy([ 'name' => 'Cooking Buddy' ]),
+            $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Cooking Buddy' ]),
             'd8d8d8', // body
             '236924', // "eyes"
             FlavorEnum::getRandomValue($rng),

@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\PetSpecies;
 use App\Enum\DistractionLocationEnum;
 use App\Enum\FlavorEnum;
 use App\Enum\GuildEnum;
@@ -27,7 +28,6 @@ use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
-use App\Repository\PetSpeciesRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\Clock;
@@ -41,6 +41,7 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use App\Service\WeatherService;
+use Doctrine\ORM\EntityManagerInterface;
 
 class GatheringService
 {
@@ -53,7 +54,6 @@ class GatheringService
     private WeatherService $weatherService;
     private IRandom $squirrel3;
     private FieldGuideService $fieldGuideService;
-    private PetSpeciesRepository $petSpeciesRepository;
     private PetRepository $petRepository;
     private PetFactory $petFactory;
     private MeritRepository $meritRepository;
@@ -63,16 +63,16 @@ class GatheringService
     private EnchantmentRepository $enchantmentRepository;
     private PetRelationshipService $petRelationshipService;
     private Clock $clock;
+    private EntityManagerInterface $em;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, ItemRepository $itemRepository, SpiceRepository $spiceRepository,
         Squirrel3 $squirrel3, WeatherService $weatherService, FieldGuideService $fieldGuideService,
-        PetSpeciesRepository $petSpeciesRepository, PetRepository $petRepository, PetFactory $petFactory,
-        MeritRepository $meritRepository, GatheringDistractionService $gatheringDistractions,
-        UserQuestRepository $userQuestRepository, Clock $clock,
+        PetRepository $petRepository, PetFactory $petFactory, MeritRepository $meritRepository,
+        GatheringDistractionService $gatheringDistractions, UserQuestRepository $userQuestRepository, Clock $clock,
         PetActivityLogTagRepository $petActivityLogTagRepository, EnchantmentRepository $enchantmentRepository,
-        PetRelationshipService $petRelationshipService
+        PetRelationshipService $petRelationshipService, EntityManagerInterface $em
     )
     {
         $this->responseService = $responseService;
@@ -84,7 +84,6 @@ class GatheringService
         $this->squirrel3 = $squirrel3;
         $this->weatherService = $weatherService;
         $this->fieldGuideService = $fieldGuideService;
-        $this->petSpeciesRepository = $petSpeciesRepository;
         $this->petRepository = $petRepository;
         $this->petFactory = $petFactory;
         $this->meritRepository = $meritRepository;
@@ -94,6 +93,7 @@ class GatheringService
         $this->enchantmentRepository = $enchantmentRepository;
         $this->petRelationshipService = $petRelationshipService;
         $this->clock = $clock;
+        $this->em = $em;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -215,7 +215,7 @@ class GatheringService
             ]);
 
             $pobosFound->setValue($pobosFound->getValue() + 1);
-            $newPetSpecies = $this->petSpeciesRepository->findOneBy([ 'name' => $newPetInfo['Species'] ]);
+            $newPetSpecies = $this->em->getRepository(PetSpecies::class)->findOneBy([ 'name' => $newPetInfo['Species'] ]);
 
             $newPetName = $this->squirrel3->rngNextFromArray([
                 'Flit', 'Waverly', 'Mirage', 'Shadow', 'Calcium',

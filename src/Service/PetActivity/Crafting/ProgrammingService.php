@@ -4,6 +4,7 @@ namespace App\Service\PetActivity\Crafting;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
+use App\Entity\PetSpecies;
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -21,7 +22,6 @@ use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetActivityLogTagRepository;
-use App\Repository\PetSpeciesRepository;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
 use App\Service\HouseSimService;
@@ -46,7 +46,6 @@ class ProgrammingService
     private EnchantmentRepository $enchantmentRepository;
     private FieldGuideService $fieldGuideService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
-    private PetSpeciesRepository $petSpeciesRepository;
     private PetFactory $petFactory;
     private MeritRepository $meritRepository;
     private EntityManagerInterface $em;
@@ -56,8 +55,7 @@ class ProgrammingService
         PetExperienceService $petExperienceService, StatusEffectService $statusEffectService,
         HouseSimService $houseSimService, HattierService $hattierService, EnchantmentRepository $enchantmentRepository,
         FieldGuideService $fieldGuideService, PetActivityLogTagRepository $petActivityLogTagRepository,
-        PetSpeciesRepository $petSpeciesRepository, PetFactory $petFactory, MeritRepository $meritRepository,
-        EntityManagerInterface $em
+        PetFactory $petFactory, MeritRepository $meritRepository, EntityManagerInterface $em
     )
     {
         $this->responseService = $responseService;
@@ -70,7 +68,6 @@ class ProgrammingService
         $this->enchantmentRepository = $enchantmentRepository;
         $this->fieldGuideService = $fieldGuideService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
-        $this->petSpeciesRepository = $petSpeciesRepository;
         $this->petFactory = $petFactory;
         $this->meritRepository = $meritRepository;
         $this->em = $em;
@@ -935,7 +932,7 @@ class ProgrammingService
 
     private function createInfinityImp(Pet $captor)
     {
-        $infinityImp = $this->petSpeciesRepository->findOneBy([ 'name' => 'Infinity Imp' ]);
+        $infinityImp = $this->em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Infinity Imp' ]);
 
         $impName = $this->squirrel3->rngNextFromArray([
             'Pythagorimp', 'Euclidemon', 'Algebrogremlin', 'Probabilidemon',

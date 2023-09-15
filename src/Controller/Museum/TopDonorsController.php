@@ -26,7 +26,7 @@ class TopDonorsController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getTopDonors(
-        Request $request, ResponseService $responseService, UserRepository $userRepository, NormalizerInterface $normalizer
+        Request $request, ResponseService $responseService, UserRepository $userRepository
     )
     {
         if(!$this->getUser()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))

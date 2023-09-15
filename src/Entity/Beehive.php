@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\BeehiveRepository")
+ * @ORM\Entity()
  * @ORM\Table(indexes={
  *     @ORM\Index(name="workers_idx", columns={"workers"}),
  *     @ORM\Index(name="flower_power_idx", columns={"flower_power"})

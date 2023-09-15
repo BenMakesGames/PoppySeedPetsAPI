@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Account;
 
+use App\Entity\PetSpecies;
 use App\Entity\User;
 use App\Entity\UserStyle;
 use App\Enum\FlavorEnum;
@@ -9,8 +10,6 @@ use App\Exceptions\PSPFormValidationException;
 use App\Functions\ProfanityFilterFunctions;
 use App\Functions\StringFunctions;
 use App\Repository\MeritRepository;
-use App\Repository\PetSpeciesRepository;
-use App\Repository\UserRepository;
 use App\Service\InventoryService;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
@@ -34,8 +33,7 @@ class RegisterController extends AbstractController
      * @Route("/register", methods={"POST"})
      */
     public function register(
-        Request $request, EntityManagerInterface $em, ResponseService $responseService,
-        SessionService $sessionService, UserRepository $userRepository, PetSpeciesRepository $petSpeciesRepository,
+        Request $request, EntityManagerInterface $em, ResponseService $responseService, SessionService $sessionService,
         UserPasswordHasherInterface $userPasswordEncoder, InventoryService $inventoryService,
         MeritRepository $meritRepository, PetFactory $petFactory, Squirrel3 $squirrel3
     )
@@ -67,7 +65,7 @@ class RegisterController extends AbstractController
         if(!StringFunctions::isISO88591($petName))
             throw new PSPFormValidationException('Your pet\'s name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
 
-        $species = $petSpeciesRepository->findOneBy([ 'image' => $petImage ]);
+        $species = $em->getRepository(PetSpecies::class)->findOneBy([ 'image' => $petImage ]);
 
         if(!$species || !$species->getAvailableAtSignup())
             throw new PSPFormValidationException('Must choose your pet\'s appearance.');
@@ -89,7 +87,7 @@ class RegisterController extends AbstractController
         if(\mb_strlen($passPhrase) < 10)
             throw new PSPFormValidationException('Pass phrase must be at least 10 characters long.');
 
-        $existingUser = $userRepository->findOneBy([ 'email' => $email ]);
+        $existingUser = $em->getRepository(User::class)->findOneBy([ 'email' => $email ]);
 
         if($existingUser)
             throw new PSPFormValidationException('Email address is already in use.');

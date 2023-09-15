@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\User;
 use App\Enum\GuildEnum;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -18,32 +19,27 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class GivingTreeGatheringService
 {
-    private $userRepository;
-    private $inventoryService;
-    private $responseService;
-    private $petExperienceService;
-    private $em;
+    private InventoryService $inventoryService;
+    private ResponseService $responseService;
+    private PetExperienceService $petExperienceService;
+    private EntityManagerInterface $em;
     private IRandom $squirrel3;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
-        UserRepository $userRepository, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService, PetExperienceService $petExperienceService, Squirrel3 $squirrel3,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        InventoryService $inventoryService, EntityManagerInterface $em, ResponseService $responseService,
+        PetExperienceService $petExperienceService, Squirrel3 $squirrel3
     )
     {
         $this->responseService = $responseService;
-        $this->userRepository = $userRepository;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->em = $em;
         $this->squirrel3 = $squirrel3;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function gatherFromGivingTree(Pet $pet): ?PetActivityLog
     {
-        $givingTree = $this->userRepository->findOneBy([ 'email' => 'giving-tree@poppyseedpets.com' ]);
+        $givingTree = $this->em->getRepository(User::class)->findOneBy([ 'email' => 'giving-tree@poppyseedpets.com' ]);
 
         if(!$givingTree)
             throw new \Exception('The "Giving Tree" NPC does not exist in the database!');
@@ -82,7 +78,7 @@ class GivingTreeGatheringService
 
                 return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited The Giving Tree, and picked up several items that other players had discarded. In honor of Gizubi\'s Tree of Life, they also took a few minutes to water the Giving Tree.', 'icons/activity-logs/giving-tree')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Giving Tree', 'Guild' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Giving Tree', 'Guild' ]))
                 ;
             }
             else
@@ -91,7 +87,7 @@ class GivingTreeGatheringService
 
                 return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited The Giving Tree, and picked up several items that other players had discarded.', 'icons/activity-logs/giving-tree')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Giving Tree' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Giving Tree' ]))
                 ;
             }
         }

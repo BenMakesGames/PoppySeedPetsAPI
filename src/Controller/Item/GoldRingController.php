@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\PetSpecies;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\PetLocationEnum;
@@ -9,7 +10,6 @@ use App\Functions\PetColorFunctions;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
-use App\Repository\PetSpeciesRepository;
 use App\Service\InventoryService;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
@@ -68,8 +68,8 @@ class GoldRingController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function collect100(
-        Inventory $inventory, EntityManagerInterface $em, InventoryService $inventoryService, ResponseService $responseService,
-        PetSpeciesRepository $petSpeciesRepository, MeritRepository $meritRepository, PetRepository $petRepository,
+        Inventory $inventory, EntityManagerInterface $em, InventoryService $inventoryService,
+        ResponseService $responseService, MeritRepository $meritRepository, PetRepository $petRepository,
         PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
@@ -116,7 +116,7 @@ class GoldRingController extends AbstractController
         {
             $inventoryService->loseItem($goldRingItem, $user, $inventory->getLocation(), 100);
 
-            $hedgehog = $petSpeciesRepository->findOneBy([ 'name' => 'Hedgehog' ]);
+            $hedgehog = $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Hedgehog' ]);
 
             $hedgehogName = $squirrel3->rngNextFromArray([
                 'Speedy', 'Dash', 'Blur', 'Quickly', 'Quills', 'Boots', 'Nitro', 'Boom', 'Runner', 'Jumper',
