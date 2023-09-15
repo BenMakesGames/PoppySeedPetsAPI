@@ -197,6 +197,7 @@ class AdoptionService
                     'oh my!',
                     'whoa!',
                     'ooooh!',
+                    'omg!',
                 ]);
             }
             else
