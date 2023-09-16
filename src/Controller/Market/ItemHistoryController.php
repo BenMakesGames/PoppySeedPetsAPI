@@ -58,12 +58,11 @@ class ItemHistoryController extends AbstractController
                 'maxPrice' => $max_price,
                 'date' => $date
             ])
-            [0]
         ;
 
         return $responseService->success([
             'history' => $itemHistory,
-            'lastHistory' => $lastHistoryItem,
+            'lastHistory' => count($lastHistoryItem) == 0 ? null : $lastHistoryItem[0],
         ]);
     }
 }
