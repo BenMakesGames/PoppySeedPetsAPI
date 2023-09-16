@@ -1,7 +1,7 @@
 <?php
 namespace App\Service\Filter;
 
-use App\Entity\PetActivityLog;
+use App\Entity\UserActivityLog;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
@@ -17,7 +17,7 @@ class UserActivityLogsFilterService
 
     public function __construct(EntityManagerInterface $em)
     {
-        $this->repository = $em->getRepository(PetActivityLog::class);
+        $this->repository = $em->getRepository(UserActivityLog::class);
 
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
