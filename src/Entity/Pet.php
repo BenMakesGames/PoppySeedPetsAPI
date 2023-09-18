@@ -1663,6 +1663,11 @@ class Pet
         return $this;
     }
 
+    public function getLunchboxSize(): int
+    {
+        return $this->hasMerit(MeritEnum::BIGGER_LUNCHBOX) ? 5 : 4;
+    }
+
     /**
      * @return Collection|LunchboxItem[]
      */

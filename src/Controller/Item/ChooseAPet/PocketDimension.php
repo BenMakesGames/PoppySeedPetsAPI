@@ -8,6 +8,7 @@ use App\Entity\Merit;
 use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Exceptions\PSPFormValidationException;
 use App\Model\PetChanges;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
@@ -20,9 +21,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
- * @Route("/item/yggdrasilBranch")
+ * @Route("/item/pocketDimension")
  */
-class YggdrasilBranch extends AbstractController
+class PocketDimension extends AbstractController
 {
     /**
      * @Route("/{inventory}", methods={"POST"})
@@ -32,50 +33,28 @@ class YggdrasilBranch extends AbstractController
         Inventory $inventory,
         Request $request,
         ResponseService $responseService,
-        EntityManagerInterface $em,
-        IRandom $rng
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'yggdrasilBranch');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'pocketDimension');
 
         $pet = ChooseAPetHelpers::getPet($request, $user, $em);
         $petChanges = new PetChanges($pet);
 
-        $randomMerit = $rng->rngNextFromArray([
-            MeritEnum::WONDROUS_STRENGTH,
-            MeritEnum::WONDROUS_STAMINA,
-            MeritEnum::WONDROUS_DEXTERITY,
-            MeritEnum::WONDROUS_PERCEPTION,
-            MeritEnum::WONDROUS_INTELLIGENCE,
-        ]);
-
-        $merit = $em->getRepository(Merit::class)->findOneBy([ 'name' => $randomMerit ]);
+        $merit = $em->getRepository(Merit::class)->findOneBy([ 'name' => MeritEnum::BIGGER_LUNCHBOX ]);
 
         if(!$merit)
-            throw new \Exception("Merit not found: {$randomMerit}");
+            throw new \Exception("Ben forgot to put the Bigger Lunchbox merit in the database! Agk!");
 
-        if($pet->hasMerit($randomMerit))
-        {
-            $leaves = $rng->rngNextFromArray([
-                'melts away',
-                'evaporates',
-                'dissipates',
-                'vanishes'
-            ]);
+        if($pet->hasMerit($merit->getName()))
+            throw new PSPFormValidationException($pet->getName() . '\'s lunchbox is already bigger on the inside!');
 
-            $itemActionDescription = "ate the fruit of the Yggdrasil Branch, and their {$randomMerit} {$leaves}!";
-            $pet->removeMerit($merit);
-        }
-        else
-        {
-            $pet->addMerit($merit);
-            $itemActionDescription = "ate the fruit of the Yggdrasil Branch, and was blessed with {$randomMerit}!";
-        }
+        $pet->addMerit($merit);
 
-        $responseService->createActivityLog($pet, "%pet:{$pet->getId()}.name% {$itemActionDescription}", '')
+        $responseService->createActivityLog($pet, "%pet:{$pet->getId()}.name%'s lunchbox got bigger!", '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
             ->setViewed()
             ->setChanges($petChanges->compare($pet))
@@ -85,7 +64,7 @@ class YggdrasilBranch extends AbstractController
         $em->flush();
 
         return $responseService->itemActionSuccess(
-            "{$pet->getName()} {$itemActionDescription}!",
+            "{$pet->getName()}'s lunchbox got bigger... but only on the inside? \*shrugs\* Good enough.",
             [ 'itemDeleted' => true ]
         );
     }

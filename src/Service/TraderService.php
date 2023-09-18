@@ -1003,6 +1003,18 @@ class TraderService
         }
 
         $offers[] = TraderOffer::createTradeOffer(
+            [
+                TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Limestone'), 2),
+            ],
+            [
+                TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Scroll of Tell Samarzhoustian Delights'), 1),
+            ],
+            'Limestone is an important building material in Tell Samarzhoustia. We build beautiful palaces, and enormous chimera statues. Well, enormous by fish standards. You should visit, sometime.',
+            $user,
+            $quantities
+        );
+
+        $offers[] = TraderOffer::createTradeOffer(
             [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Moon Pearl'), 1) ],
             [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Cooking Buddy'), 1) ],
             'That\'s no knock-off! Tell Samarzhoustia trades directly with the Eridanus Federation!',
@@ -1026,18 +1038,6 @@ class TraderService
             $quantities
         );
 
-        $offers[] = TraderOffer::createTradeOffer(
-            [
-                TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Limestone'), 2),
-            ],
-            [
-                TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Scroll of Tell Samarzhoustian Delights'), 1),
-            ],
-            'Limestone is an important building material in Tell Samarzhoustia. We build beautiful palaces, and enormous chimera statues. Well, enormous by fish standards. You should visit, sometime.',
-            $user,
-            $quantities
-        );
-
         return $offers;
     }
 
@@ -1048,24 +1048,6 @@ class TraderService
         ]);
 
         return [
-            TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createMoney(1000) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Money Sink'), 1) ],
-                'The Museum\'s curator insisted I make this offer...',
-                $user,
-                $quantities,
-                true
-            ),
-
-            TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createRecyclingPoints(1000) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Garbage Disposal'), 1) ],
-                'The Museum\'s curator insisted I make this offer...',
-                $user,
-                $quantities,
-                true
-            ),
-
             TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Secret Seashell'), 20) ],
                 [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Level 2 Sword'), 1) ],
@@ -1117,6 +1099,17 @@ class TraderService
 
             TraderOffer::createTradeOffer(
                 [
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Money Sink'), 1),
+                    TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Garbage Disposal'), 1),
+                ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Li\'l Pocket Dimension'), 1) ],
+                'I happened to get a few of these while traveling with a... well, let\'s just say he\'s a traveler. And, I mean, he didn\'t tell me _not_ to sell them, so... here we are.',
+                $user,
+                $quantities
+            ),
+
+            TraderOffer::createTradeOffer(
+                [
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Nón Lá'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Toadstool'), 1),
                     TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Money Sink'), 1),
@@ -1125,6 +1118,24 @@ class TraderService
                 'The goblin shark that sold me this told me that "nấm" mean "mushroom". Seems kind of on-the-nose, to me, but that\'s goblin sharks for you.',
                 $user,
                 $quantities
+            ),
+
+            TraderOffer::createTradeOffer(
+                [ TraderOfferCostOrYield::createMoney(1000) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Money Sink'), 1) ],
+                'The Museum\'s curator insisted I make this offer...',
+                $user,
+                $quantities,
+                true
+            ),
+
+            TraderOffer::createTradeOffer(
+                [ TraderOfferCostOrYield::createRecyclingPoints(1000) ],
+                [ TraderOfferCostOrYield::createItem($this->itemRepository->findOneByName('Garbage Disposal'), 1) ],
+                'The Museum\'s curator insisted I make this offer...',
+                $user,
+                $quantities,
+                true
             ),
         ];
     }

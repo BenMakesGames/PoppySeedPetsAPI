@@ -40,8 +40,8 @@ class LunchboxController extends AbstractController
         if(!$inventory->getItem()->getFood())
             throw new PSPInvalidOperationException('Only foods can be placed into lunchboxes.');
 
-        if(count($pet->getLunchboxItems()) >= 4)
-            throw new PSPInvalidOperationException('A lunchbox cannot contain more than 4 items.');
+        if(count($pet->getLunchboxItems()) >= $pet->getLunchboxSize())
+            throw new PSPInvalidOperationException($pet->getName() . '\'s lunchbox cannot contain more than ' . $pet->getLunchboxSize() . ' items.');
 
         if($inventory->getHolder())
             throw new PSPInvalidOperationException($inventory->getHolder()->getName() . ' is currently holding that item!');

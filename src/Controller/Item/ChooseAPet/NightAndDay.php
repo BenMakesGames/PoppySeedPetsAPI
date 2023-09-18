@@ -34,7 +34,6 @@ class NightAndDay extends AbstractController
         Inventory $inventory,
         Request $request,
         ResponseService $responseService,
-        PetRepository $petRepository,
         EntityManagerInterface $em,
         InventoryService $inventoryService,
         PetExperienceService $petExperienceService,
@@ -47,7 +46,7 @@ class NightAndDay extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'nightAndDay');
 
-        $pet = ChooseAPetHelpers::getPet($request, $user, $petRepository);
+        $pet = ChooseAPetHelpers::getPet($request, $user, $em);
         $petChanges = new PetChanges($pet);
 
         $pairOfItems = $rng->rngNextFromArray([

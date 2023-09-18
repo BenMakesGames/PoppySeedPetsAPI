@@ -33,7 +33,6 @@ class Proboscis extends AbstractController
         Inventory $inventory,
         Request $request,
         ResponseService $responseService,
-        PetRepository $petRepository,
         EntityManagerInterface $em,
         InventoryService $inventoryService,
         PetExperienceService $petExperienceService,
@@ -46,7 +45,7 @@ class Proboscis extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'proboscis');
 
-        $pet = ChooseAPetHelpers::getPet($request, $user, $petRepository);
+        $pet = ChooseAPetHelpers::getPet($request, $user, $em);
         $petChanges = new PetChanges($pet);
         $skills = $pet->getComputedSkills();
 

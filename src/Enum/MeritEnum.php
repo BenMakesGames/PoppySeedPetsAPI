@@ -36,6 +36,7 @@ final class MeritEnum
     public const WONDROUS_DEXTERITY = 'Wondrous Dexterity';
     public const WONDROUS_PERCEPTION = 'Wondrous Perception';
     public const WONDROUS_INTELLIGENCE = 'Wondrous Intelligence';
+    public const BIGGER_LUNCHBOX = 'Bigger Lunchbox';
 
     // obtained through house time spent
     public const MIND_OVER_MATTER = 'Mind Over Matter';

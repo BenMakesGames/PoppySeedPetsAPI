@@ -34,7 +34,6 @@ class Molly extends AbstractController
         Inventory $inventory,
         Request $request,
         ResponseService $responseService,
-        PetRepository $petRepository,
         EntityManagerInterface $em,
         InventoryService $inventoryService,
         PetExperienceService $petExperienceService,
@@ -47,7 +46,7 @@ class Molly extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'molly');
 
-        $pet = ChooseAPetHelpers::getPet($request, $user, $petRepository);
+        $pet = ChooseAPetHelpers::getPet($request, $user, $em);
         $petChanges = new PetChanges($pet);
         $skills = $pet->getComputedSkills();
 
