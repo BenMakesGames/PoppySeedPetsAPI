@@ -3,7 +3,7 @@ namespace App\Controller\Style;
 
 use App\Entity\User;
 use App\Entity\UserStyle;
-use App\Repository\UserStyleRepository;
+use App\Functions\UserStyleFunctions;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,14 +21,13 @@ class SaveCurrentController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function saveCurrentStyle(
-        Request $request, UserStyleRepository $userStyleRepository, EntityManagerInterface $em,
-        ResponseService $responseService
+        Request $request, EntityManagerInterface $em, ResponseService $responseService
     )
     {
         /** @var User $user */
         $user = $this->getUser();
 
-        $style = $userStyleRepository->findCurrent($user);
+        $style = UserStyleFunctions::findCurrent($em, $user->getId());
 
         if(!$style)
         {

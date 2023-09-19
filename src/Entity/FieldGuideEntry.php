@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\FieldGuideEntryTypeEnum;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity()
@@ -21,25 +20,21 @@ class FieldGuideEntry
 
     /**
      * @ORM\Column(type="string", length=20)
-     * @Groups({ "myFieldGuide" })
      */
     private $type;
 
     /**
      * @ORM\Column(type="string", length=40, unique=true)
-     * @Groups({ "myFieldGuide" })
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=40, nullable=true)
-     * @Groups({ "myFieldGuide" })
      */
     private $image;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({ "myFieldGuide" })
      */
     private $description;
 

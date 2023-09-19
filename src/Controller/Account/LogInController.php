@@ -5,7 +5,7 @@ use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Functions\PlayerLogHelpers;
-use App\Repository\UserStyleRepository;
+use App\Functions\UserStyleFunctions;
 use App\Service\ResponseService;
 use App\Service\SessionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,7 +28,7 @@ class LogInController extends AbstractController
      */
     public function logIn(
         Request $request, UserPasswordHasherInterface $userPasswordEncoder, SessionService $sessionService,
-        EntityManagerInterface $em, ResponseService $responseService, UserStyleRepository $userStyleRepository
+        EntityManagerInterface $em, ResponseService $responseService
     )
     {
         $email = $request->request->get('email');
@@ -73,8 +73,10 @@ class LogInController extends AbstractController
 
         $responseService->setSessionId($session->getSessionId());
 
+        $currentTheme = UserStyleFunctions::findCurrent($em, $user->getId());
+
         return $responseService->success(
-            [ 'currentTheme' => $userStyleRepository->findCurrent($user) ],
+            [ 'currentTheme' => $currentTheme ],
             [ SerializationGroupEnum::MY_STYLE ]
         );
     }

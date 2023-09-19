@@ -8,12 +8,13 @@ use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserLinkVisibilityEnum;
+use App\Functions\UserStyleFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserFollowingRepository;
 use App\Repository\UserLinkRepository;
-use App\Repository\UserStyleRepository;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -31,12 +32,12 @@ class GetByIdController extends AbstractController
      */
     public function getProfile(
         User $user, ResponseService $responseService, PetRepository $petRepository, InventoryRepository $inventoryRepository,
-        NormalizerInterface $normalizer, UserStyleRepository $userStyleRepository, UserLinkRepository $userLinkRepository,
+        NormalizerInterface $normalizer, EntityManagerInterface $em, UserLinkRepository $userLinkRepository,
         UserFollowingRepository $userFollowingRepository
     )
     {
         $pets = $petRepository->findBy([ 'owner' => $user, 'location' => PetLocationEnum::HOME ]);
-        $theme = $userStyleRepository->findCurrent($user);
+        $theme = UserStyleFunctions::findCurrent($em, $user->getId());
 
         $data = [
             'user' => $normalizer->normalize($user, null, [ 'groups' => [ SerializationGroupEnum::USER_PUBLIC_PROFILE ] ]),

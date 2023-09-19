@@ -3,9 +3,8 @@ namespace App\Controller\Account;
 
 use App\Entity\User;
 use App\Exceptions\PSPFormValidationException;
-use App\Service\PerformanceProfiler;
+use App\Functions\UserMenuFunctions;
 use App\Service\ResponseService;
-use App\Service\UserMenuService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,12 +23,9 @@ class SaveMenuOrderController extends AbstractController
      * @DoesNotRequireHouseHours()
      */
     public function saveMenuOrder(
-        Request $request, UserMenuService $userMenuService, EntityManagerInterface $em,
-        ResponseService $responseService, PerformanceProfiler $performanceProfiler
+        Request $request, EntityManagerInterface $em, ResponseService $responseService
     )
     {
-        $time = microtime(true);
-
         /** @var User $user */
         $user = $this->getUser();
         $newOrder = $request->request->get('order');
@@ -37,14 +33,10 @@ class SaveMenuOrderController extends AbstractController
         if(!is_array($newOrder) || count($newOrder) === 0)
             throw new PSPFormValidationException('No order info was provided.');
 
-        $userMenuService->updateUserMenuSortOrder($user, $newOrder);
+        UserMenuFunctions::updateUserMenuSortOrder($em, $user, $newOrder);
 
         $em->flush();
 
-        $response = $responseService->success();
-
-        $performanceProfiler->logExecutionTime(__METHOD__, microtime(true) - $time);
-
-        return $response;
+        return $responseService->success();
     }
 }

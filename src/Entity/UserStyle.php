@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\UserStyleRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass=UserStyleRepository::class)
+ * @ORM\Entity
  * @ORM\Table(
  *     uniqueConstraints={
  *         @ORM\UniqueConstraint(name="user_id_name_idx", columns={"user_id", "name"})

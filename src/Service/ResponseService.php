@@ -8,12 +8,12 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\SimpleDb;
+use App\Functions\UserMenuFunctions;
 use App\Model\PetChangesSummary;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -28,12 +28,11 @@ class ResponseService
     private NormalizerInterface $normalizer;
     private ?string $sessionId = null;
     private WeatherService $weatherService;
-    private UserMenuService $userMenuService;
     private PerformanceProfiler $performanceProfiler;
 
     public function __construct(
         SerializerInterface $serializer, NormalizerInterface $normalizer, EntityManagerInterface $em, Security $security,
-        WeatherService $weatherService, UserMenuService $userMenuService, PerformanceProfiler $performanceProfiler
+        WeatherService $weatherService, PerformanceProfiler $performanceProfiler
     )
     {
         $this->serializer = $serializer;
@@ -41,7 +40,6 @@ class ResponseService
         $this->em = $em;
         $this->security = $security;
         $this->weatherService = $weatherService;
-        $this->userMenuService = $userMenuService;
         $this->performanceProfiler = $performanceProfiler;
     }
 
@@ -206,7 +204,7 @@ class ResponseService
         if($user)
         {
             $responseData['user'] = $this->normalizer->normalize($user, null, [ 'groups' => [ SerializationGroupEnum::MY_ACCOUNT ] ]);
-            $responseData['user']['menu'] = $this->normalizer->normalize($this->userMenuService->getUserMenuItems($user), null, [ 'groups' => [ SerializationGroupEnum::MY_MENU ] ]);
+            $responseData['user']['menu'] = $this->normalizer->normalize(UserMenuFunctions::getUserMenuItems($this->em, $user), null, [ 'groups' => [ SerializationGroupEnum::MY_MENU ] ]);
         }
     }
 

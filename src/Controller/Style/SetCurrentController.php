@@ -5,7 +5,7 @@ use App\Entity\User;
 use App\Entity\UserStyle;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPInvalidOperationException;
-use App\Repository\UserStyleRepository;
+use App\Functions\UserStyleFunctions;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,8 +22,7 @@ class SetCurrentController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function setCurrent(
-        UserStyle $theme, ResponseService $responseService, UserStyleRepository $userStyleRepository,
-        EntityManagerInterface $em
+        UserStyle $theme, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -32,7 +31,7 @@ class SetCurrentController extends AbstractController
         if($theme->getName() === UserStyle::CURRENT)
             throw new PSPInvalidOperationException('You\'re already using that theme!');
 
-        $current = $userStyleRepository->findCurrent($user);
+        $current = UserStyleFunctions::findCurrent($em, $user->getId());
 
         if(!$current)
         {

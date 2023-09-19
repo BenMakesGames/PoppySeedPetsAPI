@@ -3,7 +3,7 @@ namespace App\Service\Filter;
 
 use App\Entity\User;
 use App\Entity\UserStyle;
-use App\Repository\UserStyleRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
@@ -20,9 +20,9 @@ class UserStyleFilter
 
     private $repository;
 
-    public function __construct(UserStyleRepository $userLetterRepository)
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->repository = $userLetterRepository;
+        $this->repository = $em->getRepository(UserStyle::class);
 
         $this->filterer = new Filterer(
             self::PAGE_SIZE,

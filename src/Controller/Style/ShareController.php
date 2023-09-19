@@ -5,7 +5,7 @@ use App\Entity\User;
 use App\Entity\UserStyle;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
-use App\Repository\UserStyleRepository;
+use App\Functions\UserStyleFunctions;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,8 +23,7 @@ class ShareController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function shareTheme(
-        UserStyleRepository $userStyleRepository, ResponseService $responseService,
-        Request $request, EntityManagerInterface $em
+        ResponseService $responseService, Request $request, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -34,16 +33,16 @@ class ShareController extends AbstractController
         if(strlen($name) < 1 || strlen($name) > 15)
             throw new PSPFormValidationException('Name must be between 1 and 15 characters.');
 
-        $current = $userStyleRepository->findCurrent($user);
+        $current = UserStyleFunctions::findCurrent($em, $user->getId());
 
         if(!$current)
             throw new PSPInvalidOperationException('You have to save your current theme, first.');
 
-        $theme = $userStyleRepository->findOneBy([ 'user' => $user, 'name' => $name ]);
+        $theme = $em->getRepository(UserStyle::class)->findOneBy([ 'user' => $user, 'name' => $name ]);
 
         if(!$theme)
         {
-            $numberOfThemes = $userStyleRepository->countThemesByUser($user);
+            $numberOfThemes = UserStyleFunctions::countThemesByUser($em, $user);
 
             if($numberOfThemes >= 10)
                 throw new PSPInvalidOperationException('You may not have more than 10 themes! Sorry...');

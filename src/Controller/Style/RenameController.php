@@ -6,7 +6,6 @@ use App\Entity\UserStyle;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
-use App\Repository\UserStyleRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,7 +24,7 @@ class RenameController extends AbstractController
      */
     public function renameTheme(
         UserStyle $theme, ResponseService $responseService, EntityManagerInterface $em,
-        Request $request, UserStyleRepository $userStyleRepository
+        Request $request
     )
     {
         /** @var User $user */
@@ -42,7 +41,7 @@ class RenameController extends AbstractController
         if(strlen($name) < 1 || strlen($name) > 15)
             throw new PSPFormValidationException('Name must be between 1 and 15 characters.');
 
-        $existingTheme = $userStyleRepository->findOneBy([
+        $existingTheme = $em->getRepository(UserStyle::class)->findOneBy([
             'user' => $user,
             'name' => $name
         ]);

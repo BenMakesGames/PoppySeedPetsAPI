@@ -3,9 +3,10 @@ namespace App\Controller\Account;
 
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
-use App\Repository\UserStyleRepository;
+use App\Functions\UserStyleFunctions;
 use App\Service\PerformanceProfiler;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -22,7 +23,7 @@ class GetAccountController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getAccount(
-        ResponseService $responseService, UserStyleRepository $userStyleRepository,
+        ResponseService $responseService, EntityManagerInterface $em,
         PerformanceProfiler $performanceProfiler
     )
     {
@@ -31,8 +32,10 @@ class GetAccountController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
+        $currentTheme = UserStyleFunctions::findCurrent($em, $user->getId());
+
         $response = $responseService->success(
-            [ 'currentTheme' => $userStyleRepository->findCurrent($user) ],
+            [ 'currentTheme' => $currentTheme ],
             [ SerializationGroupEnum::MY_STYLE ]
         );
 
