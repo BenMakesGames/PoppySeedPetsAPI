@@ -47,7 +47,7 @@ class MagicBrushController extends AbstractController
         if($pet->hasMerit(MeritEnum::SHEDS))
             throw new PSPInvalidOperationException($pet->getName() . ' already sheds!');
 
-        $pet->addMerit($meritRepository->findOneByName(MeritEnum::SHEDS));
+        $pet->addMerit($meritRepository->deprecatedFindOneByName(MeritEnum::SHEDS));
 
         $item = $pet->getSpecies()->getSheds();
 

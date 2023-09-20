@@ -62,9 +62,9 @@ class SagaSagaService
         $this->inventoryService->petCollectsItem('Skill Scroll: ' . $skill, $pet, $pet->getName() . ' was transformed into this scroll!', null);
 
         $pet
-            ->removeMerit($this->meritRepository->findOneByName(MeritEnum::SAGA_SAGA))
-            ->removeMerit($this->meritRepository->findOneByName(MeritEnum::AFFECTIONLESS))
-            ->addMerit($this->meritRepository->findOneByName(MeritEnum::SPECTRAL))
+            ->removeMerit($this->meritRepository->deprecatedFindOneByName(MeritEnum::SAGA_SAGA))
+            ->removeMerit($this->meritRepository->deprecatedFindOneByName(MeritEnum::AFFECTIONLESS))
+            ->addMerit($this->meritRepository->deprecatedFindOneByName(MeritEnum::SPECTRAL))
             ->setName('Ghost of ' . $pet->getName())
             ->resetAllNeeds()
             ->clearExp()

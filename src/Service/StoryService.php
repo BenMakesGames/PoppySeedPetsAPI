@@ -17,6 +17,7 @@ use App\Model\ItemQuantity;
 use App\Model\StoryStep;
 use App\Model\StoryStepChoice;
 use App\Repository\InventoryRepository;
+use App\Repository\ItemRepository;
 use App\Repository\StoryRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
@@ -136,7 +137,7 @@ class StoryService
             $requiredInventory = $this->inventoryService->deserializeItemList($choice['requiredInventory']);
 
             foreach($requiredInventory as $quantity)
-                $this->inventoryService->loseItem($quantity->item, $this->user, [ LocationEnum::HOME, LocationEnum::BASEMENT ], $quantity->quantity);
+                $this->inventoryService->loseItem($this->user, $quantity->item->getId(), [ LocationEnum::HOME, LocationEnum::BASEMENT ], $quantity->quantity);
         }
     }
 
@@ -258,7 +259,8 @@ class StoryService
                 break;
 
             case StoryActionTypeEnum::LOSE_ITEM:
-                $this->inventoryService->loseItem($action['item'], $this->user, [ LocationEnum::HOME, LocationEnum::BASEMENT ]);
+                $itemId = ItemRepository::getIdByName($this->em, $action['item']);
+                $this->inventoryService->loseItem($this->user, $itemId, [ LocationEnum::HOME, LocationEnum::BASEMENT ]);
                 break;
 
             case StoryActionTypeEnum::LOSE_CALLING_INVENTORY:

@@ -120,7 +120,7 @@ class StrangeUmbralEncounters
     {
         if($pet->getTool() && !$pet->getTool()->getEnchantment())
         {
-            $enchantment = $this->enchantmentRepository->findOneByName('of Agares');
+            $enchantment = $this->enchantmentRepository->deprecatedFindOneByName('of Agares');
 
             $pet->getTool()
                 ->setEnchantment($enchantment)
@@ -158,7 +158,7 @@ class StrangeUmbralEncounters
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
-        $cosmic = $this->spiceRepository->findOneByName('Cosmic');
+        $cosmic = $this->spiceRepository->deprecatedFindOneByName('Cosmic');
 
         $this->inventoryService->petCollectsEnhancedItem('Creamy Milk', null, $cosmic, $pet, $pet->getName() . ' collected this from the Cosmic Goat, who happened to fly overhead while ' . $pet->getName() . ' was exploring the Umbra.', $activityLog);
 

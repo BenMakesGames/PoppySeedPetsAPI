@@ -67,11 +67,8 @@ class DragonService
 
     private EntityManagerInterface $em;
     private InventoryService $inventoryService;
-    private EnchantmentRepository $enchantmentRepository;
-    private SpiceRepository $spiceRepository;
     private UserStatsRepository $userStatsRepository;
     private IRandom $rng;
-    private InventoryRepository $inventoryRepository;
     private DragonRepository $dragonRepository;
     private HattierService $hattierService;
     private ResponseService $responseService;
@@ -80,18 +77,14 @@ class DragonService
 
     public function __construct(
         EntityManagerInterface $em, InventoryService $inventoryService, ResponseService $responseService,
-        EnchantmentRepository $enchantmentRepository, SpiceRepository $spiceRepository, Clock $clock,
-        UserStatsRepository $userStatsRepository, Squirrel3 $rng, InventoryRepository $inventoryRepository,
+        Clock $clock, UserStatsRepository $userStatsRepository, Squirrel3 $rng,
         DragonRepository $dragonRepository, HattierService $hattierService, TransactionService $transactionService
     )
     {
         $this->em = $em;
         $this->inventoryService = $inventoryService;
-        $this->enchantmentRepository = $enchantmentRepository;
-        $this->spiceRepository = $spiceRepository;
         $this->userStatsRepository = $userStatsRepository;
         $this->rng = $rng;
-        $this->inventoryRepository = $inventoryRepository;
         $this->dragonRepository = $dragonRepository;
         $this->hattierService = $hattierService;
         $this->responseService = $responseService;
@@ -113,7 +106,7 @@ class DragonService
 
         $user = $dragon->getOwner();
 
-        $items = $this->inventoryRepository->createQueryBuilder('i')
+        $items = $this->em->getRepository(Inventory::class)->createQueryBuilder('i')
             ->leftJoin('i.item', 'item')
             ->leftJoin('item.treasure', 'treasure')
             ->andWhere('i.id IN (:inventoryIds)')
@@ -212,8 +205,8 @@ class DragonService
         {
             $newItem = $this->inventoryService->receiveItem($goody['item'], $user, $user, $user->getName() . ' received this from their dragon, ' . $dragon->getName() . '.', LocationEnum::HOME);
 
-            if(array_key_exists('bonus', $goody)) $newItem->setEnchantment($this->enchantmentRepository->findOneByName($goody['bonus']));
-            if(array_key_exists('spice', $goody)) $newItem->setSpice($this->spiceRepository->findOneByName($goody['spice']));
+            if(array_key_exists('bonus', $goody)) $newItem->setEnchantment(EnchantmentRepository::findOneByName($this->em, $goody['bonus']));
+            if(array_key_exists('spice', $goody)) $newItem->setSpice(SpiceRepository::findOneByName($this->em, $goody['spice']));
         }
 
         $totalMoneys = 0;
@@ -318,7 +311,7 @@ class DragonService
 
     private function unlockWhiteDiamondHattierStyle(User $user)
     {
-        $enchantment = $this->enchantmentRepository->findOneByName('with White Diamonds');
+        $enchantment = EnchantmentRepository::findOneByName($this->em, 'with White Diamonds');
 
         $this->transactionService->getRecyclingPoints($user, 100, 'You received this from your dragon, for donating 50 gems.', [ 'Dragon Den' ]);
 
@@ -329,7 +322,7 @@ class DragonService
 
     private function unlockBlackDiamondHattierStyle(User $user)
     {
-        $enchantment = $this->enchantmentRepository->findOneByName('with Black Diamonds');
+        $enchantment = EnchantmentRepository::findOneByName($this->em, 'with Black Diamonds');
 
         $this->transactionService->getRecyclingPoints($user, 100, 'You received this from your dragon, for donating 100 gems.', [ 'Dragon Den' ]);
 
@@ -340,7 +333,7 @@ class DragonService
 
     private function unlockLoadedHattierStyle(User $user)
     {
-        $enchantment = $this->enchantmentRepository->findOneByName('Loaded');
+        $enchantment = EnchantmentRepository::findOneByName($this->em, 'Loaded');
 
         $this->transactionService->getRecyclingPoints($user, 100, 'You received this from your dragon, for donating 200 gold and 200 silver.', [ 'Dragon Den' ]);
 

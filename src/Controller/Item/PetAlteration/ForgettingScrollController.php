@@ -86,7 +86,7 @@ class ForgettingScrollController extends AbstractController
             throw new PSPInvalidOperationException('Only pets of level 10 or greater may use this scroll.');
 
         $meritName = $request->request->get('merit', '');
-        $merit = $meritRepository->findOneByName($meritName);
+        $merit = $meritRepository->deprecatedFindOneByName($meritName);
 
         if(!$merit)
             throw new PSPFormValidationException('You forgot to select a merit!');

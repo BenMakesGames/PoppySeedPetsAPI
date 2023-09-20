@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Spice;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -20,8 +21,16 @@ class SpiceRepository extends ServiceEntityRepository
         parent::__construct($registry, Spice::class);
     }
 
-    public function findOneByName(string $name): ?Spice
+    /**
+     * @deprecated
+     */
+    public function deprecatedFindOneByName(string $name): ?Spice
     {
         return $this->findOneBy([ 'name' => $name ]);
+    }
+
+    public static function findOneByName(EntityManagerInterface $em, string $name): ?Spice
+    {
+        return $em->getRepository(Spice::class)->findOneBy([ 'name' => $name ]);
     }
 }

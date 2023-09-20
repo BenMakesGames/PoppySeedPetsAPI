@@ -51,12 +51,12 @@ class FeedController extends AbstractController
             : $beehive->getRequestedItem()
         ;
 
-        if($inventoryService->loseItem($itemToFeed, $user, LocationEnum::HOME, 1) === 0)
+        if($inventoryService->loseItem($user, $itemToFeed->getId(), LocationEnum::HOME, 1) === 0)
         {
             if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Beehive))
                 throw new PSPNotFoundException('You do not have ' . $itemToFeed->getNameWithArticle() . ' in your house!');
 
-            if($inventoryService->loseItem($itemToFeed, $user, LocationEnum::BASEMENT, 1) === 0)
+            if($inventoryService->loseItem($user, $itemToFeed->getId(), LocationEnum::BASEMENT, 1) === 0)
                 throw new PSPNotFoundException('You do not have ' . $itemToFeed->getNameWithArticle() . ' in your house, or your basement!');
             else
                 $responseService->addFlashMessage('You give the queen ' . $itemToFeed->getNameWithArticle() . ' from your basement. Her bees immediately whisk it away into the hive!');

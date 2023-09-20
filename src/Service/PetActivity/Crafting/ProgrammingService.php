@@ -955,7 +955,7 @@ class ProgrammingService
             $captor->getOwner(), $impName, $infinityImp,
             $petColors[0], $petColors[1],
             FlavorEnum::getRandomValue($this->squirrel3),
-            $this->meritRepository->findOneByName($startingMerit)
+            $this->meritRepository->deprecatedFindOneByName($startingMerit)
         );
 
         $newPet
@@ -1047,7 +1047,7 @@ class ProgrammingService
 
             if($pet->hasMerit(MeritEnum::BEHATTED) && $roll >= 27)
             {
-                $consoleCowboy = $this->enchantmentRepository->findOneByName('Console Cowboy\'s');
+                $consoleCowboy = $this->enchantmentRepository->deprecatedFindOneByName('Console Cowboy\'s');
 
                 if(!$this->hattierService->userHasUnlocked($pet->getOwner(), $consoleCowboy))
                 {

@@ -37,7 +37,7 @@ class WeedController extends AbstractController
      */
     public function weedPlants(
         ResponseService $responseService, UserQuestRepository $userQuestRepository, EntityManagerInterface $em,
-        InventoryService $inventoryService, Squirrel3 $squirrel3, WeatherService $weatherService, Clock $clock
+        InventoryService $inventoryService, Squirrel3 $squirrel3, Clock $clock
     ): JsonResponse
     {
         /** @var User $user */
@@ -89,7 +89,7 @@ class WeedController extends AbstractController
 
             $hasWaterPlots = $greenhouse->getMaxWaterPlants() > 0;
             $hasDarkPlots = $greenhouse->getMaxDarkPlants() > 0;
-            $isRaining = $weatherService->getWeather(new \DateTimeImmutable(), null)->getRainfall() > 0;
+            $isRaining = WeatherService::getWeather(new \DateTimeImmutable(), null)->getRainfall() > 0;
 
             $basicItems = [ 'Egg', 'Blackberries', 'Blueberries', 'Line of Ants' ];
             $slightlyCoolerItems = [ 'Narcissus', 'Plastic', 'Paper', 'Pepino Dulce' ];

@@ -218,7 +218,7 @@ class AstronomyClubService
                 $description = 'a Strange Field';
             }
 
-            $astralEnchantment = $this->enchantmentRepository->findOneByName('Astral');
+            $astralEnchantment = $this->enchantmentRepository->deprecatedFindOneByName('Astral');
 
             foreach($group->getMembers() as $member)
             {

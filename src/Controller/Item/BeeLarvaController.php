@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\PetLocationEnum;
 use App\Functions\PetColorFunctions;
+use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Service\InventoryService;
@@ -30,7 +31,7 @@ class BeeLarvaController extends AbstractController
     public function hatch(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService, Squirrel3 $rng,
-        PetFactory $petFactory, MeritRepository $meritRepository, PetRepository $petRepository
+        PetFactory $petFactory, MeritRepository $meritRepository
     )
     {
         /** @var User $user */
@@ -38,7 +39,9 @@ class BeeLarvaController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'beeLarva/#/hatch');
 
-        if($inventoryService->loseItem('Royal Jelly', $user, $inventory->getLocation()) < 1)
+        $royalJellyId = ItemRepository::getIdByName($em, 'Royal Jelly');
+
+        if($inventoryService->loseItem($user, $royalJellyId, $inventory->getLocation()) < 1)
         {
             return $responseService->itemActionSuccess('Hm... You\'ll need some Royal Jelly to hatch this larva...');
         }
@@ -74,7 +77,7 @@ class BeeLarvaController extends AbstractController
 
         $message = 'The larva unfurls itself, and molts, revealing a beautiful little bee!';
 
-        $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
+        $numberOfPetsAtHome = PetRepository::getNumberAtHome($em, $user);
 
         $petJoinsHouse = $numberOfPetsAtHome < $user->getMaxPets();
 
@@ -136,7 +139,9 @@ class BeeLarvaController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'beeLarva/#/giveToAntQueen');
 
-        if($inventoryService->loseItem('Ant Queen', $user, $inventory->getLocation()) < 1)
+        $antQueenId = ItemRepository::getIdByName($em, 'Ant Queen');
+
+        if($inventoryService->loseItem($user, $antQueenId, $inventory->getLocation()) < 1)
             return $responseService->itemActionSuccess('Narrator: But there\'s was no Ant Queen for ' . $user->getName() . ' to give it to.');
 
         $inventoryService->receiveItem('Ant Queen\'s Favor', $user, $user, $user->getName() . ' received this from an Ant Queen in exchange for a Bee Larva...', $inventory->getLocation());

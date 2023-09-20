@@ -43,7 +43,7 @@ class WeatherService
         return $year * 8760 + $hourOfYear;
     }
 
-    public function getWeather(\DateTimeImmutable $dt, ?Pet $pet, $getHolidays = true): WeatherData
+    public static function getWeather(\DateTimeImmutable $dt, ?Pet $pet, $getHolidays = true): WeatherData
     {
         if($pet)
             $dt = $dt->modify('-' . max(0, $pet->getHouseTime()->getActivityTime()) . ' minutes');
@@ -175,11 +175,11 @@ class WeatherService
         return $this->cache->getOrCompute(
             'Weather Forecast ' . $now->format('Y-m-d G'),
             \DateInterval::createFromDateString('1 hour'),
-            fn() => $this->compute24HourForecast()
+            fn() => self::compute24HourForecast()
         );
     }
 
-    private function compute24HourForecast()
+    private static function compute24HourForecast()
     {
         $forecast = [];
         $now = new \DateTimeImmutable();
@@ -187,7 +187,7 @@ class WeatherService
         for($hour = 0; $hour < 24; $hour++)
         {
             $now = $now->modify('+1 hour');
-            $forecast[] = $this->getWeather($now, null, false);
+            $forecast[] = self::getWeather($now, null, false);
         }
 
         return $forecast;
@@ -211,11 +211,11 @@ class WeatherService
         return $this->cache->getOrCompute(
             'Weather Forecast ' . $date->format('Y-m-d'),
             \DateInterval::createFromDateString('1 day'),
-            fn() => $this->computeWeatherForecast($date->setTime(0, 0, 0))
+            fn() => self::computeWeatherForecast($date->setTime(0, 0, 0))
         );
     }
 
-    private function computeWeatherForecast(\DateTimeImmutable $date): WeatherForecastData
+    private static function computeWeatherForecast(\DateTimeImmutable $date): WeatherForecastData
     {
         $temperatures = [];
         $clouds = [];
@@ -224,7 +224,7 @@ class WeatherService
         for($hour = 0; $hour < 24; $hour++)
         {
             $dateToConsider = $date->setTime($hour, 30, 0);
-            $weather = $this->getWeather($dateToConsider, null, false);
+            $weather = self::getWeather($dateToConsider, null, false);
 
             $temperatures[] = $weather->temperature;
             $clouds[] = $weather->clouds;

@@ -20,27 +20,28 @@ use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use Doctrine\ORM\EntityManagerInterface;
 
 class NotReallyCraftsService
 {
     private ResponseService $responseService;
     private InventoryService $inventoryService;
     private PetExperienceService $petExperienceService;
-    private SpiceRepository $spiceRepository;
+    private EntityManagerInterface $em;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        PetExperienceService $petExperienceService, SpiceRepository $spiceRepository, HouseSimService $houseSimService,
+        PetExperienceService $petExperienceService, EntityManagerInterface $em, HouseSimService $houseSimService,
         PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
-        $this->spiceRepository = $spiceRepository;
+        $this->em = $em;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
@@ -118,7 +119,7 @@ class NotReallyCraftsService
             }
 
             if($loot === 'String')
-                $spice = $this->spiceRepository->findOneByName('Cosmic');
+                $spice = SpiceRepository::findOneByName($this->em, 'Cosmic');
             else
                 $spice = null;
 

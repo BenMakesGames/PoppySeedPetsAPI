@@ -67,8 +67,7 @@ class GnomesFavorController extends AbstractController
      */
     public function getFood(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, Squirrel3 $squirrel3, SpiceRepository $spiceRepository,
-        UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em, Squirrel3 $squirrel3, UserStatsRepository $userStatsRepository
     )
     {
         /** @var User $user */
@@ -104,7 +103,7 @@ class GnomesFavorController extends AbstractController
         for($i = 0; $i < 5; $i++)
         {
             $newInventory[] = $inventoryService->receiveItem($possibleFood[$i], $user, $user, $user->getName() . ' got this from a Gnome\'s Favor.', $location)
-                ->setSpice($spiceRepository->findOneByName($possibleSpices[$i]))
+                ->setSpice(SpiceRepository::findOneByName($em, $possibleSpices[$i]))
             ;
         }
 

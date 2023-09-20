@@ -270,7 +270,7 @@ class GamingGroupService
             {
                 $enchantmentName = $this->squirrel3->rngNextFromArray($game['lootEnchantments']);
 
-                $enchantment = $enchantmentName == null ? null : $this->enchantmentRepository->findOneByName($enchantmentName);
+                $enchantment = $enchantmentName == null ? null : $this->enchantmentRepository->deprecatedFindOneByName($enchantmentName);
 
                 $this->inventoryService->petCollectsEnhancedItem(
                     $this->squirrel3->rngNextFromArray($game['possibleLoot']),

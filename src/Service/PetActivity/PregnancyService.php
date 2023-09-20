@@ -29,7 +29,6 @@ use Doctrine\ORM\EntityManagerInterface;
 class PregnancyService
 {
     private EntityManagerInterface $em;
-    private PetRepository $petRepository;
     private ResponseService $responseService;
     private PetExperienceService $petExperienceService;
     private UserQuestRepository $userQuestRepository;
@@ -37,17 +36,15 @@ class PregnancyService
     private MeritRepository $meritRepository;
     private PetFactory $petFactory;
     private IRandom $squirrel3;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
-        EntityManagerInterface $em, PetRepository $petRepository, ResponseService $responseService,
+        EntityManagerInterface $em, ResponseService $responseService,
         PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
         UserStatsRepository $userStatsRepository, MeritRepository $meritRepository, PetFactory $petFactory,
-        Squirrel3 $squirrel3, PetActivityLogTagRepository $petActivityLogTagRepository
+        Squirrel3 $squirrel3
     )
     {
         $this->em = $em;
-        $this->petRepository = $petRepository;
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
         $this->userQuestRepository = $userQuestRepository;
@@ -55,7 +52,6 @@ class PregnancyService
         $this->meritRepository = $meritRepository;
         $this->petFactory = $petFactory;
         $this->squirrel3 = $squirrel3;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function getPregnant(Pet $pet1, Pet $pet2)
@@ -194,7 +190,7 @@ class PregnancyService
         if($pregnancy->getSpiritParent())
         {
             foreach($babies as $baby)
-                $baby->addMerit($this->meritRepository->findOneByName(MeritEnum::NATURAL_CHANNEL));
+                $baby->addMerit(MeritRepository::findOneByName($this->em, MeritEnum::NATURAL_CHANNEL));
         }
 
         $smallestParent = min($pregnancy->getParent()->getScale(), $pregnancy->getOtherParent() == null ? 50 : $pregnancy->getOtherParent()->getScale());
@@ -226,7 +222,7 @@ class PregnancyService
             $this->createParentalRelationships($baby, $pregnancy->getParent(), $pregnancy->getOtherParent());
         }
 
-        $numberOfPetsAtHome = $this->petRepository->getNumberAtHome($user);
+        $numberOfPetsAtHome = PetRepository::getNumberAtHome($this->em, $user);
 
         $adjective = $this->squirrel3->rngNextFromArray([
             'a beautiful', 'an energetic', 'a wriggly',
@@ -269,7 +265,7 @@ class PregnancyService
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::GAVE_BIRTH)
-            ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Pregnancy' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Pregnancy' ]))
         ;
 
         $pet->setPregnancy(null);

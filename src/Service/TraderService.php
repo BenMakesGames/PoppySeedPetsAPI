@@ -1247,7 +1247,7 @@ class TraderService
             switch($cost->type)
             {
                 case CostOrYieldTypeEnum::ITEM:
-                    $quantity = $this->inventoryService->countInventory($user, $cost->item, LocationEnum::HOME);
+                    $quantity = InventoryService::countInventory($this->em, $user->getId(), $cost->item->getId(), LocationEnum::HOME);
 
                     if($quantity < $cost->quantity)
                         return false;
@@ -1284,7 +1284,7 @@ class TraderService
             switch($cost->type)
             {
                 case CostOrYieldTypeEnum::ITEM:
-                    $itemQuantity = $this->inventoryService->loseItem($cost->item, $user, LocationEnum::HOME, $cost->quantity * $quantity);
+                    $itemQuantity = $this->inventoryService->loseItem($user, $cost->item->getId(), LocationEnum::HOME, $cost->quantity * $quantity);
 
                     if($itemQuantity < $cost->quantity * $quantity)
                         throw new PSPNotFoundException('You do not have the items needed to make this exchange. (Expected ' . ($cost->quantity * $quantity) . ' items; only found ' . $itemQuantity . '.)');

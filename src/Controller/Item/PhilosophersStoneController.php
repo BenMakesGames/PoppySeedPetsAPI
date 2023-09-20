@@ -42,7 +42,7 @@ class PhilosophersStoneController extends AbstractController
     public function useStone(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         PetFactory $petFactory, Request $request, InventoryRepository $inventoryRepository,
-        MeritRepository $meritRepository, PetRepository $petRepository, UserStatsRepository $userStatsRepository
+        MeritRepository $meritRepository, UserStatsRepository $userStatsRepository
     )
     {
         /** @var User $user */
@@ -81,11 +81,11 @@ class PhilosophersStoneController extends AbstractController
             'Paracelsus', 'Vallalar', 'Kanada', 'Laozi',
         ]);
 
-        $startingMerit = $meritRepository->findOneByName(MeritEnum::ETERNAL);
+        $startingMerit = $meritRepository->deprecatedFindOneByName(MeritEnum::ETERNAL);
 
         $pet = $petFactory->createPet($user, $name, $species, $speciesInfo['colorA'], $speciesInfo['colorB'], FlavorEnum::getRandomValue($squirrel3), $startingMerit);
 
-        $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
+        $numberOfPetsAtHome = PetRepository::getNumberAtHome($em, $user);
 
         if($numberOfPetsAtHome >= $user->getMaxPets())
         {

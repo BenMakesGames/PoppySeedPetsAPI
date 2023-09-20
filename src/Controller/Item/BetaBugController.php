@@ -90,8 +90,8 @@ class BetaBugController extends AbstractController
 
         switch($item->getItem()->getName())
         {
-            case 'Cooking Buddy': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $petRepository, $item, $user, $meritRepository->getRandomStartingMerit(), null); break;
-            case 'Cooking "Alien"': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $petRepository, $item, $user, $meritRepository->findOneByName(MeritEnum::BEHATTED), 'Antenna'); break;
+            case 'Cooking Buddy': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, $meritRepository->getRandomStartingMerit(), null); break;
+            case 'Cooking "Alien"': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::findOneByName($em, MeritEnum::BEHATTED), 'Antenna'); break;
             case 'Sentient Beetle': self::makeBeetleEvil($responseService, $em, $user, $item); break;
             case 'Rainbowsaber': self::makeGlitchedOutRainbowsaber($responseService, $em, $user, $item); break;
             default: throw new PSPInvalidOperationException("The Beta Bug cannot be used on that item!");
@@ -152,8 +152,7 @@ class BetaBugController extends AbstractController
 
     private static function createCookingBuddy(
         ResponseService $responseService, EntityManagerInterface $em, PetFactory $petFactory, Squirrel3 $rng,
-        PetRepository $petRepository, Inventory $inventoryItem, User $user, Merit $startingMerit,
-        ?string $startingHatItem
+        Inventory $inventoryItem, User $user, Merit $startingMerit, ?string $startingHatItem
     )
     {
         $newPet = $petFactory->createPet(
@@ -182,7 +181,7 @@ class BetaBugController extends AbstractController
 
         $em->remove($inventoryItem);
 
-        $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
+        $numberOfPetsAtHome = PetRepository::getNumberAtHome($em, $user);
 
         $petJoinsHouse = $numberOfPetsAtHome < $user->getMaxPets();
 

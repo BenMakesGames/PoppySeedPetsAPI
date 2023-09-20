@@ -36,7 +36,7 @@ class AdoptController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function adoptPet(
-        int $id, PetRepository $petRepository, AdoptionService $adoptionService, Request $request,
+        int $id, AdoptionService $adoptionService, Request $request,
         ResponseService $responseService, EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
         UserQuestRepository $userQuestRepository, TransactionService $transactionService, Squirrel3 $squirrel3,
         MeritRepository $meritRepository, PetFactory $petFactory
@@ -51,7 +51,7 @@ class AdoptController extends AbstractController
         if($lastAdopted && $lastAdopted->getValue() === $now)
             throw new PSPInvalidOperationException('You cannot adopt another pet today.');
 
-        $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
+        $numberOfPetsAtHome = PetRepository::getNumberAtHome($em, $user);
 
         if($user->getMoneys() < $costToAdopt)
             throw new PSPNotEnoughCurrencyException($costToAdopt . '~~m~~', $user->getMoneys() . '~~m~~');

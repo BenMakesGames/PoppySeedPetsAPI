@@ -21,20 +21,17 @@ class GatheringDistractionService
     private IRandom $rng;
     private PetExperienceService $petExperienceService;
     private ResponseService $responseService;
-    private WeatherService $weatherService;
     private FieldGuideService $fieldGuideService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         Squirrel3 $squirrel3, PetExperienceService $petExperienceService, ResponseService $responseService,
-        WeatherService $weatherService, FieldGuideService $fieldGuideService,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        FieldGuideService $fieldGuideService, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->rng = $squirrel3;
         $this->petExperienceService = $petExperienceService;
         $this->responseService = $responseService;
-        $this->weatherService = $weatherService;
         $this->fieldGuideService = $fieldGuideService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
@@ -67,7 +64,7 @@ class GatheringDistractionService
 
     private function getPossibleDistractions(ComputedPetSkills $petWithSkills, string $location): array
     {
-        $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $petWithSkills->getPet());
+        $weather = WeatherService::getWeather(new \DateTimeImmutable(), $petWithSkills->getPet());
         $distractions = [];
         $anyRain = $weather->getRainfall() > 0;
         $anyClouds = $weather->getClouds() > 0;

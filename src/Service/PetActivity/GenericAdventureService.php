@@ -43,7 +43,6 @@ class GenericAdventureService
     private ItemRepository $itemRepository;
     private SpiceRepository $spiceRepository;
     private IRandom $squirrel3;
-    private WeatherService $weatherService;
     private EnchantmentRepository $enchantmentRepository;
     private HattierService $hattierService;
     private UserBirthdayService $userBirthdayService;
@@ -57,7 +56,7 @@ class GenericAdventureService
         ResponseService $responseService, InventoryService $inventoryService,
         PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
         TransactionService $transactionService, MeritRepository $meritRepository, ItemRepository $itemRepository,
-        Squirrel3 $squirrel3, SpiceRepository $spiceRepository, WeatherService $weatherService,
+        Squirrel3 $squirrel3, SpiceRepository $spiceRepository,
         EnchantmentRepository $enchantmentRepository, HattierService $hattierService,
         UserBirthdayService $userBirthdayService, DragonRepository $dragonRepository,
         DragonHostageService $dragonHostageService, EntityManagerInterface $em,
@@ -73,7 +72,6 @@ class GenericAdventureService
         $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
         $this->spiceRepository = $spiceRepository;
-        $this->weatherService = $weatherService;
         $this->enchantmentRepository = $enchantmentRepository;
         $this->hattierService = $hattierService;
         $this->userBirthdayService = $userBirthdayService;
@@ -109,7 +107,7 @@ class GenericAdventureService
             $changes = new PetChanges($pet);
 
             $pet
-                ->addMerit($this->meritRepository->findOneByName($newMerit))
+                ->addMerit($this->meritRepository->deprecatedFindOneByName($newMerit))
                 ->setClaimedGrandparentMerit()
             ;
 
@@ -162,7 +160,7 @@ class GenericAdventureService
                 return $activityLog;
 
             // if it's raining, and a pet is wearing a hat...
-            if($pet->getHat() && $this->weatherService->getWeather(new \DateTimeImmutable(), $pet)->getRainfall() > 0)
+            if($pet->getHat() && WeatherService::getWeather(new \DateTimeImmutable(), $pet)->getRainfall() > 0)
             {
                 $activityLog = $this->hattierService->petMaybeUnlockAura(
                     $pet,
@@ -306,7 +304,7 @@ class GenericAdventureService
         {
             if($reward[1] === 'Fishkebab')
             {
-                $spice = $this->spiceRepository->findOneByName($this->squirrel3->rngNextFromArray([
+                $spice = $this->spiceRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
                     'Spicy', 'with Ketchup', 'Cheesy', 'Fishy', 'Ducky', 'Onion\'d',
                 ]));
             }
@@ -338,7 +336,7 @@ class GenericAdventureService
         if($pet->getBirthDate() >= (new \DateTimeImmutable())->modify('-372 days'))
             return null;
 
-        $partyEnchantment = $this->enchantmentRepository->findOneByName('Party');
+        $partyEnchantment = $this->enchantmentRepository->deprecatedFindOneByName('Party');
 
         if($this->hattierService->userHasUnlocked($pet->getOwner(), $partyEnchantment))
             return null;

@@ -9,6 +9,7 @@ use App\Model\MeritInfo;
 use App\Service\IRandom;
 use App\Service\Squirrel3;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -29,12 +30,23 @@ class MeritRepository extends ServiceEntityRepository
         parent::__construct($registry, Merit::class);
     }
 
-    public function findOneByName(string $name)
+    /**
+     * @deprecated
+     */
+    public function deprecatedFindOneByName(string $name)
     {
         if(!MeritEnum::isAValue($name))
             throw new EnumInvalidValueException(MeritEnum::class, $name);
 
         return $this->findOneBy([ 'name' => $name ]);
+    }
+
+    public static function findOneByName(EntityManagerInterface $em, string $name)
+    {
+        if(!MeritEnum::isAValue($name))
+            throw new EnumInvalidValueException(MeritEnum::class, $name);
+
+        return $em->getRepository(Merit::class)->findOneBy([ 'name' => $name ]);
     }
 
     public function getRandomStartingMerit(): Merit

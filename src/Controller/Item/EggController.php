@@ -31,7 +31,7 @@ class EggController extends AbstractController
      */
     public function hatchPolyp(
         Inventory $inventory, ResponseService $responseService, Squirrel3 $squirrel3, EntityManagerInterface $em,
-        PetRepository $petRepository, MeritRepository $meritRepository, PetFactory $petFactory
+        MeritRepository $meritRepository, PetFactory $petFactory
     )
     {
         /** @var User $user */
@@ -75,7 +75,7 @@ class EggController extends AbstractController
         ]);
 
         $newPet = $petFactory->createPet(
-            $user, $jellingName, $jelling, '', '', FlavorEnum::getRandomValue($squirrel3), $meritRepository->findOneByName(MeritEnum::SAGA_SAGA)
+            $user, $jellingName, $jelling, '', '', FlavorEnum::getRandomValue($squirrel3), $meritRepository->deprecatedFindOneByName(MeritEnum::SAGA_SAGA)
         );
 
         $newPet
@@ -84,12 +84,12 @@ class EggController extends AbstractController
             ->increaseEsteem(10)
             ->increaseFood(-8)
             ->setScale($squirrel3->rngNextInt(80, 120))
-            ->addMerit($meritRepository->findOneByName(MeritEnum::AFFECTIONLESS))
+            ->addMerit($meritRepository->deprecatedFindOneByName(MeritEnum::AFFECTIONLESS))
         ;
 
         $newPet->getHouseTime()->setSocialEnergy(-365 * 24 * 60);
 
-        $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
+        $numberOfPetsAtHome = PetRepository::getNumberAtHome($em, $user);
 
         if($numberOfPetsAtHome >= $user->getMaxPets())
         {
@@ -114,7 +114,7 @@ class EggController extends AbstractController
      */
     public function hatchWeirdBlueEgg(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
-        EntityManagerInterface $em, PetRepository $petRepository, MeritRepository $meritRepository,
+        EntityManagerInterface $em, MeritRepository $meritRepository,
         PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
@@ -173,7 +173,7 @@ class EggController extends AbstractController
             ->setScale($squirrel3->rngNextInt(80, 120))
         ;
 
-        $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
+        $numberOfPetsAtHome = PetRepository::getNumberAtHome($em, $user);
 
         if($numberOfPetsAtHome >= $user->getMaxPets())
         {
@@ -196,8 +196,7 @@ class EggController extends AbstractController
      */
     public function openMetalBox(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
-        EntityManagerInterface $em, PetRepository $petRepository, MeritRepository $meritRepository,
-        PetFactory $petFactory, Squirrel3 $squirrel3
+        EntityManagerInterface $em, MeritRepository $meritRepository, PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
         /** @var User $user */
@@ -259,7 +258,7 @@ class EggController extends AbstractController
             ->setScale($squirrel3->rngNextInt(80, 120))
         ;
 
-        $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
+        $numberOfPetsAtHome = PetRepository::getNumberAtHome($em, $user);
 
         if($numberOfPetsAtHome >= $user->getMaxPets())
         {

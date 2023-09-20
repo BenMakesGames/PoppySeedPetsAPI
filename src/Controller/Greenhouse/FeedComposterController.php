@@ -46,7 +46,7 @@ class FeedComposterController extends AbstractController
     public function feedComposter(
         ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository,
         InventoryService $inventoryService, EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
-        SpiceRepository $spiceRepository, Squirrel3 $squirrel3, GreenhouseService $greenhouseService
+        Squirrel3 $squirrel3, GreenhouseService $greenhouseService
     ): JsonResponse
     {
         /** @var User $user */
@@ -60,7 +60,7 @@ class FeedComposterController extends AbstractController
 
         $itemIds = RequestFunctions::getUniqueIdsOrThrow($request, 'food', 'No items were selected as fuel???');
 
-        $items = $inventoryRepository->findFertilizers($user, $itemIds);
+        $items = InventoryRepository::findFertilizers($em, $user, $itemIds);
 
         $items = array_filter($items, function(Inventory $i)  {
             return !in_array($i->getItem()->getName(), self::FORBIDDEN_COMPOST);
@@ -145,7 +145,7 @@ class FeedComposterController extends AbstractController
                 $theBonusItem = $inventoryService->receiveItem($bonusItem, $user, $user, $user->getName() . ' found this in their composter.', LocationEnum::HOME, false);
 
             if($bonusItem->getName() === 'String' || $bonusItem->getName() === 'Grandparoot' || $bonusItem->getName() === 'Paper Bag')
-                $theBonusItem->setSpice($spiceRepository->findOneByName('Rancid'));
+                $theBonusItem->setSpice(SpiceRepository::findOneByName($em, 'Rancid'));
         }
 
         for($i = 0; $i < $largeBags; $i++)

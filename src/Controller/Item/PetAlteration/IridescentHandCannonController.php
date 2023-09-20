@@ -77,7 +77,7 @@ class IridescentHandCannonController extends AbstractController
         if($pet->hasMerit(MeritEnum::HYPERCHROMATIC))
         {
             $responseService->addFlashMessage($pet->getName() . ' has been chromatically altered! (It seems their Hyperchromaticism was blasted away by the cannon, as well!)');
-            $pet->removeMerit($meritRepository->findOneByName(MeritEnum::HYPERCHROMATIC));
+            $pet->removeMerit($meritRepository->deprecatedFindOneByName(MeritEnum::HYPERCHROMATIC));
         }
         else
         {

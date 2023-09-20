@@ -10,13 +10,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ShowWeatherCommand extends Command
 {
-    private $weatherService;
-
-    public function __construct(WeatherService  $weatherService)
+    public function __construct()
     {
         parent::__construct();
-
-        $this->weatherService = $weatherService;
     }
 
     protected function configure()
@@ -37,7 +33,7 @@ class ShowWeatherCommand extends Command
         else
             $time = new \DateTimeImmutable($time);
 
-        $weather = $this->weatherService->getWeather($time, null);
+        $weather = WeatherService::getWeather($time, null);
 
         var_export($weather);
 

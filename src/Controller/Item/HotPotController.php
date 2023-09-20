@@ -34,7 +34,7 @@ class HotPotController extends AbstractController
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
         UserQuestRepository $userQuestRepository, Request $request, InventoryRepository $inventoryRepository,
-        SpiceRepository $spiceRepository, UserStatsRepository $userStatsRepository
+        UserStatsRepository $userStatsRepository
     )
     {
         /** @var User $user */
@@ -90,7 +90,7 @@ class HotPotController extends AbstractController
             );
         }
 
-        $newSpice = $spiceRepository->findOneByName($squirrel3->rngNextFromArray($possibleSpices));
+        $newSpice = SpiceRepository::findOneByName($em, $squirrel3->rngNextFromArray($possibleSpices));
 
         $hadASpice = $dippedItem->getSpice() !== null;
         $oldName = InventoryModifierFunctions::getNameWithModifiers($dippedItem);

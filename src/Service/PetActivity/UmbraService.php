@@ -42,7 +42,6 @@ class UmbraService
     private ItemRepository $itemRepository;
     private StrangeUmbralEncounters $strangeUmbralEncounters;
     private DragonRepository $dragonRepository;
-    private WeatherService $weatherService;
     private IRandom $squirrel3;
     private HattierService $hattierService;
     private FieldGuideService $fieldGuideService;
@@ -55,9 +54,8 @@ class UmbraService
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, GuildService $guildService, StrangeUmbralEncounters $strangeUmbralEncounters,
-        ItemRepository $itemRepository, FieldGuideService $fieldGuideService,
-        DragonRepository $dragonRepository, Squirrel3 $squirrel3, WeatherService $weatherService,
-        HattierService $hattierService, PetActivityLogTagRepository $petActivityLogTagRepository,
+        ItemRepository $itemRepository, FieldGuideService $fieldGuideService, DragonRepository $dragonRepository,
+        Squirrel3 $squirrel3, HattierService $hattierService, PetActivityLogTagRepository $petActivityLogTagRepository,
         SpiceRepository $spiceRepository, LeonidsService $leonidsService, Clock $clock
     )
     {
@@ -70,7 +68,6 @@ class UmbraService
         $this->strangeUmbralEncounters = $strangeUmbralEncounters;
         $this->dragonRepository = $dragonRepository;
         $this->squirrel3 = $squirrel3;
-        $this->weatherService = $weatherService;
         $this->hattierService = $hattierService;
         $this->fieldGuideService = $fieldGuideService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
@@ -94,7 +91,7 @@ class UmbraService
         }
         else
         {
-            $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet);
+            $weather = WeatherService::getWeather(new \DateTimeImmutable(), $pet);
 
             $skill = 10 + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal(); // psychedelics bonus is built into getUmbra()
 
@@ -637,7 +634,7 @@ class UmbraService
 
             $pet->increaseEsteem(6);
 
-            $spice = $this->spiceRepository->findOneByName('Cosmic');
+            $spice = $this->spiceRepository->deprecatedFindOneByName('Cosmic');
 
             $this->inventoryService->petCollectsEnhancedItem('Jelling Polyp', null, $spice, $pet, $pet->getName() . ' got this from fishing in the Umbra.', $activityLog);
 

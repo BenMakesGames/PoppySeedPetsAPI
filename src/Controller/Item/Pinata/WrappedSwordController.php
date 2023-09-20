@@ -26,8 +26,7 @@ class WrappedSwordController extends AbstractController
      */
     public function unwrap(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        IRandom $rng, EntityManagerInterface $em, ItemRepository $itemRepository,
-        SpiceRepository $spiceRepository, EnchantmentRepository $enchantmentRepository
+        IRandom $rng, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -38,7 +37,7 @@ class WrappedSwordController extends AbstractController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $swordItem = $itemRepository->deprecatedFindOneByName($rng->rngNextFromArray([
+        $swordItem = ItemRepository::findOneByName($em, $rng->rngNextFromArray([
             'Rapier',
             'Iron Sword',
             'Brute Force',
@@ -51,7 +50,7 @@ class WrappedSwordController extends AbstractController
 
         if($sword->getSpice() == null && $rng->rngNextBool())
         {
-            $spice = $spiceRepository->findOneByName($rng->rngNextFromArray([
+            $spice = SpiceRepository::findOneByName($em, $rng->rngNextFromArray([
                 'Spicy',
                 'Ducky',
                 'Nutmeg-laden',
@@ -66,7 +65,7 @@ class WrappedSwordController extends AbstractController
         }
         else
         {
-            $bonus = $enchantmentRepository->findOneByName($rng->rngNextFromArray([
+            $bonus = EnchantmentRepository::findOneByName($em, $rng->rngNextFromArray([
                 'Bright',
                 'Spider\'s',
                 'of the Moon',

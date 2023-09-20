@@ -50,7 +50,6 @@ class HuntingService
     private PetExperienceService $petExperienceService;
     private TransactionService $transactionService;
     private WerecreatureEncounterService $werecreatureEncounterService;
-    private WeatherService $weatherService;
     private StatusEffectService $statusEffectService;
     private IRandom $squirrel3;
     private GatheringDistractionService $gatheringDistractions;
@@ -63,7 +62,7 @@ class HuntingService
         MuseumItemRepository $museumItemRepository, ItemRepository $itemRepository,
         UserQuestRepository $userQuestRepository, PetExperienceService $petExperienceService,
         TransactionService $transactionService, Squirrel3 $squirrel3, Clock $clock,
-        WerecreatureEncounterService $werecreatureEncounterService, WeatherService $weatherService,
+        WerecreatureEncounterService $werecreatureEncounterService,
         StatusEffectService $statusEffectService, GatheringDistractionService $gatheringDistractions,
         PetActivityLogTagRepository $petActivityLogTagRepository, FieldGuideService $fieldGuideService
     )
@@ -78,7 +77,6 @@ class HuntingService
         $this->transactionService = $transactionService;
         $this->squirrel3 = $squirrel3;
         $this->werecreatureEncounterService = $werecreatureEncounterService;
-        $this->weatherService = $weatherService;
         $this->statusEffectService = $statusEffectService;
         $this->gatheringDistractions = $gatheringDistractions;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
@@ -101,7 +99,7 @@ class HuntingService
         $activityLog = null;
         $changes = new PetChanges($pet);
 
-        $weather = $this->weatherService->getWeather($this->clock->now, $pet);
+        $weather = WeatherService::getWeather($this->clock->now, $pet);
         $isRaining = $weather->getRainfall() > 0;
 
         if(DateFunctions::moonPhase($this->clock->now) === MoonPhaseEnum::FULL_MOON && $this->squirrel3->rngNextInt(1, 100) === 1)

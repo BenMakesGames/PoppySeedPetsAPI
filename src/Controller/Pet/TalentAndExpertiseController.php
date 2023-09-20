@@ -42,7 +42,7 @@ class TalentAndExpertiseController extends AbstractController
         if(!in_array($talent, [ MeritEnum::MIND_OVER_MATTER, MeritEnum::MATTER_OVER_MIND, MeritEnum::MODERATION ]))
             throw new PSPFormValidationException('You gotta\' choose one of the talents!');
 
-        $merit = $meritRepository->findOneByName($talent);
+        $merit = $meritRepository->deprecatedFindOneByName($talent);
 
         if(!$merit)
             throw new \Exception('Programmer error! The Merit "' . $talent . '" does not exist in the DB! :(');
@@ -113,7 +113,7 @@ class TalentAndExpertiseController extends AbstractController
         if(!in_array($expertise, [ MeritEnum::FORCE_OF_WILL, MeritEnum::FORCE_OF_NATURE, MeritEnum::BALANCE ]))
             throw new PSPFormValidationException('You gotta\' choose one of the talents!');
 
-        $merit = $meritRepository->findOneByName($expertise);
+        $merit = $meritRepository->deprecatedFindOneByName($expertise);
 
         if(!$merit)
             throw new \Exception('Programmer error! The Merit "' . $expertise . '" does not exist in the DB! :(');

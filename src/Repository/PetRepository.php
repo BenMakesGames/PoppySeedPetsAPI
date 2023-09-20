@@ -10,6 +10,7 @@ use App\Enum\RelationshipEnum;
 use App\Enum\StatusEffectEnum;
 use App\Service\Squirrel3;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -104,9 +105,9 @@ class PetRepository extends ServiceEntityRepository
         return array_values(array_filter($pets, fn(Pet $pet) => !$pet->hasStatusEffect(StatusEffectEnum::WEREFORM)));
     }
 
-    public function getNumberAtHome(User $user): int
+    public static function getNumberAtHome(EntityManagerInterface $em, User $user): int
     {
-        return $this->createQueryBuilder('p')
+        return $em->getRepository(Pet::class)->createQueryBuilder('p')
             ->select('COUNT(p.id)')
             ->andWhere('p.owner=:owner')
             ->andWhere('p.location=:home')

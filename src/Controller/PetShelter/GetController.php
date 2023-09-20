@@ -7,6 +7,7 @@ use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\AdoptionService;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -21,7 +22,7 @@ class GetController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getAvailablePets(
-        AdoptionService $adoptionService, ResponseService $responseService, PetRepository $petRepository,
+        AdoptionService $adoptionService, ResponseService $responseService, EntityManagerInterface $em,
         UserQuestRepository $userQuestRepository
     )
     {
@@ -42,7 +43,7 @@ class GetController extends AbstractController
 
         [$pets, $dialog] = $adoptionService->getDailyPets($user);
 
-        $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
+        $numberOfPetsAtHome = PetRepository::getNumberAtHome($em, $user);
 
         if($numberOfPetsAtHome >= $user->getMaxPets())
             $dialog .= "no one catches your eye today, come back tomorrow. We get newcomers every day!\n\nSince you have so many pets in your house already, a pet you adopt will be placed into Daycare.";

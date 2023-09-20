@@ -10,6 +10,7 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
 use App\Model\ItemQuantity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -63,9 +64,9 @@ class InventoryRepository extends ServiceEntityRepository
      * @param int[] $inventoryIds
      * @return Inventory[]
      */
-    public function findFertilizers(User $user, ?array $inventoryIds = null)
+    public static function findFertilizers(EntityManagerInterface $em, User $user, ?array $inventoryIds = null)
     {
-        $qb = $this->createQueryBuilder('i')
+        $qb = $em->getRepository(Inventory::class)->createQueryBuilder('i')
             ->andWhere('i.owner=:owner')
             ->andWhere('i.location = :home')
             ->leftJoin('i.item', 'item')

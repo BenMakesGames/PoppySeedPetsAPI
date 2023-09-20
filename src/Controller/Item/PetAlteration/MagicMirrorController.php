@@ -42,7 +42,7 @@ class MagicMirrorController extends AbstractController
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
 
-        $merit = $meritRepository->findOneByName(MeritEnum::MIRRORED);
+        $merit = $meritRepository->deprecatedFindOneByName(MeritEnum::MIRRORED);
 
         if(!$merit)
             throw new \Exception('The ' . MeritEnum::MIRRORED . ' Merit does not exist! This is a terrible programming error. Someone please tell Ben.');

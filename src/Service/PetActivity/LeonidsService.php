@@ -66,7 +66,7 @@ class LeonidsService
 
         if($petWithSkills->getPet()->hasStatusEffect(StatusEffectEnum::WEREFORM))
         {
-            $starrySpice = $this->spiceRepository->findOneByName('Starry');
+            $starrySpice = $this->spiceRepository->deprecatedFindOneByName('Starry');
 
             $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they saw a group of werecreatures playing in the Stardust! ' . ActivityHelpers::PetName($pet) . ' joined them, rolling in the dust, playing tug-of-war with Pobo bones, and howling at the stars!', '');
 
@@ -233,7 +233,7 @@ class LeonidsService
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
             }
 
-            $spice = $this->spiceRepository->findOneByName($this->rng->rngNextFromArray([
+            $spice = $this->spiceRepository->deprecatedFindOneByName($this->rng->rngNextFromArray([
                 'Rain-scented',
                 'Juniper',
                 'with Rosemary',

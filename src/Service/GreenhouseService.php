@@ -30,36 +30,30 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 class GreenhouseService
 {
     private InventoryService $inventoryService;
-    private PetRepository $petRepository;
     private PetFactory $petFactory;
     private EntityManagerInterface $em;
     private MeritRepository $meritRepository;
     private UserStatsRepository $userStatsRepository;
     private IRandom $squirrel3;
     private UserQuestRepository $userQuestRepository;
-    private InventoryRepository $inventoryRepository;
     private NormalizerInterface $normalizer;
-    private SpiceRepository $spiceRepository;
     private Clock $clock;
 
     public function __construct(
-        InventoryService $inventoryService, PetRepository $petRepository, PetFactory $petFactory, Squirrel3 $squirrel3,
+        InventoryService $inventoryService, PetFactory $petFactory, Squirrel3 $squirrel3,
         EntityManagerInterface $em, MeritRepository $meritRepository, UserStatsRepository $userStatsRepository,
-        UserQuestRepository $userQuestRepository, InventoryRepository $inventoryRepository, NormalizerInterface $normalizer,
-        SpiceRepository $spiceRepository, Clock $clock
+        UserQuestRepository $userQuestRepository, NormalizerInterface $normalizer,
+        Clock $clock
     )
     {
         $this->inventoryService = $inventoryService;
-        $this->petRepository = $petRepository;
         $this->petFactory = $petFactory;
         $this->em = $em;
         $this->meritRepository = $meritRepository;
         $this->userStatsRepository = $userStatsRepository;
         $this->squirrel3 = $squirrel3;
         $this->userQuestRepository = $userQuestRepository;
-        $this->inventoryRepository = $inventoryRepository;
         $this->normalizer = $normalizer;
-        $this->spiceRepository = $spiceRepository;
         $this->clock = $clock;
     }
 
@@ -121,7 +115,7 @@ class GreenhouseService
         else
             throw new \InvalidArgumentException('Programmer foolishness did not account for all pollinators when applying spices!');
 
-        $item->setSpice($this->spiceRepository->findOneByName($spiceName));
+        $item->setSpice(SpiceRepository::findOneByName($this->em, $spiceName));
     }
 
     public function harvestPlantAsPet(GreenhousePlant $plant, PetSpecies $species, string $colorA, string $colorB, string $name, ?Merit $bonusMerit): string
@@ -130,7 +124,7 @@ class GreenhouseService
 
         $message = 'You harvested-- WHOA, WAIT, WHAT?! It\'s a living ' . $species->getName() . '!?';
 
-        $numberOfPetsAtHome = $this->petRepository->getNumberAtHome($user);
+        $numberOfPetsAtHome = PetRepository::getNumberAtHome($this->em, $user);
 
         $startingMerits = MeritInfo::POSSIBLE_STARTING_MERITS;
 
@@ -141,7 +135,7 @@ class GreenhouseService
             );
         }
 
-        $startingMerit = $this->meritRepository->findOneByName($this->squirrel3->rngNextFromArray($startingMerits));
+        $startingMerit = $this->meritRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray($startingMerits));
 
         $harvestedPet = $this->petFactory->createPet($user, $name, $species, $colorA, $colorB, FlavorEnum::getRandomValue($this->squirrel3), $startingMerit);
 
@@ -214,7 +208,7 @@ class GreenhouseService
 
     public function getGreenhouseResponseData(User $user): array
     {
-        $fertilizers = $this->inventoryRepository->findFertilizers($user);
+        $fertilizers = InventoryRepository::findFertilizers($this->em, $user);
 
         return [
             'greenhouse' => $user->getGreenhouse(),
@@ -275,7 +269,7 @@ class GreenhouseService
             'Ascot', 'Neckerchief'
         ]);
 
-        $bonusMerit = $this->meritRepository->findOneByName(MeritEnum::MOON_BOUND);
+        $bonusMerit = $this->meritRepository->deprecatedFindOneByName(MeritEnum::MOON_BOUND);
 
         return $this->harvestPlantAsPet($plant, $species, $colorA, $colorB, $name, $bonusMerit);
     }
@@ -306,7 +300,7 @@ class GreenhouseService
             'Chestnut', 'Khumbhi', 'Helvella', 'Amanita'
         ]);
 
-        $bonusMerit = $this->meritRepository->findOneByName(MeritEnum::DARKVISION);
+        $bonusMerit = $this->meritRepository->deprecatedFindOneByName(MeritEnum::DARKVISION);
 
         return $this->harvestPlantAsPet($plant, $species, $colorA, $colorB, $name, $bonusMerit);
     }
@@ -331,7 +325,7 @@ class GreenhouseService
             'Pomidor', 'Utamatisi'
         ]);
 
-        $bonusMerit = $this->meritRepository->findOneByName(MeritEnum::MOON_BOUND);
+        $bonusMerit = $this->meritRepository->deprecatedFindOneByName(MeritEnum::MOON_BOUND);
 
         return $this->harvestPlantAsPet($plant, $species, $colorA, $colorB, $name, $bonusMerit);
     }

@@ -45,7 +45,7 @@ class ParkService
      */
     public function giveOutParticipationRewards(ParkEvent $parkEvent, array $participants)
     {
-        $impressiveAura = $this->enchantmentRepository->findOneByName('Impressive');
+        $impressiveAura = $this->enchantmentRepository->deprecatedFindOneByName('Impressive');
 
         $birthdayPresentsByUser = [];
 

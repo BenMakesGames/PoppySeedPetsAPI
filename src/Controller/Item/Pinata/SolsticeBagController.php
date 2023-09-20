@@ -55,7 +55,7 @@ class SolsticeBagController extends AbstractController
 
         $message = 'You rummaged around the bag, and found ' . ArrayFunctions::list_nice($items) . '!';
 
-        $auraEnchantment = $enchantmentRepository->findOneByName('Summer\'s');
+        $auraEnchantment = $enchantmentRepository->deprecatedFindOneByName('Summer\'s');
 
         if(!$hattierService->userHasUnlocked($user, $auraEnchantment))
         {
@@ -104,7 +104,7 @@ class SolsticeBagController extends AbstractController
 
         $message = 'You rummaged around the bag, and found ' . ArrayFunctions::list_nice($items) . '!';
 
-        $auraEnchantment = $enchantmentRepository->findOneByName('Winter\'s');
+        $auraEnchantment = $enchantmentRepository->deprecatedFindOneByName('Winter\'s');
 
         if(!$hattierService->userHasUnlocked($user, $auraEnchantment))
         {

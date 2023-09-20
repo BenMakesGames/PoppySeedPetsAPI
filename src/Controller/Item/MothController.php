@@ -32,8 +32,7 @@ class MothController extends AbstractController
      * @Route("/getQuantity/{inventory}", methods={"GET"})
      */
     public function getMothInfo(
-        Inventory $inventory, ResponseService $responseService,
-        InventoryService $inventoryService
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -50,7 +49,7 @@ class MothController extends AbstractController
             throw new PSPInvalidOperationException('Moths can only be released from the home, basement, or fireplace mantle.');
         }
 
-        $numberOfMoths = $inventoryService->countInventory($user, $inventory->getItem(), $inventory->getLocation());
+        $numberOfMoths = InventoryService::countInventory($em, $user->getId(), $inventory->getItem()->getId(), $inventory->getLocation());
 
         return $responseService->success([
             'location' => $inventory->getLocation(),

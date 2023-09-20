@@ -98,7 +98,7 @@ class GreenhouseAdventureService
 
     public function maybeUnlockBeeAura(Pet $pet, PetActivityLog $activityLog): bool
     {
-        $forTheBees = $this->enchantmentRepository->findOneByName('for the Bees');
+        $forTheBees = $this->enchantmentRepository->deprecatedFindOneByName('for the Bees');
 
         if($this->hattierService->userHasUnlocked($pet->getOwner(), $forTheBees))
             return false;

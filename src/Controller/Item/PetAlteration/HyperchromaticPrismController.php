@@ -44,7 +44,7 @@ class HyperchromaticPrismController extends AbstractController
         if($pet->hasMerit(MeritEnum::HYPERCHROMATIC))
             throw new PSPInvalidOperationException($pet->getName() . ' is already Hyperchromatic!');
 
-        $pet->addMerit($meritRepository->findOneByName(MeritEnum::HYPERCHROMATIC));
+        $pet->addMerit($meritRepository->deprecatedFindOneByName(MeritEnum::HYPERCHROMATIC));
 
         $em->remove($inventory);
         $em->flush();

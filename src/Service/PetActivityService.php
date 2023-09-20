@@ -91,7 +91,6 @@ class PetActivityService
     private LetterService $letterService;
     private IRandom $squirrel3;
     private ChocolateMansion $chocolateMansion;
-    private WeatherService $weatherService;
     private Caerbannog $caerbannog;
     private CravingService $cravingService;
     private StatusEffectService $statusEffectService;
@@ -117,7 +116,7 @@ class PetActivityService
         MagicBeanstalkService $beanStalkService, GatheringHolidayAdventureService $gatheringHolidayAdventureService,
         GuildService $guildService, BurntForestService $burntForestService, InventoryService $inventoryService,
         DeepSeaService $deepSeaService, NotReallyCraftsService $notReallyCraftsService, LetterService $letterService,
-        WeatherService $weatherService, Caerbannog $caerbannog, TreasureMapService $treasureMapService,
+        Caerbannog $caerbannog, TreasureMapService $treasureMapService,
         StatusEffectService $statusEffectService, EatingService $eatingService, HouseSimService $houseSimService,
         MagicBindingService $magicBindingService, SmithingService $smithingService, CravingService $cravingService,
         PlasticPrinterService $plasticPrinterService, PhilosophersStoneService $philosophersStoneService,
@@ -153,7 +152,6 @@ class PetActivityService
         $this->notReallyCraftsService = $notReallyCraftsService;
         $this->letterService = $letterService;
         $this->chocolateMansion = $chocolateMansion;
-        $this->weatherService = $weatherService;
         $this->caerbannog = $caerbannog;
         $this->cravingService = $cravingService;
         $this->statusEffectService = $statusEffectService;
@@ -1231,7 +1229,7 @@ class PetActivityService
         $changes = new PetChanges($pet);
 
         $pet->removeStatusEffect($pet->getStatusEffect($statusEffect));
-        $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet);
+        $weather = WeatherService::getWeather(new \DateTimeImmutable(), $pet);
 
         if($pet->hasMerit(MeritEnum::GOURMAND))
         {

@@ -33,7 +33,9 @@ class RecoveredArchiveController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'recoveredArchive/#/open');
 
-        if($inventoryService->countInventory($user, '3D Printer', $inventory->getLocation()) < 1)
+        $threeDeePrinterId = ItemRepository::getIdByName($em, '3D Printer');
+
+        if(InventoryService::countInventory($em, $user->getId(), $threeDeePrinterId, $inventory->getLocation()) < 1)
         {
             return $responseService->itemActionSuccess('You peek at the archive\'s contents. It appears to be a model file for a 3D Printer! If only you had a 3D Printer, you might be able to use it to print the object!');
         }

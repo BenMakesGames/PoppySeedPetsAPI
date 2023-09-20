@@ -20,7 +20,6 @@ use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
 use App\Model\FoodWithSpice;
 use App\Model\ItemQuantity;
-use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\SpiceRepository;
 use App\Service\PetActivity\EatingService;
@@ -28,58 +27,41 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class InventoryService
 {
-    private ItemRepository $itemRepository;
     private EntityManagerInterface $em;
     private ResponseService $responseService;
-    private InventoryRepository $inventoryRepository;
     private IRandom $squirrel3;
-    private SpiceRepository $spiceRepository;
     private EatingService $eatingService;
     private HouseSimService $houseSimService;
     private StatusEffectService $statusEffectService;
 
     public function __construct(
-        ItemRepository $itemRepository, EntityManagerInterface $em, ResponseService $responseService,
-        InventoryRepository $inventoryRepository, Squirrel3 $squirrel3, SpiceRepository $spiceRepository,
+        EntityManagerInterface $em, ResponseService $responseService, Squirrel3 $squirrel3,
         EatingService $eatingService, HouseSimService $houseSimService, StatusEffectService $statusEffectService
     )
     {
-        $this->itemRepository = $itemRepository;
         $this->responseService = $responseService;
         $this->em = $em;
-        $this->inventoryRepository = $inventoryRepository;
         $this->squirrel3 = $squirrel3;
-        $this->spiceRepository = $spiceRepository;
         $this->eatingService = $eatingService;
         $this->houseSimService = $houseSimService;
         $this->statusEffectService = $statusEffectService;
     }
 
     /**
-     * @param Item|string|integer $item
      * @throws EnumInvalidValueException
      */
-    public function countInventory(User $user, $item, int $location): int
+    public static function countInventory(EntityManagerInterface $em, int $userId, int $itemId, int $location): int
     {
         if(!LocationEnum::isAValue($location))
             throw new EnumInvalidValueException(LocationEnum::class, $location);
 
-        if(is_string($item))
-            $itemId = $this->itemRepository->getIdByName($this->em, $item);
-        else if(is_object($item) && $item instanceof Item)
-            $itemId = $item->getId();
-        else if(is_integer($item))
-            $itemId = $item;
-        else
-            throw new \InvalidArgumentException('$item must be an Item, string, or integer.');
-
-        return (int)$this->em->createQueryBuilder()
+        return (int)$em->createQueryBuilder()
             ->select('COUNT(i.id)')
             ->from(Inventory::class, 'i')
             ->andWhere('i.owner=:owner')
             ->andWhere('i.item=:item')
             ->andWhere('i.location=:location')
-            ->setParameter('owner', $user->getId())
+            ->setParameter('owner', $userId)
             ->setParameter('item', $itemId)
             ->setParameter('location', $location)
             ->getQuery()
@@ -137,7 +119,7 @@ class InventoryService
             [$itemId, $quantity] = \explode(':', $item);
             $itemQuantity = new ItemQuantity();
 
-            $itemQuantity->item = $this->itemRepository->find($itemId);
+            $itemQuantity->item = $this->em->getRepository(Item::class)->find($itemId);
             $itemQuantity->quantity = (int)$quantity;
 
             $quantities[] = $itemQuantity;
@@ -219,7 +201,7 @@ class InventoryService
         $item = $this->getItemWithChanceForLuckyTransformation($item);
 
         if($pet->hasStatusEffect(StatusEffectEnum::HOT_TO_THE_TOUCH))
-            $spice = (!$spice || $this->squirrel3->rngNextInt(1, 4) == 4) ? $this->spiceRepository->findOneByName('Spicy') : $spice;
+            $spice = (!$spice || $this->squirrel3->rngNextInt(1, 4) == 4) ? SpiceRepository::findOneByName($this->em, 'Spicy') : $spice;
 
         $cancelGather = false;
         $replacementItemNames = [];
@@ -234,7 +216,7 @@ class InventoryService
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ;
 
-                $item = $this->itemRepository->deprecatedFindOneByName('Wheat');
+                $item = ItemRepository::findOneByName($this->em, 'Wheat');
             }
             else if($item->getName() === 'Wheat' || $item->getName() === 'Wheat Flower')
             {
@@ -243,7 +225,7 @@ class InventoryService
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ;
 
-                $item = $this->itemRepository->deprecatedFindOneByName('Gold Bar');
+                $item = ItemRepository::findOneByName($this->em, 'Gold Bar');
             }
         }
 
@@ -377,12 +359,12 @@ class InventoryService
 
         if($pet->hasMerit(MeritEnum::CELESTIAL_CHORUSER) && $item->hasItemGroup('Outer Space'))
         {
-            $itemName = $this->itemRepository->deprecatedFindOneByName('Music Note');
+            $musicNote = ItemRepository::findOneByName($this->em, 'Music Note');
 
             $extraItem = (new Inventory())
                 ->setOwner($pet->getOwner())
                 ->setCreatedBy($pet->getOwner())
-                ->setItem($itemName)
+                ->setItem($musicNote)
                 ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' as a Celestial Choruser.')
                 ->setLocation(LocationEnum::HOME)
                 ->setSpice($extraItemSpice)
@@ -401,7 +383,7 @@ class InventoryService
 
         if($pet->hasStatusEffect(StatusEffectEnum::FRUIT_CLOBBERING) && $item->hasItemGroup('Fresh Fruit'))
         {
-            $pectin = $this->itemRepository->deprecatedFindOneByName('Pectin');
+            $pectin = ItemRepository::findOneByName($this->em, 'Pectin');
 
             $extraItem = (new Inventory())
                 ->setOwner($pet->getOwner())
@@ -500,7 +482,7 @@ class InventoryService
             return $i;
 
         if($i->getItem()->getName() === 'Worms' && DateFunctions::getFullMoonName(new \DateTimeImmutable()) === 'Worm')
-            return $i->setSpice($this->spiceRepository->findOneByName('with Butts'));
+            return $i->setSpice(SpiceRepository::findOneByName($this->em, 'with Butts'));
 
         return $i;
     }
@@ -551,7 +533,7 @@ class InventoryService
         if($bugName === null)
             $bugName = $this->squirrel3->rngNextFromArray([ 'Spider', 'Centipede', 'Cockroach', 'Line of Ants', 'Fruit Fly', 'Stink Bug', 'Moth' ]);
 
-        $bug = $this->itemRepository->deprecatedFindOneByName($bugName);
+        $bug = ItemRepository::findOneByName($this->em, $bugName);
 
         $comment = $toolAttractsBugs ? $pet->getName() . ' caught this in their ' . $pet->getTool()->getItem()->getName() . '!' : 'Ah! How\'d this get inside?!';
         $inventory = null;
@@ -585,27 +567,22 @@ class InventoryService
             $itemName = $itemIsString ? $item : $item->getName();
 
             if($itemName === 'Butter')
-                return $this->itemRepository->deprecatedFindOneByName('Butterknife');
+                return ItemRepository::findOneByName($this->em, 'Butterknife');
             else if($itemName === 'Beans')
-                return $this->itemRepository->deprecatedFindOneByName('Magic Beans');
+                return ItemRepository::findOneByName($this->em, 'Magic Beans');
             else if($itemName === 'Feathers')
-                return $this->itemRepository->deprecatedFindOneByName('Ruby Feather');
+                return ItemRepository::findOneByName($this->em, 'Ruby Feather');
             else if($itemName === 'Toad Legs')
-                return $this->itemRepository->deprecatedFindOneByName('Rainbow Toad Legs');
+                return ItemRepository::findOneByName($this->em, 'Rainbow Toad Legs');
             else if($itemName === 'Stink Bug')
-                return $this->itemRepository->deprecatedFindOneByName('Stinkier Bug');
+                return ItemRepository::findOneByName($this->em, 'Stinkier Bug');
             else if($itemName === 'Naner')
-                return $this->itemRepository->deprecatedFindOneByName('Bunch of Naners');
+                return ItemRepository::findOneByName($this->em, 'Bunch of Naners');
             else
-                return $itemIsString ? $this->itemRepository->deprecatedFindOneByName($item) : $item;
+                return $itemIsString ? ItemRepository::findOneByName($this->em, $item) : $item;
         }
         else
-            return $itemIsString ? $this->itemRepository->deprecatedFindOneByName($item) : $item;
-    }
-
-    public function getItem($item): Item
-    {
-        return is_string($item) ? $this->itemRepository->deprecatedFindOneByName($item) : $item;
+            return $itemIsString ? ItemRepository::findOneByName($this->em, $item) : $item;
     }
 
     /**
@@ -636,17 +613,14 @@ class InventoryService
     }
 
     /**
-     * @param Item|string $item
      * @param int|int[] $location
      */
-    public function loseItem($item, User $owner, $location, int $quantity = 1): int
+    public function loseItem(User $owner, int $itemId, $location, int $quantity = 1): int
     {
-        if(is_string($item)) $item = $this->itemRepository->deprecatedFindOneByName($item);
-
-        $inventory = $this->inventoryRepository->findBy(
+        $inventory = $this->em->getRepository(Inventory::class)->findBy(
             [
                 'owner' => $owner->getId(),
-                'item' => $item->getId(),
+                'item' => $itemId,
                 'location' => $location
             ],
             null,
@@ -664,24 +638,6 @@ class InventoryService
         $this->responseService->setReloadInventory();
 
         return count($inventory);
-    }
-
-    /**
-     * @param Item[]|string[] $itemList
-     * @param int|int[] $location
-     * @return Item|string|null
-     */
-    public function loseOneOf(array $itemList, User $owner, $location)
-    {
-        $this->squirrel3->rngNextShuffle($itemList);
-
-        foreach($itemList as $item)
-        {
-            if($this->loseItem($item, $owner, $location, 1) > 0)
-                return $item;
-        }
-
-        return null;
     }
 
     /**

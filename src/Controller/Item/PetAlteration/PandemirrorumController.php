@@ -42,8 +42,8 @@ class PandemirrorumController extends AbstractController
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
 
-        $invertedMerit = $meritRepository->findOneByName(MeritEnum::INVERTED);
-        $veryInvertedMerit = $meritRepository->findOneByName(MeritEnum::VERY_INVERTED);
+        $invertedMerit = $meritRepository->deprecatedFindOneByName(MeritEnum::INVERTED);
+        $veryInvertedMerit = $meritRepository->deprecatedFindOneByName(MeritEnum::VERY_INVERTED);
 
         if(!$invertedMerit)
             throw new \Exception('The ' . MeritEnum::INVERTED . ' Merit does not exist! This is a terrible programming error. Someone please tell Ben.');

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Enchantment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -21,10 +22,15 @@ class EnchantmentRepository extends ServiceEntityRepository
     }
 
     /**
-     * @deprecated
+     * @deprecated Use static EnchantmentRepository::findOneByName(...) instead
      */
-    public function findOneByName(string $name)
+    public function deprecatedFindOneByName(string $name): ?Enchantment
     {
         return $this->findOneBy([ 'name' => $name ]);
+    }
+
+    public static function findOneByName(EntityManagerInterface $em, string $name): ?Enchantment
+    {
+        return $em->getRepository(Enchantment::class)->findOneBy([ 'name' => $name ]);
     }
 }

@@ -33,7 +33,6 @@ class MagicBindingService
     private ItemRepository $itemRepository;
     private IRandom $squirrel3;
     private CoinSmithingService $coinSmithingService;
-    private WeatherService $weatherService;
     private StatusEffectService $statusEffectService;
     private HouseSimService $houseSimService;
     private HattierService $hattierService;
@@ -41,9 +40,9 @@ class MagicBindingService
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        ItemRepository $itemRepository, Squirrel3 $squirrel3,
-        CoinSmithingService $coinSmithingService, WeatherService $weatherService, StatusEffectService $statusEffectService,
-        HouseSimService $houseSimService, HattierService $hattierService, EntityManagerInterface $em
+        ItemRepository $itemRepository, Squirrel3 $squirrel3, CoinSmithingService $coinSmithingService,
+        StatusEffectService $statusEffectService, HouseSimService $houseSimService, HattierService $hattierService,
+        EntityManagerInterface $em
     )
     {
         $this->inventoryService = $inventoryService;
@@ -52,7 +51,6 @@ class MagicBindingService
         $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
         $this->coinSmithingService = $coinSmithingService;
-        $this->weatherService = $weatherService;
         $this->statusEffectService = $statusEffectService;
         $this->houseSimService = $houseSimService;
         $this->hattierService = $hattierService;
@@ -64,7 +62,7 @@ class MagicBindingService
      */
     public function getCraftingPossibilities(ComputedPetSkills $petWithSkills): array
     {
-        $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $petWithSkills->getPet());
+        $weather = WeatherService::getWeather(new \DateTimeImmutable(), $petWithSkills->getPet());
 
         $possibilities = [];
 
@@ -2380,7 +2378,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Sidereal Leaf Spear', 1);
             $pet->increaseEsteem(3);
 
-            $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet);
+            $weather = WeatherService::getWeather(new \DateTimeImmutable(), $pet);
 
             $makes = $weather->isNight ? 'Midnight' : 'Sunrise';
 

@@ -215,10 +215,10 @@ class PetExperienceService
         if($pet->getPregnancy())
             $pet->getPregnancy()->increaseGrowth($time);
 
-        $this->spendTimeOnStatusEffects($pet, $time);
+        self::spendTimeOnStatusEffects($pet, $time);
     }
 
-    public function spendTimeOnStatusEffects(Pet $pet, int $time)
+    public static function spendTimeOnStatusEffects(Pet $pet, int $time)
     {
         /** @var StatusEffect[] $statusEffects */
         $statusEffects = array_values($pet->getStatusEffects()->toArray());

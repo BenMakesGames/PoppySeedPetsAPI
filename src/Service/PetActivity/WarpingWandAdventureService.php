@@ -127,7 +127,7 @@ class WarpingWandAdventureService
             [ 'spice' => null, 'item' => 'Carrot Preserves' ],
         ]);
 
-        $spice = $loot['spice'] ? $this->spiceRepository->findOneByName($loot['spice']) : null;
+        $spice = $loot['spice'] ? $this->spiceRepository->deprecatedFindOneByName($loot['spice']) : null;
 
         $activityLog = $this->responseService->createActivityLog(
             $pet,
@@ -298,7 +298,7 @@ class WarpingWandAdventureService
             ''
         );
 
-        $rancid = $this->spiceRepository->findOneByName('Rancid');
+        $rancid = $this->spiceRepository->deprecatedFindOneByName('Rancid');
 
         $this->inventoryService->petCollectsEnhancedItem($loot, null, $rancid, $pet, $pet->getName() . ' found this inside the belly of a whale!', $activityLog);
         $this->petExperienceService->spendTime($pet, 2, PetActivityStatEnum::OTHER, null);

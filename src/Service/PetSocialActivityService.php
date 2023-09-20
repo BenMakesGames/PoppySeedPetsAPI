@@ -32,7 +32,6 @@ class PetSocialActivityService
     private PetExperienceService $petExperienceService;
     private PetRelationshipRepository $petRelationshipRepository;
     private IRandom $squirrel3;
-    private WeatherService $weatherService;
     private HoliService $holiService;
     private AwaOdoriService $awaOdoriService;
     private PregnancyService $pregnancyService;
@@ -40,7 +39,7 @@ class PetSocialActivityService
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, PetRelationshipService $petRelationshipService,
         Squirrel3 $squirrel3, PetGroupService $petGroupService, PetExperienceService $petExperienceService,
-        PetRelationshipRepository $petRelationshipRepository, WeatherService $weatherService, HoliService $holiService,
+        PetRelationshipRepository $petRelationshipRepository, HoliService $holiService,
         PregnancyService $pregnancyService, AwaOdoriService $awaOdoriService
     )
     {
@@ -51,7 +50,6 @@ class PetSocialActivityService
         $this->petGroupService = $petGroupService;
         $this->petExperienceService = $petExperienceService;
         $this->petRelationshipRepository = $petRelationshipRepository;
-        $this->weatherService = $weatherService;
         $this->holiService = $holiService;
         $this->pregnancyService = $pregnancyService;
         $this->awaOdoriService = $awaOdoriService;
@@ -77,7 +75,7 @@ class PetSocialActivityService
             return true;
         }
 
-        $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet);
+        $weather = WeatherService::getWeather(new \DateTimeImmutable(), $pet);
 
         if(!$pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
         {

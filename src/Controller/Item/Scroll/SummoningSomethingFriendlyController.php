@@ -3,6 +3,7 @@ namespace App\Controller\Item\Scroll;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\PetSpecies;
 use App\Entity\User;
 use App\Enum\PetLocationEnum;
@@ -30,9 +31,8 @@ class SummoningSomethingFriendlyController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function summonSomethingFriendly(
-        Inventory $inventory, ResponseService $responseService, PetRepository $petRepository,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em,
-        PetFactory $petFactory, Squirrel3 $squirrel3
+        Inventory $inventory, ResponseService $responseService, UserStatsRepository $userStatsRepository,
+        EntityManagerInterface $em, PetFactory $petFactory, Squirrel3 $squirrel3
     ): JsonResponse
     {
         /** @var User $user */
@@ -60,7 +60,7 @@ class SummoningSomethingFriendlyController extends AbstractController
 
         if($pet === null)
         {
-            $pet = $petRepository->findOneBy(
+            $pet = $em->getRepository(Pet::class)->findOneBy(
                 [
                     'owner' => $em->getRepository(User::class)->findOneBy([ 'email' => 'the-wilds@poppyseedpets.com' ])
                 ],
@@ -109,7 +109,7 @@ class SummoningSomethingFriendlyController extends AbstractController
 
         $pet->setOwner($user);
 
-        $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
+        $numberOfPetsAtHome = PetRepository::getNumberAtHome($em, $user);
 
         if($numberOfPetsAtHome >= $user->getMaxPets())
         {

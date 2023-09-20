@@ -14,10 +14,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class ItemHistoryController extends AbstractController
 {
     /**
-     * @Route("/history/{item}", methods={"GET"})
+     * @Route("/history/{itemId}", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function getItemHistory(Item $item, ResponseService $responseService)
+    public function getItemHistory(int $itemId, ResponseService $responseService)
     {
         $maxAge = \DateInterval::createFromDateString('7 days');
 
@@ -29,7 +29,7 @@ class ItemHistoryController extends AbstractController
                 FROM daily_market_item_average AS h
                 WHERE h.item_id=:itemId AND h.date>:earliestDate',
                 [
-                    ':itemId' => $item->getId(),
+                    ':itemId' => $itemId,
                     ':earliestDate' => (new \DateTimeImmutable())->sub($maxAge)->format('Y-m-d')
                 ]
             )
@@ -49,7 +49,7 @@ class ItemHistoryController extends AbstractController
                 ORDER BY h.date DESC
                 LIMIT 1',
                 [
-                    ':itemId' => $item->getId(),
+                    ':itemId' => $itemId,
                 ]
             )
             ->mapResults(fn($average_price, $min_price, $max_price, $date) => [

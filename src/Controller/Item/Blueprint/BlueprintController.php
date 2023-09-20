@@ -15,6 +15,7 @@ use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
+use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
 use App\Service\BeehiveService;
@@ -278,8 +279,7 @@ class BlueprintController extends AbstractController
      */
     public function installFishStatue(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, InventoryRepository $inventoryRepository, PetExperienceService $petExperienceService,
-        InventoryService $inventoryService
+        PetRepository $petRepository, InventoryRepository $inventoryRepository, PetExperienceService $petExperienceService
     )
     {
         /** @var User $user */
@@ -295,7 +295,9 @@ class BlueprintController extends AbstractController
 
         $pet = $this->getPet($request, $petRepository);
 
-        if($inventoryService->countInventory($user, '3D Printer', LocationEnum::HOME) < 1)
+        $threeDeePrinterId = ItemRepository::getIdByName($em, '3D Printer');
+
+        if(InventoryService::countInventory($em, $user->getId(), $threeDeePrinterId, LocationEnum::HOME) < 1)
             return $responseService->itemActionSuccess('The statue appears to be a fountain! You and ' . $pet->getName() . ' are going to need a 3D Printer at home, and some Plastic to make some pipes...');
 
         $plastic = $inventoryRepository->findOneToConsume($user, 'Plastic');

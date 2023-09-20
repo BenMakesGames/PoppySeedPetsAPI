@@ -192,7 +192,7 @@ class AliceAndBobController extends AbstractController
         $item = $inventoryService->receiveItem($tool, $user, $user, $user->getName() . ' got this from Bob\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
 
         $item->setEnchantment(
-            $enchantmentRepository->findOneByName('Bob\'s')
+            $enchantmentRepository->deprecatedFindOneByName('Bob\'s')
         );
 
         return BoxHelpers::countRemoveFlushAndRespond('Inside Bob\'s Secret, you find', $userStatsRepository, $user, $inventory, [ $item ], $responseService, $em);

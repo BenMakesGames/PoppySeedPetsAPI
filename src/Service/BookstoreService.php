@@ -14,13 +14,14 @@ use App\Functions\CalendarFunctions;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 class BookstoreService
 {
     private UserStatsRepository $userStatsRepository;
     private UserQuestRepository $userQuestRepository;
     private InventoryService $inventoryService;
-    private ItemRepository $itemRepository;
+    private EntityManagerInterface $em;
     private Clock $clock;
 
     const BOOKSTORE_QUEST_NAME = 'Items Given to Bookstore';
@@ -118,13 +119,13 @@ class BookstoreService
 
     public function __construct(
         UserStatsRepository $userStatsRepository, UserQuestRepository $userQuestRepository,
-        InventoryService $inventoryService, ItemRepository $itemRepository, Clock $clock
+        InventoryService $inventoryService, EntityManagerInterface $em, Clock $clock
     )
     {
         $this->userStatsRepository = $userStatsRepository;
         $this->userQuestRepository = $userQuestRepository;
         $this->inventoryService = $inventoryService;
-        $this->itemRepository = $itemRepository;
+        $this->em = $em;
         $this->clock = $clock;
     }
 
@@ -141,7 +142,7 @@ class BookstoreService
         if(!$this->renamingScrollAvailable($user))
             throw new PSPNotUnlockedException('Bookstore Renaming Scrolls');
 
-        $item = $this->itemRepository->deprecatedFindOneByName($itemToGive);
+        $item = ItemRepository::findOneByName($this->em, $itemToGive);
 
         $bookstoreQuestStep = $this->userQuestRepository->findOrCreate($user, self::BOOKSTORE_QUEST_NAME, 0);
 
@@ -153,7 +154,7 @@ class BookstoreService
         if(!in_array($itemToGive, $questStep['askingFor']))
             throw new PSPFormValidationException('That\'s not what I\'m looking for right now...');
 
-        if($this->inventoryService->loseItem($item, $user, [ LocationEnum::HOME, LocationEnum::BASEMENT ], 1) === 0)
+        if($this->inventoryService->loseItem($user, $item->getId(), [ LocationEnum::HOME, LocationEnum::BASEMENT ], 1) === 0)
         {
             throw new PSPNotFoundException('You don\'t seem to have ' . $item->getNameWithArticle() . '...');
         }
@@ -349,7 +350,8 @@ class BookstoreService
      */
     private function serializeShopInventory(array $inventory): array
     {
-        $items = $this->itemRepository->findBy([ 'name' => array_keys($inventory) ], [ 'name' => 'ASC' ]);
+        $items = $this->em->getRepository(Item::class)
+            ->findBy([ 'name' => array_keys($inventory) ], [ 'name' => 'ASC' ]);
 
         return array_map(
             fn(Item $item) => [

@@ -69,7 +69,7 @@ class GoldRingController extends AbstractController
      */
     public function collect100(
         Inventory $inventory, EntityManagerInterface $em, InventoryService $inventoryService,
-        ResponseService $responseService, MeritRepository $meritRepository, PetRepository $petRepository,
+        ResponseService $responseService, MeritRepository $meritRepository,
         PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
@@ -80,7 +80,7 @@ class GoldRingController extends AbstractController
 
         $goldRingItem = $inventory->getItem();
 
-        $count = $inventoryService->countInventory($user, $goldRingItem, $inventory->getLocation());
+        $count = InventoryService::countInventory($em, $user->getId(), $goldRingItem->getId(), $inventory->getLocation());
 
         if($count < 20)
         {
@@ -114,7 +114,7 @@ class GoldRingController extends AbstractController
             return $responseService->itemActionSuccess($count . '!! AAAAAAAAAAAAAA!!!');
         else
         {
-            $inventoryService->loseItem($goldRingItem, $user, $inventory->getLocation(), 100);
+            $inventoryService->loseItem($user, $goldRingItem->getId(), $inventory->getLocation(), 100);
 
             $hedgehog = $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Hedgehog' ]);
 
@@ -142,7 +142,7 @@ class GoldRingController extends AbstractController
 
             $message = '100 Gold Rings!!! That\'s one extra Hedgehog!';
 
-            $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
+            $numberOfPetsAtHome = PetRepository::getNumberAtHome($em, $user);
 
             $petJoinsHouse = $numberOfPetsAtHome < $user->getMaxPets();
 

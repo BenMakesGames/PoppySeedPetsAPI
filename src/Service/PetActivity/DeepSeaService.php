@@ -552,7 +552,7 @@ class DeepSeaService
                 else if($this->squirrel3->rngNextInt(1, 10) === 1)
                 {
                     $rareTreasure = 'No Right Turns';
-                    $rareTreasureEnchantment = $this->enchantmentRepository->findOneByName('Seaweed-covered');
+                    $rareTreasureEnchantment = $this->enchantmentRepository->deprecatedFindOneByName('Seaweed-covered');
                     $andMore = '; oh, and a "No Right Turns" sign, too?';
                 }
                 else

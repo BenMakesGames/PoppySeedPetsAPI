@@ -68,8 +68,7 @@ class DaycareController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function takePetOutOfDaycare(
-        Pet $pet, ResponseService $responseService, PetRepository $petRepository, EntityManagerInterface $em,
-        PetExperienceService $petExperienceService
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -81,7 +80,7 @@ class DaycareController extends AbstractController
         if($pet->getLocation() !== PetLocationEnum::DAYCARE)
             throw new PSPInvalidOperationException($pet->getName() . ' isn\'t in Daycare...');
 
-        $petsAtHome = $petRepository->getNumberAtHome($user);
+        $petsAtHome = PetRepository::getNumberAtHome($em, $user);
 
         if($petsAtHome >= $user->getMaxPets())
             throw new PSPInvalidOperationException('Your house has too many pets as-is.');
@@ -92,7 +91,7 @@ class DaycareController extends AbstractController
         {
             $fourHoursInDayCare = (int)($hoursInDayCare / 4);
 
-            $petExperienceService->spendTimeOnStatusEffects($pet, $fourHoursInDayCare);
+            PetExperienceService::spendTimeOnStatusEffects($pet, $fourHoursInDayCare);
 
             $pet
                 ->increasePoison(-$fourHoursInDayCare)

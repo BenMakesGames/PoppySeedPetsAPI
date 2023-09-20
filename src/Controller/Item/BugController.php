@@ -194,7 +194,7 @@ class BugController extends AbstractController
      */
     public function adopt(
         Inventory $inventory, EntityManagerInterface $em, MeritRepository $meritRepository,
-        PetRepository $petRepository, ResponseService $responseService, PetFactory $petFactory, Squirrel3 $squirrel3
+        ResponseService $responseService, PetFactory $petFactory, Squirrel3 $squirrel3
     )
     {
         /** @var User $user */
@@ -255,7 +255,7 @@ class BugController extends AbstractController
             ->setScale($squirrel3->rngNextInt(80, 120))
         ;
 
-        $numberOfPetsAtHome = $petRepository->getNumberAtHome($user);
+        $numberOfPetsAtHome = PetRepository::getNumberAtHome($em, $user);
 
         if($numberOfPetsAtHome >= $user->getMaxPets())
         {

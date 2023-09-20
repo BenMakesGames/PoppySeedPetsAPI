@@ -10,15 +10,16 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\DragonRepository;
 use App\Repository\PetRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 class PetAssistantService
 {
-    private PetRepository $petRepository;
+    private EntityManagerInterface $em;
     private DragonRepository $dragonRepository;
 
-    public function __construct(PetRepository $petRepository, DragonRepository $dragonRepository, Squirrel3 $rng)
+    public function __construct(EntityManagerInterface $em, DragonRepository $dragonRepository)
     {
-        $this->petRepository = $petRepository;
+        $this->em = $em;
         $this->dragonRepository = $dragonRepository;
     }
 
@@ -158,7 +159,7 @@ class PetAssistantService
         else
             throw new PSPInvalidOperationException('That pet is not currently helping out anywhere...');
 
-        $numberOfPetsAtHome = $this->petRepository->getNumberAtHome($user);
+        $numberOfPetsAtHome = PetRepository::getNumberAtHome($this->em, $user);
 
         if($numberOfPetsAtHome >= $user->getMaxPets())
             $pet->setLocation(PetLocationEnum::DAYCARE);

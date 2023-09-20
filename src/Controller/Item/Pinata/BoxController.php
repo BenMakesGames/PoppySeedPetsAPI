@@ -1180,7 +1180,7 @@ class BoxController extends AbstractController
      */
     public function openChocolateChest(
         Inventory $box, ResponseService $responseService, InventoryService $inventoryService, PetRepository $petRepository,
-        SpiceRepository $spiceRepository, UserStatsRepository $userStatsRepository, EntityManagerInterface $em,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em,
         Squirrel3 $squirrel3
     )
     {
@@ -1232,7 +1232,7 @@ class BoxController extends AbstractController
         ];
 
         $grossItem = $inventoryService->receiveItem($squirrel3->rngNextFromArray($possibleGrossItems), $user, $box->getCreatedBy(), $user->getName() . ' found inside ' . $box->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
-        $grossItem->setSpice($spiceRepository->findOneByName('Chocolate-covered'));
+        $grossItem->setSpice(SpiceRepository::findOneByName($em, 'Chocolate-covered'));
         $lootNames[] = 'a Chocolate-covered ' . $grossItem->getItem()->getName();
 
         $em->remove($box);

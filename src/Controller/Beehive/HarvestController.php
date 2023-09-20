@@ -33,7 +33,7 @@ class HarvestController extends AbstractController
      */
     public function harvest(
         ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, SpiceRepository $spiceRepository, Squirrel3 $squirrel3
+        InventoryService $inventoryService, Squirrel3 $squirrel3
     )
     {
         /** @var User $user */
@@ -159,9 +159,9 @@ class HarvestController extends AbstractController
                 if($newItem->getItem()->getName() === 'Crooked Stick' || $newItem->getItem()->getFood())
                 {
                     if($squirrel3->rngNextInt(1, 20) === 1)
-                        $newItem->setSpice($spiceRepository->findOneByName('of Queens'));
+                        $newItem->setSpice(SpiceRepository::findOneByName($em, 'of Queens'));
                     else
-                        $newItem->setSpice($spiceRepository->findOneByName('Anthophilan'));
+                        $newItem->setSpice(SpiceRepository::findOneByName($em, 'Anthophilan'));
                 }
 
                 $itemNames[] = $newItem->getFullItemName();

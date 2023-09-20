@@ -6,6 +6,7 @@ use App\Enum\LocationEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\PlayerLogHelpers;
+use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\MarketService;
 use App\Service\ResponseService;
@@ -54,7 +55,9 @@ class LimitsController extends AbstractController
         if(!$itemRequired)
             throw new PSPInvalidOperationException('The market limits don\'t go any higher!');
 
-        if($inventoryService->loseItem($itemRequired['itemName'], $user, [ LocationEnum::HOME, LocationEnum::BASEMENT ], 1) === 0)
+        $itemRequiredId = ItemRepository::getIdByName($em, $itemRequired['itemName']);
+
+        if($inventoryService->loseItem($user, $itemRequiredId, [ LocationEnum::HOME, LocationEnum::BASEMENT ], 1) === 0)
             throw new PSPNotFoundException('Come back when you ACTUALLY have the item.');
 
         $user->setMaxSellPrice($user->getMaxSellPrice() + 10);

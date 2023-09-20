@@ -305,7 +305,7 @@ class BurntForestService
 
                 if($pet->hasMerit(MeritEnum::BEHATTED))
                 {
-                    $livingFlame = $this->enchantmentRepository->findOneByName('of Living Flame');
+                    $livingFlame = $this->enchantmentRepository->deprecatedFindOneByName('of Living Flame');
 
                     if(!$this->hattierService->userHasUnlocked($pet->getOwner(), $livingFlame))
                     {

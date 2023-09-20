@@ -32,7 +32,6 @@ class FishingService
     private PetExperienceService $petExperienceService;
     private TransactionService $transactionService;
     private UserQuestRepository $userQuestRepository;
-    private WeatherService $weatherService;
     private IRandom $squirrel3;
     private FieldGuideService $fieldGuideService;
     private GatheringDistractionService $gatheringDistractions;
@@ -41,7 +40,7 @@ class FishingService
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3,
-        WeatherService $weatherService, FieldGuideService $fieldGuideService, GatheringDistractionService $gatheringDistractions,
+        FieldGuideService $fieldGuideService, GatheringDistractionService $gatheringDistractions,
         PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
@@ -51,7 +50,6 @@ class FishingService
         $this->transactionService = $transactionService;
         $this->userQuestRepository = $userQuestRepository;
         $this->squirrel3 = $squirrel3;
-        $this->weatherService = $weatherService;
         $this->fieldGuideService = $fieldGuideService;
         $this->gatheringDistractions = $gatheringDistractions;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
@@ -438,7 +436,7 @@ class FishingService
     {
         $pet = $petWithSkills->getPet();
 
-        $toadChance = $this->weatherService->getWeather(new \DateTimeImmutable(), $pet)->getRainfall() > 0 ? 100 : 34;
+        $toadChance = WeatherService::getWeather(new \DateTimeImmutable(), $pet)->getRainfall() > 0 ? 100 : 34;
 
         $nothingBiting = $this->nothingBiting($pet, 20, 'at a Roadside Creek');
         if($nothingBiting !== null) return $nothingBiting;

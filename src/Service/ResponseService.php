@@ -90,7 +90,7 @@ class ResponseService
         if($this->sessionId !== null)
             $responseData['sessionId'] = $this->sessionId;
 
-        $weather = $this->weatherService->getWeather(new \DateTimeImmutable(), null);
+        $weather = WeatherService::getWeather(new \DateTimeImmutable(), null);
 
         $responseData['weather'] = $this->normalizer->normalize([
             'today' => $weather,

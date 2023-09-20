@@ -117,7 +117,7 @@ class IcyMoonService
     {
         return $this->squirrel3->rngNextBool()
             ? null
-            : $this->spiceRepository->findOneByName('Freezer-burned')
+            : $this->spiceRepository->deprecatedFindOneByName('Freezer-burned')
         ;
     }
 

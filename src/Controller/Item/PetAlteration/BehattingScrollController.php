@@ -48,7 +48,7 @@ class BehattingScrollController extends AbstractController
         if($pet->hasMerit(MeritEnum::BEHATTED))
             throw new PSPInvalidOperationException($pet->getName() . ' already has the Behatted Merit!');
 
-        $merit = $meritRepository->findOneByName(MeritEnum::BEHATTED);
+        $merit = $meritRepository->deprecatedFindOneByName(MeritEnum::BEHATTED);
 
         if(!$merit)
             throw new \Exception('The ' . MeritEnum::BEHATTED . ' Merit does not exist! This is a terrible programming error. Someone please tell Ben.');
