@@ -54,7 +54,7 @@ class TwuWuvCraftingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
-        $makingItem = $this->itemRepository->findOneByName('Wed Bawwoon');
+        $makingItem = $this->itemRepository->deprecatedFindOneByName('Wed Bawwoon');
 
         if($roll >= 14)
         {
@@ -89,7 +89,7 @@ class TwuWuvCraftingService
         if($pet->hasMerit(MeritEnum::SILVERBLOOD))
             $roll += 5;
 
-        $makingItem = $this->itemRepository->findOneByName('Cupid');
+        $makingItem = $this->itemRepository->deprecatedFindOneByName('Cupid');
 
         if($roll <= 2)
         {

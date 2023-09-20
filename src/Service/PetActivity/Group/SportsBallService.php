@@ -27,11 +27,10 @@ class SportsBallService
     private InventoryService $inventoryService;
     private PetRelationshipService $petRelationshipService;
     private IRandom $squirrel3;
-    private ItemRepository $itemRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, InventoryService $inventoryService,
-        PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3, ItemRepository $itemRepository
+        PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -39,7 +38,6 @@ class SportsBallService
         $this->inventoryService = $inventoryService;
         $this->petRelationshipService = $petRelationshipService;
         $this->squirrel3 = $squirrel3;
-        $this->itemRepository = $itemRepository;
     }
 
     private const DICTIONARY = [
@@ -143,7 +141,7 @@ class SportsBallService
 
             if($this->squirrel3->rngNextInt(1, 10) === 1 && $member->getId() !== $lowestPerformer)
             {
-                $loot = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray(self::POSSIBLE_LOOT));
+                $loot = ItemRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray(self::POSSIBLE_LOOT));
                 $activityLog->setEntry($activityLog->getEntry() . ' ' . $member->getName() . ' accidentally brought ' . $loot->getNameWithArticle() . ' home after the game. (Oops! (Oh well.))');
                 $this->inventoryService->petCollectsItem($loot, $member, $this->formatMessage($message, $member, $group), $activityLog);
             }

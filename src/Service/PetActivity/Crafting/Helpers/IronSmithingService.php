@@ -412,7 +412,7 @@ class IronSmithingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
-        $item = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
+        $item = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
             'Scythe',
             'Garden Shovel'
         ]));
@@ -521,7 +521,7 @@ class IronSmithingService
 
     public function createHeavyTool(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $makes = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
+        $makes = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
             'Heavy Hammer',
             'Heavy Lance'
         ]));

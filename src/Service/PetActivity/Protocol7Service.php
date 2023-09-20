@@ -166,7 +166,7 @@ class Protocol7Service
                 'Recovered Archive',
             ]);
 
-            $item = $this->itemRepository->findOneByName($loot);
+            $item = $this->itemRepository->deprecatedFindOneByName($loot);
 
             [$locationAndAction, $actioning] = $this->squirrel3->rngNextFromArray([
                 [ 'an abandoned forum, and started rooting around old posts', 'rooting around in an abandoned forum' ],
@@ -516,7 +516,7 @@ class Protocol7Service
 
         if($roll >= 16)
         {
-            $lootItem = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray($video['loot']));
+            $lootItem = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray($video['loot']));
 
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% watched a video ' . $video['subject'] . ' in Project-E, and got ' . $lootItem->getNameWithArticle() . ' out of it.', '')

@@ -153,7 +153,7 @@ class PetSummonedAwayService
                 throw new \Exception('Bad random number result.');
         }
 
-        $lootItem = $this->itemRepository->findOneByName($loot);
+        $lootItem = $this->itemRepository->deprecatedFindOneByName($loot);
         $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them made them ' . $activity . '. Once the task was completed, ' . $pet->getName() . ' returned home, still holding ' . $lootItem->getNameWithArticle() . '!';
 
         $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned')

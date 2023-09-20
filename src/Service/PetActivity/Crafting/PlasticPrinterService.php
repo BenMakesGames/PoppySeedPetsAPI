@@ -174,7 +174,7 @@ class PlasticPrinterService
 
             if($getExtraStuff)
             {
-                $extraLoot = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
+                $extraLoot = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
                     'Fluff', 'Feathers', 'Dark Matter', 'Aging Powder', 'Baking Powder', 'Spider', 'Moon Dust',
                 ]));
 
@@ -308,7 +308,7 @@ class PlasticPrinterService
         {
             if($this->squirrel3->rngNextInt(1, 2) === 1)
             {
-                $item = $this->itemRepository->findOneByName('Small Plastic Bucket');
+                $item = $this->itemRepository->deprecatedFindOneByName('Small Plastic Bucket');
                 $beingHalloweeny = true;
             }
             else
@@ -317,12 +317,12 @@ class PlasticPrinterService
                     return $item !== 'Small Plastic Bucket';
                 });
 
-                $item = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray($allPlasticItemsExceptBucket));
+                $item = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray($allPlasticItemsExceptBucket));
             }
         }
         else
         {
-            $item = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray($allPlasticItems));
+            $item = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray($allPlasticItems));
         }
 
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));

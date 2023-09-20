@@ -22,7 +22,7 @@ class FairyRingController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function takeApart(
-        Inventory $inventory, ResponseService $responseService, ItemRepository $itemRepository, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, Squirrel3 $squirrel3,
         EntityManagerInterface $em, InventoryService $inventoryService
     )
     {
@@ -32,7 +32,7 @@ class FairyRingController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'fairyRing/#/takeApart');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
-        $inventory->changeItem($itemRepository->findOneByName('Gold Ring'));
+        $inventory->changeItem(ItemRepository::findOneByName($em, 'Gold Ring'));
 
         $inventoryService->receiveItem('Wings', $user, $inventory->getCreatedBy(), $user->getName() . ' pulled these off a Fairy Ring.', $inventory->getLocation(), $inventory->getLockedToOwner());
 

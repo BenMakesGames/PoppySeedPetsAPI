@@ -34,7 +34,7 @@ class LeafSpearController extends AbstractController
 
         $wasEquipped = $inventory->getHolder() !== null;
 
-        $inventory->changeItem($itemRepository->findOneByName('Really Big Leaf'));
+        $inventory->changeItem($itemRepository->deprecatedFindOneByName('Really Big Leaf'));
 
         $stringLocation = $inventory->getLocation() === LocationEnum::WARDROBE
             ? LocationEnum::HOME

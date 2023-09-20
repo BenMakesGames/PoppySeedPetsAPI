@@ -24,7 +24,7 @@ class FeatheredHatController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function tweakHat(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, ItemRepository $itemRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'featheredHat/#/tweak');
@@ -41,7 +41,7 @@ class FeatheredHatController extends AbstractController
                 throw new \Exception($oldItemName . ' cannot be tweaked?? This is a result of programmer oversight. Please let Ben know.');
         }
 
-        $newItem = $itemRepository->findOneByName($newItemName);
+        $newItem = ItemRepository::findOneByName($em, $newItemName);
 
         $reloadPets = $inventory->getHolder() || $inventory->getWearer();
 

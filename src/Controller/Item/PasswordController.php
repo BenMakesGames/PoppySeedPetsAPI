@@ -29,7 +29,7 @@ class PasswordController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'password/#/erase');
 
-        $string = $itemRepository->findOneByName('String');
+        $string = $itemRepository->deprecatedFindOneByName('String');
 
         $inventory
             ->changeItem($string)

@@ -37,8 +37,7 @@ class WeedController extends AbstractController
      */
     public function weedPlants(
         ResponseService $responseService, UserQuestRepository $userQuestRepository, EntityManagerInterface $em,
-        InventoryService $inventoryService, Squirrel3 $squirrel3, WeatherService $weatherService,
-        ItemRepository $itemRepository, Clock $clock
+        InventoryService $inventoryService, Squirrel3 $squirrel3, WeatherService $weatherService, Clock $clock
     ): JsonResponse
     {
         /** @var User $user */
@@ -119,7 +118,7 @@ class WeedController extends AbstractController
                 [ 'Mango', 'Gypsum', 'Really Big Leaf', 'White Feathers' ]
             );
 
-            $extraItemObject = $itemRepository->findOneByName($extraItem);
+            $extraItemObject = ItemRepository::findOneByName($em, $extraItem);
 
             $surprisingItems = [ 'Coconut', 'Mango' ];
             $litterItems = [ 'Plastic', 'Paper', 'Filthy Cloth' ];

@@ -20,15 +20,14 @@ class NoteController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function eraseNote(
-        Inventory $inventory, ResponseService $responseService, ItemRepository $itemRepository,
-        EntityManagerInterface $em
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'note/#/erase');
 
-        $paper = $itemRepository->findOneByName('Paper');
+        $paper = ItemRepository::findOneByName($em, 'Paper');
 
         $inventory
             ->changeItem($paper)

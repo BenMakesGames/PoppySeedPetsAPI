@@ -48,8 +48,7 @@ class TradesController extends AbstractController
      */
     public function makeExchange(
         string $tradeId, Request $request, ResponseService $responseService, EntityManagerInterface $em,
-        HollowEarthService $hollowEarthService, InventoryService $inventoryService,
-        ItemRepository $itemRepository
+        HollowEarthService $hollowEarthService, InventoryService $inventoryService
     )
     {
         /** @var User $user */
@@ -96,7 +95,7 @@ class TradesController extends AbstractController
             }
         }
 
-        $item = $itemRepository->findOneByName($trade['item']['name']);
+        $item = ItemRepository::findOneByName($em, $trade['item']['name']);
 
         if(!$item)
             throw new \Exception('No item called "' . $trade['item']['name'] . '" exists in the database!');

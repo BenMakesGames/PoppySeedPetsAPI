@@ -90,10 +90,10 @@ class BetaBugController extends AbstractController
 
         switch($item->getItem()->getName())
         {
-            case 'Cooking Buddy': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $petRepository, $itemRepository, $item, $user, $meritRepository->getRandomStartingMerit(), null); break;
-            case 'Cooking "Alien"': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $petRepository, $itemRepository, $item, $user, $meritRepository->findOneByName(MeritEnum::BEHATTED), 'Antenna'); break;
-            case 'Sentient Beetle': self::makeBeetleEvil($responseService, $itemRepository, $user, $item); break;
-            case 'Rainbowsaber': self::makeGlitchedOutRainbowsaber($responseService, $itemRepository, $user, $item); break;
+            case 'Cooking Buddy': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $petRepository, $item, $user, $meritRepository->getRandomStartingMerit(), null); break;
+            case 'Cooking "Alien"': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $petRepository, $item, $user, $meritRepository->findOneByName(MeritEnum::BEHATTED), 'Antenna'); break;
+            case 'Sentient Beetle': self::makeBeetleEvil($responseService, $em, $user, $item); break;
+            case 'Rainbowsaber': self::makeGlitchedOutRainbowsaber($responseService, $em, $user, $item); break;
             default: throw new PSPInvalidOperationException("The Beta Bug cannot be used on that item!");
         }
 
@@ -104,11 +104,11 @@ class BetaBugController extends AbstractController
     }
 
     private static function makeBeetleEvil(
-        ResponseService $responseService, ItemRepository $itemRepository,
+        ResponseService $responseService, EntityManagerInterface $em,
         User $user, Inventory $beetle
     )
     {
-        $beetle->changeItem($itemRepository->findOneByName('EVIL Sentient Beetle'));
+        $beetle->changeItem(ItemRepository::findOneByName($em, 'EVIL Sentient Beetle'));
         $beetle->addComment($user->getName() . ' introduced a Beta Bug into the Sentient Beetle, turning it EVIL!');
 
         $responseService->addFlashMessage('Oh dang! Introducing a Beta Bug into the Sentient Beetle turned it EVIL!');
@@ -116,11 +116,11 @@ class BetaBugController extends AbstractController
     }
 
     private static function makeGlitchedOutRainbowsaber(
-        ResponseService $responseService, ItemRepository $itemRepository,
+        ResponseService $responseService, EntityManagerInterface $em,
         User $user, Inventory $rainbowsaber
     )
     {
-        $rainbowsaber->changeItem($itemRepository->findOneByName('Glitched-out Rainbowsaber'));
+        $rainbowsaber->changeItem(ItemRepository::findOneByName($em, 'Glitched-out Rainbowsaber'));
         $rainbowsaber->addComment($user->getName() . ' introduced a Beta Bug into the Rainbowsaber, glitching it out!');
 
         $responseService->addFlashMessage('Oh dang! Introducing a Beta Bug into the Rainbowsaber made it all glitchy!');
@@ -151,9 +151,9 @@ class BetaBugController extends AbstractController
     ];
 
     private static function createCookingBuddy(
-        ResponseService $responseService, EntityManagerInterface $em,
-        PetFactory $petFactory, Squirrel3 $rng, PetRepository $petRepository, ItemRepository $itemRepository,
-        Inventory $inventoryItem, User $user, Merit $startingMerit, ?string $startingHatItem
+        ResponseService $responseService, EntityManagerInterface $em, PetFactory $petFactory, Squirrel3 $rng,
+        PetRepository $petRepository, Inventory $inventoryItem, User $user, Merit $startingMerit,
+        ?string $startingHatItem
     )
     {
         $newPet = $petFactory->createPet(
@@ -173,7 +173,7 @@ class BetaBugController extends AbstractController
                 ->setOwner($user)
                 ->setCreatedBy($user)
                 ->setLocation(LocationEnum::WARDROBE)
-                ->setItem($itemRepository->findOneByName($startingHatItem))
+                ->setItem(ItemRepository::findOneByName($em, $startingHatItem))
                 ->setWearer($newPet)
             ;
 

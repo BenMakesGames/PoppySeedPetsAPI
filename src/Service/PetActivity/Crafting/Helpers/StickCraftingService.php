@@ -112,7 +112,7 @@ class StickCraftingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
-        $making = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
+        $making = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
             'Stereotypical Torch',
             'White Flag'
         ]));

@@ -106,7 +106,7 @@ class GrocerService
 
     private function createInventoryData($itemData, bool $special)
     {
-        $item = $this->itemRepository->findOneByName($itemData[0]);
+        $item = $this->itemRepository->deprecatedFindOneByName($itemData[0]);
 
         return [
             'special' => $special,

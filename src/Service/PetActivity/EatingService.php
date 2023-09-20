@@ -218,7 +218,7 @@ class EatingService
         if($pet->hasMerit(MeritEnum::BURPS_MOTHS) && $this->squirrel3->rngNextInt(1, 200) < $food->food + $food->junk)
         {
             $inventory = (new Inventory())
-                ->setItem($this->itemRepository->findOneByName('Moth'))
+                ->setItem($this->itemRepository->deprecatedFindOneByName('Moth'))
                 ->setLocation(LocationEnum::HOME)
                 ->setOwner($pet->getOwner())
                 ->setCreatedBy($pet->getOwner())

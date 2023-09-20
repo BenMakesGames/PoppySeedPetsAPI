@@ -210,7 +210,7 @@ class HuntingService
         // if you haven't donated a fairy, then you can't rescue a second
         if(!$this->museumItemRepository->hasUserDonated(
             $user,
-            $this->itemRepository->findOneByName('House Fairy')
+            $this->itemRepository->deprecatedFindOneByName('House Fairy')
         ))
             return false;
 
@@ -945,7 +945,7 @@ class HuntingService
             {
                 $pet->getGuildMembership()->increaseReputation();
 
-                $prizeItem = $this->itemRepository->findOneByName($prize);
+                $prizeItem = $this->itemRepository->deprecatedFindOneByName($prize);
 
                 $activityLog = $this->responseService->createActivityLog($pet, 'A Pirate Ghost tried to haunt %pet:' . $pet->getId() . '.name%, but %pet:' . $pet->getId() . '.name% was able to calm the spirit! Thankful, the spirit gives %pet:' . $pet->getId() . '.name% ' . $prizeItem->getNameWithArticle() . '.', 'guilds/light-and-shadow')
                     ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Guild' ]))
@@ -1030,7 +1030,7 @@ class HuntingService
             {
                 $pet->getGuildMembership()->increaseReputation();
 
-                $item = $this->itemRepository->findOneByName($loot);
+                $item = $this->itemRepository->deprecatedFindOneByName($loot);
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Possessed Turkey! They were able to calm the creature, and set the spirit free. Grateful, the spirit conjured up ' . $item->getNameWithArticle() . ' for ' . $pet->getName() . '!', 'guilds/light-and-shadow')
                     ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Guild', 'Special Event', 'Thanksgiving' ]))
@@ -1067,7 +1067,7 @@ class HuntingService
             {
                 $pet->getGuildMembership()->increaseReputation();
 
-                $item = $this->itemRepository->findOneByName($loot);
+                $item = $this->itemRepository->deprecatedFindOneByName($loot);
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Possessed Turkey! They were able to subdue the creature, and banish the spirit forever. (And they got ' . $item->getNameWithArticle() . ' out of it!)', 'guilds/the-universe-forgets')
                     ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Guild', 'Special Event', 'Thanksgiving' ]))
@@ -1102,7 +1102,7 @@ class HuntingService
 
         if($this->squirrel3->rngNextInt(1, $skill) >= 15)
         {
-            $item = $this->itemRepository->findOneByName($loot);
+            $item = $this->itemRepository->deprecatedFindOneByName($loot);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Possessed Turkey! They fought hard, took ' . $item->getNameWithArticle() . ', and drove the creature away!', '')
                 ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting', 'Special Event', 'Thanksgiving' ]))
@@ -1548,7 +1548,7 @@ class HuntingService
 
         if($pet->hasMerit(MeritEnum::GOURMAND) && $this->squirrel3->rngNextInt(1, 4) === 1)
         {
-            $prize = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray($possibleLoot));
+            $prize = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray($possibleLoot));
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out hunting, and encountered an Egg Salad Monstrosity! After a grueling (and sticky) battle, ' . $pet->getName() . ' took a huge bite out of the monster, slaying it! (Ah~! A true Gourmand!) Finally, they dug ' . $prize->getNameWithArticle() . ' out of the lumpy corpse, and brought it home.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)

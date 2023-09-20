@@ -38,13 +38,13 @@ class SharuminyinkaController extends AbstractController
 
         $exchange = TraderOffer::createTradeOffer(
             [
-                TraderOfferCostOrYield::createItem($itemRepository->findOneByName('Poker'), 1),
-                TraderOfferCostOrYield::createItem($itemRepository->findOneByName('Spider'), 1),
-                TraderOfferCostOrYield::createItem($itemRepository->findOneByName('Feathers'), 1),
-                TraderOfferCostOrYield::createItem($itemRepository->findOneByName('Quintessence'), 1),
+                TraderOfferCostOrYield::createItem($itemRepository->deprecatedFindOneByName('Poker'), 1),
+                TraderOfferCostOrYield::createItem($itemRepository->deprecatedFindOneByName('Spider'), 1),
+                TraderOfferCostOrYield::createItem($itemRepository->deprecatedFindOneByName('Feathers'), 1),
+                TraderOfferCostOrYield::createItem($itemRepository->deprecatedFindOneByName('Quintessence'), 1),
             ],
             [
-                TraderOfferCostOrYield::createItem($itemRepository->findOneByName('Sharuminyinka\'s Hope'), 1),
+                TraderOfferCostOrYield::createItem($itemRepository->deprecatedFindOneByName('Sharuminyinka\'s Hope'), 1),
             ],
             '',
             $user,
@@ -80,13 +80,13 @@ class SharuminyinkaController extends AbstractController
 
         $exchange = TraderOffer::createTradeOffer(
             [
-                TraderOfferCostOrYield::createItem($itemRepository->findOneByName('Crazy-hot Torch'), 1),
-                TraderOfferCostOrYield::createItem($itemRepository->findOneByName('Blackonite'), 1),
-                TraderOfferCostOrYield::createItem($itemRepository->findOneByName('String'), 1),
-                TraderOfferCostOrYield::createItem($itemRepository->findOneByName('Quintessence'), 1),
+                TraderOfferCostOrYield::createItem($itemRepository->deprecatedFindOneByName('Crazy-hot Torch'), 1),
+                TraderOfferCostOrYield::createItem($itemRepository->deprecatedFindOneByName('Blackonite'), 1),
+                TraderOfferCostOrYield::createItem($itemRepository->deprecatedFindOneByName('String'), 1),
+                TraderOfferCostOrYield::createItem($itemRepository->deprecatedFindOneByName('Quintessence'), 1),
             ],
             [
-                TraderOfferCostOrYield::createItem($itemRepository->findOneByName('Tig\'s Memory'), 1),
+                TraderOfferCostOrYield::createItem($itemRepository->deprecatedFindOneByName('Tig\'s Memory'), 1),
             ],
             '',
             $user,

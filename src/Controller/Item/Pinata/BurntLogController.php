@@ -42,7 +42,7 @@ class BurntLogController extends AbstractController
 
         $stat = $userStatsRepository->incrementStat($user, UserStatEnum::BURNT_LOGS_BROKEN);
 
-        $extraItem = $itemRepository->findOneByName($squirrel3->rngNextFromArray([
+        $extraItem = $itemRepository->deprecatedFindOneByName($squirrel3->rngNextFromArray([
             'Crooked Stick',
             'Iron Ore',
             'Glass',

@@ -20,12 +20,12 @@ class ButterknifeController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function moldButterknife(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, ItemRepository $itemRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'butterknife/#/mold');
 
-        $butter = $itemRepository->findOneByName('Butter');
+        $butter = ItemRepository::findOneByName($em, 'Butter');
 
         $reloadPets = $inventory->getHolder() || $inventory->getWearer();
 

@@ -136,7 +136,7 @@ class DreamingService
         }
 
         $itemName = $this->squirrel3->rngNextFromArray($possibleItems);
-        $item = $this->itemRepository->findOneByName($itemName);
+        $item = $this->itemRepository->deprecatedFindOneByName($itemName);
 
         $dream = $this->dreamRepository->findRandom($this->squirrel3);
 

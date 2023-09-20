@@ -21,8 +21,7 @@ class AnniversaryMuffinController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function wishForLengthySkillScroll(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        ItemRepository $itemRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -31,7 +30,7 @@ class AnniversaryMuffinController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'anniversaryMuffin/#/lengthySkillScroll');
 
         $inventory
-            ->changeItem($itemRepository->findOneByName('Lengthy Scroll of Skill'))
+            ->changeItem(ItemRepository::findOneByName($em, 'Lengthy Scroll of Skill'))
             ->setModifiedOn()
         ;
 

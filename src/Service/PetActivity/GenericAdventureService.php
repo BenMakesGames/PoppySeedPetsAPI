@@ -92,7 +92,7 @@ class GenericAdventureService
 
         if($pet->getHat() && $pet->getHat()->getItem()->getName() === 'Red')
         {
-            $pet->getHat()->changeItem($this->itemRepository->findOneByName('William, Shush'));
+            $pet->getHat()->changeItem($this->itemRepository->deprecatedFindOneByName('William, Shush'));
 
             return $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, some random dude jumped out of nowhere and shot an arrow in %pet:' . $pet->getId() . '.name%\'s Red!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)

@@ -57,7 +57,7 @@ class SandyLumpController extends AbstractController
             ]);
         }
 
-        $itemObject = $itemRepository->findOneByName($item);
+        $itemObject = $itemRepository->deprecatedFindOneByName($item);
 
         $userStatsRepository->incrementStat($user, 'Cleaned a ' . $lump->getItem()->getName());
 

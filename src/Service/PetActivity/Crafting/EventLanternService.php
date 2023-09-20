@@ -54,8 +54,8 @@ class EventLanternService
         $possibilities = [];
 
         $recipe = new HouseSimRecipe([
-            $this->itemRepository->findOneByName('Crooked Fishing Rod'),
-            $this->itemRepository->findOneByName('Paper'),
+            $this->itemRepository->deprecatedFindOneByName('Crooked Fishing Rod'),
+            $this->itemRepository->deprecatedFindOneByName('Paper'),
             $this->itemRepository->findBy([ 'name' => [ 'Candle', 'Jar of Fireflies' ]])
         ]);
 

@@ -25,7 +25,7 @@ class GizbuisShovelController extends AbstractController
      */
     public function dig(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        UserQuestRepository $userQuestRepository, ItemRepository $itemRepository
+        UserQuestRepository $userQuestRepository
     )
     {
         /** @var User $user */
@@ -48,7 +48,7 @@ class GizbuisShovelController extends AbstractController
         $reloadPets = $inventory->getHolder() || $inventory->getWearer();
 
         $inventory
-            ->changeItem($itemRepository->findOneByName('Farmer\'s Multi-tool'))
+            ->changeItem(ItemRepository::findOneByName($em, 'Farmer\'s Multi-tool'))
             ->setModifiedOn()
         ;
 

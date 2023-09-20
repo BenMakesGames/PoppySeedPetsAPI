@@ -247,7 +247,7 @@ class PhilosophersStoneService
                         ''
                     );
 
-                    $pet->getTool()->changeItem($this->itemRepository->findOneByName('Ceremonial Trident'));
+                    $pet->getTool()->changeItem($this->itemRepository->deprecatedFindOneByName('Ceremonial Trident'));
 
                     $pet->increaseEsteem(12);
 

@@ -29,7 +29,7 @@ class GlowingProtojellyController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'protojelly/#/d4');
 
-        $die = $itemRepository->findOneByName('Glowing Four-sided Die');
+        $die = $itemRepository->deprecatedFindOneByName('Glowing Four-sided Die');
         $inventory
             ->changeItem($die)
             ->addComment($user->getName() . ' compelled this Glowing Protojelly to take the shape of a tetrahedron.')
@@ -54,7 +54,7 @@ class GlowingProtojellyController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'protojelly/#/d6');
 
-        $die = $itemRepository->findOneByName('Glowing Six-sided Die');
+        $die = $itemRepository->deprecatedFindOneByName('Glowing Six-sided Die');
         $inventory
             ->changeItem($die)
             ->addComment($user->getName() . ' compelled this Glowing Protojelly to take the shape of a cube.')
@@ -79,7 +79,7 @@ class GlowingProtojellyController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'protojelly/#/d8');
 
-        $die = $itemRepository->findOneByName('Glowing Eight-sided Die');
+        $die = $itemRepository->deprecatedFindOneByName('Glowing Eight-sided Die');
         $inventory
             ->changeItem($die)
             ->addComment($user->getName() . ' compelled this Glowing Protojelly to take the shape of an octahedron.')

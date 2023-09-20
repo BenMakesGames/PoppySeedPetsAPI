@@ -53,7 +53,7 @@ class WerecreatureEncounterService
 
             if($treasure && $treasure->getSilver() > 0)
             {
-                $lootItem = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
+                $lootItem = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
                     'Talon', 'Fluff'
                 ]));
 
@@ -85,7 +85,7 @@ class WerecreatureEncounterService
 
             if($treasure && $treasure->getSilver() > 0)
             {
-                $lootItem = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
+                $lootItem = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
                     'Talon', 'Fluff'
                 ]));
 
@@ -113,7 +113,7 @@ class WerecreatureEncounterService
 
         if($this->squirrel3->rngNextInt(1, $skill) >= 15)
         {
-            $lootItem = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
+            $lootItem = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
                 'Talon', 'Fluff'
             ]));
 

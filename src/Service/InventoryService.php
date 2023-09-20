@@ -65,7 +65,7 @@ class InventoryService
             throw new EnumInvalidValueException(LocationEnum::class, $location);
 
         if(is_string($item))
-            $itemId = $this->itemRepository->getIdByName($item);
+            $itemId = $this->itemRepository->getIdByName($this->em, $item);
         else if(is_object($item) && $item instanceof Item)
             $itemId = $item->getId();
         else if(is_integer($item))
@@ -234,7 +234,7 @@ class InventoryService
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ;
 
-                $item = $this->itemRepository->findOneByName('Wheat');
+                $item = $this->itemRepository->deprecatedFindOneByName('Wheat');
             }
             else if($item->getName() === 'Wheat' || $item->getName() === 'Wheat Flower')
             {
@@ -243,7 +243,7 @@ class InventoryService
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ;
 
-                $item = $this->itemRepository->findOneByName('Gold Bar');
+                $item = $this->itemRepository->deprecatedFindOneByName('Gold Bar');
             }
         }
 
@@ -377,7 +377,7 @@ class InventoryService
 
         if($pet->hasMerit(MeritEnum::CELESTIAL_CHORUSER) && $item->hasItemGroup('Outer Space'))
         {
-            $itemName = $this->itemRepository->findOneByName('Music Note');
+            $itemName = $this->itemRepository->deprecatedFindOneByName('Music Note');
 
             $extraItem = (new Inventory())
                 ->setOwner($pet->getOwner())
@@ -401,7 +401,7 @@ class InventoryService
 
         if($pet->hasStatusEffect(StatusEffectEnum::FRUIT_CLOBBERING) && $item->hasItemGroup('Fresh Fruit'))
         {
-            $pectin = $this->itemRepository->findOneByName('Pectin');
+            $pectin = $this->itemRepository->deprecatedFindOneByName('Pectin');
 
             $extraItem = (new Inventory())
                 ->setOwner($pet->getOwner())
@@ -551,7 +551,7 @@ class InventoryService
         if($bugName === null)
             $bugName = $this->squirrel3->rngNextFromArray([ 'Spider', 'Centipede', 'Cockroach', 'Line of Ants', 'Fruit Fly', 'Stink Bug', 'Moth' ]);
 
-        $bug = $this->itemRepository->findOneByName($bugName);
+        $bug = $this->itemRepository->deprecatedFindOneByName($bugName);
 
         $comment = $toolAttractsBugs ? $pet->getName() . ' caught this in their ' . $pet->getTool()->getItem()->getName() . '!' : 'Ah! How\'d this get inside?!';
         $inventory = null;
@@ -585,27 +585,27 @@ class InventoryService
             $itemName = $itemIsString ? $item : $item->getName();
 
             if($itemName === 'Butter')
-                return $this->itemRepository->findOneByName('Butterknife');
+                return $this->itemRepository->deprecatedFindOneByName('Butterknife');
             else if($itemName === 'Beans')
-                return $this->itemRepository->findOneByName('Magic Beans');
+                return $this->itemRepository->deprecatedFindOneByName('Magic Beans');
             else if($itemName === 'Feathers')
-                return $this->itemRepository->findOneByName('Ruby Feather');
+                return $this->itemRepository->deprecatedFindOneByName('Ruby Feather');
             else if($itemName === 'Toad Legs')
-                return $this->itemRepository->findOneByName('Rainbow Toad Legs');
+                return $this->itemRepository->deprecatedFindOneByName('Rainbow Toad Legs');
             else if($itemName === 'Stink Bug')
-                return $this->itemRepository->findOneByName('Stinkier Bug');
+                return $this->itemRepository->deprecatedFindOneByName('Stinkier Bug');
             else if($itemName === 'Naner')
-                return $this->itemRepository->findOneByName('Bunch of Naners');
+                return $this->itemRepository->deprecatedFindOneByName('Bunch of Naners');
             else
-                return $itemIsString ? $this->itemRepository->findOneByName($item) : $item;
+                return $itemIsString ? $this->itemRepository->deprecatedFindOneByName($item) : $item;
         }
         else
-            return $itemIsString ? $this->itemRepository->findOneByName($item) : $item;
+            return $itemIsString ? $this->itemRepository->deprecatedFindOneByName($item) : $item;
     }
 
     public function getItem($item): Item
     {
-        return is_string($item) ? $this->itemRepository->findOneByName($item) : $item;
+        return is_string($item) ? $this->itemRepository->deprecatedFindOneByName($item) : $item;
     }
 
     /**
@@ -641,7 +641,7 @@ class InventoryService
      */
     public function loseItem($item, User $owner, $location, int $quantity = 1): int
     {
-        if(is_string($item)) $item = $this->itemRepository->findOneByName($item);
+        if(is_string($item)) $item = $this->itemRepository->deprecatedFindOneByName($item);
 
         $inventory = $this->inventoryRepository->findBy(
             [

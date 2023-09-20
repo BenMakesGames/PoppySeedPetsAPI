@@ -17,21 +17,22 @@ use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use Doctrine\ORM\EntityManagerInterface;
 
 class HalloweenSmithingService
 {
-    private $petExperienceService;
-    private $inventoryService;
-    private $responseService;
-    private $itemRepository;
+    private PetExperienceService $petExperienceService;
+    private InventoryService $inventoryService;
+    private ResponseService $responseService;
+    private ItemRepository $itemRepository;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private EntityManagerInterface $em;
 
     public function __construct(
         PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
         ItemRepository $itemRepository, Squirrel3 $squirrel3, HouseSimService $houseSimService,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        EntityManagerInterface $em
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -40,7 +41,7 @@ class HalloweenSmithingService
         $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->em = $em;
     }
 
     public function createPumpkinBucket(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -52,7 +53,7 @@ class HalloweenSmithingService
             'Upside-down, Yellow Plastic Bucket'
         ];
 
-        $makes = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
+        $makes = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
             'Ecstatic Pumpkin Bucket',
             'Distressed Pumpkin Bucket',
             'Unconvinced Pumpkin Bucket',
@@ -65,12 +66,12 @@ class HalloweenSmithingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::SMITH, true);
 
             $itemUsed = $this->houseSimService->getState()->loseOneOf($buckets);
-            $itemUsedItem = $this->itemRepository->findOneByName($itemUsed);
+            $itemUsedItem = $this->itemRepository->deprecatedFindOneByName($itemUsed);
             $pet->increaseEsteem(2);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% applied heat to ' . $itemUsedItem->getNameWithArticle() . ', and shaped it into ' . $makes->getNameWithArticle() . '!', 'items/' . $makes->getImage())
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Smithing', 'Special Event', 'Halloween' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Crafting', 'Smithing', 'Special Event', 'Halloween' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -80,7 +81,7 @@ class HalloweenSmithingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to shape a bucket into ' . $makes->getNameWithArticle() . ', but couldn\'t get the heat just right.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Smithing', 'Special Event', 'Halloween' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Crafting', 'Smithing', 'Special Event', 'Halloween' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);

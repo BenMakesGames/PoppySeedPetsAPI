@@ -58,7 +58,7 @@ class DragonHostageService
 
     public function generateLoot(string $type): DragonHostageLoot
     {
-        $item = $this->itemRepository->findOneByName($this->rng->rngNextFromArray(self::HOSTAGE_LOOT[$type]));
+        $item = $this->itemRepository->deprecatedFindOneByName($this->rng->rngNextFromArray(self::HOSTAGE_LOOT[$type]));
 
         return new DragonHostageLoot(
             $item,

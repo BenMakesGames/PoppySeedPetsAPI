@@ -872,7 +872,7 @@ class CraftingService
     {
         $pet = $petWithSkills->getPet();
 
-        $making = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
+        $making = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
             'String',
             'White Cloth'
         ]));
@@ -933,10 +933,10 @@ class CraftingService
         $now = new \DateTimeImmutable();
 
         if(CalendarFunctions::isValentinesOrAdjacent($now))
-            $making = $this->itemRepository->findOneByName('Chocolate Key');
+            $making = $this->itemRepository->deprecatedFindOneByName('Chocolate Key');
         else
         {
-            $making = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
+            $making = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
                 'Chocolate Sword',
                 'Chocolate Sword',
                 'Chocolate Hammer',
@@ -1927,7 +1927,7 @@ class CraftingService
         }
         else // success!
         {
-            $veilPiercer = $this->itemRepository->findOneByName('Veil-piercer');
+            $veilPiercer = $this->itemRepository->deprecatedFindOneByName('Veil-piercer');
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
@@ -2318,7 +2318,7 @@ class CraftingService
     private function createFlag(ComputedPetSkills $petWithSkills, string $dye, string $making)
     {
         $pet = $petWithSkills->getPet();
-        $makingItem = $this->itemRepository->findOneByName($making);
+        $makingItem = $this->itemRepository->deprecatedFindOneByName($making);
 
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 

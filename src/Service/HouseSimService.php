@@ -73,12 +73,12 @@ class HouseSimService
     {
         if($quantity === 1)
         {
-            $ingredient = $this->itemRepository->findOneByName($itemName);
+            $ingredient = $this->itemRepository->deprecatedFindOneByName($itemName);
         }
         else
         {
             $ingredient = new ItemQuantity();
-            $ingredient->item = $this->itemRepository->findOneByName($itemName);
+            $ingredient->item = $this->itemRepository->deprecatedFindOneByName($itemName);
             $ingredient->quantity = $quantity;
         }
 

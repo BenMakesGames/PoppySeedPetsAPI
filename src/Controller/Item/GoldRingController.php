@@ -35,7 +35,7 @@ class GoldRingController extends AbstractController
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'goldRing/#/smash');
 
-        $inventory->changeItem($itemRepository->findOneByName('Gold Bar'));
+        $inventory->changeItem($itemRepository->deprecatedFindOneByName('Gold Bar'));
 
         $message = $squirrel3->rngNextFromArray([
             'Easy as 1, 2, 3.',

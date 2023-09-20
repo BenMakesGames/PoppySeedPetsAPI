@@ -56,8 +56,8 @@ class BeehiveService
 
         $beehive = (new Beehive())
             ->setQueenName($this->squirrel3->rngNextFromArray(self::QUEEN_NAMES))
-            ->setRequestedItem($this->itemRepository->findOneByName(array_rand(self::DESIRED_ITEMS)))
-            ->setAlternateRequestedItem($this->itemRepository->findOneByName(array_rand(self::ALT_DESIRED_ITEMS)))
+            ->setRequestedItem($this->itemRepository->deprecatedFindOneByName(array_rand(self::DESIRED_ITEMS)))
+            ->setAlternateRequestedItem($this->itemRepository->deprecatedFindOneByName(array_rand(self::ALT_DESIRED_ITEMS)))
         ;
 
         $this->em->persist($beehive);
@@ -98,8 +98,8 @@ class BeehiveService
 
         // pick a new requested item
         $beehive
-            ->setRequestedItem($this->itemRepository->findOneByName(array_rand($possibleItems)))
-            ->setAlternateRequestedItem($this->itemRepository->findOneByName(array_rand($possibleAltItems)))
+            ->setRequestedItem($this->itemRepository->deprecatedFindOneByName(array_rand($possibleItems)))
+            ->setAlternateRequestedItem($this->itemRepository->deprecatedFindOneByName(array_rand($possibleAltItems)))
         ;
     }
 

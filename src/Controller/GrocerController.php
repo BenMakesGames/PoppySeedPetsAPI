@@ -59,8 +59,7 @@ class GrocerController extends AbstractController
     public function buy(
         Request $request, ResponseService $responseService, GrocerService $grocerService,
         TransactionService $transactionService, InventoryService $inventoryService, EntityManagerInterface $em,
-        ItemRepository $itemRepository, UserStatsRepository $userStatsRepository,
-        UserQuestRepository $userQuestRepository
+        UserStatsRepository $userStatsRepository, UserQuestRepository $userQuestRepository
     )
     {
         $buyTo = $request->request->getInt('location');
@@ -147,7 +146,7 @@ class GrocerController extends AbstractController
         {
             for($i = 0; $i < $quantity; $i++)
             {
-                $item = $itemRepository->findOneByName($itemName);
+                $item = ItemRepository::findOneByName($em, $itemName);
 
                 $newInventory = (new Inventory())
                     ->setItem($item)

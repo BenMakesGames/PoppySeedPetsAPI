@@ -48,7 +48,7 @@ class ReversableController extends AbstractController
                 throw new \Exception($oldItemName . ' cannot be flipped?? This is a result of programmer oversight. Please let Ben know.');
         }
 
-        $newItem = $itemRepository->findOneByName($newItemName);
+        $newItem = $itemRepository->deprecatedFindOneByName($newItemName);
 
         $inventory
             ->changeItem($newItem)

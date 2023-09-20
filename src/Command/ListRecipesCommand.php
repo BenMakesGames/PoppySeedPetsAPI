@@ -96,7 +96,7 @@ class ListRecipesCommand extends PoppySeedPetsCommand
         {
             $q = new ItemQuantity();
 
-            $q->item = $this->itemRepository->findOneByName($itemName);
+            $q->item = $this->itemRepository->deprecatedFindOneByName($itemName);
             $q->quantity = $quantity;
 
             if($q->item === null)

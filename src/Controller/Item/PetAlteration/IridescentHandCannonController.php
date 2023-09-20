@@ -2,17 +2,17 @@
 namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
+use App\Entity\Enchantment;
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetColorFunctions;
-use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
-use App\Repository\PetRepository;
 use App\Service\HattierService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -33,9 +33,8 @@ class IridescentHandCannonController extends AbstractController
      */
     public function fireHandCannon(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, ItemRepository $itemRepository, MeritRepository $meritRepository,
-        PetColorFunctions $petColorChangingService, Squirrel3 $squirrel3, HattierService $hattierService,
-        EnchantmentRepository $enchantmentRepository
+        MeritRepository $meritRepository, PetColorFunctions $petColorChangingService, Squirrel3 $squirrel3,
+        HattierService $hattierService
     )
     {
         /** @var User $user */
@@ -46,7 +45,7 @@ class IridescentHandCannonController extends AbstractController
         $color = strtoupper(trim($request->request->getAlpha('color', '')));
 
         $petId = $request->request->getInt('pet', 0);
-        $pet = $petRepository->find($petId);
+        $pet = $em->getRepository(Pet::class)->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
@@ -105,13 +104,13 @@ class IridescentHandCannonController extends AbstractController
             }
 
             $inventory
-                ->changeItem($itemRepository->findOneByName('Rusty Blunderbuss'))
+                ->changeItem(ItemRepository::findOneByName($em, 'Rusty Blunderbuss'))
                 ->addComment($comment)
                 ->setModifiedOn()
             ;
         }
 
-        $rainbowEye = $enchantmentRepository->findOneBy([ 'name' => 'Rainboweye' ]);
+        $rainbowEye = $em->getRepository(Enchantment::class)->findOneBy([ 'name' => 'Rainboweye' ]);
 
         if(!$hattierService->userHasUnlocked($user, $rainbowEye))
         {

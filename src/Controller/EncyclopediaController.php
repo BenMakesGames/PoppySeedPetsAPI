@@ -53,11 +53,11 @@ class EncyclopediaController extends AbstractController
      * @DoesNotRequireHouseHours()
      * @Route("/item/{itemName}", methods={"GET"})
      */
-    public function getItemByName(string $itemName, ItemRepository $itemRepository, ResponseService $responseService)
+    public function getItemByName(string $itemName, EntityManagerInterface $em, ResponseService $responseService)
     {
         try
         {
-            $item = $itemRepository->findOneByName($itemName);
+            $item = ItemRepository::findOneByName($em, $itemName);
 
             return $responseService->success($item, [ SerializationGroupEnum::ITEM_ENCYCLOPEDIA ]);
         }

@@ -46,8 +46,7 @@ class GiftShopController extends AbstractController
      */
     public function buyFromGiftShop(
         Request $request, ResponseService $responseService, MuseumService $museumService,
-        InventoryService $inventoryService, ItemRepository $itemRepository, EntityManagerInterface $em,
-        TransactionService $transactionService
+        InventoryService $inventoryService, EntityManagerInterface $em, TransactionService $transactionService
     )
     {
         /** @var User $user */
@@ -76,7 +75,7 @@ class GiftShopController extends AbstractController
         if($item['cost'] > $pointsRemaining)
             throw new PSPNotEnoughCurrencyException($item['cost'] . ' Favor', $pointsRemaining);
 
-        $itemObject = $itemRepository->findOneByName($item['item']['name']);
+        $itemObject = ItemRepository::findOneByName($em, $item['item']['name']);
 
         $itemsInBuyersHome = $inventoryService->countTotalInventory($user, LocationEnum::HOME);
 

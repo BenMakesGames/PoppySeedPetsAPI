@@ -128,7 +128,7 @@ class Caerbannog
         else
         {
             $pet->increaseSafety(-2);
-            $lootItem = $this->itemRepository->findOneByName($loot[0]);
+            $lootItem = $this->itemRepository->deprecatedFindOneByName($loot[0]);
 
             $activityLog = $this->responseService->createActivityLog($pet, $petName . ' went to the Caerbannog Cave, and encountered one of the terrifying creatures living there, and was forced to flee! (They grabbed ' . $lootItem->getNameWithArticle() . ' on their way out, at least!)', 'items/key/carrot')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))

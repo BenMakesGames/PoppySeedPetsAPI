@@ -25,7 +25,7 @@ class CeremonyOfSandAndSeaController extends AbstractController
      */
     public function useItem(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        UserQuestRepository $userQuestRepository, ItemRepository $itemRepository
+        UserQuestRepository $userQuestRepository
     )
     {
         /** @var User $user */
@@ -48,7 +48,7 @@ class CeremonyOfSandAndSeaController extends AbstractController
         $reloadPets = $inventory->getHolder() || $inventory->getWearer();
 
         $inventory
-            ->changeItem($itemRepository->findOneByName('Ceremonial Trident'))
+            ->changeItem(ItemRepository::findOneByName($em, 'Ceremonial Trident'))
             ->setModifiedOn()
         ;
 

@@ -86,7 +86,7 @@ class MothController extends AbstractController
         if($mothCount == 0)
             throw new PSPFormValidationException('Must release at least one moth!');
 
-        $mothItem = $itemRepository->findOneByName('Moth');
+        $mothItem = $itemRepository->deprecatedFindOneByName('Moth');
 
         $moths = $inventoryRepository->findBy([
             'owner' => $user,

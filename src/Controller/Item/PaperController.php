@@ -29,7 +29,7 @@ class PaperController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'paper/#/unfold');
 
-        $paper = $itemRepository->findOneByName('Paper');
+        $paper = $itemRepository->deprecatedFindOneByName('Paper');
 
         $newComment = $user->getName() . ' unfolded ' . $inventory->getItem()->getNameWithArticle() . ' into this simple piece of Paper.';
 

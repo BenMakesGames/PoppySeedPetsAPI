@@ -259,7 +259,7 @@ class TreasureMapService
             return $activityLog;
         }
 
-        $loot = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
+        $loot = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
             'Pot of Gold', 'Green Scroll'
         ]));
 

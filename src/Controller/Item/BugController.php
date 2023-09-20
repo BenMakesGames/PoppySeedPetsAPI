@@ -93,7 +93,7 @@ class BugController extends AbstractController
     public function feedBug(
         Inventory $inventory, ResponseService $responseService, UserStatsRepository $userStatsRepository,
         EntityManagerInterface $em, Request $request, InventoryRepository $inventoryRepository,
-        InventoryService $inventoryService, ItemRepository $itemRepository, Squirrel3 $squirrel3
+        InventoryService $inventoryService, Squirrel3 $squirrel3
     )
     {
         /** @var User $user */
@@ -114,7 +114,7 @@ class BugController extends AbstractController
             case 'Centipede':
                 $userStatsRepository->incrementStat($user, UserStatEnum::EVOLVED_A_CENTIPEDE);
                 $inventory
-                    ->changeItem($itemRepository->findOneByName('Moth'))
+                    ->changeItem(ItemRepository::findOneByName($em, 'Moth'))
                     ->addComment($user->getName() . ' fed this Centipede, allowing it to grow up into a beautiful... Moth.')
                     ->setModifiedOn()
                 ;

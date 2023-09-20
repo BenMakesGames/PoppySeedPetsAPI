@@ -41,7 +41,7 @@ class MuseumService
     public function forceDonateItem(User $user, $item, ?string $comment, ?User $createdBy = null): MuseumItem
     {
         if(is_string($item))
-            $item = $this->itemRepository->findOneByName($item);
+            $item = $this->itemRepository->deprecatedFindOneByName($item);
         else if(is_numeric($item))
             $item = $this->itemRepository->find($item);
 

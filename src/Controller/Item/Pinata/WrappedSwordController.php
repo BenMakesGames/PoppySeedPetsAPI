@@ -38,7 +38,7 @@ class WrappedSwordController extends AbstractController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $swordItem = $itemRepository->findOneByName($rng->rngNextFromArray([
+        $swordItem = $itemRepository->deprecatedFindOneByName($rng->rngNextFromArray([
             'Rapier',
             'Iron Sword',
             'Brute Force',

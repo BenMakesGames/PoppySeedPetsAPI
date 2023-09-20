@@ -37,7 +37,7 @@ class WhisperStoneController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'whisperStone/#/listen');
 
-        $inventory->changeItem($itemRepository->findOneByName('Striped Microcline'));
+        $inventory->changeItem($itemRepository->deprecatedFindOneByName('Striped Microcline'));
 
         $recipeCount = (int)$recipeRepository->createQueryBuilder('r')
             ->select('COUNT(r.id)')

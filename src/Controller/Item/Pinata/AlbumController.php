@@ -47,7 +47,7 @@ class AlbumController extends AbstractController
         $location = $inventory->getLocation();
 
         $musicNotes = new ItemQuantity();
-        $musicNotes->item = $itemRepository->findOneByName('Music Note');
+        $musicNotes->item = $itemRepository->deprecatedFindOneByName('Music Note');
         $musicNotes->quantity = $squirrel3->rngNextInt(3, 4);
 
         $extraItem = $squirrel3->rngNextFromArray([ 'Pointer', 'NUL', 'Quintessence' ]);
@@ -83,7 +83,7 @@ class AlbumController extends AbstractController
         $location = $inventory->getLocation();
 
         $musicNotes = new ItemQuantity();
-        $musicNotes->item = $itemRepository->findOneByName('Music Note');
+        $musicNotes->item = $itemRepository->deprecatedFindOneByName('Music Note');
         $musicNotes->quantity = $squirrel3->rngNextInt(4, 6);
 
         $genre = $squirrel3->rngNextFromArray(self::GENRES);
@@ -122,7 +122,7 @@ class AlbumController extends AbstractController
         $location = $inventory->getLocation();
 
         $musicNotes = new ItemQuantity();
-        $musicNotes->item = $itemRepository->findOneByName('Music Note');
+        $musicNotes->item = $itemRepository->deprecatedFindOneByName('Music Note');
         $musicNotes->quantity = $squirrel3->rngNextInt(4, 6);
 
         $genre = $squirrel3->rngNextFromArray(self::GENRES);

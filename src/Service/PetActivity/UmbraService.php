@@ -545,7 +545,7 @@ class UmbraService
             {
                 $pet->getGuildMembership()->increaseReputation();
 
-                $prizeItem = $this->itemRepository->findOneByName($prize);
+                $prizeItem = $this->itemRepository->deprecatedFindOneByName($prize);
 
                 $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; but ' . $pet->getName() . ' endured its attacks long enough to calm it down! It eventually wandered away, dropping ' . $prizeItem->getNameWithArticle() . ' as it went...', 'guilds/light-and-shadow')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)

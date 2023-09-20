@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Exceptions\PSPNotFoundException;
 use App\Model\ItemQuantity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -24,7 +25,10 @@ class ItemRepository extends ServiceEntityRepository
         parent::__construct($registry, Item::class);
     }
 
-    public function findOneByName(string $itemName): Item
+    /**
+     * @deprecated Use static ItemRepository::findOneByName, instead
+     */
+    public function deprecatedFindOneByName(string $itemName): Item
     {
         $item = $this->createQueryBuilder('i')
             ->where('i.name=:name')
@@ -38,9 +42,23 @@ class ItemRepository extends ServiceEntityRepository
         return $item;
     }
 
-    public function getIdByName(string $itemName): int
+    public static function findOneByName(EntityManagerInterface $em, string $itemName): Item
     {
-        $itemId = $this->createQueryBuilder('i')
+        $item = $em->getRepository(Item::class)->createQueryBuilder('i')
+            ->where('i.name=:name')
+            ->setParameter('name', $itemName)
+            ->getQuery()
+            ->enableResultCache(24 * 60 * 60, 'ItemRepository_FindOneByName_' . $itemName)
+            ->getOneOrNullResult();
+
+        if(!$item) throw new PSPNotFoundException('There is no item called ' . $itemName . '.');
+
+        return $item;
+    }
+
+    public static function getIdByName(EntityManagerInterface $em, string $itemName): int
+    {
+        $itemId = $em->getRepository(Item::class)->createQueryBuilder('i')
             ->select('i.id')
             ->where('i.name=:name')
             ->setParameter('name', $itemName)

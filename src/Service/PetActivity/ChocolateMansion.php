@@ -227,7 +227,7 @@ class ChocolateMansion
             $expAmount = 1;
             $expStats = [ PetSkillEnum::STEALTH ];
 
-            $item = $this->itemRepository->findOneByName($this->rng->rngNextFromArray([
+            $item = $this->itemRepository->deprecatedFindOneByName($this->rng->rngNextFromArray([
                 'Blood Wine', 'Chocolate Wine',
             ]));
 
@@ -243,7 +243,7 @@ class ChocolateMansion
             $expAmount = 0;
             $expStats = [ ];
 
-            $item = $this->itemRepository->findOneByName($this->rng->rngNextFromArray([
+            $item = $this->itemRepository->deprecatedFindOneByName($this->rng->rngNextFromArray([
                 'Blood Wine', 'Chocolate Wine',
             ]));
 
@@ -525,7 +525,7 @@ class ChocolateMansion
         {
             if($this->rng->rngNextBool())
             {
-                $loot = $this->itemRepository->findOneByName($this->rng->rngNextFromArray([
+                $loot = $this->itemRepository->deprecatedFindOneByName($this->rng->rngNextFromArray([
                     'Minor Scroll of Riches', 'Piece of Cetgueli\'s Map', 'Wings', 'Cast Net',
                     'Glowing Six-sided Die', 'Glowing Six-sided Die',
                 ]));
@@ -534,7 +534,7 @@ class ChocolateMansion
             }
             else
             {
-                $loot = $this->itemRepository->findOneByName($this->rng->rngNextFromArray([
+                $loot = $this->itemRepository->deprecatedFindOneByName($this->rng->rngNextFromArray([
                     'Pepperbox', 'Gold Bar', 'Warping Wand', 'XOR',
                     'Glowing Six-sided Die', 'Glowing Six-sided Die',
                 ]));
@@ -693,7 +693,7 @@ class ChocolateMansion
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
 
-            $loot = $this->itemRepository->findOneByName($this->rng->rngNextFromArray([
+            $loot = $this->itemRepository->deprecatedFindOneByName($this->rng->rngNextFromArray([
                 'Cocoa Powder', 'Sugar',
             ]));
 

@@ -876,7 +876,7 @@ class GatheringService
 
         if($success)
         {
-            $loot = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
+            $loot = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
                 'Fishkebab Stew',
                 'Grilled Fish',
                 $this->squirrel3->rngNextFromArray([ 'Orange', 'Yellowy Lime', 'Ponzu' ]),
@@ -1159,7 +1159,7 @@ class GatheringService
         {
             $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Île Volcan', '%pet:' . $pet->getId() . '.name% explored the island\'s Volcano.');
 
-            $loot = $this->itemRepository->findOneByName($this->squirrel3->rngNextFromArray([
+            $loot = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
                 'Iron Ore', 'Silver Ore', 'Liquid-hot Magma', 'Hot Potato'
             ]));
 

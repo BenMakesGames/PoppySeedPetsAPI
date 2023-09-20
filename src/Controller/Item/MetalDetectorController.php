@@ -25,7 +25,7 @@ class MetalDetectorController extends AbstractController
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'metalDetector/#/tune/iron');
 
-        $inventory->changeItem($itemRepository->findOneByName('Metal Detector (Iron)'));
+        $inventory->changeItem($itemRepository->deprecatedFindOneByName('Metal Detector (Iron)'));
 
         $em->flush();
 
@@ -46,7 +46,7 @@ class MetalDetectorController extends AbstractController
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'metalDetector/#/tune/silver');
 
-        $inventory->changeItem($itemRepository->findOneByName('Metal Detector (Silver)'));
+        $inventory->changeItem($itemRepository->deprecatedFindOneByName('Metal Detector (Silver)'));
 
         $em->flush();
 
@@ -67,7 +67,7 @@ class MetalDetectorController extends AbstractController
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'metalDetector/#/tune/gold');
 
-        $inventory->changeItem($itemRepository->findOneByName('Metal Detector (Gold)'));
+        $inventory->changeItem($itemRepository->deprecatedFindOneByName('Metal Detector (Gold)'));
 
         $em->flush();
 

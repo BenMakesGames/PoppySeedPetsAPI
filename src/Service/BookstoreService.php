@@ -141,7 +141,7 @@ class BookstoreService
         if(!$this->renamingScrollAvailable($user))
             throw new PSPNotUnlockedException('Bookstore Renaming Scrolls');
 
-        $item = $this->itemRepository->findOneByName($itemToGive);
+        $item = $this->itemRepository->deprecatedFindOneByName($itemToGive);
 
         $bookstoreQuestStep = $this->userQuestRepository->findOrCreate($user, self::BOOKSTORE_QUEST_NAME, 0);
 

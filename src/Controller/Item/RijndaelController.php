@@ -51,7 +51,7 @@ class RijndaelController extends AbstractController
             ->getArrayResult()
         ;
 
-        $inventory->changeItem($itemRepository->findOneByName('Elvish Magnifying Glass'));
+        $inventory->changeItem($itemRepository->deprecatedFindOneByName('Elvish Magnifying Glass'));
 
         $em->flush();
 

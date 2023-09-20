@@ -15,6 +15,7 @@ use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
+use Doctrine\ORM\EntityManagerInterface;
 
 class CoinSmithingService
 {
@@ -23,12 +24,12 @@ class CoinSmithingService
     private ResponseService $responseService;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private EntityManagerInterface $em;
 
     public function __construct(
         PetExperienceService $petExperienceService, Squirrel3 $squirrel3, HouseSimService $houseSimService,
         TransactionService $transactionService, ResponseService $responseService,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        EntityManagerInterface $em
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -36,7 +37,7 @@ class CoinSmithingService
         $this->responseService = $responseService;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->em = $em;
     }
 
     public function spillGold(ComputedPetSkills $petWithSkills, Item $triedToMake): PetActivityLog
@@ -47,7 +48,7 @@ class CoinSmithingService
         $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 8));
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $triedToMake->getNameWithArticle() . ', but they accidentally burned themselves! :(', 'icons/activity-logs/burn')
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Smithing' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Smithing' ]))
         ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -67,7 +68,7 @@ class CoinSmithingService
         $pet->increaseFood(-1);
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $triedToMake->getNameWithArticle() . ' from a Silver Bar, but spilled some of the silver, and almost burned themselves! They used the leftovers to make ' . $moneys . '~~m~~ worth of silver coins, instead.', 'icons/activity-logs/moneys')
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Smithing', 'Moneys' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Smithing', 'Moneys' ]))
         ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -87,7 +88,7 @@ class CoinSmithingService
         $pet->increaseFood(-1);
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $triedToMake->getNameWithArticle() . ' from a Gold Bar, but spilled some of the gold, and almost burned themselves! They used the leftovers to make ' . $moneys . '~~m~~ worth of gold coins, instead.', 'icons/activity-logs/moneys')
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Smithing', 'Moneys' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Smithing', 'Moneys' ]))
         ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);

@@ -27,7 +27,7 @@ class LookInStockingController extends AbstractController
      */
     public function lookInStocking(
         InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
-        UserQuestRepository $userQuestRepository, ItemRepository $itemRepository, Squirrel3 $squirrel3
+        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3
     )
     {
         /** @var User $user */
@@ -94,7 +94,7 @@ class LookInStockingController extends AbstractController
                 $item = $squirrel3->rngNextFromArray($randomRewards);
         }
 
-        $itemObject = $itemRepository->findOneByName($item);
+        $itemObject = ItemRepository::findOneByName($em, $item);
 
         $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' found this in a stocking over their Fireplace on ' . $now->format('M j, Y') . '.', LocationEnum::HOME, true);
 

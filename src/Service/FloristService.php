@@ -22,7 +22,7 @@ class FloristService
 
     public function getInventory(User $user): array
     {
-        $flowerbomb = $this->itemRepository->findOneByName('Flowerbomb');
+        $flowerbomb = $this->itemRepository->deprecatedFindOneByName('Flowerbomb');
         $fullMoonName = DateFunctions::getFullMoonName($this->clock->now);
 
         $inventory = [
@@ -34,21 +34,21 @@ class FloristService
 
         if(CalendarFunctions::isAprilFools($this->clock->now))
         {
-            $glitterBomb = $this->itemRepository->findOneByName('Glitter Bomb');
+            $glitterBomb = $this->itemRepository->deprecatedFindOneByName('Glitter Bomb');
 
             $inventory[] = [
                 'item' => [ 'name' => $glitterBomb->getName(), 'image' => $glitterBomb->getImage() ],
                 'cost' => 20
             ];
 
-            $jestersCap = $this->itemRepository->findOneByName('Jester\'s Cap');
+            $jestersCap = $this->itemRepository->deprecatedFindOneByName('Jester\'s Cap');
 
             $inventory[] = [
                 'item' => [ 'name' => $jestersCap->getName(), 'image' => $jestersCap->getImage() ],
                 'cost' => 20
             ];
 
-            $foolsSpice = $this->itemRepository->findOneByName('Fool\'s Spice');
+            $foolsSpice = $this->itemRepository->deprecatedFindOneByName('Fool\'s Spice');
 
             $inventory[] = [
                 'item' => [ 'name' => $foolsSpice->getName(), 'image' => $foolsSpice->getImage() ],
@@ -63,7 +63,7 @@ class FloristService
             CalendarFunctions::isHalloween($this->clock->now)
         )
         {
-            $chocolateBomb = $this->itemRepository->findOneByName('Chocolate Bomb');
+            $chocolateBomb = $this->itemRepository->deprecatedFindOneByName('Chocolate Bomb');
 
             $inventory[] = [
                 'item' => [ 'name' => $chocolateBomb->getName(), 'image' => $chocolateBomb->getImage() ],
@@ -76,7 +76,7 @@ class FloristService
             CalendarFunctions::isWhiteDay($this->clock->now)
         )
         {
-            $theLovelyHaberdashers = $this->itemRepository->findOneByName('Tile: Lovely Haberdashers');
+            $theLovelyHaberdashers = $this->itemRepository->deprecatedFindOneByName('Tile: Lovely Haberdashers');
 
             $inventory[] = [
                 'item' => [ 'name' => $theLovelyHaberdashers->getName(), 'image' => $theLovelyHaberdashers->getImage() ],
@@ -86,7 +86,7 @@ class FloristService
 
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::HollowEarth))
         {
-            $flowerBasketTile = $this->itemRepository->findOneByName('Tile: Flower Basket');
+            $flowerBasketTile = $this->itemRepository->deprecatedFindOneByName('Tile: Flower Basket');
 
             $inventory[] = [
                 'item' => [ 'name' => $flowerBasketTile->getName(), 'image' => $flowerBasketTile->getImage() ],
