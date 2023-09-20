@@ -180,8 +180,6 @@ class ResponseService
     {
         $time = microtime(true);
 
-        // the `oneMonthAgo` clause has a HUGE impact on performance; we don't _really_ want to limit unread logs to
-        // any particular timeframe, but if you haven't played in a month... it's fine :P you'll figure it out.
         $logs = SimpleDb::createReadOnlyConnection()
             ->query(
                 'SELECT l.id,l.entry,l.icon,l.changes,l.interestingness
@@ -189,11 +187,9 @@ class ResponseService
                 INNER JOIN pet AS p ON p.id = l.pet_id
                 WHERE
                     p.owner_id = :userId
-                    AND l.viewed = 0
-                    AND l.created_on >= :oneMonthAgo',
+                    AND l.viewed = 0',
                 [
-                    ':userId' => $user->getId(),
-                    ':oneMonthAgo' => (new \DateTimeImmutable())->modify('-1 month')->format('Y-m-d'),
+                    ':userId' => $user->getId()
                 ]
             )
             ->mapResults(
