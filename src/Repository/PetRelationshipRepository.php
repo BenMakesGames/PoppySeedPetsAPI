@@ -7,6 +7,7 @@ use App\Entity\PetRelationship;
 use App\Enum\RelationshipEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
+use App\Service\PerformanceProfiler;
 use App\Service\PetExperienceService;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -20,9 +21,13 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PetRelationshipRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private PerformanceProfiler $performanceProfiler;
+
+    public function __construct(ManagerRegistry $registry, PerformanceProfiler $performanceProfiler)
     {
         parent::__construct($registry, PetRelationship::class);
+
+        $this->performanceProfiler = $performanceProfiler;
     }
 
     /**
@@ -30,6 +35,8 @@ class PetRelationshipRepository extends ServiceEntityRepository
      */
     public function getRelationshipsToHangOutWith(Pet $pet): array
     {
+        $time = microtime(true);
+
         $maxFriendsToConsider = $pet->getMaximumFriends();
 
         $qb = $this->createQueryBuilder('r')
@@ -65,6 +72,8 @@ class PetRelationshipRepository extends ServiceEntityRepository
             }));
         }
 
+        $this->performanceProfiler->logExecutionTime(__METHOD__, microtime(true) - $time);
+
         return $friends;
     }
 
@@ -73,6 +82,8 @@ class PetRelationshipRepository extends ServiceEntityRepository
      */
     public function getDislikedRelationshipsWithCommitment(Pet $pet): array
     {
+        $time = microtime(true);
+
         $qb = $this->createQueryBuilder('r')
             ->leftJoin('r.pet', 'pet')
             ->leftJoin('r.relationship', 'friend')
@@ -83,7 +94,11 @@ class PetRelationshipRepository extends ServiceEntityRepository
             ->setParameter('dislikedRelationshipTypes', [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ])
         ;
 
-        return $qb->getQuery()->execute();
+        $results = $qb->getQuery()->execute();
+
+        $this->performanceProfiler->logExecutionTime(__METHOD__, microtime(true) - $time);
+
+        return $results;
     }
 
     /**
@@ -91,6 +106,8 @@ class PetRelationshipRepository extends ServiceEntityRepository
      */
     public function getDislikedRelationships(Pet $pet): array
     {
+        $time = microtime(true);
+
         $qb = $this->createQueryBuilder('r')
             ->leftJoin('r.pet', 'pet')
             ->leftJoin('r.relationship', 'friend')
@@ -100,7 +117,11 @@ class PetRelationshipRepository extends ServiceEntityRepository
             ->setParameter('dislikedRelationshipTypes', [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ])
         ;
 
-        return $qb->getQuery()->execute();
+        $results = $qb->getQuery()->execute();
+
+        $this->performanceProfiler->logExecutionTime(__METHOD__, microtime(true) - $time);
+
+        return $results;
     }
 
     /**

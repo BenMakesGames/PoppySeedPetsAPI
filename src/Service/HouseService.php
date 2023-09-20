@@ -15,7 +15,6 @@ use Psr\Cache\CacheItemPoolInterface;
 class HouseService
 {
     private PetActivityService $petActivityService;
-    private PetRepository $petRepository;
     private UserQuestRepository $userQuestRepository;
     private InventoryService $inventoryService;
     private CacheItemPoolInterface $cache;
@@ -27,14 +26,13 @@ class HouseService
     private PerformanceProfiler $performanceProfiler;
 
     public function __construct(
-        PetActivityService $petActivityService, PetRepository $petRepository, CacheItemPoolInterface $cache,
+        PetActivityService $petActivityService, CacheItemPoolInterface $cache,
         EntityManagerInterface $em, UserQuestRepository $userQuestRepository, InventoryService $inventoryService,
         Squirrel3 $squirrel3, HouseSimService $houseSimService, SagaSagaService $sagaSagaService,
         PetSocialActivityService $petSocialActivityService, PerformanceProfiler $performanceProfiler
     )
     {
         $this->petActivityService = $petActivityService;
-        $this->petRepository = $petRepository;
         $this->userQuestRepository = $userQuestRepository;
         $this->inventoryService = $inventoryService;
         $this->cache = $cache;
@@ -50,7 +48,7 @@ class HouseService
     {
         $time = microtime(true);
 
-        $query = $this->petRepository->createQueryBuilder('p')
+        $query = $this->em->getRepository(Pet::class)->createQueryBuilder('p')
             ->select('p.id')
             ->join('p.houseTime', 'ht')
             ->andWhere('p.owner=:user')
@@ -96,8 +94,10 @@ class HouseService
             }
         }
 
+        $time = microtime(true);
+
         /** @var Pet[] $petsWithTime */
-        $petsWithTime = $this->petRepository->createQueryBuilder('p')
+        $petsWithTime = $this->em->getRepository(Pet::class)->createQueryBuilder('p')
             ->join('p.houseTime', 'ht')
             ->andWhere('p.owner=:user')
             ->andWhere('(ht.activityTime>=60 OR (ht.socialEnergy>=:minimumSocialEnergy AND ht.canAttemptSocialHangoutAfter<:now))')
@@ -110,9 +110,11 @@ class HouseService
             ->execute()
         ;
 
+        $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - Get petsWithTime', microtime(true) - $time);
+
         if(count($petsWithTime) > 0)
         {
-            $this->houseSimService->begin($user);
+            $this->houseSimService->begin($this->em, $user);
 
             while(count($petsWithTime) > 0)
             {
@@ -121,7 +123,7 @@ class HouseService
                 $petsWithTime = $this->processPets($petsWithTime);
             }
 
-            $this->houseSimService->end();
+            $this->houseSimService->end($this->em);
 
             $time = microtime(true);
             $this->em->flush();

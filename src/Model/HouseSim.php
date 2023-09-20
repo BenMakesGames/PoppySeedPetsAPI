@@ -14,14 +14,11 @@ class HouseSim implements IHouseSim
 
     private array $itemQuantitiesByItemId = [];
 
-    private IRandom $rng;
-
     /**
      * @param Inventory[] $inventory
      */
-    public function __construct(IRandom $rng, array $inventory)
+    public function __construct(array $inventory)
     {
-        $this->rng = $rng;
         $this->setInventory($inventory);
     }
 
@@ -101,14 +98,14 @@ class HouseSim implements IHouseSim
     /**
      * @param Item[]|string[] $items
      */
-    public function loseOneOf(array $items): string
+    public function loseOneOf(IRandom $rng, array $items): string
     {
         $items = array_map(
             fn($item) => is_string($item) ? $item : $item->getName(),
             $items
         );
 
-        $this->rng->rngNextShuffle($items);
+        $rng->rngNextShuffle($items);
 
         /** @var Inventory $itemToRemove */
         $itemToRemove = ArrayFunctions::find_one(

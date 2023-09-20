@@ -3,6 +3,7 @@ namespace App\Model;
 
 use App\Entity\Inventory;
 use App\Entity\Item;
+use App\Service\IRandom;
 
 interface IHouseSim
 {
@@ -17,7 +18,7 @@ interface IHouseSim
     /**
      * @param Item[]|string[] $items
      */
-    public function loseOneOf(array $items): string;
+    public function loseOneOf(IRandom $rng, array $items): string;
 
     public function addInventory(?Inventory $i): bool;
 

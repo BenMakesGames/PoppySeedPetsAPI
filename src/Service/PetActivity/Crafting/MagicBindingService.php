@@ -2847,7 +2847,7 @@ class MagicBindingService
         {
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Fluff', 1);
-            $this->houseSimService->getState()->loseOneOf([ 'Snakebite', 'Wood\'s Metal' ]);
+            $this->houseSimService->getState()->loseOneOf($this->squirrel3, [ 'Snakebite', 'Wood\'s Metal' ]);
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% brought some Fluff to life, and bound it to a sword, creating a Cattail!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)

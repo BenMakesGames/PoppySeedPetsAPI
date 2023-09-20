@@ -1,7 +1,7 @@
 <?php
 namespace App\Service;
 
-use App\Entity\Item;
+use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\LocationEnum;
@@ -10,56 +10,46 @@ use App\Model\HouseSimRecipe;
 use App\Model\IHouseSim;
 use App\Model\ItemQuantity;
 use App\Model\NoHouseSim;
-use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HouseSimService
 {
     // services
-    private InventoryRepository $inventoryRepository;
-    private ItemRepository $itemRepository;
     private EntityManagerInterface $em;
-    private IRandom $squirrel3;
 
     // data
     private IHouseSim $houseState;
     private array $petIdsThatRanSocialTime = [];
 
-    public function __construct(
-        InventoryRepository $inventoryRepository, ItemRepository $itemRepository, EntityManagerInterface $em,
-        Squirrel3 $squirrel3
-    )
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->inventoryRepository = $inventoryRepository;
-        $this->itemRepository = $itemRepository;
         $this->em = $em;
-        $this->squirrel3 = $squirrel3;
 
         $this->houseState = new NoHouseSim();
     }
 
-    public function begin(User $user)
+    public function begin(EntityManagerInterface $em, User $user)
     {
-        $inventory = $this->inventoryRepository->findBy([
+        $inventory = $em->getRepository(Inventory::class)->findBy([
             'owner' => $user,
             'location' => LocationEnum::HOME
         ]);
 
-        $this->houseState = new HouseSim($this->squirrel3, $inventory);
+        $this->houseState = new HouseSim($inventory);
         $this->petIdsThatRanSocialTime = [];
     }
 
-    public function end()
+    public function end(EntityManagerInterface $em)
     {
         $toRemove = $this->houseState->getInventoryToRemove();
         $toPersist = $this->houseState->getInventoryToPersist();
 
         foreach($toRemove as $i)
-            $this->em->remove($i);
+            $em->remove($i);
 
         foreach($toPersist as $i)
-            $this->em->persist($i);
+            $em->persist($i);
 
         $this->houseState = new NoHouseSim();
     }
@@ -73,12 +63,12 @@ class HouseSimService
     {
         if($quantity === 1)
         {
-            $ingredient = $this->itemRepository->deprecatedFindOneByName($itemName);
+            $ingredient = ItemRepository::findOneByName($this->em, $itemName);
         }
         else
         {
             $ingredient = new ItemQuantity();
-            $ingredient->item = $this->itemRepository->deprecatedFindOneByName($itemName);
+            $ingredient->item = ItemRepository::findOneByName($this->em, $itemName);
             $ingredient->quantity = $quantity;
         }
 

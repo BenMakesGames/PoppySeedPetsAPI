@@ -3,6 +3,7 @@ namespace App\Model;
 
 use App\Entity\Inventory;
 use App\Entity\Item;
+use App\Service\IRandom;
 
 class NoHouseSim implements IHouseSim
 {
@@ -27,7 +28,7 @@ class NoHouseSim implements IHouseSim
     /**
      * @param Item[]|string[] $items
      */
-    public function loseOneOf(array $items): string
+    public function loseOneOf(IRandom $rng, array $items): string
     {
         NoHouseSim::throwException();
     }

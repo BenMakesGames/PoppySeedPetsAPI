@@ -257,7 +257,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Glue', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
 
-            $this->houseSimService->getState()->loseOneOf([ 'Rice', 'Wheat' ]);
+            $this->houseSimService->getState()->loseOneOf($this->squirrel3, [ 'Rice', 'Wheat' ]);
 
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Straw Broom.', '')
@@ -323,7 +323,7 @@ class StickCraftingService
 
         if($craftsCheck <= 2 && $pet->getFood() <= 4)
         {
-            $foodEaten = $this->houseSimService->getState()->loseOneOf([ 'Rice', 'Corn' ]);
+            $foodEaten = $this->houseSimService->getState()->loseOneOf($this->squirrel3, [ 'Rice', 'Corn' ]);
             $pet->increaseFood(4);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a Harvest Staff, but got hungry, and ate the ' . $foodEaten . ' :(', '')
                 ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Eating' ]))
@@ -474,7 +474,7 @@ class StickCraftingService
         if($roll >= 12)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
-            $itemLost = $this->houseSimService->getState()->loseOneOf([ 'String', 'Glue' ]);
+            $itemLost = $this->houseSimService->getState()->loseOneOf($this->squirrel3, [ 'String', 'Glue' ]);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Wooden Sword.', '')

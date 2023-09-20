@@ -2,7 +2,6 @@
 namespace App\Security;
 
 use App\Entity\UserSession;
-use App\Service\PerformanceProfiler;
 use App\Service\ResponseService;
 use App\Service\SessionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,17 +22,14 @@ class SessionAuthenticator extends AbstractAuthenticator
     private EntityManagerInterface $em;
     private ResponseService $responseService;
     private SessionService $sessionService;
-    private PerformanceProfiler $performanceProfiler;
 
     public function __construct(
-        EntityManagerInterface $em, ResponseService $responseService, SessionService $sessionService,
-        PerformanceProfiler $performanceProfiler
+        EntityManagerInterface $em, ResponseService $responseService, SessionService $sessionService
     )
     {
         $this->em = $em;
         $this->responseService = $responseService;
         $this->sessionService = $sessionService;
-        $this->performanceProfiler = $performanceProfiler;
     }
 
     public function supports(Request $request): bool
@@ -54,8 +50,6 @@ class SessionAuthenticator extends AbstractAuthenticator
 
     public function authenticate(Request $request): Passport
     {
-        $time = microtime(true);
-
         $sessionId = self::getSessionIdOrThrow($request);
 
         $session = $this->em->getRepository(UserSession::class)->findOneBy([ 'sessionId' => $sessionId ]);
@@ -63,7 +57,6 @@ class SessionAuthenticator extends AbstractAuthenticator
         if(!$session || $session->getSessionExpiration() < new \DateTimeImmutable())
         {
             $this->responseService->setSessionId(null);
-            $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - session expired', microtime(true) - $time);
             throw new UnauthorizedHttpException('You have been logged out due to inactivity. Please log in again.');
         }
 
@@ -77,8 +70,6 @@ class SessionAuthenticator extends AbstractAuthenticator
             // there are legit reasons a user might be Forbidden that we DON'T want them to be logged
             // out for (ex: accessing the Fireplace before they unlocked it).
 
-            $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - is locked', microtime(true) - $time);
-
             throw new UnauthorizedHttpException('This account has been locked.');
         }
 
@@ -89,8 +80,6 @@ class SessionAuthenticator extends AbstractAuthenticator
         $this->em->flush();
 
         $response = new SelfValidatingPassport(new UserBadge($user->getEmail()));
-
-        $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - success', microtime(true) - $time);
 
         return $response;
     }

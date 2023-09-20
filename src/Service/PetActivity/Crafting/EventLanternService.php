@@ -118,7 +118,7 @@ class EventLanternService
         {
             $this->houseSimService->getState()->loseItem('Crooked Fishing Rod', 1);
             $this->houseSimService->getState()->loseItem('Paper', 1);
-            $this->houseSimService->getState()->loseOneOf([ 'Jar of Fireflies', 'Candle' ]);
+            $this->houseSimService->getState()->loseOneOf($this->squirrel3, [ 'Jar of Fireflies', 'Candle' ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a ' . $lanternName . ' out of a Crooked Fishing Rod!', '')
                 ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Special Event', $activityTag ]))

@@ -1,12 +1,12 @@
 <?php
 namespace App\Controller\House;
 
+use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
-use App\Repository\InventoryRepository;
-use App\Repository\PetRepository;
 use App\Service\HouseService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,7 +29,7 @@ class RunHoursController extends AbstractController
      */
     public function runHours(
         ResponseService $responseService, HouseService $houseService, EntityManagerInterface $em, LoggerInterface $logger,
-        PetRepository $petRepository, InventoryRepository $inventoryRepository, NormalizerInterface $normalizer
+        NormalizerInterface $normalizer
     )
     {
         /** @var User $user */
@@ -55,7 +55,7 @@ class RunHoursController extends AbstractController
         {
             $responseService->setReloadInventory(false);
 
-            $inventory = $inventoryRepository->findBy([
+            $inventory = $em->getRepository(Inventory::class)->findBy([
                 'owner' => $this->getUser(),
                 'location' => LocationEnum::HOME
             ]);
@@ -67,7 +67,7 @@ class RunHoursController extends AbstractController
         {
             $responseService->setReloadPets(false);
 
-            $petsAtHome = $petRepository->findBy([
+            $petsAtHome = $em->getRepository(Pet::class)->findBy([
                 'owner' => $user->getId(),
                 'location' => PetLocationEnum::HOME,
             ]);

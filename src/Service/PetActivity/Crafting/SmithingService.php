@@ -465,7 +465,7 @@ class SmithingService
         }
         else // success!
         {
-            $this->houseSimService->getState()->loseOneOf([ 'Saucepan', 'Upside-down Saucepan' ]);
+            $this->houseSimService->getState()->loseOneOf($this->squirrel3, [ 'Saucepan', 'Upside-down Saucepan' ]);
             $this->houseSimService->getState()->loseItem($otherMaterial, 1);
 
             $pet->increaseEsteem(2);
@@ -510,7 +510,7 @@ class SmithingService
         }
         else if($roll >= 13)
         {
-            $mirrorBacking = $this->houseSimService->getState()->loseOneOf([ 'Silver Bar', 'Dark Matter' ]);
+            $mirrorBacking = $this->houseSimService->getState()->loseOneOf($this->squirrel3, [ 'Silver Bar', 'Dark Matter' ]);
             $this->houseSimService->getState()->loseItem('Glass', 1);
             $pet->increaseEsteem(2);
 

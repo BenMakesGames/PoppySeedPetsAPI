@@ -65,7 +65,7 @@ class HalloweenSmithingService
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::SMITH, true);
 
-            $itemUsed = $this->houseSimService->getState()->loseOneOf($buckets);
+            $itemUsed = $this->houseSimService->getState()->loseOneOf($this->squirrel3, $buckets);
             $itemUsedItem = $this->itemRepository->deprecatedFindOneByName($itemUsed);
             $pet->increaseEsteem(2);
 

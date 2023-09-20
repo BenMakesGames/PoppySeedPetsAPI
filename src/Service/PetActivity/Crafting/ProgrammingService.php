@@ -301,7 +301,7 @@ class ProgrammingService
             $this->houseSimService->getState()->loseItem('Plastic', 1);
             $this->houseSimService->getState()->loseItem('Glass', 1);
 
-            $this->houseSimService->getState()->loseOneOf($metalToUse);
+            $this->houseSimService->getState()->loseOneOf($this->squirrel3, $metalToUse);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% 3D printed & wired a Laser Pointer.', 'items/resource/string')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
@@ -355,7 +355,7 @@ class ProgrammingService
             $this->houseSimService->getState()->loseItem('Plastic', 1);
             $this->houseSimService->getState()->loseItem('Magic Smoke', 1);
 
-            $this->houseSimService->getState()->loseOneOf($metalToUse);
+            $this->houseSimService->getState()->loseOneOf($this->squirrel3, $metalToUse);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% 3D printed & wired up a Metal Detector.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
@@ -404,8 +404,8 @@ class ProgrammingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, false);
 
             $this->houseSimService->getState()->loseItem('Gold Bar', 1);
-            $this->houseSimService->getState()->loseOneOf([ 'Fiberglass', 'Fiberglass Flute' ]);
-            $this->houseSimService->getState()->loseOneOf([ 'Metal Detector (Iron)', 'Metal Detector (Silver)', 'Metal Detector (Gold)' ]);
+            $this->houseSimService->getState()->loseOneOf($this->squirrel3, [ 'Fiberglass', 'Fiberglass Flute' ]);
+            $this->houseSimService->getState()->loseOneOf($this->squirrel3, [ 'Metal Detector (Iron)', 'Metal Detector (Silver)', 'Metal Detector (Gold)' ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% modified an ordinary Metal Detector, turning it into a Secret Seashell Detector!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)

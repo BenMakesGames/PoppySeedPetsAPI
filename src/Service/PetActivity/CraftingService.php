@@ -877,7 +877,7 @@ class CraftingService
 
         if($roll >= $difficulty)
         {
-            $spunWhat = $this->houseSimService->getState()->loseOneOf([ 'Fluff', 'Cobweb' ]);
+            $spunWhat = $this->houseSimService->getState()->loseOneOf($this->squirrel3, [ 'Fluff', 'Cobweb' ]);
 
             if($roll >= $difficulty + 12)
             {
@@ -1674,7 +1674,7 @@ class CraftingService
         else if($roll >= 15)
         {
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
-            $bucketType = $this->houseSimService->getState()->loseOneOf([ 'Small Plastic Bucket', 'Small, Yellow Plastic Bucket' ]);
+            $bucketType = $this->houseSimService->getState()->loseOneOf($this->squirrel3, [ 'Small Plastic Bucket', 'Small, Yellow Plastic Bucket' ]);
             $this->houseSimService->getState()->loseItem('String', 1);
             $pet->increaseEsteem(2);
 
@@ -2540,7 +2540,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('White Cloth', 1);
             $this->houseSimService->getState()->loseItem('Quinacridone Magenta Dye', 1);
 
-            $stuffing = $this->houseSimService->getState()->loseOneOf([ 'Beans', 'Fluff' ]);
+            $stuffing = $this->houseSimService->getState()->loseOneOf($this->squirrel3, [ 'Beans', 'Fluff' ]);
 
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Peacock Plushy stuffed with ' . $stuffing . '!', '')
