@@ -47,7 +47,7 @@ class IncreaseTimeCommand extends Command
             COMMIT;
         ');
 
-        if(!$_ENV['APP_MAINTENANCE'])
+        if(!isset($_ENV['APP_MAINTENANCE']))
         {
             // fireplace logic...
             $this->em->getConnection()->executeQuery('
