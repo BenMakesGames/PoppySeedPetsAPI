@@ -6,6 +6,7 @@ use App\Entity\PetActivityLog;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
@@ -14,33 +15,29 @@ use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\StatusEffectService;
+use Doctrine\ORM\EntityManagerInterface;
 
 class AwaOdoriService
 {
-    private PetRepository $petRepository;
     private IRandom $rng;
     private StatusEffectService $statusEffectService;
-    private ResponseService $responseService;
+    private EntityManagerInterface $em;
     private PetExperienceService $petExperienceService;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
-        PetRepository $petRepository, Squirrel3 $rng, StatusEffectService $statusEffectService,
-        ResponseService $responseService, PetExperienceService $petExperienceService,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        Squirrel3 $rng, StatusEffectService $statusEffectService,
+        EntityManagerInterface $em, PetExperienceService $petExperienceService
     )
     {
-        $this->petRepository = $petRepository;
         $this->rng = $rng;
         $this->statusEffectService = $statusEffectService;
-        $this->responseService = $responseService;
+        $this->em = $em;
         $this->petExperienceService = $petExperienceService;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function adventure(Pet $pet): ?PetActivityLog
     {
-        $qb = $this->petRepository->createQueryBuilder('p');
+        $qb = $this->em->getRepository(Pet::class)->createQueryBuilder('p');
 
         $qb
             ->leftJoin('p.houseTime', 'houseTime')
@@ -89,7 +86,7 @@ class AwaOdoriService
             ->getQuery()
             ->execute();
 
-        $awaOdoriTag = $this->petActivityLogTagRepository->deprecatedFindByNames([ 'Awa Odori' ]);
+        $awaOdoriTag = PetActivityLogTagRepository::findByNames($this->em, [ 'Awa Odori' ]);
 
         $petNames = [ '%pet:' . $pet->getId() . '.name%' ];
 
@@ -98,20 +95,17 @@ class AwaOdoriService
 
         $listOfPetNames = ArrayFunctions::list_nice($petNames);
 
-        $activityLog = $this->dance($pet, $listOfPetNames, $awaOdoriTag);
+        $activityLog = $this->dance($pet, $listOfPetNames, $awaOdoriTag, false);
 
         foreach($dancingBuddies as $buddy)
         {
-            $buddyActivityLog = $this->dance($buddy, $listOfPetNames, $awaOdoriTag);
-
-            if($buddy->getOwner()->getId() == $pet->getOwner()->getId())
-                $buddyActivityLog->setViewed();
+            $buddyActivityLog = $this->dance($buddy, $listOfPetNames, $awaOdoriTag, $buddy->getOwner()->getId() == $pet->getOwner()->getId());
         }
 
         return $activityLog;
     }
 
-    private function dance(Pet $pet, $listOfPetNames, $activityLogTags): PetActivityLog
+    private function dance(Pet $pet, $listOfPetNames, $activityLogTags, bool $markLogAsRead): PetActivityLog
     {
         $changes = new PetChanges($pet);
 
@@ -120,9 +114,17 @@ class AwaOdoriService
 
         $pet->increaseSafety(4)->increaseLove(4)->increaseEsteem(4);
 
-        return $this->responseService->createActivityLog($pet, $listOfPetNames . ' went out dancing together!', 'ui/holidays/awa-odori', $changes->compare($pet))
+        $log = $markLogAsRead
+            ? PetActivityLogFactory::createReadLog($this->em, $pet, $listOfPetNames . ' went out dancing together!')
+            : PetActivityLogFactory::createUnreadLog($this->em, $pet, $listOfPetNames . ' went out dancing together!');
+
+        $log
+            ->setIcon('ui/holidays/awa-odori')
+            ->setChanges($changes->compare($pet))
             ->addTags($activityLogTags)
             ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
         ;
+
+        return $log;
     }
 }

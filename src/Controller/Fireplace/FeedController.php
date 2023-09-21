@@ -80,7 +80,7 @@ class FeedController extends AbstractController
                 ? 'You burned ' . $fuelUsed[0] . ' for fuel in the Fireplace.'
                 : 'You burned the following items for fuel in the Fireplace: ' . ArrayFunctions::list_nice($fuelUsed) . '.';
 
-            PlayerLogHelpers::Create($em, $user, $entry, [ 'Fireplace' ]);
+            PlayerLogHelpers::create($em, $user, $entry, [ 'Fireplace' ]);
 
             $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_THROWN_INTO_THE_FIREPLACE, count($fuelUsed));
         }

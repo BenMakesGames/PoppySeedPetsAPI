@@ -121,7 +121,7 @@ class KappaService
 
             $this->userStatsRepository->incrementStat($owner, UserStatEnum::PETTED_A_PET, 1);
 
-            PlayerLogHelpers::Create($this->em, $owner, ActivityHelpers::PetName($pet) . ' returned your Shirikodama! (Some Kappa must have stolen it!) You thank ' . ActivityHelpers::PetName($pet) . ' with pets and pats before swallowing the Shirikodama.', [
+            PlayerLogHelpers::create($this->em, $owner, ActivityHelpers::PetName($pet) . ' returned your Shirikodama! (Some Kappa must have stolen it!) You thank ' . ActivityHelpers::PetName($pet) . ' with pets and pats before swallowing the Shirikodama.', [
                 'Shirikodama',
             ]);
 
@@ -144,7 +144,7 @@ class KappaService
 
             $this->userStatsRepository->incrementStat($owner, UserStatEnum::PETTED_A_PET, 1);
 
-            PlayerLogHelpers::Create($this->em, $owner, ActivityHelpers::PetName($pet) . ' returned your Shirikodama! (Some Kappa must have stolen it!) You thank ' . ActivityHelpers::PetName($pet) . ' with pets and pats before swallowing the Shirikodama.', [
+            PlayerLogHelpers::create($this->em, $owner, ActivityHelpers::PetName($pet) . ' returned your Shirikodama! (Some Kappa must have stolen it!) You thank ' . ActivityHelpers::PetName($pet) . ' with pets and pats before swallowing the Shirikodama.', [
                 'Shirikodama',
             ]);
 

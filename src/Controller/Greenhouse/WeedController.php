@@ -174,7 +174,7 @@ class WeedController extends AbstractController
 
         $message .= ' ' . $squirrel3->rngNextFromArray([ 'Noice!', 'Yoink!', '👍', '👌', 'Neat-o!', 'Okey dokey!' ]);
 
-        PlayerLogHelpers::Create($em, $user, $message, [ 'Greenhouse' ]);
+        PlayerLogHelpers::create($em, $user, $message, [ 'Greenhouse' ]);
 
         $em->flush();
 

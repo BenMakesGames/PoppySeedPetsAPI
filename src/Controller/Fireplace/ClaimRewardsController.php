@@ -107,7 +107,7 @@ class ClaimRewardsController extends AbstractController
 
         $responseService->addFlashMessage($message);
 
-        PlayerLogHelpers::Create($em, $user, $message, [ 'Fireplace' ]);
+        PlayerLogHelpers::create($em, $user, $message, [ 'Fireplace' ]);
 
         if($numItems > 0 && $fireplace->getGnomePoints() >= 24)
         {
@@ -123,7 +123,7 @@ class ClaimRewardsController extends AbstractController
 
             $responseService->addFlashMessage($gnomishMessage . ' (You received a Gnome\'s Favor!)');
 
-            PlayerLogHelpers::Create($em, $user, $gnomishMessage . ' (You received a Gnome\'s Favor!)', [ 'Fireplace' ]);
+            PlayerLogHelpers::create($em, $user, $gnomishMessage . ' (You received a Gnome\'s Favor!)', [ 'Fireplace' ]);
         }
 
         $em->flush();

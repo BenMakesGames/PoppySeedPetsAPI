@@ -9,6 +9,7 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\ActivityHelpers;
 use App\Functions\EquipmentFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
 use App\Model\PetShelterPet;
 use App\Repository\PetRepository;
@@ -78,13 +79,8 @@ class ReleaseController extends AbstractController
                 $user->getHollowEarthPlayer()->setChosenPet(null);
         }
 
-        $activityLog = (new PetActivityLog())
-            ->setPet($pet)
-            ->setEntry($user->getName() . ' gave up ' . ActivityHelpers::PetName($pet) . ', releasing them to The Wilds.')
-            ->setChanges($state->compare($pet))
-        ;
-
-        $em->persist($activityLog);
+        PetActivityLogFactory::createUnreadLog($em, $pet, $user->getName() . ' gave up ' . ActivityHelpers::PetName($pet) . ', releasing them to The Wilds.')
+            ->setChanges($state->compare($pet));
 
         $em->flush();
 

@@ -6,6 +6,7 @@ use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
 use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Model\ComputedPetSkills;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
@@ -140,21 +141,16 @@ class FriendlyRivalsService
      */
     private function createLogs(Pet $p1, Pet $p2, string $message): array
     {
-        $p1Log = (new PetActivityLog())
-            ->setPet($p1)
-            ->setEntry($message)
+        $p1Log = PetActivityLogFactory::createUnreadLog($this->em, $p1, $message)
             ->setIcon('icons/activity-logs/friend')
         ;
 
-        $this->em->persist($p1Log);
+        if($p1->getOwner()->getId() == $p2->getOwner()->getId())
+            $p2Log = PetActivityLogFactory::createReadLog($this->em, $p2, $message);
+        else
+            $p2Log = PetActivityLogFactory::createUnreadLog($this->em, $p2, $message);
 
-        $p2Log = (new PetActivityLog())
-            ->setPet($p2)
-            ->setEntry($message)
-            ->setIcon('icons/activity-logs/friend')
-        ;
-
-        $this->em->persist($p2Log);
+        $p2Log->setIcon('icons/activity-logs/friend');
 
         return [ $p1Log, $p2Log ];
     }

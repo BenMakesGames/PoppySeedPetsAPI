@@ -22,7 +22,7 @@ class PassphraseResetService
     {
         $now = new \DateTimeImmutable();
 
-        PlayerLogHelpers::Create(
+        PlayerLogHelpers::create(
             $this->em,
             $user,
             'A passphrase reset request was made for `' . $user->getEmail() . '`.',

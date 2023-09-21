@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\SimpleDb;
 use App\Functions\UserMenuFunctions;
 use App\Model\PetChangesSummary;
@@ -130,10 +131,8 @@ class ResponseService
         $unreadMessages = $this->findUnreadForUser($user);
 
         // for whatever reason, doing this results in fewer serialization deadlocks
-        // compared to foreach($unreadMessages as $message) $message->setViewed();
         $query = $this->em->createQuery('
-            UPDATE App\\Entity\\PetActivityLog l
-            SET l.viewed = 1
+            DELETE FROM App\\Entity\\UnreadPetActivityLog l
             WHERE l.id IN (:messageIds)
         ');
 
@@ -183,11 +182,10 @@ class ResponseService
         $logs = SimpleDb::createReadOnlyConnection()
             ->query(
                 'SELECT l.id,l.entry,l.icon,l.changes,l.interestingness
-                FROM pet_activity_log AS l
-                INNER JOIN pet AS p ON p.id = l.pet_id
-                WHERE
-                    p.owner_id = :userId
-                    AND l.viewed = 0',
+                FROM unread_pet_activity_log AS ul
+                INNER JOIN pet AS p ON p.id = ul.pet_id
+                INNER JOIN pet_activity_log AS l ON ul.pet_activity_log_id=l.id
+                WHERE p.owner_id = :userId',
                 [
                     ':userId' => $user->getId()
                 ]
@@ -213,18 +211,15 @@ class ResponseService
         }
     }
 
+    /**
+     * @deprecated Use PetActivityLogFactory::createLog(...), instead
+     */
     public function createActivityLog(Pet $pet, string $entry, string $icon, ?PetChangesSummary $changes = null): PetActivityLog
     {
-        $log = (new PetActivityLog())
-            ->setPet($pet)
-            ->setEntry($entry)
+        return PetActivityLogFactory::createUnreadLog($this->em, $pet, $entry)
             ->setChanges($changes)
             ->setIcon($icon)
         ;
-
-        $this->em->persist($log);
-
-        return $log;
     }
 
     public function setReloadPets($reload = true): self
@@ -251,12 +246,7 @@ class ResponseService
 
     public function addFlashMessage(string $message): self
     {
-        $log = (new PetActivityLog())
-            ->setEntry($message)
-            ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
-        ;
-
-        $this->flashMessages[] = new FlashMessage(0, $log->getEntry(), $log->getIcon(), $log->getChanges(), $log->getInterestingness());
+        $this->flashMessages[] = new FlashMessage(0, $message, '', null, PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE);
 
         return $this;
     }

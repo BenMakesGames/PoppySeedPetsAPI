@@ -62,7 +62,7 @@ class LimitsController extends AbstractController
 
         $user->setMaxSellPrice($user->getMaxSellPrice() + 10);
 
-        PlayerLogHelpers::Create(
+        PlayerLogHelpers::create(
             $em,
             $user,
             'You gave ' . $itemRequired['itemName'] . ' to Argentelle to increase your maximum Market sell price to ' . $user->getMaxSellPrice() . '.',

@@ -11,6 +11,7 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\CalendarFunctions;
 use App\Functions\GroupNameGenerator;
+use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
 use App\Repository\PetActivityLogTagRepository;
@@ -32,14 +33,13 @@ class AstronomyClubService
     private InventoryService $inventoryService;
     private PetRelationshipService $petRelationshipService;
     private IRandom $squirrel3;
-    private EnchantmentRepository $enchantmentRepository;
     private HattierService $hattierService;
     private Clock $clock;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, InventoryService $inventoryService,
         PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3, HattierService $hattierService,
-        EnchantmentRepository $enchantmentRepository, Clock $clock
+        Clock $clock
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -48,7 +48,6 @@ class AstronomyClubService
         $this->petRelationshipService = $petRelationshipService;
         $this->squirrel3 = $squirrel3;
         $this->hattierService = $hattierService;
-        $this->enchantmentRepository = $enchantmentRepository;
         $this->clock = $clock;
     }
 
@@ -133,9 +132,7 @@ class AstronomyClubService
             {
                 $member->increaseEsteem($this->squirrel3->rngNextInt(3, 6));
 
-                $activityLog = (new PetActivityLog())
-                    ->setPet($member)
-                    ->setEntry($this->formatMessage($messageTemplate, $member, $group, ''))
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $this->formatMessage($messageTemplate, $member, $group, ''))
                     ->setIcon(self::ACTIVITY_ICON)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
@@ -143,8 +140,6 @@ class AstronomyClubService
                 ;
 
                 $this->inventoryService->petCollectsItem('Stardust', $member, $this->formatMessage($messageTemplate, $member, $group, 'this'), $activityLog);
-
-                $this->em->persist($activityLog);
 
                 $activityLogsPerPet[$member->getId()] = $activityLog;
             }
@@ -218,15 +213,13 @@ class AstronomyClubService
                 $description = 'a Strange Field';
             }
 
-            $astralEnchantment = $this->enchantmentRepository->deprecatedFindOneByName('Astral');
+            $astralEnchantment = EnchantmentRepository::findOneByName($this->em, 'Astral');
 
             foreach($group->getMembers() as $member)
             {
                 $member->increaseEsteem($this->squirrel3->rngNextInt(3, 6));
 
-                $activityLog = (new PetActivityLog())
-                    ->setPet($member)
-                    ->setEntry($this->formatMessage($messageTemplate, $member, $group, $description))
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $this->formatMessage($messageTemplate, $member, $group, $description))
                     ->setIcon(self::ACTIVITY_ICON)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
@@ -238,8 +231,6 @@ class AstronomyClubService
                 $this->maybeUnlockAuraAfterMakingDiscovery(
                     $member, $activityLog, $astralEnchantment, $description, $group->getName(),
                 );
-
-                $this->em->persist($activityLog);
 
                 $activityLogsPerPet[$member->getId()] = $activityLog;
             }
@@ -253,16 +244,12 @@ class AstronomyClubService
                 else
                     $member->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
 
-                $activityLog = (new PetActivityLog())
-                    ->setPet($member)
-                    ->setEntry($member->getName() . ' explored the cosmos with ' . $group->getName() . '.')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member,  $member->getName() . ' explored the cosmos with ' . $group->getName() . '.')
                     ->setIcon(self::ACTIVITY_ICON)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout', 'Astronomy Lab' ]))
                 ;
-
-                $this->em->persist($activityLog);
 
                 $activityLogsPerPet[$member->getId()] = $activityLog;
             }

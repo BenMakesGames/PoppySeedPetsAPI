@@ -10,6 +10,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SpiritCompanionStarEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Model\ParkEvent\TriDChessParticipant;
 use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
@@ -291,9 +292,7 @@ class TriDChessService implements ParkEventInterface
 
             $participant->pet->increaseEsteem(2 * $wins);
 
-            $log = (new PetActivityLog())
-                ->setPet($participant->pet)
-                ->setEntry($activityLogEntry)
+            $log = PetActivityLogFactory::createUnreadLog($this->em, $participant->pet, $activityLogEntry)
                 ->setIcon('icons/activity-logs/park')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT)
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Park Event', 'Tri-D Chess' ]))
@@ -307,8 +306,6 @@ class TriDChessService implements ParkEventInterface
             );
 
             $log->setChanges($state->compare($participant->pet));
-
-            $this->em->persist($log);
 
             $participant->activityLog = $log;
         }

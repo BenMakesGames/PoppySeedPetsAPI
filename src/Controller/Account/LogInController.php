@@ -62,7 +62,7 @@ class LogInController extends AbstractController
             $user->setUnreadNews(0);
         }
 
-        PlayerLogHelpers::Create(
+        PlayerLogHelpers::create(
             $em,
             $user,
             'You logged in from `' . $request->getClientIp() . '`.',

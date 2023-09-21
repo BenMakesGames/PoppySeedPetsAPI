@@ -9,6 +9,7 @@ use App\Enum\ParkEventTypeEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Model\ParkEvent\KinBallParticipant;
 use App\Model\ParkEvent\KinBallTeam;
 use App\Model\PetChanges;
@@ -226,9 +227,7 @@ class KinBallService implements ParkEventInterface
                 $participant->pet->increaseLove(3);
                 $participant->pet->increaseEsteem(3);
 
-                $log = (new PetActivityLog())
-                    ->setPet($participant->pet)
-                    ->setEntry($activityLogEntry)
+                $log = PetActivityLogFactory::createUnreadLog($this->em, $participant->pet, $activityLogEntry)
                     ->setIcon('icons/activity-logs/park')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT)
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Park Event', 'Kin-ball' ]))
@@ -242,8 +241,6 @@ class KinBallService implements ParkEventInterface
                 );
 
                 $log->setChanges($state->compare($participant->pet));
-
-                $this->em->persist($log);
 
                 $participant->activityLog = $log;
             }

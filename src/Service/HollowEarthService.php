@@ -16,6 +16,7 @@ use App\Enum\HollowEarthRequiredActionEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\PetChanges;
 use App\Repository\HollowEarthPlayerTileRepository;
@@ -372,15 +373,10 @@ class HollowEarthService
 
             $currentCard = $this->getEffectiveTileCard($player, $player->getCurrentTile());
 
-            $activityLog = (new PetActivityLog())
-                ->setPet($pet)
-                ->setEntry($description)
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $description)
                 ->setIcon(($currentCard && $currentCard->getImage()) ? ('hollow-earth/tile/' . $currentCard->getImage()) : '')
                 ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Hollow Earth' ]))
-                ->setViewed()
             ;
-
-            $this->em->persist($activityLog);
         }
 
         if(array_key_exists('exp', $event))
@@ -415,16 +411,11 @@ class HollowEarthService
         {
             $currentCard = $this->getEffectiveTileCard($player, $player->getCurrentTile());
 
-            $activityLog = (new PetActivityLog())
-                ->setPet($player->getChosenPet())
-                ->setEntry('While exploring the Hollow Earth, ' . $player->getChosenPet()->getName() . ' received ' . ArrayFunctions::list_nice($items) . '.')
+            $activityLog = PetActivityLogFactory::createReadLog($this->em, $player->getChosenPet(), 'While exploring the Hollow Earth, ' . $player->getChosenPet()->getName() . ' received ' . ArrayFunctions::list_nice($items) . '.')
                 ->setIcon(($currentCard && $currentCard->getImage()) ? ('hollow-earth/tile/' . $currentCard->getImage()) : '')
                 ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Hollow Earth' ]))
                 ->setChanges($petChanges->compare($pet))
-                ->setViewed()
             ;
-
-            $this->em->persist($activityLog);
         }
 
         foreach($items as $itemName)

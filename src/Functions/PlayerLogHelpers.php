@@ -12,7 +12,7 @@ final class PlayerLogHelpers
     /**
      * @param string[] $tagNames
      */
-    public static function Create(EntityManagerInterface $em, User $user, string $entry, array $tagNames): UserActivityLog
+    public static function create(EntityManagerInterface $em, User $user, string $entry, array $tagNames): UserActivityLog
     {
         $tags = $em->getRepository(UserActivityLogTag::class)->findBy([ 'title' => $tagNames ]);
 

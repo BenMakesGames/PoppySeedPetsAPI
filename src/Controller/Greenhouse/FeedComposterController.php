@@ -182,7 +182,7 @@ class FeedComposterController extends AbstractController
 
         if(count($tossedItemNames) > 5)
         {
-            PlayerLogHelpers::Create(
+            PlayerLogHelpers::create(
                 $em,
                 $user,
                 'You chucked ' . count($tossedItemNames) . ' into the Composter, and got' . $gotDescription,
@@ -192,7 +192,7 @@ class FeedComposterController extends AbstractController
         else
         {
             $objectOrObjects = count($tossedItemNames) == 1 ? 'object' : 'objects';
-            PlayerLogHelpers::Create(
+            PlayerLogHelpers::create(
                 $em,
                 $user,
                 'You chucked ' . ArrayFunctions::list_nice($tossedItemNames) . ' into the Composter, and got' . $gotDescription,

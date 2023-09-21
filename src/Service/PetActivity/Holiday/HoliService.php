@@ -9,6 +9,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetQuestRepository;
@@ -23,18 +24,16 @@ class HoliService
 
     private PetRelationshipRepository $petRelationshipRepository;
     private PetQuestRepository $petQuestRepository;
-    private ResponseService $responseService;
     private EntityManagerInterface $em;
     private PetExperienceService $petExperienceService;
 
     public function __construct(
         PetRelationshipRepository $petRelationshipRepository, PetQuestRepository $petQuestRepository,
-        ResponseService $responseService, EntityManagerInterface $em, PetExperienceService $petExperienceService
+        EntityManagerInterface $em, PetExperienceService $petExperienceService
     )
     {
         $this->petRelationshipRepository = $petRelationshipRepository;
         $this->petQuestRepository = $petQuestRepository;
-        $this->responseService = $responseService;
         $this->em = $em;
         $this->petExperienceService = $petExperienceService;
     }
@@ -88,15 +87,9 @@ class HoliService
 
         $pet->increaseLove(8);
 
-        $activityLog = $this->responseService->createActivityLog(
-            $pet,
-            ActivityHelpers::PetName($pet) . ' enjoyed watching others participate in Holi this year, but didn\'t have any relationships to repair, themselves.',
-            self::HOLI_ACTIVITY_LOG_ICON
-        );
-
-        $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Holi', 'Special Event' ]));
-
-        return $activityLog;
+        return PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' enjoyed watching others participate in Holi this year, but didn\'t have any relationships to repair, themselves.')
+            ->setIcon(self::HOLI_ACTIVITY_LOG_ICON)
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Holi', 'Special Event' ]));
     }
 
     private function doReconcileWithPet(Pet $pet, PetRelationship $relationshipToReconcile): PetActivityLog
@@ -134,27 +127,27 @@ class HoliService
 
         $tags = PetActivityLogTagRepository::findByNames($this->em, [ 'Holi', 'Special Event', '1-on-1 Hangout' ]);
 
-        $otherPetLog = (new PetActivityLog())
-            ->setPet($otherPet)
-            ->setEntry('In the spirit of Holi, ' . ActivityHelpers::PetName($pet) . ' talked with ' . ActivityHelpers::PetName($otherPet) . '. The two reconciled, and are now friends!')
+        $otherPetLogMessage = 'In the spirit of Holi, ' . ActivityHelpers::PetName($pet) . ' talked with ' . ActivityHelpers::PetName($otherPet) . '. The two reconciled, and are now friends!';
+
+        $otherPetLog = $pet->getOwner()->getId() === $otherPet->getOwner()->getId()
+            ? PetActivityLogFactory::createReadLog($this->em, $otherPet, $otherPetLogMessage)
+            : PetActivityLogFactory::createUnreadLog($this->em, $otherPet, $otherPetLogMessage);
+
+        $otherPetLog
             ->setIcon(self::HOLI_ACTIVITY_LOG_ICON)
             ->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION)
             ->setChanges($otherPetChanges->compare($otherPet))
             ->addTags($tags)
         ;
 
-        if($pet->getOwner()->getId() === $otherPet->getOwner()->getId())
-            $otherPetLog->setViewed();
-
-        $this->em->persist($otherPetLog);
-
-        $activityLog = $this->responseService->createActivityLog(
+        $activityLog = PetActivityLogFactory::createUnreadLog(
+            $this->em,
             $pet,
             'In the spirit of Holi, ' . ActivityHelpers::PetName($pet) . ' talked with ' . ActivityHelpers::PetName($otherPet) . '. The two reconciled, and are now friends!',
-            self::HOLI_ACTIVITY_LOG_ICON
         );
 
         $activityLog
+            ->setIcon(self::HOLI_ACTIVITY_LOG_ICON)
             ->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION)
             ->addTags($tags)
         ;

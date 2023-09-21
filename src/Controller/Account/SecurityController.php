@@ -59,7 +59,7 @@ class SecurityController extends AbstractController
 
         $user->setEmail($newEmail);
 
-        PlayerLogHelpers::Create(
+        PlayerLogHelpers::create(
             $em,
             $user,
             'You changed your e-mail address, from `' . $oldEmail . '` to `' . $newEmail .'`.',
@@ -94,7 +94,7 @@ class SecurityController extends AbstractController
 
         $user->setPassword($passwordEncoder->hashPassword($user, $newPassphrase));
 
-        PlayerLogHelpers::Create(
+        PlayerLogHelpers::create(
             $em,
             $user,
             'You changed your passphrase.',
@@ -158,7 +158,7 @@ class SecurityController extends AbstractController
 
         $em->remove($resetRequest);
 
-        PlayerLogHelpers::Create(
+        PlayerLogHelpers::create(
             $em,
             $user,
             'You reset your passphrase.',

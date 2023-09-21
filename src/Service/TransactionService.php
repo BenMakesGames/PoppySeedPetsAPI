@@ -36,7 +36,7 @@ class TransactionService
 
         $tags = array_merge($additionalTags, [ 'Moneys' ]);
 
-        return PlayerLogHelpers::Create($this->em, $user, $description . ' (-' . $amount . '~~m~~)', $tags);
+        return PlayerLogHelpers::create($this->em, $user, $description . ' (-' . $amount . '~~m~~)', $tags);
     }
 
     public function getMoney(User $user, int $amount, string $description, array $additionalTags = []): UserActivityLog
@@ -48,7 +48,7 @@ class TransactionService
 
         $tags = array_merge($additionalTags, [ 'Moneys' ]);
 
-        return PlayerLogHelpers::Create($this->em, $user, $description . ' (+' . $amount . '~~m~~)', $tags);
+        return PlayerLogHelpers::create($this->em, $user, $description . ' (+' . $amount . '~~m~~)', $tags);
     }
 
     public function spendRecyclingPoints(User $user, int $amount, string $description, array $additionalTags = [])
@@ -63,7 +63,7 @@ class TransactionService
 
         $tags = array_merge($additionalTags, [ 'Recycling' ]);
 
-        return PlayerLogHelpers::Create($this->em, $user, $description . ' (-' . $amount . ' Recycling Point' . ($amount == 1 ? '' : 's') . ')', $tags);
+        return PlayerLogHelpers::create($this->em, $user, $description . ' (-' . $amount . ' Recycling Point' . ($amount == 1 ? '' : 's') . ')', $tags);
     }
 
     public function getRecyclingPoints(User $user, int $amount, string $description, array $additionalTags = [])
@@ -76,7 +76,7 @@ class TransactionService
 
         $tags = array_merge($additionalTags, [ 'Recycling' ]);
 
-        return PlayerLogHelpers::Create($this->em, $user, $description . ' (+' . $amount . ' Recycling Point' . ($amount == 1 ? '' : 's') . ')', $tags);
+        return PlayerLogHelpers::create($this->em, $user, $description . ' (+' . $amount . ' Recycling Point' . ($amount == 1 ? '' : 's') . ')', $tags);
     }
 
     public function spendMuseumFavor(User $user, int $amount, string $description, array $additionalTags = [])
@@ -91,7 +91,7 @@ class TransactionService
 
         $tags = array_merge($additionalTags, [ 'Museum' ]);
 
-        return PlayerLogHelpers::Create($this->em, $user, $description . ' (-' . $amount . ' Museum Favor)', $tags);
+        return PlayerLogHelpers::create($this->em, $user, $description . ' (-' . $amount . ' Museum Favor)', $tags);
     }
 
     public function getMuseumFavor(User $user, int $amount, string $description, array $additionalTags = [])
@@ -103,6 +103,6 @@ class TransactionService
 
         $tags = array_merge($additionalTags, [ 'Museum' ]);
 
-        return PlayerLogHelpers::Create($this->em, $user, $description . ' (+' . $amount . ' Museum Favor)', $tags);
+        return PlayerLogHelpers::create($this->em, $user, $description . ' (+' . $amount . ' Museum Favor)', $tags);
     }
 }

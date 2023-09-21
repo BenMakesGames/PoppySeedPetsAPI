@@ -8,6 +8,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\GroupNameGenerator;
+use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
@@ -209,16 +210,12 @@ class BandService
                 ->increaseLove($this->squirrel3->rngNextInt(2, 4))
             ;
 
-            $activityLog = (new PetActivityLog())
-                ->setPet($pet)
-                ->setEntry($group->getName() . ' received some fan mail! %pet:' . $pet->getId() . '.name% was ' . $feels)
+            PetActivityLogFactory::createUnreadLog($this->em, $pet, $group->getName() . ' received some fan mail! %pet:' . $pet->getId() . '.name% was ' . $feels)
                 ->setIcon(self::ACTIVITY_ICON)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->setChanges($changes->compare($pet))
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout', 'Band' ]))
             ;
-
-            $this->em->persist($activityLog);
         }
     }
 
@@ -236,16 +233,12 @@ class BandService
 
             $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
 
-            $activityLog = (new PetActivityLog())
-                ->setPet($pet)
-                ->setEntry('%pet:' . $pet->getId() . '.name% got royalties from ' . $group->getName() . ' sales!')
+            PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% got royalties from ' . $group->getName() . ' sales!')
                 ->setIcon(self::ACTIVITY_ICON)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->setChanges($changes->compare($pet))
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout', 'Band', 'Moneys' ]))
             ;
-
-            $this->em->persist($activityLog);
         }
     }
 
@@ -306,16 +299,12 @@ class BandService
             {
                 $member->increaseEsteem($this->squirrel3->rngNextInt(8, 12));
 
-                $activityLog = (new PetActivityLog())
-                    ->setPet($member)
-                    ->setEntry($group->getName() . ($this->squirrel3->rngNextInt(1, 5) === 1 ? ' finally' : '') . ' released a new ' . $item . '!')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $group->getName() . ($this->squirrel3->rngNextInt(1, 5) === 1 ? ' finally' : '') . ' released a new ' . $item . '!')
                     ->setIcon(self::ACTIVITY_ICON)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout', 'Band' ]))
                 ;
-
-                $this->em->persist($activityLog);
 
                 $activityLogsPerPet[$member->getId()] = $activityLog;
 
@@ -338,16 +327,12 @@ class BandService
                 else if($sentiment === 1)
                     $member->increaseEsteem($this->squirrel3->rngNextInt(2, 6));
 
-                $activityLog = (new PetActivityLog())
-                    ->setPet($member)
-                    ->setEntry($member->getName() . ' jammed with ' . $group->getName() . '. ' . self::BAND_ACTIVITY_SENTIMENT_MESSAGES[$sentiment])
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $member->getName() . ' jammed with ' . $group->getName() . '. ' . self::BAND_ACTIVITY_SENTIMENT_MESSAGES[$sentiment])
                     ->setIcon(self::ACTIVITY_ICON)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout', 'Band' ]))
                 ;
-
-                $this->em->persist($activityLog);
 
                 $activityLogsPerPet[$member->getId()] = $activityLog;
             }

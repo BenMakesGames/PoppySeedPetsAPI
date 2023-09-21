@@ -57,7 +57,7 @@ class PullUpPlantController extends AbstractController
                 $inventoryService->receiveItem('Fluff', $user, $user, 'Dropped by a startled goat.', LocationEnum::HOME);
         }
 
-        PlayerLogHelpers::Create($em, $user, $logMessage, [ 'Greenhouse' ]);
+        PlayerLogHelpers::create($em, $user, $logMessage, [ 'Greenhouse' ]);
 
         $pollinators = $plant->getPollinators();
 

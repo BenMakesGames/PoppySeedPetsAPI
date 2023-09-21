@@ -299,7 +299,7 @@ class DragonService
         else
             $message .= '.';
 
-        PlayerLogHelpers::Create(
+        PlayerLogHelpers::create(
             $this->em,
             $user,
             'You gave your dragon ' . ArrayFunctions::list_nice($offeringItemNames) . '. ' . $message,

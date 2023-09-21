@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Exceptions\PSPFormValidationException;
+use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
@@ -54,9 +55,8 @@ class PocketDimension extends AbstractController
 
         $pet->addMerit($merit);
 
-        $responseService->createActivityLog($pet, "%pet:{$pet->getId()}.name%'s lunchbox got bigger!", '')
+        PetActivityLogFactory::createReadLog($em, $pet, "%pet:{$pet->getId()}.name%'s lunchbox got bigger!")
             ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
-            ->setViewed()
             ->setChanges($petChanges->compare($pet))
         ;
 

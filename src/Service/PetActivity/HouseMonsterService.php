@@ -8,6 +8,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
 use App\Model\SummoningScrollMonster;
 use App\Model\SummoningScrollMonsterElementEnum;
@@ -28,12 +29,10 @@ class HouseMonsterService
     private EntityManagerInterface $em;
     private PetExperienceService $petExperienceService;
     private FieldGuideService $fieldGuideService;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         Squirrel3 $squirrel3, UserStatsRepository $userStatsRepository, InventoryService $inventoryService,
-        EntityManagerInterface $em, PetExperienceService $petExperienceService, FieldGuideService $fieldGuideService,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        EntityManagerInterface $em, PetExperienceService $petExperienceService, FieldGuideService $fieldGuideService
     )
     {
         $this->squirrel3 = $squirrel3;
@@ -42,7 +41,6 @@ class HouseMonsterService
         $this->em = $em;
         $this->petExperienceService = $petExperienceService;
         $this->fieldGuideService = $fieldGuideService;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     /**
@@ -215,19 +213,14 @@ class HouseMonsterService
             if($changes->level > 0)
                 $tags[] = 'Level-up';
 
-            $activityLog = (new PetActivityLog())
-                ->setPet($pet)
-                ->setEntry($result)
-                ->setViewed()
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($tags))
-            ;
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $result)
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags))
+                ->setChanges($changes);
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(5, 15), PetActivityStatEnum::HUNT, $won);
             $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ], $activityLog);
 
             $activityLog->setChanges($changes);
-
-            $this->em->persist($activityLog);
         }
 
         return $result;

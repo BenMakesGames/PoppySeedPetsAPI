@@ -63,7 +63,7 @@ class FertilizePlantController extends AbstractController
 
         $plantNameArticle = GrammarFunctions::indefiniteArticle($plant->getPlant()->getName());
 
-        PlayerLogHelpers::Create(
+        PlayerLogHelpers::create(
             $em,
             $user,
             "You fertilized $plantNameArticle {$plant->getPlant()->getName()} plant with {$fertilizer->getFullItemName()}.",

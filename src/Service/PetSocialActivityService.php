@@ -602,12 +602,6 @@ class PetSocialActivityService
             ->setChanges($friendChanges->compare($friend->getPet()))
             ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ '1-on-1 Hangout' ]))
         ;
-
-        if($petLog->getPet()->getOwner()->getId() === $friendLog->getPet()->getOwner()->getId())
-            $friendLog->setViewed();
-
-        $this->em->persist($petLog);
-        $this->em->persist($friendLog);
     }
 
     private function meetRoommates(Pet $pet): bool

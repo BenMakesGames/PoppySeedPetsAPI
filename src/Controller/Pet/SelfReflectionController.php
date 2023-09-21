@@ -13,6 +13,7 @@ use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
+use App\Functions\PetActivityLogFactory;
 use App\Repository\GuildRepository;
 use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
@@ -225,13 +226,15 @@ class SelfReflectionController extends AbstractController
             ->setCommitment(max($otherSide->getCommitment(), $minimumCommitment))
         ;
 
-        $friendActivityLog = $responseService->createActivityLog($friend, $pet->getName() . ' came over; they talked with ' . $friend->getName() . ', and the two made up! They are now ' . $relationshipDescriptions[$newRelationship ] . '!', 'icons/activity-logs/friend')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
-        ;
+        $makeUpMessage = $pet->getName() . ' came over; they talked with ' . $friend->getName() . ', and the two made up! They are now ' . $relationshipDescriptions[$newRelationship ] . '!';
 
-        // don't show the message "twice"
-        if($pet->getOwner()->getId() === $friend->getOwner()->getId())
-            $friendActivityLog->setViewed();
+        $friendActivityLog = $pet->getOwner()->getId() === $friend->getOwner()->getId()
+            ? PetActivityLogFactory::createReadLog($em, $friend, $makeUpMessage)
+            : PetActivityLogFactory::createUnreadLog($em, $friend, $makeUpMessage);
+
+        $friendActivityLog
+            ->setIcon('icons/activity-logs/friend')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE);
 
         $pet->increaseSelfReflectionPoint(-1);
 

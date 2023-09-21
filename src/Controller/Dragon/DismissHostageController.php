@@ -48,7 +48,7 @@ class DismissHostageController extends AbstractController
 
         $inventoryService->receiveItem($loot->item, $dragon->getOwner(), $dragon->getOwner(), $loot->comment, LocationEnum::HOME, false);
 
-        PlayerLogHelpers::Create(
+        PlayerLogHelpers::create(
             $em,
             $user,
             'You ushered a "hostage" out of your Dragon Den. ' . $loot->flashMessage,

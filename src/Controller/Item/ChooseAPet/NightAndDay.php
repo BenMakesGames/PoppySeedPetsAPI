@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
 use App\Repository\PetRepository;
 use App\Service\CommentFormatter;
@@ -64,7 +65,7 @@ class NightAndDay extends AbstractController
         $messageMiddle = "focused {$subject}, and the {$inventory->getFullItemName()} turned into";
         $itemList = ArrayFunctions::list_nice($pairOfItems);
 
-        $activityLog = $responseService->createActivityLog($pet, "%pet:{$pet->getId()}.name% {$messageMiddle} {$itemList}!", '')
+        $activityLog = PetActivityLogFactory::createReadLog($em, $pet, "%pet:{$pet->getId()}.name% {$messageMiddle} {$itemList}!")
             ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
         ;
 
@@ -73,10 +74,7 @@ class NightAndDay extends AbstractController
 
         $petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
 
-        $activityLog
-            ->setViewed()
-            ->setChanges($petChanges->compare($pet))
-        ;
+        $activityLog->setChanges($petChanges->compare($pet));
 
         $em->remove($inventory);
         $em->flush();

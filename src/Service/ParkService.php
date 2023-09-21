@@ -2,13 +2,14 @@
 namespace App\Service;
 
 use App\Entity\ParkEvent;
-use App\Entity\PetActivityLog;
+use App\Entity\Pet;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\CalendarFunctions;
 use App\Functions\DateFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Model\ParkEvent\ParkEventParticipant;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
@@ -74,29 +75,16 @@ class ParkService
             {
                 $changes = new PetChanges($pet);
 
-                $log = (new PetActivityLog())
-                    ->setPet($pet)
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
-                ;
-
                 $pet
                     ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
                     ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
                 ;
 
-                $comment = $pet->getName() . ' found this while participating in a ' . $parkEvent->getType() . ' event!';
-
-                if($commentExtra)
-                    $comment .= ' ' . $commentExtra;
-
-                $balloon = $this->inventoryService->petCollectsRandomBalloon($pet, $comment, $forceBalloon, $log);
+                [ $balloon, $log ] = $this->petCollectsRandomBalloon($pet, $parkEvent->getType(), $commentExtra, $forceBalloon);
 
                 $log
-                    ->setEntry($pet->getName() . ' found a ' . $balloon->getItem()->getName() . ' while participating in a ' . $parkEvent->getType() . ' event!')
                     ->setChanges($changes->compare($pet))
                 ;
-
-                $this->em->persist($log);
 
                 if(!$pet->getTool())
                 {
@@ -152,5 +140,41 @@ class ParkService
                 }
             }
         }
+    }
+
+    public function petCollectsRandomBalloon(Pet $pet, string $parkEventType, string $commentExtra, ?string $specificBalloon): array
+    {
+        if($specificBalloon)
+        {
+            $balloon = $specificBalloon;
+            $locked = true;
+        }
+        else
+        {
+            $balloon = $this->squirrel3->rngNextFromArray([
+                'Red Balloon',
+                'Orange Balloon',
+                'Yellow Balloon',
+                'Green Balloon',
+                'Blue Balloon',
+                'Purple Balloon',
+            ]);
+            $locked = false;
+        }
+
+        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, $pet->getName() . ' found a ' . $balloon->getItem()->getName() . ' while participating in a ' . $parkEventType . ' event!')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+        ;
+
+        $balloonComment = $pet->getName() . ' found this while participating in a ' . $parkEventType  . ' event!';
+
+        if($commentExtra)
+            $balloonComment .= ' ' . $commentExtra;
+
+        $item = $this->inventoryService->petCollectsItem($balloon, $pet, $balloonComment, $log);
+
+        $item->setLockedToOwner($locked);
+
+        return [ $item, $log ];
     }
 }

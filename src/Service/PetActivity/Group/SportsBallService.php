@@ -8,6 +8,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\GroupNameGenerator;
+use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
@@ -125,9 +126,7 @@ class SportsBallService
             else
                 $member->increaseEsteem($this->squirrel3->rngNextInt(3, 6));
 
-            $activityLog = (new PetActivityLog())
-                ->setPet($member)
-                ->setEntry($this->formatMessage($messageTemplate, $member, $group))
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $this->formatMessage($messageTemplate, $member, $group))
                 ->setIcon(self::ACTIVITY_ICON)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout', 'Sportsball' ]))
@@ -147,8 +146,6 @@ class SportsBallService
             }
 
             $activityLog->setChanges($petChanges->compare($member));
-
-            $this->em->persist($activityLog);
         }
 
         $this->petRelationshipService->groupGathering(

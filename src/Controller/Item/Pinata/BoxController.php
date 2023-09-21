@@ -668,9 +668,7 @@ class BoxController extends AbstractController
 
             $pet->increaseSafety(2);
 
-            $activityLog = $responseService->createActivityLog($pet, $pet->getName() . ' listened to the Jukebox.', '', $changes->compare($pet))
-                ->setViewed()
-            ;
+            $activityLog = $responseService->createActivityLog($pet, $pet->getName() . ' listened to the Jukebox.', '', $changes->compare($pet));
 
             $petExperienceService->gainExp($pet, 1, [ PetSkillEnum::MUSIC ], $activityLog);
         }

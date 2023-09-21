@@ -169,33 +169,6 @@ class InventoryService
         return $inventory;
     }
 
-    public function petCollectsRandomBalloon(Pet $pet, string $message, ?string $specificBalloon, ?PetActivityLog $log)
-    {
-        if($specificBalloon)
-        {
-            $balloon = $specificBalloon;
-            $locked = true;
-        }
-        else
-        {
-            $balloon = $this->squirrel3->rngNextFromArray([
-                'Red Balloon',
-                'Orange Balloon',
-                'Yellow Balloon',
-                'Green Balloon',
-                'Blue Balloon',
-                'Purple Balloon',
-            ]);
-            $locked = false;
-        }
-
-        $item = $this->petCollectsItem($balloon, $pet, $message, $log);
-
-        $item->setLockedToOwner($locked);
-
-        return $item;
-    }
-
     public function petCollectsEnhancedItem($item, ?Enchantment $bonus, ?Spice $spice, Pet $pet, string $comment, ?PetActivityLog $activityLog): ?Inventory
     {
         $item = $this->getItemWithChanceForLuckyTransformation($item);

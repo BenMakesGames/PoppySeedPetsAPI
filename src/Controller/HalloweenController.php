@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\Inventory;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Enum\LocationEnum;
@@ -9,6 +10,9 @@ use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\CalendarFunctions;
+use App\Functions\GrammarFunctions;
+use App\Functions\PetActivityLogFactory;
+use App\Functions\PlayerLogHelpers;
 use App\Model\FoodWithSpice;
 use App\Repository\InventoryRepository;
 use App\Repository\PetActivityLogTagRepository;
@@ -97,8 +101,8 @@ class HalloweenController extends AbstractController
      */
     public function giveCandy(
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
-        Request $request, InventoryRepository $inventoryRepository, Clock $clock, Squirrel3 $squirrel3,
-        EatingService $eatingService, FieldGuideService $fieldGuideService
+        Request $request, Clock $clock, Squirrel3 $squirrel3, EatingService $eatingService,
+        FieldGuideService $fieldGuideService
     )
     {
         /** @var User $user */
@@ -107,7 +111,7 @@ class HalloweenController extends AbstractController
         if(!CalendarFunctions::isHalloween($clock->now))
             throw new PSPInvalidOperationException('It isn\'t Halloween!');
 
-        $candy = $inventoryRepository->find($request->request->getInt('candy'));
+        $candy = $em->getRepository(Inventory::class)->find($request->request->getInt('candy'));
         $toGivingTree = $request->request->getBoolean('toGivingTree', false);
 
         if(!$candy || $candy->getOwner()->getId() !== $user->getId() || $candy->getLocation() !== LocationEnum::HOME)
@@ -162,15 +166,18 @@ class HalloweenController extends AbstractController
             if($favoriteFlavorStrength > 0)
                 $logMessage .= ' (' . $squirrel3->rngNextFromArray([ 'Just what they wanted!', 'Ah! The good stuff!', 'One of their favorites!' ]) . ')';
 
-            $log = (new PetActivityLog())
-                ->setPet($trickOrTreater)
+            PetActivityLogFactory::createUnreadLog($em, $trickOrTreater, $logMessage)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
                 ->setIcon('ui/halloween')
-                ->setEntry($logMessage)
                 ->addTags(PetActivityLogTagRepository::findByNames($em, [ 'Special Event', 'Halloween' ]))
             ;
 
-            $em->persist($log);
+            PlayerLogHelpers::create(
+                $em,
+                $user,
+                'You gave ' . $candy->getFullItemName() . ' to ' . GrammarFunctions::indefiniteArticle($trickOrTreater->getSpecies()->getName()) . ' ' . $trickOrTreater->getSpecies()->getName() . ' dressed as ' . $trickOrTreater->getCostume() . '!',
+                [ 'Special Event', 'Halloween' ]
+            );
         }
 
         $reward = $halloweenService->countCandyGiven($user, $trickOrTreater, $toGivingTree);

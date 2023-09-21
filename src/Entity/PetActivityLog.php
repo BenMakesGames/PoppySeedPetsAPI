@@ -12,8 +12,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity()
  * @ORM\Table(indexes={
- *     @ORM\Index(name="created_on_idx", columns={"created_on"}),
- *     @ORM\Index(name="viewed_idx", columns={"viewed"})
+ *     @ORM\Index(name="created_on_idx", columns={"created_on"})
  * })
  */
 class PetActivityLog
@@ -61,11 +60,6 @@ class PetActivityLog
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
     private $interestingness = 0;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $viewed = false;
 
     /**
      * @ORM\ManyToOne(targetEntity=Item::class)
@@ -158,18 +152,6 @@ class PetActivityLog
     {
         if($interestingness > $this->interestingness)
             $this->interestingness = $interestingness;
-
-        return $this;
-    }
-
-    public function getViewed(): bool
-    {
-        return $this->viewed;
-    }
-
-    public function setViewed(): self
-    {
-        $this->viewed = true;
 
         return $this;
     }

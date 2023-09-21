@@ -10,6 +10,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Model\ParkEvent\JoustingClashResult;
 use App\Model\ParkEvent\JoustingParticipant;
 use App\Model\ParkEvent\JoustingTeam;
@@ -451,9 +452,7 @@ class JoustingService implements ParkEventInterface
 
         $pet->increaseEsteem(2 * $team->wins);
 
-        $log = (new PetActivityLog())
-            ->setPet($pet)
-            ->setEntry($log)
+        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, $log)
             ->setIcon('icons/activity-logs/park')
             ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT)
             ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Park Event', 'Jousting' ]))
@@ -462,9 +461,6 @@ class JoustingService implements ParkEventInterface
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ], $log);
 
         $log->setChanges($changes->compare($pet));
-
-
-        $this->em->persist($log);
 
         $this->individualParticipants[$pet->getId()]->activityLog = $log;
         $this->individualParticipants[$pet->getId()]->isWinner = $team->wins === $this->round;

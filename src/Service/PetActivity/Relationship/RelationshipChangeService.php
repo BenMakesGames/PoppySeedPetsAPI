@@ -1,30 +1,32 @@
 <?php
 namespace App\Service\PetActivity\Relationship;
 
+use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\RelationshipEnum;
-use App\Functions\ArrayFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Repository\PetActivityLogTagRepository;
 use App\Service\IRandom;
 use App\Service\Squirrel3;
+use Doctrine\ORM\EntityManagerInterface;
 
 class RelationshipChangeService
 {
     private LoveService $loveService;
     private IRandom $squirrel3;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private EntityManagerInterface $em;
 
     public function __construct(
-        LoveService $loveService, Squirrel3 $squirrel3, PetActivityLogTagRepository $petActivityLogTagRepository
+        LoveService $loveService, Squirrel3 $squirrel3, EntityManagerInterface $em
     )
     {
         $this->loveService = $loveService;
         $this->squirrel3 = $squirrel3;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->em = $em;
     }
 
     /**
@@ -70,6 +72,23 @@ class RelationshipChangeService
         return $logs;
     }
 
+    private static function createLogs(EntityManagerInterface $em, Pet $p1, string $p1Message, Pet $p2, string $p2Message, $icon = '')
+    {
+        $log1 = PetActivityLogFactory::createUnreadLog($em, $p1, $p1Message);
+
+        $log2 = $p1->getOwner()->getId() === $p2->getOwner()->getId()
+            ? PetActivityLogFactory::createReadLog($em, $p2, $p2Message)
+            : PetActivityLogFactory::createUnreadLog($em, $p2, $p2Message);
+
+        if($icon)
+        {
+            $log1->setIcon($icon);
+            $log2->setIcon($icon);
+        }
+
+        return [ $log1, $log2 ];
+    }
+
     /**
      * @param PetRelationship $p1
      * @param PetRelationship $p2
@@ -83,58 +102,62 @@ class RelationshipChangeService
             $p1->setCurrentRelationship(RelationshipEnum::DISLIKE);
             $p2->setCurrentRelationship(RelationshipEnum::DISLIKE);
 
-            $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s shennanigans! They are no longer friendly rivals.');
-
             if($p2->getRelationshipGoal() === RelationshipEnum::DISLIKE)
             {
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s shennanigans! The feeling is mutual! They are no longer friendly rivals!');
+                $log2Message = $p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s shennanigans! The feeling is mutual! They are no longer friendly rivals!';
             }
             else
             {
                 $p2->setRelationshipGoal(RelationshipEnum::DISLIKE);
 
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s shennanigans! They don\'t want to be friendly rivals any more! (How rude!)');
+                $log2Message = $p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s shennanigans! They don\'t want to be friendly rivals any more! (How rude!)';
             }
+
+            return self::createLogs($this->em,
+                $p1->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s shennanigans! They are no longer friendly rivals.',
+                $p2->getPet(), $log2Message
+            );
         }
-        else
+
+        if($p2->getRelationshipGoal() === RelationshipEnum::DISLIKE)
         {
-            if($p2->getRelationshipGoal() === RelationshipEnum::DISLIKE)
-            {
-                $p1
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                    ->setRelationshipGoal($this->squirrel3->rngNextFromArray([
-                        RelationshipEnum::FRIENDLY_RIVAL, RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE
-                    ]))
-                ;
+            $p1
+                ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
+                ->setRelationshipGoal($this->squirrel3->rngNextFromArray([
+                    RelationshipEnum::FRIENDLY_RIVAL, RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE
+                ]))
+            ;
 
-                $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
+            $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
 
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to be friends with ' . $p2->getPet()->getName() . ', but ' . $p2->getPet()->getName() . ' apparently wants nothing to do with ' . $p1->getPet()->getName() . ' anymore! :(');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wanted to be friends; ' . $p2->getPet()->getName() . ' rejected, wanting nothing to do with with ' . $p2->getPet()->getName() . '!');
-            }
-            else
-            {
-                $p1->setCurrentRelationship(RelationshipEnum::FRIEND);
-                $p2->setCurrentRelationship(RelationshipEnum::FRIEND);
-
-                if($this->squirrel3->rngNextInt(1, 3) === 1)
-                    $mostly = ' (Well, mostly!)';
-                else
-                    $mostly = '';
-
-                if($p1->getRelationshipGoal() === RelationshipEnum::FRIENDLY_RIVAL)
-                    $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to be friends with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' accepted...');
-                else
-                    $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to be friends with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' happily accepted! No more of this silly rivalry stuff!' . $mostly);
-
-                if($p2->getRelationshipGoal() === RelationshipEnum::FRIENDLY_RIVAL)
-                    $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wanted to be friends with ' . $p2->getPet()->getName() . '; they accepted...');
-                else
-                    $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wanted to be friends with ' . $p2->getPet()->getName() . '; they happily accepted! No more of this silly rivalry stuff!' . $mostly);
-            }
+            return self::createLogs(
+                $this->em,
+                $p1->getPet(), $p1->getPet()->getName() . ' wanted to be friends with ' . $p2->getPet()->getName() . ', but ' . $p2->getPet()->getName() . ' apparently wants nothing to do with ' . $p1->getPet()->getName() . ' anymore! :(',
+                $p2->getPet(), $p1->getPet()->getName() . ' wanted to be friends; ' . $p2->getPet()->getName() . ' rejected, wanting nothing to do with with ' . $p2->getPet()->getName() . '!'
+            );
         }
 
-        return [ $log1, $log2 ];
+        $p1->setCurrentRelationship(RelationshipEnum::FRIEND);
+        $p2->setCurrentRelationship(RelationshipEnum::FRIEND);
+
+        if($this->squirrel3->rngNextInt(1, 3) === 1)
+            $mostly = ' (Well, mostly!)';
+        else
+            $mostly = '';
+
+        $log1Message = $p1->getRelationshipGoal() === RelationshipEnum::FRIENDLY_RIVAL
+            ? $p1->getPet()->getName() . ' wanted to be friends with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' accepted...'
+            : $p1->getPet()->getName() . ' wanted to be friends with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' happily accepted! No more of this silly rivalry stuff!' . $mostly;
+
+        $log2Message = $p2->getRelationshipGoal() === RelationshipEnum::FRIENDLY_RIVAL
+            ? $p1->getPet()->getName() . ' wanted to be friends with ' . $p2->getPet()->getName() . '; they accepted...'
+            : $p1->getPet()->getName() . ' wanted to be friends with ' . $p2->getPet()->getName() . '; they happily accepted! No more of this silly rivalry stuff!' . $mostly;
+
+        return self::createLogs(
+            $this->em,
+            $p1->getPet(), $log1Message,
+            $p2->getPet(), $log2Message
+        );
     }
 
     /**
@@ -184,12 +207,15 @@ class RelationshipChangeService
         switch($p2->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' said that they consider ' . $p2->getPet()->getName() . ' a best friend; ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :(');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said that they consider ' . $p2->getPet()->getName() . ' a best friend; ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :|');
                 $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
                 $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
                 $p1->setRelationshipGoal(RelationshipEnum::DISLIKE);
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' said that they consider ' . $p2->getPet()->getName() . ' a best friend; ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' said that they consider ' . $p2->getPet()->getName() . ' a best friend; ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :|'
+                );
 
             case RelationshipEnum::FRIEND:
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 45, 45);
@@ -199,11 +225,15 @@ class RelationshipChangeService
 
             case RelationshipEnum::BFF:
             case RelationshipEnum::FWB:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' said that they consider ' . $p2->getPet()->getName() . ' a best friend; ' . $p2->getPet()->getName() . ' feels the same way! The two are now BFFs! :D')->setIcon('icons/activity-logs/friend');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said that they consider ' . $p2->getPet()->getName() . ' a best friend; ' . $p2->getPet()->getName() . ' feels the same way! The two are now BFFs! :D')->setIcon('icons/activity-logs/friend');
                 $p1->setCurrentRelationship(RelationshipEnum::BFF);
                 $p2->setCurrentRelationship(RelationshipEnum::BFF);
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' said that they consider ' . $p2->getPet()->getName() . ' a best friend; ' . $p2->getPet()->getName() . ' feels the same way! The two are now BFFs! :D',
+                    $p2->getPet(), $p1->getPet()->getName() . ' said that they consider ' . $p2->getPet()->getName() . ' a best friend; ' . $p2->getPet()->getName() . ' feels the same way! The two are now BFFs! :D',
+                    'icons/activity-logs/friend'
+                );
 
             case RelationshipEnum::MATE:
                 return $this->hangOutPrivatelyFromBFFsToMates($p2, $p1);
@@ -211,8 +241,6 @@ class RelationshipChangeService
             default:
                 throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
         }
-
-        return [ $log1, $log2 ];
     }
 
     /**
@@ -226,12 +254,16 @@ class RelationshipChangeService
         switch($p2->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' said that they want to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :(')->setIcon('icons/activity-logs/breakup');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said that they want to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends >:(')->setIcon('icons/activity-logs/breakup');
                 $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
                 $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
                 $p1->setRelationshipGoal(RelationshipEnum::DISLIKE);
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' said that they want to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' said that they want to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends >:(',
+                    'icons/activity-logs/breakup'
+                );
 
             case RelationshipEnum::FRIEND:
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 60, 25);
@@ -243,11 +275,15 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 80, 15);
 
             case RelationshipEnum::FWB:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' said that they\'d like to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' feels the same way ' . $this->loveService->sexyTimesEmoji($p1->getPet(), $p2->getPet()))->setIcon('icons/activity-logs/friend-cute');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said that they\'d like to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' feels the same way ' . $this->loveService->sexyTimesEmoji($p1->getPet(), $p2->getPet()))->setIcon('icons/activity-logs/friend-cute');
                 $p1->setCurrentRelationship(RelationshipEnum::FWB);
                 $p2->setCurrentRelationship(RelationshipEnum::FWB);
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' said that they\'d like to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' feels the same way ' . $this->loveService->sexyTimesEmoji($p1->getPet(), $p2->getPet()),
+                    $p2->getPet(), $p1->getPet()->getName() . ' said that they\'d like to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' feels the same way ' . $this->loveService->sexyTimesEmoji($p1->getPet(), $p2->getPet()),
+                    'icons/activity-logs/friend-cute'
+                );
 
             case RelationshipEnum::MATE:
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 65, 25);
@@ -255,8 +291,6 @@ class RelationshipChangeService
             default:
                 throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
         }
-
-        return [ $log1, $log2 ];
     }
 
     /**
@@ -267,9 +301,6 @@ class RelationshipChangeService
      */
     private function hangOutPrivatelySuggestingMatesWithCompleteRejection(PetRelationship $p1, PetRelationship $p2): array
     {
-        $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to date ' . $p2->getPet()->getName() . ', but ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :\'(')->setIcon('icons/activity-logs/breakup');
-        $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wanted to date ' . $p2->getPet()->getName() . ', but ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends! >:(')->setIcon('icons/activity-logs/breakup');
-
         $p1
             ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
             ->setRelationshipGoal(RelationshipEnum::DISLIKE)
@@ -277,7 +308,12 @@ class RelationshipChangeService
 
         $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
 
-        return [ $log1, $log2 ];
+        return self::createLogs(
+            $this->em,
+            $p1->getPet(), $p1->getPet()->getName() . ' wanted to date ' . $p2->getPet()->getName() . ', but ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :\'(',
+            $p2->getPet(), $p1->getPet()->getName() . ' wanted to date ' . $p2->getPet()->getName() . ', but ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends! >:(',
+            'icons/activity-logs/breakup'
+        );
     }
 
     /**
@@ -309,18 +345,19 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 25, 45);
 
             case RelationshipEnum::MATE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wants to date ' . $p2->getPet()->getName() . '! ' . $p2->getPet()->getName() . ' feels the same way! The two are now dating! <3')->setIcon('icons/activity-logs/friend-cute');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wants to date ' . $p2->getPet()->getName() . '! ' . $p2->getPet()->getName() . ' feels the same way! The two are now dating! <3')->setIcon('icons/activity-logs/friend-cute');
-
                 $p1->setCurrentRelationship(RelationshipEnum::MATE);
                 $p2->setCurrentRelationship(RelationshipEnum::MATE);
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' wants to date ' . $p2->getPet()->getName() . '! ' . $p2->getPet()->getName() . ' feels the same way! The two are now dating! <3',
+                    $p2->getPet(), $p1->getPet()->getName() . ' wants to date ' . $p2->getPet()->getName() . '! ' . $p2->getPet()->getName() . ' feels the same way! The two are now dating! <3',
+                    'icons/activity-logs/friend-cute'
+                );
 
             default:
                 throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
         }
-
-        return [ $log1, $log2 ];
     }
 
     /**
@@ -349,17 +386,19 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 25, 45);
 
             case RelationshipEnum::MATE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wants to date ' . $p2->getPet()->getName() . '! ' . $p2->getPet()->getName() . ' feels the same way! The two are now dating! <3')->setIcon('icons/activity-logs/friend-cute');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wants to date ' . $p2->getPet()->getName() . '! ' . $p2->getPet()->getName() . ' feels the same way! The two are now dating! <3')->setIcon('icons/activity-logs/friend-cute');
                 $p1->setCurrentRelationship(RelationshipEnum::MATE);
                 $p2->setCurrentRelationship(RelationshipEnum::MATE);
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' wants to date ' . $p2->getPet()->getName() . '! ' . $p2->getPet()->getName() . ' feels the same way! The two are now dating! <3',
+                    $p2->getPet(), $p1->getPet()->getName() . ' wants to date ' . $p2->getPet()->getName() . '! ' . $p2->getPet()->getName() . ' feels the same way! The two are now dating! <3',
+                    'icons/activity-logs/friend-cute'
+                );
 
             default:
                 throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
         }
-
-        return [ $log1, $log2 ];
     }
 
     /**
@@ -402,16 +441,6 @@ class RelationshipChangeService
                 $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$originalGoal] . ', but ' . $p2->getPet()->getName() . ' asked to ' . $downgradeDescription[$p2->getCurrentRelationship()] . ', instead. ' . $p1->getPet()->getName() . ' agreed immediately!';
             else
                 $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$originalGoal] . ', but ' . $p2->getPet()->getName() . ' was upset, and asked to ' . $downgradeDescription[$p2->getCurrentRelationship()] . '. After talking for a while, ' . $p1->getPet()->getName() . ' agreed...';
-
-            $p1Log = (new PetActivityLog())
-                ->setPet($p1->getPet())
-                ->setEntry($message)
-            ;
-
-            $p2Log = (new PetActivityLog())
-                ->setPet($p2->getPet())
-                ->setEntry($message)
-            ;
         }
         else if($p2ChangesMind)
         {
@@ -425,38 +454,24 @@ class RelationshipChangeService
                 $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$p1->getRelationshipGoal()] . '. ' . $p2->getPet()->getName() . ' agreed immediately!';
             else
                 $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$p1->getRelationshipGoal()] . '. ' . $p2->getPet()->getName() . ' was upset, but after talking for a while said that it would be okay...';
-
-            $p1Log = (new PetActivityLog())
-                ->setPet($p1->getPet())
-                ->setEntry($message)
-            ;
-
-            $p2Log = (new PetActivityLog())
-                ->setPet($p2->getPet())
-                ->setEntry($message)
-            ;
         }
         else // break up
         {
             $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$p1->getRelationshipGoal()] . '; ' . $p2->getPet()->getName() . ' was really upset! After arguing for a while, the two broke up entirely! :(';
             $tags[] = 'Break-up';
 
-            $p1Log = (new PetActivityLog())
-                ->setPet($p1->getPet())
-                ->setEntry($message)
-            ;
-
-            $p2Log = (new PetActivityLog())
-                ->setPet($p2->getPet())
-                ->setEntry($message)
-            ;
-
             $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
             $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
         }
 
-        $p1Log->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($tags));
-        $p2Log->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($tags));
+        [ $p1Log, $p2Log ] = self::createLogs(
+            $this->em,
+            $p1->getPet(), $message,
+            $p2->getPet(), $message
+        );
+
+        $p1Log->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags));
+        $p2Log->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags));
 
         return [ $p1Log, $p2Log ];
     }
@@ -541,6 +556,7 @@ class RelationshipChangeService
         [$p1ChangesMind, $p2ChangesMind] = $this->determineWhoChangesTheirMind($p1, $p2, $chanceP1ChangesMind, $chanceP2ChangesMind);
 
         $tags = [ 'Relationship Change' ];
+        $icon = '';
 
         if($p1ChangesMind)
         {
@@ -548,16 +564,6 @@ class RelationshipChangeService
                 $message = $p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . ', but ' . $p2->getPet()->getName() . ' wants to ' . $downgradeDescription[$p2->getRelationshipGoal()] . '. ' . $p1->getPet()->getName() . ' immediately agreed to ' . $upgradeDescription[$p2->getRelationshipGoal()] . '!';
             else
                 $message = $p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . ', but ' . $p2->getPet()->getName() . ' wants to ' . $downgradeDescription[$p2->getRelationshipGoal()] . '. ' . $p1->getPet()->getName() . ' thought for a bit, and agreed to try ' . $descriptioning[$p2->getRelationshipGoal()] . '!';
-
-            $p1Log = (new PetActivityLog())
-                ->setPet($p1->getPet())
-                ->setEntry($message)
-            ;
-
-            $p2Log = (new PetActivityLog())
-                ->setPet($p2->getPet())
-                ->setEntry($message)
-            ;
 
             $p1->setCurrentRelationship($p2->getRelationshipGoal());
             $p2->setCurrentRelationship($p2->getRelationshipGoal());
@@ -572,16 +578,6 @@ class RelationshipChangeService
             else
                 $message = $p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . ', but ' . $p2->getPet()->getName() . ' wants to ' . $downgradeDescription[$p2->getRelationshipGoal()] . '. ' . $p2->getPet()->getName() . ' thought for a bit, and agreed to try ' . $descriptioning[$p1->getRelationshipGoal()] . '!';
 
-            $p1Log = (new PetActivityLog())
-                ->setPet($p1->getPet())
-                ->setEntry($message)
-            ;
-
-            $p2Log = (new PetActivityLog())
-                ->setPet($p2->getPet())
-                ->setEntry($message)
-            ;
-
             $p1->setCurrentRelationship($p1->getRelationshipGoal());
             $p2->setCurrentRelationship($p1->getRelationshipGoal());
 
@@ -592,25 +588,21 @@ class RelationshipChangeService
         {
             $message = $p1->getPet()->getName() . ' wanted to ' . $upgradeDescription[$p1->getRelationshipGoal()] . ', but ' . $p2->getPet()->getName() . ' doesn\'t want that. After arguing for a while, the two broke up entirely! :\'(';
             $tags[] = 'Break-up';
-
-            $p1Log = (new PetActivityLog())
-                ->setPet($p1->getPet())
-                ->setEntry($message)
-                ->setIcon('icons/activity-logs/breakup')
-            ;
-
-            $p2Log = (new PetActivityLog())
-                ->setPet($p2->getPet())
-                ->setEntry($message)
-                ->setIcon('icons/activity-logs/breakup')
-            ;
+            $icon = 'icons/activity-logs/breakup';
 
             $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
             $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
         }
 
-        $p1Log->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($tags));
-        $p2Log->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($tags));
+        [ $p1Log, $p2Log ] = self::createLogs(
+            $this->em,
+            $p1->getPet(), $message,
+            $p2->getPet(), $message,
+            $icon
+        );
+
+        $p1Log->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags));
+        $p2Log->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags));
 
         return [ $p1Log, $p2Log ];
     }
@@ -626,16 +618,16 @@ class RelationshipChangeService
         switch($p2->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s nonsense! The feeling is mutual! They are no longer friends >:(');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense! The feeling is mutual! They are no longer friends >:(');
                 $p1->setCurrentRelationship(RelationshipEnum::DISLIKE);
                 $p2->setCurrentRelationship(RelationshipEnum::DISLIKE);
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s nonsense! The feeling is mutual! They are no longer friends >:(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense! The feeling is mutual! They are no longer friends >:('
+                );
 
             case RelationshipEnum::FRIEND:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s nonsense! They are no longer friends >:(')->setIcon('icons/activity-logs/breakup');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense, and no longer wants to be friends! ' . $p2->getPet()->getName() . ' thought they had a really good friendship going... :(')->setIcon('icons/activity-logs/breakup');
-
                 $p2->getPet()
                     ->increaseLove(-$this->squirrel3->rngNextInt(12, 18))
                     ->increaseEsteem(-$this->squirrel3->rngNextInt(8, 12))
@@ -646,7 +638,13 @@ class RelationshipChangeService
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
                     ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
                 ;
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s nonsense! They are no longer friends >:(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense, and no longer wants to be friends! ' . $p2->getPet()->getName() . ' thought they had a really good friendship going... :(',
+                    'icons/activity-logs/breakup'
+                );
 
             case RelationshipEnum::FRIENDLY_RIVAL:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 35, 0);
@@ -654,9 +652,6 @@ class RelationshipChangeService
             case RelationshipEnum::BFF:
             case RelationshipEnum::FWB:
             case RelationshipEnum::MATE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s nonsense! They are no longer friends >:(')->setIcon('icons/activity-logs/breakup');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense, and no longer wants to be friends! ' . $p2->getPet()->getName() . ' thought they had a really good friendship going, and had been hoping they might be something more :\'(')->setIcon('icons/activity-logs/breakup');
-
                 $p2->getPet()
                     ->increaseLove(-$this->squirrel3->rngNextInt(16, 24))
                     ->increaseEsteem(-$this->squirrel3->rngNextInt(12, 16))
@@ -667,13 +662,17 @@ class RelationshipChangeService
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
                     ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
                 ;
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s nonsense! They are no longer friends >:(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense, and no longer wants to be friends! ' . $p2->getPet()->getName() . ' thought they had a really good friendship going, and had been hoping they might be something more :\'(',
+                    'icons/activity-logs/breakup'
+                );
 
             default:
                 throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
         }
-
-        return [ $log1, $log2 ];
     }
 
     /**
@@ -687,22 +686,29 @@ class RelationshipChangeService
         switch($p2->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' said that they consider ' . $p2->getPet()->getName() . ' a friendly rival, but ' . $p2->getPet()->getName() . ' confessed that they\'re not really interested in hanging out at all anymore! :| The two are no longer friends...');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' suggested being friendly rivals; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out anymore, and said so! The two are no longer friends...');
                 $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
                 $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
                 $p1->setRelationshipGoal(RelationshipEnum::DISLIKE);
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' said that they consider ' . $p2->getPet()->getName() . ' a friendly rival, but ' . $p2->getPet()->getName() . ' confessed that they\'re not really interested in hanging out at all anymore! :| The two are no longer friends...',
+                    $p2->getPet(), $p1->getPet()->getName() . ' suggested being friendly rivals; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out anymore, and said so! The two are no longer friends...'
+                );
 
             case RelationshipEnum::FRIEND:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 50, 30);
 
             case RelationshipEnum::FRIENDLY_RIVAL:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' said that they consider ' . $p2->getPet()->getName() . ' a friendly rival; ' . $p2->getPet()->getName() . ' feels the same way! Let the rivalry begin!! >:)')->setIcon('icons/activity-logs/friend');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said that they consider ' . $p2->getPet()->getName() . ' a friendly rival; ' . $p2->getPet()->getName() . ' feels the same way! Let the rivalry begin!! >:)')->setIcon('icons/activity-logs/friend');
                 $p1->setCurrentRelationship(RelationshipEnum::FRIENDLY_RIVAL);
                 $p2->setCurrentRelationship(RelationshipEnum::FRIENDLY_RIVAL);
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' said that they consider ' . $p2->getPet()->getName() . ' a friendly rival; ' . $p2->getPet()->getName() . ' feels the same way! Let the rivalry begin!! >:)',
+                    $p2->getPet(), $p1->getPet()->getName() . ' said that they consider ' . $p2->getPet()->getName() . ' a friendly rival; ' . $p2->getPet()->getName() . ' feels the same way! Let the rivalry begin!! >:)',
+                    'icons/activity-logs/friend'
+                );
 
             case RelationshipEnum::BFF:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 10, 10);
@@ -716,8 +722,6 @@ class RelationshipChangeService
             default:
                 throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
         }
-
-        return [ $log1, $log2 ];
     }
 
     /**
@@ -761,9 +765,6 @@ class RelationshipChangeService
         switch($p2->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to just be friends; ' . $p2->getPet()->getName() . ' has had enough of ' . $p1->getPet()->getName() . '\'s nonsense, and breaks up entirely! :(')->setIcon('icons/activity-logs/breakup');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wanted to just be friends; ' . $p2->getPet()->getName() . ' has had enough of ' . $p1->getPet()->getName() . '\'s nonsense, and breaks up entirely! >:(')->setIcon('icons/activity-logs/breakup');
-
                 $p1
                     ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
@@ -773,17 +774,26 @@ class RelationshipChangeService
                     ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
                 ;
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' wanted to just be friends; ' . $p2->getPet()->getName() . ' has had enough of ' . $p1->getPet()->getName() . '\'s nonsense, and breaks up entirely! :(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' wanted to just be friends; ' . $p2->getPet()->getName() . ' has had enough of ' . $p1->getPet()->getName() . '\'s nonsense, and breaks up entirely! >:(',
+                    'icons/activity-logs/breakup'
+                );
 
             case RelationshipEnum::FRIENDLY_RIVAL:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 45, 40);
 
             case RelationshipEnum::FRIEND:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wants a little more time to theirself; ' . $p2->getPet()->getName() . ' feels the same way. The two are now friends, instead of BFFs.');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wants a little more time to theirself; ' . $p2->getPet()->getName() . ' feels the same way. The two are now friends, instead of BFFs.');
                 $p1->setCurrentRelationship(RelationshipEnum::FRIEND);
                 $p2->setCurrentRelationship(RelationshipEnum::FRIEND);
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' wants a little more time to theirself; ' . $p2->getPet()->getName() . ' feels the same way. The two are now friends, instead of BFFs.',
+                    $p2->getPet(), $p1->getPet()->getName() . ' wants a little more time to theirself; ' . $p2->getPet()->getName() . ' feels the same way. The two are now friends, instead of BFFs.'
+                );
 
             case RelationshipEnum::BFF:
             case RelationshipEnum::FWB:
@@ -795,8 +805,6 @@ class RelationshipChangeService
             default:
                 throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
         }
-
-        return [ $log1, $log2 ];
     }
 
     /**
@@ -810,9 +818,6 @@ class RelationshipChangeService
         switch($p2->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to stop being BFFs, and just be Friendly Rivals; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! :(');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wanted to stop being BFFs, and just be Friendly Rivals; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! >:(');
-
                 $p1
                     ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
@@ -823,16 +828,23 @@ class RelationshipChangeService
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
                 ;
 
-                break;
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' wanted to stop being BFFs, and just be Friendly Rivals; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! :(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' wanted to stop being BFFs, and just be Friendly Rivals; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! >:('
+                );
 
             case RelationshipEnum::FRIENDLY_RIVAL:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to turn their friendship with ' . $p2->getPet()->getName() . ' into a Friendly Rivalry; ' . $p2->getPet()->getName() . ' actually feels the same way! BRING IT ON! >:)')->setIcon('icons/activity-logs/friend');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wanted to turn their friendship with ' . $p2->getPet()->getName() . ' into a Friendly Rivalry; ' . $p2->getPet()->getName() . ' actually feels the same way! BRING IT ON! >:)')->setIcon('icons/activity-logs/friend');
 
                 $p1->setCurrentRelationship(RelationshipEnum::FRIENDLY_RIVAL);
                 $p2->setCurrentRelationship(RelationshipEnum::FRIENDLY_RIVAL);
 
-                break;
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' wanted to turn their friendship with ' . $p2->getPet()->getName() . ' into a Friendly Rivalry; ' . $p2->getPet()->getName() . ' actually feels the same way! BRING IT ON! >:)',
+                    $p2->getPet(), $p1->getPet()->getName() . ' wanted to turn their friendship with ' . $p2->getPet()->getName() . ' into a Friendly Rivalry; ' . $p2->getPet()->getName() . ' actually feels the same way! BRING IT ON! >:)',
+                    'icons/activity-logs/friend'
+                );
 
             case RelationshipEnum::FRIEND:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 45, 40);
@@ -847,9 +859,6 @@ class RelationshipChangeService
             default:
                 throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
         }
-
-        return [ $log1, $log2 ];
-
     }
 
     /**
@@ -863,12 +872,15 @@ class RelationshipChangeService
         switch($p2->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' said that they want to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :|');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said that they want to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :|');
                 $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
                 $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
                 $p1->setRelationshipGoal(RelationshipEnum::DISLIKE);
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' said that they want to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :|',
+                    $p2->getPet(), $p1->getPet()->getName() . ' said that they want to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :|'
+                );
 
             case RelationshipEnum::FRIENDLY_RIVAL:
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 25, 25);
@@ -880,11 +892,15 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 70, 25);
 
             case RelationshipEnum::FWB:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' said that they\'d like to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' feels the same way ' . $this->loveService->sexyTimesEmoji($p1->getPet(), $p2->getPet()))->setIcon('icons/activity-logs/friend-cute');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said that they\'d like to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' feels the same way ' . $this->loveService->sexyTimesEmoji($p1->getPet(), $p2->getPet()))->setIcon('icons/activity-logs/friend-cute');
                 $p1->setCurrentRelationship(RelationshipEnum::FWB);
                 $p2->setCurrentRelationship(RelationshipEnum::FWB);
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' said that they\'d like to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' feels the same way ' . $this->loveService->sexyTimesEmoji($p1->getPet(), $p2->getPet()),
+                    $p2->getPet(), $p1->getPet()->getName() . ' said that they\'d like to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' feels the same way ' . $this->loveService->sexyTimesEmoji($p1->getPet(), $p2->getPet()),
+                    'icons/activity-logs/friend-cute'
+                );
 
             case RelationshipEnum::MATE:
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 50, 45);
@@ -892,8 +908,6 @@ class RelationshipChangeService
             default:
                 throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
         }
-
-        return [ $log1, $log2 ];
     }
 
     /**
@@ -907,17 +921,17 @@ class RelationshipChangeService
         switch($p2->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s nonsense! The feeling is mutual! They are no longer friends >:(');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense! The feeling is mutual! They are no longer friends >:(');
                 $p1->setCurrentRelationship(RelationshipEnum::DISLIKE);
                 $p2->setCurrentRelationship(RelationshipEnum::DISLIKE);
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s nonsense! The feeling is mutual! They are no longer friends >:(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense! The feeling is mutual! They are no longer friends >:('
+                );
 
             case RelationshipEnum::FRIEND:
             case RelationshipEnum::FRIENDLY_RIVAL:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s nonsense! They are no longer friends >:(');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense, and no longer wants to be BFFs, or even friends at all! To be honest, ' . $p2->getPet()->getName() . ' felt the whole BFF thing was a bit much, anyway >:(');
-
                 $p2->getPet()
                     ->increaseLove(-$this->squirrel3->rngNextInt(4, 8))
                     ->increaseEsteem(-$this->squirrel3->rngNextInt(1, 4))
@@ -928,13 +942,15 @@ class RelationshipChangeService
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
                     ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
                 ;
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s nonsense! They are no longer friends >:(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense, and no longer wants to be BFFs, or even friends at all! To be honest, ' . $p2->getPet()->getName() . ' felt the whole BFF thing was a bit much, anyway >:('
+                );
 
             case RelationshipEnum::BFF:
             case RelationshipEnum::FWB:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s nonsense! They are no longer friends >:(')->setIcon('icons/activity-logs/breakup');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense, and no longer wants to be BFFs, or even friends at all! ' . $p2->getPet()->getName() . ' thought they had a really good friendship going... :(')->setIcon('icons/activity-logs/breakup');
-
                 $p2->getPet()
                     ->increaseLove(-$this->squirrel3->rngNextInt(12, 18))
                     ->increaseEsteem(-$this->squirrel3->rngNextInt(8, 12))
@@ -945,12 +961,15 @@ class RelationshipChangeService
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
                     ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
                 ;
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s nonsense! They are no longer friends >:(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense, and no longer wants to be BFFs, or even friends at all! ' . $p2->getPet()->getName() . ' thought they had a really good friendship going... :(',
+                    'icons/activity-logs/breakup'
+                );
 
             case RelationshipEnum::MATE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s nonsense! They are no longer friends >:(');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense, and no longer wants to be BFFs, or friends at all! ' . $p2->getPet()->getName() . ' thought they had a really good friendship going, and had been hoping they might be something more :\'(');
-
                 $p2->getPet()
                     ->increaseLove(-$this->squirrel3->rngNextInt(16, 24))
                     ->increaseEsteem(-$this->squirrel3->rngNextInt(12, 16))
@@ -961,13 +980,16 @@ class RelationshipChangeService
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
                     ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
                 ;
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s nonsense! They are no longer friends >:(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense, and no longer wants to be BFFs, or friends at all! ' . $p2->getPet()->getName() . ' thought they had a really good friendship going, and had been hoping they might be something more :\'('
+                );
 
             default:
                 throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
         }
-
-        return [ $log1, $log2 ];
     }
 
     /**
@@ -1027,18 +1049,19 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 30, 60);
 
             case RelationshipEnum::MATE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wants to date ' . $p2->getPet()->getName() . '! ' . $p2->getPet()->getName() . ' feels the same way! The two are now dating! <3')->setIcon('icons/activity-logs/friend-cute');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wants to date ' . $p2->getPet()->getName() . '! ' . $p2->getPet()->getName() . ' feels the same way! The two are now dating! <3')->setIcon('icons/activity-logs/friend-cute');
                 $p1->setCurrentRelationship(RelationshipEnum::MATE);
                 $p2->setCurrentRelationship(RelationshipEnum::MATE);
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' wants to date ' . $p2->getPet()->getName() . '! ' . $p2->getPet()->getName() . ' feels the same way! The two are now dating! <3',
+                    $p2->getPet(), $p1->getPet()->getName() . ' wants to date ' . $p2->getPet()->getName() . '! ' . $p2->getPet()->getName() . ' feels the same way! The two are now dating! <3',
+                    'icons/activity-logs/friend-cute'
+                );
 
             default:
                 throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
         }
-
-        return [ $log1, $log2 ];
-
     }
 
     /**
@@ -1052,9 +1075,6 @@ class RelationshipChangeService
         switch($p2->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to stop being intimate, and just be BFFs; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! :(')->setIcon('icons/activity-logs/breakup');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wanted to stop being intimate, and just be BFFs; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! >:(')->setIcon('icons/activity-logs/breakup');
-
                 $p1
                     ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
@@ -1065,7 +1085,12 @@ class RelationshipChangeService
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
                 ;
 
-                break;
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' wanted to stop being intimate, and just be BFFs; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! :(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' wanted to stop being intimate, and just be BFFs; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! >:(',
+                    'icons/activity-logs/breakup'
+                );
 
             case RelationshipEnum::FRIENDLY_RIVAL:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 20, 20);
@@ -1074,13 +1099,15 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 40, 40);
 
             case RelationshipEnum::BFF:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to stop being intimate, and just be BFFs; ' . $p2->getPet()->getName() . ' actually feels the same way! It\'s a difficult transition, but they\'re both committed to making it work! :)')->setIcon('icons/activity-logs/friend');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wanted to stop being intimate, and just be BFFs; ' . $p2->getPet()->getName() . ' actually feels the same way! It\'s a difficult transition, but they\'re both committed to making it work! :)')->setIcon('icons/activity-logs/friend');
-
                 $p1->setCurrentRelationship(RelationshipEnum::BFF);
                 $p2->setCurrentRelationship(RelationshipEnum::BFF);
 
-                break;
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' wanted to stop being intimate, and just be BFFs; ' . $p2->getPet()->getName() . ' actually feels the same way! It\'s a difficult transition, but they\'re both committed to making it work! :)',
+                    $p2->getPet(), $p1->getPet()->getName() . ' wanted to stop being intimate, and just be BFFs; ' . $p2->getPet()->getName() . ' actually feels the same way! It\'s a difficult transition, but they\'re both committed to making it work! :)',
+                    'icons/activity-logs/friend'
+                );
 
             case RelationshipEnum::FWB:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 45, 45);
@@ -1091,8 +1118,6 @@ class RelationshipChangeService
             default:
                 throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
         }
-
-        return [ $log1, $log2 ];
     }
 
     /**
@@ -1106,9 +1131,6 @@ class RelationshipChangeService
         switch($p2->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to stop being intimate, and just be Friends; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! :(');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wanted to stop being intimate, and just be Friends; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! >:(');
-
                 $p1
                     ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
@@ -1119,19 +1141,25 @@ class RelationshipChangeService
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
                 ;
 
-                break;
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' wanted to stop being intimate, and just be Friends; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! :(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' wanted to stop being intimate, and just be Friends; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! >:('
+                );
 
             case RelationshipEnum::FRIENDLY_RIVAL:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 45, 45);
 
             case RelationshipEnum::FRIEND:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to stop being intimate, and just be Friends; ' . $p2->getPet()->getName() . ' actually feels the same way! It\'s a difficult transition, but they\'re both committed to making it work!')->setIcon('icons/activity-logs/friend');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wanted to stop being intimate, and just be Friends; ' . $p2->getPet()->getName() . ' actually feels the same way! It\'s a difficult transition, but they\'re both committed to making it work!')->setIcon('icons/activity-logs/friend');
-
                 $p1->setCurrentRelationship(RelationshipEnum::FRIEND);
                 $p2->setCurrentRelationship(RelationshipEnum::FRIEND);
 
-                break;
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' wanted to stop being intimate, and just be Friends; ' . $p2->getPet()->getName() . ' actually feels the same way! It\'s a difficult transition, but they\'re both committed to making it work!',
+                    $p2->getPet(), $p1->getPet()->getName() . ' wanted to stop being intimate, and just be Friends; ' . $p2->getPet()->getName() . ' actually feels the same way! It\'s a difficult transition, but they\'re both committed to making it work!',
+                    'icons/activity-logs/friend'
+                );
 
             case RelationshipEnum::BFF:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 45, 45);
@@ -1145,8 +1173,6 @@ class RelationshipChangeService
             default:
                 throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
         }
-
-        return [ $log1, $log2 ];
     }
 
     /**
@@ -1160,9 +1186,6 @@ class RelationshipChangeService
         switch($p2->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to stop being intimate, and just be Friendly Rivals; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! :(')->setIcon('icons/activity-logs/breakup');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wanted to stop being intimate, and just be Friendly Rivals; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! >:(')->setIcon('icons/activity-logs/breakup');
-
                 $p1
                     ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
@@ -1173,16 +1196,23 @@ class RelationshipChangeService
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
                 ;
 
-                break;
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' wanted to stop being intimate, and just be Friendly Rivals; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! :(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' wanted to stop being intimate, and just be Friendly Rivals; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! >:(',
+                    'icons/activity-logs/breakup'
+                );
 
             case RelationshipEnum::FRIENDLY_RIVAL:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to stop being intimate, and just be Friendly Rivals; unexpectedly, ' . $p2->getPet()->getName() . ' actually feels the same way! BRING IT ON! >:)')->setIcon('icons/activity-logs/friend');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry('Unexpectedly, ' . $p1->getPet()->getName() . ' wanted to stop being intimate, and just be Friendly Rivals; ' . $p2->getPet()->getName() . ' actually feels the same way! BRING IT ON! >:)')->setIcon('icons/activity-logs/friend');
-
                 $p1->setCurrentRelationship(RelationshipEnum::FRIENDLY_RIVAL);
                 $p2->setCurrentRelationship(RelationshipEnum::FRIENDLY_RIVAL);
 
-                break;
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' wanted to stop being intimate, and just be Friendly Rivals; unexpectedly, ' . $p2->getPet()->getName() . ' actually feels the same way! BRING IT ON! >:)',
+                    $p2->getPet(), 'Unexpectedly, ' . $p1->getPet()->getName() . ' wanted to stop being intimate, and just be Friendly Rivals; ' . $p2->getPet()->getName() . ' actually feels the same way! BRING IT ON! >:)',
+                    'icons/activity-logs/friend'
+                );
 
             case RelationshipEnum::FRIEND:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 45, 45);
@@ -1199,8 +1229,6 @@ class RelationshipChangeService
             default:
                 throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
         }
-
-        return [ $log1, $log2 ];
     }
 
     /**
@@ -1214,11 +1242,14 @@ class RelationshipChangeService
         switch($p2->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s nonsense! The feeling is mutual! They are no longer friends >:(');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense! The feeling is mutual! They are no longer friends >:(');
                 $p1->setCurrentRelationship(RelationshipEnum::DISLIKE);
                 $p2->setCurrentRelationship(RelationshipEnum::DISLIKE);
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s nonsense! The feeling is mutual! They are no longer friends >:(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense! The feeling is mutual! They are no longer friends >:('
+                );
 
             case RelationshipEnum::FRIENDLY_RIVAL:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 20, 0);
@@ -1235,9 +1266,6 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 35, 0);
 
             case RelationshipEnum::MATE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s nonsense! They are no longer friends >:(')->setIcon('icons/activity-logs/breakup');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense, and no longer wants to be FWBs, or friends at all! ' . $p2->getPet()->getName() . ' thought they had a really good friendship going, and had been hoping they might be something more :\'(')->setIcon('icons/activity-logs/breakup');
-
                 $p2->getPet()
                     ->increaseLove(-$this->squirrel3->rngNextInt(16, 24))
                     ->increaseEsteem(-$this->squirrel3->rngNextInt(12, 16))
@@ -1248,13 +1276,17 @@ class RelationshipChangeService
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
                     ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
                 ;
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s nonsense! They are no longer friends >:(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense, and no longer wants to be FWBs, or friends at all! ' . $p2->getPet()->getName() . ' thought they had a really good friendship going, and had been hoping they might be something more :\'(',
+                    'icons/activity-logs/breakup'
+                );
 
             default:
                 throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
         }
-
-        return [ $log1, $log2 ];
     }
 
     /**
@@ -1301,9 +1333,6 @@ class RelationshipChangeService
         switch($p2->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to just be Friendly Rivals; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! :(')->setIcon('icons/activity-logs/breakup');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wanted to just be Friendly Rivals; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! >:(')->setIcon('icons/activity-logs/breakup');
-
                 $p1
                     ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
@@ -1314,16 +1343,23 @@ class RelationshipChangeService
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
                 ;
 
-                break;
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' wanted to just be Friendly Rivals; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! :(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' wanted to just be Friendly Rivals; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! >:(',
+                    'icons/activity-logs/breakup'
+                );
 
             case RelationshipEnum::FRIENDLY_RIVAL:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to just be Friendly Rivals; unexpectedly, ' . $p2->getPet()->getName() . ' actually feels the same way! Okay, then! BRING IT ON! >:)')->setIcon('icons/activity-logs/friend');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry('Unexpectedly, ' . $p1->getPet()->getName() . ' wanted to just be Friendly Rivals; ' . $p2->getPet()->getName() . ' actually feels the same way! Okay, then! BRING IT ON! >:)')->setIcon('icons/activity-logs/friend');
-
                 $p1->setCurrentRelationship(RelationshipEnum::FRIENDLY_RIVAL);
                 $p2->setCurrentRelationship(RelationshipEnum::FRIENDLY_RIVAL);
 
-                break;
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' wanted to just be Friendly Rivals; unexpectedly, ' . $p2->getPet()->getName() . ' actually feels the same way! Okay, then! BRING IT ON! >:)',
+                    $p2->getPet(), 'Unexpectedly, ' . $p1->getPet()->getName() . ' wanted to just be Friendly Rivals; ' . $p2->getPet()->getName() . ' actually feels the same way! Okay, then! BRING IT ON! >:)',
+                    'icons/activity-logs/friend'
+                );
 
             case RelationshipEnum::FRIEND:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 50, 40);
@@ -1340,8 +1376,6 @@ class RelationshipChangeService
             default:
                 throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
         }
-
-        return [ $log1, $log2 ];
     }
 
     /**
@@ -1355,9 +1389,6 @@ class RelationshipChangeService
         switch($p2->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to just be BFFs; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! :\'(')->setIcon('icons/activity-logs/breakup');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wanted to just be BFFs; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! >:(')->setIcon('icons/activity-logs/breakup');
-
                 $p1
                     ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
@@ -1368,7 +1399,12 @@ class RelationshipChangeService
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
                 ;
 
-                break;
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' wanted to just be BFFs; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! :\'(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' wanted to just be BFFs; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! >:(',
+                    'icons/activity-logs/breakup'
+                );
 
             case RelationshipEnum::FRIENDLY_RIVAL:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 20, 20);
@@ -1377,13 +1413,16 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 45, 45);
 
             case RelationshipEnum::BFF:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to just be BFFs; ' . $p2->getPet()->getName() . ' actually feels the same way! It\'s a difficult transition, but they\'re both committed to making it work! :)')->setIcon('icons/activity-logs/friend');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wanted to just be BFFs; ' . $p2->getPet()->getName() . ' actually feels the same way! It\'s a difficult transition, but they\'re both committed to making it work! :)')->setIcon('icons/activity-logs/friend');
 
                 $p1->setCurrentRelationship(RelationshipEnum::BFF);
                 $p2->setCurrentRelationship(RelationshipEnum::BFF);
 
-                break;
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' wanted to just be BFFs; ' . $p2->getPet()->getName() . ' actually feels the same way! It\'s a difficult transition, but they\'re both committed to making it work! :)',
+                    $p2->getPet(), $p1->getPet()->getName() . ' wanted to just be BFFs; ' . $p2->getPet()->getName() . ' actually feels the same way! It\'s a difficult transition, but they\'re both committed to making it work! :)',
+                    'icons/activity-logs/friend'
+                );
 
             case RelationshipEnum::FWB:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 50, 40);
@@ -1394,8 +1433,6 @@ class RelationshipChangeService
             default:
                 throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
         }
-
-        return [ $log1, $log2 ];
     }
 
     /**
@@ -1409,9 +1446,6 @@ class RelationshipChangeService
         switch($p2->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to just be FWBs; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! :\'(')->setIcon('icons/activity-logs/breakup');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wanted to just be FWBs; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! >:(')->setIcon('icons/activity-logs/breakup');
-
                 $p1
                     ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
@@ -1422,7 +1456,12 @@ class RelationshipChangeService
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
                 ;
 
-                break;
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' wanted to just be FWBs; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! :\'(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' wanted to just be FWBs; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! >:(',
+                    'icons/activity-logs/breakup'
+                );
 
             case RelationshipEnum::FRIENDLY_RIVAL:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 15, 15);
@@ -1434,13 +1473,15 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 35, 35);
 
             case RelationshipEnum::FWB:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to just be FWBs; unexpectedly, ' . $p2->getPet()->getName() . ' actually feels the same way!' . $this->loveService->sexyTimesEmoji($p1->getPet(), $p2->getPet()))->setIcon('icons/activity-logs/friend-cute');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry('Unexpectedly, ' . $p1->getPet()->getName() . ' wanted to just be FWBs; ' . $p2->getPet()->getName() . ' actually feels the same way!' . $this->loveService->sexyTimesEmoji($p1->getPet(), $p2->getPet()))->setIcon('icons/activity-logs/friend-cute');
-
                 $p1->setCurrentRelationship(RelationshipEnum::FWB);
                 $p2->setCurrentRelationship(RelationshipEnum::FWB);
 
-                break;
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' wanted to just be FWBs; unexpectedly, ' . $p2->getPet()->getName() . ' actually feels the same way!' . $this->loveService->sexyTimesEmoji($p1->getPet(), $p2->getPet()),
+                    $p2->getPet(), 'Unexpectedly, ' . $p1->getPet()->getName() . ' wanted to just be FWBs; ' . $p2->getPet()->getName() . ' actually feels the same way!' . $this->loveService->sexyTimesEmoji($p1->getPet(), $p2->getPet()),
+                    'icons/activity-logs/friend-cute'
+                );
 
             case RelationshipEnum::MATE:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 35, 35);
@@ -1448,8 +1489,6 @@ class RelationshipChangeService
             default:
                 throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
         }
-
-        return [ $log1, $log2 ];
     }
 
     /**
@@ -1463,9 +1502,6 @@ class RelationshipChangeService
         switch($p2->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to just be friends; ' . $p2->getPet()->getName() . ' has had enough of ' . $p1->getPet()->getName() . '\'s nonsense, and breaks up entirely! :\'(')->setIcon('icons/activity-logs/breakup');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wanted to just be friends; ' . $p2->getPet()->getName() . ' has had enough of ' . $p1->getPet()->getName() . '\'s nonsense, and breaks up entirely! >:(')->setIcon('icons/activity-logs/breakup');
-
                 $p1
                     ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
@@ -1476,18 +1512,24 @@ class RelationshipChangeService
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
                 ;
 
-                break;
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' wanted to just be friends; ' . $p2->getPet()->getName() . ' has had enough of ' . $p1->getPet()->getName() . '\'s nonsense, and breaks up entirely! :\'(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' wanted to just be friends; ' . $p2->getPet()->getName() . ' has had enough of ' . $p1->getPet()->getName() . '\'s nonsense, and breaks up entirely! >:(',
+                    'icons/activity-logs/breakup'
+                );
 
             case RelationshipEnum::FRIENDLY_RIVAL:
             case RelationshipEnum::FRIEND:
             case RelationshipEnum::BFF:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' wanted to just be friends; after talking for a bit, ' . $p2->getPet()->getName() . ' agrees that that\'d be best... :(');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' wanted to just be friends; after talking for a bit, ' . $p2->getPet()->getName() . ' agrees that that\'d be best... :(');
-
                 $p1->setCurrentRelationship(RelationshipEnum::FRIEND);
                 $p2->setCurrentRelationship(RelationshipEnum::FRIEND);
 
-                break;
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' wanted to just be friends; after talking for a bit, ' . $p2->getPet()->getName() . ' agrees that that\'d be best... :(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' wanted to just be friends; after talking for a bit, ' . $p2->getPet()->getName() . ' agrees that that\'d be best... :('
+                );
 
             case RelationshipEnum::FWB:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 15, 60);
@@ -1499,8 +1541,6 @@ class RelationshipChangeService
             default:
                 throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
         }
-
-        return [ $log1, $log2 ];
     }
 
     /**
@@ -1514,17 +1554,17 @@ class RelationshipChangeService
         switch($p2->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' doesn\'t like ' . $p2->getPet()->getName() . ' anymore. The feeling is mutual! They\'re breaking up! >:(');
-                $log2 = (new PetActivityLog())->setPet($p2->getPet())->setEntry($p1->getPet()->getName() . ' said they don\'t like ' . $p2->getPet()->getName() . ' anymore. The feeling is mutual! They\'re breaking up! >:(');
                 $p1->setCurrentRelationship(RelationshipEnum::DISLIKE);
                 $p2->setCurrentRelationship(RelationshipEnum::DISLIKE);
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' doesn\'t like ' . $p2->getPet()->getName() . ' anymore. The feeling is mutual! They\'re breaking up! >:(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' said they don\'t like ' . $p2->getPet()->getName() . ' anymore. The feeling is mutual! They\'re breaking up! >:('
+                );
 
             case RelationshipEnum::FRIEND:
             case RelationshipEnum::FRIENDLY_RIVAL:
-                $log1 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s nonsense! They are no longer friends >:(');
-                $log2 = (new PetActivityLog())->setPet($p1->getPet())->setEntry($p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense, and wants to break up! To be honest, ' . $p2->getPet()->getName() . ' felt the whole dating thing was a bit much, anyway >:(');
-
                 $p2->getPet()
                     ->increaseLove(-$this->squirrel3->rngNextInt(12, 18))
                     ->increaseEsteem(-$this->squirrel3->rngNextInt(8, 12))
@@ -1535,7 +1575,12 @@ class RelationshipChangeService
                     ->setRelationshipGoal(RelationshipEnum::DISLIKE)
                     ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
                 ;
-                break;
+
+                return self::createLogs(
+                    $this->em,
+                    $p1->getPet(), $p1->getPet()->getName() . ' is tired of ' . $p2->getPet()->getName() . '\'s nonsense! They are no longer friends >:(',
+                    $p2->getPet(), $p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense, and wants to break up! To be honest, ' . $p2->getPet()->getName() . ' felt the whole dating thing was a bit much, anyway >:('
+                );
 
             case RelationshipEnum::BFF:
             case RelationshipEnum::FWB:
@@ -1547,7 +1592,5 @@ class RelationshipChangeService
             default:
                 throw new \InvalidArgumentException('p2 relationship goal is of an unexpected type, "' . $p2->getRelationshipGoal() . '"');
         }
-
-        return [ $log1, $log2 ];
     }
 }

@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
 use App\Repository\PetRepository;
 use App\Service\CommentFormatter;
@@ -68,7 +69,7 @@ class Molly extends AbstractController
 
         $actionDescription = "helped the Molly give birth to a litter of... {$babies} {$babyItem}s?? It was a surprisingly-messy affair, during which they collected " . ArrayFunctions::list_nice($loot) . "...";
 
-        $activityLog = $responseService->createActivityLog($pet, "%pet:{$pet->getId()}.name% ${actionDescription}", '')
+        $activityLog = PetActivityLogFactory::createReadLog($em, $pet, "%pet:{$pet->getId()}.name% ${actionDescription}")
             ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
         ;
 
@@ -83,10 +84,7 @@ class Molly extends AbstractController
 
         $petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
 
-        $activityLog
-            ->setViewed()
-            ->setChanges($petChanges->compare($pet))
-        ;
+        $activityLog->setChanges($petChanges->compare($pet));
 
         $em->remove($inventory);
         $em->flush();

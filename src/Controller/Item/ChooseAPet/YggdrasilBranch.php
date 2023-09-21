@@ -8,6 +8,7 @@ use App\Entity\Merit;
 use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
@@ -75,9 +76,8 @@ class YggdrasilBranch extends AbstractController
             $itemActionDescription = "ate the fruit of the Yggdrasil Branch, and was blessed with {$randomMerit}!";
         }
 
-        $responseService->createActivityLog($pet, "%pet:{$pet->getId()}.name% {$itemActionDescription}", '')
+        PetActivityLogFactory::createReadLog($em, $pet, "%pet:{$pet->getId()}.name% {$itemActionDescription}")
             ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
-            ->setViewed()
             ->setChanges($petChanges->compare($pet))
         ;
 
