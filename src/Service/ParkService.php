@@ -142,7 +142,7 @@ class ParkService
         }
     }
 
-    public function petCollectsRandomBalloon(Pet $pet, string $parkEventType, string $commentExtra, ?string $specificBalloon): array
+    public function petCollectsRandomBalloon(Pet $pet, string $parkEventType, ?string $commentExtra, ?string $specificBalloon): array
     {
         if($specificBalloon)
         {

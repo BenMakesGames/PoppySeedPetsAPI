@@ -47,15 +47,18 @@ class IncreaseTimeCommand extends Command
             COMMIT;
         ');
 
-        // fireplace logic...
-        $this->em->getConnection()->executeQuery('
-            START TRANSACTION;
-            UPDATE fireplace SET longest_streak = current_streak + 1 WHERE current_streak >= longest_streak;
-            UPDATE fireplace SET heat = heat - 1, current_streak = current_streak + 1, points = points + 1 WHERE heat > 1;
-            UPDATE fireplace SET alcohol = alcohol - 1, gnome_points = gnome_points + 1 WHERE alcohol > 0;
-            UPDATE fireplace SET heat = 0, alcohol = 0, current_streak = 0, points = points + 1 WHERE heat = 1;
-            COMMIT;
-        ');
+        if(!$_ENV['APP_MAINTENANCE'])
+        {
+            // fireplace logic...
+            $this->em->getConnection()->executeQuery('
+                START TRANSACTION;
+                UPDATE fireplace SET longest_streak = current_streak + 1 WHERE current_streak >= longest_streak;
+                UPDATE fireplace SET heat = heat - 1, current_streak = current_streak + 1, points = points + 1 WHERE heat > 1;
+                UPDATE fireplace SET alcohol = alcohol - 1, gnome_points = gnome_points + 1 WHERE alcohol > 0;
+                UPDATE fireplace SET heat = 0, alcohol = 0, current_streak = 0, points = points + 1 WHERE heat = 1;
+                COMMIT;
+            ');
+        }
 
         // delete expired sessions...
         $this->em->getConnection()->executeQuery(
