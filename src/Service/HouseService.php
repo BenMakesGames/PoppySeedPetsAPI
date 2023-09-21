@@ -68,36 +68,6 @@ class HouseService
         return $petsWithTime > 0;
     }
 
-    public function needsToBeRunSimpleDb(User $user)
-    {
-        $time = microtime(true);
-
-        $petsWithTime = SimpleDb::createReadOnlyConnection()
-            ->query(
-                'SELECT p0_.id AS id_0
-                FROM pet p0_
-                INNER JOIN pet_house_time p1_ ON p0_.id = p1_.pet_id
-                WHERE
-                    p0_.owner_id = :userId
-                    AND (
-                        p1_.activity_time >= 60
-                        OR (p1_.social_energy >= :minimumSocialEnergy AND p1_.can_attempt_social_hangout_after < NOW())
-                    )
-                    AND p0_.location = :home
-                LIMIT 1',
-                [
-                    ':userId' => $user->getId(),
-                    ':home' => PetLocationEnum::HOME,
-                    ':minimumSocialEnergy' => PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT,
-                ]
-            )
-            ->getSingleValue();
-
-        $this->performanceProfiler->logExecutionTime(__METHOD__, microtime(true) - $time);
-
-        return $petsWithTime > 0;
-    }
-
     public function getHouseRunLock(User $user)
     {
         return $this->cache->getItem('User #' . $user->getId() . ' - Running House Hours');

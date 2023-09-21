@@ -86,17 +86,8 @@ class ControllerActionSubscriber implements EventSubscriberInterface
         if($item->isHit())
             return;
 
-        if(mt_rand(1, 2) == 1)
-        {
-            if(!$this->houseService->needsToBeRun($user))
-                return;
-        }
-        else
-        {
-            if(!$this->houseService->needsToBeRunSimpleDb($user))
-                return;
-        }
-
+        if(!$this->houseService->needsToBeRun($user))
+            return;
 
         throw new PSPHoursMustBeRun();
     }
