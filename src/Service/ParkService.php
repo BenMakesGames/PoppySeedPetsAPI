@@ -162,7 +162,7 @@ class ParkService
             $locked = false;
         }
 
-        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, $pet->getName() . ' found a ' . $balloon->getItem()->getName() . ' while participating in a ' . $parkEventType . ' event!')
+        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, $pet->getName() . ' found a ' . $balloon . ' while participating in a ' . $parkEventType . ' event!')
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
         ;
 
