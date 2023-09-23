@@ -206,21 +206,21 @@ class HouseMonsterService
 
         foreach($petsAtHome as $pet)
         {
-            $changes = $petChanges[$pet->getId()]->compare($pet);
-
             $tags = [ 'Fighting' ];
 
-            if($changes->level > 0)
-                $tags[] = 'Level-up';
-
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $result)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags))
-                ->setChanges($changes);
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $result);
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(5, 15), PetActivityStatEnum::HUNT, $won);
             $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ], $activityLog);
 
-            $activityLog->setChanges($changes);
+            $changes = $petChanges[$pet->getId()]->compare($pet);
+
+            if($changes->level > 0)
+                $tags[] = 'Level-up';
+
+            $activityLog
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags))
+                ->setChanges($changes);
         }
 
         return $result;
