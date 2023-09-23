@@ -35,6 +35,7 @@ use App\Service\PetActivity\Crafting\PlasticPrinterService;
 use App\Service\PetActivity\Crafting\ProgrammingService;
 use App\Service\PetActivity\Crafting\SmithingService;
 use App\Service\PetActivity\CraftingService;
+use App\Service\PetActivity\Daydreams\IceCreamDaydream;
 use App\Service\PetActivity\DeepSeaService;
 use App\Service\PetActivity\DreamingService;
 use App\Service\PetActivity\EatingService;
@@ -61,6 +62,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PetActivityService
 {
+    private Clock $clock;
     private EntityManagerInterface $em;
     private ResponseService $responseService;
     private FishingService $fishingService;
@@ -101,10 +103,10 @@ class PetActivityService
     private PhilosophersStoneService $philosophersStoneService;
     private IcyMoonService $icyMoonService;
     private KappaService $kappaService;
-    private Clock $clock;
+    private IceCreamDaydream $iceCreamDaydream;
 
     public function __construct(
-        EntityManagerInterface $em, ResponseService $responseService,
+        Clock $clock, EntityManagerInterface $em, ResponseService $responseService,
         FishingService $fishingService, HeartDimensionService $heartDimensionService, IcyMoonService $icyMoonService,
         HuntingService $huntingService, GatheringService $gatheringService, CraftingService $craftingService,
         UserStatsRepository $userStatsRepository,
@@ -120,11 +122,13 @@ class PetActivityService
         StatusEffectService $statusEffectService, EatingService $eatingService, HouseSimService $houseSimService,
         MagicBindingService $magicBindingService, SmithingService $smithingService, CravingService $cravingService,
         PlasticPrinterService $plasticPrinterService, PhilosophersStoneService $philosophersStoneService,
-        KappaService $kappaService, Clock $clock
+        KappaService $kappaService, IceCreamDaydream $iceCreamDaydream
     )
     {
+        $this->clock = $clock;
         $this->em = $em;
         $this->squirrel3 = $squirrel3;
+
         $this->responseService = $responseService;
         $this->fishingService = $fishingService;
         $this->huntingService = $huntingService;
@@ -163,7 +167,7 @@ class PetActivityService
         $this->philosophersStoneService = $philosophersStoneService;
         $this->icyMoonService = $icyMoonService;
         $this->kappaService = $kappaService;
-        $this->clock = $clock;
+        $this->iceCreamDaydream = $iceCreamDaydream;
     }
 
     public function runHour(Pet $pet)
@@ -416,6 +420,20 @@ class PetActivityService
             ;
         }
 
+        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        {
+            if($this->squirrel3->rngNextInt(1, 10) === 1)
+                $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::WEREFORM));
+        }
+        else if(
+            $pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_WERECREATURE) &&
+            $this->squirrel3->rngNextInt(1, max(20, 50 + $pet->getFood() + $pet->getSafety() * 2 + $pet->getLove() + $pet->getEsteem())) === 1 &&
+            !$pet->hasStatusEffect(StatusEffectEnum::WEREFORM)
+        )
+        {
+            $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::WEREFORM, 1);
+        }
+
         if($pet->hasStatusEffect(StatusEffectEnum::OIL_COVERED))
         {
             if($this->cleanUpStatusEffect($pet, StatusEffectEnum::OIL_COVERED, 'Oil'))
@@ -452,18 +470,11 @@ class PetActivityService
             return;
         }
 
-        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        if($pet->hasStatusEffect(StatusEffectEnum::DAYDREAM_ICE_CREAM) && $this->squirrel3->rngNextInt(1, 2) === 1)
         {
-            if($this->squirrel3->rngNextInt(1, 10) === 1)
-                $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::WEREFORM));
-        }
-        else if(
-            $pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_WERECREATURE) &&
-            $this->squirrel3->rngNextInt(1, max(20, 50 + $pet->getFood() + $pet->getSafety() * 2 + $pet->getLove() + $pet->getEsteem())) === 1 &&
-            !$pet->hasStatusEffect(StatusEffectEnum::WEREFORM)
-        )
-        {
-            $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::WEREFORM, 1);
+            $this->iceCreamDaydream->doAdventure($petWithSkills);
+            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::DAYDREAM_ICE_CREAM));
+            return;
         }
 
         if($this->maybeReceiveFairyGodmotherItem($pet))
@@ -1241,7 +1252,7 @@ class PetActivityService
             $this->petExperienceService->spendTime($pet, 5, PetActivityStatEnum::OTHER, null);
 
             $this->responseService->createActivityLog($pet, '%pet:'. $pet->getId() . '.name% eats the ' . $itemOnBody . ' off their body in no time flat! (Ah~! A true Gourmand!)', '', $changes->compare($pet))
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Eating' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Eating', 'Gourmand' ]))
             ;
             return false;
         }

@@ -604,6 +604,7 @@ class ChocolateMansion
             $success = true;
 
             $tags[] = 'Eating';
+            $tags[] = 'Gourmand';
         }
         else
         {

@@ -42,4 +42,6 @@ final class StatusEffectEnum
     public const HEAT_RESISTANT = 'Heat-resistant';
     public const JAUNE = 'Jaune';
     public const SPICED = 'Spiced';
+
+    public const DAYDREAM_ICE_CREAM = 'Daydreaming (Ice Cream)';
 }

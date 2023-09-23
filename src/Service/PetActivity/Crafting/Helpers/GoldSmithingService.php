@@ -110,7 +110,7 @@ class GoldSmithingService
                     $pet->increaseFood($this->squirrel3->rngNextInt(4, 8));
 
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make an Aubergine Scepter, but accidentally burnt the Eggplant! %pet:' . $pet->getId() . '.name%, as a true gourmand, could not allow even an Eggplant to go to waste, and ate it!', '')
-                        ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Smithing', 'Eating' ]))
+                        ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Smithing', 'Eating', 'Gourmand' ]))
                     ;
                 }
                 else

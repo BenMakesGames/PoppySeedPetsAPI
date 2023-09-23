@@ -117,7 +117,8 @@ class StatusEffect
             StatusEffectEnum::FOCUSED_CRAFTS,
             StatusEffectEnum::FOCUSED_BRAWL,
             StatusEffectEnum::FOCUSED_MUSIC,
-            StatusEffectEnum::LAPINE_WHISPERS
+            StatusEffectEnum::LAPINE_WHISPERS,
+            StatusEffectEnum::DAYDREAM_ICE_CREAM,
         ]))
         {
             return $this;

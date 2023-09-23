@@ -719,7 +719,7 @@ class HuntingService
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' didn\'t even flinch, and swallowed the Onion Boy whole! (Ah~! A true Gourmand!)', 'items/veggie/onion')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting', 'Eating' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting', 'Eating', 'Gourmand' ]))
             ;
 
             $pet
@@ -1550,7 +1550,7 @@ class HuntingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out hunting, and encountered an Egg Salad Monstrosity! After a grueling (and sticky) battle, ' . $pet->getName() . ' took a huge bite out of the monster, slaying it! (Ah~! A true Gourmand!) Finally, they dug ' . $prize->getNameWithArticle() . ' out of the lumpy corpse, and brought it home.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Hunting', 'Eating' ]))
+                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Hunting', 'Eating', 'Gourmand' ]))
             ;
 
             $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' collected this from the remains of an Egg Salad Monstrosity.', $activityLog);
