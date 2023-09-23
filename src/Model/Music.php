@@ -175,5 +175,8 @@ class Music
         // from Jet Set Radio
         'I\'m trying to get to-- I\'m trying to get to sleep! Playing with that-- playing with that-- I\'m, I\'m, I\'m... aaaahhh!',
         'The most important part of dance is music. So now let us listen to the music, and identify the beats. One... ... two... ... three... ... but that was too soft.',
+
+        // Faster than Light (from Stellaris)
+        'Stars in the skyyy... Floating in darrrkneeess.... Soooon... I will flyyy... faaasterrr thaaan liiiiight...',
     ];
 }
