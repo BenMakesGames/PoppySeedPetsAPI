@@ -5,9 +5,9 @@ use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\SimpleDb;
+use App\Service\CommentFormatter;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -21,7 +21,7 @@ class FieldGuideController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getUnlockedEntries(
-        Request $request, ResponseService $responseService
+        ResponseService $responseService, CommentFormatter $commentFormatter
     )
     {
         /** @var User $user */
@@ -39,10 +39,10 @@ class FieldGuideController extends AbstractController
                 ORDER BY e.name ASC',
                 [ $user->getId() ]
             )
-            ->mapResults(function($discoveredOn, $comment, $type, $name, $image, $description) {
-                return [
+            ->mapResults(fn($discoveredOn, $comment, $type, $name, $image, $description) =>
+                [
                     'discoveredOn' => $discoveredOn,
-                    'comment' => $comment,
+                    'comment' => $commentFormatter->format($comment),
                     'entry' => [
                         'type' => $type,
                         'name' => $name,
@@ -50,8 +50,8 @@ class FieldGuideController extends AbstractController
                         'description' => $description,
                     ]
 
-                ];
-            });
+                ]
+            );
 
         return $responseService->success($entries);
     }
