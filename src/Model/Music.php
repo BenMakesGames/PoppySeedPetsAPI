@@ -171,5 +171,9 @@ class Music
 
         // Todrick Hall, Nails, Hair, Hips, Heels
         'Girl, I don\'t dance, I work; I don\'t play, I slay; I don\'t walk, I strut, strut, strut, and then sashay...',
+
+        // from Jet Set Radio
+        'I\'m trying to get to-- I\'m trying to get to sleep! Playing with that-- playing with that-- I\'m, I\'m, I\'m... aaaahhh!',
+        'The most important part of dance is music. So now let us listen to the music, and identify the beats. One... ... two... ... three... ... but that was too soft.',
     ];
 }
