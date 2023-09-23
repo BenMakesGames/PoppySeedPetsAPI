@@ -2,6 +2,7 @@
 namespace App\Serializer;
 
 use App\Entity\PetActivityLog;
+use App\Entity\UserActivityLog;
 use App\Enum\SerializationGroupEnum;
 use App\Service\CommentFormatter;
 use App\Service\FlashMessage;
@@ -22,7 +23,7 @@ class PetActivityLogNormalizer implements ContextAwareNormalizerInterface
     }
 
     /**
-     * @param PetActivityLog|FlashMessage $object
+     * @param PetActivityLog|UserActivityLog|FlashMessage $object
      */
     public function normalize($object, string $format = null, array $context = [])
     {
@@ -36,6 +37,6 @@ class PetActivityLogNormalizer implements ContextAwareNormalizerInterface
 
     public function supportsNormalization($data, string $format = null, array $context = []): bool
     {
-        return $data instanceof PetActivityLog || $data instanceof FlashMessage;
+        return $data instanceof PetActivityLog || $data instanceof UserActivityLog || $data instanceof FlashMessage;
     }
 }
