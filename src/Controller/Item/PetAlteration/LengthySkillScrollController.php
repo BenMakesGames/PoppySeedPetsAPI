@@ -3,6 +3,7 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\PetSkillEnum;
 use App\Exceptions\PSPFormValidationException;
@@ -10,7 +11,6 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetActivityLogFactory;
 use App\Repository\PetActivityLogTagRepository;
-use App\Repository\PetRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,8 +28,7 @@ class LengthySkillScrollController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function increaseSkill(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, PetActivityLogTagRepository $petActivityLogTagRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
     )
     {
         /** @var User $user */
@@ -38,7 +37,7 @@ class LengthySkillScrollController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'lengthyScrollOfSkill');
 
         $petId = $request->request->getInt('pet', 0);
-        $pet = $petRepository->find($petId);
+        $pet = $em->getRepository(Pet::class)->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
@@ -61,7 +60,7 @@ class LengthySkillScrollController extends AbstractController
 
         PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% was read ' . $inventory->getItem()->getNameWithArticle() . ', increasing their ' . ucfirst($skill) . ' to ' . $pet->getSkills()->getStat($skill) . '!')
             ->setIcon('items/scroll/lengthy-skill')
-            ->addTag($petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($em, [ 'Level-up' ]))
         ;
 
         $em->flush();

@@ -31,7 +31,6 @@ class PetRelationshipService
     ];
 
     private EntityManagerInterface $em;
-    private ResponseService $responseService;
     private PregnancyService $pregnancyService;
     private FriendlyRivalsService $friendlyRivalsService;
     private LoveService $loveService;
@@ -39,13 +38,11 @@ class PetRelationshipService
     private IRandom $squirrel3;
 
     public function __construct(
-        EntityManagerInterface $em, ResponseService $responseService, PregnancyService $pregnancyService,
-        FriendlyRivalsService $friendlyRivalsService, LoveService $loveService,
-        RelationshipChangeService $relationshipChangeService, Squirrel3 $squirrel3
+        EntityManagerInterface $em, PregnancyService $pregnancyService, FriendlyRivalsService $friendlyRivalsService,
+        LoveService $loveService, RelationshipChangeService $relationshipChangeService, Squirrel3 $squirrel3
     )
     {
         $this->em = $em;
-        $this->responseService = $responseService;
         $this->pregnancyService = $pregnancyService;
         $this->friendlyRivalsService = $friendlyRivalsService;
         $this->loveService = $loveService;
@@ -256,11 +253,11 @@ class PetRelationshipService
         $meetDescription = str_replace([ '%p1%', '%p2%' ], [ '%pet:' . $pet->getId() . '.name%', '%pet:' . $otherPet->getId() . '.name%' ], $metActivityLogTemplate);
 
         if($petRelationship->getCurrentRelationship() === RelationshipEnum::DISLIKE)
-            $activityLog = $this->responseService->createActivityLog($pet, $meetDescription . ' They didn\'t really get along, though...', 'icons/activity-logs/enemy');
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $meetDescription . ' They didn\'t really get along, though...')->setIcon('icons/activity-logs/enemy');
         else if($petRelationship->getCurrentRelationship() === RelationshipEnum::FWB || $petRelationship->getRelationshipGoal() === RelationshipEnum::FWB || $petRelationship->getRelationshipGoal() === RelationshipEnum::MATE)
-            $activityLog = $this->responseService->createActivityLog($pet, $meetDescription . ' (And what a cutie!)', 'icons/activity-logs/friend-cute');
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $meetDescription . ' (And what a cutie!)')->setIcon('icons/activity-logs/friend-cute');
         else
-            $activityLog = $this->responseService->createActivityLog($pet, $meetDescription, 'icons/activity-logs/friend');
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $meetDescription)->setIcon('icons/activity-logs/friend');
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
@@ -378,14 +375,17 @@ class PetRelationshipService
 
         if($p1Description)
         {
-            $this->responseService->createActivityLog($p1->getPet(), $p1Description, $icon)
+            PetActivityLogFactory::createUnreadLog($this->em, $p1->getPet(), $p1Description)
+                ->setIcon($icon)
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, $groupTags))
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout' ]))
             ;
         }
+
         if($p2Description)
         {
-            $this->responseService->createActivityLog($p2->getPet(), $p2Description, $icon)
+            PetActivityLogFactory::createUnreadLog($this->em, $p2->getPet(), $p2Description)
+                ->setIcon($icon)
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, $groupTags))
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout' ]))
             ;

@@ -4,28 +4,28 @@ namespace App\Service;
 use App\Entity\Pet;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
+use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserStatsRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 class PetAndPraiseService
 {
     private PetExperienceService $petExperienceService;
     private CravingService $cravingService;
-    private ResponseService $responseService;
+    private EntityManagerInterface $em;
     private UserStatsRepository $userStatsRepository;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
-        PetExperienceService $petExperienceService, CravingService $cravingService, ResponseService $responseService,
-        UserStatsRepository $userStatsRepository, PetActivityLogTagRepository $petActivityLogTagRepository
+        PetExperienceService $petExperienceService, CravingService $cravingService, EntityManagerInterface $em,
+        UserStatsRepository $userStatsRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->cravingService = $cravingService;
-        $this->responseService = $responseService;
+        $this->em = $em;
         $this->userStatsRepository = $userStatsRepository;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function doPet(Pet $pet)
@@ -71,8 +71,8 @@ class PetAndPraiseService
 
         $this->cravingService->maybeAddCraving($pet);
 
-        $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% pet ' . '%pet:' . $pet->getId() . '.name%'. '.', 'ui/affection', $changes->compare($pet))
-            ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Petting' ]))
+        PetActivityLogFactory::createUnreadLog($this->em, $pet, '%user:' . $pet->getOwner()->getId() . '.Name% pet ' . '%pet:' . $pet->getId() . '.name%'. '.', 'ui/affection', $changes->compare($pet))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Petting' ]))
         ;
         $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PETTED_A_PET);
     }

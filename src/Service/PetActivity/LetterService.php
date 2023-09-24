@@ -38,13 +38,12 @@ class LetterService
     private UserLetterRepository $userLetterRepository;
     private EntityManagerInterface $em;
     private IRandom $squirrel3;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         UserQuestRepository $userQuestRepository, InventoryService $inventoryService, ResponseService $responseService,
         PetRepository $petRepository, PetExperienceService $petExperienceService, MuseumService $museumService,
         LetterRepository $letterRepository, UserLetterRepository $userLetterRepository,
-        EntityManagerInterface $em, Squirrel3 $squirrel3, PetActivityLogTagRepository $petActivityLogTagRepository
+        EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         $this->userQuestRepository = $userQuestRepository;
@@ -57,7 +56,6 @@ class LetterService
         $this->userLetterRepository = $userLetterRepository;
         $this->em = $em;
         $this->squirrel3 = $squirrel3;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): ?PetActivityLog
@@ -245,7 +243,7 @@ class LetterService
 
             $courierActivity = $this->responseService->createActivityLog($courier, '%pet:' . $courier->getId() . '.name% - on a job for Correspondence - delivered a Letter from ' . $sender . ' to ' . $descriptionForCourier, 'icons/activity-logs/letter')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Guild', 'Mail' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Guild', 'Mail' ]))
             ;
 
             $courierActivity->setChanges($courierChanges->compare($courier));
@@ -255,7 +253,7 @@ class LetterService
 
         $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a courier delivered them a Letter from ' . $sender . '! The courier was ' . $descriptionForPet, 'icons/activity-logs/letter')
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Mail' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Mail' ]))
         ;
 
         $activityLog->setChanges($petChanges->compare($pet));
