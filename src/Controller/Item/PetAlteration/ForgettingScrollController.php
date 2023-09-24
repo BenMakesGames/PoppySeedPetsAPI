@@ -109,7 +109,8 @@ class ForgettingScrollController extends AbstractController
 
         $pet->removeMerit($merit);
 
-        $responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% has forgotten the "' . $merit->getName() . '" Merit!', 'items/scroll/unlearning');
+        PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% has forgotten the "' . $merit->getName() . '" Merit!')
+            ->setIcon('items/scroll/unlearning');
 
         if(in_array($merit->getName(), MeritInfo::AFFECTION_REWARDS))
             $pet->decreaseAffectionRewardsClaimed();

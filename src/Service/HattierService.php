@@ -9,22 +9,20 @@ use App\Entity\UserUnlockedAura;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\UserUnlockedFeatureHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HattierService
 {
     private EntityManagerInterface $em;
-    private ResponseService $responseService;
     private CommentFormatter $commentFormatter;
 
     public function __construct(
-        ResponseService $responseService, CommentFormatter $commentFormatter,
-        EntityManagerInterface $em
+        CommentFormatter $commentFormatter, EntityManagerInterface $em
     )
     {
         $this->em = $em;
-        $this->responseService = $responseService;
         $this->commentFormatter = $commentFormatter;
     }
 
@@ -220,7 +218,7 @@ class HattierService
 
         if($pet->getHat() && !$pet->getHat()->getEnchantment())
         {
-            $activityLog = $this->responseService->createActivityLog($pet, $logIfHatGetsEnchanted, '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $logIfHatGetsEnchanted, '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
             ;
 
@@ -228,7 +226,7 @@ class HattierService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, $logIfHatDoesNotGetEnchanted, '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $logIfHatDoesNotGetEnchanted, '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
             ;
         }
