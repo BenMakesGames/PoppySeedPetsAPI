@@ -35,7 +35,7 @@ class RenameController extends AbstractController
         if($pet->getRenamingCharges() <= 0)
             throw new PSPInvalidOperationException($pet->getName() . ' does not have any Renaming Charges.');
 
-        PetRenamingHelpers::renamePet($responseService, $pet, $request->request->get('name', ''));
+        PetRenamingHelpers::renamePet($em, $pet, $request->request->get('name', ''));
 
         $pet->setRenamingCharges($pet->getRenamingCharges() - 1);
 

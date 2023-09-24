@@ -10,6 +10,7 @@ use App\Enum\PetLocationEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\GrammarFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Repository\PetRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\PetFactory;
@@ -84,11 +85,11 @@ class SummoningSomethingFriendlyController extends AbstractController
 
                         if($species->getName() !== 'Sentinel' && $species->getId() != $pet->getSpecies()->getId())
                         {
-                            $responseService->createActivityLog(
+                            PetActivityLogFactory::createUnreadLog(
+                                $em,
                                 $pet,
                                 ActivityHelpers::PetName($pet) . ' was altered by the energies of the wilds! They were ' . GrammarFunctions::indefiniteArticle($pet->getSpecies()->getName()) . ' ' . $pet->getSpecies()->getName() . ', ' .
-                                'but became ' . GrammarFunctions::indefiniteArticle($species->getName()) . ' ' . $species->getName() . '!',
-                                ''
+                                'but became ' . GrammarFunctions::indefiniteArticle($species->getName()) . ' ' . $species->getName() . '!'
                             );
 
                             $pet->setSpecies($species);

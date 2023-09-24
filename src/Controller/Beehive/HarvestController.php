@@ -10,6 +10,7 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\SpiceRepository;
@@ -102,7 +103,7 @@ class HarvestController extends AbstractController
                         [ 'Goodberries', 'Iris' ]
                     );
 
-                    $activityLog = $responseService->createActivityLog($helper, ActivityHelpers::PetName($helper) . ' helped ' . $user->getName() . '\'s bees while they were out gathering, and collected ' . $extraItem1 . ' AND ' . $extraItem2 . '.', '');
+                    $activityLog = PetActivityLogFactory::createUnreadLog($em, $helper, ActivityHelpers::PetName($helper) . ' helped ' . $user->getName() . '\'s bees while they were out gathering, and collected ' . $extraItem1 . ' AND ' . $extraItem2 . '.');
 
                     $inventoryService->petCollectsItem($extraItem1, $helper, $helper->getName() . ' helped ' . $user->getName() . '\'s bees gathered this.', $activityLog);
                     $inventoryService->petCollectsItem($extraItem2, $helper, $helper->getName() . ' helped ' . $user->getName() . '\'s bees gathered this.', $activityLog);
@@ -142,7 +143,7 @@ class HarvestController extends AbstractController
                         $verb = 'hunt';
                     }
 
-                    $activityLog = $responseService->createActivityLog($helper, ActivityHelpers::PetName($helper) . ' helped ' . $user->getName() . '\'s bees while they were out ' . $verb . 'ing, and collected ' . $extraItem . '.', '');
+                    $activityLog = PetActivityLogFactory::createUnreadLog($em, $helper, ActivityHelpers::PetName($helper) . ' helped ' . $user->getName() . '\'s bees while they were out ' . $verb . 'ing, and collected ' . $extraItem . '.');
 
                     $inventoryService->petCollectsItem($extraItem, $helper, $helper->getName() . ' helped ' . $user->getName() . '\'s bees ' . $verb . ' this.', $activityLog);
                 }

@@ -8,6 +8,7 @@ use App\Enum\PetSkillEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
+use App\Functions\PetActivityLogFactory;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
 use App\Service\ResponseService;
@@ -58,7 +59,8 @@ class LengthySkillScrollController extends AbstractController
         $pet->getSkills()->increaseStat($skill);
         $pet->getSkills()->increaseStat($skill);
 
-        $responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was read ' . $inventory->getItem()->getNameWithArticle() . ', increasing their ' . ucfirst($skill) . ' to ' . $pet->getSkills()->getStat($skill) . '!', 'items/scroll/lengthy-skill')
+        PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% was read ' . $inventory->getItem()->getNameWithArticle() . ', increasing their ' . ucfirst($skill) . ' to ' . $pet->getSkills()->getStat($skill) . '!')
+            ->setIcon('items/scroll/lengthy-skill')
             ->addTag($petActivityLogTagRepository->findOneBy([ 'title' => 'Level-up' ]))
         ;
 

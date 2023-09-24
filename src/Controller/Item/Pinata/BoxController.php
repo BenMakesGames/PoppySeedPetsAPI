@@ -12,6 +12,7 @@ use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
@@ -135,7 +136,8 @@ class BoxController extends AbstractController
                 $pet->increaseEsteem(3);
                 $message .= "\n\nA lobster claw reached out from underneath and tried to pinch you, but " . $pet->getName() . " stepped in and beat it up!\n\nThat was a little scary, but hey: +1 Fish meat!";
 
-                $activityLog = $responseService->createActivityLog($pet, 'While ' . $user->getName() . ' was sifting through a box of ore, a lobster jumped out and tried to attack them! ' . $pet->getName() . ' stepped in and saved the day! It was a little scary, but hey: +1 Fish meat!', '', $changes->compare($pet));
+                $activityLog = PetActivityLogFactory::createUnreadLog($em, $pet, 'While ' . $user->getName() . ' was sifting through a box of ore, a lobster jumped out and tried to attack them! ' . $pet->getName() . ' stepped in and saved the day! It was a little scary, but hey: +1 Fish meat!')
+                    ->setChanges($changes->compare($pet));
 
                 $petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $activityLog);
             }
@@ -669,9 +671,11 @@ class BoxController extends AbstractController
 
             $pet->increaseSafety(2);
 
-            $activityLog = $responseService->createActivityLog($pet, $pet->getName() . ' listened to the Jukebox.', '', $changes->compare($pet));
+            $activityLog = PetActivityLogFactory::createUnreadLog($em, $pet, $pet->getName() . ' listened to the Jukebox.');
 
             $petExperienceService->gainExp($pet, 1, [ PetSkillEnum::MUSIC ], $activityLog);
+
+            $activityLog->setChanges($changes->compare($pet));
         }
 
         $em->flush();

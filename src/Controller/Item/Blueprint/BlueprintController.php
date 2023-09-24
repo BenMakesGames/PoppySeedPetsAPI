@@ -12,6 +12,7 @@ use App\Enum\PetSkillEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
@@ -359,7 +360,7 @@ class BlueprintController extends AbstractController
 
         $responseService->addFlashMessage($flashMessage);
 
-        $activityLog = $responseService->createActivityLog($pet, $logMessage, 'ui/affection', $changes->compare($pet))
+        $activityLog = PetActivityLogFactory::createUnreadLog($em, $pet, $logMessage, 'ui/affection', $changes->compare($pet))
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
         ;
 

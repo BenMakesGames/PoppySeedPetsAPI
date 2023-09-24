@@ -8,6 +8,7 @@ use App\Enum\MeritEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
+use App\Functions\PetActivityLogFactory;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserStatsRepository;
@@ -63,7 +64,8 @@ class BehattingScrollController extends AbstractController
             'awe-inspiring', 'incredible', 'breathtaking', 'amazing', 'fabulous'
         ]);
 
-        $responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was granted the ' . $adjective . ' power to wear hats!', 'items/scroll/behatting');
+        PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% was granted the ' . $adjective . ' power to wear hats!')
+            ->setIcon('items/scroll/behatting');
 
         $em->flush();
 

@@ -15,6 +15,7 @@ use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\InventoryModifierFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
 use App\Repository\InventoryRepository;
@@ -80,9 +81,9 @@ class DragonVaseController extends AbstractController
             $petItem = $rng->rngNextFromArray([ 'Quintessence', 'Wings', 'Feathers' ]);
 
             if($petItem == 'Feathers')
-                $activityLog = $responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' ' . $description . ' some ' . $petItem . ' that flew out of a Dragon Vase ' . $user->getName() . ' smashed, but accidentally reduced it to mere Feathers.', '');
+                $activityLog = PetActivityLogFactory::createUnreadLog($em, $pet, ActivityHelpers::PetName($pet) . ' ' . $description . ' some ' . $petItem . ' that flew out of a Dragon Vase ' . $user->getName() . ' smashed, but accidentally reduced it to mere Feathers.');
             else
-                $activityLog = $responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' ' . $description . ' some ' . $petItem . ' that flew out of a Dragon Vase ' . $user->getName() . ' smashed.', '');
+                $activityLog = PetActivityLogFactory::createUnreadLog($em, $pet, ActivityHelpers::PetName($pet) . ' ' . $description . ' some ' . $petItem . ' that flew out of a Dragon Vase ' . $user->getName() . ' smashed.');
 
             $inventoryService->petCollectsItem(
                 $petItem,

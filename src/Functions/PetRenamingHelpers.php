@@ -8,10 +8,11 @@ use App\Enum\MeritEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 
 final class PetRenamingHelpers
 {
-    public static function renamePet(ResponseService $responseService, Pet $pet, string $newName)
+    public static function renamePet(EntityManagerInterface $em, Pet $pet, string $newName)
     {
         if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
             throw new PSPInvalidOperationException('This pet is Affectionless. It\'s not interested in taking on a new name.');
@@ -24,12 +25,12 @@ final class PetRenamingHelpers
         if(\mb_strlen($petName) < 1 || \mb_strlen($petName) > 30)
             throw new PSPFormValidationException('Pet name must be between 1 and 30 characters long.');
 
-        $responseService->createActivityLog($pet, "{$pet->getName()} has been renamed to {$petName}!", '');
+        PetActivityLogFactory::createUnreadLog($em, $pet, "{$pet->getName()} has been renamed to {$petName}!");
 
         $pet->setName($petName);
     }
 
-    public static function renameSpiritCompanion(ResponseService $responseService, SpiritCompanion $spiritCompanion, string $newName)
+    public static function renameSpiritCompanion(EntityManagerInterface $em, SpiritCompanion $spiritCompanion, string $newName)
     {
         $companionName = ProfanityFilterFunctions::filter(trim($newName));
 
@@ -39,7 +40,7 @@ final class PetRenamingHelpers
         if(\mb_strlen($companionName) < 1 || \mb_strlen($companionName) > 30)
             throw new PSPFormValidationException('Spirit companion names must be between 1 and 30 characters long.');
 
-        $responseService->createActivityLog($spiritCompanion->getPet(), ActivityHelpers::PetName($spiritCompanion->getPet()) . "'s spirit companion has been renamed to {$companionName}!", '');
+        PetActivityLogFactory::createUnreadLog($em, $spiritCompanion->getPet(), ActivityHelpers::PetName($spiritCompanion->getPet()) . "'s spirit companion has been renamed to {$companionName}!");
 
         $spiritCompanion->setName($companionName);
     }

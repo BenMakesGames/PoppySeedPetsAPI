@@ -9,6 +9,7 @@ use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\PetActivityLogFactory;
 use App\Repository\PetRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -61,7 +62,7 @@ class MoonPearlController extends AbstractController
 
             if($squirrel3->rngNextInt(1, $skill) >= 16)
             {
-                $activityLog = $responseService->createActivityLog($helper, ActivityHelpers::UserName($user, true) . ' shattered a moon pearl; ' . ActivityHelpers::PetName($helper) . ' gathered up some of its Quintessence before it could evaporate away!', '');
+                $activityLog = PetActivityLogFactory::createUnreadLog($em, $helper, ActivityHelpers::UserName($user, true) . ' shattered a moon pearl; ' . ActivityHelpers::PetName($helper) . ' gathered up some of its Quintessence before it could evaporate away!');
 
                 $inventoryService->petCollectsItem('Quintessence', $helper, $helper->getName() . ' caught this as it escaped from a shattered Moon Pearl.', $activityLog);
 

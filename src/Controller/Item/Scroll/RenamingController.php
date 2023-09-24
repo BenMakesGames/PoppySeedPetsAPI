@@ -47,7 +47,7 @@ class RenamingController extends AbstractController
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
 
-        PetRenamingHelpers::renamePet($responseService, $pet, $request->request->get('name', ''));
+        PetRenamingHelpers::renamePet($em, $pet, $request->request->get('name', ''));
 
         $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
@@ -81,7 +81,7 @@ class RenamingController extends AbstractController
         if(!$pet->getSpiritCompanion())
             throw new PSPNotFoundException('That pet does not have a spirit companion.');
 
-        PetRenamingHelpers::renameSpiritCompanion($responseService, $pet->getSpiritCompanion(), $request->request->get('name', ''));
+        PetRenamingHelpers::renameSpiritCompanion($em, $pet->getSpiritCompanion(), $request->request->get('name', ''));
 
         $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 

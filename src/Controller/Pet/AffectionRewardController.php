@@ -15,6 +15,7 @@ use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\MeritFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Repository\MeritRepository;
 use App\Service\ResponseService;
@@ -95,7 +96,8 @@ class AffectionRewardController extends AbstractController
             $pet->setIsFertile(true);
         }
 
-        $responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% took the "' . $merit->getName() . '" Merit at %user:' . $user->getId() . '.name\'s% suggestion.', 'ui/merit-icon');
+        PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% took the "' . $merit->getName() . '" Merit at %user:' . $user->getId() . '.name\'s% suggestion.')
+            ->setIcon('ui/merit-icon');
 
         // you should already unlock the merit when the pet increases in affection, but someone reported that
         // NOT happening, so just in case...
@@ -138,7 +140,8 @@ class AffectionRewardController extends AbstractController
         $pet->getSkills()->increaseStat($skillName);
         $pet->increaseAffectionRewardsClaimed();
 
-        $responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% trained hard in ' . $skillName . ' at %user:' . $user->getId() . '.name\'s% suggestion.', 'ui/merit-icon');
+        PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% trained hard in ' . $skillName . ' at %user:' . $user->getId() . '.name\'s% suggestion.')
+            ->setIcon('ui/merit-icon');
 
         $em->flush();
 

@@ -13,6 +13,7 @@ use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\EquipmentFunctions;
 use App\Functions\MeritFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Model\MeritInfo;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
@@ -177,7 +178,8 @@ class ForgettingScrollController extends AbstractController
 
         $pet->getSkills()->decreaseStat($skill);
 
-        $responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% has forgotten some details about ' . ucfirst($skill) . '!', 'items/scroll/unlearning');
+        PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% has forgotten some details about ' . ucfirst($skill) . '!')
+            ->setIcon('items/scroll/unlearning');
 
         $em->flush();
 

@@ -8,6 +8,7 @@ use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
+use App\Functions\PetActivityLogFactory;
 use App\Repository\MeritRepository;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -84,7 +85,7 @@ class TalentAndExpertiseController extends AbstractController
 
         $pet->getSkills()->setTalent();
 
-        $responseService->createActivityLog($pet, str_replace('%pet.name%', $pet->getName(), $merit->getDescription()), '')
+        PetActivityLogFactory::createUnreadLog($em, $pet, str_replace('%pet.name%', $pet->getName(), $merit->getDescription()))
             ->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP)
         ;
 
@@ -155,7 +156,7 @@ class TalentAndExpertiseController extends AbstractController
 
         $pet->getSkills()->setExpertise();
 
-        $responseService->createActivityLog($pet, str_replace('%pet.name%', $pet->getName(), $merit->getDescription()), '')
+        PetActivityLogFactory::createUnreadLog($em, $pet, str_replace('%pet.name%', $pet->getName(), $merit->getDescription()))
             ->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP)
         ;
 

@@ -9,6 +9,7 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
 use App\Functions\CalendarFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\PlayerLogHelpers;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
@@ -131,7 +132,7 @@ class WeedController extends AbstractController
                 $extraDetail = '.';
 
             $changes = new PetChanges($helper);
-            $activityLogEntry = $responseService->createActivityLog($helper, ActivityHelpers::PetName($helper) . ' helped ' . $user->getName() . ' weed their Greenhouse, and found ' . $extraItemObject->getNameWithArticle() . $extraDetail, '');
+            $activityLogEntry = PetActivityLogFactory::createUnreadLog($em, $helper, ActivityHelpers::PetName($helper) . ' helped ' . $user->getName() . ' weed their Greenhouse, and found ' . $extraItemObject->getNameWithArticle() . $extraDetail);
 
             $bonusFlower = null;
 

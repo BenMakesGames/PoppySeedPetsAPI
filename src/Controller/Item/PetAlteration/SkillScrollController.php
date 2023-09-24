@@ -8,6 +8,7 @@ use App\Enum\PetSkillEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
+use App\Functions\PetActivityLogFactory;
 use App\Repository\PetRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -133,7 +134,8 @@ class SkillScrollController extends AbstractController
 
         $em->flush();
 
-        $responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was read ' . $inventory->getItem()->getNameWithArticle() . ', increasing their ' . ucfirst($skill) . ' to ' . $pet->getSkills()->getStat($skill) . '!', 'items/scroll/skill/' . $skill);
+        PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% was read ' . $inventory->getItem()->getNameWithArticle() . ', increasing their ' . ucfirst($skill) . ' to ' . $pet->getSkills()->getStat($skill) . '!')
+            ->setIcon('items/scroll/skill/' . $skill);
 
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }

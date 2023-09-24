@@ -138,7 +138,7 @@ class SelfReflectionController extends AbstractController
 
         $pet->increaseSelfReflectionPoint(-1);
 
-        $responseService->createActivityLog($pet, $pet->getName() . ' left ' . $oldGuildName . ', and joined ' . $guild->getName() . '!', '')
+        PetActivityLogFactory::createUnreadLog($em, $pet, $pet->getName() . ' left ' . $oldGuildName . ', and joined ' . $guild->getName() . '!')
             ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
         ;
 
@@ -216,7 +216,8 @@ class SelfReflectionController extends AbstractController
             ->setCommitment(max($relationship->getCommitment(), $minimumCommitment))
         ;
 
-        $responseService->createActivityLog($pet, $pet->getName() . ' and ' . $friend->getName() . ' talked and made up! They are now ' . $relationshipDescriptions[$newRelationship ] . '!', 'icons/activity-logs/friend')
+        PetActivityLogFactory::createUnreadLog($em, $pet, $pet->getName() . ' and ' . $friend->getName() . ' talked and made up! They are now ' . $relationshipDescriptions[$newRelationship ] . '!')
+            ->setIcon('icons/activity-logs/friend')
             ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
         ;
 
