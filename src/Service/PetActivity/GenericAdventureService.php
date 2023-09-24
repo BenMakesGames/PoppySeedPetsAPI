@@ -19,6 +19,7 @@ use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetActivityLogTagRepository;
+use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\DragonHostageService;
 use App\Service\FieldGuideService;
@@ -291,9 +292,9 @@ class GenericAdventureService
         {
             if($reward[1] === 'Fishkebab')
             {
-                $spice = $this->em->getRepository(Spice::class)->findOneBy([ 'name' => $this->squirrel3->rngNextFromArray([
+                $spice = SpiceRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray([
                     'Spicy', 'with Ketchup', 'Cheesy', 'Fishy', 'Ducky', 'Onion\'d',
-                ]) ]);
+                ]));
             }
             else
                 $spice = null;

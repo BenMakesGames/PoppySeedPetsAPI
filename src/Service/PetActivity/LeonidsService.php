@@ -17,7 +17,7 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
+use Doctrine\ORM\EntityManagerInterface;
 
 class LeonidsService
 {
@@ -26,11 +26,11 @@ class LeonidsService
     private PetActivityLogTagRepository $petActivityLogTagRepository;
     private InventoryService $inventoryService;
     private PetExperienceService $petExperienceService;
-    private SpiceRepository $spiceRepository;
+    private EntityManagerInterface $em;
 
     public function __construct(
-        Squirrel3 $rng, ResponseService $responseService, PetActivityLogTagRepository $petActivityLogTagRepository,
-        InventoryService $inventoryService, PetExperienceService $petExperienceService, SpiceRepository $spiceRepository
+        IRandom $rng, ResponseService $responseService, PetActivityLogTagRepository $petActivityLogTagRepository,
+        InventoryService $inventoryService, PetExperienceService $petExperienceService, EntityManagerInterface $em
     )
     {
         $this->rng = $rng;
@@ -38,7 +38,7 @@ class LeonidsService
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
-        $this->spiceRepository = $spiceRepository;
+        $this->em = $em;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -66,7 +66,7 @@ class LeonidsService
 
         if($petWithSkills->getPet()->hasStatusEffect(StatusEffectEnum::WEREFORM))
         {
-            $starrySpice = $this->spiceRepository->deprecatedFindOneByName('Starry');
+            $starrySpice = SpiceRepository::findOneByName($this->em, 'Starry');
 
             $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they saw a group of werecreatures playing in the Stardust! ' . ActivityHelpers::PetName($pet) . ' joined them, rolling in the dust, playing tug-of-war with Pobo bones, and howling at the stars!', '');
 
@@ -233,7 +233,7 @@ class LeonidsService
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
             }
 
-            $spice = $this->spiceRepository->deprecatedFindOneByName($this->rng->rngNextFromArray([
+            $spice = SpiceRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
                 'Rain-scented',
                 'Juniper',
                 'with Rosemary',

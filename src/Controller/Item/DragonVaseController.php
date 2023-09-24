@@ -118,8 +118,7 @@ class DragonVaseController extends AbstractController
      */
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
-        UserQuestRepository $userQuestRepository, Request $request, InventoryRepository $inventoryRepository,
-        EnchantmentRepository $enchantmentRepository, UserStatsRepository $userStatsRepository
+        UserQuestRepository $userQuestRepository, Request $request, UserStatsRepository $userStatsRepository
     )
     {
         /** @var User $user */
@@ -132,7 +131,7 @@ class DragonVaseController extends AbstractController
         if($itemId <= 0)
             throw new PSPFormValidationException('You forgot to select a tool!');
 
-        $dippedItem = $inventoryRepository->findOneBy([
+        $dippedItem = $em->getRepository(Inventory::class)->findOneBy([
             'id' => $itemId,
             'owner' => $user,
             'location' => LocationEnum::HOME
@@ -175,7 +174,7 @@ class DragonVaseController extends AbstractController
             );
         }
 
-        $newBonus = $enchantmentRepository->findOneBy([ 'name' => $squirrel3->rngNextFromArray($possibleBonuses) ]);
+        $newBonus = EnchantmentRepository::findOneByName($em, $squirrel3->rngNextFromArray($possibleBonuses));
 
         $hadAnEnchantment = $dippedItem->getEnchantment() !== null;
         $oldName = InventoryModifierFunctions::getNameWithModifiers($dippedItem);

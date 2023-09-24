@@ -3,15 +3,16 @@ namespace App\Controller\Item\Scroll;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Enum\UserStatEnum;
 use App\Model\SummoningScrollMonster;
 use App\Repository\PetRepository;
 use App\Repository\UserStatsRepository;
+use App\Service\IRandom;
 use App\Service\PetActivity\HouseMonsterService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,9 +29,8 @@ class SummoningController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function summonSomethingUnfriendly(
-        Inventory $inventory, ResponseService $responseService, PetRepository $petRepository,
-        EntityManagerInterface $em, HouseMonsterService $houseMonsterService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        HouseMonsterService $houseMonsterService, IRandom $squirrel3, UserStatsRepository $userStatsRepository
     ): JsonResponse
     {
         /** @var User $user */
@@ -40,7 +40,7 @@ class SummoningController extends AbstractController
 
         $em->remove($inventory);
 
-        $petsAtHome = $petRepository->findBy([
+        $petsAtHome = $em->getRepository(Pet::class)->findBy([
             'owner' => $user,
             'location' => PetLocationEnum::HOME
         ]);
@@ -73,8 +73,8 @@ class SummoningController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function summonSomethingFromDeepSpace(
-        Inventory $inventory, ResponseService $responseService, PetRepository $petRepository,
-        EntityManagerInterface $em, HouseMonsterService $houseMonsterService, Squirrel3 $squirrel3
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        HouseMonsterService $houseMonsterService, IRandom $squirrel3
     ): JsonResponse
     {
         /** @var User $user */
@@ -84,7 +84,7 @@ class SummoningController extends AbstractController
 
         $em->remove($inventory);
 
-        $petsAtHome = $petRepository->findBy([
+        $petsAtHome = $em->getRepository(Pet::class)->findBy([
             'owner' => $user,
             'location' => PetLocationEnum::HOME
         ]);

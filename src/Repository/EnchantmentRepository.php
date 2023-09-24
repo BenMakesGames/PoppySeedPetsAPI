@@ -21,14 +21,6 @@ class EnchantmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Enchantment::class);
     }
 
-    /**
-     * @deprecated Use static EnchantmentRepository::findOneByName(...) instead
-     */
-    public function deprecatedFindOneByName(string $name): ?Enchantment
-    {
-        return $this->findOneBy([ 'name' => $name ]);
-    }
-
     public static function findOneByName(EntityManagerInterface $em, string $name): ?Enchantment
     {
         return $em->getRepository(Enchantment::class)->findOneBy([ 'name' => $name ]);

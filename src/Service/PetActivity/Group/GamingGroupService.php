@@ -28,12 +28,10 @@ class GamingGroupService
     private InventoryService $inventoryService;
     private PetRelationshipService $petRelationshipService;
     private IRandom $squirrel3;
-    private EnchantmentRepository $enchantmentRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, InventoryService $inventoryService,
-        PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3,
-        EnchantmentRepository $enchantmentRepository
+        PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -41,7 +39,6 @@ class GamingGroupService
         $this->inventoryService = $inventoryService;
         $this->petRelationshipService = $petRelationshipService;
         $this->squirrel3 = $squirrel3;
-        $this->enchantmentRepository = $enchantmentRepository;
     }
 
     private const DICTIONARY = [
@@ -269,7 +266,7 @@ class GamingGroupService
             {
                 $enchantmentName = $this->squirrel3->rngNextFromArray($game['lootEnchantments']);
 
-                $enchantment = $enchantmentName == null ? null : $this->enchantmentRepository->deprecatedFindOneByName($enchantmentName);
+                $enchantment = $enchantmentName == null ? null : EnchantmentRepository::findOneByName($this->em, $enchantmentName);
 
                 $this->inventoryService->petCollectsEnhancedItem(
                     $this->squirrel3->rngNextFromArray($game['possibleLoot']),

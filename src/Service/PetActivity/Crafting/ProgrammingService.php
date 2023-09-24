@@ -43,7 +43,6 @@ class ProgrammingService
     private StatusEffectService $statusEffectService;
     private HouseSimService $houseSimService;
     private HattierService $hattierService;
-    private EnchantmentRepository $enchantmentRepository;
     private FieldGuideService $fieldGuideService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
     private PetFactory $petFactory;
@@ -53,7 +52,7 @@ class ProgrammingService
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
         PetExperienceService $petExperienceService, StatusEffectService $statusEffectService,
-        HouseSimService $houseSimService, HattierService $hattierService, EnchantmentRepository $enchantmentRepository,
+        HouseSimService $houseSimService, HattierService $hattierService,
         FieldGuideService $fieldGuideService, PetActivityLogTagRepository $petActivityLogTagRepository,
         PetFactory $petFactory, MeritRepository $meritRepository, EntityManagerInterface $em
     )
@@ -65,7 +64,6 @@ class ProgrammingService
         $this->statusEffectService = $statusEffectService;
         $this->houseSimService = $houseSimService;
         $this->hattierService = $hattierService;
-        $this->enchantmentRepository = $enchantmentRepository;
         $this->fieldGuideService = $fieldGuideService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->petFactory = $petFactory;
@@ -1047,7 +1045,7 @@ class ProgrammingService
 
             if($pet->hasMerit(MeritEnum::BEHATTED) && $roll >= 27)
             {
-                $consoleCowboy = $this->enchantmentRepository->deprecatedFindOneByName('Console Cowboy\'s');
+                $consoleCowboy = EnchantmentRepository::findOneByName($this->em, 'Console Cowboy\'s');
 
                 if(!$this->hattierService->userHasUnlocked($pet->getOwner(), $consoleCowboy))
                 {

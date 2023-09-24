@@ -11,6 +11,7 @@ use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetColorFunctions;
+use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Service\HattierService;
@@ -110,7 +111,7 @@ class IridescentHandCannonController extends AbstractController
             ;
         }
 
-        $rainbowEye = $em->getRepository(Enchantment::class)->findOneBy([ 'name' => 'Rainboweye' ]);
+        $rainbowEye = EnchantmentRepository::findOneByName($em, 'Rainboweye');
 
         if(!$hattierService->userHasUnlocked($user, $rainbowEye))
         {

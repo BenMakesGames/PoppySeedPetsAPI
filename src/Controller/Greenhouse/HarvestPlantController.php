@@ -49,8 +49,7 @@ class HarvestPlantController extends AbstractController
         InventoryService $inventoryService, UserStatsRepository $userStatsRepository, PetRepository $petRepository,
         UserQuestRepository $userQuestRepository, GreenhouseAdventureService $greenhouseAdventureService,
         GreenhouseService $greenhouseService, Squirrel3 $squirrel3, FieldGuideService $fieldGuideService,
-        EnchantmentRepository $enchantmentRepository, HattierService $hattierService,
-        TransactionService $transactionService
+        HattierService $hattierService, TransactionService $transactionService
     ): JsonResponse
     {
         /** @var User $user */
@@ -97,7 +96,7 @@ class HarvestPlantController extends AbstractController
 
             $responseService->addFlashMessage('You carry the tree out to where Tess is planting new trees on the island, and plant the Earth Tree. She gives you 25 recycling points for your help taking care of the Earth!');
 
-            $leaves = $enchantmentRepository->findOneBy([ 'name' => 'Leafy' ]);
+            $leaves = EnchantmentRepository::findOneByName($em, 'Leafy');
 
             if(!$hattierService->userHasUnlocked($user, $leaves))
             {
@@ -196,7 +195,7 @@ class HarvestPlantController extends AbstractController
         }
         else if($plantsHarvested->getValue() === 1000)
         {
-            $vinesAura = $enchantmentRepository->findOneBy([ 'name' => 'of Wild Growth' ]);
+            $vinesAura = EnchantmentRepository::findOneByName($em, 'of Wild Growth');
 
             $responseService->addFlashMessage('After harvesting the ' . $plant->getPlant()->getName() . ', an odd-looking fairy pops out and bestows a wreath of vines to you. "As you give life to the Earth, you give life to my people. Please, accept this gift for all you have done for us!" (A new style is available at the Hattier\'s! _And_ you somehow got 100 recycling points?! Sure; why not!)');
 

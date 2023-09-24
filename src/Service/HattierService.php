@@ -11,6 +11,7 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\UserUnlockedFeatureHelpers;
+use App\Repository\EnchantmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HattierService
@@ -32,7 +33,7 @@ class HattierService
     public function userHasUnlocked(User $user, $enchantment): bool
     {
         if(is_string($enchantment))
-            $enchantment = $this->em->getRepository(Enchantment::class)->findOneBy([ 'name' => $enchantment ]);
+            $enchantment = EnchantmentRepository::findOneByName($this->em, $enchantment);
 
         $cacheKey = $user->getId() . '-' . $enchantment->getId();
 
@@ -211,7 +212,7 @@ class HattierService
     ): ?PetActivityLog
     {
         if(is_string($enchantment))
-            $enchantment = $this->em->getRepository(Enchantment::class)->findOneBy([ 'name' => $enchantment ]);
+            $enchantment = EnchantmentRepository::findOneByName($this->em, $enchantment);
 
         if($this->userHasUnlocked($pet->getOwner(), $enchantment))
             return null;

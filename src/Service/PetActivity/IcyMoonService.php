@@ -22,7 +22,7 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
+use Doctrine\ORM\EntityManagerInterface;
 
 class IcyMoonService
 {
@@ -32,12 +32,12 @@ class IcyMoonService
     private IRandom $squirrel3;
     private FieldGuideService $fieldGuideService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
-    private SpiceRepository $spiceRepository;
+    private EntityManagerInterface $em;
     private HouseSimService $houseSimService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        Squirrel3 $squirrel3, FieldGuideService $fieldGuideService, SpiceRepository $spiceRepository,
+        IRandom $squirrel3, FieldGuideService $fieldGuideService, EntityManagerInterface $em,
         PetActivityLogTagRepository $petActivityLogTagRepository, HouseSimService $houseSimService
     )
     {
@@ -47,7 +47,7 @@ class IcyMoonService
         $this->squirrel3 = $squirrel3;
         $this->fieldGuideService = $fieldGuideService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
-        $this->spiceRepository = $spiceRepository;
+        $this->em = $em;
         $this->houseSimService = $houseSimService;
     }
 
@@ -117,7 +117,7 @@ class IcyMoonService
     {
         return $this->squirrel3->rngNextBool()
             ? null
-            : $this->spiceRepository->deprecatedFindOneByName('Freezer-burned')
+            : SpiceRepository::findOneByName($this->em, 'Freezer-burned')
         ;
     }
 

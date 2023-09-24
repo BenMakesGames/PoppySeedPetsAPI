@@ -21,14 +21,6 @@ class SpiceRepository extends ServiceEntityRepository
         parent::__construct($registry, Spice::class);
     }
 
-    /**
-     * @deprecated
-     */
-    public function deprecatedFindOneByName(string $name): ?Spice
-    {
-        return $this->findOneBy([ 'name' => $name ]);
-    }
-
     public static function findOneByName(EntityManagerInterface $em, string $name): ?Spice
     {
         return $em->getRepository(Spice::class)->findOneBy([ 'name' => $name ]);

@@ -11,6 +11,7 @@ use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
+use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Service\HattierService;
@@ -2000,7 +2001,7 @@ class MagicBindingService
 
             if($pet->hasMerit(MeritEnum::BEHATTED) && $roll >= 28)
             {
-                $watchfulEnchantment = $this->em->getRepository(Enchantment::class)->findOneBy([ 'name' => 'Watchful' ]);
+                $watchfulEnchantment = EnchantmentRepository::findOneByName($this->em, 'Watchful');
 
                 if(!$this->hattierService->userHasUnlocked($pet->getOwner(), $watchfulEnchantment))
                 {

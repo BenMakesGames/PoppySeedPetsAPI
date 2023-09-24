@@ -23,6 +23,7 @@ use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use Doctrine\ORM\EntityManagerInterface;
 
 class DeepSeaService
 {
@@ -33,12 +34,12 @@ class DeepSeaService
     private HattierService $hattierService;
     private FieldGuideService $fieldGuideService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
-    private EnchantmentRepository $enchantmentRepository;
+    private EntityManagerInterface $em;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         Squirrel3 $squirrel3, HattierService $hattierService, FieldGuideService $fieldGuideService,
-        PetActivityLogTagRepository $petActivityLogTagRepository, EnchantmentRepository $enchantmentRepository
+        PetActivityLogTagRepository $petActivityLogTagRepository, EntityManagerInterface $em
     )
     {
         $this->responseService = $responseService;
@@ -48,7 +49,7 @@ class DeepSeaService
         $this->hattierService = $hattierService;
         $this->fieldGuideService = $fieldGuideService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
-        $this->enchantmentRepository = $enchantmentRepository;
+        $this->em = $em;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -552,7 +553,7 @@ class DeepSeaService
                 else if($this->squirrel3->rngNextInt(1, 10) === 1)
                 {
                     $rareTreasure = 'No Right Turns';
-                    $rareTreasureEnchantment = $this->enchantmentRepository->deprecatedFindOneByName('Seaweed-covered');
+                    $rareTreasureEnchantment = EnchantmentRepository::findOneByName($this->em, 'Seaweed-covered');
                     $andMore = '; oh, and a "No Right Turns" sign, too?';
                 }
                 else

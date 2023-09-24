@@ -22,21 +22,18 @@ class ParkService
     private InventoryService $inventoryService;
     private UserQuestRepository $userQuestRepository;
     private EntityManagerInterface $em;
-    private EnchantmentRepository $enchantmentRepository;
     private HattierService $hattierService;
     private Clock $clock;
 
     public function __construct(
         Squirrel3 $squirrel3, InventoryService $inventoryService, UserQuestRepository $userQuestRepository,
-        EntityManagerInterface $em, EnchantmentRepository $enchantmentRepository, HattierService $hattierService,
-        Clock $clock
+        EntityManagerInterface $em, HattierService $hattierService, Clock $clock
     )
     {
         $this->squirrel3 = $squirrel3;
         $this->inventoryService = $inventoryService;
         $this->userQuestRepository = $userQuestRepository;
         $this->em = $em;
-        $this->enchantmentRepository = $enchantmentRepository;
         $this->hattierService = $hattierService;
         $this->clock = $clock;
     }
@@ -46,7 +43,7 @@ class ParkService
      */
     public function giveOutParticipationRewards(ParkEvent $parkEvent, array $participants)
     {
-        $impressiveAura = $this->enchantmentRepository->deprecatedFindOneByName('Impressive');
+        $impressiveAura = EnchantmentRepository::findOneByName($this->em, 'Impressive');
 
         $birthdayPresentsByUser = [];
 

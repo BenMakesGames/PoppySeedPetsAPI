@@ -16,6 +16,7 @@ use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use Doctrine\ORM\EntityManagerInterface;
 
 class GreenhouseAdventureService
 {
@@ -24,13 +25,13 @@ class GreenhouseAdventureService
     private Squirrel3 $squirrel3;
     private PetExperienceService $petExperienceService;
     private HattierService $hattierService;
-    private EnchantmentRepository $enchantmentRepository;
+    private EntityManagerInterface $em;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     function __construct(
         ResponseService $responseService, InventoryService $inventoryService,
         Squirrel3 $squirrel3, PetExperienceService $petExperienceService,
-        HattierService $hattierService, EnchantmentRepository $enchantmentRepository,
+        HattierService $hattierService, EntityManagerInterface $em,
         PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
@@ -39,7 +40,7 @@ class GreenhouseAdventureService
         $this->squirrel3 = $squirrel3;
         $this->petExperienceService = $petExperienceService;
         $this->hattierService = $hattierService;
-        $this->enchantmentRepository = $enchantmentRepository;
+        $this->em = $em;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
@@ -98,7 +99,7 @@ class GreenhouseAdventureService
 
     public function maybeUnlockBeeAura(Pet $pet, PetActivityLog $activityLog): bool
     {
-        $forTheBees = $this->enchantmentRepository->deprecatedFindOneByName('for the Bees');
+        $forTheBees = EnchantmentRepository::findOneByName($this->em, 'for the Bees');
 
         if($this->hattierService->userHasUnlocked($pet->getOwner(), $forTheBees))
             return false;

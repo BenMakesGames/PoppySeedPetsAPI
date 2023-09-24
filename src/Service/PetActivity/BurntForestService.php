@@ -23,6 +23,7 @@ use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\StatusEffectService;
+use Doctrine\ORM\EntityManagerInterface;
 
 class BurntForestService
 {
@@ -33,14 +34,14 @@ class BurntForestService
     private StatusEffectService $statusEffectService;
     private IRandom $squirrel3;
     private HattierService $hattierService;
-    private EnchantmentRepository $enchantmentRepository;
+    private EntityManagerInterface $em;
     private FieldGuideService $fieldGuideService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, ResponseService $responseService, InventoryService $inventoryService,
         UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3, StatusEffectService $statusEffectService,
-        HattierService $hattierService, EnchantmentRepository $enchantmentRepository, FieldGuideService $fieldGuideService,
+        HattierService $hattierService, EntityManagerInterface $em, FieldGuideService $fieldGuideService,
         PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
@@ -51,7 +52,7 @@ class BurntForestService
         $this->squirrel3 = $squirrel3;
         $this->statusEffectService = $statusEffectService;
         $this->hattierService = $hattierService;
-        $this->enchantmentRepository = $enchantmentRepository;
+        $this->em = $em;
         $this->fieldGuideService = $fieldGuideService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
@@ -305,7 +306,7 @@ class BurntForestService
 
                 if($pet->hasMerit(MeritEnum::BEHATTED))
                 {
-                    $livingFlame = $this->enchantmentRepository->deprecatedFindOneByName('of Living Flame');
+                    $livingFlame = EnchantmentRepository::findOneByName($this->em, 'of Living Flame');
 
                     if(!$this->hattierService->userHasUnlocked($pet->getOwner(), $livingFlame))
                     {

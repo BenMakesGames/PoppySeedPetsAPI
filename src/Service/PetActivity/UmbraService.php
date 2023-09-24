@@ -32,6 +32,7 @@ use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use App\Service\WeatherService;
+use Doctrine\ORM\EntityManagerInterface;
 
 class UmbraService
 {
@@ -39,14 +40,13 @@ class UmbraService
     private InventoryService $inventoryService;
     private PetExperienceService $petExperienceService;
     private TransactionService $transactionService;
-    private ItemRepository $itemRepository;
     private StrangeUmbralEncounters $strangeUmbralEncounters;
     private DragonRepository $dragonRepository;
     private IRandom $squirrel3;
     private HattierService $hattierService;
     private FieldGuideService $fieldGuideService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
-    private SpiceRepository $spiceRepository;
+    private EntityManagerInterface $em;
     private LeonidsService $leonidsService;
     private GuildService $guildService;
     private Clock $clock;
@@ -54,9 +54,9 @@ class UmbraService
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, GuildService $guildService, StrangeUmbralEncounters $strangeUmbralEncounters,
-        ItemRepository $itemRepository, FieldGuideService $fieldGuideService, DragonRepository $dragonRepository,
-        Squirrel3 $squirrel3, HattierService $hattierService, PetActivityLogTagRepository $petActivityLogTagRepository,
-        SpiceRepository $spiceRepository, LeonidsService $leonidsService, Clock $clock
+        FieldGuideService $fieldGuideService, DragonRepository $dragonRepository, IRandom $squirrel3,
+        HattierService $hattierService, PetActivityLogTagRepository $petActivityLogTagRepository,
+        EntityManagerInterface $em, LeonidsService $leonidsService, Clock $clock
     )
     {
         $this->responseService = $responseService;
@@ -64,14 +64,13 @@ class UmbraService
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
         $this->guildService = $guildService;
-        $this->itemRepository = $itemRepository;
         $this->strangeUmbralEncounters = $strangeUmbralEncounters;
         $this->dragonRepository = $dragonRepository;
         $this->squirrel3 = $squirrel3;
         $this->hattierService = $hattierService;
         $this->fieldGuideService = $fieldGuideService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
-        $this->spiceRepository = $spiceRepository;
+        $this->em = $em;
         $this->leonidsService = $leonidsService;
         $this->clock = $clock;
     }
@@ -542,7 +541,7 @@ class UmbraService
             {
                 $pet->getGuildMembership()->increaseReputation();
 
-                $prizeItem = $this->itemRepository->deprecatedFindOneByName($prize);
+                $prizeItem = ItemRepository::findOneByName($this->em, $prize);
 
                 $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; but ' . $pet->getName() . ' endured its attacks long enough to calm it down! It eventually wandered away, dropping ' . $prizeItem->getNameWithArticle() . ' as it went...', 'guilds/light-and-shadow')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
@@ -634,7 +633,7 @@ class UmbraService
 
             $pet->increaseEsteem(6);
 
-            $spice = $this->spiceRepository->deprecatedFindOneByName('Cosmic');
+            $spice = SpiceRepository::findOneByName($this->em, 'Cosmic');
 
             $this->inventoryService->petCollectsEnhancedItem('Jelling Polyp', null, $spice, $pet, $pet->getName() . ' got this from fishing in the Umbra.', $activityLog);
 
