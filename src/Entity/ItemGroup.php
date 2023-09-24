@@ -2,14 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\ItemGroupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass=ItemGroupRepository::class)
+ * @ORM\Entity()
  */
 class ItemGroup
 {

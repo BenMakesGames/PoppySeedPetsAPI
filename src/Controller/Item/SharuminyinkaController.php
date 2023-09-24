@@ -25,7 +25,7 @@ class SharuminyinkaController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function createHope(
-        Inventory $inventory, ResponseService $responseService, TraderService $traderService, ItemRepository $itemRepository,
+        Inventory $inventory, ResponseService $responseService, TraderService $traderService,
         EntityManagerInterface $em, InventoryRepository $inventoryRepository
     )
     {
@@ -38,13 +38,13 @@ class SharuminyinkaController extends AbstractController
 
         $exchange = TraderOffer::createTradeOffer(
             [
-                TraderOfferCostOrYield::createItem($itemRepository->deprecatedFindOneByName('Poker'), 1),
-                TraderOfferCostOrYield::createItem($itemRepository->deprecatedFindOneByName('Spider'), 1),
-                TraderOfferCostOrYield::createItem($itemRepository->deprecatedFindOneByName('Feathers'), 1),
-                TraderOfferCostOrYield::createItem($itemRepository->deprecatedFindOneByName('Quintessence'), 1),
+                TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Poker'), 1),
+                TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Spider'), 1),
+                TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Feathers'), 1),
+                TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Quintessence'), 1),
             ],
             [
-                TraderOfferCostOrYield::createItem($itemRepository->deprecatedFindOneByName('Sharuminyinka\'s Hope'), 1),
+                TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Sharuminyinka\'s Hope'), 1),
             ],
             '',
             $user,
@@ -69,7 +69,7 @@ class SharuminyinkaController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function createMemory(
-        Inventory $inventory, ResponseService $responseService, TraderService $traderService, ItemRepository $itemRepository,
+        Inventory $inventory, ResponseService $responseService, TraderService $traderService,
         EntityManagerInterface $em
     )
     {
@@ -80,13 +80,13 @@ class SharuminyinkaController extends AbstractController
 
         $exchange = TraderOffer::createTradeOffer(
             [
-                TraderOfferCostOrYield::createItem($itemRepository->deprecatedFindOneByName('Crazy-hot Torch'), 1),
-                TraderOfferCostOrYield::createItem($itemRepository->deprecatedFindOneByName('Blackonite'), 1),
-                TraderOfferCostOrYield::createItem($itemRepository->deprecatedFindOneByName('String'), 1),
-                TraderOfferCostOrYield::createItem($itemRepository->deprecatedFindOneByName('Quintessence'), 1),
+                TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Crazy-hot Torch'), 1),
+                TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Blackonite'), 1),
+                TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'String'), 1),
+                TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Quintessence'), 1),
             ],
             [
-                TraderOfferCostOrYield::createItem($itemRepository->deprecatedFindOneByName('Tig\'s Memory'), 1),
+                TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Tig\'s Memory'), 1),
             ],
             '',
             $user,

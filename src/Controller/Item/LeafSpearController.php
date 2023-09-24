@@ -24,7 +24,7 @@ class LeafSpearController extends AbstractController
      */
     public function unwrapLeafSpear(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, ItemRepository $itemRepository
+        InventoryService $inventoryService
     )
     {
         /** @var User $user */
@@ -34,7 +34,7 @@ class LeafSpearController extends AbstractController
 
         $wasEquipped = $inventory->getHolder() !== null;
 
-        $inventory->changeItem($itemRepository->deprecatedFindOneByName('Really Big Leaf'));
+        $inventory->changeItem(ItemRepository::findOneByName($em, 'Really Big Leaf'));
 
         $stringLocation = $inventory->getLocation() === LocationEnum::WARDROBE
             ? LocationEnum::HOME

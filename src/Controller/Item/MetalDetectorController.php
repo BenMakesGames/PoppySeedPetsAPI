@@ -19,13 +19,12 @@ class MetalDetectorController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function tuneMetalDetectorForIron(
-        Inventory $inventory, ResponseService $responseService, ItemRepository $itemRepository,
-        EntityManagerInterface $em
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'metalDetector/#/tune/iron');
 
-        $inventory->changeItem($itemRepository->deprecatedFindOneByName('Metal Detector (Iron)'));
+        $inventory->changeItem(ItemRepository::findOneByName($em, 'Metal Detector (Iron)'));
 
         $em->flush();
 
@@ -40,13 +39,12 @@ class MetalDetectorController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function tuneMetalDetectorForSilver(
-        Inventory $inventory, ResponseService $responseService, ItemRepository $itemRepository,
-        EntityManagerInterface $em
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'metalDetector/#/tune/silver');
 
-        $inventory->changeItem($itemRepository->deprecatedFindOneByName('Metal Detector (Silver)'));
+        $inventory->changeItem(ItemRepository::findOneByName($em, 'Metal Detector (Silver)'));
 
         $em->flush();
 
@@ -61,13 +59,12 @@ class MetalDetectorController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function tuneMetalDetectorForGold(
-        Inventory $inventory, ResponseService $responseService, ItemRepository $itemRepository,
-        EntityManagerInterface $em
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'metalDetector/#/tune/gold');
 
-        $inventory->changeItem($itemRepository->deprecatedFindOneByName('Metal Detector (Gold)'));
+        $inventory->changeItem(ItemRepository::findOneByName($em, 'Metal Detector (Gold)'));
 
         $em->flush();
 

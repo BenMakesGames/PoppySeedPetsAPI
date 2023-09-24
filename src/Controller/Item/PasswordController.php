@@ -20,8 +20,7 @@ class PasswordController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function erasePassword(
-        Inventory $inventory, ResponseService $responseService, ItemRepository $itemRepository,
-        EntityManagerInterface $em
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -29,7 +28,7 @@ class PasswordController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'password/#/erase');
 
-        $string = $itemRepository->deprecatedFindOneByName('String');
+        $string = ItemRepository::findOneByName($em, 'String');
 
         $inventory
             ->changeItem($string)

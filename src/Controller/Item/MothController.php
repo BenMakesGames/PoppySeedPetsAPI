@@ -64,7 +64,7 @@ class MothController extends AbstractController
     public function releaseMoths(
         ResponseService $responseService, UserStatsRepository $userStatsRepository,
         EntityManagerInterface $em, Request $request, InventoryRepository $inventoryRepository,
-        Squirrel3 $rng, InventoryService $inventoryService, ItemRepository $itemRepository
+        Squirrel3 $rng, InventoryService $inventoryService
     )
     {
         /** @var User $user */
@@ -85,7 +85,7 @@ class MothController extends AbstractController
         if($mothCount == 0)
             throw new PSPFormValidationException('Must release at least one moth!');
 
-        $mothItem = $itemRepository->deprecatedFindOneByName('Moth');
+        $mothItem = ItemRepository::findOneByName($em, 'Moth');
 
         $moths = $inventoryRepository->findBy([
             'owner' => $user,

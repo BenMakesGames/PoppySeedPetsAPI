@@ -19,10 +19,10 @@ use App\Service\Squirrel3;
 
 class StickCraftingService
 {
-    private $petExperienceService;
-    private $inventoryService;
-    private $responseService;
-    private $itemRepository;
+    private PetExperienceService $petExperienceService;
+    private InventoryService $inventoryService;
+    private ResponseService $responseService;
+    private ItemRepository $itemRepository;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;

@@ -14,7 +14,6 @@ use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
-use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Model\FoodWithSpice;
@@ -40,7 +39,6 @@ class EatingService
     private InventoryService $inventoryService;
     private ResponseService $responseService;
     private EntityManagerInterface $em;
-    private ItemRepository $itemRepository;
     private PetExperienceService $petExperienceService;
     private UserStatsRepository $userStatsRepository;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
@@ -48,8 +46,8 @@ class EatingService
     public function __construct(
         Squirrel3 $squirrel3, StatusEffectService $statusEffectService, CravingService $cravingService,
         InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
-        ItemRepository $itemRepository, PetExperienceService $petExperienceService,
-        UserStatsRepository $userStatsRepository, PetActivityLogTagRepository $petActivityLogTagRepository
+        PetExperienceService $petExperienceService, UserStatsRepository $userStatsRepository,
+        PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->squirrel3 = $squirrel3;
@@ -58,7 +56,6 @@ class EatingService
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->em = $em;
-        $this->itemRepository = $itemRepository;
         $this->petExperienceService = $petExperienceService;
         $this->userStatsRepository = $userStatsRepository;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
@@ -218,7 +215,7 @@ class EatingService
         if($pet->hasMerit(MeritEnum::BURPS_MOTHS) && $this->squirrel3->rngNextInt(1, 200) < $food->food + $food->junk)
         {
             $inventory = (new Inventory())
-                ->setItem($this->itemRepository->deprecatedFindOneByName('Moth'))
+                ->setItem(ItemRepository::findOneByName($this->em, 'Moth'))
                 ->setLocation(LocationEnum::HOME)
                 ->setOwner($pet->getOwner())
                 ->setCreatedBy($pet->getOwner())

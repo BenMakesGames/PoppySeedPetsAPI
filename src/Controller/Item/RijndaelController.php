@@ -2,6 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\Item;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Repository\ItemRepository;
@@ -33,7 +34,7 @@ class RijndaelController extends AbstractController
         if(!$searchForId)
             throw new PSPFormValidationException('An item to search for must be selected!');
 
-        $itemToFind = $itemRepository->find($searchForId);
+        $itemToFind = $em->getRepository(Item::class)->find($searchForId);
 
         if(!$itemToFind)
             throw new PSPNotFoundException('The item you selected could not be found... that\'s really weird. Reload and try again??');
@@ -51,7 +52,7 @@ class RijndaelController extends AbstractController
             ->getArrayResult()
         ;
 
-        $inventory->changeItem($itemRepository->deprecatedFindOneByName('Elvish Magnifying Glass'));
+        $inventory->changeItem(ItemRepository::findOneByName($em, 'Elvish Magnifying Glass'));
 
         $em->flush();
 

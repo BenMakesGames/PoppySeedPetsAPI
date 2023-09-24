@@ -10,6 +10,7 @@ use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -17,16 +18,16 @@ use App\Service\StatusEffectService;
 
 class WerecreatureEncounterService
 {
-    private $petExperienceService;
-    private $squirrel3;
-    private $itemRepository;
-    private $responseService;
-    private $inventoryService;
-    private $statusEffectService;
+    private PetExperienceService $petExperienceService;
+    private IRandom $squirrel3;
+    private ItemRepository $itemRepository;
+    private ResponseService $responseService;
+    private InventoryService $inventoryService;
+    private StatusEffectService $statusEffectService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
-        PetExperienceService $petExperienceService, Squirrel3 $squirrel3, ItemRepository $itemRepository,
+        PetExperienceService $petExperienceService, IRandom $squirrel3, ItemRepository $itemRepository,
         ResponseService $responseService, InventoryService $inventoryService, StatusEffectService $statusEffectService,
         PetActivityLogTagRepository $petActivityLogTagRepository
     )

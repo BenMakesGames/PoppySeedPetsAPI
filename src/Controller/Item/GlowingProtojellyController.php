@@ -20,8 +20,7 @@ class GlowingProtojellyController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function d4(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        ItemRepository $itemRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -29,7 +28,7 @@ class GlowingProtojellyController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'protojelly/#/d4');
 
-        $die = $itemRepository->deprecatedFindOneByName('Glowing Four-sided Die');
+        $die = ItemRepository::findOneByName($em, 'Glowing Four-sided Die');
         $inventory
             ->changeItem($die)
             ->addComment($user->getName() . ' compelled this Glowing Protojelly to take the shape of a tetrahedron.')
@@ -45,8 +44,7 @@ class GlowingProtojellyController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function d6(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        ItemRepository $itemRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -54,7 +52,7 @@ class GlowingProtojellyController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'protojelly/#/d6');
 
-        $die = $itemRepository->deprecatedFindOneByName('Glowing Six-sided Die');
+        $die = ItemRepository::findOneByName($em, 'Glowing Six-sided Die');
         $inventory
             ->changeItem($die)
             ->addComment($user->getName() . ' compelled this Glowing Protojelly to take the shape of a cube.')
@@ -70,8 +68,7 @@ class GlowingProtojellyController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function d8(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        ItemRepository $itemRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -79,7 +76,7 @@ class GlowingProtojellyController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'protojelly/#/d8');
 
-        $die = $itemRepository->deprecatedFindOneByName('Glowing Eight-sided Die');
+        $die = ItemRepository::findOneByName($em, 'Glowing Eight-sided Die');
         $inventory
             ->changeItem($die)
             ->addComment($user->getName() . ' compelled this Glowing Protojelly to take the shape of an octahedron.')

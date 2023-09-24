@@ -5,16 +5,17 @@ use App\Entity\DragonHostage;
 use App\Entity\Item;
 use App\Enum\DragonHostageTypeEnum;
 use App\Repository\ItemRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 class DragonHostageService
 {
     private IRandom $rng;
-    private ItemRepository $itemRepository;
+    private EntityManagerInterface $em;
 
-    public function __construct(Squirrel3 $rng, ItemRepository $itemRepository)
+    public function __construct(IRandom $rng, EntityManagerInterface $em)
     {
         $this->rng = $rng;
-        $this->itemRepository = $itemRepository;
+        $this->em = $em;
     }
 
     public function generateHostage(): DragonHostage
@@ -58,7 +59,7 @@ class DragonHostageService
 
     public function generateLoot(string $type): DragonHostageLoot
     {
-        $item = $this->itemRepository->deprecatedFindOneByName($this->rng->rngNextFromArray(self::HOSTAGE_LOOT[$type]));
+        $item = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray(self::HOSTAGE_LOOT[$type]));
 
         return new DragonHostageLoot(
             $item,

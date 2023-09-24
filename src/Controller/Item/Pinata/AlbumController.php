@@ -9,6 +9,7 @@ use App\Model\ItemQuantity;
 use App\Model\Music;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetRelationshipService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -36,7 +37,7 @@ class AlbumController extends AbstractController
      */
     public function listenToSingle(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, ItemRepository $itemRepository, Squirrel3 $squirrel3
+        EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
         /** @var User $user */
@@ -47,7 +48,7 @@ class AlbumController extends AbstractController
         $location = $inventory->getLocation();
 
         $musicNotes = new ItemQuantity();
-        $musicNotes->item = $itemRepository->deprecatedFindOneByName('Music Note');
+        $musicNotes->item = ItemRepository::findOneByName($em, 'Music Note');
         $musicNotes->quantity = $squirrel3->rngNextInt(3, 4);
 
         $extraItem = $squirrel3->rngNextFromArray([ 'Pointer', 'NUL', 'Quintessence' ]);
@@ -72,7 +73,7 @@ class AlbumController extends AbstractController
      */
     public function listenToEP(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, ItemRepository $itemRepository, Squirrel3 $squirrel3
+        EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -83,7 +84,7 @@ class AlbumController extends AbstractController
         $location = $inventory->getLocation();
 
         $musicNotes = new ItemQuantity();
-        $musicNotes->item = $itemRepository->deprecatedFindOneByName('Music Note');
+        $musicNotes->item = ItemRepository::findOneByName($em, 'Music Note');
         $musicNotes->quantity = $squirrel3->rngNextInt(4, 6);
 
         $genre = $squirrel3->rngNextFromArray(self::GENRES);
@@ -111,7 +112,7 @@ class AlbumController extends AbstractController
      */
     public function listenToLP(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, ItemRepository $itemRepository, Squirrel3 $squirrel3
+        EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
         /** @var User $user */
@@ -122,7 +123,7 @@ class AlbumController extends AbstractController
         $location = $inventory->getLocation();
 
         $musicNotes = new ItemQuantity();
-        $musicNotes->item = $itemRepository->deprecatedFindOneByName('Music Note');
+        $musicNotes->item = ItemRepository::findOneByName($em, 'Music Note');
         $musicNotes->quantity = $squirrel3->rngNextInt(4, 6);
 
         $genre = $squirrel3->rngNextFromArray(self::GENRES);

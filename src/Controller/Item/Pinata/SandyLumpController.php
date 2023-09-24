@@ -25,7 +25,7 @@ class SandyLumpController extends AbstractController
      */
     public function clean(
         Inventory $lump, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, ItemRepository $itemRepository
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -57,7 +57,7 @@ class SandyLumpController extends AbstractController
             ]);
         }
 
-        $itemObject = $itemRepository->deprecatedFindOneByName($item);
+        $itemObject = ItemRepository::findOneByName($em, $item);
 
         $userStatsRepository->incrementStat($user, 'Cleaned a ' . $lump->getItem()->getName());
 

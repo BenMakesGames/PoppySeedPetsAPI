@@ -4,20 +4,21 @@ namespace App\Service;
 use App\Functions\CalendarFunctions;
 use App\Functions\RandomFunctions;
 use App\Repository\ItemRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 class GrocerService
 {
     public const MAX_CAN_PURCHASE_PER_DAY = 20;
 
     private CacheHelper $cacheHelper;
-    private ItemRepository $itemRepository;
+    private EntityManagerInterface $em;
 
     public function __construct(
-        CacheHelper $cacheHelper, ItemRepository $itemRepository
+        CacheHelper $cacheHelper, EntityManagerInterface $em
     )
     {
         $this->cacheHelper = $cacheHelper;
-        $this->itemRepository = $itemRepository;
+        $this->em = $em;
     }
 
     private const ITEMS = [
@@ -106,7 +107,7 @@ class GrocerService
 
     private function createInventoryData($itemData, bool $special)
     {
-        $item = $this->itemRepository->deprecatedFindOneByName($itemData[0]);
+        $item = ItemRepository::findOneByName($this->em, $itemData[0]);
 
         return [
             'special' => $special,

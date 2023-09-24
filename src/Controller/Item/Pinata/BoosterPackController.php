@@ -3,12 +3,12 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\ItemGroup;
 use App\Entity\User;
 use App\Functions\ArrayFunctions;
-use App\Repository\ItemGroupRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,7 +25,7 @@ class BoosterPackController extends AbstractController
      */
     public function openBoosterPackOne(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, ItemGroupRepository $itemGroupRepository, Squirrel3 $rng
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -36,9 +36,9 @@ class BoosterPackController extends AbstractController
 
         $location = $inventory->getLocation();
 
-        $commons = $itemGroupRepository->findOneByName('Hollow Earth Booster Pack: Common');
-        $uncommons = $itemGroupRepository->findOneByName('Hollow Earth Booster Pack: Uncommon');
-        $rares = $itemGroupRepository->findOneByName('Hollow Earth Booster Pack: Rare');
+        $commons = $em->getRepository(ItemGroup::class)->findOneBy([ 'name' => 'Hollow Earth Booster Pack: Common' ]);
+        $uncommons = $em->getRepository(ItemGroup::class)->findOneBy([ 'Hollow Earth Booster Pack: Uncommon' ]);
+        $rares = $em->getRepository(ItemGroup::class)->findOneBy([ 'Hollow Earth Booster Pack: Rare' ]);
 
         $tiles = [
             InventoryService::getRandomItemFromItemGroup($rng, $commons),

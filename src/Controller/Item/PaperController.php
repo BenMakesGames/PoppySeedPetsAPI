@@ -20,8 +20,7 @@ class PaperController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function unfoldPaperThing(
-        Inventory $inventory, ResponseService $responseService, ItemRepository $itemRepository,
-        EntityManagerInterface $em
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -29,7 +28,7 @@ class PaperController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'paper/#/unfold');
 
-        $paper = $itemRepository->deprecatedFindOneByName('Paper');
+        $paper = ItemRepository::findOneByName($em, 'Paper');
 
         $newComment = $user->getName() . ' unfolded ' . $inventory->getItem()->getNameWithArticle() . ' into this simple piece of Paper.';
 

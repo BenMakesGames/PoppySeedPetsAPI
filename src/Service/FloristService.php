@@ -6,23 +6,24 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Functions\CalendarFunctions;
 use App\Functions\DateFunctions;
 use App\Repository\ItemRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 class FloristService
 {
-    private ItemRepository $itemRepository;
+    private EntityManagerInterface $em;
     private Clock $clock;
 
     public function __construct(
-        ItemRepository $itemRepository, Clock $clock
+        EntityManagerInterface $em, Clock $clock
     )
     {
-        $this->itemRepository = $itemRepository;
+        $this->em = $em;
         $this->clock = $clock;
     }
 
     public function getInventory(User $user): array
     {
-        $flowerbomb = $this->itemRepository->deprecatedFindOneByName('Flowerbomb');
+        $flowerbomb = ItemRepository::findOneByName($this->em, 'Flowerbomb');
         $fullMoonName = DateFunctions::getFullMoonName($this->clock->now);
 
         $inventory = [
@@ -34,21 +35,21 @@ class FloristService
 
         if(CalendarFunctions::isAprilFools($this->clock->now))
         {
-            $glitterBomb = $this->itemRepository->deprecatedFindOneByName('Glitter Bomb');
+            $glitterBomb = ItemRepository::findOneByName($this->em, 'Glitter Bomb');
 
             $inventory[] = [
                 'item' => [ 'name' => $glitterBomb->getName(), 'image' => $glitterBomb->getImage() ],
                 'cost' => 20
             ];
 
-            $jestersCap = $this->itemRepository->deprecatedFindOneByName('Jester\'s Cap');
+            $jestersCap = ItemRepository::findOneByName($this->em, 'Jester\'s Cap');
 
             $inventory[] = [
                 'item' => [ 'name' => $jestersCap->getName(), 'image' => $jestersCap->getImage() ],
                 'cost' => 20
             ];
 
-            $foolsSpice = $this->itemRepository->deprecatedFindOneByName('Fool\'s Spice');
+            $foolsSpice = ItemRepository::findOneByName($this->em, 'Fool\'s Spice');
 
             $inventory[] = [
                 'item' => [ 'name' => $foolsSpice->getName(), 'image' => $foolsSpice->getImage() ],
@@ -63,7 +64,7 @@ class FloristService
             CalendarFunctions::isHalloween($this->clock->now)
         )
         {
-            $chocolateBomb = $this->itemRepository->deprecatedFindOneByName('Chocolate Bomb');
+            $chocolateBomb = ItemRepository::findOneByName($this->em, 'Chocolate Bomb');
 
             $inventory[] = [
                 'item' => [ 'name' => $chocolateBomb->getName(), 'image' => $chocolateBomb->getImage() ],
@@ -76,7 +77,7 @@ class FloristService
             CalendarFunctions::isWhiteDay($this->clock->now)
         )
         {
-            $theLovelyHaberdashers = $this->itemRepository->deprecatedFindOneByName('Tile: Lovely Haberdashers');
+            $theLovelyHaberdashers = ItemRepository::findOneByName($this->em, 'Tile: Lovely Haberdashers');
 
             $inventory[] = [
                 'item' => [ 'name' => $theLovelyHaberdashers->getName(), 'image' => $theLovelyHaberdashers->getImage() ],
@@ -86,7 +87,7 @@ class FloristService
 
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::HollowEarth))
         {
-            $flowerBasketTile = $this->itemRepository->deprecatedFindOneByName('Tile: Flower Basket');
+            $flowerBasketTile = ItemRepository::findOneByName($this->em, 'Tile: Flower Basket');
 
             $inventory[] = [
                 'item' => [ 'name' => $flowerBasketTile->getName(), 'image' => $flowerBasketTile->getImage() ],

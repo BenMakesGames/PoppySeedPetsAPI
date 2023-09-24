@@ -25,7 +25,7 @@ class RecoveredArchiveController extends AbstractController
      */
     public function openRecoveredArchive(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, ItemRepository $itemRepository, Squirrel3 $squirrel3
+        EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
         /** @var User $user */
@@ -131,7 +131,7 @@ class RecoveredArchiveController extends AbstractController
             'Yellow Dye',
         ]);
 
-        $item = $itemRepository->deprecatedFindOneByName($loot);
+        $item = ItemRepository::findOneByName($em, $loot);
 
         $message = "You peek at the archive's contents. It appears to be a model file for a 3D Printer!\n\nYou load the archive into your 3D Printer. Without any Plastic whatsoever, the device springs to life and begins printing at a furious rate! After the sparks stop and smoke clears, you see that it printed " . $item->getNameWithArticle() . "!\n\n";
 

@@ -29,13 +29,13 @@ class GoldRingController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function smash(
-        Inventory $inventory, ResponseService $responseService, ItemRepository $itemRepository, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, Squirrel3 $squirrel3,
         EntityManagerInterface $em
     )
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'goldRing/#/smash');
 
-        $inventory->changeItem($itemRepository->deprecatedFindOneByName('Gold Bar'));
+        $inventory->changeItem(ItemRepository::findOneByName($em, 'Gold Bar'));
 
         $message = $squirrel3->rngNextFromArray([
             'Easy as 1, 2, 3.',

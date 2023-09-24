@@ -3,6 +3,8 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\Item;
+use App\Entity\ItemGroup;
 use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\LocationEnum;
@@ -12,13 +14,12 @@ use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
-use App\Repository\ItemGroupRepository;
 use App\Repository\ItemRepository;
-use App\Repository\PetRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
@@ -80,9 +81,9 @@ class BoxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openOreBox(
-        Inventory $box, ResponseService $responseService, InventoryService $inventoryService, PetRepository $petRepository,
+        Inventory $box, ResponseService $responseService, InventoryService $inventoryService,
         PetExperienceService $petExperienceService, UserStatsRepository $userStatsRepository, EntityManagerInterface $em,
-        Squirrel3 $squirrel3
+        IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -118,7 +119,7 @@ class BoxController extends AbstractController
 
         if($containsLobster)
         {
-            $pets = $petRepository->findBy([ 'owner' => $user, 'location' => PetLocationEnum::HOME ]);
+            $pets = $em->getRepository(Pet::class)->findBy([ 'owner' => $user, 'location' => PetLocationEnum::HOME ]);
 
             /** @var Pet $pet */
             $pet = count($pets) == 0 ? null : $squirrel3->rngNextFromArray($pets);
@@ -479,7 +480,7 @@ class BoxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openHandicrafts(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -519,8 +520,8 @@ class BoxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openGamingBox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, ItemGroupRepository $itemGroupRepository
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -545,11 +546,11 @@ class BoxController extends AbstractController
         $r = $squirrel3->rngNextInt(1, 6);
 
         if($r === 6)
-            $rarityGroup = $itemGroupRepository->findOneByName('Hollow Earth Booster Pack: Rare');
+            $rarityGroup = $em->getRepository(ItemGroup::class)->findOneBy([ 'Hollow Earth Booster Pack: Rare' ]);
         else if($r >= 4)
-            $rarityGroup = $itemGroupRepository->findOneByName('Hollow Earth Booster Pack: Uncommon');
+            $rarityGroup = $em->getRepository(ItemGroup::class)->findOneBy([ 'Hollow Earth Booster Pack: Uncommon' ]);
         else
-            $rarityGroup = $itemGroupRepository->findOneByName('Hollow Earth Booster Pack: Common');
+            $rarityGroup = $em->getRepository(ItemGroup::class)->findOneBy([ 'Hollow Earth Booster Pack: Common' ]);
 
         $tile = InventoryService::getRandomItemFromItemGroup($squirrel3, $rarityGroup);
 
@@ -566,7 +567,7 @@ class BoxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openBagOfBeans(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -599,7 +600,7 @@ class BoxController extends AbstractController
      */
     public function disassemblePepperbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, Squirrel3 $squirrel3
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -634,7 +635,7 @@ class BoxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function listenToJukebox(
-        Inventory $inventory, ResponseService $responseService, PetRepository $petRepository, PetExperienceService $petExperienceService,
+        Inventory $inventory, ResponseService $responseService, PetExperienceService $petExperienceService,
         EntityManagerInterface $em, UserQuestRepository $userQuestRepository
     )
     {
@@ -654,7 +655,7 @@ class BoxController extends AbstractController
 
         $listenedToJukebox->setValue($today);
 
-        $pets = $petRepository->findBy([
+        $pets = $em->getRepository(Pet::class)->findBy([
             'owner' => $user->getId(),
             'location' => PetLocationEnum::HOME
         ]);
@@ -683,7 +684,7 @@ class BoxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function raidSandbox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -757,7 +758,7 @@ class BoxController extends AbstractController
      */
     public function openPaperBag(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, ItemRepository $itemRepository
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -765,7 +766,7 @@ class BoxController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/paperBag/#/open');
 
-        $item = $itemRepository->deprecatedFindOneByName($squirrel3->rngNextFromArray([
+        $item = ItemRepository::findOneByName($em, $squirrel3->rngNextFromArray([
             'Apricot', 'Baking Soda', 'Beans', 'Blackberry Lassi', 'Blueberries', 'Butter', 'Canned Food', 'Celery',
             'Cockroach', 'Corn', 'Cream of Tartar', 'Creamy Milk', 'Egg', 'Fish', 'Fluff', 'Glowing Four-sided Die',
             'Grandparoot', 'Honeydont', 'Hot Dog', 'Iron Ore', 'Kombucha', 'Melon Bun', 'Mint', 'Mixed Nuts', 'Naner',
@@ -871,7 +872,7 @@ class BoxController extends AbstractController
      */
     public function openBastilleDayBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, Squirrel3 $rng
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -939,7 +940,7 @@ class BoxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openNewYearBox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -1056,7 +1057,7 @@ class BoxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openRubyChest(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -1095,7 +1096,7 @@ class BoxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openTowerBox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -1130,7 +1131,7 @@ class BoxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openFishBag(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -1177,7 +1178,7 @@ class BoxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openChocolateChest(
-        Inventory $box, ResponseService $responseService, InventoryService $inventoryService, PetRepository $petRepository,
+        Inventory $box, ResponseService $responseService, InventoryService $inventoryService,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em,
         Squirrel3 $squirrel3
     )
@@ -1192,7 +1193,9 @@ class BoxController extends AbstractController
         $lockedToOwner = $box->getLockedToOwner();
 
         /** @var Pet $pet */
-        $pet = $squirrel3->rngNextFromArray($petRepository->findBy([ 'owner' => $user, 'location' => PetLocationEnum::HOME ]));
+        $pet = $squirrel3->rngNextFromArray(
+            $em->getRepository(Pet::class)->findBy([ 'owner' => $user, 'location' => PetLocationEnum::HOME ])
+        );
 
         if($pet)
         {

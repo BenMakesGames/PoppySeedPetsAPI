@@ -28,7 +28,7 @@ class BurntLogController extends AbstractController
      */
     public function openBurntLog(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, ItemRepository $itemRepository
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
     )
     {
         /** @var User $user */
@@ -42,7 +42,7 @@ class BurntLogController extends AbstractController
 
         $stat = $userStatsRepository->incrementStat($user, UserStatEnum::BURNT_LOGS_BROKEN);
 
-        $extraItem = $itemRepository->deprecatedFindOneByName($squirrel3->rngNextFromArray([
+        $extraItem = ItemRepository::findOneByName($em, $squirrel3->rngNextFromArray([
             'Crooked Stick',
             'Iron Ore',
             'Glass',

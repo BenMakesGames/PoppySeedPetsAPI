@@ -3,6 +3,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\Spice;
 use App\Enum\BirdBathBirdEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
@@ -18,7 +19,6 @@ use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetActivityLogTagRepository;
-use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\DragonHostageService;
 use App\Service\FieldGuideService;
@@ -27,7 +27,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -39,28 +38,21 @@ class GenericAdventureService
     private PetExperienceService $petExperienceService;
     private UserQuestRepository $userQuestRepository;
     private TransactionService $transactionService;
-    private MeritRepository $meritRepository;
-    private ItemRepository $itemRepository;
-    private SpiceRepository $spiceRepository;
     private IRandom $squirrel3;
-    private EnchantmentRepository $enchantmentRepository;
     private HattierService $hattierService;
     private UserBirthdayService $userBirthdayService;
     private DragonRepository $dragonRepository;
     private DragonHostageService $dragonHostageService;
     private EntityManagerInterface $em;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
     private FieldGuideService $fieldGuideService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService,
         PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
-        TransactionService $transactionService, MeritRepository $meritRepository, ItemRepository $itemRepository,
-        Squirrel3 $squirrel3, SpiceRepository $spiceRepository,
-        EnchantmentRepository $enchantmentRepository, HattierService $hattierService,
+        TransactionService $transactionService, IRandom $squirrel3, HattierService $hattierService,
         UserBirthdayService $userBirthdayService, DragonRepository $dragonRepository,
         DragonHostageService $dragonHostageService, EntityManagerInterface $em,
-        PetActivityLogTagRepository $petActivityLogTagRepository, FieldGuideService $fieldGuideService
+        FieldGuideService $fieldGuideService
     )
     {
         $this->responseService = $responseService;
@@ -68,17 +60,12 @@ class GenericAdventureService
         $this->userQuestRepository = $userQuestRepository;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
-        $this->meritRepository = $meritRepository;
-        $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
-        $this->spiceRepository = $spiceRepository;
-        $this->enchantmentRepository = $enchantmentRepository;
         $this->hattierService = $hattierService;
         $this->userBirthdayService = $userBirthdayService;
         $this->dragonRepository = $dragonRepository;
         $this->dragonHostageService = $dragonHostageService;
         $this->em = $em;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->fieldGuideService = $fieldGuideService;
     }
 
@@ -90,7 +77,7 @@ class GenericAdventureService
 
         if($pet->getHat() && $pet->getHat()->getItem()->getName() === 'Red')
         {
-            $pet->getHat()->changeItem($this->itemRepository->deprecatedFindOneByName('William, Shush'));
+            $pet->getHat()->changeItem(ItemRepository::findOneByName($this->em, 'William, Shush'));
 
             return $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, some random dude jumped out of nowhere and shot an arrow in %pet:' . $pet->getId() . '.name%\'s Red!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
@@ -107,7 +94,7 @@ class GenericAdventureService
             $changes = new PetChanges($pet);
 
             $pet
-                ->addMerit($this->meritRepository->deprecatedFindOneByName($newMerit))
+                ->addMerit(MeritRepository::findOneByName($this->em, $newMerit))
                 ->setClaimedGrandparentMerit()
             ;
 
@@ -138,7 +125,7 @@ class GenericAdventureService
 
             $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a raccoon carrying a House Fairy in its mouth. The raccoon stared at %pet:' . $pet->getId() . '.name% for a moment, then dropped the House Fairy and scurried away.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fae-kind' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fae-kind' ]))
             ;
             $inventory = $this->inventoryService->petCollectsItem('House Fairy', $pet, 'A startled raccoon dropped this while ' . $pet->getName() . ' was out.', $activityLog);
 
@@ -183,7 +170,7 @@ class GenericAdventureService
 
             return $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a huge ' . $bird . ' swoop into the Greenhouse and land on the Bird Bath!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Greenhouse' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Greenhouse' ]))
             ;
         }
 
@@ -268,28 +255,28 @@ class GenericAdventureService
         if($event === 1)
         {
             $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they spotted a bunch of ants carrying ' . $describeReward . '! %pet:' . $pet->getId() . '.name% took the ' . $reward[1] . ', brushed the ants off, and returned home.', 'items/bug/ant-conga')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Gathering' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
             ;
             $comment = $pet->getName() . ' stole this from some ants.';
         }
         else if($event === 2)
         {
             $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw ' . $describeReward . ' floating downstream on a log! %pet:' . $pet->getId() . '.name% caught up to the log, and took the ' . $reward[1] . '.', '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Gathering' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
             ;
             $comment = $pet->getName() . ' found this floating on a log.';
         }
         else if($event === 3)
         {
             $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw ' . $describeReward . ' poking out of a bag near a dumpster! %pet:' . $pet->getId() . '.name% took the ' . $reward[1] . ', and returned home.', '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Dumpster-diving' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Dumpster-diving' ]))
             ;
             $comment = $pet->getName() . ' found this near a dumpster.';
         }
         else //if($event === 4)
         {
             $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a raccoon carrying ' . $describeReward . ' in its mouth. The raccoon stared at %pet:' . $pet->getId() . '.name% for a moment, then dropped the ' . $reward[1] . ' and scurried away.', '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Gathering' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
             ;
             $comment = 'A startled raccoon dropped this while ' . $pet->getName() . ' was out.';
         }
@@ -298,15 +285,15 @@ class GenericAdventureService
         {
             $this->transactionService->getMoney($pet->getOwner(), $reward[0], $comment);
 
-            $activityLog->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Moneys' ]));
+            $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Moneys' ]));
         }
         else
         {
             if($reward[1] === 'Fishkebab')
             {
-                $spice = $this->spiceRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
+                $spice = $this->em->getRepository(Spice::class)->findOneBy([ 'name' => $this->squirrel3->rngNextFromArray([
                     'Spicy', 'with Ketchup', 'Cheesy', 'Fishy', 'Ducky', 'Onion\'d',
-                ]));
+                ]) ]);
             }
             else
                 $spice = null;
@@ -336,7 +323,7 @@ class GenericAdventureService
         if($pet->getBirthDate() >= (new \DateTimeImmutable())->modify('-372 days'))
             return null;
 
-        $partyEnchantment = $this->enchantmentRepository->deprecatedFindOneByName('Party');
+        $partyEnchantment = EnchantmentRepository::findOneByName($this->em, 'Party');
 
         if($this->hattierService->userHasUnlocked($pet->getOwner(), $partyEnchantment))
             return null;
@@ -366,7 +353,7 @@ class GenericAdventureService
         );
 
         if($activityLog)
-            $activityLog->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Special Event', 'Birthday' ]));
+            $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Special Event', 'Birthday' ]));
 
         return $activityLog;
     }

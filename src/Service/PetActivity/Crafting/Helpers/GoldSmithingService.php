@@ -18,11 +18,11 @@ use App\Service\Squirrel3;
 
 class GoldSmithingService
 {
-    private $petExperienceService;
-    private $inventoryService;
-    private $responseService;
-    private $coinSmithingService;
-    private $itemRepository;
+    private PetExperienceService $petExperienceService;
+    private InventoryService $inventoryService;
+    private ResponseService $responseService;
+    private CoinSmithingService $coinSmithingService;
+    private ItemRepository $itemRepository;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;

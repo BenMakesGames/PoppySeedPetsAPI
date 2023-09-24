@@ -24,7 +24,7 @@ class HatBoxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openHatBox(
-        Inventory $box, ResponseService $responseService, InventoryService $inventoryService, ItemRepository $itemRepository,
+        Inventory $box, ResponseService $responseService, InventoryService $inventoryService,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
@@ -36,7 +36,7 @@ class HatBoxController extends AbstractController
         $location = $box->getLocation();
         $lockedToOwner = $box->getLockedToOwner();
 
-        $hatItem = $itemRepository->deprecatedFindOneByName($squirrel3->rngNextFromArray([
+        $hatItem = ItemRepository::findOneByName($em, $squirrel3->rngNextFromArray([
             'Bright Top Hat',
             'Masquerade Mask',
             'Merchant\'s Cap',

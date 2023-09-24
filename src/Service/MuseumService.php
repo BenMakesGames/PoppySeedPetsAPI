@@ -6,7 +6,6 @@ use App\Entity\ItemGroup;
 use App\Entity\MuseumItem;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
-use App\Repository\ItemGroupRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MuseumItemRepository;
 use App\Repository\UserStatsRepository;
@@ -18,20 +17,17 @@ class MuseumService
     private ItemRepository $itemRepository;
     private UserStatsRepository $userStatsRepository;
     private MuseumItemRepository $museumItemRepository;
-    private ItemGroupRepository $itemGroupRepository;
     private TransactionService $transactionService;
 
     public function __construct(
         EntityManagerInterface $em, ItemRepository $itemRepository, UserStatsRepository $userStatsRepository,
-        MuseumItemRepository $museumItemRepository, ItemGroupRepository $itemGroupRepository,
-        TransactionService $transactionService
+        MuseumItemRepository $museumItemRepository, TransactionService $transactionService
     )
     {
         $this->em = $em;
         $this->itemRepository = $itemRepository;
         $this->userStatsRepository = $userStatsRepository;
         $this->museumItemRepository = $museumItemRepository;
-        $this->itemGroupRepository = $itemGroupRepository;
         $this->transactionService = $transactionService;
     }
 
@@ -41,7 +37,7 @@ class MuseumService
     public function forceDonateItem(User $user, $item, ?string $comment, ?User $createdBy = null): MuseumItem
     {
         if(is_string($item))
-            $item = $this->itemRepository->deprecatedFindOneByName($item);
+            $item = ItemRepository::findOneByName($this->em, $item);
         else if(is_numeric($item))
             $item = $this->itemRepository->find($item);
 
@@ -76,7 +72,7 @@ class MuseumService
         $inventory = [];
 
         /** @var ItemGroup[] $groups */
-        $groups = $this->itemGroupRepository->findBy([
+        $groups = $this->em->getRepository(ItemGroup::class)->findBy([
             'isGiftShop' => true
         ]);
 

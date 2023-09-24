@@ -10,7 +10,6 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
-use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -35,7 +34,6 @@ class ChocolateMansion
     private const QUEST_VALUE_FULL_ACCESS = 8;
 
     private UserQuestRepository $userQuestRepository;
-    private ItemRepository $itemRepository;
     private InventoryService $inventoryService;
     private PetExperienceService $petExperienceService;
     private ResponseService $responseService;
@@ -46,15 +44,14 @@ class ChocolateMansion
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
-        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3, ItemRepository $itemRepository,
-        InventoryService $inventoryService, PetExperienceService $petExperienceService, ResponseService $responseService,
+        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3, InventoryService $inventoryService,
+        PetExperienceService $petExperienceService, ResponseService $responseService,
         PetQuestRepository $petQuestRepository, EntityManagerInterface $em, FieldGuideService $fieldGuideService,
         PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->userQuestRepository = $userQuestRepository;
         $this->rng = $squirrel3;
-        $this->itemRepository = $itemRepository;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->responseService = $responseService;
@@ -227,7 +224,7 @@ class ChocolateMansion
             $expAmount = 1;
             $expStats = [ PetSkillEnum::STEALTH ];
 
-            $item = $this->itemRepository->deprecatedFindOneByName($this->rng->rngNextFromArray([
+            $item = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
                 'Blood Wine', 'Chocolate Wine',
             ]));
 
@@ -243,7 +240,7 @@ class ChocolateMansion
             $expAmount = 0;
             $expStats = [ ];
 
-            $item = $this->itemRepository->deprecatedFindOneByName($this->rng->rngNextFromArray([
+            $item = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
                 'Blood Wine', 'Chocolate Wine',
             ]));
 
@@ -525,7 +522,7 @@ class ChocolateMansion
         {
             if($this->rng->rngNextBool())
             {
-                $loot = $this->itemRepository->deprecatedFindOneByName($this->rng->rngNextFromArray([
+                $loot = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
                     'Minor Scroll of Riches', 'Piece of Cetgueli\'s Map', 'Wings', 'Cast Net',
                     'Glowing Six-sided Die', 'Glowing Six-sided Die',
                 ]));
@@ -534,7 +531,7 @@ class ChocolateMansion
             }
             else
             {
-                $loot = $this->itemRepository->deprecatedFindOneByName($this->rng->rngNextFromArray([
+                $loot = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
                     'Pepperbox', 'Gold Bar', 'Warping Wand', 'XOR',
                     'Glowing Six-sided Die', 'Glowing Six-sided Die',
                 ]));
@@ -694,7 +691,7 @@ class ChocolateMansion
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
 
-            $loot = $this->itemRepository->deprecatedFindOneByName($this->rng->rngNextFromArray([
+            $loot = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
                 'Cocoa Powder', 'Sugar',
             ]));
 

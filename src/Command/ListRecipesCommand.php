@@ -15,16 +15,16 @@ class ListRecipesCommand extends PoppySeedPetsCommand
 {
     private RecipeRepository $recipeRepository;
     private InventoryService $inventoryService;
-    private ItemRepository $itemRepository;
+    private EntityManagerInterface $em;
 
     public function __construct(
         RecipeRepository $recipeRepository, InventoryService $inventoryService,
-        ItemRepository $itemRepository
+        EntityManagerInterface $em
     )
     {
         $this->recipeRepository = $recipeRepository;
         $this->inventoryService = $inventoryService;
-        $this->itemRepository = $itemRepository;
+        $this->em = $em;
 
         parent::__construct();
     }
@@ -96,7 +96,7 @@ class ListRecipesCommand extends PoppySeedPetsCommand
         {
             $q = new ItemQuantity();
 
-            $q->item = $this->itemRepository->deprecatedFindOneByName($itemName);
+            $q->item = ItemRepository::findOneByName($this->em, $itemName);
             $q->quantity = $quantity;
 
             if($q->item === null)

@@ -9,7 +9,6 @@ use Doctrine\ORM\EntityManagerInterface;
 class BeehiveService
 {
     private EntityManagerInterface $em;
-    private ItemRepository $itemRepository;
     private IRandom $squirrel3;
 
     public const DESIRED_ITEMS = [
@@ -42,10 +41,9 @@ class BeehiveService
         'Potato' => 10,
     ];
 
-    public function __construct(EntityManagerInterface $em, ItemRepository $itemRepository, Squirrel3 $squirrel3)
+    public function __construct(EntityManagerInterface $em, Squirrel3 $squirrel3)
     {
         $this->em = $em;
-        $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
     }
 
@@ -56,8 +54,8 @@ class BeehiveService
 
         $beehive = (new Beehive())
             ->setQueenName($this->squirrel3->rngNextFromArray(self::QUEEN_NAMES))
-            ->setRequestedItem($this->itemRepository->deprecatedFindOneByName(array_rand(self::DESIRED_ITEMS)))
-            ->setAlternateRequestedItem($this->itemRepository->deprecatedFindOneByName(array_rand(self::ALT_DESIRED_ITEMS)))
+            ->setRequestedItem(ItemRepository::findOneByName($this->em, array_rand(self::DESIRED_ITEMS)))
+            ->setAlternateRequestedItem(ItemRepository::findOneByName($this->em, array_rand(self::ALT_DESIRED_ITEMS)))
         ;
 
         $this->em->persist($beehive);
@@ -98,8 +96,8 @@ class BeehiveService
 
         // pick a new requested item
         $beehive
-            ->setRequestedItem($this->itemRepository->deprecatedFindOneByName(array_rand($possibleItems)))
-            ->setAlternateRequestedItem($this->itemRepository->deprecatedFindOneByName(array_rand($possibleAltItems)))
+            ->setRequestedItem(ItemRepository::findOneByName($this->em, array_rand($possibleItems)))
+            ->setAlternateRequestedItem(ItemRepository::findOneByName($this->em, array_rand($possibleAltItems)))
         ;
     }
 

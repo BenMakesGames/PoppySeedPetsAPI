@@ -8,6 +8,7 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
@@ -16,7 +17,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class Caerbannog
@@ -26,10 +26,9 @@ class Caerbannog
     private InventoryService $inventoryService;
     private PetExperienceService $petExperienceService;
     private ResponseService $responseService;
-    private ItemRepository $itemRepository;
 
     public function __construct(
-        EntityManagerInterface $em, Squirrel3 $rng, InventoryService $inventoryService, ItemRepository $itemRepository,
+        EntityManagerInterface $em, IRandom $rng, InventoryService $inventoryService,
         PetExperienceService $petExperienceService, ResponseService $responseService
     )
     {
@@ -38,7 +37,6 @@ class Caerbannog
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->responseService = $responseService;
-        $this->itemRepository = $itemRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -128,9 +126,10 @@ class Caerbannog
         else
         {
             $pet->increaseSafety(-2);
-            $lootItem = $this->itemRepository->deprecatedFindOneByName($loot[0]);
+            $lootItem = ItemRepository::findOneByName($this->em, $loot[0]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $petName . ' went to the Caerbannog Cave, and encountered one of the terrifying creatures living there, and was forced to flee! (They grabbed ' . $lootItem->getNameWithArticle() . ' on their way out, at least!)', 'items/key/carrot')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $petName . ' went to the Caerbannog Cave, and encountered one of the terrifying creatures living there, and was forced to flee! (They grabbed ' . $lootItem->getNameWithArticle() . ' on their way out, at least!)')
+                ->setIcon('items/key/carrot')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);

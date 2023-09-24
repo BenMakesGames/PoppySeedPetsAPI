@@ -7,21 +7,22 @@ use App\Enum\PetSkillEnum;
 use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 
 class GizubisGardenService
 {
-    private $petExperienceService;
-    private $responseService;
-    private $inventoryService;
-    private $itemRepository;
-    private $squirrel3;
+    private PetExperienceService $petExperienceService;
+    private ResponseService $responseService;
+    private InventoryService $inventoryService;
+    private ItemRepository $itemRepository;
+    private IRandom $squirrel3;
 
     public function __construct(
         PetExperienceService $petExperienceService, ResponseService $responseService, InventoryService $inventoryService,
-        ItemRepository $itemRepository, Squirrel3 $squirrel3
+        ItemRepository $itemRepository, IRandom $squirrel3
     )
     {
         $this->petExperienceService = $petExperienceService;

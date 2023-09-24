@@ -30,8 +30,7 @@ class ReversableController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function flipIt(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, ItemRepository $itemRepository,
-        Squirrel3 $squirrel3
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'reversable/#/flip');
@@ -48,7 +47,7 @@ class ReversableController extends AbstractController
                 throw new \Exception($oldItemName . ' cannot be flipped?? This is a result of programmer oversight. Please let Ben know.');
         }
 
-        $newItem = $itemRepository->deprecatedFindOneByName($newItemName);
+        $newItem = ItemRepository::findOneByName($em, $newItemName);
 
         $inventory
             ->changeItem($newItem)

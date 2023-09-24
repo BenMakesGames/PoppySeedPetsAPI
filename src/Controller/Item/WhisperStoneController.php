@@ -28,7 +28,7 @@ class WhisperStoneController extends AbstractController
      */
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
-        ItemRepository $itemRepository, RecipeRepository $recipeRepository, InventoryService $inventoryService,
+        RecipeRepository $recipeRepository, InventoryService $inventoryService,
         UserStatsRepository $userStatsRepository
     )
     {
@@ -37,7 +37,7 @@ class WhisperStoneController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'whisperStone/#/listen');
 
-        $inventory->changeItem($itemRepository->deprecatedFindOneByName('Striped Microcline'));
+        $inventory->changeItem(ItemRepository::findOneByName($em, 'Striped Microcline'));
 
         $recipeCount = (int)$recipeRepository->createQueryBuilder('r')
             ->select('COUNT(r.id)')

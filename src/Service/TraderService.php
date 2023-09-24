@@ -85,7 +85,6 @@ class TraderService
         'Ruby', 'Rubis',
     ];
 
-    private ItemRepository $itemRepository;
     private InventoryService $inventoryService;
     private TransactionService $transactionService;
     private IRandom $rng;
@@ -95,12 +94,11 @@ class TraderService
     private EntityManagerInterface $em;
 
     public function __construct(
-        ItemRepository $itemRepository, InventoryService $inventoryService, TransactionService $transactionService,
-        Squirrel3 $squirrel3, InventoryRepository $inventoryRepository, MuseumItemRepository $museumItemRepository,
-        Clock $clock, EntityManagerInterface $em
+        InventoryService $inventoryService, TransactionService $transactionService, IRandom $squirrel3,
+        InventoryRepository $inventoryRepository, MuseumItemRepository $museumItemRepository, Clock $clock,
+        EntityManagerInterface $em
     )
     {
-        $this->itemRepository = $itemRepository;
         $this->inventoryService = $inventoryService;
         $this->transactionService = $transactionService;
         $this->rng = $squirrel3;
@@ -227,62 +225,62 @@ class TraderService
         return [
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Dragon Flag'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Dragon Flag'), 1),
                     TraderOfferCostOrYield::createMoney(10)
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('White Flag'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'White Flag'), 1) ],
                 'Not the flag design you were looking for? You should try the Flag of Tell Samarzhoustia!',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Sun Flag'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Sun Flag'), 1),
                     TraderOfferCostOrYield::createMoney(10)
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('White Flag'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'White Flag'), 1) ],
                 'Not the flag design you were looking for? You should try the Flag of Tell Samarzhoustia!',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Black Flag'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Black Flag'), 1),
                     TraderOfferCostOrYield::createMoney(10)
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('White Flag'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'White Flag'), 1) ],
                 'Not the flag design you were looking for? You should try the Flag of Tell Samarzhoustia!',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Black Feathers'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Black Feathers'), 1),
                     TraderOfferCostOrYield::createMoney(10)
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('White Feathers'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'White Feathers'), 1) ],
                 'Sometimes it\'s just easier to defeat a demon than a pegasus, you know?',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Filthy Cloth'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Filthy Cloth'), 1),
                     TraderOfferCostOrYield::createMoney(5)
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('White Cloth'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'White Cloth'), 1) ],
                 'There you go! Good as new!',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Chocolate-stained Cloth'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Chocolate-stained Cloth'), 1),
                     TraderOfferCostOrYield::createMoney(5)
                 ],
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('White Cloth'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Cocoa Powder'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'White Cloth'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Cocoa Powder'), 1),
                 ],
                 'There you go! Good as new! And I even kept the Cocoa Powder for you.',
                 $user,
@@ -290,11 +288,11 @@ class TraderService
             ),
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Chocolate Feather Bonnet'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Chocolate Feather Bonnet'), 1),
                     TraderOfferCostOrYield::createMoney(100)
                 ],
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('White Chocolate Feather Bonnet'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'White Chocolate Feather Bonnet'), 1),
                 ],
                 "It's still edible, too! Oh, but did you know there's a bee in there? I think it was a little agitated by the bleaching process, so... eat carefully, I guess is what I'm saying.",
                 $user,
@@ -302,81 +300,81 @@ class TraderService
             ),
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Black Baabble'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Black Baabble'), 1),
                     TraderOfferCostOrYield::createRecyclingPoints(25),
                     TraderOfferCostOrYield::createMoney(25),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('White Baabble'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'White Baabble'), 1) ],
                 'Just don\'t tell the satyrs I did this for you. I\'m pretty sure they\'d consider it cheating...',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Red Firework'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Red Firework'), 1),
                     TraderOfferCostOrYield::createMoney(10)
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('White Firework'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'White Firework'), 1) ],
                 'There\'s a little Tell Samarzhoustia chemistry for you!',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Blue Firework'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Blue Firework'), 1),
                     TraderOfferCostOrYield::createMoney(10),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('White Firework'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'White Firework'), 1) ],
                 'There\'s a little Tell Samarzhoustia chemistry for you!',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Top Hat'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Top Hat'), 1),
                     TraderOfferCostOrYield::createMoney(10),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Bright Top Hat'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Bright Top Hat'), 1) ],
                 'Huh: the band bleached out to be purple? Must be some kind of powerful dye they used, there...',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Jolliest Roger'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Jolliest Roger'), 1),
                     TraderOfferCostOrYield::createMoney(10),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Creamiest Roger'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Creamiest Roger'), 1) ],
                 'Well, it came out kind of funny. I think I liked the red better, myself, but hey: whatever floats your pirate boat!',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Dark Horsey Hat'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Dark Horsey Hat'), 1),
                     TraderOfferCostOrYield::createMoney(10),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Zebra "Horsey" Hat'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Zebra "Horsey" Hat'), 1) ],
                 'Someone was telling me that zebras _aren\'t_ a kind of horse? Is that true?? You land-dwellers have confusing animals...',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Zebra "Horsey" Hat'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Zebra "Horsey" Hat'), 1),
                     TraderOfferCostOrYield::createMoney(10),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('White Horsey Hat'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'White Horsey Hat'), 1) ],
                 'And you\'re _super_ sure zebras aren\'t horses? It just seems _really_ weird, you know??',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Horsey Hat'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Horsey Hat'), 1),
                     TraderOfferCostOrYield::createMoney(10),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('White Horsey Hat'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'White Horsey Hat'), 1) ],
                 'It\'s fun that horses come in so many colors! But what about, like, purple horses? Are there any of those?',
                 $user,
                 $quantities
@@ -385,7 +383,7 @@ class TraderService
                 [
                     TraderOfferCostOrYield::createMoney(10),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Paint Stripper'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Paint Stripper'), 1) ],
                 'I\'ve been getting some requests to "bleach" painted items. That\'s not really how that works, but I figured I could at least sell you guys some Paint Stripper, so you can do it yourself, if you want.',
                 $user,
                 $quantities
@@ -398,58 +396,58 @@ class TraderService
         return [
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('NUL'), 5),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'NUL'), 5),
                     TraderOfferCostOrYield::createMoney(2),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('XOR'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'XOR'), 1) ],
                 'XORs are, like, one of the de facto currencies for those trading in Project-E.',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Pointer'), 3),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Pointer'), 3),
                     TraderOfferCostOrYield::createMoney(1),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('XOR'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'XOR'), 1) ],
                 'XORs are, like, one of the de facto currencies for those trading in Project-E.',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('XOR'), 5) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Fruits & Veggies Box'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'XOR'), 5) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Fruits & Veggies Box'), 1) ],
                 'Enjoy the fruits and veggies!',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('XOR'), 5) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Baker\'s Box'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'XOR'), 5) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Baker\'s Box'), 1) ],
                 'Enjoy the baking supplies!',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('XOR'), 5) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Handicrafts Supply Box'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'XOR'), 5) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Handicrafts Supply Box'), 1) ],
                 'Enjoy the crafting supplies!',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('XOR'), 5) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Hat Box'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'XOR'), 5) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Hat Box'), 1) ],
                 'Enjoy the hat!',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Short-range Telephone'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Short-range Telephone'), 1),
                     TraderOfferCostOrYield::createMoney(100),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Rotary Phone'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Rotary Phone'), 1) ],
                 "Enjoy the hat!\n\nIt _is_ a hat, right??",
                 $user,
                 $quantities
@@ -458,7 +456,7 @@ class TraderService
                 [
                     TraderOfferCostOrYield::createRecyclingPoints(200)
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Digital Camera'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Digital Camera'), 1) ],
                 "An aspiring photographer, eh? Have fun!",
                 $user,
                 $quantities
@@ -468,61 +466,61 @@ class TraderService
 
     private function getBugOffers(User $user, array $quantities): array
     {
-        $stickInsect = $this->itemRepository->deprecatedFindOneByName('Stick Insect');
+        $stickInsect = ItemRepository::findOneByName($this->em, 'Stick Insect');
 
         return [
             TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createItem($stickInsect, 1), TraderOfferCostOrYield::createRecyclingPoints(1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Yeast'), 3) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Yeast'), 3) ],
                 'Useful little fellas, these Stick Insects! Thanks a lot!',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createItem($stickInsect, 1), TraderOfferCostOrYield::createRecyclingPoints(1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Sunflower'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Sunflower'), 1) ],
                 'Useful little fellas, these Stick Insects! Thanks a lot!',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createItem($stickInsect, 3), TraderOfferCostOrYield::createRecyclingPoints(3) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Quintessence'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Quintessence'), 1) ],
                 'Useful little fellas, these Stick Insects! Thanks a lot!',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createItem($stickInsect, 6), TraderOfferCostOrYield::createRecyclingPoints(6) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Wrapped Sword'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Wrapped Sword'), 1) ],
                 'Useful little fellas, these Stick Insects! Thanks a lot!',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createItem($stickInsect, 10), TraderOfferCostOrYield::createRecyclingPoints(10) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Fish Statue'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Fish Statue'), 1) ],
                 'Useful little fellas, these Stick Insects! Thanks a lot!',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createItem($stickInsect, 14), TraderOfferCostOrYield::createRecyclingPoints(14) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Hat Box'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Hat Box'), 1) ],
                 'Useful little fellas, these Stick Insects! Thanks a lot!',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createItem($stickInsect, 18), TraderOfferCostOrYield::createRecyclingPoints(15) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Gold Chest'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Gold Chest'), 1) ],
                 'Useful little fellas, these Stick Insects! Thanks a lot!',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createItem($stickInsect, 20), TraderOfferCostOrYield::createRecyclingPoints(20) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Ruby Chest'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Ruby Chest'), 1) ],
                 'Useful little fellas, these Stick Insects! Thanks a lot!',
                 $user,
                 $quantities
@@ -535,7 +533,7 @@ class TraderService
         return [
             TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createRecyclingPoints(100) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Hollow Earth Booster Pack'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Hollow Earth Booster Pack'), 1) ],
                 'Have fun!',
                 $user,
                 $quantities
@@ -543,7 +541,7 @@ class TraderService
 
             TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createRecyclingPoints(4) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Glowing Four-sided Die'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Glowing Four-sided Die'), 1) ],
                 'To be honest, those dice kind of give me the willies. And only four sides? That\'s just not right.',
                 $user,
                 $quantities
@@ -551,7 +549,7 @@ class TraderService
 
             TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createRecyclingPoints(6) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Glowing Six-sided Die'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Glowing Six-sided Die'), 1) ],
                 'To be honest, those dice kind of give me the willies.',
                 $user,
                 $quantities
@@ -559,7 +557,7 @@ class TraderService
 
             TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createRecyclingPoints(8) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Glowing Eight-sided Die'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Glowing Eight-sided Die'), 1) ],
                 'To be honest, those dice kind of give me the willies. And _eight_ sides?? It\'s unnatural.',
                 $user,
                 $quantities
@@ -570,7 +568,7 @@ class TraderService
                     TraderOfferCostOrYield::createRecyclingPoints(20),
                     TraderOfferCostOrYield::createMoney(40)
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Scroll of Dice'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Scroll of Dice'), 1) ],
                 'To be honest, those dice kind of give me the willies. A whole scroll of them? Yeah, no thanks!',
                 $user,
                 $quantities
@@ -578,12 +576,12 @@ class TraderService
 
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Iron Key'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Silver Key'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Gold Key'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Iron Key'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Silver Key'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Gold Key'), 1),
                     TraderOfferCostOrYield::createMoney(1),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Key Ring'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Key Ring'), 1) ],
                 'Do enjoy!',
                 $user,
                 $quantities
@@ -621,7 +619,7 @@ class TraderService
                 [
                     TraderOfferCostOrYield::createMoney(20),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('"Roy" Plushy'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, '"Roy" Plushy'), 1) ],
                 'This is a special offer for PsyPets\' birthday. Tess and Mia insisted. Oh, but cool bonus: unlike other plushies, you can wear this as a hat. Not sure why that is, really...',
                 $user,
                 $quantities
@@ -633,12 +631,12 @@ class TraderService
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Twu Wuv'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('White Cloth'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Twu Wuv'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'White Cloth'), 1),
                     TraderOfferCostOrYield::createMoney(100),
                 ],
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Pink Bow'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Pink Bow'), 1),
                 ],
                 'Please enjoy the complimentary chocolate, and remember: all candies "recycled" during Valentine\'s are guaranteed to find their way to the Giving Tree, where any pet may collect them!',
                 $user,
@@ -650,8 +648,8 @@ class TraderService
         if(CalendarFunctions::isStockingStuffingSeason($this->clock->now))
         {
             $offers[] = TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Talon'), 2) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Antlers'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Talon'), 2) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Antlers'), 1) ],
                 'These were cut from Antlerfish earlier this year. Catch and release, of course. The antlers grow back every year, mating season is already over, and the antlers actually make the fish easier targets for predators, so the system really works out for everyone! Well, except for Antlerfish predators, I suppose. They kinda\' lose out.',
                 $user,
                 $quantities
@@ -659,7 +657,7 @@ class TraderService
 
             $offers[] = TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createRecyclingPoints(20) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Tawny Ears'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Tawny Ears'), 1) ],
                 'I _guess_ these could be reindeer ears? That\'s my best guess, anyway. Oh: made of plastic and fluff, of course! They\'re not _real_ ears! That would be brutal.',
                 $user,
                 $quantities
@@ -670,26 +668,14 @@ class TraderService
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Blue Plastic Egg'), 5)
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Blue Plastic Egg'), 5)
                 ],
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Chili Calamari'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Deep-fried Toad Legs'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Fisherman\'s Pie'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Tomato Soup'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Coffee Jelly'), 1),
-                ],
-                'We fish collect the things, too, you know!',
-                $user,
-                $quantities
-            );
-
-            $offers[] = TraderOffer::createTradeOffer(
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Yellow Plastic Egg'), 2),
-                ],
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Spice Rack'), 3),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Chili Calamari'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Deep-fried Toad Legs'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Fisherman\'s Pie'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Tomato Soup'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Coffee Jelly'), 1),
                 ],
                 'We fish collect the things, too, you know!',
                 $user,
@@ -698,10 +684,22 @@ class TraderService
 
             $offers[] = TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Pink Plastic Egg'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Yellow Plastic Egg'), 2),
                 ],
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Hat Box'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Spice Rack'), 3),
+                ],
+                'We fish collect the things, too, you know!',
+                $user,
+                $quantities
+            );
+
+            $offers[] = TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Pink Plastic Egg'), 1),
+                ],
+                [
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Hat Box'), 1),
                 ],
                 'We fish collect the things, too, you know!',
                 $user,
@@ -713,11 +711,11 @@ class TraderService
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Talon'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Quintessence'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Talon'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Quintessence'), 1),
                 ],
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Unicorn Horn'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Unicorn Horn'), 1),
                 ],
                 'Triangular hats are where it\'s at. That one\'s rather... isosceles, though. (Isoscelic? Isoscelean? Whatever.)',
                 $user,
@@ -726,10 +724,10 @@ class TraderService
 
             $offers[] = TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Toadstool'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Toadstool'), 1),
                 ],
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Tinfoil Hat'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Tinfoil Hat'), 1),
                 ],
                 'Triangular hats are where it\'s at. That one\'s rather... crinkly, though. And no plume!',
                 $user,
@@ -745,7 +743,7 @@ class TraderService
                     TraderOfferCostOrYield::createMoney(10),
                 ],
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Rusty Rapier'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Rusty Rapier'), 1),
                 ],
                 "If I had 10~~m~~ for every Rapier I found lying on the bottom of the ocean, I'd be a very wealthy fish!\n\nOhohohoho!",
                 $user,
@@ -757,11 +755,11 @@ class TraderService
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Photon'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Photon'), 1),
                     TraderOfferCostOrYield::createMoney(100),
                 ],
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Lightpike'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Lightpike'), 1),
                 ],
                 "Masters of the Lightpike can cut you down in one stab!",
                 $user,
@@ -805,10 +803,10 @@ class TraderService
         return [
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Gold Bar'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Gold Bar'), 1),
                     TraderOfferCostOrYield::createRecyclingPoints(3),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Silver Bar'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Silver Bar'), 1) ],
                 'Thank you kindly.',
                 $user,
                 $quantities
@@ -816,10 +814,10 @@ class TraderService
 
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Gold Ore'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Gold Ore'), 1),
                     TraderOfferCostOrYield::createRecyclingPoints(2),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Silver Ore'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Silver Ore'), 1) ],
                 'Thank you kindly.',
                 $user,
                 $quantities
@@ -827,37 +825,11 @@ class TraderService
 
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Iron Bar'), 1),
-                    TraderOfferCostOrYield::createRecyclingPoints(3),
-                ],
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Silver Bar'), 1),
-                ],
-                'Thank you kindly.',
-                $user,
-                $quantities
-            ),
-
-            TraderOffer::createTradeOffer(
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Iron Ore'), 1),
-                    TraderOfferCostOrYield::createRecyclingPoints(2),
-                ],
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Silver Ore'), 1),
-                ],
-                'Thank you kindly.',
-                $user,
-                $quantities
-            ),
-
-            TraderOffer::createTradeOffer(
-                [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Silver Bar'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Iron Bar'), 1),
                     TraderOfferCostOrYield::createRecyclingPoints(3),
                 ],
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Iron Bar'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Silver Bar'), 1),
                 ],
                 'Thank you kindly.',
                 $user,
@@ -866,11 +838,11 @@ class TraderService
 
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Silver Ore'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Iron Ore'), 1),
                     TraderOfferCostOrYield::createRecyclingPoints(2),
                 ],
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Iron Ore'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Silver Ore'), 1),
                 ],
                 'Thank you kindly.',
                 $user,
@@ -879,11 +851,11 @@ class TraderService
 
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Silver Bar'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Silver Bar'), 1),
                     TraderOfferCostOrYield::createRecyclingPoints(3),
                 ],
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Gold Bar'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Iron Bar'), 1),
                 ],
                 'Thank you kindly.',
                 $user,
@@ -892,11 +864,37 @@ class TraderService
 
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Silver Ore'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Silver Ore'), 1),
                     TraderOfferCostOrYield::createRecyclingPoints(2),
                 ],
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Gold Ore'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Iron Ore'), 1),
+                ],
+                'Thank you kindly.',
+                $user,
+                $quantities
+            ),
+
+            TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Silver Bar'), 1),
+                    TraderOfferCostOrYield::createRecyclingPoints(3),
+                ],
+                [
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Gold Bar'), 1),
+                ],
+                'Thank you kindly.',
+                $user,
+                $quantities
+            ),
+
+            TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Silver Ore'), 1),
+                    TraderOfferCostOrYield::createRecyclingPoints(2),
+                ],
+                [
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Gold Ore'), 1),
                 ],
                 'Thank you kindly.',
                 $user,
@@ -910,52 +908,52 @@ class TraderService
         return [
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Charcoal'), 2),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Dark Matter'), 2),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Blackberries'), 2),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Black Tea'), 2),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Charcoal'), 2),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Dark Matter'), 2),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Blackberries'), 2),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Black Tea'), 2),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Blackonite'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Blackonite'), 1) ],
                 'The technique for forging Blackonite is unknown, even to Tell Samarzhoustia. But we _have_ established trade with a creature that knows the secret. The Charcoal, etc, is essentially an offering.',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Fairy Ring'), 3),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Quinacridone Magenta Dye'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Fairy Ring'), 3),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Quinacridone Magenta Dye'), 1),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Fairy Swarm'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Fairy Swarm'), 1) ],
                 'Quinacridone Magenta is pretty valuable stuff. Naturally, King Nebuludwigula XIII has a few robes dyed that color.',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Feathers'), 3),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Feathers'), 3),
                     TraderOfferCostOrYield::createMoney(5),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Quintessence'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Quintessence'), 1) ],
                 'In Tell Samarzhoustian mythology, birds are associated with magic...',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Quintessence'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Quintessence'), 1),
                     TraderOfferCostOrYield::createMoney(5),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Feathers'), 3) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Feathers'), 3) ],
                 'In Tell Samarzhoustian mythology, birds are associated with magic...',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Heart Beetle'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Heart Beetle'), 1),
                     TraderOfferCostOrYield::createRecyclingPoints(2),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Harmony-dusted Donut'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Harmony-dusted Donut'), 1) ],
                 'What? No, we don\'t _cook_ them! That would be barbaric...',
                 $user,
                 $quantities
@@ -968,7 +966,7 @@ class TraderService
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse))
             return true;
 
-        $deedForGreenhousePlot = $this->itemRepository->deprecatedFindOneByName('Deed for Greenhouse Plot');
+        $deedForGreenhousePlot = ItemRepository::findOneByName($this->em, 'Deed for Greenhouse Plot');
 
         if(!$this->museumItemRepository->hasUserDonated($user, $deedForGreenhousePlot))
             return true;
@@ -982,7 +980,7 @@ class TraderService
 
         if($this->stillOfferingDeedForGreenhousePlot($user))
         {
-            $deedForGreenhousePlot = $this->itemRepository->deprecatedFindOneByName('Deed for Greenhouse Plot');
+            $deedForGreenhousePlot = ItemRepository::findOneByName($this->em, 'Deed for Greenhouse Plot');
 
             $offers[] = TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createMoney(100) ],
@@ -994,7 +992,7 @@ class TraderService
             );
             $offers[] = TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createRecyclingPoints(50) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Deed for Greenhouse Plot'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Deed for Greenhouse Plot'), 1) ],
                 "Oh, fun, a greenhouse! What kind of Kelp will you be gr-- oh. Right, I suppose you'll just be growing Landweed, and such.\n\nWell.\n\nHave fun with that, I suppose.",
                 $user,
                 $quantities,
@@ -1004,10 +1002,10 @@ class TraderService
 
         $offers[] = TraderOffer::createTradeOffer(
             [
-                TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Limestone'), 2),
+                TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Limestone'), 2),
             ],
             [
-                TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Scroll of Tell Samarzhoustian Delights'), 1),
+                TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Scroll of Tell Samarzhoustian Delights'), 1),
             ],
             'Limestone is an important building material in Tell Samarzhoustia. We build beautiful palaces, and enormous chimera statues. Well, enormous by fish standards. You should visit, sometime.',
             $user,
@@ -1015,24 +1013,24 @@ class TraderService
         );
 
         $offers[] = TraderOffer::createTradeOffer(
-            [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Moon Pearl'), 1) ],
-            [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Cooking Buddy'), 1) ],
+            [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Moon Pearl'), 1) ],
+            [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Cooking Buddy'), 1) ],
             'That\'s no knock-off! Tell Samarzhoustia trades directly with the Eridanus Federation!',
             $user,
             $quantities
         );
 
         $offers[] = TraderOffer::createTradeOffer(
-            [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Moon Pearl'), 1) ],
-            [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Hot Pot'), 1) ],
+            [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Moon Pearl'), 1) ],
+            [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Hot Pot'), 1) ],
             'That\'s no knock-off! Tell Samarzhoustia trades directly with the Eridanus Federation!',
             $user,
             $quantities
         );
 
         $offers[] = TraderOffer::createTradeOffer(
-            [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Moon Pearl'), 1) ],
-            [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Composter'), 1) ],
+            [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Moon Pearl'), 1) ],
+            [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Composter'), 1) ],
             'That\'s no knock-off! Tell Samarzhoustia trades directly with the Eridanus Federation!',
             $user,
             $quantities
@@ -1049,16 +1047,16 @@ class TraderService
 
         return [
             TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Secret Seashell'), 20) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Level 2 Sword'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Secret Seashell'), 20) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Level 2 Sword'), 1) ],
                 'It\'s dangerous to go alone. Take this.',
                 $user,
                 $quantities
             ),
 
             TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Black Baabble'), 1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('3D Printer'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Black Baabble'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, '3D Printer'), 1) ],
                 'Please use this responsibly, human. The amount of Plastic ending up in the oceans these days is a bit troubling.',
                 $user,
                 $quantities
@@ -1069,7 +1067,7 @@ class TraderService
                     TraderOfferCostOrYield::createMoney(400),
                     TraderOfferCostOrYield::createRecyclingPoints(200),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Submarine'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Submarine'), 1) ],
                 'Derelict submarines sometimes drift into Tell Samarzhoustia. We fix \'em up, and sell them to land-dwellers such as yourself! Have fun!',
                 $user,
                 $quantities,
@@ -1077,8 +1075,8 @@ class TraderService
             ),
 
             TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Music Note'), 7) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Musical Scales'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Music Note'), 7) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Musical Scales'), 1) ],
                 'I don\'t mind letting you in on a little Tell Samarzhoustian secret: you can do this "trade" yourself at home. Just combine 7 Music Notes.',
                 $user,
                 $quantities
@@ -1086,12 +1084,12 @@ class TraderService
 
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Gold Ring'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Planetary Ring'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Onion Rings'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('String'), 1)
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Gold Ring'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Planetary Ring'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Onion Rings'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'String'), 1)
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Rings on Strings'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Rings on Strings'), 1) ],
                 'This item feels kind of silly, doesn\'t it? Well, I suppose it\'s not for me to say. Oh, and thanks for the Onion Rings. I was feeling a little peckish.',
                 $user,
                 $quantities
@@ -1099,10 +1097,10 @@ class TraderService
 
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Money Sink'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Garbage Disposal'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Money Sink'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Garbage Disposal'), 1),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Li\'l Pocket Dimension'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Li\'l Pocket Dimension'), 1) ],
                 'I happened to get a few of these while traveling with a... well, let\'s just say he\'s a traveler. And, I mean, he didn\'t tell me _not_ to sell them, so... here we are.',
                 $user,
                 $quantities
@@ -1110,11 +1108,11 @@ class TraderService
 
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Nón Lá'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Toadstool'), 1),
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Money Sink'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Nón Lá'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Toadstool'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Money Sink'), 1),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Nấm Lá'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Nấm Lá'), 1) ],
                 'The goblin shark that sold me this told me that "nấm" mean "mushroom". Seems kind of on-the-nose, to me, but that\'s goblin sharks for you.',
                 $user,
                 $quantities
@@ -1122,7 +1120,7 @@ class TraderService
 
             TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createMoney(1000) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Money Sink'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Money Sink'), 1) ],
                 'The Museum\'s curator insisted I make this offer...',
                 $user,
                 $quantities,
@@ -1131,7 +1129,7 @@ class TraderService
 
             TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createRecyclingPoints(1000) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Garbage Disposal'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Garbage Disposal'), 1) ],
                 'The Museum\'s curator insisted I make this offer...',
                 $user,
                 $quantities,
@@ -1144,40 +1142,40 @@ class TraderService
     {
         return [
             TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Peacock Plushy'), 1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Fluff Heart'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Peacock Plushy'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Fluff Heart'), 1) ],
                 'These things are so cute...',
                 $user,
                 $quantities
             ),
 
             TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Bulbun Plushy'), 1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Fluff Heart'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Bulbun Plushy'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Fluff Heart'), 1) ],
                 'These things are so cute...',
                 $user,
                 $quantities
             ),
 
             TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Sneqo Plushy'), 1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Fluff Heart'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Sneqo Plushy'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Fluff Heart'), 1) ],
                 'These things are so cute...',
                 $user,
                 $quantities
             ),
 
             TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Rainbow Dolphin Plushy'), 1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Fluff Heart'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Rainbow Dolphin Plushy'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Fluff Heart'), 1) ],
                 'These things are so cute...',
                 $user,
                 $quantities
             ),
 
             TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Phoenix Plushy'), 1) ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Fluff Heart'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Phoenix Plushy'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Fluff Heart'), 1) ],
                 'These things are so cute...',
                 $user,
                 $quantities
@@ -1185,10 +1183,10 @@ class TraderService
 
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Fluff Heart'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Fluff Heart'), 1),
                     TraderOfferCostOrYield::createMoney(10),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Peacock Plushy'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Peacock Plushy'), 1) ],
                 'Such a classic.',
                 $user,
                 $quantities
@@ -1196,10 +1194,10 @@ class TraderService
 
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Fluff Heart'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Fluff Heart'), 1),
                     TraderOfferCostOrYield::createMoney(10),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Bulbun Plushy'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Bulbun Plushy'), 1) ],
                 'These make great body pillows. Well, I guess it is a bit small for you, though.',
                 $user,
                 $quantities
@@ -1207,10 +1205,10 @@ class TraderService
 
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Fluff Heart'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Fluff Heart'), 1),
                     TraderOfferCostOrYield::createMoney(10),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Sneqo Plushy'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Sneqo Plushy'), 1) ],
                 'I don\'t know why these things are plushies. They have arms! Snakes shouldn\'t have arms!',
                 $user,
                 $quantities
@@ -1218,10 +1216,10 @@ class TraderService
 
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Fluff Heart'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Fluff Heart'), 1),
                     TraderOfferCostOrYield::createMoney(12),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Rainbow Dolphin Plushy'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Rainbow Dolphin Plushy'), 1) ],
                 'The extra 2~~m~~ covers a tax imposed by the Great Rainbow Dolphin Empire.',
                 $user,
                 $quantities
@@ -1229,10 +1227,10 @@ class TraderService
 
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Fluff Heart'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Fluff Heart'), 1),
                     TraderOfferCostOrYield::createMoney(10),
                 ],
-                [ TraderOfferCostOrYield::createItem($this->itemRepository->deprecatedFindOneByName('Phoenix Plushy'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Phoenix Plushy'), 1) ],
                 'A rare and beautiful bird, for a rare and beautiful customer!',
                 $user,
                 $quantities
