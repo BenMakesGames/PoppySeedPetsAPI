@@ -22,16 +22,14 @@ use Symfony\Component\Console\Input\InputArgument;
 class ExportItemCommand extends PoppySeedPetsCommand
 {
     private ItemRepository $itemRepository;
-    private RecipeRepository $recipeRepository;
     private EntityManagerInterface $em;
 
     public function __construct(
-        ItemRepository $itemRepository, EntityManagerInterface $em, RecipeRepository $recipeRepository
+        ItemRepository $itemRepository, EntityManagerInterface $em
     )
     {
         $this->itemRepository = $itemRepository;
         $this->em = $em;
-        $this->recipeRepository = $recipeRepository;
 
         parent::__construct();
     }
@@ -129,7 +127,7 @@ class ExportItemCommand extends PoppySeedPetsCommand
 
         if($anyRecipes)
         {
-            $recipes = $this->recipeRepository->findByMakes($item);
+            $recipes = $this->findByMakes($item);
 
             if(!$recipes)
                 throw new \Exception('There are no recipes for this item.');
@@ -147,6 +145,24 @@ class ExportItemCommand extends PoppySeedPetsCommand
         echo "================================================================================\n\n";
 
         return 0;
+    }
+
+    /**
+     * @return Recipe[] Returns an array of Recipe objects
+     */
+    private function findByMakes(Item $item)
+    {
+        $qb = $this->em->createQueryBuilder('r');
+
+        return $qb
+            ->orWhere('r.makes LIKE :makesBeginning')
+            ->orWhere('r.makes LIKE :makesMiddle')
+            ->setParameter('makesBeginning', $item->getId() . ':%')
+            ->setParameter('makesMiddle', '%,'. $item->getId() . ':%')
+            ->orderBy('r.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
     }
 
     private function generateSql(string $className, object $entity, string $comment): string

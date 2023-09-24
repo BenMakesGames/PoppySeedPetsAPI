@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\HollowEarthTileTypeRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass=HollowEarthTileTypeRepository::class)
+ * @ORM\Entity()
  * @ORM\Table(
  *    uniqueConstraints={
  *        @ORM\UniqueConstraint(name="name_idx", columns={"name"})

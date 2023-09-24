@@ -178,5 +178,67 @@ class Music
 
         // Faster than Light (from Stellaris)
         'Stars in the skyyy... Floating in darrrkneeess.... Soooon... I will flyyy... faaasterrr thaaan liiiiight...',
+
+        // As The Rush Comes
+        'Traveling somewherrre; could be aaanywhere. There\'s a coldness in the air... but I don\'t ca-arrre...',
+
+        // Pendulum
+        'It\'s 9,000 miii-iles back to yooo-ooou. (Nooo-ooo...) I still feeeel like hooooome is in... yoouur aarrms...',
+
+        // Venus Hum, Hummingbirds
+        'Some of my faaa-aaavourite colours in the world... beat against my eyelids with the blues of green hummingbirds...',
+
+        // Freezepop
+        'The music is loud. The night is so young. All over the world. We wanna have fun.',
+        'You tell just half the truth, you\'re pulling strings and pushing buttons. Wheels are turning in your head; I know that you are up to something...',
+
+        // Phoenix
+        'No, I gotta be someone else. These days it comes, it comes, it comes, it comes, it comes and goes...',
+
+        // I:Scintilla, The Bells
+        'The florrrescent lightiiing does nothiiing to keep you from hiiiiiidiiiiiiiiiiiiiii i-i-iyeaaaaaaaaahah-ah, ah-aaahhh...!',
+
+        // Group Love, Tongue Tied
+        'Don\'t take me tongue tied... don\'t wave no goodbye... dooooooooooon\'t BREAK! (One, two, three, four...)',
+
+        // Boom Boom Satellites, Shut Up and Explode
+        'Running free, running free, driving me insane... shut it down, shut it down, it\'s about to explode... run away, run away, run away, run away, run away, run away, run away, run away, run away, run away, run away, run away, run away, run away, run away, run away...',
+
+        // Fall Out Boy, I Don't Care
+        'I! Don\'t! Care what you think, as long as it\'s abouuut me; the best of us can find happiness in mi-i-i-isery...',
+
+        // Lush, De-Luxe
+        'Some say I\'m vaaauuuge... and I\'d easily faaade... foolish paraaade ooof faaantaaasyyyy...',
+
+        // The Seatbelts, Yo Pumpkin Head
+        'In the dream that pulls you along, won\'t go carry a jelly bean. In your dream they\'re never on top. Let\'s get funky, Pumpkinheeeeeaaaaad! Yo, Pumpkinheeeeeaaaaad! Yo, Pumpkinheeeeeaaaaad! Yo, Pumpkinheeeeeaaaaad!',
+
+        // Birthday Massacre
+        'I know you\'re just pretending; there\'s no window for escape. I know you see right through me; there\'s no promise left to brea-eak.',
+        'Nails clawing splinters from the ceiling and floor... shrieking like the witches \'til his stitches are sore...',
+
+        // Qemists, S.W.A.G.
+        'Don\'t hide the feeling deep inside - take it in your stride, at least you know you tried. Jump back and get back a little more.',
+
+        // Linkin Park, Burn it Down
+        'The colors confliiiiiiiiiicteeeed, as the flames climbed into the clouds...',
+
+        // Jayme Gutierrez, Like a Tiger
+        'And now it sounds like I\'m straining my voice, but I\'m only really singing very soooftly. I sing the melody right over the beat to distract from any monotonicality.',
+
+        // Junkie XL, Beauty Never Fades
+        'Each step I take the shadows grow looongerrr... padded footfalls in the dark I waaanderrr...',
+
+        // GitHub CoPilot??
+        'I\'m not afraid of the future; I\'m not afraid of the past. I\'m not afraid of letting go, and letting my illusions last.',
+
+        // Imogen Heap, Hide and Seek
+        'Ransom notes keep falling out your mouth mid-sweet talk, newspaper word cut-outs...',
+
+        // Darren Korb, Setting Sail/Coming Home
+        'I dig my hole, you build a wall. I dig my hole, you build a wall. One day that wall is gonna fa-a-all.',
+
+        // MINMI, Song of Four Seasons
+        'Haru wo tsuge! Odoridasu sansai... Satsu wo miru ugi! Nohara karakusa kawaku wa...',
     ];
 }

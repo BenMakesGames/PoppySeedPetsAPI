@@ -20,34 +20,4 @@ class RecipeRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Recipe::class);
     }
-
-    /**
-     * @return Recipe[] Returns an array of Recipe objects
-     */
-    public function findByMakes(Item $item)
-    {
-        $qb = $this->createQueryBuilder('r');
-
-        return $qb
-            ->orWhere('r.makes LIKE :makesBeginning')
-            ->orWhere('r.makes LIKE :makesMiddle')
-            ->setParameter('makesBeginning', $item->getId() . ':%')
-            ->setParameter('makesMiddle', '%,'. $item->getId() . ':%')
-            ->orderBy('r.id', 'ASC')
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
-    /*
-    public function findOneBySomeField($value): ?Recipe
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

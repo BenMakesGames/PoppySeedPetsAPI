@@ -33,11 +33,8 @@ class HollowEarthService
     private InventoryService $inventoryService;
     private PetExperienceService $petExperienceService;
     private TransactionService $transactionService;
-    private HollowEarthPlayerTileRepository $hollowEarthPlayerTileRepository;
     private StatusEffectService $statusEffectService;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
     private ResponseService $responseService;
-    private ItemRepository $itemRepository;
     private UserStatsRepository $userStatsRepository;
 
     public const DICE_ITEMS = [
@@ -52,11 +49,10 @@ class HollowEarthService
     ];
 
     public function __construct(
-        HollowEarthTileRepository $hollowEarthTileRepository, EntityManagerInterface $em, InventoryService $inventoryService,
-        PetExperienceService $petExperienceService, TransactionService $transactionService,
-        HollowEarthPlayerTileRepository $hollowEarthPlayerTileRepository, StatusEffectService $statusEffectService,
-        PetActivityLogTagRepository $petActivityLogTagRepository, ResponseService $responseService,
-        ItemRepository $itemRepository, UserStatsRepository $userStatsRepository
+        HollowEarthTileRepository $hollowEarthTileRepository, EntityManagerInterface $em,
+        InventoryService $inventoryService, PetExperienceService $petExperienceService,
+        TransactionService $transactionService, StatusEffectService $statusEffectService,
+        ResponseService $responseService, UserStatsRepository $userStatsRepository
     )
     {
         $this->hollowEarthTileRepository = $hollowEarthTileRepository;
@@ -64,11 +60,8 @@ class HollowEarthService
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
-        $this->hollowEarthPlayerTileRepository = $hollowEarthPlayerTileRepository;
         $this->statusEffectService = $statusEffectService;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->responseService = $responseService;
-        $this->itemRepository = $itemRepository;
         $this->userStatsRepository = $userStatsRepository;
     }
 
@@ -90,7 +83,7 @@ class HollowEarthService
     public function getAllCardIdsOnMap(User $player): array
     {
         $map = $this->hollowEarthTileRepository->findAll();
-        $playerTiles = $this->hollowEarthPlayerTileRepository->findBy([ 'player' => $player ]);
+        $playerTiles = $this->em->getRepository(HollowEarthPlayerTile::class)->findBy([ 'player' => $player ]);
         $playerTilesByTile = [];
 
         foreach($playerTiles as $t)
@@ -118,7 +111,7 @@ class HollowEarthService
     public function getMap(User $player): array
     {
         $map = $this->hollowEarthTileRepository->findAllInBounds();
-        $playerTiles = $this->hollowEarthPlayerTileRepository->findBy([ 'player' => $player ]);
+        $playerTiles = $this->em->getRepository(HollowEarthPlayerTile::class)->findBy([ 'player' => $player ]);
         $playerTilesByTile = [];
 
         foreach($playerTiles as $t)
@@ -323,7 +316,7 @@ class HollowEarthService
 
     private function getCurrentPlayerTile(HollowEarthPlayer $player, HollowEarthTile $tile): ?HollowEarthPlayerTile
     {
-        return $this->hollowEarthPlayerTileRepository->findOneBy([
+        return $this->em->getRepository(HollowEarthPlayerTile::class)->findOneBy([
             'player' => $player->getUser(),
             'tile' => $tile,
         ]);
@@ -375,7 +368,7 @@ class HollowEarthService
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $description)
                 ->setIcon(($currentCard && $currentCard->getImage()) ? ('hollow-earth/tile/' . $currentCard->getImage()) : '')
-                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Hollow Earth' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hollow Earth' ]))
             ;
         }
 
@@ -413,7 +406,7 @@ class HollowEarthService
 
             $activityLog = PetActivityLogFactory::createReadLog($this->em, $player->getChosenPet(), 'While exploring the Hollow Earth, ' . $player->getChosenPet()->getName() . ' received ' . ArrayFunctions::list_nice($items) . '.')
                 ->setIcon(($currentCard && $currentCard->getImage()) ? ('hollow-earth/tile/' . $currentCard->getImage()) : '')
-                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Hollow Earth' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hollow Earth' ]))
                 ->setChanges($petChanges->compare($pet))
             ;
         }
@@ -455,7 +448,7 @@ class HollowEarthService
 
     public function getTrades(HollowEarthPlayer $player)
     {
-        $items = $this->itemRepository->findBy([
+        $items = $this->em->getRepository(Item::class)->findBy([
             'name' => [
                 'Potion of Brawling',
                 'Potion of Crafts',

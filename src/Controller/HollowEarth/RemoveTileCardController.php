@@ -2,6 +2,7 @@
 namespace App\Controller\HollowEarth;
 
 use App\Entity\HollowEarthPlayerTile;
+use App\Entity\HollowEarthTile;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
@@ -24,8 +25,7 @@ class RemoveTileCardController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function removeTileCard(
-        Request $request, HollowEarthPlayerTileRepository $hollowEarthPlayerTileRepository,
-        ResponseService $responseService, EntityManagerInterface $em, HollowEarthTileRepository $hollowEarthTileRepository
+        Request $request, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
@@ -39,7 +39,7 @@ class RemoveTileCardController extends AbstractController
 
         $tileId = $request->request->getInt('tile', 0);
 
-        $tile = $hollowEarthTileRepository->find($tileId);
+        $tile = $em->getRepository(HollowEarthTile::class)->find($tileId);
 
         if(!$tile)
             throw new PSPNotFoundException('That space in the Hollow Earth does not exist?!?! (Maybe reload and try again...)');
@@ -47,7 +47,7 @@ class RemoveTileCardController extends AbstractController
         if($tile->getCard() && $tile->getCard()->getType()->getName() === 'Fixed')
             throw new PSPInvalidOperationException('That space in the Hollow Earth cannot be changed!');
 
-        $existingPlayerTile = $hollowEarthPlayerTileRepository->findOneBy([
+        $existingPlayerTile = $em->getRepository(HollowEarthPlayerTile::class)->findOneBy([
             'player' => $user,
             'tile' => $tile,
         ]);

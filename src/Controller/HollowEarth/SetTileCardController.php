@@ -2,7 +2,9 @@
 namespace App\Controller\HollowEarth;
 
 use App\Entity\HollowEarthPlayerTile;
+use App\Entity\HollowEarthTile;
 use App\Entity\HollowEarthTileType;
+use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPFormValidationException;
@@ -30,9 +32,8 @@ class SetTileCardController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function setTileCard(
-        Request $request, HollowEarthPlayerTileRepository $hollowEarthPlayerTileRepository,
-        ResponseService $responseService, EntityManagerInterface $em, HollowEarthTileRepository $hollowEarthTileRepository,
-        InventoryRepository $inventoryRepository, HollowEarthService $hollowEarthService
+        Request $request,
+        ResponseService $responseService, EntityManagerInterface $em, HollowEarthService $hollowEarthService
     )
     {
         /** @var User $user */
@@ -48,7 +49,7 @@ class SetTileCardController extends AbstractController
         $tileId = $request->request->getInt('tile', 0);
         $inventoryId = $request->request->getInt('item', 0);
 
-        $tile = $hollowEarthTileRepository->find($tileId);
+        $tile = $em->getRepository(HollowEarthTile::class)->find($tileId);
 
         if(!$tile)
             throw new PSPNotFoundException('That space in the Hollow Earth does not exist?!?! (Maybe reload and try again...)');
@@ -56,7 +57,7 @@ class SetTileCardController extends AbstractController
         if($tile->getCard() && $tile->getCard()->getType()->getName() === 'Fixed')
             throw new PSPInvalidOperationException('That space in the Hollow Earth cannot be changed!');
 
-        $inventory = $inventoryRepository->findOneBy([
+        $inventory = $em->getRepository(Inventory::class)->findOneBy([
             'id' => $inventoryId,
             'owner' => $user,
             'location' => LocationEnum::HOME
@@ -80,7 +81,7 @@ class SetTileCardController extends AbstractController
         if(array_search($card->getId(), $cardIdsOnMap))
             throw new PSPInvalidOperationException('You already have that Tile on the map! (Each Tile can only appear once!)');
 
-        $existingPlayerTile = $hollowEarthPlayerTileRepository->findOneBy([
+        $existingPlayerTile = $em->getRepository(HollowEarthPlayerTile::class)->findOneBy([
             'player' => $user,
             'tile' => $tile,
         ]);

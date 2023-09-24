@@ -22,8 +22,7 @@ class ChangeTileGoodsController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function changeTileGoods(
-        Request $request, ResponseService $responseService, EntityManagerInterface $em,
-        HollowEarthPlayerTileRepository $hollowEarthPlayerTileRepository
+        Request $request, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -43,7 +42,7 @@ class ChangeTileGoodsController extends AbstractController
         if(!in_array($selectedGoods, $tile->getGoods()))
             throw new PSPInvalidOperationException('This tile is not capable of producing that type of good.');
 
-        $existingPlayerTile = $hollowEarthPlayerTileRepository->findOneBy([
+        $existingPlayerTile = $em->getRepository(HollowEarthPlayerTile::class)->findOneBy([
             'player' => $user,
             'tile' => $tile->getId(),
         ]);

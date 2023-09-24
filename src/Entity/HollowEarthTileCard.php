@@ -2,13 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\HollowEarthTileCardRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
 /**
- * @ORM\Entity(repositoryClass=HollowEarthTileCardRepository::class)
+ * @ORM\Entity()
  * @ORM\Table(
  *    uniqueConstraints={
  *        @ORM\UniqueConstraint(name="name_idx", columns={"name"})
