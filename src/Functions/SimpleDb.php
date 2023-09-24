@@ -10,15 +10,10 @@ final class SimpleDb
     {
         $db = self::parseDatabaseUri($connectionUri);
 
-        // TODO: investigate usage of PDO::ATTR_PERSISTENT
-        // ChatGPT warns "Persistent connections can cause problems if your code has unhandled
-        // exceptions or errors since the connection could be left in an unpredictable state and
-        // reused in that state in subsequent requests."
-
         $options = [
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
             \PDO::ATTR_EMULATE_PREPARES => false,
-            //\PDO::ATTR_PERSISTENT => true,
+            \PDO::ATTR_PERSISTENT => true,
         ];
 
         $this->pdo = new \PDO($db['dsn'], $db['user'], $db['password'], $options);
@@ -30,6 +25,7 @@ final class SimpleDb
     }
 
     // TODO: we need a way to support transactions before we can even start to think about allowing this:
+    // TODO: we need to be careful when using persistent connections with transactions and cursors, as they can cause problems:
     /*
     public static function createReadWriteConnection()
     {
