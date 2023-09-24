@@ -7,6 +7,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\PetActivityLogFactory;
 use App\Model\ComputedPetSkills;
 use App\Repository\EnchantmentRepository;
 use App\Repository\PetActivityLogTagRepository;
@@ -15,35 +16,27 @@ use App\Service\FieldGuideService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\ResponseService;
-use App\Service\Squirrel3;
+use Doctrine\ORM\EntityManagerInterface;
 
 class StrangeUmbralEncounters
 {
 
-    private $responseService;
-    private $petExperienceService;
-    private $inventoryService;
-    private $enchantmentRepository;
-    private $spiceRepository;
+    private PetExperienceService $petExperienceService;
+    private InventoryService $inventoryService;
+    private EntityManagerInterface $em;
     private IRandom $squirrel3;
     private FieldGuideService $fieldGuideService;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
-        ResponseService $responseService, PetExperienceService $petExperienceService, InventoryService $inventoryService,
-        EnchantmentRepository $enchantmentRepository, SpiceRepository $spiceRepository, Squirrel3 $squirrel3,
-        FieldGuideService $fieldGuideService, PetActivityLogTagRepository $petActivityLogTagRepository
+        PetExperienceService $petExperienceService, InventoryService $inventoryService,
+        EntityManagerInterface $em, IRandom $squirrel3, FieldGuideService $fieldGuideService
     )
     {
-        $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
         $this->inventoryService = $inventoryService;
-        $this->enchantmentRepository = $enchantmentRepository;
-        $this->spiceRepository = $spiceRepository;
+        $this->em = $em;
         $this->squirrel3 = $squirrel3;
         $this->fieldGuideService = $fieldGuideService;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -74,9 +67,9 @@ class StrangeUmbralEncounters
         if(in_array(PetSkillEnum::STEALTH, $encounter['skills']))
             $tags[] = 'Stealth';
 
-        $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the umbra, ' . ActivityHelpers::PetName($pet) . ' ' . $encounter['description'], '')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the umbra, ' . ActivityHelpers::PetName($pet) . ' ' . $encounter['description'])
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($tags))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags))
         ;
 
         $this->petExperienceService->gainExp($pet, 1, $encounter['skills'], $activityLog);
@@ -120,23 +113,23 @@ class StrangeUmbralEncounters
     {
         if($pet->getTool() && !$pet->getTool()->getEnchantment())
         {
-            $enchantment = $this->enchantmentRepository->deprecatedFindOneByName('of Agares');
+            $enchantment = EnchantmentRepository::findOneByName($this->em, 'of Agares');
 
             $pet->getTool()
                 ->setEnchantment($enchantment)
                 ->addComment('This item was enchanted by an old man riding an alligator and holding a goshawk!')
             ;
 
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring some ruins in the Umbra, ' . '%pet:' . $pet->getId() . '.name% was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language %pet:' . $pet->getId() . '.name% didn\'t know. %pet:' . $pet->getId() . '.name%\'s ' . $pet->getTool()->getItem()->getName() . ' began to glow, and the old man left...', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring some ruins in the Umbra, ' . '%pet:' . $pet->getId() . '.name% was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language %pet:' . $pet->getId() . '.name% didn\'t know. %pet:' . $pet->getId() . '.name%\'s ' . $pet->getTool()->getItem()->getName() . ' began to glow, and the old man left...')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra' ]))
             ;
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring some ruins in the Umbra, ' . '%pet:' . $pet->getId() . '.name% was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language %pet:' . $pet->getId() . '.name% didn\'t know. Frustrated, the old man left.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring some ruins in the Umbra, ' . '%pet:' . $pet->getId() . '.name% was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language %pet:' . $pet->getId() . '.name% didn\'t know. Frustrated, the old man left.')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra' ]))
             ;
         }
 
@@ -150,15 +143,15 @@ class StrangeUmbralEncounters
     {
         $discoveryMessage = 'While exploring the Umbra, some white rain started to fall. ' . '%pet:' . $pet->getId() . '.name% looked up, and saw the Cosmic Goat flying overhead, milk flowing from its udder.';
 
-        $activityLog = $this->responseService->createActivityLog($pet, $discoveryMessage . ' They gathered up as much of the "rain" as they could.', '')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $discoveryMessage . ' They gathered up as much of the "rain" as they could.')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra' ]))
         ;
 
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
-        $cosmic = $this->spiceRepository->deprecatedFindOneByName('Cosmic');
+        $cosmic = SpiceRepository::findOneByName($this->em, 'Cosmic');
 
         $this->inventoryService->petCollectsEnhancedItem('Creamy Milk', null, $cosmic, $pet, $pet->getName() . ' collected this from the Cosmic Goat, who happened to fly overhead while ' . $pet->getName() . ' was exploring the Umbra.', $activityLog);
 

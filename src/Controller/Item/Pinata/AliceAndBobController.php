@@ -169,8 +169,7 @@ class AliceAndBobController extends AbstractController
      */
     public function bobsTool(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
-        EnchantmentRepository $enchantmentRepository, UserStatsRepository $userStatsRepository,
-        ResponseService $responseService
+        UserStatsRepository $userStatsRepository, ResponseService $responseService
     )
     {
         /** @var User $user */
@@ -192,7 +191,7 @@ class AliceAndBobController extends AbstractController
         $item = $inventoryService->receiveItem($tool, $user, $user, $user->getName() . ' got this from Bob\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
 
         $item->setEnchantment(
-            $enchantmentRepository->deprecatedFindOneByName('Bob\'s')
+            EnchantmentRepository::findOneByName($em, 'Bob\'s')
         );
 
         return BoxHelpers::countRemoveFlushAndRespond('Inside Bob\'s Secret, you find', $userStatsRepository, $user, $inventory, [ $item ], $responseService, $em);

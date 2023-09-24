@@ -27,7 +27,7 @@ class SolsticeBagController extends AbstractController
      */
     public function openSummerSolsticeBag(
         Inventory $bag, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        EntityManagerInterface $em, HattierService $hattierService, EnchantmentRepository $enchantmentRepository
+        EntityManagerInterface $em, HattierService $hattierService
     )
     {
         /** @var User $user */
@@ -55,7 +55,7 @@ class SolsticeBagController extends AbstractController
 
         $message = 'You rummaged around the bag, and found ' . ArrayFunctions::list_nice($items) . '!';
 
-        $auraEnchantment = $enchantmentRepository->deprecatedFindOneByName('Summer\'s');
+        $auraEnchantment = EnchantmentRepository::findOneByName($em, 'Summer\'s');
 
         if(!$hattierService->userHasUnlocked($user, $auraEnchantment))
         {
@@ -76,7 +76,7 @@ class SolsticeBagController extends AbstractController
      */
     public function openWinterSolsticeBag(
         Inventory $bag, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        EntityManagerInterface $em, HattierService $hattierService, EnchantmentRepository $enchantmentRepository
+        EntityManagerInterface $em, HattierService $hattierService
     )
     {
         /** @var User $user */
@@ -104,7 +104,7 @@ class SolsticeBagController extends AbstractController
 
         $message = 'You rummaged around the bag, and found ' . ArrayFunctions::list_nice($items) . '!';
 
-        $auraEnchantment = $enchantmentRepository->deprecatedFindOneByName('Winter\'s');
+        $auraEnchantment = EnchantmentRepository::findOneByName($em, 'Winter\'s');
 
         if(!$hattierService->userHasUnlocked($user, $auraEnchantment))
         {

@@ -5,11 +5,9 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Functions\ArrayFunctions;
-use App\Model\ItemQuantity;
 use App\Repository\EnchantmentRepository;
-use App\Repository\ItemRepository;
 use App\Service\InventoryService;
-use App\Service\PetRelationshipService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,8 +26,7 @@ class AnimalPouchController extends AbstractController
      */
     public function openMagpiePouch(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService, EnchantmentRepository $enchantmentRepository,
-        Squirrel3 $squirrel3
+        ResponseService $responseService, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -58,7 +55,7 @@ class AnimalPouchController extends AbstractController
             $item = $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
 
             if($itemName === 'Phishing Rod')
-                $item->setEnchantment($enchantmentRepository->deprecatedFindOneByName('Moneyed'));
+                $item->setEnchantment(EnchantmentRepository::findOneByName($em, 'Moneyed'));
         }
 
         $em->flush();
