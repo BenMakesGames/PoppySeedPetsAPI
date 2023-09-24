@@ -9,7 +9,6 @@ use App\Enum\UserLinkWebsiteEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\SimpleDb;
-use App\Repository\UserLinkRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -62,8 +61,7 @@ class MyLinksController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function createLink(
-        Request $request, ResponseService $responseService, EntityManagerInterface $em,
-        UserLinkRepository $userLinkRepository
+        Request $request, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -88,7 +86,7 @@ class MyLinksController extends AbstractController
         if(strpos($nameOrId, '/') !== false || strpos($nameOrId, '\\') !== false)
             throw new PSPFormValidationException('Slashes are not allowed.');
 
-        $existingLinks = $userLinkRepository->count([ 'user' => $user ]);
+        $existingLinks = $em->getRepository(UserLink::class)->count([ 'user' => $user ]);
 
         if($existingLinks >= 5)
             throw new PSPFormValidationException('You can only have up to 5 links.');

@@ -5,10 +5,9 @@ use App\Entity\Pet;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\PetRelationshipRepository;
-use App\Repository\PetRepository;
-use App\Repository\SpiritCompanionRepository;
 use App\Service\Filter\PetRelationshipFilterService;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -65,25 +64,30 @@ class RelationshipsController extends AbstractController
      * @Route("/{pet}/familyTree", methods={"GET"})
      */
     public function getFamilyTree(
-        Pet $pet, ResponseService $responseService, PetRepository $petRepository,
-        SpiritCompanionRepository $spiritCompanionRepository
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em
     )
     {
-        $siblings = $petRepository->findSiblings($pet);
-        $parents = $petRepository->findParents($pet);
+        $siblings = self::findSiblings($pet, $em);
+        $parents = self::findParents($pet, $em);
 
         $grandparents = [];
         $spiritGrandparents = [];
 
         foreach($parents as $parent)
         {
-            $grandparents = array_merge($grandparents, $petRepository->findParents($parent));
+            $grandparents = array_merge($grandparents, self::findParents($parent, $em));
 
             if($parent->getSpiritDad())
                 $spiritGrandparents[] = $parent->getSpiritDad();
         }
 
-        $children = $petRepository->findChildren($pet);
+        $children = $em->createQueryBuilder()
+            ->select('p')
+            ->from(Pet::class, 'p')
+            ->andWhere('p.mom=:petId OR p.dad=:petId')
+            ->setParameter('petId', $pet->getId())
+            ->getQuery()
+            ->getResult();
 
         return $responseService->success([
             'grandparents' => $grandparents,
@@ -94,4 +98,49 @@ class RelationshipsController extends AbstractController
             'children' => $children,
         ], [ SerializationGroupEnum::PET_FRIEND, SerializationGroupEnum::PET_SPIRIT_ANCESTOR ]);
     }
+
+
+    /**
+     * @return Pet[]
+     */
+    private static function findSiblings(Pet $pet, EntityManagerInterface $em): array
+    {
+        $parents = $pet->getParents();
+
+        if(count($parents) === 0)
+            return [];
+
+        return $em->createQueryBuilder()
+            ->select('p')
+            ->from(Pet::class, 'p')
+            ->andWhere('p.mom IN (:petParents) OR p.dad IN (:petParents)')
+            ->andWhere('p.id != :petId')
+            ->setParameter('petParents', array_map(fn(Pet $p) => $p->getId(), $parents))
+            ->setParameter('petId', $pet->getId())
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+
+    /**
+     * @return Pet[]
+     */
+    private static function findParents(Pet $pet, EntityManagerInterface $em): array
+    {
+        $parents = $pet->getParents();
+
+        if(count($parents) === 0)
+            return [];
+
+        return $em->createQueryBuilder()
+            ->select('p')
+            ->from(Pet::class, 'p')
+            ->andWhere('p.id IN (:petParents)')
+            ->setParameter('petParents', array_map(fn(Pet $p) => $p->getId(), $parents))
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
 }

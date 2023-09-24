@@ -10,9 +10,18 @@ final class SimpleDb
     {
         $db = self::parseDatabaseUri($connectionUri);
 
-        $this->pdo = new \PDO($db['dsn'], $db['user'], $db['password']);
-        $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        $this->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
+        // TODO: investigate usage of PDO::ATTR_PERSISTENT
+        // ChatGPT warns "Persistent connections can cause problems if your code has unhandled
+        // exceptions or errors since the connection could be left in an unpredictable state and
+        // reused in that state in subsequent requests."
+
+        $options = [
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+            \PDO::ATTR_EMULATE_PREPARES => false,
+            //\PDO::ATTR_PERSISTENT => true,
+        ];
+
+        $this->pdo = new \PDO($db['dsn'], $db['user'], $db['password'], $options);
     }
 
     public static function createReadOnlyConnection(): self

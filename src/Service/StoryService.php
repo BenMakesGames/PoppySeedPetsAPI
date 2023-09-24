@@ -18,7 +18,6 @@ use App\Model\StoryStep;
 use App\Model\StoryStepChoice;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
-use App\Repository\StoryRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,7 +26,6 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 class StoryService
 {
     private EntityManagerInterface $em;
-    private StoryRepository $storyRepository;
     private UserQuestRepository $userQuestRepository;
     private InventoryService $inventoryService;
     private InventoryRepository $inventoryRepository;
@@ -45,14 +43,13 @@ class StoryService
     private Inventory $callingInventory;
 
     public function __construct(
-        EntityManagerInterface $em, StoryRepository $storyRepository, UserQuestRepository $userQuestRepository,
+        EntityManagerInterface $em, UserQuestRepository $userQuestRepository,
         InventoryService $inventoryService, JsonLogicParserService $jsonLogicParserService,
         UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
         ResponseService $responseService, MuseumService $museumService
     )
     {
         $this->em = $em;
-        $this->storyRepository = $storyRepository;
         $this->userQuestRepository = $userQuestRepository;
         $this->inventoryService = $inventoryService;
         $this->jsonLogicParserService = $jsonLogicParserService;
@@ -67,7 +64,7 @@ class StoryService
      */
     public function doStory(User $user, int $storyId, ParameterBag $request, Inventory $callingInventory = null): StoryStep
     {
-        $this->story = $this->storyRepository->find($storyId);
+        $this->story = $this->em->getRepository(Story::class)->find($storyId);
 
         if (!$this->story)
             throw new PSPNotFoundException('That Story doesn\'t exist! (Uh oh! Is something broken? Maybe reload and try again?)');

@@ -4,11 +4,10 @@ namespace App\Entity;
 
 use App\Enum\UserLinkVisibilityEnum;
 use App\Enum\UserLinkWebsiteEnum;
-use App\Repository\UserLinkRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=UserLinkRepository::class)
+ * @ORM\Entity()
  */
 class UserLink
 {

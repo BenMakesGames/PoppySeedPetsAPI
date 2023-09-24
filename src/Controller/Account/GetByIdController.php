@@ -1,7 +1,10 @@
 <?php
 namespace App\Controller\Account;
 
+use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\User;
+use App\Entity\UserFollowing;
 use App\Entity\UserLink;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
@@ -9,10 +12,6 @@ use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserLinkVisibilityEnum;
 use App\Functions\UserStyleFunctions;
-use App\Repository\InventoryRepository;
-use App\Repository\PetRepository;
-use App\Repository\UserFollowingRepository;
-use App\Repository\UserLinkRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,12 +30,10 @@ class GetByIdController extends AbstractController
      * @Route("/{user}", methods={"GET"}, requirements={"user"="\d+"})
      */
     public function getProfile(
-        User $user, ResponseService $responseService, PetRepository $petRepository, InventoryRepository $inventoryRepository,
-        NormalizerInterface $normalizer, EntityManagerInterface $em, UserLinkRepository $userLinkRepository,
-        UserFollowingRepository $userFollowingRepository
+        User $user, ResponseService $responseService, NormalizerInterface $normalizer, EntityManagerInterface $em
     )
     {
-        $pets = $petRepository->findBy([ 'owner' => $user, 'location' => PetLocationEnum::HOME ]);
+        $pets = $em->getRepository(Pet::class)->findBy([ 'owner' => $user, 'location' => PetLocationEnum::HOME ]);
         $theme = UserStyleFunctions::findCurrent($em, $user->getId());
 
         $data = [
@@ -50,11 +47,11 @@ class GetByIdController extends AbstractController
             $data['stocking'] = $user->getFireplace()->getStocking();
         }
 
-        $data['links'] = $this->getLinks($user, $userFollowingRepository, $userLinkRepository);
+        $data['links'] = $this->getLinks($user, $em);
 
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace))
         {
-            $mantle = $inventoryRepository->findBy(['owner' => $user, 'location' => LocationEnum::MANTLE]);
+            $mantle = $em->getRepository(Inventory::class)->findBy(['owner' => $user, 'location' => LocationEnum::MANTLE]);
 
             $data['mantle'] = $normalizer->normalize($mantle, null, [ 'groups' => [ SerializationGroupEnum::FIREPLACE_MANTLE ] ]);
         }
@@ -62,7 +59,7 @@ class GetByIdController extends AbstractController
         return $responseService->success($data);
     }
 
-    private function getLinks(User $user, UserFollowingRepository $userFollowingRepository, UserLinkRepository $userLinkRepository)
+    private function getLinks(User $user, EntityManagerInterface $em)
     {
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
@@ -72,7 +69,7 @@ class GetByIdController extends AbstractController
 
         $showPrivateLinks =
             $user->getId() == $currentUser->getId() ||
-            $userFollowingRepository->count([
+            $em->getRepository(UserFollowing::class)->count([
                 'user' => $user,
                 'following' => $currentUser,
             ]) > 0
@@ -80,11 +77,11 @@ class GetByIdController extends AbstractController
 
         if($showPrivateLinks)
         {
-            $links = $userLinkRepository->findBy([ 'user' => $user ]);
+            $links = $em->getRepository(UserLink::class)->findBy([ 'user' => $user ]);
         }
         else
         {
-            $links = $userLinkRepository->findBy([
+            $links = $em->getRepository(UserLink::class)->findBy([
                 'user' => $user,
                 'visibility' => UserLinkVisibilityEnum::FOLLOWED,
             ]);

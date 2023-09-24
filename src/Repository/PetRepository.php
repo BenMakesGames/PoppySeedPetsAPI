@@ -30,57 +30,6 @@ class PetRepository extends ServiceEntityRepository
     /**
      * @return Pet[]
      */
-    public function findParents(Pet $pet): array
-    {
-        $parents = $pet->getParents();
-
-        if(count($parents) === 0)
-            return [];
-
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.id IN (:petParents)')
-            ->setParameter('petParents', array_map(fn(Pet $p) => $p->getId(), $parents))
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
-    /**
-     * @return Pet[]
-     */
-    public function findSiblings(Pet $pet): array
-    {
-        $parents = $pet->getParents();
-
-        if(count($parents) === 0)
-            return [];
-
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.mom IN (:petParents) OR p.dad IN (:petParents)')
-            ->andWhere('p.id != :pet')
-            ->setParameter('petParents', array_map(fn(Pet $p) => $p->getId(), $parents))
-            ->setParameter('pet', $pet->getId())
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
-    /**
-     * @return Pet[]
-     */
-    public function findChildren(Pet $pet): array
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.mom=:pet OR p.dad=:pet')
-            ->setParameter('pet', $pet->getId())
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
-    /**
-     * @return Pet[]
-     */
     public function findPetsEligibleForParkEvent(string $eventType, int $number): array
     {
         $today = new \DateTimeImmutable();
