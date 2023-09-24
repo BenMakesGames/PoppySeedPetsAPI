@@ -102,7 +102,7 @@ class PetFactory
         $isSagaJelling = $petSpecies->getName() === 'Sága Jelling';
 
         $startingMerit = $isSagaJelling
-            ? $this->meritRepository->deprecatedFindOneByName(MeritEnum::SAGA_SAGA)
+            ? MeritRepository::findOneByName($this->em, MeritEnum::SAGA_SAGA)
             : $this->meritRepository->getRandomStartingMerit()
         ;
 
@@ -127,7 +127,7 @@ class PetFactory
         ;
 
         if($isSagaJelling)
-            $pet->addMerit($this->meritRepository->deprecatedFindOneByName(MeritEnum::AFFECTIONLESS));
+            $pet->addMerit(MeritRepository::findOneByName($this->em, MeritEnum::AFFECTIONLESS));
 
         return $pet;
     }

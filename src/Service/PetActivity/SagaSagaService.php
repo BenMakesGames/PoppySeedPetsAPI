@@ -8,6 +8,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\PetActivityLogFactory;
 use App\Repository\MeritRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserStatsRepository;
@@ -15,27 +16,26 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use Doctrine\ORM\EntityManagerInterface;
 
 class SagaSagaService
 {
     private IRandom $rng;
     private InventoryService $inventoryService;
-    private MeritRepository $meritRepository;
+    private EntityManagerInterface $em;
     private ResponseService $responseService;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
     private UserStatsRepository $userStatsRepository;
 
     public function __construct(
-        Squirrel3 $rng, InventoryService $inventoryService, MeritRepository $meritRepository,
-        ResponseService $responseService, PetActivityLogTagRepository $petActivityLogTagRepository,
+        Squirrel3 $rng, InventoryService $inventoryService, EntityManagerInterface $em,
+        ResponseService $responseService,
         UserStatsRepository $userStatsRepository
     )
     {
         $this->rng = $rng;
         $this->inventoryService = $inventoryService;
-        $this->meritRepository = $meritRepository;
+        $this->em = $em;
         $this->responseService = $responseService;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->userStatsRepository = $userStatsRepository;
     }
 
@@ -62,9 +62,9 @@ class SagaSagaService
         $this->inventoryService->petCollectsItem('Skill Scroll: ' . $skill, $pet, $pet->getName() . ' was transformed into this scroll!', null);
 
         $pet
-            ->removeMerit($this->meritRepository->deprecatedFindOneByName(MeritEnum::SAGA_SAGA))
-            ->removeMerit($this->meritRepository->deprecatedFindOneByName(MeritEnum::AFFECTIONLESS))
-            ->addMerit($this->meritRepository->deprecatedFindOneByName(MeritEnum::SPECTRAL))
+            ->removeMerit(MeritRepository::findOneByName($this->em, MeritEnum::SAGA_SAGA))
+            ->removeMerit(MeritRepository::findOneByName($this->em, MeritEnum::AFFECTIONLESS))
+            ->addMerit(MeritRepository::findOneByName($this->em, MeritEnum::SPECTRAL))
             ->setName('Ghost of ' . $pet->getName())
             ->resetAllNeeds()
             ->clearExp()
@@ -85,15 +85,9 @@ class SagaSagaService
             ->setActivityTime(0)
         ;
 
-        $log = $this->responseService->createActivityLog(
-            $pet,
-            ActivityHelpers::PetName($pet) . ' got 5 points in ' . $skill . ', and was transformed into a skill scroll! All that remains is their ghost...',
-            ''
-        );
-
-        $log
+        PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' got 5 points in ' . $skill . ', and was transformed into a skill scroll! All that remains is their ghost...')
             ->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY)
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Level-up' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Level-up' ]))
         ;
 
         $this->responseService->setReloadPets(true);

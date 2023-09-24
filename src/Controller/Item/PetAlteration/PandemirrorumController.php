@@ -28,7 +28,7 @@ class PandemirrorumController extends AbstractController
      */
     public function usePandemirrorum(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, MeritRepository $meritRepository
+        PetRepository $petRepository
     )
     {
         /** @var User $user */
@@ -42,14 +42,8 @@ class PandemirrorumController extends AbstractController
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
 
-        $invertedMerit = $meritRepository->deprecatedFindOneByName(MeritEnum::INVERTED);
-        $veryInvertedMerit = $meritRepository->deprecatedFindOneByName(MeritEnum::VERY_INVERTED);
-
-        if(!$invertedMerit)
-            throw new \Exception('The ' . MeritEnum::INVERTED . ' Merit does not exist! This is a terrible programming error. Someone please tell Ben.');
-
-        if(!$veryInvertedMerit)
-            throw new \Exception('The ' . MeritEnum::VERY_INVERTED . ' Merit does not exist! This is a terrible programming error. Someone please tell Ben.');
+        $invertedMerit = MeritRepository::findOneByName($em, MeritEnum::INVERTED);
+        $veryInvertedMerit = MeritRepository::findOneByName($em, MeritEnum::VERY_INVERTED);
 
         if($pet->hasMerit(MeritEnum::INVERTED))
         {

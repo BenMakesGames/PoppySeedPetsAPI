@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Merit;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Model\MeritInfo;
 use App\Service\IRandom;
 use App\Service\Squirrel3;
@@ -30,33 +31,31 @@ class MeritRepository extends ServiceEntityRepository
         parent::__construct($registry, Merit::class);
     }
 
-    /**
-     * @deprecated
-     */
-    public function deprecatedFindOneByName(string $name)
+    public static function findOneByName(EntityManagerInterface $em, string $name): Merit
     {
         if(!MeritEnum::isAValue($name))
             throw new EnumInvalidValueException(MeritEnum::class, $name);
 
-        return $this->findOneBy([ 'name' => $name ]);
-    }
+        $merit = $em->getRepository(Merit::class)->createQueryBuilder('m')
+            ->where('m.name=:name')
+            ->setParameter('name', $name)
+            ->getQuery()
+            ->enableResultCache(24 * 60 * 60, 'MeritRepository_FindOneByName_' . $name)
+            ->getOneOrNullResult();
 
-    public static function findOneByName(EntityManagerInterface $em, string $name)
-    {
-        if(!MeritEnum::isAValue($name))
-            throw new EnumInvalidValueException(MeritEnum::class, $name);
+        if(!$merit) throw new PSPNotFoundException('There is no Merit called ' . $name . '.');
 
-        return $em->getRepository(Merit::class)->findOneBy([ 'name' => $name ]);
+        return $merit;
     }
 
     public function getRandomStartingMerit(): Merit
     {
-        return $this->findOneBy([ 'name' => $this->squirrel3->rngNextFromArray(MeritInfo::POSSIBLE_STARTING_MERITS) ]);
+        return MeritRepository::findOneByName($this->getEntityManager(), $this->squirrel3->rngNextFromArray(MeritInfo::POSSIBLE_STARTING_MERITS));
     }
 
     public function getRandomFirstPetStartingMerit(): Merit
     {
-        return $this->findOneBy([ 'name' => $this->squirrel3->rngNextFromArray(MeritInfo::POSSIBLE_FIRST_PET_STARTING_MERITS) ]);
+        return MeritRepository::findOneByName($this->getEntityManager(), $this->squirrel3->rngNextFromArray(MeritInfo::POSSIBLE_FIRST_PET_STARTING_MERITS));
     }
 
     public function getRandomAdoptedPetStartingMerit(): Merit
@@ -65,6 +64,6 @@ class MeritRepository extends ServiceEntityRepository
             return $m !== MeritEnum::HYPERCHROMATIC && $m !== MeritEnum::SPECTRAL;
         });
 
-        return $this->findOneBy([ 'name' => $this->squirrel3->rngNextFromArray($possibleMerits) ]);
+        return MeritRepository::findOneByName($this->getEntityManager(), $this->squirrel3->rngNextFromArray($possibleMerits));
     }
 }

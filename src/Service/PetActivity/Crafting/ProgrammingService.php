@@ -46,7 +46,6 @@ class ProgrammingService
     private FieldGuideService $fieldGuideService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
     private PetFactory $petFactory;
-    private MeritRepository $meritRepository;
     private EntityManagerInterface $em;
 
     public function __construct(
@@ -54,7 +53,7 @@ class ProgrammingService
         PetExperienceService $petExperienceService, StatusEffectService $statusEffectService,
         HouseSimService $houseSimService, HattierService $hattierService,
         FieldGuideService $fieldGuideService, PetActivityLogTagRepository $petActivityLogTagRepository,
-        PetFactory $petFactory, MeritRepository $meritRepository, EntityManagerInterface $em
+        PetFactory $petFactory, EntityManagerInterface $em
     )
     {
         $this->responseService = $responseService;
@@ -67,7 +66,6 @@ class ProgrammingService
         $this->fieldGuideService = $fieldGuideService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->petFactory = $petFactory;
-        $this->meritRepository = $meritRepository;
         $this->em = $em;
     }
 
@@ -953,7 +951,7 @@ class ProgrammingService
             $captor->getOwner(), $impName, $infinityImp,
             $petColors[0], $petColors[1],
             FlavorEnum::getRandomValue($this->squirrel3),
-            $this->meritRepository->deprecatedFindOneByName($startingMerit)
+            MeritRepository::findOneByName($this->em, $startingMerit)
         );
 
         $newPet

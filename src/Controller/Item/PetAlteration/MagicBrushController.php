@@ -30,7 +30,7 @@ class MagicBrushController extends AbstractController
      */
     public function brush(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, MeritRepository $meritRepository, InventoryService $inventoryService
+        PetRepository $petRepository, InventoryService $inventoryService
     )
     {
         /** @var User $user */
@@ -47,7 +47,7 @@ class MagicBrushController extends AbstractController
         if($pet->hasMerit(MeritEnum::SHEDS))
             throw new PSPInvalidOperationException($pet->getName() . ' already sheds!');
 
-        $pet->addMerit($meritRepository->deprecatedFindOneByName(MeritEnum::SHEDS));
+        $pet->addMerit(MeritRepository::findOneByName($em, MeritEnum::SHEDS));
 
         $item = $pet->getSpecies()->getSheds();
 

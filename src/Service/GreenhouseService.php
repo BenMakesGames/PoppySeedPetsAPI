@@ -32,7 +32,6 @@ class GreenhouseService
     private InventoryService $inventoryService;
     private PetFactory $petFactory;
     private EntityManagerInterface $em;
-    private MeritRepository $meritRepository;
     private UserStatsRepository $userStatsRepository;
     private IRandom $squirrel3;
     private UserQuestRepository $userQuestRepository;
@@ -41,15 +40,13 @@ class GreenhouseService
 
     public function __construct(
         InventoryService $inventoryService, PetFactory $petFactory, Squirrel3 $squirrel3,
-        EntityManagerInterface $em, MeritRepository $meritRepository, UserStatsRepository $userStatsRepository,
-        UserQuestRepository $userQuestRepository, NormalizerInterface $normalizer,
-        Clock $clock
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, UserQuestRepository $userQuestRepository,
+        NormalizerInterface $normalizer, Clock $clock
     )
     {
         $this->inventoryService = $inventoryService;
         $this->petFactory = $petFactory;
         $this->em = $em;
-        $this->meritRepository = $meritRepository;
         $this->userStatsRepository = $userStatsRepository;
         $this->squirrel3 = $squirrel3;
         $this->userQuestRepository = $userQuestRepository;
@@ -135,7 +132,7 @@ class GreenhouseService
             );
         }
 
-        $startingMerit = $this->meritRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray($startingMerits));
+        $startingMerit = MeritRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray($startingMerits));
 
         $harvestedPet = $this->petFactory->createPet($user, $name, $species, $colorA, $colorB, FlavorEnum::getRandomValue($this->squirrel3), $startingMerit);
 
@@ -269,7 +266,7 @@ class GreenhouseService
             'Ascot', 'Neckerchief'
         ]);
 
-        $bonusMerit = $this->meritRepository->deprecatedFindOneByName(MeritEnum::MOON_BOUND);
+        $bonusMerit = MeritRepository::findOneByName($this->em, MeritEnum::MOON_BOUND);
 
         return $this->harvestPlantAsPet($plant, $species, $colorA, $colorB, $name, $bonusMerit);
     }
@@ -300,7 +297,7 @@ class GreenhouseService
             'Chestnut', 'Khumbhi', 'Helvella', 'Amanita'
         ]);
 
-        $bonusMerit = $this->meritRepository->deprecatedFindOneByName(MeritEnum::DARKVISION);
+        $bonusMerit = MeritRepository::findOneByName($this->em, MeritEnum::DARKVISION);
 
         return $this->harvestPlantAsPet($plant, $species, $colorA, $colorB, $name, $bonusMerit);
     }
@@ -325,7 +322,7 @@ class GreenhouseService
             'Pomidor', 'Utamatisi'
         ]);
 
-        $bonusMerit = $this->meritRepository->deprecatedFindOneByName(MeritEnum::MOON_BOUND);
+        $bonusMerit = MeritRepository::findOneByName($this->em, MeritEnum::MOON_BOUND);
 
         return $this->harvestPlantAsPet($plant, $species, $colorA, $colorB, $name, $bonusMerit);
     }

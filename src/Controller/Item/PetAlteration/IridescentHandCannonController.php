@@ -34,8 +34,7 @@ class IridescentHandCannonController extends AbstractController
      */
     public function fireHandCannon(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        MeritRepository $meritRepository, PetColorFunctions $petColorChangingService, Squirrel3 $squirrel3,
-        HattierService $hattierService
+        PetColorFunctions $petColorChangingService, Squirrel3 $squirrel3, HattierService $hattierService
     )
     {
         /** @var User $user */
@@ -78,7 +77,7 @@ class IridescentHandCannonController extends AbstractController
         if($pet->hasMerit(MeritEnum::HYPERCHROMATIC))
         {
             $responseService->addFlashMessage($pet->getName() . ' has been chromatically altered! (It seems their Hyperchromaticism was blasted away by the cannon, as well!)');
-            $pet->removeMerit($meritRepository->deprecatedFindOneByName(MeritEnum::HYPERCHROMATIC));
+            $pet->removeMerit(MeritRepository::findOneByName($em, MeritEnum::HYPERCHROMATIC));
         }
         else
         {

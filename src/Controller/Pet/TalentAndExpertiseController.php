@@ -28,8 +28,7 @@ class TalentAndExpertiseController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function pickTalent(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
-        MeritRepository $meritRepository
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
@@ -43,7 +42,7 @@ class TalentAndExpertiseController extends AbstractController
         if(!in_array($talent, [ MeritEnum::MIND_OVER_MATTER, MeritEnum::MATTER_OVER_MIND, MeritEnum::MODERATION ]))
             throw new PSPFormValidationException('You gotta\' choose one of the talents!');
 
-        $merit = $meritRepository->deprecatedFindOneByName($talent);
+        $merit = MeritRepository::findOneByName($em, $talent);
 
         if(!$merit)
             throw new \Exception('Programmer error! The Merit "' . $talent . '" does not exist in the DB! :(');
@@ -99,8 +98,7 @@ class TalentAndExpertiseController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function pickExpertise(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
-        MeritRepository $meritRepository
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3
     )
     {
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
@@ -114,7 +112,7 @@ class TalentAndExpertiseController extends AbstractController
         if(!in_array($expertise, [ MeritEnum::FORCE_OF_WILL, MeritEnum::FORCE_OF_NATURE, MeritEnum::BALANCE ]))
             throw new PSPFormValidationException('You gotta\' choose one of the talents!');
 
-        $merit = $meritRepository->deprecatedFindOneByName($expertise);
+        $merit = MeritRepository::findOneByName($em, $expertise);
 
         if(!$merit)
             throw new \Exception('Programmer error! The Merit "' . $expertise . '" does not exist in the DB! :(');

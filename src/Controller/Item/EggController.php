@@ -31,7 +31,7 @@ class EggController extends AbstractController
      */
     public function hatchPolyp(
         Inventory $inventory, ResponseService $responseService, Squirrel3 $squirrel3, EntityManagerInterface $em,
-        MeritRepository $meritRepository, PetFactory $petFactory
+        PetFactory $petFactory
     )
     {
         /** @var User $user */
@@ -75,7 +75,7 @@ class EggController extends AbstractController
         ]);
 
         $newPet = $petFactory->createPet(
-            $user, $jellingName, $jelling, '', '', FlavorEnum::getRandomValue($squirrel3), $meritRepository->deprecatedFindOneByName(MeritEnum::SAGA_SAGA)
+            $user, $jellingName, $jelling, '', '', FlavorEnum::getRandomValue($squirrel3), MeritRepository::findOneByName($em, MeritEnum::SAGA_SAGA)
         );
 
         $newPet
@@ -84,7 +84,7 @@ class EggController extends AbstractController
             ->increaseEsteem(10)
             ->increaseFood(-8)
             ->setScale($squirrel3->rngNextInt(80, 120))
-            ->addMerit($meritRepository->deprecatedFindOneByName(MeritEnum::AFFECTIONLESS))
+            ->addMerit(MeritRepository::findOneByName($em, MeritEnum::AFFECTIONLESS))
         ;
 
         $newPet->getHouseTime()->setSocialEnergy(-365 * 24 * 60);

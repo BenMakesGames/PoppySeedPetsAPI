@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Enchantment;
+use App\Exceptions\PSPNotFoundException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -23,6 +24,15 @@ class EnchantmentRepository extends ServiceEntityRepository
 
     public static function findOneByName(EntityManagerInterface $em, string $name): ?Enchantment
     {
-        return $em->getRepository(Enchantment::class)->findOneBy([ 'name' => $name ]);
+        $enchantment = $em->getRepository(Enchantment::class)->createQueryBuilder('e')
+            ->where('e.name=:name')
+            ->setParameter('name', $name)
+            ->getQuery()
+            ->enableResultCache(24 * 60 * 60, 'EnchantmentRepository_FindOneByName_' . $name)
+            ->getOneOrNullResult();
+
+        if(!$enchantment) throw new PSPNotFoundException('There is no enchantment called ' . $name . '.');
+
+        return $enchantment;
     }
 }
