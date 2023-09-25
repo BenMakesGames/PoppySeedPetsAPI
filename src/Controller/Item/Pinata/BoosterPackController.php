@@ -37,8 +37,8 @@ class BoosterPackController extends AbstractController
         $location = $inventory->getLocation();
 
         $commons = $em->getRepository(ItemGroup::class)->findOneBy([ 'name' => 'Hollow Earth Booster Pack: Common' ]);
-        $uncommons = $em->getRepository(ItemGroup::class)->findOneBy([ 'Hollow Earth Booster Pack: Uncommon' ]);
-        $rares = $em->getRepository(ItemGroup::class)->findOneBy([ 'Hollow Earth Booster Pack: Rare' ]);
+        $uncommons = $em->getRepository(ItemGroup::class)->findOneBy([ 'name' => 'Hollow Earth Booster Pack: Uncommon' ]);
+        $rares = $em->getRepository(ItemGroup::class)->findOneBy([ 'name' => 'Hollow Earth Booster Pack: Rare' ]);
 
         $tiles = [
             InventoryService::getRandomItemFromItemGroup($rng, $commons),
