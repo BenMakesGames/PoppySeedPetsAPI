@@ -35,45 +35,46 @@ class PetAndPraiseService
 
         $now = new \DateTimeImmutable();
 
+        if($pet->getLastInteracted() >= $now->modify('-4 hours'))
+            throw new PSPInvalidOperationException('You\'ve already interacted with this pet recently.');
+
         $changes = new PetChanges($pet);
 
-        if($pet->getLastInteracted() < $now->modify('-4 hours'))
+        $diff = $now->diff($pet->getLastInteracted());
+        $hours = min(48, $diff->h + $diff->days * 24);
+
+        $affection = (int)($hours / 4);
+        $gain = ceil($hours / 2.5) + 3;
+
+        $safetyBonus = 0;
+        $esteemBonus = 0;
+
+        if($pet->getSafety() > $pet->getEsteem())
         {
-            $diff = $now->diff($pet->getLastInteracted());
-            $hours = min(48, $diff->h + $diff->days * 24);
-
-            $affection = (int)($hours / 4);
-            $gain = ceil($hours / 2.5) + 3;
-
-            $safetyBonus = 0;
-            $esteemBonus = 0;
-
-            if($pet->getSafety() > $pet->getEsteem())
-            {
-                $safetyBonus -= floor($gain / 4);
-                $esteemBonus += floor($gain / 4);
-            }
-            else if($pet->getEsteem() > $pet->getSafety())
-            {
-                $safetyBonus += floor($gain / 4);
-                $esteemBonus -= floor($gain / 4);
-            }
-
-            $pet->increaseSafety($gain + $safetyBonus);
-            $pet->increaseLove($gain);
-            $pet->increaseEsteem($gain + $esteemBonus);
-            $this->petExperienceService->gainAffection($pet, $affection);
+            $safetyBonus -= floor($gain / 4);
+            $esteemBonus += floor($gain / 4);
         }
-        else
-            throw new PSPInvalidOperationException('You\'ve already interacted with this pet recently.');
+        else if($pet->getEsteem() > $pet->getSafety())
+        {
+            $safetyBonus += floor($gain / 4);
+            $esteemBonus -= floor($gain / 4);
+        }
+
+        $pet->increaseSafety($gain + $safetyBonus);
+        $pet->increaseLove($gain);
+        $pet->increaseEsteem($gain + $esteemBonus);
+        $this->petExperienceService->gainAffection($pet, $affection);
 
         $pet->setLastInteracted($now);
 
         $this->cravingService->maybeAddCraving($pet);
 
-        PetActivityLogFactory::createUnreadLog($this->em, $pet, '%user:' . $pet->getOwner()->getId() . '.Name% pet ' . '%pet:' . $pet->getId() . '.name%'. '.', 'ui/affection', $changes->compare($pet))
+        PetActivityLogFactory::createUnreadLog($this->em, $pet, '%user:' . $pet->getOwner()->getId() . '.Name% pet ' . '%pet:' . $pet->getId() . '.name%.')
+            ->setIcon('ui/affection')
+            ->setChanges($changes->compare($pet))
             ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Petting' ]))
         ;
+
         $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PETTED_A_PET);
     }
 
