@@ -548,11 +548,11 @@ class BoxController extends AbstractController
         $r = $squirrel3->rngNextInt(1, 6);
 
         if($r === 6)
-            $rarityGroup = $em->getRepository(ItemGroup::class)->findOneBy([ 'Hollow Earth Booster Pack: Rare' ]);
+            $rarityGroup = $em->getRepository(ItemGroup::class)->findOneBy([ 'name' => 'Hollow Earth Booster Pack: Rare' ]);
         else if($r >= 4)
-            $rarityGroup = $em->getRepository(ItemGroup::class)->findOneBy([ 'Hollow Earth Booster Pack: Uncommon' ]);
+            $rarityGroup = $em->getRepository(ItemGroup::class)->findOneBy([ 'name' => 'Hollow Earth Booster Pack: Uncommon' ]);
         else
-            $rarityGroup = $em->getRepository(ItemGroup::class)->findOneBy([ 'Hollow Earth Booster Pack: Common' ]);
+            $rarityGroup = $em->getRepository(ItemGroup::class)->findOneBy([ 'name' => 'Hollow Earth Booster Pack: Common' ]);
 
         $tile = InventoryService::getRandomItemFromItemGroup($squirrel3, $rarityGroup);
 
