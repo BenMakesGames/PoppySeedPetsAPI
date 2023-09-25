@@ -226,9 +226,10 @@ class BoxController extends AbstractController
                 'Twilight Box',
                 'Nature Box',
                 'Monster Box',
+                'Pizza Box',
             ];
 
-            if($squirrel3->rngNextInt(1, 4) === 0)
+            if($squirrel3->rngNextInt(1, 2) === 0) // TODO: remove this entirely once we get to, like, 20 possible boxes??
                 $possibleItems[] = [ $squirrel3->rngNextFromArray([ 'Cereal Box', 'Hat Box' ]) ];
 
             if($squirrel3->rngNextInt(1, 20) === 0)

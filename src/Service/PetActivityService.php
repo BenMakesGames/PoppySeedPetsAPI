@@ -36,9 +36,8 @@ use App\Service\PetActivity\Crafting\PlasticPrinterService;
 use App\Service\PetActivity\Crafting\ProgrammingService;
 use App\Service\PetActivity\Crafting\SmithingService;
 use App\Service\PetActivity\CraftingService;
-use App\Service\PetActivity\Daydreams\IceCreamDaydream;
 use App\Service\PetActivity\DeepSeaService;
-use App\Service\PetActivity\DreamingService;
+use App\Service\PetActivity\DreamingAndDaydreamingService;
 use App\Service\PetActivity\EatingService;
 use App\Service\PetActivity\FishingService;
 use App\Service\PetActivity\GatheringHolidayAdventureService;
@@ -81,7 +80,6 @@ class PetActivityService
     private GivingTreeGatheringService $givingTreeGatheringService;
     private PregnancyService $pregnancyService;
     private PetExperienceService $petExperienceService;
-    private DreamingService $dreamingService;
     private MagicBeanstalkService $beanStalkService;
     private GatheringHolidayAdventureService $gatheringHolidayAdventureService;
     private HeartDimensionService $heartDimensionService;
@@ -104,7 +102,7 @@ class PetActivityService
     private PhilosophersStoneService $philosophersStoneService;
     private IcyMoonService $icyMoonService;
     private KappaService $kappaService;
-    private IceCreamDaydream $iceCreamDaydream;
+    private DreamingAndDaydreamingService $dreamingAndDaydreamingService;
 
     public function __construct(
         Clock $clock, EntityManagerInterface $em, ResponseService $responseService,
@@ -115,7 +113,7 @@ class PetActivityService
         Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService,
         PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService,
         PregnancyService $pregnancyService, Squirrel3 $squirrel3, ChocolateMansion $chocolateMansion,
-        PetExperienceService $petExperienceService, DreamingService $dreamingService,
+        PetExperienceService $petExperienceService, DreamingAndDaydreamingService $dreamingAndDaydreamingService,
         MagicBeanstalkService $beanStalkService, GatheringHolidayAdventureService $gatheringHolidayAdventureService,
         GuildService $guildService, BurntForestService $burntForestService, InventoryService $inventoryService,
         DeepSeaService $deepSeaService, NotReallyCraftsService $notReallyCraftsService, LetterService $letterService,
@@ -123,7 +121,7 @@ class PetActivityService
         StatusEffectService $statusEffectService, EatingService $eatingService, HouseSimService $houseSimService,
         MagicBindingService $magicBindingService, SmithingService $smithingService, CravingService $cravingService,
         PlasticPrinterService $plasticPrinterService, PhilosophersStoneService $philosophersStoneService,
-        KappaService $kappaService, IceCreamDaydream $iceCreamDaydream
+        KappaService $kappaService
     )
     {
         $this->clock = $clock;
@@ -145,7 +143,7 @@ class PetActivityService
         $this->givingTreeGatheringService = $givingTreeGatheringService;
         $this->pregnancyService = $pregnancyService;
         $this->petExperienceService = $petExperienceService;
-        $this->dreamingService = $dreamingService;
+        $this->dreamingAndDaydreamingService = $dreamingAndDaydreamingService;
         $this->beanStalkService = $beanStalkService;
         $this->gatheringHolidayAdventureService = $gatheringHolidayAdventureService;
         $this->heartDimensionService = $heartDimensionService;
@@ -168,7 +166,6 @@ class PetActivityService
         $this->philosophersStoneService = $philosophersStoneService;
         $this->icyMoonService = $icyMoonService;
         $this->kappaService = $kappaService;
-        $this->iceCreamDaydream = $iceCreamDaydream;
     }
 
     public function runHour(Pet $pet)
@@ -464,31 +461,14 @@ class PetActivityService
             return;
         }
 
-        if($pet->hasStatusEffect(StatusEffectEnum::ONEIRIC) && $this->squirrel3->rngNextInt(1, 2) === 1)
-        {
-            $this->dreamingService->dream($pet);
-            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::ONEIRIC));
+        if($this->dreamingAndDaydreamingService->maybeDreamOrDaydream($petWithSkills))
             return;
-        }
-
-        if($pet->hasStatusEffect(StatusEffectEnum::DAYDREAM_ICE_CREAM) && $this->squirrel3->rngNextInt(1, 2) === 1)
-        {
-            $this->iceCreamDaydream->doAdventure($petWithSkills);
-            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::DAYDREAM_ICE_CREAM));
-            return;
-        }
 
         if($this->maybeReceiveFairyGodmotherItem($pet))
             return;
 
         if($this->maybeReceiveAthenasGift($pet))
             return;
-
-        if($this->dream($pet))
-        {
-            $this->dreamingService->dream($pet);
-            return;
-        }
 
         $itemsInHouse = $this->houseSimService->getState()->getInventoryCount();
 
@@ -1132,17 +1112,6 @@ class PetActivityService
             return true;
 
         if($pet->getTool() && $pet->getTool()->increasesPooping() && $this->squirrel3->rngNextInt(1, 180) === 1)
-            return true;
-
-        return false;
-    }
-
-    private function dream(Pet $pet): bool
-    {
-        if($pet->hasMerit(MeritEnum::DREAMWALKER) && $this->squirrel3->rngNextInt(1, 200) === 1)
-            return true;
-
-        if($pet->getTool() && $pet->getTool()->isDreamcatcher() && $this->squirrel3->rngNextInt(1, 200) === 1)
             return true;
 
         return false;

@@ -795,11 +795,11 @@ class Pet
     {
         if($this->getSafety() >= 16)
             return 'invincible';
-        else if($this->getSafety() >= 8)
+        else if($this->getSafety() >= 8) // 8 to 15
             return 'safe';
-        else if($this->getSafety() >= 0)
+        else if($this->getSafety() >= 0) // 0 to 7
             return '...';
-        else if($this->getSafety() >= -12)
+        else if($this->getSafety() >= -12) // -12 to -1
             return 'on edge';
         else
             return 'terrified';

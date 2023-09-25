@@ -55,7 +55,7 @@ class AnimalPouchController extends AbstractController
             $item = $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
 
             if($itemName === 'Phishing Rod')
-                $item->setEnchantment(EnchantmentRepository::findOneByName($em, 'Moneyed'));
+                $item->setEnchantment(EnchantmentRepository::findOneByName($em, 'Clinquant'));
         }
 
         $em->flush();
