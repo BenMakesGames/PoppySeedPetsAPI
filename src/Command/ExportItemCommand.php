@@ -15,20 +15,15 @@ use App\Entity\PlantYieldItem;
 use App\Entity\Recipe;
 use App\Entity\Spice;
 use App\Repository\ItemRepository;
-use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
 class ExportItemCommand extends PoppySeedPetsCommand
 {
-    private ItemRepository $itemRepository;
     private EntityManagerInterface $em;
 
-    public function __construct(
-        ItemRepository $itemRepository, EntityManagerInterface $em
-    )
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->itemRepository = $itemRepository;
         $this->em = $em;
 
         parent::__construct();
@@ -49,7 +44,7 @@ class ExportItemCommand extends PoppySeedPetsCommand
             throw new \Exception('Can only be run in dev environments.');
 
         $name = $this->input->getArgument('item');
-        $item = $this->itemRepository->findOneBy([ 'name' => $name ]);
+        $item = ItemRepository::findOneByName($this->em, $name);
 
         if(!$item)
             throw new \Exception('There is no item by that name.');

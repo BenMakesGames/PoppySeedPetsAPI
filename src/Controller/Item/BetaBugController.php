@@ -70,8 +70,7 @@ class BetaBugController extends AbstractController
     public function useBug(
         Inventory $inventory, Request $request, InventoryRepository $inventoryRepository,
         ResponseService $responseService, EntityManagerInterface $em, PetFactory $petFactory,
-        Squirrel3 $rng, MeritRepository $meritRepository,
-        PetRepository $petRepository, ItemRepository $itemRepository
+        Squirrel3 $rng, MeritRepository $meritRepository
     )
     {
         /** @var User $user */

@@ -23,8 +23,7 @@ class RijndaelController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function search(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        ItemRepository $itemRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
     )
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'rijndael');

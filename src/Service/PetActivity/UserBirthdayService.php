@@ -10,6 +10,7 @@ use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\MuseumService;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 
 class UserBirthdayService
 {
@@ -17,18 +18,18 @@ class UserBirthdayService
     private ResponseService $responseService;
     private InventoryService $inventoryService;
     private MuseumService $museumService;
-    private ItemRepository $itemRepository;
+    private EntityManagerInterface $em;
 
     public function __construct(
         UserQuestRepository $userQuestRepository, ResponseService $responseService, InventoryService $inventoryService,
-        MuseumService $museumService, ItemRepository $itemRepository
+        MuseumService $museumService, EntityManagerInterface $em
     )
     {
         $this->userQuestRepository = $userQuestRepository;
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->museumService = $museumService;
-        $this->itemRepository = $itemRepository;
+        $this->em = $em;
     }
 
     public function doBirthday(ComputedPetSkills $petWithSkills): ?PetActivityLog
@@ -44,7 +45,7 @@ class UserBirthdayService
         if($now < $registeredOn->modify('+' . $years . ' years'))
             return null;
 
-        $anniversaryMuffin = $this->itemRepository->deprecatedFindOneByName('Anniversary Poppy Seed* Muffin');
+        $anniversaryMuffin = ItemRepository::findOneByName($this->em, 'Anniversary Poppy Seed* Muffin');
 
         $this->inventoryService->receiveItem($anniversaryMuffin, $user, $user, $petWithSkills->getPet()->getName() . ' made this for your ' . $years . '-year Anniversary!', LocationEnum::HOME, true);
         $this->museumService->forceDonateItem($user, $anniversaryMuffin, $petWithSkills->getPet()->getName() . ' made this for your ' . $years . '-year Anniversary!', $user);

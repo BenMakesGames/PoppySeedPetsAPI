@@ -15,6 +15,7 @@ use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use Doctrine\ORM\EntityManagerInterface;
 
 class GoldSmithingService
 {
@@ -22,14 +23,14 @@ class GoldSmithingService
     private InventoryService $inventoryService;
     private ResponseService $responseService;
     private CoinSmithingService $coinSmithingService;
-    private ItemRepository $itemRepository;
+    private EntityManagerInterface $em;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
-        HouseSimService $houseSimService, CoinSmithingService $coinSmithingService, ItemRepository $itemRepository,
+        HouseSimService $houseSimService, CoinSmithingService $coinSmithingService, EntityManagerInterface $em,
         Squirrel3 $squirrel3, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
@@ -37,7 +38,7 @@ class GoldSmithingService
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->coinSmithingService = $coinSmithingService;
-        $this->itemRepository = $itemRepository;
+        $this->em = $em;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
@@ -48,7 +49,7 @@ class GoldSmithingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getMusic()->getTotal()) + $petWithSkills->getSmithingBonus()->getTotal());
 
-        $makingItem = $this->itemRepository->deprecatedFindOneByName('Gold Triangle');
+        $makingItem = ItemRepository::findOneByName($this->em, 'Gold Triangle');
 
         if($roll <= 2)
         {
@@ -93,7 +94,7 @@ class GoldSmithingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
-        $makingItem = $this->itemRepository->deprecatedFindOneByName('Aubergine Scepter');
+        $makingItem = ItemRepository::findOneByName($this->em, 'Aubergine Scepter');
 
         if($roll <= 2)
         {
@@ -354,7 +355,7 @@ class GoldSmithingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
-        $makingItem = $this->itemRepository->deprecatedFindOneByName('Gold Key');
+        $makingItem = ItemRepository::findOneByName($this->em, 'Gold Key');
 
         if($roll <= 2)
         {
@@ -407,7 +408,7 @@ class GoldSmithingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
-        $makingItem = $this->itemRepository->deprecatedFindOneByName('Gold Tuning Fork');
+        $makingItem = ItemRepository::findOneByName($this->em, 'Gold Tuning Fork');
 
         if($roll <= 2)
         {
@@ -534,7 +535,7 @@ class GoldSmithingService
         $smithingRoll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
         $printerRoll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
-        $makingItem = $this->itemRepository->deprecatedFindOneByName('Gold Rod');
+        $makingItem = ItemRepository::findOneByName($this->em, 'Gold Rod');
 
         if($printerRoll <= 3)
         {
@@ -622,7 +623,7 @@ class GoldSmithingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
-        $makingItem = $this->itemRepository->deprecatedFindOneByName('No Whisk, No Reward');
+        $makingItem = ItemRepository::findOneByName($this->em, 'No Whisk, No Reward');
 
         if($roll <= 2)
         {

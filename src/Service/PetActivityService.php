@@ -20,6 +20,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\InventoryModifierFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Model\ComputedPetSkills;
 use App\Model\FoodWithSpice;
 use App\Model\PetChanges;
@@ -187,14 +188,11 @@ class PetActivityService
             $changes = new PetChangesSummary();
             $changes->food = '+';
 
-            $activityLog = $this->responseService->createActivityLog(
-                $pet,
-                '%pet:' . $pet->getId() . '.name% nibbled on their ' . InventoryModifierFunctions::getNameWithModifiers($pet->getTool()) . '.',
-                'icons/activity-logs/just-the-fork',
-                $changes
-            );
-
-            $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Eating' ]));
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% nibbled on their ' . InventoryModifierFunctions::getNameWithModifiers($pet->getTool()) . '.')
+                ->setIcon('icons/activity-logs/just-the-fork')
+                ->setChanges($changes)
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Eating' ]))
+            ;
         }
         else
             $pet->increaseFood(-1);
@@ -303,7 +301,8 @@ class PetActivityService
 
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
 
-                $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% threw up :(', '', $changes->compare($pet));
+                PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% threw up :(')
+                    ->setChanges($changes->compare($pet));
 
                 return;
             }
@@ -415,7 +414,9 @@ class PetActivityService
             if($itemsLeftInLunchbox === 0)
                 $message .= ' Their lunchbox is now empty!';
 
-            $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/lunchbox', $petChanges->compare($pet))
+            PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
+                ->setIcon('icons/activity-logs/lunchbox')
+                ->setChanges($petChanges->compare($pet))
                 ->addInterestingness($itemsLeftInLunchbox === 0 ? PetActivityLogInterestingnessEnum::LUNCHBOX_EMPTY : 1)
             ;
         }
@@ -515,7 +516,8 @@ class PetActivityService
             {
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
-                $this->responseService->createActivityLog($pet, $description . ' %pet:' . $pet->getId() . '.name% wanted to make something, but couldn\'t find any materials to work with.', 'icons/activity-logs/house-too-full')
+                PetActivityLogFactory::createUnreadLog($this->em, $pet, $description . ' %pet:' . $pet->getId() . '.name% wanted to make something, but couldn\'t find any materials to work with.')
+                    ->setIcon('icons/activity-logs/house-too-full')
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'House Too Full' ]))
                 ;
             }
@@ -829,7 +831,7 @@ class PetActivityService
     private function doNothing(Pet $pet)
     {
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
-        $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% hung around the house.', '');
+        PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% hung around the house.');
     }
 
     private function pickDesire(array $petDesires)
@@ -1195,7 +1197,7 @@ class PetActivityService
 
         $changes = new PetChanges($pet);
 
-        $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' was thinking about what to do, when their Fairy Godmother showed up! They chatted for a while before she delivered these parting words: "' . $randomChat . '"... and a parting gift: ' . $randomGoody . '. (' . $soNice . ')', '')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' was thinking about what to do, when their Fairy Godmother showed up! They chatted for a while before she delivered these parting words: "' . $randomChat . '"... and a parting gift: ' . $randomGoody . '. (' . $soNice . ')')
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
         ;
 
@@ -1225,7 +1227,7 @@ class PetActivityService
             'Neat-o!', 'Rad!', 'Dope!', 'Sweet!', 'Hot diggity!', 'Epic!', 'Let\'s go!',
         ]);
 
-        $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' was thinking about what to do, when they spotted a Handicrafts Supply Box nearby! (Athena\'s Gifts! ' . $randomExclamation . ')', '')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' was thinking about what to do, when they spotted a Handicrafts Supply Box nearby! (Athena\'s Gifts! ' . $randomExclamation . ')')
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
         ;
 
@@ -1251,7 +1253,8 @@ class PetActivityService
 
             $this->petExperienceService->spendTime($pet, 5, PetActivityStatEnum::OTHER, null);
 
-            $this->responseService->createActivityLog($pet, '%pet:'. $pet->getId() . '.name% eats the ' . $itemOnBody . ' off their body in no time flat! (Ah~! A true Gourmand!)', '', $changes->compare($pet))
+            PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:'. $pet->getId() . '.name% eats the ' . $itemOnBody . ' off their body in no time flat! (Ah~! A true Gourmand!)')
+                ->setChanges($changes->compare($pet))
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Eating', 'Gourmand' ]))
             ;
             return false;
@@ -1259,7 +1262,7 @@ class PetActivityService
         else if($weather->getRainfall() > 0)
         {
             $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:'. $pet->getId() . '.name% spends some time cleaning the ' . $itemOnBody . ' off their body. The rain made it go much faster!', '');
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:'. $pet->getId() . '.name% spends some time cleaning the ' . $itemOnBody . ' off their body. The rain made it go much faster!');
 
             $this->inventoryService->petCollectsItem($itemOnBody, $pet, $pet->getName() . ' cleaned this off their body with the help of the rain...', $activityLog);
 
@@ -1272,7 +1275,7 @@ class PetActivityService
         else
         {
             $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:'. $pet->getId() . '.name% spends some time cleaning the ' . $itemOnBody . ' off their body...', '');
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:'. $pet->getId() . '.name% spends some time cleaning the ' . $itemOnBody . ' off their body...');
 
             $this->inventoryService->petCollectsItem($itemOnBody, $pet, $pet->getName() . ' cleaned this off their body...', $activityLog);
 

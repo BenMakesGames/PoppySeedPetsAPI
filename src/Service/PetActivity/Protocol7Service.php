@@ -8,7 +8,6 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\AdventureMath;
-use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
@@ -18,8 +17,8 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\TransactionService;
+use Doctrine\ORM\EntityManagerInterface;
 
 class Protocol7Service
 {
@@ -28,15 +27,15 @@ class Protocol7Service
     private InventoryService $inventoryService;
     private TransactionService $transactionService;
     private GuildService $guildService;
-    private ItemRepository $itemRepository;
+    private EntityManagerInterface $em;
     private IRandom $squirrel3;
     private PetQuestRepository $petQuestRepository;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, GuildService $guildService, ItemRepository $itemRepository,
-        Squirrel3 $squirrel3, PetQuestRepository $petQuestRepository, PetActivityLogTagRepository $petActivityLogTagRepository
+        TransactionService $transactionService, GuildService $guildService, EntityManagerInterface $em,
+        IRandom $squirrel3, PetQuestRepository $petQuestRepository, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->responseService = $responseService;
@@ -44,7 +43,7 @@ class Protocol7Service
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
         $this->guildService = $guildService;
-        $this->itemRepository = $itemRepository;
+        $this->em = $em;
         $this->squirrel3 = $squirrel3;
         $this->petQuestRepository = $petQuestRepository;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
@@ -166,7 +165,7 @@ class Protocol7Service
                 'Recovered Archive',
             ]);
 
-            $item = $this->itemRepository->deprecatedFindOneByName($loot);
+            $item = ItemRepository::findOneByName($this->em, $loot);
 
             [$locationAndAction, $actioning] = $this->squirrel3->rngNextFromArray([
                 [ 'an abandoned forum, and started rooting around old posts', 'rooting around in an abandoned forum' ],
@@ -516,7 +515,7 @@ class Protocol7Service
 
         if($roll >= 16)
         {
-            $lootItem = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray($video['loot']));
+            $lootItem = ItemRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray($video['loot']));
 
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% watched a video ' . $video['subject'] . ' in Project-E, and got ' . $lootItem->getNameWithArticle() . ' out of it.', '')

@@ -34,7 +34,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\StatusEffectService;
 use App\Service\TransactionService;
 use App\Service\WeatherService;
@@ -61,7 +60,7 @@ class HuntingService
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
         MuseumItemRepository $museumItemRepository, ItemRepository $itemRepository,
         UserQuestRepository $userQuestRepository, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, Squirrel3 $squirrel3, Clock $clock,
+        TransactionService $transactionService, IRandom $squirrel3, Clock $clock,
         WerecreatureEncounterService $werecreatureEncounterService,
         StatusEffectService $statusEffectService, GatheringDistractionService $gatheringDistractions,
         PetActivityLogTagRepository $petActivityLogTagRepository, FieldGuideService $fieldGuideService

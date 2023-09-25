@@ -8,7 +8,6 @@ use App\Entity\PlantYield;
 use App\Entity\PlantYieldItem;
 use App\Enum\PlantTypeEnum;
 use App\Functions\ArrayFunctions;
-use App\Repository\ItemRepository;
 use App\Repository\PlantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -21,11 +20,10 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
     private EntityManagerInterface $em;
     private PlantRepository $plantRepository;
 
-    public function __construct(EntityManagerInterface $em, PlantRepository $plantRepository, ItemRepository $itemRepository)
+    public function __construct(EntityManagerInterface $em, PlantRepository $plantRepository)
     {
         $this->em = $em;
         $this->plantRepository = $plantRepository;
-        $this->itemRepository = $itemRepository;
 
         parent::__construct();
     }

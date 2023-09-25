@@ -2,14 +2,14 @@
 namespace App\Service\Typeahead;
 
 use App\Exceptions\PSPFormValidationException;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 
 abstract class TypeaheadService
 {
-    private $repository;
+    private EntityRepository $repository;
 
-    public function __construct(ServiceEntityRepository $repository)
+    public function __construct(EntityRepository $repository)
     {
         $this->repository = $repository;
     }

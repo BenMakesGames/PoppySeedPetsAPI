@@ -45,14 +45,12 @@ class TreasureMapService
     private UserQuestRepository $userQuestRepository;
     private StatusEffectService $statusEffectService;
     private IRandom $squirrel3;
-    private ItemRepository $itemRepository;
     private HouseSimService $houseSimService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
         EntityManagerInterface $em, PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
-        StatusEffectService $statusEffectService, Squirrel3 $squirrel3, ItemRepository $itemRepository,
-        HouseSimService $houseSimService
+        StatusEffectService $statusEffectService, Squirrel3 $squirrel3, HouseSimService $houseSimService
     )
     {
         $this->responseService = $responseService;
@@ -63,7 +61,6 @@ class TreasureMapService
         $this->userQuestRepository = $userQuestRepository;
         $this->statusEffectService = $statusEffectService;
         $this->squirrel3 = $squirrel3;
-        $this->itemRepository = $itemRepository;
         $this->houseSimService = $houseSimService;
     }
 
@@ -259,7 +256,7 @@ class TreasureMapService
             return $activityLog;
         }
 
-        $loot = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
+        $loot = ItemRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray([
             'Pot of Gold', 'Green Scroll'
         ]));
 

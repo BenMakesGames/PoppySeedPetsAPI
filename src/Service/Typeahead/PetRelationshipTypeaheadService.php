@@ -2,7 +2,7 @@
 namespace App\Service\Typeahead;
 
 use App\Entity\Pet;
-use App\Repository\PetRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 
 class PetRelationshipTypeaheadService extends TypeaheadService
@@ -10,9 +10,9 @@ class PetRelationshipTypeaheadService extends TypeaheadService
     /** @var Pet */ private $pet;
     /** @var string[] */ private $relationships;
 
-    public function __construct(PetRepository $petRepository)
+    public function __construct(EntityManagerInterface $em)
     {
-        parent::__construct($petRepository);
+        parent::__construct($em->getRepository(Pet::class));
     }
 
     public function setParameters(Pet $pet, array $relationships)

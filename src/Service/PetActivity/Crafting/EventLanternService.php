@@ -17,13 +17,14 @@ use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
+use Doctrine\ORM\EntityManagerInterface;
 
 class EventLanternService
 {
     private InventoryService $inventoryService;
     private ResponseService $responseService;
     private PetExperienceService $petExperienceService;
-    private ItemRepository $itemRepository;
+    private EntityManagerInterface $em;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
@@ -31,14 +32,14 @@ class EventLanternService
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        ItemRepository $itemRepository, Squirrel3 $squirrel3, Clock $clock,
+        EntityManagerInterface $em, Squirrel3 $squirrel3, Clock $clock,
         HouseSimService $houseSimService, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
-        $this->itemRepository = $itemRepository;
+        $this->em = $em;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
@@ -54,9 +55,9 @@ class EventLanternService
         $possibilities = [];
 
         $recipe = new HouseSimRecipe([
-            $this->itemRepository->deprecatedFindOneByName('Crooked Fishing Rod'),
-            $this->itemRepository->deprecatedFindOneByName('Paper'),
-            $this->itemRepository->findBy([ 'name' => [ 'Candle', 'Jar of Fireflies' ]])
+            ItemRepository::findOneByName($this->em, 'Crooked Fishing Rod'),
+            ItemRepository::findOneByName($this->em, 'Paper'),
+            [ ItemRepository::findOneByName($this->em, 'Candle'), ItemRepository::findOneByName($this->em, 'Jar of Fireflies') ]
         ]);
 
         $items = $this->houseSimService->getState()->hasInventory($recipe);

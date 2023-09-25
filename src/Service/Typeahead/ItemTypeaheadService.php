@@ -1,14 +1,15 @@
 <?php
 namespace App\Service\Typeahead;
 
-use App\Repository\ItemRepository;
+use App\Entity\Item;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 
 class ItemTypeaheadService extends TypeaheadService
 {
-    public function __construct(ItemRepository $itemRepository)
+    public function __construct(EntityManagerInterface $em)
     {
-        parent::__construct($itemRepository);
+        parent::__construct($em->getRepository(Item::class));
     }
 
     public function addQueryBuilderConditions(QueryBuilder $qb): QueryBuilder

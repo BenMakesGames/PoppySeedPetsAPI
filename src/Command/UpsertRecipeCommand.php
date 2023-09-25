@@ -3,10 +3,8 @@
 namespace App\Command;
 
 use App\Command\Traits\AskItemTrait;
-use App\Entity\Item;
 use App\Entity\Recipe;
 use App\Model\ItemQuantity;
-use App\Repository\ItemRepository;
 use App\Repository\RecipeRepository;
 use App\Service\InventoryService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,14 +21,12 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
     private InventoryService $inventoryService;
 
     public function __construct(
-        EntityManagerInterface $em, RecipeRepository $recipeRepository, InventoryService $inventoryService,
-        ItemRepository $itemRepository
+        EntityManagerInterface $em, RecipeRepository $recipeRepository, InventoryService $inventoryService
     )
     {
         $this->em = $em;
         $this->recipeRepository = $recipeRepository;
         $this->inventoryService = $inventoryService;
-        $this->itemRepository = $itemRepository;
 
         parent::__construct();
     }

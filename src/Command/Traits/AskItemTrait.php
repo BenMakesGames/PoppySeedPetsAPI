@@ -7,8 +7,6 @@ use Symfony\Component\Console\Question\Question;
 
 trait AskItemTrait
 {
-    private ItemRepository $itemRepository;
-
     private function askItem(string $prompt, ?Item $defaultValue): Item
     {
         if($defaultValue)
@@ -22,7 +20,7 @@ trait AskItemTrait
             if($itemName === '' || $itemName === '~')
                 throw new \RuntimeException('Must select an item.');
 
-            $item = $this->itemRepository->findOneBy([ 'name' => $itemName ]);
+            $item = ItemRepository::findOneByName($this->em, $itemName);
             if($item === null)
                 throw new \RuntimeException('There is no Item called "' . $itemName . '".');
 
@@ -44,7 +42,7 @@ trait AskItemTrait
 
             if($itemName === '~') return null;
 
-            $item = $this->itemRepository->findOneBy([ 'name' => $itemName ]);
+            $item = ItemRepository::findOneByName($this->em, $itemName);
             if($item === null)
                 throw new \RuntimeException('There is no Item called "' . $itemName . '".');
 

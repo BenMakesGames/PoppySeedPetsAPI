@@ -1,8 +1,9 @@
 <?php
 namespace App\Service\Typeahead;
 
+use App\Entity\Pet;
 use App\Entity\User;
-use App\Repository\PetRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 
 class PetTypeaheadService extends TypeaheadService
@@ -10,9 +11,9 @@ class PetTypeaheadService extends TypeaheadService
     private ?User $user = null;
     private ?int $speciesId = null;
 
-    public function __construct(PetRepository $petRepository)
+    public function __construct(EntityManagerInterface $em)
     {
-        parent::__construct($petRepository);
+        parent::__construct($em->getRepository(Pet::class));
     }
 
     public function setUser(User $user)
