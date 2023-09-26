@@ -225,7 +225,7 @@ class Music
         'The colors confliiiiiiiiiicteeeed, as the flames climbed into the clouds...',
 
         // Jayme Gutierrez, Like a Tiger
-        'And now it sounds like I\'m straining my voice, but I\'m only really singing very soooftly. I sing the melody right over the beat to distract from any monotonicality.',
+        'And now it sounds like I\'m straining my voice, but I\'m only really singing very soooftly. I sing the melody right over the beat to distract from any monotonicality-y.',
 
         // Junkie XL, Beauty Never Fades
         'Each step I take the shadows grow looongerrr... padded footfalls in the dark I waaanderrr...',
