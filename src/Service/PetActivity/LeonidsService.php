@@ -23,19 +23,17 @@ class LeonidsService
 {
     private IRandom $rng;
     private ResponseService $responseService;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
     private InventoryService $inventoryService;
     private PetExperienceService $petExperienceService;
     private EntityManagerInterface $em;
 
     public function __construct(
-        IRandom $rng, ResponseService $responseService, PetActivityLogTagRepository $petActivityLogTagRepository,
-        InventoryService $inventoryService, PetExperienceService $petExperienceService, EntityManagerInterface $em
+        IRandom $rng, ResponseService $responseService, InventoryService $inventoryService,
+        PetExperienceService $petExperienceService, EntityManagerInterface $em
     )
     {
         $this->rng = $rng;
         $this->responseService = $responseService;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->em = $em;
@@ -54,7 +52,7 @@ class LeonidsService
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Umbra', 'Special Event', 'Leonids' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Umbra', 'Special Event', 'Leonids' ]))
         ;
 
         return $activityLog;
@@ -150,7 +148,7 @@ class LeonidsService
         }
 
         return $activityLog
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Werecreature' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Werecreature' ]))
         ;
     }
 
@@ -163,7 +161,7 @@ class LeonidsService
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
             $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they encountered a large raccoon spirit, gathering Stardust. It snarled at ' . ActivityHelpers::PetName($pet) . ', but they calmed it down, and helped it gather some Stardust (it\'s the Light and Shadow way)! In addition to getting some Stardust of their own, the spirit gave ' . ActivityHelpers::PetName($pet) . ' some Quintesence as thanks!', '')
-                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Guild' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Guild' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Stardust', $pet, $pet->getName() . ' gathered this with a large raccoon spirit they met in the Umbra!', $activityLog);
@@ -182,7 +180,7 @@ class LeonidsService
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
                 $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they encountered a large raccoon spirit, gathering Stardust. It snarled at ' . ActivityHelpers::PetName($pet) . ', but they calmed it down, and helped it gather some Stardust (it\'s the Light and Shadow way)! In addition to getting some Stardust of their own, the spirit gave ' . ActivityHelpers::PetName($pet) . ' some Quintesence as thanks!', '')
-                    ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Fighting' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
                 ;
 
                 $loot = $this->rng->rngNextFromArray([ 'Fluff', 'Talon', 'Quintessence' ]);
@@ -262,7 +260,7 @@ class LeonidsService
         $this->inventoryService->petCollectsItem('Stardust', $pet, $pet->getName() . ' gathered this with some fairies they met in the Umbra!', $activityLog);
 
         return $activityLog
-            ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Fae-kind' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fae-kind' ]))
         ;
     }
 

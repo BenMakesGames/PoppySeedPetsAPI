@@ -17,20 +17,20 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
+use Doctrine\ORM\EntityManagerInterface;
 
 class GatheringHolidayAdventureService
 {
-    private $inventoryService;
-    private $responseService;
-    private $petExperienceService;
-    private $userQuestRepository;
+    private InventoryService $inventoryService;
+    private ResponseService $responseService;
+    private PetExperienceService $petExperienceService;
+    private UserQuestRepository $userQuestRepository;
     private IRandom $squirrel3;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private EntityManagerInterface $em;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3, PetActivityLogTagRepository $petActivityLogTagRepository
+        UserQuestRepository $userQuestRepository, IRandom $squirrel3, EntityManagerInterface $em
     )
     {
         $this->inventoryService = $inventoryService;
@@ -38,7 +38,7 @@ class GatheringHolidayAdventureService
         $this->petExperienceService = $petExperienceService;
         $this->userQuestRepository = $userQuestRepository;
         $this->squirrel3 = $squirrel3;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->em = $em;
     }
 
     private const HOLIDAY_TAGS = [
@@ -113,7 +113,7 @@ class GatheringHolidayAdventureService
         {
             $activityLog
                 ->setChanges($changes->compare($pet))
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Special Event', self::HOLIDAY_TAGS[$holiday] ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Special Event', self::HOLIDAY_TAGS[$holiday] ]))
             ;
         }
 

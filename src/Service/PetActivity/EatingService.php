@@ -28,13 +28,12 @@ use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
-use App\Service\StatusEffectService;
+use App\Service\StatusEffectServiceHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 
 class EatingService
 {
     private IRandom $squirrel3;
-    private StatusEffectService $statusEffectService;
     private CravingService $cravingService;
     private InventoryService $inventoryService;
     private ResponseService $responseService;
@@ -44,14 +43,13 @@ class EatingService
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
-        Squirrel3 $squirrel3, StatusEffectService $statusEffectService, CravingService $cravingService,
+        IRandom $squirrel3, CravingService $cravingService,
         InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
         PetExperienceService $petExperienceService, UserStatsRepository $userStatsRepository,
         PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
         $this->squirrel3 = $squirrel3;
-        $this->statusEffectService = $statusEffectService;
         $this->cravingService = $cravingService;
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
@@ -124,7 +122,7 @@ class EatingService
         if($caffeine > 0)
         {
             $pet->increaseCaffeine($caffeine);
-            $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::CAFFEINATED, $caffeine * 60);
+            StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::CAFFEINATED, $caffeine * 60);
         }
         else if($caffeine < 0)
             $pet->increaseCaffeine($caffeine);
@@ -139,7 +137,7 @@ class EatingService
 
         foreach($food->grantedStatusEffects as $statusEffect)
         {
-            $this->statusEffectService->applyStatusEffect($pet, $statusEffect['effect'], $statusEffect['duration']);
+            StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, $statusEffect['effect'], $statusEffect['duration']);
         }
 
         if($food->grantsSelfReflection)
@@ -407,7 +405,7 @@ class EatingService
             StatusEffectEnum::VIVACIOUS,
         ]);
 
-        $this->statusEffectService->applyStatusEffect($pet, $statusEffect, 8 * 60);
+        StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, $statusEffect, 8 * 60);
 
         return $statusEffect;
     }

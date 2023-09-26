@@ -13,29 +13,26 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
+use Doctrine\ORM\EntityManagerInterface;
 
 class PetSummonedAwayService
 {
     private ResponseService $responseService;
     private InventoryService $inventoryService;
     private PetExperienceService $petExperienceService;
-    private ItemRepository $itemRepository;
     private IRandom $squirrel3;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private EntityManagerInterface $em;
 
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        PetExperienceService $petExperienceService, ItemRepository $itemRepository,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        PetExperienceService $petExperienceService, EntityManagerInterface $em
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
-        $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->em = $em;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -103,7 +100,7 @@ class PetSummonedAwayService
         }
 
         $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned')
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
         ;
 
         $this->petExperienceService->gainExp(
@@ -153,11 +150,11 @@ class PetSummonedAwayService
                 throw new \Exception('Bad random number result.');
         }
 
-        $lootItem = $this->itemRepository->deprecatedFindOneByName($loot);
+        $lootItem = ItemRepository::findOneByName($this->em, $loot);
         $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them made them ' . $activity . '. Once the task was completed, ' . $pet->getName() . ' returned home, still holding ' . $lootItem->getNameWithArticle() . '!';
 
         $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned')
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($tags))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags))
         ;
 
         $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' was summoned by a wizard to ' . $activity . '; they returned home with this!', $activityLog);
@@ -217,7 +214,7 @@ class PetSummonedAwayService
         $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them made them ' . $activity . '. Once the task was completed, ' . $pet->getName() . ' returned home!';
 
         $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned')
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($tags))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags))
         ;
 
         $this->petExperienceService->gainExp($pet, $this->squirrel3->rngNextInt(1, 2), [ $skill ], $activityLog);
@@ -253,7 +250,7 @@ class PetSummonedAwayService
         $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned to ' . $location . '. The wizard that summoned them made them ' . $description . ' until the spell ended, and they were returned home! (At least they managed to pocket some ' . $loot . ' before the spell ended!)';
 
         $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned')
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($tags))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags))
         ;
 
         $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' was summoned by a wizard to do hard labor; while ' . $descriptioning . ', they stole this!', $activityLog);

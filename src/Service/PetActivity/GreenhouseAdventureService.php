@@ -26,13 +26,11 @@ class GreenhouseAdventureService
     private PetExperienceService $petExperienceService;
     private HattierService $hattierService;
     private EntityManagerInterface $em;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     function __construct(
         ResponseService $responseService, InventoryService $inventoryService,
         Squirrel3 $squirrel3, PetExperienceService $petExperienceService,
-        HattierService $hattierService, EntityManagerInterface $em,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        HattierService $hattierService, EntityManagerInterface $em
     )
     {
         $this->responseService = $responseService;
@@ -41,7 +39,6 @@ class GreenhouseAdventureService
         $this->petExperienceService = $petExperienceService;
         $this->hattierService = $hattierService;
         $this->em = $em;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills, GreenhousePlant $plant): PetActivityLog
@@ -90,7 +87,7 @@ class GreenhouseAdventureService
         }
 
         $activityLog
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Greenhouse' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Greenhouse' ]))
             ->setChanges($changes->compare($pet))
         ;
 

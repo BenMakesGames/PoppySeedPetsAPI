@@ -10,7 +10,7 @@ use App\Service\HotPotatoService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
-use App\Service\StatusEffectService;
+use App\Service\StatusEffectServiceHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,8 +27,7 @@ class GlitterBombController extends AbstractController
      */
     public function toss(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        PetRepository $petRepository, Squirrel3 $squirrel3, HotPotatoService $hotPotatoService,
-        StatusEffectService $statusEffectService
+        PetRepository $petRepository, Squirrel3 $squirrel3, HotPotatoService $hotPotatoService
     )
     {
         /** @var User $user */
@@ -44,7 +43,7 @@ class GlitterBombController extends AbstractController
             ]);
 
             foreach($pets as $pet)
-                $statusEffectService->applyStatusEffect($pet, StatusEffectEnum::GLITTER_BOMBED, 12 * 60);
+                StatusEffectServiceHelpers::applyStatusEffect($em, $pet, StatusEffectEnum::GLITTER_BOMBED, 12 * 60);
 
             $em->remove($inventory);
             $em->flush();

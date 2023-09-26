@@ -22,7 +22,7 @@ use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
-use App\Service\StatusEffectService;
+use App\Service\StatusEffectServiceHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 
 class BurntForestService
@@ -31,7 +31,6 @@ class BurntForestService
     private ResponseService $responseService;
     private InventoryService $inventoryService;
     private UserQuestRepository $userQuestRepository;
-    private StatusEffectService $statusEffectService;
     private IRandom $squirrel3;
     private HattierService $hattierService;
     private EntityManagerInterface $em;
@@ -39,7 +38,7 @@ class BurntForestService
 
     public function __construct(
         PetExperienceService $petExperienceService, ResponseService $responseService, InventoryService $inventoryService,
-        UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3, StatusEffectService $statusEffectService,
+        UserQuestRepository $userQuestRepository, IRandom $squirrel3,
         HattierService $hattierService, EntityManagerInterface $em, FieldGuideService $fieldGuideService
     )
     {
@@ -48,7 +47,6 @@ class BurntForestService
         $this->inventoryService = $inventoryService;
         $this->userQuestRepository = $userQuestRepository;
         $this->squirrel3 = $squirrel3;
-        $this->statusEffectService = $statusEffectService;
         $this->hattierService = $hattierService;
         $this->em = $em;
         $this->fieldGuideService = $fieldGuideService;
@@ -173,7 +171,7 @@ class BurntForestService
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Fae-kind' ]))
             ;
 
-            $this->statusEffectService->applyStatusEffect($pet, $this->squirrel3->rngNextFromArray([
+            StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, $this->squirrel3->rngNextFromArray([
                 StatusEffectEnum::INSPIRED, StatusEffectEnum::ONEIRIC, StatusEffectEnum::EXTRA_EXTROVERTED
             ]), 4 * 60);
 

@@ -32,7 +32,7 @@ use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
-use App\Service\StatusEffectService;
+use App\Service\StatusEffectServiceHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 
 class TreasureMapService
@@ -43,14 +43,13 @@ class TreasureMapService
     private EntityManagerInterface $em;
     private PetExperienceService $petExperienceService;
     private UserQuestRepository $userQuestRepository;
-    private StatusEffectService $statusEffectService;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
         EntityManagerInterface $em, PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
-        StatusEffectService $statusEffectService, Squirrel3 $squirrel3, HouseSimService $houseSimService
+        IRandom $squirrel3, HouseSimService $houseSimService
     )
     {
         $this->responseService = $responseService;
@@ -59,7 +58,6 @@ class TreasureMapService
         $this->em = $em;
         $this->petExperienceService = $petExperienceService;
         $this->userQuestRepository = $userQuestRepository;
-        $this->statusEffectService = $statusEffectService;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
     }
@@ -287,7 +285,7 @@ class TreasureMapService
         ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
-        $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::EGGPLANT_CURSED, $this->squirrel3->rngNextInt(24, 48) * 60);
+        StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::EGGPLANT_CURSED, $this->squirrel3->rngNextInt(24, 48) * 60);
 
         $pet
             ->increaseEsteem(-$this->squirrel3->rngNextInt(4, 8))

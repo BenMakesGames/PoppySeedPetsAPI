@@ -8,27 +8,17 @@ use App\Enum\MeritEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\EquipmentFunctions;
+use App\Functions\PetActivityLogFactory;
 use Doctrine\ORM\EntityManagerInterface;
 
-class StatusEffectService
+final class StatusEffectServiceHelpers
 {
-    private EntityManagerInterface $em;
-    private ResponseService $responseService;
-
-    public function __construct(
-        EntityManagerInterface $em, ResponseService $responseService
-    )
-    {
-        $this->em = $em;
-        $this->responseService = $responseService;
-    }
-
-    public function applyStatusEffect(Pet $pet, string $status, int $durationInMinutes)
+    public static function applyStatusEffect(EntityManagerInterface $em, Pet $pet, string $status, int $durationInMinutes)
     {
         if(($status == StatusEffectEnum::BITTEN_BY_A_WERECREATURE || $status == StatusEffectEnum::WEREFORM) && $pet->hasMerit(MeritEnum::SILVERBLOOD))
             return;
 
-        $maxDuration = StatusEffectService::getStatusEffectMaxDuration($status);
+        $maxDuration = StatusEffectServiceHelpers::getStatusEffectMaxDuration($status);
 
         $statusEffect = $pet->getStatusEffect($status);
 
@@ -39,7 +29,7 @@ class StatusEffectService
 
             $pet->addStatusEffect($statusEffect);
 
-            $this->em->persist($statusEffect);
+            $em->persist($statusEffect);
         }
 
         $statusEffect
@@ -74,9 +64,9 @@ class StatusEffectService
             }
 
             if(count($itemsDropped) > 0)
-                $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% turned into a Werecreature, and immediately dropped their ' . ArrayFunctions::list_nice($itemsDropped) . '!', '');
+                PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% turned into a Werecreature, and immediately dropped their ' . ArrayFunctions::list_nice($itemsDropped) . '!');
             else
-                $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% turned into a Werecreature!', '');
+                PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% turned into a Werecreature!');
         }
         else if(mb_substr($status, 0, 8) === 'Focused ')
         {

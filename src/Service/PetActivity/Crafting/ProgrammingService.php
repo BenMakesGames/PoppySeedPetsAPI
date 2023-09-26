@@ -31,7 +31,7 @@ use App\Service\PetExperienceService;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
-use App\Service\StatusEffectService;
+use App\Service\StatusEffectServiceHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ProgrammingService
@@ -40,7 +40,6 @@ class ProgrammingService
     private InventoryService $inventoryService;
     private PetExperienceService $petExperienceService;
     private IRandom $squirrel3;
-    private StatusEffectService $statusEffectService;
     private HouseSimService $houseSimService;
     private HattierService $hattierService;
     private FieldGuideService $fieldGuideService;
@@ -50,8 +49,7 @@ class ProgrammingService
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
-        PetExperienceService $petExperienceService, StatusEffectService $statusEffectService,
-        HouseSimService $houseSimService, HattierService $hattierService,
+        PetExperienceService $petExperienceService, HouseSimService $houseSimService, HattierService $hattierService,
         FieldGuideService $fieldGuideService, PetActivityLogTagRepository $petActivityLogTagRepository,
         PetFactory $petFactory, EntityManagerInterface $em
     )
@@ -60,7 +58,6 @@ class ProgrammingService
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->squirrel3 = $squirrel3;
-        $this->statusEffectService = $statusEffectService;
         $this->houseSimService = $houseSimService;
         $this->hattierService = $hattierService;
         $this->fieldGuideService = $fieldGuideService;
@@ -1430,7 +1427,7 @@ class ProgrammingService
         if($roll === 1)
         {
             $pet->increaseSafety(-6);
-            $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
+            StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Bermuda Triangle, but accidentally hexed themselves, instead! :(', '')
                 ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Physics', 'Smithing' ]))

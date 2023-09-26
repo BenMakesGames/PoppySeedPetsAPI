@@ -94,7 +94,6 @@ class PetActivityService
     private ChocolateMansion $chocolateMansion;
     private Caerbannog $caerbannog;
     private CravingService $cravingService;
-    private StatusEffectService $statusEffectService;
     private EatingService $eatingService;
     private HouseSimService $houseSimService;
     private SmithingService $smithingService;
@@ -117,11 +116,10 @@ class PetActivityService
         MagicBeanstalkService $beanStalkService, GatheringHolidayAdventureService $gatheringHolidayAdventureService,
         GuildService $guildService, BurntForestService $burntForestService, InventoryService $inventoryService,
         DeepSeaService $deepSeaService, NotReallyCraftsService $notReallyCraftsService, LetterService $letterService,
-        Caerbannog $caerbannog, TreasureMapService $treasureMapService,
-        StatusEffectService $statusEffectService, EatingService $eatingService, HouseSimService $houseSimService,
-        MagicBindingService $magicBindingService, SmithingService $smithingService, CravingService $cravingService,
-        PlasticPrinterService $plasticPrinterService, PhilosophersStoneService $philosophersStoneService,
-        KappaService $kappaService
+        Caerbannog $caerbannog, TreasureMapService $treasureMapService, EatingService $eatingService,
+        HouseSimService $houseSimService, MagicBindingService $magicBindingService, SmithingService $smithingService,
+        CravingService $cravingService, PlasticPrinterService $plasticPrinterService,
+        PhilosophersStoneService $philosophersStoneService, KappaService $kappaService
     )
     {
         $this->clock = $clock;
@@ -157,7 +155,6 @@ class PetActivityService
         $this->chocolateMansion = $chocolateMansion;
         $this->caerbannog = $caerbannog;
         $this->cravingService = $cravingService;
-        $this->statusEffectService = $statusEffectService;
         $this->eatingService = $eatingService;
         $this->houseSimService = $houseSimService;
         $this->magicBindingService = $magicBindingService;
@@ -429,7 +426,7 @@ class PetActivityService
             !$pet->hasStatusEffect(StatusEffectEnum::WEREFORM)
         )
         {
-            $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::WEREFORM, 1);
+            StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::WEREFORM, 1);
         }
 
         if($pet->hasStatusEffect(StatusEffectEnum::OIL_COVERED))
