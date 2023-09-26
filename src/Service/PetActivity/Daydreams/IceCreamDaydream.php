@@ -52,6 +52,7 @@ class IceCreamDaydream
 
         $log
             ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Dream' ]))
+            ->setIcon('icons/status-effect/daydream-ice-cream')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ->setChanges($changes->compare($pet));
 

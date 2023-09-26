@@ -59,6 +59,7 @@ class FoodFightDaydream
 
         $log
             ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Dream' ]))
+            ->setIcon('icons/status-effect/daydream-food-fight')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ->setChanges($changes->compare($pet));
 
