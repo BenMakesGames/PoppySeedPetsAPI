@@ -3,6 +3,7 @@ namespace App\Service\PetActivity\Daydreams;
 
 use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
@@ -51,6 +52,7 @@ class IceCreamDaydream
 
         $log
             ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Dream' ]))
+            ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ->setChanges($changes->compare($pet));
 
         return $log;

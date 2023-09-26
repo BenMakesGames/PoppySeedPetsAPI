@@ -104,12 +104,12 @@ class StatusEffect
     {
         // these status effects don't go away unless/until something SPECIAL happens:
         if(in_array($this->status, [
-            StatusEffectEnum::ONEIRIC,
-            StatusEffectEnum::GOBBLE_GOBBLE,
             StatusEffectEnum::BUBBLEGUMD,
             StatusEffectEnum::OIL_COVERED,
+
             StatusEffectEnum::BITTEN_BY_A_WERECREATURE,
             StatusEffectEnum::WEREFORM,
+
             StatusEffectEnum::FOCUSED_NATURE,
             StatusEffectEnum::FOCUSED_SCIENCE,
             StatusEffectEnum::FOCUSED_STEALTH,
@@ -117,9 +117,14 @@ class StatusEffect
             StatusEffectEnum::FOCUSED_CRAFTS,
             StatusEffectEnum::FOCUSED_BRAWL,
             StatusEffectEnum::FOCUSED_MUSIC,
-            StatusEffectEnum::LAPINE_WHISPERS,
+
             StatusEffectEnum::DAYDREAM_ICE_CREAM,
             StatusEffectEnum::DAYDREAM_PIZZA,
+            StatusEffectEnum::DAYDREAM_FOOD_FIGHT,
+
+            StatusEffectEnum::LAPINE_WHISPERS,
+            StatusEffectEnum::ONEIRIC,
+            StatusEffectEnum::GOBBLE_GOBBLE,
         ]))
         {
             return $this;

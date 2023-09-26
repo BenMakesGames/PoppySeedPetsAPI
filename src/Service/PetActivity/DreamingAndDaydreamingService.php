@@ -7,6 +7,7 @@ use App\Enum\MeritEnum;
 use App\Enum\StatusEffectEnum;
 use App\Model\ComputedPetSkills;
 use App\Service\IRandom;
+use App\Service\PetActivity\Daydreams\FoodFightDaydream;
 use App\Service\PetActivity\Daydreams\IceCreamDaydream;
 use App\Service\PetActivity\Daydreams\PizzaDaydream;
 
@@ -15,16 +16,18 @@ class DreamingAndDaydreamingService
     private DreamingService $dreamingService;
     private IceCreamDaydream $iceCreamDaydream;
     private PizzaDaydream $pizzaDaydream;
+    private FoodFightDaydream $foodFightDaydream;
     private IRandom $squirrel3;
 
     public function __construct(
         DreamingService $dreamingService, IceCreamDaydream $iceCreamDaydream, PizzaDaydream $pizzaDaydream,
-        IRandom $squirrel3
+        IRandom $squirrel3, FoodFightDaydream $foodFightDaydream
     )
     {
         $this->dreamingService = $dreamingService;
         $this->iceCreamDaydream = $iceCreamDaydream;
         $this->pizzaDaydream = $pizzaDaydream;
+        $this->foodFightDaydream = $foodFightDaydream;
         $this->squirrel3 = $squirrel3;
     }
 
@@ -80,6 +83,13 @@ class DreamingAndDaydreamingService
         {
             $this->pizzaDaydream->doAdventure($petWithSkills);
             $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::DAYDREAM_PIZZA));
+            return true;
+        }
+
+        if($pet->hasStatusEffect(StatusEffectEnum::DAYDREAM_FOOD_FIGHT))
+        {
+            $this->foodFightDaydream->doAdventure($petWithSkills);
+            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::DAYDREAM_FOOD_FIGHT));
             return true;
         }
 

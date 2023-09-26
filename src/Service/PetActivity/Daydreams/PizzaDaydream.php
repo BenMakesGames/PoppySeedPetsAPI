@@ -6,6 +6,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
 use App\Enum\MeritEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
@@ -63,6 +64,7 @@ class PizzaDaydream
 
         $log
             ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Dream' ]))
+            ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ->setChanges($changes->compare($pet));
 
         return $log;
@@ -153,7 +155,9 @@ class PizzaDaydream
 
         if($pet->hasMerit(MeritEnum::GOURMAND))
         {
-            $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' daydreamed they were exploring a planet made of pizza. They stayed for a while, ate (a true Gourmand!), and picked up various toppings: ' . ArrayFunctions::list_nice($loot) . '. When they snapped back to reality, they had everything they picked up in the daydream!');
+            $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' daydreamed they were exploring a planet made of pizza. They stayed for a while, ate (a true Gourmand!), and picked up various toppings: ' . ArrayFunctions::list_nice($loot) . '. When they snapped back to reality, they had everything they picked up in the daydream!')
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gourmand', 'Eating' ]));
+
             $pet->increaseFood(8);
         }
         else
@@ -188,7 +192,8 @@ class PizzaDaydream
 
         if($pet->hasMerit(MeritEnum::GOURMAND))
         {
-            $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' daydreamed they were on a conveyor belt in a pizza factory making bubblegum pizzas. When they got under a giant nozzle dispensing bubblegum sauce, they opened wide and guzzled it down (a true Gourmand!), getting covered in bubblegum sauce in the process. When they snapped back to reality, they were covered in bubblegum!');
+            $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' daydreamed they were on a conveyor belt in a pizza factory making bubblegum pizzas. When they got under a giant nozzle dispensing bubblegum sauce, they opened wide and guzzled it down (a true Gourmand!), getting covered in bubblegum sauce in the process. When they snapped back to reality, they were covered in bubblegum!')
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gourmand', 'Eating' ]));
 
             $pet->increaseFood(8);
         }

@@ -1,0 +1,192 @@
+<?php
+
+namespace App\Service\PetActivity\Daydreams;
+
+use App\Entity\Pet;
+use App\Entity\PetActivityLog;
+use App\Entity\PetRelationship;
+use App\Enum\MeritEnum;
+use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityStatEnum;
+use App\Enum\PetSkillEnum;
+use App\Enum\StatusEffectEnum;
+use App\Functions\ActivityHelpers;
+use App\Functions\ArrayFunctions;
+use App\Functions\PetActivityLogFactory;
+use App\Model\ComputedPetSkills;
+use App\Model\PetChanges;
+use App\Repository\PetActivityLogTagRepository;
+use App\Service\InventoryService;
+use App\Service\IRandom;
+use App\Service\PetExperienceService;
+use App\Service\StatusEffectService;
+use App\Service\TransactionService;
+use Doctrine\ORM\EntityManagerInterface;
+
+class FoodFightDaydream
+{
+    private IRandom $rng;
+    private EntityManagerInterface $em;
+    private InventoryService $inventoryService;
+    private PetExperienceService $petExperienceService;
+
+    public function __construct(
+        IRandom $rng, EntityManagerInterface $em, InventoryService $inventoryService,
+        PetExperienceService $petExperienceService
+    )
+    {
+        $this->rng = $rng;
+        $this->em = $em;
+        $this->inventoryService = $inventoryService;
+        $this->petExperienceService = $petExperienceService;
+    }
+
+    public function doAdventure(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $changes = new PetChanges($pet);
+
+        switch($this->rng->rngNextInt(1, 4))
+        {
+            case 1: $log = $this->doChocolateDragon($petWithSkills); break;
+            case 2: $log = $this->doCombatOnPowderedSugarBeach($petWithSkills); break;
+            case 3: $log = $this->doPuddingBeastsInCustardCanyon($petWithSkills); break;
+            case 4: $log = $this->doVegetableWarriors($petWithSkills); break;
+            default: throw new \Exception("Unknown Pizza Day Dream adventure! (Ben screwed up!)");
+        }
+
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+
+        $log
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Dream' ]))
+            ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ->setChanges($changes->compare($pet));
+
+        return $log;
+    }
+
+    private function doChocolateDragon(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        if($pet->hasMerit(MeritEnum::GOURMAND))
+        {
+            $log = PetActivityLogFactory::createUnreadLog(
+                $this->em,
+                $petWithSkills->getPet(),
+                ActivityHelpers::PetName($pet) . ' daydreamed they encountered a chocolate dragon! It roared and flapped its wings menacingly, but ' . ActivityHelpers::PetName($pet) . ' just started eating it, starting with its legs! (Ah~! A true Gourmand!) Midway into finishing the dragon, ' . ActivityHelpers::PetName($pet) . ' snapped back to reality, a piece of the dragon still in their hands...');
+
+            $log->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gourmand', 'Eating' ]));
+
+            $pet->increaseFood(8)->increaseEsteem(4);
+
+            $this->inventoryService->petCollectsItem('Chocolate Bar', $pet, 'The remains of a chocolate dragon which ' . $pet->getName() . ' ate in a daydream.', $log);
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $log);
+
+            return $log;
+        }
+
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal());
+
+        if($roll >= 15)
+        {
+            $log = PetActivityLogFactory::createUnreadLog(
+                $this->em,
+                $petWithSkills->getPet(),
+                ActivityHelpers::PetName($pet) . ' daydreamed they encountered a chocolate dragon! The two battled fiercely, but ' . ActivityHelpers::PetName($pet) . ' was victorious! When they snapped back to reality, they were surrounded by chocolately dragon remains...');
+
+            $this->inventoryService->petCollectsItem('Chocolate Bar', $pet, 'The remains of a chocolate dragon which ' . $pet->getName() . ' defeated in a daydream.', $log);
+
+            switch($this->rng->rngNextInt(1, 3))
+            {
+                case 1:
+                    $this->inventoryService->petCollectsItem('Spicy Chocolate Bar', $pet, 'The remains of a chocolate dragon which ' . $pet->getName() . ' defeated in a daydream.', $log);
+                    break;
+                case 2:
+                    $this->inventoryService->petCollectsItem('Chocomilk', $pet, 'The "blood" of a chocolate dragon which ' . $pet->getName() . ' defeated in a daydream.', $log);
+                    break;
+                case 3:
+                    $this->inventoryService->petCollectsItem('Chocolate Cue Ball', $pet, 'The, uh, \*cough\* _remains_ of a chocolate dragon which ' . $pet->getName() . ' defeated in a daydream.', $log);
+                    break;
+            }
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $log);
+            $pet->increaseEsteem(4);
+
+            return $log;
+        }
+        else
+        {
+            $log = PetActivityLogFactory::createUnreadLog(
+                $this->em,
+                $petWithSkills->getPet(),
+                ActivityHelpers::PetName($pet) . ' daydreamed they encountered a chocolate dragon! The two battled fiercely, but a giant piece of the dragon fell on ' . ActivityHelpers::PetName($pet) . ', causing them to snap back to reality...');
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $log);
+
+            $this->inventoryService->petCollectsItem('Chocolate Bar', $pet, 'A piece of a chocolate dragon than fell on ' . $pet->getName() . ' in a daydream.', $log);
+
+            return $log;
+        }
+    }
+
+    private function doCombatOnPowderedSugarBeach(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $log = PetActivityLogFactory::createUnreadLog(
+            $this->em,
+            $petWithSkills->getPet(),
+            ActivityHelpers::PetName($pet) . ' daydreamed they were on a moonlit beach of powdered sugar, dancing a swirling duel against an opponent. With every step, powdered sugar was kicked up into the air. ' . ActivityHelpers::PetName($pet) . '\'s vision went white, then they snapped back to reality, sugar falling off their body.');
+
+        $this->inventoryService->petCollectsItem('Sugar', $pet, $pet->getName() . ' got covered by this in a daydream.', $log);
+        $this->inventoryService->petCollectsItem('Sugar', $pet, $pet->getName() . ' got covered by this in a daydream.', $log);
+
+        if($this->rng->rngNextBool())
+            $this->inventoryService->petCollectsItem('Sugar', $pet, $pet->getName() . ' got covered by this in a daydream.', $log);
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $log);
+
+        return $log;
+    }
+
+    private function doPuddingBeastsInCustardCanyon(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $possibleLoot = [
+            'Mango Pudding', 'Naner Puddin\'', 'Rice Puddin\'',
+            'Caramel', 'Caramel'
+        ];
+
+        $loot = $this->rng->rngNextSubsetFromArray($possibleLoot, $this->rng->rngNextInt(1, $this->rng->rngNextInt(2, 3)));
+
+        $log = PetActivityLogFactory::createUnreadLog(
+            $this->em,
+            $petWithSkills->getPet(),
+            ActivityHelpers::PetName($pet) . ' daydreamed they were trekking through a treacherous canyon, battling pudding beasts and caramel creatures that lurked in the shadows! When they snapped back to reality, they were holding ' . ArrayFunctions::list_nice($loot) . '!');
+
+        foreach($loot as $itemName)
+            $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in a daydream.', $log);
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $log);
+
+        return $log;
+    }
+
+    private function doVegetableWarriors(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $log = PetActivityLogFactory::createUnreadLog(
+            $this->em,
+            $petWithSkills->getPet(),
+            ActivityHelpers::PetName($pet) . ' daydreamed they were in a vast, echoing hall; warriors stood poised with delicate fans that, when unfurled, had the gleam and sharpness of knife-sliced vegetables. ' . ActivityHelpers::PetName($pet) . ' grabbed some of the vegetables, then snapped back to reality, vegetables still in hand.');
+
+        $this->inventoryService->petCollectsItem('Pickled Veggie Slices', $pet, $pet->getName() . ' found this in a daydream.', $log);
+        $this->inventoryService->petCollectsItem('Pickled Veggie Slices', $pet, $pet->getName() . ' found this in a daydream.', $log);
+
+        return $log;
+    }
+}
