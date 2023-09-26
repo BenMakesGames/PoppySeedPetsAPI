@@ -98,15 +98,22 @@ class FoodFightDaydream
 
             $this->inventoryService->petCollectsItem('Chocolate Bar', $pet, 'The remains of a chocolate dragon which ' . $pet->getName() . ' defeated in a daydream.', $log);
 
-            switch($this->rng->rngNextInt(1, 3))
+            switch($this->rng->rngNextInt(1, 5))
             {
                 case 1:
+                case 2:
+                    $this->inventoryService->petCollectsItem('Cocoa Powder', $pet, 'The remains of a chocolate dragon which ' . $pet->getName() . ' defeated in a daydream.', $log);
                     $this->inventoryService->petCollectsItem('Spicy Chocolate Bar', $pet, 'The remains of a chocolate dragon which ' . $pet->getName() . ' defeated in a daydream.', $log);
                     break;
-                case 2:
+
+                case 3:
+                case 4:
+                    $this->inventoryService->petCollectsItem('Cocoa Powder', $pet, 'The remains of a chocolate dragon which ' . $pet->getName() . ' defeated in a daydream.', $log);
                     $this->inventoryService->petCollectsItem('Chocomilk', $pet, 'The "blood" of a chocolate dragon which ' . $pet->getName() . ' defeated in a daydream.', $log);
                     break;
-                case 3:
+
+                case 5:
+                    $this->inventoryService->petCollectsItem('Chocolate Cue Ball', $pet, 'The, uh, \*cough\* _remains_ of a chocolate dragon which ' . $pet->getName() . ' defeated in a daydream.', $log);
                     $this->inventoryService->petCollectsItem('Chocolate Cue Ball', $pet, 'The, uh, \*cough\* _remains_ of a chocolate dragon which ' . $pet->getName() . ' defeated in a daydream.', $log);
                     break;
             }
