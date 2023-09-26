@@ -119,6 +119,7 @@ class StatusEffect
             StatusEffectEnum::FOCUSED_MUSIC,
             StatusEffectEnum::LAPINE_WHISPERS,
             StatusEffectEnum::DAYDREAM_ICE_CREAM,
+            StatusEffectEnum::DAYDREAM_PIZZA,
         ]))
         {
             return $this;

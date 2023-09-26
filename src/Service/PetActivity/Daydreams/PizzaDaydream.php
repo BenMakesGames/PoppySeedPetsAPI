@@ -91,15 +91,15 @@ class PizzaDaydream
         // do the stuff for the daydreamed-about pet:
         if($pet->getOwner()->getId() !== $otherPet->getOwner()->getId())
         {
-            $this->transactionService->getMoney($pet->getOwner(), 2, $otherPet->getName() . ' received a tip for delivering a pizza in a daydream... which was also apparently real?!?');
+            $this->transactionService->getMoney($otherPet->getOwner(), 2, $otherPet->getName() . ' received a tip for delivering a pizza in a dream... which was also apparently real?!?');
 
-            PetActivityLogFactory::createUnreadLog($this->em, $otherPet, ActivityHelpers::PetName($otherPet) . ' dreamed they delivered a pizza to ' . ActivityHelpers::PetName($pet) . ', and received a 2~~m~~ tip. When they woke up, they were holding the 2~~m~~!')
+            PetActivityLogFactory::createUnreadLog($this->em, $otherPet, ActivityHelpers::PetName($otherPet) . ' dreamed they delivered a pizza to ' . ActivityHelpers::PetName($pet) . ', who tipped them 2~~m~~. When they woke up, they were holding the 2~~m~~!')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Dream' ]))
             ;
         }
         else
         {
-            PetActivityLogFactory::createReadLog($this->em, $otherPet, ActivityHelpers::PetName($otherPet) . ' dreamed they delivered a pizza to ' . ActivityHelpers::PetName($pet) . ', and received a 2~~m~~ tip. When they woke up, they were holding the 2~~m~~!')
+            PetActivityLogFactory::createReadLog($this->em, $otherPet, ActivityHelpers::PetName($otherPet) . ' dreamed they delivered a pizza to ' . ActivityHelpers::PetName($pet) . ', who tipped them 2~~m~~. When they woke up, they were holding the 2~~m~~!')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Dream' ]))
             ;
         }
@@ -158,7 +158,9 @@ class PizzaDaydream
         }
         else
         {
-            $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' daydreamed they were exploring a planet made of pizza. While they explored, they picked up several toppings: ' . ArrayFunctions::list_nice($loot) . '. When they snapped back to reality, they had everything they picked up in the daydream!');
+            $quantityDescription = count($loot) === 1 ? 'a topping' : 'some toppings';
+
+            $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' daydreamed they were exploring a planet made of pizza. While they explored, they picked up ' . $quantityDescription . ': ' . ArrayFunctions::list_nice($loot) . '. When they snapped back to reality, they had everything they picked up in the daydream!');
         }
 
         foreach($loot as $itemName)
@@ -203,9 +205,9 @@ class PizzaDaydream
 
     private static function getRandomFriend(EntityManagerInterface $em, IRandom $rng, Pet $pet): ?Pet
     {
-        $relationshipCount = (int)$em->getRepository(PetRelationship::class)->createQueryBuilder('r')
+        $relationshipCount = (int)$em->createQueryBuilder()
             ->select('COUNT(r.id)')
-            ->leftJoin('r.relationship', 'friend')
+            ->from(PetRelationship::class, 'r')
             ->andWhere('r.pet=:pet')
             ->setParameter('pet', $pet)
             ->getQuery()
@@ -217,14 +219,15 @@ class PizzaDaydream
 
         $offset = $relationshipCount == 1 ? 0 : $rng->rngNextInt(0, $relationshipCount - 1);
 
-        return $em->getRepository(PetRelationship::class)->createQueryBuilder('r')
-            ->select('friend')
-            ->leftJoin('r.relationship', 'friend')
+        $relationship = $em->getRepository(PetRelationship::class)->createQueryBuilder('r')
+            ->join('r.relationship', 'f')
             ->andWhere('r.pet=:pet')
             ->setParameter('pet', $pet)
             ->setMaxResults(1)
             ->setFirstResult($offset)
             ->getQuery()
             ->getSingleResult();
+
+        return $relationship->getRelationship();
     }
 }
