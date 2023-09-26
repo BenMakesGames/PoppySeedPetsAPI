@@ -25,7 +25,7 @@ class Music
         'Perfect circles, three-sided squares, and two nested pairs with just one number; Issac Newton\'s fourth law of motion; rivers and oceans on the mooooon...',
 
         // Nano Nano
-        'Nano naaanooo, naaaanoooo - what a wonderful surprise! The ordinary is extraordinary when you make it nano size!',
+        'Nano naaanooo, naaaanoooo - what a wonderful surpriiise! The ordinary is extraordinary when you make it nano siiize!',
 
         // Homestar Runner
         'I don\'t know... who it is... but it probably is Fhqwhgaaaaads. I asked my friend Joe; I asked my friend Jake: they said it was Fhqwhgads!',
@@ -244,5 +244,8 @@ class Music
 
         // Daft Punk
         'Music\'s got me feeling so free, we\'re gonna celebrate - celebrate and dance so free. One more time...',
+
+        // Moldy Peaches
+        'I kiss you on the brain in the shadow of a train; kiss you all starry-eyed, my body\'s swingin\' from side to side. I don\'t see what anyone can see in anyone else... bu-ut you...',
     ];
 }
