@@ -20,6 +20,7 @@ use App\Model\TraderOfferCostOrYield;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MuseumItemRepository;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 
 class TraderService
@@ -93,11 +94,12 @@ class TraderService
     private MuseumItemRepository $museumItemRepository;
     private Clock $clock;
     private EntityManagerInterface $em;
+    private CacheHelper $cache;
 
     public function __construct(
         InventoryService $inventoryService, TransactionService $transactionService, IRandom $squirrel3,
         InventoryRepository $inventoryRepository, MuseumItemRepository $museumItemRepository, Clock $clock,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, CacheHelper $cache
     )
     {
         $this->inventoryService = $inventoryService;
@@ -107,6 +109,7 @@ class TraderService
         $this->museumItemRepository = $museumItemRepository;
         $this->clock = $clock;
         $this->em = $em;
+        $this->cache = $cache;
     }
 
     /**
@@ -590,38 +593,51 @@ class TraderService
         ];
     }
 
+    private function getSpecialOfferItemsAndPrices(int $offers): array
+    {
+        if($offers <= 0) return [];
+
+        return $this->cache->getOrCompute(
+            'Trader Special Offers ' . $this->clock->now->format('Y-m-d'),
+            \DateInterval::createFromDateString('1 day'),
+            fn() => $this->computeSpecialOfferItemsAndPrices($offers)
+        );
+    }
+
+    private function computeSpecialOfferItemsAndPrices(int $offers)
+    {
+        $results = [];
+
+        $uniqueOfferItems = $this->findItemsForDailySpecialOffers($offers);
+
+        foreach($uniqueOfferItems as $uniqueOfferItem)
+        {
+            $averageValue = $this->em->getRepository(DailyMarketItemAverage::class)->createQueryBuilder('a')
+                ->select('AVG(a.averagePrice) AS averagePrice, COUNT(a.id) AS count')
+                ->andWhere('a.item=:item')->setParameter('item', $uniqueOfferItem->getId())
+                ->andWhere('a.date >= :date')->setParameter('date', $this->clock->now->modify('-3 months'))
+                ->getQuery()
+                ->getSingleResult(AbstractQuery::HYDRATE_ARRAY);
+
+            $computedValue = $uniqueOfferItem->getRecycleValue() * 1.3334 + $uniqueOfferItem->getMuseumPoints() * 0.5;
+
+            $value = (int)($averageValue['count'] < 28 == 0 ? $computedValue : ceil(($averageValue['averagePrice'] + $computedValue) / 2));
+
+            $results[] = [
+                'item' => $uniqueOfferItem,
+                'value' => $value
+            ];
+        }
+
+        return $results;
+    }
+
     /**
      * @return TraderOffer[]
      */
     private function getSpecialOffers(User $user, array $quantities): array
     {
         $offers = [];
-
-        $uniqueOfferItems = $this->findThreeForSpecialTraderOffer($user->getDailySeed());
-
-        foreach($uniqueOfferItems as $uniqueOfferItem)
-        {
-            $averagePlayerValue = $this->em->getRepository(DailyMarketItemAverage::class)->createQueryBuilder('a')
-                ->select('AVG(a.averagePrice)')
-                ->andWhere('a.item=:item')->setParameter('item', $uniqueOfferItem->getId())
-                ->andWhere('a.date >= :date')->setParameter('date', $this->clock->now->modify('-3 months'))
-                ->getQuery()
-                ->getSingleScalarResult();
-
-            $computedValue = $uniqueOfferItem->getRecycleValue() * 1.3334 + $uniqueOfferItem->getMuseumPoints() * 0.5;
-
-            $offers[] = TraderOffer::createTradeOffer(
-                [
-                    TraderOfferCostOrYield::createItem($uniqueOfferItem, 1),
-                ],
-                [
-                    TraderOfferCostOrYield::createMoney((int)ceil(($averagePlayerValue + $computedValue) / 2)),
-                ],
-                'It\'s a special offer, just for you.',
-                $user,
-                $quantities
-            );
-        }
 
         if(CalendarFunctions::isPsyPetsBirthday($this->clock->now))
         {
@@ -777,32 +793,53 @@ class TraderService
             );
         }
 
+        $uniqueOffers = $this->getSpecialOfferItemsAndPrices(self::NUMBER_OF_DAILY_SPECIAL_OFFERS - count($offers));
+
+        foreach($uniqueOffers as $uniqueOffer)
+        {
+            $offers[] = TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createItem($uniqueOffer['item'], 1),
+                ],
+                [
+                    TraderOfferCostOrYield::createMoney($uniqueOffer['value']),
+                ],
+                'It\'s a special offer, just for you.',
+                $user,
+                $quantities
+            );
+        }
+
         return $offers;
     }
+
+    public const NUMBER_OF_DAILY_SPECIAL_OFFERS = 5;
 
     /**
      * @return Item[]
      */
-    public function findThreeForSpecialTraderOffer(int $seed): array
+    public function findItemsForDailySpecialOffers(int $offers): array
     {
         $count = $this->em->getRepository(Item::class)->createQueryBuilder('i')
             ->select('COUNT(i)')
             ->andWhere('i.recycleValue > 0')
             ->andWhere('i.treasure IS NULL')
-            ->andWhere('i.fuel = 0')
+            ->andWhere('i.fuel < 4')
+            ->andWhere('i.fertilizer < 4')
             ->getQuery()
             ->getSingleScalarResult()
         ;
 
-        $random = ($seed * 514229) % ($count - 2);
+        $random = (($this->clock->now->format('Ymd') - 20040404) * 6737 + 76801) % ($count - $offers + 1);
 
         return $this->em->getRepository(Item::class)->createQueryBuilder('i')
             ->andWhere('i.recycleValue > 0')
             ->andWhere('i.treasure IS NULL')
-            ->andWhere('i.fuel = 0')
+            ->andWhere('i.fuel < 4')
+            ->andWhere('i.fertilizer < 4')
             ->orderBy('i.id', 'ASC')
             ->setFirstResult($random)
-            ->setMaxResults(3)
+            ->setMaxResults($offers)
             ->getQuery()
             ->execute()
         ;
