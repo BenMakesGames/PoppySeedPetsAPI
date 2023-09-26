@@ -241,5 +241,8 @@ class Music
 
         // MINMI, Song of Four Seasons
         'Haru wo tsuge! Odoridasu sansai... Satsu wo miru ugi! Nohara karakusa kawaku wa...',
+
+        // Daft Punk
+        'Music\'s got me feeling so free, we\'re gonna celebrate - celebrate and dance so free. One more time...',
     ];
 }
