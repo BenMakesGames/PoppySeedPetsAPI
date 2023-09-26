@@ -1,6 +1,7 @@
 <?php
 namespace App\Service;
 
+use App\Entity\DailyMarketItemAverage;
 use App\Entity\Item;
 use App\Entity\Trader;
 use App\Entity\TradesUnlocked;
@@ -600,12 +601,21 @@ class TraderService
 
         foreach($uniqueOfferItems as $uniqueOfferItem)
         {
+            $averagePlayerValue = $this->em->getRepository(DailyMarketItemAverage::class)->createQueryBuilder('a')
+                ->select('AVG(a.averagePrice)')
+                ->andWhere('a.item=:item')->setParameter('item', $uniqueOfferItem->getId())
+                ->andWhere('a.date >= :date')->setParameter('date', $this->clock->now->modify('-3 months'))
+                ->getQuery()
+                ->getSingleScalarResult();
+
+            $computedValue = $uniqueOfferItem->getRecycleValue() * 1.3334 + $uniqueOfferItem->getMuseumPoints() * 0.5;
+
             $offers[] = TraderOffer::createTradeOffer(
                 [
                     TraderOfferCostOrYield::createItem($uniqueOfferItem, 1),
                 ],
                 [
-                    TraderOfferCostOrYield::createMoney((int)($uniqueOfferItem->getRecycleValue() * 1.3334)),
+                    TraderOfferCostOrYield::createMoney((int)ceil(($averagePlayerValue + $computedValue) / 2)),
                 ],
                 'It\'s a special offer, just for you.',
                 $user,
