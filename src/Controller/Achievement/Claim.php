@@ -12,8 +12,8 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Model\TraderOfferCostOrYield;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,7 +33,7 @@ final class Claim extends AbstractController
     public function claim(
         ResponseService $responseService, Request $request, EntityManagerInterface $em,
         UserStatsRepository $userStatsRepository, InventoryService $inventoryService,
-        TransactionService $transactionService, Squirrel3 $rng
+        TransactionService $transactionService, IRandom $rng
     )
     {
         /** @var User $user */
