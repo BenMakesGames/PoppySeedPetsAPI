@@ -52,8 +52,9 @@ class Music
         // Katzenjammer, Demon Kitty Rag
         'I\'ll be your nightmare mirror! Dubba-do-what you did do-do to meeeee - ahahahaha! I\'ll be your nightmare mirorrrrr-oh-oh-or... colder than a steel blade, yeah...',
 
-        // Pogo, Data & Picard
+        // Pogo, Data & Picard, and Boy & Bear
         'Incredibly unbroken sentence; moving from topic to topic; no one had a chance to interrupt. It was quite hypnotic.',
+        'Dum-dee-dum deeee dum-dum. Dum-dee-dum deeee dum-dum. When I\'m with you, I\'m with you.',
 
         // Pokémon, anime american opening song
         'I wanna be the very best, like no one ever was... to catch them is my real test; to train them is my cause!',
