@@ -6,6 +6,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
+use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
@@ -13,8 +14,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
-use App\Service\StatusEffectServiceHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 
 class WerecreatureEncounterService
@@ -116,7 +115,7 @@ class WerecreatureEncounterService
 
             $silverblood = $pet->hasMerit(MeritEnum::SILVERBLOOD);
 
-            StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BITTEN_BY_A_WERECREATURE, 1);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BITTEN_BY_A_WERECREATURE, 1);
 
             $pet
                 ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
@@ -146,7 +145,7 @@ class WerecreatureEncounterService
                 ->increaseSafety(-$this->squirrel3->rngNextInt(4, 8))
             ;
 
-            StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BITTEN_BY_A_WERECREATURE, 1);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BITTEN_BY_A_WERECREATURE, 1);
 
             $message .= '%pet:' . $pet->getId() . '.name% eventually escaped the creature, but not before being scratched and bitten! (Uh oh!)';
 

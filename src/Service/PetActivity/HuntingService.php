@@ -21,6 +21,7 @@ use App\Functions\CalendarFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\InventoryModifierFunctions;
 use App\Functions\NumberFunctions;
+use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
@@ -34,7 +35,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\StatusEffectServiceHelpers;
 use App\Service\TransactionService;
 use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -474,7 +474,7 @@ class HuntingService
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
                 ;
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' took this from the body of a defeated Deep-fried Dough Golem.', $activityLog);
-                StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::OIL_COVERED, 1);
+                StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::OIL_COVERED, 1);
 
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $activityLog);
             }

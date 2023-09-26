@@ -10,6 +10,7 @@ use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\NumberFunctions;
+use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
@@ -21,8 +22,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
-use App\Service\StatusEffectServiceHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 
 class BurntForestService
@@ -171,7 +170,7 @@ class BurntForestService
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Fae-kind' ]))
             ;
 
-            StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, $this->squirrel3->rngNextFromArray([
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, $this->squirrel3->rngNextFromArray([
                 StatusEffectEnum::INSPIRED, StatusEffectEnum::ONEIRIC, StatusEffectEnum::EXTRA_EXTROVERTED
             ]), 4 * 60);
 

@@ -5,12 +5,11 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Enum\StatusEffectEnum;
+use App\Functions\StatusEffectHelpers;
 use App\Repository\PetRepository;
 use App\Service\HotPotatoService;
-use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
-use App\Service\StatusEffectServiceHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -43,7 +42,7 @@ class GlitterBombController extends AbstractController
             ]);
 
             foreach($pets as $pet)
-                StatusEffectServiceHelpers::applyStatusEffect($em, $pet, StatusEffectEnum::GLITTER_BOMBED, 12 * 60);
+                StatusEffectHelpers::applyStatusEffect($em, $pet, StatusEffectEnum::GLITTER_BOMBED, 12 * 60);
 
             $em->remove($inventory);
             $em->flush();

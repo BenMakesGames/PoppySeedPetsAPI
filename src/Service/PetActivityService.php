@@ -21,6 +21,7 @@ use App\Functions\CalendarFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\InventoryModifierFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\FoodWithSpice;
 use App\Model\PetChanges;
@@ -426,7 +427,7 @@ class PetActivityService
             !$pet->hasStatusEffect(StatusEffectEnum::WEREFORM)
         )
         {
-            StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::WEREFORM, 1);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::WEREFORM, 1);
         }
 
         if($pet->hasStatusEffect(StatusEffectEnum::OIL_COVERED))

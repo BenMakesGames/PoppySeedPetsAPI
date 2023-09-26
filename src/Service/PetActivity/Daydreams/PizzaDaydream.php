@@ -13,13 +13,13 @@ use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\StatusEffectServiceHelpers;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -201,7 +201,7 @@ class PizzaDaydream
             $pet->increaseSafety(-2); // :P
         }
 
-        StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BUBBLEGUMD, 1);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BUBBLEGUMD, 1);
 
         return $log;
     }

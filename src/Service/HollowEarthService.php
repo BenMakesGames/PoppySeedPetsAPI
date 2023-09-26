@@ -17,11 +17,10 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\StatusEffectHelpers;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\PetChanges;
-use App\Repository\HollowEarthPlayerTileRepository;
 use App\Repository\HollowEarthTileRepository;
-use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -349,7 +348,7 @@ class HollowEarthService
 
         if(array_key_exists('statusEffect', $event))
         {
-            StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, $event['statusEffect']['status'], $event['statusEffect']['duration']);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, $event['statusEffect']['status'], $event['statusEffect']['duration']);
             $doLog = true;
         }
 

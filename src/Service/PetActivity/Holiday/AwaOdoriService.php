@@ -7,11 +7,11 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\StatusEffectHelpers;
 use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\StatusEffectServiceHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 
 class AwaOdoriService
@@ -103,7 +103,7 @@ class AwaOdoriService
     {
         $changes = new PetChanges($pet);
 
-        StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::DANCING_LIKE_A_FOOL, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::DANCING_LIKE_A_FOOL, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
         $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
 
         $pet->increaseSafety(4)->increaseLove(4)->increaseEsteem(4);

@@ -11,6 +11,7 @@ use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
 use App\Functions\EquipmentFunctions;
+use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
@@ -19,7 +20,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\StatusEffectServiceHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HeartDimensionService
@@ -206,7 +206,7 @@ class HeartDimensionService
 
         $pet->incrementAffectionAdventures();
 
-        StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::INSPIRED, 24 * 60);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::INSPIRED, 24 * 60);
 
         return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% relaxed for a while in the Heart Dimension, and became Inspired.', 'icons/activity-logs/heart-dimension')
             ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Heart Dimension' ]))
@@ -257,7 +257,7 @@ class HeartDimensionService
 
         $pet->incrementAffectionAdventures();
 
-        StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::INSPIRED, 24 * 60);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::INSPIRED, 24 * 60);
 
         $figure = $this->squirrel3->rngNextFromArray([
             [ 'the First Vampire', [ '; it was really scary!', ', but it was oddly calming...' ]],

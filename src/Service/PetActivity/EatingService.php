@@ -16,6 +16,7 @@ use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
+use App\Functions\StatusEffectHelpers;
 use App\Model\FoodWithSpice;
 use App\Model\FortuneCookie;
 use App\Model\PetChanges;
@@ -27,8 +28,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
-use App\Service\StatusEffectServiceHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 
 class EatingService
@@ -122,7 +121,7 @@ class EatingService
         if($caffeine > 0)
         {
             $pet->increaseCaffeine($caffeine);
-            StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::CAFFEINATED, $caffeine * 60);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::CAFFEINATED, $caffeine * 60);
         }
         else if($caffeine < 0)
             $pet->increaseCaffeine($caffeine);
@@ -137,7 +136,7 @@ class EatingService
 
         foreach($food->grantedStatusEffects as $statusEffect)
         {
-            StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, $statusEffect['effect'], $statusEffect['duration']);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, $statusEffect['effect'], $statusEffect['duration']);
         }
 
         if($food->grantsSelfReflection)
@@ -405,7 +404,7 @@ class EatingService
             StatusEffectEnum::VIVACIOUS,
         ]);
 
-        StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, $statusEffect, 8 * 60);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, $statusEffect, 8 * 60);
 
         return $statusEffect;
     }

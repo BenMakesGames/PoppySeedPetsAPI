@@ -16,6 +16,7 @@ use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetColorFunctions;
+use App\Functions\StatusEffectHelpers;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -31,7 +32,6 @@ use App\Service\PetExperienceService;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
-use App\Service\StatusEffectServiceHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ProgrammingService
@@ -1427,7 +1427,7 @@ class ProgrammingService
         if($roll === 1)
         {
             $pet->increaseSafety(-6);
-            StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Bermuda Triangle, but accidentally hexed themselves, instead! :(', '')
                 ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Physics', 'Smithing' ]))

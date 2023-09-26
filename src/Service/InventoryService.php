@@ -18,6 +18,7 @@ use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
+use App\Functions\StatusEffectHelpers;
 use App\Model\FoodWithSpice;
 use App\Model\ItemQuantity;
 use App\Repository\ItemRepository;
@@ -215,7 +216,7 @@ class InventoryService
                 if($toolTool->getWhenGather() && $item->getName() === $toolTool->getWhenGather()->getName())
                 {
                     if($toolTool->getWhenGatherApplyStatusEffect() && $toolTool->getWhenGatherApplyStatusEffectDuration())
-                        StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, $toolTool->getWhenGatherApplyStatusEffect(), $toolTool->getWhenGatherApplyStatusEffectDuration());
+                        StatusEffectHelpers::applyStatusEffect($this->em, $pet, $toolTool->getWhenGatherApplyStatusEffect(), $toolTool->getWhenGatherApplyStatusEffectDuration());
 
                     if($toolTool->getWhenGatherPreventGather())
                         $cancelGather = true;
@@ -274,7 +275,7 @@ class InventoryService
                 if($bonusEffects->getWhenGather() && $item->getName() === $bonusEffects->getWhenGather()->getName())
                 {
                     if($bonusEffects->getWhenGatherApplyStatusEffect() && $bonusEffects->getWhenGatherApplyStatusEffectDuration())
-                        StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, $bonusEffects->getWhenGatherApplyStatusEffect(), $bonusEffects->getWhenGatherApplyStatusEffectDuration());
+                        StatusEffectHelpers::applyStatusEffect($this->em, $pet, $bonusEffects->getWhenGatherApplyStatusEffect(), $bonusEffects->getWhenGatherApplyStatusEffectDuration());
 
                     if($bonusEffects->getWhenGatherPreventGather())
                         $cancelGather = true;

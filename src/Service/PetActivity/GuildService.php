@@ -12,6 +12,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\GrammarFunctions;
+use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\GuildRepository;
@@ -20,7 +21,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\StatusEffectServiceHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 
 class GuildService
@@ -282,7 +282,7 @@ class GuildService
                 else
                 {
                     $message .= ' %pet:' . $pet->getId() . '.name% started feeling ' . $effectToGive['effect'] . '!';
-                    StatusEffectServiceHelpers::applyStatusEffect($this->em, $pet, $effectToGive['effect'], $effectToGive['duration']);
+                    StatusEffectHelpers::applyStatusEffect($this->em, $pet, $effectToGive['effect'], $effectToGive['duration']);
                 }
             }
         }
