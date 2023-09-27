@@ -83,27 +83,27 @@ class StrangeUmbralEncounters
         return $this->squirrel3->rngNextFromArray([
             [
                 'description' => 'saw a family of deer spirits running across the umbral sands. ' . ActivityHelpers::PetName($pet) . ' watched for a while before returning home.',
-                'skills' => [ PetSkillEnum::UMBRA ]
+                'skills' => [ PetSkillEnum::ARCANA ]
             ],
             [
                 'description' => 'saw the Raccoon King and his entourage. ' . ActivityHelpers::PetName($pet) . ' hid behind some rocks and waited for them to pass...',
-                'skills' => [ PetSkillEnum::UMBRA, PetSkillEnum::STEALTH ]
+                'skills' => [ PetSkillEnum::ARCANA, PetSkillEnum::STEALTH ]
             ],
             [
                 'description' => 'encountered a friendly wizard. They traveled for a while, the wizard making conversation, until they parted ways.',
-                'skills' => [ PetSkillEnum::UMBRA ]
+                'skills' => [ PetSkillEnum::ARCANA ]
             ],
             [
                 'description' => 'found a large field of wild, oversized plants. ' . ActivityHelpers::PetName($pet) . ' explored the field for a while, avoiding the more aggressive-looking plants...',
-                'skills' => [ PetSkillEnum::UMBRA ]
+                'skills' => [ PetSkillEnum::ARCANA ]
             ],
             [
                 'description' => 'felt the ground tremble. They looked around, but didn\'t see an obvious source of the shaking...',
-                'skills' => [ PetSkillEnum::UMBRA ]
+                'skills' => [ PetSkillEnum::ARCANA ]
             ],
             [
                 'description' => 'felt a strange breeze. Looking up, they saw a flock (or maybe "school"?) of translucent creatures gliding overhead.',
-                'skills' => [ PetSkillEnum::UMBRA ]
+                'skills' => [ PetSkillEnum::ARCANA ]
             ]
         ]);
     }
@@ -133,7 +133,7 @@ class StrangeUmbralEncounters
             ;
         }
 
-        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
         return $activityLog;
@@ -148,7 +148,7 @@ class StrangeUmbralEncounters
             ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra' ]))
         ;
 
-        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
         $cosmic = SpiceRepository::findOneByName($this->em, 'Cosmic');

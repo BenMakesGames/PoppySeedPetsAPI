@@ -950,7 +950,7 @@ class HuntingService
                     ->increaseEsteem(3)
                 ;
 
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
 
                 return $activityLog;
@@ -971,7 +971,7 @@ class HuntingService
                     ->increaseEsteem(2)
                 ;
 
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
 
                 return $activityLog;
@@ -990,7 +990,7 @@ class HuntingService
 
                 $pet->increaseEsteem(2);
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
 
                 return $activityLog;
@@ -1001,7 +1001,7 @@ class HuntingService
             ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hunting' ]))
         ;
         $pet->increaseSafety(-3);
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::HUNT, false);
 
         return $activityLog;
@@ -1033,7 +1033,7 @@ class HuntingService
                 $pet->increaseSafety(2);
                 $pet->increaseEsteem(3);
 
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
 
                 return $activityLog;
@@ -1045,7 +1045,7 @@ class HuntingService
                 ;
                 $pet->increaseEsteem(-$this->squirrel3->rngNextInt(2, 3));
                 $pet->increaseSafety(-$this->squirrel3->rngNextInt(1, 3));
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
 
                 return $activityLog;
@@ -1070,7 +1070,7 @@ class HuntingService
                 $pet->increaseSafety(3);
                 $pet->increaseEsteem(2);
 
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
 
                 return $activityLog;
@@ -1082,7 +1082,7 @@ class HuntingService
                 ;
                 $pet->increaseEsteem(-$this->squirrel3->rngNextInt(1, 3));
                 $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 3));
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
 
                 return $activityLog;

@@ -72,7 +72,7 @@ class NightAndDay extends AbstractController
         foreach($pairOfItems as $item)
             $inventoryService->petCollectsItem($item, $pet, "{$pet->getName()} {$messageMiddle} this!", $activityLog);
 
-        $petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
+        $petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
 
         $activityLog->setChanges($petChanges->compare($pet));
 

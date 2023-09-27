@@ -478,7 +478,7 @@ class SmithingService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Smithing' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::SMITH, true);
             $this->inventoryService->petCollectsItem($makes, $pet, $pet->getName() . ' made this.', $activityLog);
         }

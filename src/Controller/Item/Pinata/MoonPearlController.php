@@ -66,7 +66,7 @@ class MoonPearlController extends AbstractController
 
                 $inventoryService->petCollectsItem('Quintessence', $helper, $helper->getName() . ' caught this as it escaped from a shattered Moon Pearl.', $activityLog);
 
-                $petExperienceService->gainExp($helper, 2, [ PetSkillEnum::UMBRA ], $activityLog);
+                $petExperienceService->gainExp($helper, 2, [ PetSkillEnum::ARCANA ], $activityLog);
 
                 $message = 'You shatter the Moon Pearl, yielding a couple lumps of Moon Dust, and some Silica Grounds, and ' . $helper->getName() . ' gathers up the Quintessence before it evaporates away.';
 

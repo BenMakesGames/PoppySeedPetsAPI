@@ -425,11 +425,17 @@ class PetActivityStats
         return $this;
     }
 
+    /**
+     * Represents number of times the pet successfully explored the Umbra.
+     */
     public function getUmbraSuccess(): int
     {
         return $this->umbraSuccess;
     }
 
+    /**
+     * Represents number of times the pet successfully explored the Umbra.
+     */
     public function increaseUmbraSuccess(int $amount = 1): self
     {
         $this->umbraSuccess += $amount;
@@ -437,11 +443,17 @@ class PetActivityStats
         return $this;
     }
 
+    /**
+     * Represents number of times the pet FAILED while exploring the Umbra.
+     */
     public function getUmbraFailure(): int
     {
         return $this->umbraFailure;
     }
 
+    /**
+     * Represents number of times the pet FAILED while exploring the Umbra.
+     */
     public function increaseUmbraFailure(int $amount = 1): self
     {
         $this->umbraFailure += $amount;

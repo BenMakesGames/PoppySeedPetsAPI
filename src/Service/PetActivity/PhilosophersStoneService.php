@@ -241,7 +241,7 @@ class PhilosophersStoneService
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $activityLogMessage);
             }
 
-            $this->petExperienceService->gainExp($pet, $roll >= 20 ? 3 : 2, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, $roll >= 20 ? 3 : 2, [ PetSkillEnum::ARCANA ], $activityLog);
         }
 
         $activityLog

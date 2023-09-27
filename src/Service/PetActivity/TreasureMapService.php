@@ -150,7 +150,7 @@ class TreasureMapService
         if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::BulkSelling))
             UserUnlockedFeatureHelpers::create($this->em, $pet->getOwner(), UnlockableFeatureEnum::BulkSelling);
 
-        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
         $this->petExperienceService->spendTime($pet, 120, PetActivityStatEnum::OTHER, null);
 
         $activityLog->setChanges($changes->compare($pet));
@@ -248,7 +248,7 @@ class TreasureMapService
             $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a Leprechaun approached them... but upon seeing %pet:' . $pet->getId() . '.name%\'s pale visage, fled screaming into the woods! (Oops!) %pet:' . $pet->getId() . '.name% put their ' . $pet->getTool()->getFullItemName() . ' down...', '')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fae-kind', 'Adventure!' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
             EquipmentFunctions::unequipPet($pet);
             return $activityLog;
         }
@@ -266,7 +266,7 @@ class TreasureMapService
         $this->em->remove($pet->getTool());
         $pet->setTool($newInventory);
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         return $activityLog;
@@ -283,7 +283,7 @@ class TreasureMapService
             ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Adventure!' ]))
         ;
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
         StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::EGGPLANT_CURSED, $this->squirrel3->rngNextInt(24, 48) * 60);
 
         $pet
@@ -387,7 +387,7 @@ class TreasureMapService
             'a half-buried hole just outside town'
         ]);
 
-        $skillTrained = $location == $magicLocation ? PetSkillEnum::UMBRA : PetSkillEnum::NATURE;
+        $skillTrained = $location == $magicLocation ? PetSkillEnum::ARCANA : PetSkillEnum::NATURE;
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% followed a Fruit Fly on a String to ' . $location . ', and retrieved ' . ArrayFunctions::list_nice($loot) . ' after setting the fly free.', 'items/bug/fly-fruit')
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)

@@ -264,7 +264,7 @@ class GatheringService
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::ARCANA ], $activityLog);
             $pet->increaseSafety(-4);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
         }
@@ -879,7 +879,7 @@ class GatheringService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
 
             $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Nang Tani', '%pet:' . $pet->getId() . '.name% encountered Nang Tani at a lone Naner Tree!');
 
@@ -890,7 +890,7 @@ class GatheringService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a lone Naner Tree in the island\'s Micro-Jungle. They left a small offering for Nang Tani, and left.', '')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
         }
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, $success);
@@ -1052,7 +1052,7 @@ class GatheringService
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
                 ;
 
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA, PetSkillEnum::NATURE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA, PetSkillEnum::NATURE ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::GATHER, true);
             }
             else
@@ -1062,7 +1062,7 @@ class GatheringService
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
                 ;
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::NATURE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA, PetSkillEnum::NATURE ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::GATHER, false);
             }
         }

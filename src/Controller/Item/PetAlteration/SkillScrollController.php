@@ -99,12 +99,12 @@ class SkillScrollController extends AbstractController
      * @Route("/umbraSkillScroll/{inventory}", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function increaseUmbra(
+    public function increaseArcana(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository
     )
     {
-        return $this->doSkillScroll($inventory, $request, $em, $petRepository, $responseService, PetSkillEnum::UMBRA);
+        return $this->doSkillScroll($inventory, $request, $em, $petRepository, $responseService, PetSkillEnum::ARCANA);
     }
 
     private function doSkillScroll(

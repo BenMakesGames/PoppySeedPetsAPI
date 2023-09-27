@@ -87,7 +87,7 @@ class MeritFunctions
                     break;
 
                 case MeritEnum::SPIRIT_COMPANION:
-                    $available = $pet->getSkills()->getUmbra() >= 5;
+                    $available = $pet->getSkills()->getArcana() >= 5;
                     break;
 
                 case MeritEnum::GREEN_THUMB:

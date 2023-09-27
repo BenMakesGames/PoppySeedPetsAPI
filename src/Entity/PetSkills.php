@@ -252,12 +252,12 @@ class PetSkills
         return $this;
     }
 
-    public function getUmbra(): int
+    public function getArcana(): int
     {
         return $this->umbra;
     }
 
-    public function setUmbra(int $umbra): self
+    public function setArcana(int $umbra): self
     {
         $this->umbra = $umbra;
 

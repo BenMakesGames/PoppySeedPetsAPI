@@ -11,8 +11,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class ItemTool
 {
     public const MODIFIER_FIELDS = [
-        'stealth', 'nature', 'brawl', 'umbra', 'crafts', 'fishing', 'gathering',
-        'music', 'smithing', 'science', 'climbing'
+        'arcana', 'brawl', 'climbing', 'crafts', 'fishing', 'gathering',
+        'music', 'nature', 'science', 'smithing', 'stealth',
     ];
 
     /**
@@ -224,23 +224,9 @@ class ItemTool
         return $this->stealth;
     }
 
-    public function setStealth(int $stealth): self
-    {
-        $this->stealth = $stealth;
-
-        return $this;
-    }
-
     public function getNature(): int
     {
         return $this->nature;
-    }
-
-    public function setNature(int $nature): self
-    {
-        $this->nature = $nature;
-
-        return $this;
     }
 
     public function getBrawl(): int
@@ -248,23 +234,9 @@ class ItemTool
         return $this->brawl;
     }
 
-    public function setBrawl(int $brawl): self
-    {
-        $this->brawl = $brawl;
-
-        return $this;
-    }
-
-    public function getUmbra(): int
+    public function getArcana(): int
     {
         return $this->umbra;
-    }
-
-    public function setUmbra(int $umbra): self
-    {
-        $this->umbra = $umbra;
-
-        return $this;
     }
 
     public function getCrafts(): int
@@ -272,23 +244,9 @@ class ItemTool
         return $this->crafts;
     }
 
-    public function setCrafts(int $crafts): self
-    {
-        $this->crafts = $crafts;
-
-        return $this;
-    }
-
     public function getFishing(): int
     {
         return $this->fishing;
-    }
-
-    public function setFishing(int $fishing): self
-    {
-        $this->fishing = $fishing;
-
-        return $this;
     }
 
     public function getGathering(): int
@@ -296,23 +254,9 @@ class ItemTool
         return $this->gathering;
     }
 
-    public function setGathering(int $gathering): self
-    {
-        $this->gathering = $gathering;
-
-        return $this;
-    }
-
     public function getMusic(): int
     {
         return $this->music;
-    }
-
-    public function setMusic(int $music): self
-    {
-        $this->music = $music;
-
-        return $this;
     }
 
     public function getSmithing(): int
@@ -320,23 +264,9 @@ class ItemTool
         return $this->smithing;
     }
 
-    public function setSmithing(int $smithing): self
-    {
-        $this->smithing = $smithing;
-
-        return $this;
-    }
-
     public function getScience(): ?int
     {
         return $this->science;
-    }
-
-    public function setScience(int $science): self
-    {
-        $this->science = $science;
-
-        return $this;
     }
 
     public function getGripX(): float

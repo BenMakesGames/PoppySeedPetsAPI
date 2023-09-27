@@ -1433,7 +1433,7 @@ class ProgrammingService
                 ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Physics', 'Smithing' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::ARCANA ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
         else if($roll >= 19)

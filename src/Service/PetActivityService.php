@@ -937,7 +937,7 @@ class PetActivityService
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
-            $desire += $pet->getTool()->getItem()->getTool()->getUmbra();
+            $desire += $pet->getTool()->getItem()->getTool()->getArcana();
 
         if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CRAFTING_MAGIC))
             $desire += 4;
@@ -974,7 +974,7 @@ class PetActivityService
         $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getArcana()->getTotal();
 
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
-            $desire += $pet->getTool()->getItem()->getTool()->getUmbra();
+            $desire += $pet->getTool()->getItem()->getTool()->getArcana();
 
         if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::UMBRA))
             $desire += 4;

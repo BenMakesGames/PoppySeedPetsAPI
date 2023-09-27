@@ -238,7 +238,7 @@ class GatheringDistractionService
 
             $distractions[] = [
                 'description' => $description . ' They stalked it for a while, but lost the trail before ever getting a good look at it...',
-                'skills' => [ PetSkillEnum::STEALTH, PetSkillEnum::UMBRA ],
+                'skills' => [ PetSkillEnum::STEALTH, PetSkillEnum::ARCANA ],
             ];
         }
 

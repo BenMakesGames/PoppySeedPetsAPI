@@ -447,13 +447,13 @@ class HollowEarthService
     {
         $items = $this->em->getRepository(Item::class)->findBy([
             'name' => [
+                'Potion of Arcana',
                 'Potion of Brawling',
                 'Potion of Crafts',
                 'Potion of Music',
                 'Potion of Nature',
                 'Potion of Science',
                 'Potion of Stealth',
-                'Potion of Umbra',
                 'Fruits & Veggies Box',
                 'Small Box of Ores',
                 'Magic Smoke',
@@ -463,13 +463,13 @@ class HollowEarthService
         ]);
 
         return [
+            self::createTrade($player, $items, 'skillpotion7', 'Potion of Arcana', [ 'incense' => 4, 'amber' => 4 ]),
             self::createTrade($player, $items, 'skillpotion1', 'Potion of Brawling', [ 'jade' => 4, 'fruit' => 4 ]),
             self::createTrade($player, $items, 'skillpotion2', 'Potion of Crafts', [ 'jade' => 4, 'incense' => 4 ]),
             self::createTrade($player, $items, 'skillpotion3', 'Potion of Music', [ 'incense' => 4, 'fruit' => 4 ]),
             self::createTrade($player, $items, 'skillpotion4', 'Potion of Nature', [ 'fruit' => 4, 'salt' => 4 ]),
             self::createTrade($player, $items, 'skillpotion5', 'Potion of Science', [ 'amber' => 4, 'salt' => 4 ]),
             self::createTrade($player, $items, 'skillpotion6', 'Potion of Stealth', [ 'incense' => 4, 'salt' => 4 ]),
-            self::createTrade($player, $items, 'skillpotion7', 'Potion of Umbra', [ 'incense' => 4, 'amber' => 4 ]),
             self::createTrade($player, $items, 'magic1', 'Magic Smoke', [ 'jade' => 2 ]),
             self::createTrade($player, $items, 'magic2', 'Quintessence', [ 'incense' => 2 ]),
             self::createTrade($player, $items, 'box2', 'Small Box of Ores', [ 'salt' => 2 ]),

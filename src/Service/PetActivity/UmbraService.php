@@ -181,7 +181,7 @@ class UmbraService
             ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra' ]))
         ;
 
-        $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::UMBRA ], $activityLog);
+        $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::ARCANA ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
         return $activityLog;
@@ -279,7 +279,7 @@ class UmbraService
                 $this->inventoryService->petCollectsItem('Blackberries', $pet, $pet->getName() . ' harvested these exceptionally-dark Blackberries from a rock-sheltered berry bush in the Umbra.', $activityLog);
             }
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, 'true');
 
             return $activityLog;
@@ -290,7 +290,7 @@ class UmbraService
                 ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra', 'Gathering' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
             return $activityLog;
@@ -351,7 +351,7 @@ class UmbraService
             if($useSpirit)
                 $activityLog->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Spirit Companion' ]));
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
             $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT);
@@ -377,7 +377,7 @@ class UmbraService
                 $pet->increaseEsteem(4);
             }
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
             return $activityLog;
@@ -388,7 +388,7 @@ class UmbraService
                 ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
             return $activityLog;
@@ -416,7 +416,7 @@ class UmbraService
 
             $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Drizzly Bear', $drizzlyBearDiscovery);
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA, PetSkillEnum::STEALTH ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA, PetSkillEnum::STEALTH ], $activityLog);
         }
         else
         {
@@ -424,7 +424,7 @@ class UmbraService
                 ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra', 'Stealth' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::STEALTH ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA, PetSkillEnum::STEALTH ], $activityLog);
         }
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, $success);
@@ -450,7 +450,7 @@ class UmbraService
 
             $this->inventoryService->petCollectsItem('Little Strongbox', $pet, $pet->getName() . ' found this on the shores of a dark river in the Umbra.', $activityLog);
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
 
             return $activityLog;
         }
@@ -464,7 +464,7 @@ class UmbraService
 
             $this->inventoryService->petCollectsItem('Little Strongbox', $pet, $pet->getName() . ' found this on the shores of a dark river in the Umbra.', $activityLog);
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
 
             return $activityLog;
         }
@@ -483,7 +483,7 @@ class UmbraService
 
             $this->inventoryService->petCollectsItem($die, $pet, $pet->getName() . ' found this on the shores of a dark river in the Umbra.', $activityLog);
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
 
             return $activityLog;
         }
@@ -496,7 +496,7 @@ class UmbraService
 
             $this->inventoryService->petCollectsItem($die, $pet, $pet->getName() . ' found this on the shores of a dark river in the Umbra.', $activityLog);
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
 
             return $activityLog;
         }
@@ -507,7 +507,7 @@ class UmbraService
             ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra', 'Moneys' ]))
         ;
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
 
         return $activityLog;
     }
@@ -551,7 +551,7 @@ class UmbraService
 
                 $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' defeated a gross-looking mummy with crazy-long arms, and took this.', $activityLog);
 
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
                 return $activityLog;
@@ -562,7 +562,7 @@ class UmbraService
                     ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra', 'Guild' ]))
                 ;
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
                 return $activityLog;
@@ -598,7 +598,7 @@ class UmbraService
 
             $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' defeated a gross-looking mummy with crazy-long arms, and took this.', $activityLog);
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
         }
         else
         {
@@ -606,7 +606,7 @@ class UmbraService
                 ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra', 'Fighting' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
         }
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, $roll >= $success);
@@ -638,7 +638,7 @@ class UmbraService
 
             $this->inventoryService->petCollectsEnhancedItem('Jelling Polyp', null, $spice, $pet, $pet->getName() . ' got this from fishing in the Umbra.', $activityLog);
 
-            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
         }
         else if($roll >= 13)
         {
@@ -687,14 +687,14 @@ class UmbraService
 
             $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13);
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
         }
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% decided to fish in a dark river. Plenty of strange things swam by, but ' . $pet->getName() . ' didn\'t manage to catch any of them.', '')
                 ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra', 'Fishing' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
         }
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::FISH, $roll >= 13);
@@ -720,7 +720,7 @@ class UmbraService
 
             if($activityLog)
             {
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
                 $activityLog->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra' ]));
@@ -749,7 +749,7 @@ class UmbraService
 
                 $didWhat = 'defeated one of Noetala\'s guard, and took this';
 
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::HUNT, true);
             }
             else
@@ -763,7 +763,7 @@ class UmbraService
                 ;
                 $didWhat = 'was attacked by one of Noetala\'s guard, and covered in this';
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::HUNT, false);
             }
         }
@@ -782,7 +782,7 @@ class UmbraService
                 ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra', 'Stealth' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::ARCANA ], $activityLog);
 
             if($this->squirrel3->rngNextInt(1, 100) === 1)
                 $activityLog->setEntry($activityLog->getEntry() . ' ("Snuck"? "Sneaked"? I dunno. One of thems.)');
@@ -820,7 +820,7 @@ class UmbraService
 
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' stole this from a vampire castle.', $activityLog);
 
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::ARCANA ], $activityLog);
             }
             else
             {
@@ -828,7 +828,7 @@ class UmbraService
                     ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra', 'Stealth' ]))
                 ;
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::ARCANA ], $activityLog);
             }
         }
         else if($pet->getTool() && $pet->getTool()->isGrayscaling())
@@ -842,7 +842,7 @@ class UmbraService
                 ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
 
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' stole this from a vampire castle.', $activityLog);
         }
@@ -857,7 +857,7 @@ class UmbraService
                 ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
 
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' stole this from a vampire castle.', $activityLog);
         }
@@ -882,7 +882,7 @@ class UmbraService
 
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' beat up a vampire and took this.', $activityLog);
 
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
             }
             else
             {
@@ -895,7 +895,7 @@ class UmbraService
                     ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra', 'Fighting' ]))
                 ;
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
             }
         }
 
@@ -915,7 +915,7 @@ class UmbraService
                 ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra', 'Dark' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::UMBRA, false);
 
             return $activityLog;
@@ -932,7 +932,7 @@ class UmbraService
                     ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra', 'Dark', 'Fighting' ]))
                 ;
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::HUNT, false);
 
                 $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' liberated this from a fox spirit in a frozen quag in the deep Umbra.', $activityLog);
@@ -944,7 +944,7 @@ class UmbraService
                     ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra', 'Dark', 'Fighting' ]))
                 ;
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::HUNT, false);
             }
 
@@ -987,7 +987,7 @@ class UmbraService
             $this->inventoryService->petCollectsItem('Everice', $pet, $pet->getName() . ' found this in a frozen quag in the deep Umbra.', $activityLog);
         }
 
-        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::GATHER, true);
 
         return $activityLog;
@@ -1015,7 +1015,7 @@ class UmbraService
             if($roll >= 30)
                 $prizes[] = $this->squirrel3->rngNextFromArray($possiblePrizes);
 
-            $this->petExperienceService->gainExp($pet, 2 + count($prizes), [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+            $this->petExperienceService->gainExp($pet, 2 + count($prizes), [ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ]);
             $pet
                 ->increaseEsteem(3)
                 ->increaseSafety(3)
@@ -1035,7 +1035,7 @@ class UmbraService
                 ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra', 'Fighting' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
         }
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, $roll >= 20);
@@ -1071,7 +1071,7 @@ class UmbraService
                 $didWhat = 'defeated an Angry Spirit in the Umbra, and got this';
 
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::UMBRA, true);
-                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
             }
             else
             {
@@ -1084,7 +1084,7 @@ class UmbraService
                 ;
 
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::UMBRA, false);
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
 
                 return $activityLog;
             }
@@ -1099,7 +1099,7 @@ class UmbraService
             ;
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::ARCANA ], $activityLog);
         }
 
         foreach($loot as $itemName)
@@ -1113,7 +1113,7 @@ class UmbraService
         $activityLog = $this->responseService->createActivityLog($pet, 'A rabbit spirit visited %pet:' . $pet->getId() . '.name%, and the two talked for a while, about this world, and the other...', '')
             ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra' ]))
         ;
-        $this->petExperienceService->gainExp($pet, 10, [ PetSkillEnum::UMBRA, PetSkillEnum::NATURE ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 10, [ PetSkillEnum::ARCANA, PetSkillEnum::NATURE ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
         return $activityLog;

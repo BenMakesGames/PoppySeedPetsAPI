@@ -451,7 +451,7 @@ class StickCraftingService
             $exp = $this->maybeSpotAStickBug($petWithSkills, $activityLog) ? 3 : 2;
 
             $this->inventoryService->petCollectsItem('Champignon', $pet, $pet->getName() . ' created this from a Crooked Stick, Toadstool, and bit of Quintessence.', $activityLog);
-            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::CRAFTS,  PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::CRAFTS,  PetSkillEnum::ARCANA ], $activityLog);
         }
         else
         {
@@ -459,7 +459,7 @@ class StickCraftingService
                 ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Magic-binding' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::ARCANA ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
         }
 

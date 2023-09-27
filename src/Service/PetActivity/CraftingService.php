@@ -1916,7 +1916,7 @@ class CraftingService
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::ARCANA ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
         }
         else // success!
@@ -1932,7 +1932,7 @@ class CraftingService
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Magic-binding' ]))
             ;
             $this->inventoryService->petCollectsItem($veilPiercer, $pet, $pet->getName() . ' made this by enchanting a Decorated Spear.', $activityLog);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::ARCANA ], $activityLog);
         }
 
         return $activityLog;

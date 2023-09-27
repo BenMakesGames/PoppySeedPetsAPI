@@ -46,7 +46,7 @@ final class MeritInfo
         MeritEnum::ATHENAS_GIFTS, // crafts >= 5
         MeritEnum::NO_SHADOW_OR_REFLECTION, // stealth >= 5
         MeritEnum::CELESTIAL_CHORUSER, // music >= 5
-        MeritEnum::SPIRIT_COMPANION, // umbra >= 5
+        MeritEnum::SPIRIT_COMPANION, // arcana >= 5
 
         // anytime:
         MeritEnum::LUCKY,

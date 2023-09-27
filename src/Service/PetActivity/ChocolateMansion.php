@@ -166,7 +166,7 @@ class ChocolateMansion
             {
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
                 $expAmount = 3;
-                $expStats = [ PetSkillEnum::UMBRA ];
+                $expStats = [ PetSkillEnum::ARCANA ];
 
                 $loot[] = 'Chocolate-stained Cloth';
 
@@ -185,7 +185,7 @@ class ChocolateMansion
             {
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
                 $expAmount = 2;
-                $expStats = [ PetSkillEnum::UMBRA ];
+                $expStats = [ PetSkillEnum::ARCANA ];
 
                 $description .= '%pet:' . $pet->getId() . '.name% tried to cast a banishing spell, but was overwhelmed by the attack, and forced to flee!';
             }

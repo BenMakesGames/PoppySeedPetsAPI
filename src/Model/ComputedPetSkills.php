@@ -216,16 +216,16 @@ class ComputedPetSkills
     public function getArcana(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
-        $skill->base = $this->pet->getSkills()->getUmbra();
-        $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->umbraBonus() : 0;
+        $skill->base = $this->pet->getSkills()->getArcana();
+        $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->arcanaBonus() : 0;
         $skill->merits = ($this->pet->hasMerit(MeritEnum::LUMINARY_ESSENCE) ? 1 : 0);
         $skill->statusEffects =
             ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 3 : 0) +
-            ($this->pet->hasStatusEffect(StatusEffectEnum::HEX_HEXED) ? 6 - $this->pet->getSkills()->getUmbra() : 0) +
+            ($this->pet->hasStatusEffect(StatusEffectEnum::HEX_HEXED) ? 6 - $this->pet->getSkills()->getArcana() : 0) +
             ceil($this->pet->getPsychedelic() * 5 / $this->pet->getMaxPsychedelic()) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::OUT_OF_THIS_WORLD) ? 1 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::MOONSTRUCK) ? 10 : 0) +
-            ($this->pet->getSkills()->getUmbra() < 10 && $this->pet->hasStatusEffect(StatusEffectEnum::FOCUSED_UMBRA) ? 3 : 0)
+            ($this->pet->getSkills()->getArcana() < 10 && $this->pet->hasStatusEffect(StatusEffectEnum::FOCUSED_ARCANA) ? 3 : 0)
         ;
 
         return $skill;
