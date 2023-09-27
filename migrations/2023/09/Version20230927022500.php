@@ -19,7 +19,7 @@ final class Version20230927022500 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql('UPDATE item_food SET granted_status_effect=\'Focused (Arcana)\' WHERE name=\'Focused (Umbra)\'');
+        $this->addSql('UPDATE item_food SET granted_status_effect=\'Focused (Arcana)\' WHERE granted_status_effect=\'Focused (Umbra)\'');
     }
 
     public function down(Schema $schema): void
