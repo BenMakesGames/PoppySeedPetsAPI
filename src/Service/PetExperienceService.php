@@ -14,6 +14,7 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
@@ -28,22 +29,20 @@ class PetExperienceService
     private InventoryService $inventoryService;
     private UserStatsRepository $userStatsRepository;
     private UserQuestRepository $userQuestRepository;
-    private ResponseService $responseService;
     private HattierService $hattierService;
     private EntityManagerInterface $em;
     private Clock $clock;
 
     public function __construct(
-        Squirrel3 $squirrel3, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
-        ResponseService $responseService, UserQuestRepository $userQuestRepository, HattierService $hattierService,
-        EntityManagerInterface $em, Clock $clock
+        IRandom $squirrel3, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
+        UserQuestRepository $userQuestRepository, HattierService $hattierService, EntityManagerInterface $em,
+        Clock $clock
     )
     {
         $this->squirrel3 = $squirrel3;
         $this->inventoryService = $inventoryService;
         $this->userStatsRepository = $userStatsRepository;
         $this->userQuestRepository = $userQuestRepository;
-        $this->responseService = $responseService;
         $this->hattierService = $hattierService;
         $this->em = $em;
         $this->clock = $clock;
@@ -287,7 +286,8 @@ class PetExperienceService
         $this->inventoryService->receiveItem('Twu Wuv', $pet->getOwner(), $pet->getOwner(), $pet->getOwner()->getName() . ' received this from ' . $pet->getName() . ' for Valentine\'s Day!', LocationEnum::HOME, true);
         $this->inventoryService->receiveItem('Twu Wuv', $pet->getOwner(), $pet->getOwner(), $pet->getOwner()->getName() . ' received this from ' . $pet->getName() . ' for Valentine\'s Day!', LocationEnum::HOME, true);
 
-        $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave Twu Wuv to %user:' . $pet->getOwner()->getId() . '.Name% for Valentine\'s Day! (Two of them! Two Twu Wuvs!)', 'items/resource/twu-wuv')
+        PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% gave Twu Wuv to %user:' . $pet->getOwner()->getId() . '.Name% for Valentine\'s Day! (Two of them! Two Twu Wuvs!)')
+            ->setIcon('items/resource/twu-wuv')
             ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
             ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Special Event', 'Valentine\'s' ]))
         ;

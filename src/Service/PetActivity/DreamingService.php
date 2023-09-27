@@ -27,14 +27,12 @@ class DreamingService
     private ItemRepository $itemRepository;
     private IRandom $squirrel3;
     private DreamRepository $dreamRepository;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
     private EntityManagerInterface $em;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService,
         PetExperienceService $petExperienceService, ItemRepository $itemRepository, Squirrel3 $squirrel3,
-        DreamRepository $dreamRepository, PetActivityLogTagRepository $petActivityLogTagRepository,
-        EntityManagerInterface $em
+        DreamRepository $dreamRepository, EntityManagerInterface $em
     )
     {
         $this->inventoryService = $inventoryService;
@@ -43,7 +41,6 @@ class DreamingService
         $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
         $this->dreamRepository = $dreamRepository;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->em = $em;
     }
 
@@ -154,7 +151,7 @@ class DreamingService
 
         return $this->responseService->createActivityLog($pet, $eventDescription, '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-            ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Dream' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Dream' ]))
         ;
     }
 

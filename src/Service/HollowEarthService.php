@@ -17,11 +17,10 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\StatusEffectHelpers;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\PetChanges;
-use App\Repository\HollowEarthPlayerTileRepository;
 use App\Repository\HollowEarthTileRepository;
-use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,7 +32,6 @@ class HollowEarthService
     private InventoryService $inventoryService;
     private PetExperienceService $petExperienceService;
     private TransactionService $transactionService;
-    private StatusEffectService $statusEffectService;
     private ResponseService $responseService;
     private UserStatsRepository $userStatsRepository;
 
@@ -51,8 +49,8 @@ class HollowEarthService
     public function __construct(
         HollowEarthTileRepository $hollowEarthTileRepository, EntityManagerInterface $em,
         InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, StatusEffectService $statusEffectService,
-        ResponseService $responseService, UserStatsRepository $userStatsRepository
+        TransactionService $transactionService, ResponseService $responseService,
+        UserStatsRepository $userStatsRepository
     )
     {
         $this->hollowEarthTileRepository = $hollowEarthTileRepository;
@@ -60,7 +58,6 @@ class HollowEarthService
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
-        $this->statusEffectService = $statusEffectService;
         $this->responseService = $responseService;
         $this->userStatsRepository = $userStatsRepository;
     }
@@ -351,7 +348,7 @@ class HollowEarthService
 
         if(array_key_exists('statusEffect', $event))
         {
-            $this->statusEffectService->applyStatusEffect($pet, $event['statusEffect']['status'], $event['statusEffect']['duration']);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, $event['statusEffect']['status'], $event['statusEffect']['duration']);
             $doLog = true;
         }
 

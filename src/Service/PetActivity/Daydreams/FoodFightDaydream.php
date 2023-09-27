@@ -2,14 +2,11 @@
 
 namespace App\Service\PetActivity\Daydreams;
 
-use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Entity\PetRelationship;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
-use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
@@ -19,8 +16,6 @@ use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\StatusEffectService;
-use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class FoodFightDaydream

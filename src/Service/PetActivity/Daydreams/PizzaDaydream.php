@@ -13,13 +13,13 @@ use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\StatusEffectService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -30,12 +30,10 @@ class PizzaDaydream
     private InventoryService $inventoryService;
     private PetExperienceService $petExperienceService;
     private TransactionService $transactionService;
-    private StatusEffectService $statusEffectService;
 
     public function __construct(
         IRandom $rng, EntityManagerInterface $em, InventoryService $inventoryService,
-        PetExperienceService $petExperienceService, TransactionService $transactionService,
-        StatusEffectService $statusEffectService
+        PetExperienceService $petExperienceService, TransactionService $transactionService
     )
     {
         $this->rng = $rng;
@@ -43,7 +41,6 @@ class PizzaDaydream
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
-        $this->statusEffectService = $statusEffectService;
     }
 
     public function doAdventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -204,7 +201,7 @@ class PizzaDaydream
             $pet->increaseSafety(-2); // :P
         }
 
-        $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::BUBBLEGUMD, 1);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BUBBLEGUMD, 1);
 
         return $log;
     }

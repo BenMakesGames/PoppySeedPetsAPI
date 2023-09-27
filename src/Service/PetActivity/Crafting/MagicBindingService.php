@@ -1,7 +1,6 @@
 <?php
 namespace App\Service\PetActivity\Crafting;
 
-use App\Entity\Enchantment;
 use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -9,6 +8,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\StatusEffectHelpers;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Repository\EnchantmentRepository;
@@ -22,7 +22,6 @@ use App\Service\PetActivity\Crafting\Helpers\CoinSmithingService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
-use App\Service\StatusEffectService;
 use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -34,7 +33,6 @@ class MagicBindingService
     private ItemRepository $itemRepository;
     private IRandom $squirrel3;
     private CoinSmithingService $coinSmithingService;
-    private StatusEffectService $statusEffectService;
     private HouseSimService $houseSimService;
     private HattierService $hattierService;
     private EntityManagerInterface $em;
@@ -42,8 +40,7 @@ class MagicBindingService
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
         ItemRepository $itemRepository, Squirrel3 $squirrel3, CoinSmithingService $coinSmithingService,
-        StatusEffectService $statusEffectService, HouseSimService $houseSimService, HattierService $hattierService,
-        EntityManagerInterface $em
+        HouseSimService $houseSimService, HattierService $hattierService, EntityManagerInterface $em
     )
     {
         $this->inventoryService = $inventoryService;
@@ -52,7 +49,6 @@ class MagicBindingService
         $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
         $this->coinSmithingService = $coinSmithingService;
-        $this->statusEffectService = $statusEffectService;
         $this->houseSimService = $houseSimService;
         $this->hattierService = $hattierService;
         $this->em = $em;
@@ -685,7 +681,7 @@ class MagicBindingService
         if($umbraCheck <= 2)
         {
             $pet->increaseSafety(-6);
-            $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Ceremonial Trident, but accidentally hexed themselves, instead! :(', '')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Magic-binding' ]))
             ;
@@ -1768,7 +1764,7 @@ class MagicBindingService
         if($umbraCheck <= 2)
         {
             $pet->increaseSafety(-6);
-            $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Gold Trifecta, but accidentally hexed themselves, instead! :(', '')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Magic-binding' ]))
             ;
@@ -2236,7 +2232,7 @@ class MagicBindingService
         if($skillCheck <= 2)
         {
             $pet->increaseSafety(-6);
-            $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to transmute plastic into ice, but accidentally hexed themselves, instead! :(', '')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Magic-binding' ]))
             ;
@@ -2316,7 +2312,7 @@ class MagicBindingService
         if($umbraCheck <= 2)
         {
             $pet->increaseSafety(-6);
-            $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::HEX_HEXED, 6 * 60);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant an Aubergine Scepter, but accidentally hexed themselves, instead! :(', '')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Magic-binding' ]))
             ;

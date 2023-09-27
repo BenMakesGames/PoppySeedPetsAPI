@@ -5,29 +5,29 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
-use App\Functions\ArrayFunctions;
 use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
+use Doctrine\ORM\EntityManagerInterface;
 
 // yep. this game has a class called "PoopingService". you're welcome.
 class PoopingService
 {
-    private $inventoryService;
-    private $responseService;
-    private $squirrel3;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private InventoryService $inventoryService;
+    private ResponseService $responseService;
+    private IRandom $squirrel3;
+    private EntityManagerInterface $em;
 
     public function __construct(
-        InventoryService $inventoryService, ResponseService $responseService, Squirrel3 $squirrel3,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        InventoryService $inventoryService, ResponseService $responseService, IRandom $squirrel3,
+        EntityManagerInterface $em
     )
     {
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->squirrel3 = $squirrel3;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->em = $em;
     }
 
     public function shed(Pet $pet)
@@ -35,7 +35,7 @@ class PoopingService
         $this->inventoryService->receiveItem($pet->getSpecies()->getSheds(), $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' shed this.', LocationEnum::HOME);
 
         $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% shed some ' . $pet->getSpecies()->getSheds()->getName() . '.', '')
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Shedding']))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Shedding']))
             ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
         ;
     }
@@ -43,7 +43,7 @@ class PoopingService
     public function poopDarkMatter(Pet $pet): PetActivityLog
     {
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name%, um, _created_ some Dark Matter.', 'items/element/dark-matter')
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Pooping']))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Pooping']))
             ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
         ;
 

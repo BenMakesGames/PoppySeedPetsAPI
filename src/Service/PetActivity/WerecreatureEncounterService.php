@@ -6,6 +6,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
+use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
 use App\Repository\PetActivityLogTagRepository;
@@ -13,32 +14,26 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
-use App\Service\StatusEffectService;
+use Doctrine\ORM\EntityManagerInterface;
 
 class WerecreatureEncounterService
 {
     private PetExperienceService $petExperienceService;
     private IRandom $squirrel3;
-    private ItemRepository $itemRepository;
     private ResponseService $responseService;
     private InventoryService $inventoryService;
-    private StatusEffectService $statusEffectService;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private EntityManagerInterface $em;
 
     public function __construct(
-        PetExperienceService $petExperienceService, IRandom $squirrel3, ItemRepository $itemRepository,
-        ResponseService $responseService, InventoryService $inventoryService, StatusEffectService $statusEffectService,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        PetExperienceService $petExperienceService, IRandom $squirrel3,
+        ResponseService $responseService, InventoryService $inventoryService, EntityManagerInterface $em
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->squirrel3 = $squirrel3;
-        $this->itemRepository = $itemRepository;
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
-        $this->statusEffectService = $statusEffectService;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->em = $em;
     }
 
     public function encounterWerecreature(ComputedPetSkills $petWithSkills, string $doingWhat, array $tags): PetActivityLog
@@ -54,7 +49,7 @@ class WerecreatureEncounterService
 
             if($treasure && $treasure->getSilver() > 0)
             {
-                $lootItem = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
+                $lootItem = ItemRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray([
                     'Talon', 'Fluff'
                 ]));
 
@@ -66,7 +61,7 @@ class WerecreatureEncounterService
                 $message .= 'However, upon seeing %pet:' . $pet->getId() . '.name%\'s silver ' . $hat->getItem()->getName() . ', the creature ran off, dropping ' . $lootItem->getNameWithArticle() . ' as it went!';
 
                 $activityLog = $this->responseService->createActivityLog($pet, $message, '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames(array_merge($tags, [ 'Werecreature', 'Fighting' ])))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, array_merge($tags, [ 'Werecreature', 'Fighting' ])))
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
@@ -86,7 +81,7 @@ class WerecreatureEncounterService
 
             if($treasure && $treasure->getSilver() > 0)
             {
-                $lootItem = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
+                $lootItem = ItemRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray([
                     'Talon', 'Fluff'
                 ]));
 
@@ -98,7 +93,7 @@ class WerecreatureEncounterService
                 $message .= '%pet:' . $pet->getId() . '.name% brandished their silver ' . $tool->getItem()->getName() . '; the creature ran off at the sight of it, dropping ' . $lootItem->getNameWithArticle() . ' as it went!';
 
                 $activityLog = $this->responseService->createActivityLog($pet, $message, '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames(array_merge($tags, [ 'Werecreature', 'Fighting' ])))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, array_merge($tags, [ 'Werecreature', 'Fighting' ])))
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
@@ -114,13 +109,13 @@ class WerecreatureEncounterService
 
         if($this->squirrel3->rngNextInt(1, $skill) >= 15)
         {
-            $lootItem = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
+            $lootItem = ItemRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray([
                 'Talon', 'Fluff'
             ]));
 
             $silverblood = $pet->hasMerit(MeritEnum::SILVERBLOOD);
 
-            $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::BITTEN_BY_A_WERECREATURE, 1);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BITTEN_BY_A_WERECREATURE, 1);
 
             $pet
                 ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
@@ -133,7 +128,7 @@ class WerecreatureEncounterService
                 $message .= '%pet:' . $pet->getId() . '.name% beat the creature back, and received ' . $lootItem->getNameWithArticle() . ', but also received a bite during the encounter... (Uh oh...)';
 
             $activityLog = $this->responseService->createActivityLog($pet, $message, '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames(array_merge($tags, [ 'Werecreature', 'Fighting' ])))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, array_merge($tags, [ 'Werecreature', 'Fighting' ])))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
@@ -150,12 +145,12 @@ class WerecreatureEncounterService
                 ->increaseSafety(-$this->squirrel3->rngNextInt(4, 8))
             ;
 
-            $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::BITTEN_BY_A_WERECREATURE, 1);
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BITTEN_BY_A_WERECREATURE, 1);
 
             $message .= '%pet:' . $pet->getId() . '.name% eventually escaped the creature, but not before being scratched and bitten! (Uh oh!)';
 
             $activityLog = $this->responseService->createActivityLog($pet, $message, '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames(array_merge($tags, [ 'Werecreature', 'Fighting' ])))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, array_merge($tags, [ 'Werecreature', 'Fighting' ])))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);

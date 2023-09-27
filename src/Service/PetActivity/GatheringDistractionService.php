@@ -15,6 +15,7 @@ use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use App\Service\WeatherService;
+use Doctrine\ORM\EntityManagerInterface;
 
 class GatheringDistractionService
 {
@@ -22,18 +23,18 @@ class GatheringDistractionService
     private PetExperienceService $petExperienceService;
     private ResponseService $responseService;
     private FieldGuideService $fieldGuideService;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private EntityManagerInterface $em;
 
     public function __construct(
         Squirrel3 $squirrel3, PetExperienceService $petExperienceService, ResponseService $responseService,
-        FieldGuideService $fieldGuideService, PetActivityLogTagRepository $petActivityLogTagRepository
+        FieldGuideService $fieldGuideService, EntityManagerInterface $em
     )
     {
         $this->rng = $squirrel3;
         $this->petExperienceService = $petExperienceService;
         $this->responseService = $responseService;
         $this->fieldGuideService = $fieldGuideService;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->em = $em;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills, string $location, string $whileDoingDescription): PetActivityLog
@@ -54,7 +55,7 @@ class GatheringDistractionService
 
         $activityLog = $this->responseService->createActivityLog($pet, $description, '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Gathering' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
         ;
 
         $this->petExperienceService->gainExp($pet, 1, $distraction['skills'], $activityLog);

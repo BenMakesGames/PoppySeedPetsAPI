@@ -8,7 +8,6 @@ use App\Enum\MeritEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Model\MeritInfo;
 use App\Service\IRandom;
-use App\Service\Squirrel3;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -24,7 +23,7 @@ class MeritRepository extends ServiceEntityRepository
 {
     private IRandom $squirrel3;
 
-    public function __construct(ManagerRegistry $registry, Squirrel3 $squirrel3)
+    public function __construct(ManagerRegistry $registry, IRandom $squirrel3)
     {
         $this->squirrel3 = $squirrel3;
 

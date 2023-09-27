@@ -21,6 +21,7 @@ use App\Functions\CalendarFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\InventoryModifierFunctions;
 use App\Functions\NumberFunctions;
+use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
@@ -34,9 +35,9 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\StatusEffectService;
 use App\Service\TransactionService;
 use App\Service\WeatherService;
+use Doctrine\ORM\EntityManagerInterface;
 
 class HuntingService
 {
@@ -44,41 +45,36 @@ class HuntingService
     private InventoryService $inventoryService;
     private UserStatsRepository $userStatsRepository;
     private MuseumItemRepository $museumItemRepository;
-    private ItemRepository $itemRepository;
     private UserQuestRepository $userQuestRepository;
     private PetExperienceService $petExperienceService;
     private TransactionService $transactionService;
     private WerecreatureEncounterService $werecreatureEncounterService;
-    private StatusEffectService $statusEffectService;
     private IRandom $squirrel3;
     private GatheringDistractionService $gatheringDistractions;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
+    private EntityManagerInterface $em;
     private FieldGuideService $fieldGuideService;
     private Clock $clock;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
-        MuseumItemRepository $museumItemRepository, ItemRepository $itemRepository,
-        UserQuestRepository $userQuestRepository, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, IRandom $squirrel3, Clock $clock,
-        WerecreatureEncounterService $werecreatureEncounterService,
-        StatusEffectService $statusEffectService, GatheringDistractionService $gatheringDistractions,
-        PetActivityLogTagRepository $petActivityLogTagRepository, FieldGuideService $fieldGuideService
+        MuseumItemRepository $museumItemRepository, UserQuestRepository $userQuestRepository,
+        PetExperienceService $petExperienceService, TransactionService $transactionService, IRandom $squirrel3,
+        Clock $clock, WerecreatureEncounterService $werecreatureEncounterService,
+        GatheringDistractionService $gatheringDistractions, EntityManagerInterface $em,
+        FieldGuideService $fieldGuideService
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->userStatsRepository = $userStatsRepository;
         $this->museumItemRepository = $museumItemRepository;
-        $this->itemRepository = $itemRepository;
         $this->userQuestRepository = $userQuestRepository;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
         $this->squirrel3 = $squirrel3;
         $this->werecreatureEncounterService = $werecreatureEncounterService;
-        $this->statusEffectService = $statusEffectService;
         $this->gatheringDistractions = $gatheringDistractions;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
+        $this->em = $em;
         $this->fieldGuideService = $fieldGuideService;
         $this->clock = $clock;
     }
@@ -207,7 +203,7 @@ class HuntingService
         // if you haven't donated a fairy, then you can't rescue a second
         if(!$this->museumItemRepository->hasUserDonated(
             $user,
-            $this->itemRepository->deprecatedFindOneByName('House Fairy')
+            ItemRepository::findOneByName($this->em, 'House Fairy')
         ))
             return false;
 
@@ -227,7 +223,7 @@ class HuntingService
         ;
 
         $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was out hunting, they spotted a Raccoon and Thieving Magpie fighting over a fairy! %pet:' . $pet->getId() . '.name% jumped in and chased the two creatures off before tending to the fairy\'s wounds.', '')
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Hunting', 'Fighting', 'Fae-kind' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hunting', 'Fighting', 'Fae-kind' ]))
         ;
         $inventory = $this->inventoryService->petCollectsItem('House Fairy', $pet, 'Rescued from a Raccoon and Thieving Magpie.', $activityLog);
 
@@ -258,7 +254,7 @@ class HuntingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% couldn\'t find anything to hunt, so watched some small birds play in the Greenhouse Bird Bath, instead.', 'icons/activity-logs/birb')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Hunting', 'Greenhouse' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hunting', 'Greenhouse' ]))
             ;
 
             if($pet->getSkills()->getBrawl() < 5)
@@ -271,7 +267,7 @@ class HuntingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out hunting, but couldn\'t find anything to hunt.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Hunting' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hunting' ]))
             ;
         }
 
@@ -294,7 +290,7 @@ class HuntingService
         if($this->squirrel3->rngNextInt(1, $skill) >= 6)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% ' . $defeated . ' a Dust Bunny, reducing it to Fluff!', 'items/ambiguous/fluff')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Hunting' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hunting' ]))
             ;
             $this->inventoryService->petCollectsItem('Fluff', $pet, 'The remains of a Dust Bunny that ' . $pet->getName() . ' hunted.', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
@@ -304,7 +300,7 @@ class HuntingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% ' . $chased . ' a Dust Bunny, but wasn\'t able to catch up with it.', '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Hunting' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hunting' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
 
@@ -330,7 +326,7 @@ class HuntingService
         if($this->squirrel3->rngNextInt(1, $skill) >= 6)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% ' . $defeated . ' a Plastic Bag, reducing it to Plastic... somehow?', 'items/ambiguous/fluff')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Hunting' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hunting' ]))
             ;
             $this->inventoryService->petCollectsItem('Plastic', $pet, 'The remains of a vicious Plastic Bag that ' . $pet->getName() . ' hunted!', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
@@ -339,7 +335,7 @@ class HuntingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% ' . $chased . ' a Plastic Bag, but wasn\'t able to catch up with it!', '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Hunting' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hunting' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, false);
@@ -362,14 +358,14 @@ class HuntingService
             if($this->squirrel3->rngNextInt(1, 2) === 1)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wrestled a Goat, and won, receiving Creamy Milk.', '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
                 ;
                 $this->inventoryService->petCollectsItem('Creamy Milk', $pet, $pet->getName() . '\'s prize for out-wrestling a Goat.', $activityLog);
             }
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wrestled a Goat, and won, receiving Butter.', '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
                 ;
                 $this->inventoryService->petCollectsItem('Butter', $pet, $pet->getName() . '\'s prize for out-wrestling a Goat.', $activityLog);
             }
@@ -381,14 +377,14 @@ class HuntingService
             if($this->squirrel3->rngNextInt(1, 4) === 1)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wrestled a Goat. The Goat won.', '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
                 ;
                 $this->inventoryService->petCollectsItem('Fluff', $pet, $pet->getName() . ' wrestled a Goat, and lost, but managed to grab a fistful of Fluff.', $activityLog);
             }
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wrestled a Goat. The Goat won.', '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
                 ;
             }
 
@@ -421,7 +417,7 @@ class HuntingService
             $loot = $this->squirrel3->rngNextFromArray($possibleLootSansOil);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% snuck up on a sleeping Deep-fried Dough Golem, and harvested some of its ' . $loot . ', and Oil, without it ever noticing!', '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Stealth' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Stealth' ]))
             ;
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' stole this off the body of a sleeping Deep-fried Dough Golem.', $activityLog);
             $this->inventoryService->petCollectsItem('Oil', $pet, $pet->getName() . ' stole this off the body of a sleeping Deep-fried Dough Golem.', $activityLog);
@@ -439,7 +435,7 @@ class HuntingService
             $loot = $this->squirrel3->rngNextFromArray($possibleLoot);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% snuck up on a sleeping Dough Golem, and harvested some of its ' . $loot . ' without it ever noticing!', '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Stealth' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Stealth' ]))
             ;
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' stole this off the body of a sleeping Dough Golem.', $activityLog);
 
@@ -465,7 +461,7 @@ class HuntingService
                 $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% attacked a rampaging Deep-fried Dough Golem, defeated it, and harvested its ' . $loot . '.', '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
                 ;
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' took this from the body of a defeated Deep-fried Dough Golem.', $activityLog);
                 $this->inventoryService->petCollectsItem('Oil', $pet, $pet->getName() . ' took this from the body of a defeated Deep-fried Dough Golem.', $activityLog);
@@ -475,10 +471,10 @@ class HuntingService
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% attacked a rampaging Deep-fried Dough Golem. It was gross and oily, and %pet:' . $pet->getId() . '.name% got Oil all over themselves, but in the end they defeated the creature, and harvested its ' . $loot . '.', '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
                 ;
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' took this from the body of a defeated Deep-fried Dough Golem.', $activityLog);
-                $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::OIL_COVERED, 1);
+                StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::OIL_COVERED, 1);
 
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $activityLog);
             }
@@ -492,7 +488,7 @@ class HuntingService
             $loot = $this->squirrel3->rngNextFromArray($possibleLoot);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% attacked a rampaging Dough Golem, defeated it, and harvested its ' . $loot . '.', '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
             ;
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' took this from the body of a defeated Dough Golem.', $activityLog);
 
@@ -505,14 +501,14 @@ class HuntingService
             if($this->squirrel3->rngNextInt(1, 4) === 1)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% attacked a rampaging Dough Golem, but it released a cloud of defensive flour, and escaped. ' . $pet->getName() . ' picked up some of the flour, and brought it home.', '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
                 ;
                 $this->inventoryService->petCollectsItem('Wheat Flour', $pet, $pet->getName() . ' got this from a fleeing Dough Golem.', $activityLog);
             }
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% attacked a Dough Golem, but it was really sticky. ' . $pet->getName() . '\'s attacks were useless, and they were forced to retreat.', '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
                 ;
             }
 
@@ -538,7 +534,7 @@ class HuntingService
             $aOrSome = $item === 'Feathers' ? 'some' : 'a';
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wrestled a Turkey! The Turkey fled, but not before ' . $pet->getName() . ' took ' . $aOrSome . ' ' . $item . '!', '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting', 'Special Event', 'Thanksgiving' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting', 'Special Event', 'Thanksgiving' ]))
             ;
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' wrestled this from a Turkey.', $activityLog);
 
@@ -548,7 +544,7 @@ class HuntingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% picked a fight with a Turkey, but lost.', '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting', 'Special Event', 'Thanksgiving' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting', 'Special Event', 'Thanksgiving' ]))
             ;
             $pet->increaseEsteem(-2);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
@@ -573,14 +569,14 @@ class HuntingService
             if($this->squirrel3->rngNextInt(1, 4) === 1)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% beat up a Giant Toad, and took two of its legs.', 'items/animal/meat/legs-frog')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
                 ;
                 $this->inventoryService->petCollectsItem('Toad Legs', $pet, $pet->getName() . ' took these from a Giant Toad. It still has two left, so it\'s probably fine >_>', $activityLog);
             }
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wrestled a Toadstool off the back of a Giant Toad.', 'items/fungus/toadstool')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
                 ;
                 $this->inventoryService->petCollectsItem('Toadstool', $pet, $pet->getName() . ' wrestled this from a Giant Toad.', $activityLog);
             }
@@ -591,7 +587,7 @@ class HuntingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% picked a fight with a Giant Toad, but lost.', '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
             ;
             $pet->increaseEsteem(-2);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
@@ -623,7 +619,7 @@ class HuntingService
             $moneys = $this->squirrel3->rngNextInt(1, $this->squirrel3->rngNextInt(2, $this->squirrel3->rngNextInt(3, 5)));
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% snuck up on a Scarecrow, and picked its pockets... and also its ' . $bodyPart . '! ' . $pet->getName() . ' walked away with ' . $moneys . '~~m~~, and some ' . $itemName . '.', '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Stealth', 'Moneys' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Stealth', 'Moneys' ]))
             ;
             $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' stole this from a Scarecrow\'s ' . $bodyPart .'.', $activityLog);
             $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' stole this from a Scarecrow.');
@@ -639,13 +635,13 @@ class HuntingService
                 if($foundPinecone)
                 {
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% beat up a Scarecrow, then took some of the Wheat it was defending. Hm-what? A Pinecone also fell out of the Scarecrow!', '')
-                        ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting', 'Gathering', 'Special Event' ]))
+                        ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting', 'Gathering', 'Special Event' ]))
                     ;
                 }
                 else
                 {
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% beat up a Scarecrow, then took some of the Wheat it was defending.', '')
-                        ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting', 'Gathering' ]))
+                        ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting', 'Gathering' ]))
                     ;
                 }
 
@@ -667,13 +663,13 @@ class HuntingService
                 if($foundPinecone)
                 {
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% beat up a Scarecrow, then took some of the Rice it was defending. Hm-what? A Pinecone also fell out of the Scarecrow!', '')
-                        ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting', 'Gathering', 'Special Event', 'Stocking Stuffing Season' ]))
+                        ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting', 'Gathering', 'Special Event', 'Stocking Stuffing Season' ]))
                     ;
                 }
                 else
                 {
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% beat up a Scarecrow, then took some of the Rice it was defending.', '')
-                        ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting', 'Gathering' ]))
+                        ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting', 'Gathering' ]))
                     ;
                 }
 
@@ -697,7 +693,7 @@ class HuntingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to take out a Scarecrow, but lost.', '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
             ;
             $pet->increaseEsteem(-1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
@@ -718,7 +714,7 @@ class HuntingService
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' didn\'t even flinch, and swallowed the Onion Boy whole! (Ah~! A true Gourmand!)', 'items/veggie/onion')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting', 'Eating', 'Gourmand' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting', 'Eating', 'Gourmand' ]))
             ;
 
             $pet
@@ -732,7 +728,7 @@ class HuntingService
         else if($pet->getTool() && $pet->getTool()->rangedOnly())
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' attacked from a distance using their ' . InventoryModifierFunctions::getNameWithModifiers($pet->getTool()) . '! The Onion Boy ran off, dropping an Onion as it ran.', 'items/veggie/onion')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
             ;
             $this->inventoryService->petCollectsItem('Onion', $pet, 'Dropped by an Onion Boy that ' . $pet->getName() . ' encountered.', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ], $activityLog);
@@ -747,7 +743,7 @@ class HuntingService
             if($getClothes)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' powered through it, and grabbed onto its... clothes? The creature ran off, causing it to drop an Onion.', 'items/veggie/onion')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
                 ;
 
                 $loot = $this->squirrel3->rngNextFromArray([ 'Paper', 'Filthy Cloth' ]);
@@ -759,7 +755,7 @@ class HuntingService
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' powered through it, scaring the creature off, causing it to drop an Onion.', 'items/veggie/onion')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
                 ;
             }
 
@@ -771,7 +767,7 @@ class HuntingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were overwhelming, and ' . $pet->getName() . ' fled.', '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
             ;
             $pet->increaseSafety(-2);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
@@ -793,7 +789,7 @@ class HuntingService
             $item = $this->squirrel3->rngNextFromArray([ 'Fluff', 'Castoreum' ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wrestled a beaver! It fled, but not before ' . ActivityHelpers::PetName($pet) . ' took some of its ' . $item . '!', '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
             ;
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' wrestled this from a beaver.', $activityLog);
 
@@ -803,7 +799,7 @@ class HuntingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% picked a fight with a beaver, but lost.', '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
             ;
             $pet->increaseEsteem(-2);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
@@ -848,7 +844,7 @@ class HuntingService
             ;
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was outsmarted by a Thieving Magpie, ' . $description, '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Moneys' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Moneys' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
@@ -869,14 +865,14 @@ class HuntingService
                 {
                     $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' shot at a Thieving Magpie, forcing it to drop this money.');
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% shot at a Thieving Magpie; it dropped its ' . $moneys . ' moneys and sped away.', 'icons/activity-logs/moneys')
-                        ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Hunting', 'Moneys' ]))
+                        ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hunting', 'Moneys' ]))
                     ;
                 }
                 else
                 {
                     $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' pounced on a Thieving Magpie, and liberated this money.');
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% pounced on a Thieving Magpie, and liberated its ' . $moneys . ' moneys.', 'icons/activity-logs/moneys')
-                        ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Hunting', 'Moneys' ]))
+                        ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hunting', 'Moneys' ]))
                     ;
                 }
             }
@@ -886,14 +882,14 @@ class HuntingService
                 {
                     $item = $this->squirrel3->rngNextFromArray([ 'String', 'Rice', 'Plastic' ]);
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% shot at a Thieving Magpie, forcing it to drop some ' . $item . '.', '')
-                        ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Hunting' ]))
+                        ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hunting' ]))
                     ;
                 }
                 else
                 {
                     $item = $this->squirrel3->rngNextFromArray([ 'Egg', 'String', 'Rice', 'Plastic' ]);
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% pounced on a Thieving Magpie, and liberated ' . ($item === 'Egg' ? 'an' : 'some') . ' ' . $item . '.', '')
-                        ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Hunting' ]))
+                        ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hunting' ]))
                     ;
                 }
 
@@ -906,7 +902,7 @@ class HuntingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to take down a Thieving Magpie, but it got away.', '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Hunting' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hunting' ]))
             ;
             $pet->increaseSafety(-1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
@@ -942,10 +938,10 @@ class HuntingService
             {
                 $pet->getGuildMembership()->increaseReputation();
 
-                $prizeItem = $this->itemRepository->deprecatedFindOneByName($prize);
+                $prizeItem = ItemRepository::findOneByName($this->em, $prize);
 
                 $activityLog = $this->responseService->createActivityLog($pet, 'A Pirate Ghost tried to haunt %pet:' . $pet->getId() . '.name%, but %pet:' . $pet->getId() . '.name% was able to calm the spirit! Thankful, the spirit gives %pet:' . $pet->getId() . '.name% ' . $prizeItem->getNameWithArticle() . '.', 'guilds/light-and-shadow')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Guild' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Guild' ]))
                 ;
                 $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' received this from a grateful Pirate Ghost.', $activityLog);
 
@@ -989,7 +985,7 @@ class HuntingService
                 ]);
 
                 $activityLog = $this->responseService->createActivityLog($pet, 'A Pirate Ghost tried to haunt %pet:' . $pet->getId() . '.name%, but %pet:' . $pet->getId() . '.name% ' . $hidSomehow . ', eluding the ghost!', '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Stealth' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Stealth' ]))
                 ;
 
                 $pet->increaseEsteem(2);
@@ -1002,7 +998,7 @@ class HuntingService
         }
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out hunting, and got haunted by a Pirate Ghost! After harassing %pet:' . $pet->getId() . '.name% for a while, the ghost became bored, and left.', '')
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Hunting' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hunting' ]))
         ;
         $pet->increaseSafety(-3);
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ], $activityLog);
@@ -1027,10 +1023,10 @@ class HuntingService
             {
                 $pet->getGuildMembership()->increaseReputation();
 
-                $item = $this->itemRepository->deprecatedFindOneByName($loot);
+                $item = ItemRepository::findOneByName($this->em, $loot);
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Possessed Turkey! They were able to calm the creature, and set the spirit free. Grateful, the spirit conjured up ' . $item->getNameWithArticle() . ' for ' . $pet->getName() . '!', 'guilds/light-and-shadow')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Guild', 'Special Event', 'Thanksgiving' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Guild', 'Special Event', 'Thanksgiving' ]))
                 ;
                 $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' got this by freeing the spirit possessing a Possessed Turkey.', $activityLog);
 
@@ -1045,7 +1041,7 @@ class HuntingService
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Possessed Turkey. They tried to calm it down, to set the spirit free, but was chased away by a flurry of kicks and pecks!', 'guilds/light-and-shadow')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Guild', 'Special Event', 'Thanksgiving' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Guild', 'Special Event', 'Thanksgiving' ]))
                 ;
                 $pet->increaseEsteem(-$this->squirrel3->rngNextInt(2, 3));
                 $pet->increaseSafety(-$this->squirrel3->rngNextInt(1, 3));
@@ -1064,10 +1060,10 @@ class HuntingService
             {
                 $pet->getGuildMembership()->increaseReputation();
 
-                $item = $this->itemRepository->deprecatedFindOneByName($loot);
+                $item = ItemRepository::findOneByName($this->em, $loot);
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Possessed Turkey! They were able to subdue the creature, and banish the spirit forever. (And they got ' . $item->getNameWithArticle() . ' out of it!)', 'guilds/the-universe-forgets')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Guild', 'Special Event', 'Thanksgiving' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Guild', 'Special Event', 'Thanksgiving' ]))
                 ;
                 $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' got this by freeing the spirit possessing a Possessed Turkey.', $activityLog);
 
@@ -1082,7 +1078,7 @@ class HuntingService
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Possessed Turkey. They tried to subdue it, to banish the spirit forever, but was chased away by a flurry of kicks and pecks!', 'guilds/the-universe-forgets')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Guild', 'Special Event', 'Thanksgiving' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Guild', 'Special Event', 'Thanksgiving' ]))
                 ;
                 $pet->increaseEsteem(-$this->squirrel3->rngNextInt(1, 3));
                 $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 3));
@@ -1099,10 +1095,10 @@ class HuntingService
 
         if($this->squirrel3->rngNextInt(1, $skill) >= 15)
         {
-            $item = $this->itemRepository->deprecatedFindOneByName($loot);
+            $item = ItemRepository::findOneByName($this->em, $loot);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Possessed Turkey! They fought hard, took ' . $item->getNameWithArticle() . ', and drove the creature away!', '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting', 'Special Event', 'Thanksgiving' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting', 'Special Event', 'Thanksgiving' ]))
             ;
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' got this by defeating a Possessed Turkey.', $activityLog);
             $pet->increaseSafety(3);
@@ -1115,7 +1111,7 @@ class HuntingService
         }
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered and fought a Possessed Turkey, but was chased away by a flurry of kicks and pecks!', '')
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting', 'Special Event', 'Thanksgiving' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting', 'Special Event', 'Thanksgiving' ]))
         ;
         $pet->increaseEsteem(-$this->squirrel3->rngNextInt(1, 3));
         $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
@@ -1140,7 +1136,7 @@ class HuntingService
         if($pet->hasStatusEffect(StatusEffectEnum::CORDIAL))
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Satyr; the Satyr was so enamored by ' . $pet->getName() . '\'s cordiality, they had a simply _wonderful_ time, and offered gifts before leaving in peace.', 'icons/activity-logs/drunk-satyr')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fae-kind' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fae-kind' ]))
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ;
             $pet->increaseEsteem(1);
@@ -1156,7 +1152,7 @@ class HuntingService
         else if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY) && $pet->hasMerit(MeritEnum::SOOTHING_VOICE))
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Satyr, but remembered that Satyrs love music, so sang a song. The Satyr was so enthralled by ' . $pet->getName() . '\'s Soothing Voice, that it offered gifts before leaving in peace.', 'icons/activity-logs/drunk-satyr')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fae-kind' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fae-kind' ]))
             ;
             $pet->increaseEsteem(1);
             $this->inventoryService->petCollectsItem('Blackberry Wine', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.', $activityLog);
@@ -1174,7 +1170,7 @@ class HuntingService
             if($pet->hasMerit(MeritEnum::SOOTHING_VOICE))
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Satyr, who upon hearing ' . $pet->getName() . '\'s voice, bade them sing. ' . $pet->getName() . ' did so; the Satyr was so enthralled by their soothing voice, that it offered gifts before leaving in peace.', 'icons/activity-logs/drunk-satyr')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fae-kind' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fae-kind' ]))
                 ;
                 $pet->increaseEsteem(1);
                 $this->inventoryService->petCollectsItem('Blackberry Wine', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.', $activityLog);
@@ -1190,7 +1186,7 @@ class HuntingService
             else if($musicSkill >= 15)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Satyr, who challenged ' . $pet->getName() . ' to a sing. It was surprised by ' . $pet->getName() . '\'s musical skill, and apologetically offered gifts before leaving in peace.', 'icons/activity-logs/drunk-satyr')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fae-kind' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fae-kind' ]))
                 ;
                 $pet->increaseEsteem(2);
                 $this->inventoryService->petCollectsItem('Blackberry Wine', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.', $activityLog);
@@ -1206,7 +1202,7 @@ class HuntingService
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Satyr, who challenged ' . $pet->getName() . ' to a sing. The Satyr quickly cut ' . $pet->getName() . ' off, complaining loudly, and leaving in a huff.', '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fae-kind' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fae-kind' ]))
                 ;
                 $pet->increaseEsteem(-1);
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::MUSIC ], $activityLog);
@@ -1222,7 +1218,7 @@ class HuntingService
                 if($this->squirrel3->rngNextInt(1, 2) === 1)
                 {
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% fought a Satyr, and won, receiving its Yogurt (gross), and Wine.', '')
-                        ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting', 'Fae-kind' ]))
+                        ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting', 'Fae-kind' ]))
                     ;
                     $this->inventoryService->petCollectsItem('Plain Yogurt', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.', $activityLog);
                     $this->inventoryService->petCollectsItem('Blackberry Wine', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.', $activityLog);
@@ -1230,7 +1226,7 @@ class HuntingService
                 else
                 {
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% fought a Satyr, and won, receiving its Yogurt (gross), and Horn. Er: Talon, I guess.', '')
-                        ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting', 'Fae-kind' ]))
+                        ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting', 'Fae-kind' ]))
                     ;
                     $this->inventoryService->petCollectsItem('Plain Yogurt', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.', $activityLog);
                     $this->inventoryService->petCollectsItem('Talon', $pet, 'Satyr loot, earned by ' . $pet->getName() . '.', $activityLog);
@@ -1242,7 +1238,7 @@ class HuntingService
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to fight a drunken Satyr, but the Satyr misinterpreted ' . $pet->getName() . '\'s intentions, and it started to get really weird, so ' . $pet->getName() . ' ran away.', 'icons/activity-logs/drunk-satyr')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting', 'Fae-kind' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting', 'Fae-kind' ]))
                 ;
                 $pet->increaseSafety(-$this->squirrel3->rngNextInt(1, 5));
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
@@ -1258,7 +1254,7 @@ class HuntingService
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, false);
 
         return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out hunting, expecting to find some goats, but there don\'t seem to be any around today...', 'icons/activity-logs/confused')
-            ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Hunting', 'Special Event', 'Easter' ]))
+            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hunting', 'Special Event', 'Easter' ]))
         ;
     }
 
@@ -1282,14 +1278,14 @@ class HuntingService
             if($stealthRoll >= 15)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% snuck up behind a Paper Golem, and unfolded it!', '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Stealth' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Stealth' ]))
                 ;
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH ], $activityLog);
             }
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% unfolded a Paper Golem!', '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting', 'Crafting' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting', 'Crafting' ]))
                 ;
 
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ], $activityLog);
@@ -1303,7 +1299,7 @@ class HuntingService
             if($this->squirrel3->rngNextInt(1, 10) === 1 && $pet->hasMerit(MeritEnum::LUCKY))
             {
                 $this->inventoryService->petCollectsItem($recipe, $pet, $pet->getName() . ' got this by unfolding a Paper Golem. Lucky~!', $activityLog);
-                $activityLog->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Lucky~!' ]));
+                $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Lucky~!' ]));
             }
             else if($this->squirrel3->rngNextInt(1, 20) === 1)
                 $this->inventoryService->petCollectsItem($recipe, $pet, $pet->getName() . ' got this by unfolding a Paper Golem.', $activityLog);
@@ -1327,7 +1323,7 @@ class HuntingService
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to unfold a Paper Golem, but got a nasty paper cut! During the fight, however, a small, glowing die rolled out from within the folds of the golem! Lucky~! ' . $pet->getName() . ' grabbed it before fleeing.', '')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting', 'Crafting', 'Lucky~!' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting', 'Crafting', 'Lucky~!' ]))
                 ;
 
                 $this->inventoryService->petCollectsItem('Glowing Six-sided Die', $pet, 'While ' . $pet->getName() . ' was fighting a Paper Golem, this fell out from it! Lucky~!', $activityLog);
@@ -1335,7 +1331,7 @@ class HuntingService
             else if($this->squirrel3->rngNextInt(1, 20) === 1)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to unfold a Paper Golem, but got a nasty paper cut! During the fight, however, a small, glowing die rolled out from within the folds of the golem. ' . $pet->getName() . ' grabbed it before fleeing.', '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting', 'Crafting' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting', 'Crafting' ]))
                 ;
 
                 $this->inventoryService->petCollectsItem('Glowing Six-sided Die', $pet, 'While ' . $pet->getName() . ' was fighting a Paper Golem, this fell out from it.', $activityLog);
@@ -1343,7 +1339,7 @@ class HuntingService
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to unfold a Paper Golem, but got a nasty paper cut!', '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting', 'Crafting' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting', 'Crafting' ]))
                 ;
             }
 
@@ -1374,7 +1370,7 @@ class HuntingService
             if($this->squirrel3->rngNextInt(1, 5) === 1)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was out hunting, something started throwing sticks and throwing branches at them! %pet:' . $pet->getId() . '.name% spotted an Argopelter in the trees! They chased after the creature, and defeated it with one of its own sticks!', '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
                 ;
 
                 $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' beat up an Argopelter with the help of this stick, which the Argopelter had thrown at them!', $activityLog);
@@ -1382,7 +1378,7 @@ class HuntingService
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was out hunting, something started throwing sticks and throwing branches at them! %pet:' . $pet->getId() . '.name% spotted an Argopelter in the trees! They chased after the creature, and quickly defeated it before it could get away!', '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
                 ;
 
                 $this->inventoryService->petCollectsItem('Crooked Stick', $pet, 'An Argopelter threw this at ' . $pet->getName() . '!', $activityLog);
@@ -1412,13 +1408,13 @@ class HuntingService
             if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
             {
                 $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was out hunting in the woods, something started throwing sticks and thorny branches at them! %pet:' . $pet->getId() . '.name% never saw their tormenter, but it was surely an Agropelter...', '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
                 ;
             }
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was out hunting in the woods, something started throwing sticks and thorny branches at them! %pet:' . $pet->getId() . '.name% looked around for their tormenter, but didn\'t see anything...', '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
                 ;
                 $pet->increaseEsteem(-1);
             }
@@ -1517,7 +1513,7 @@ class HuntingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
         }
 
-        $activityLog->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Fighting', 'Special Event', 'Thanksgiving' ]));
+        $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting', 'Special Event', 'Thanksgiving' ]));
 
         if($gobbleGobble !== null)
             $pet->removeStatusEffect($gobbleGobble);
@@ -1545,11 +1541,11 @@ class HuntingService
 
         if($pet->hasMerit(MeritEnum::GOURMAND) && $this->squirrel3->rngNextInt(1, 4) === 1)
         {
-            $prize = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray($possibleLoot));
+            $prize = ItemRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray($possibleLoot));
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out hunting, and encountered an Egg Salad Monstrosity! After a grueling (and sticky) battle, ' . $pet->getName() . ' took a huge bite out of the monster, slaying it! (Ah~! A true Gourmand!) Finally, they dug ' . $prize->getNameWithArticle() . ' out of the lumpy corpse, and brought it home.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Hunting', 'Eating', 'Gourmand' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hunting', 'Eating', 'Gourmand' ]))
             ;
 
             $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' collected this from the remains of an Egg Salad Monstrosity.', $activityLog);
@@ -1571,7 +1567,7 @@ class HuntingService
             ];
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out hunting, and encountered an Egg Salad Monstrosity! After a grueling (and sticky) battle, ' . $pet->getName() . ' won, and claimed its ' . ArrayFunctions::list_nice($loot) . '!', '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Hunting' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hunting' ]))
             ;
 
             foreach($loot as $itemName)
@@ -1586,7 +1582,7 @@ class HuntingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out hunting, and encountered an Egg Salad Monstrosity, which chased ' . $pet->getName() . ' away!', '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Hunting' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hunting' ]))
             ;
             $pet->increaseSafety(-3);
 

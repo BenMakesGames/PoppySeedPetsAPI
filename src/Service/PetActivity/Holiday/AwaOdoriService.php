@@ -7,30 +7,24 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\StatusEffectHelpers;
 use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
-use App\Repository\PetRepository;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\ResponseService;
-use App\Service\Squirrel3;
-use App\Service\StatusEffectService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class AwaOdoriService
 {
     private IRandom $rng;
-    private StatusEffectService $statusEffectService;
     private EntityManagerInterface $em;
     private PetExperienceService $petExperienceService;
 
     public function __construct(
-        Squirrel3 $rng, StatusEffectService $statusEffectService,
-        EntityManagerInterface $em, PetExperienceService $petExperienceService
+        IRandom $rng, EntityManagerInterface $em, PetExperienceService $petExperienceService
     )
     {
         $this->rng = $rng;
-        $this->statusEffectService = $statusEffectService;
         $this->em = $em;
         $this->petExperienceService = $petExperienceService;
     }
@@ -109,7 +103,7 @@ class AwaOdoriService
     {
         $changes = new PetChanges($pet);
 
-        $this->statusEffectService->applyStatusEffect($pet, StatusEffectEnum::DANCING_LIKE_A_FOOL, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::DANCING_LIKE_A_FOOL, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
         $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
 
         $pet->increaseSafety(4)->increaseLove(4)->increaseEsteem(4);

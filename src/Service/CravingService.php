@@ -10,6 +10,7 @@ use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\StatusEffectHelpers;
 use App\Repository\PetActivityLogTagRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -18,17 +19,14 @@ class CravingService
     private EntityManagerInterface $em;
     private IRandom $squirrel3;
     private PetExperienceService $petExperienceService;
-    private StatusEffectService $statusEffectService;
 
     public function __construct(
-        EntityManagerInterface $em, IRandom $squirrel3, PetExperienceService $petExperienceService,
-        StatusEffectService $statusEffectService
+        EntityManagerInterface $em, IRandom $squirrel3, PetExperienceService $petExperienceService
     )
     {
         $this->em = $em;
         $this->squirrel3 = $squirrel3;
         $this->petExperienceService = $petExperienceService;
-        $this->statusEffectService = $statusEffectService;
     }
 
     public static function petHasCraving(Pet $pet): bool
@@ -120,7 +118,7 @@ class CravingService
             StatusEffectEnum::VIVACIOUS,
         ]);
 
-        $this->statusEffectService->applyStatusEffect($pet, $statusEffect, 8 * 60);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, $statusEffect, 8 * 60);
 
         PetActivityLogFactory::createUnreadLog($this->em, $pet, 'The ' . $food->getName() . ' that ' . ActivityHelpers::PetName($pet) . ' ate satisfied their craving! They\'re feeling ' . $statusEffect . '!')
             ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Eating' ]))

@@ -18,6 +18,7 @@ use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
+use App\Functions\StatusEffectHelpers;
 use App\Model\FoodWithSpice;
 use App\Model\ItemQuantity;
 use App\Repository\ItemRepository;
@@ -32,11 +33,10 @@ class InventoryService
     private IRandom $squirrel3;
     private EatingService $eatingService;
     private HouseSimService $houseSimService;
-    private StatusEffectService $statusEffectService;
 
     public function __construct(
-        EntityManagerInterface $em, ResponseService $responseService, Squirrel3 $squirrel3,
-        EatingService $eatingService, HouseSimService $houseSimService, StatusEffectService $statusEffectService
+        EntityManagerInterface $em, ResponseService $responseService, IRandom $squirrel3,
+        EatingService $eatingService, HouseSimService $houseSimService
     )
     {
         $this->responseService = $responseService;
@@ -44,7 +44,6 @@ class InventoryService
         $this->squirrel3 = $squirrel3;
         $this->eatingService = $eatingService;
         $this->houseSimService = $houseSimService;
-        $this->statusEffectService = $statusEffectService;
     }
 
     /**
@@ -217,7 +216,7 @@ class InventoryService
                 if($toolTool->getWhenGather() && $item->getName() === $toolTool->getWhenGather()->getName())
                 {
                     if($toolTool->getWhenGatherApplyStatusEffect() && $toolTool->getWhenGatherApplyStatusEffectDuration())
-                        $this->statusEffectService->applyStatusEffect($pet, $toolTool->getWhenGatherApplyStatusEffect(), $toolTool->getWhenGatherApplyStatusEffectDuration());
+                        StatusEffectHelpers::applyStatusEffect($this->em, $pet, $toolTool->getWhenGatherApplyStatusEffect(), $toolTool->getWhenGatherApplyStatusEffectDuration());
 
                     if($toolTool->getWhenGatherPreventGather())
                         $cancelGather = true;
@@ -276,7 +275,7 @@ class InventoryService
                 if($bonusEffects->getWhenGather() && $item->getName() === $bonusEffects->getWhenGather()->getName())
                 {
                     if($bonusEffects->getWhenGatherApplyStatusEffect() && $bonusEffects->getWhenGatherApplyStatusEffectDuration())
-                        $this->statusEffectService->applyStatusEffect($pet, $bonusEffects->getWhenGatherApplyStatusEffect(), $bonusEffects->getWhenGatherApplyStatusEffectDuration());
+                        StatusEffectHelpers::applyStatusEffect($this->em, $pet, $bonusEffects->getWhenGatherApplyStatusEffect(), $bonusEffects->getWhenGatherApplyStatusEffectDuration());
 
                     if($bonusEffects->getWhenGatherPreventGather())
                         $cancelGather = true;

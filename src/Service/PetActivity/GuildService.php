@@ -12,6 +12,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\GrammarFunctions;
+use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\GuildRepository;
@@ -20,26 +21,23 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
-use App\Service\StatusEffectService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class GuildService
 {
-    private $guildRepository;
-    private $em;
-    private $responseService;
-    private $inventoryService;
-    private $petExperienceService;
-    private $gizubisGardenService;
-    private $statusEffectService;
+    private GuildRepository $guildRepository;
+    private EntityManagerInterface $em;
+    private ResponseService $responseService;
+    private InventoryService $inventoryService;
+    private PetExperienceService $petExperienceService;
+    private GizubisGardenService $gizubisGardenService;
     private IRandom $squirrel3;
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         GuildRepository $guildRepository, EntityManagerInterface $em, ResponseService $responseService,
         InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        StatusEffectService $statusEffectService, GizubisGardenService $gizubisGardenService, Squirrel3 $squirrel3,
+        GizubisGardenService $gizubisGardenService, IRandom $squirrel3,
         PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {
@@ -48,7 +46,6 @@ class GuildService
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
-        $this->statusEffectService = $statusEffectService;
         $this->gizubisGardenService = $gizubisGardenService;
         $this->squirrel3 = $squirrel3;
         $this->petActivityLogTagRepository = $petActivityLogTagRepository;
@@ -285,7 +282,7 @@ class GuildService
                 else
                 {
                     $message .= ' %pet:' . $pet->getId() . '.name% started feeling ' . $effectToGive['effect'] . '!';
-                    $this->statusEffectService->applyStatusEffect($pet, $effectToGive['effect'], $effectToGive['duration']);
+                    StatusEffectHelpers::applyStatusEffect($this->em, $pet, $effectToGive['effect'], $effectToGive['duration']);
                 }
             }
         }
