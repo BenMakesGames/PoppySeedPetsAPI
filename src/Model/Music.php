@@ -31,7 +31,7 @@ class Music
         'I don\'t know... who it is... but it probably is Fhqwhgaaaaads. I asked my friend Joe; I asked my friend Jake: they said it was Fhqwhgads!',
 
         // Portal
-        'This was a triumph. I\'m making a note here: huge success. It\'s haarrd to ooooverstaaaate my saaaatisfadtion...',
+        'This was a triumph. I\'m making a note here: huge success. It\'s haarrd to ooooverstaaaate my saaaatisfaction...',
 
         // B-52s
         'Everybody\'s movin\'; everybody\'s groovin\', baby! Folks linin\' up outside just to get down!',
