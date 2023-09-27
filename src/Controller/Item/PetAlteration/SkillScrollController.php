@@ -96,7 +96,7 @@ class SkillScrollController extends AbstractController
     }
 
     /**
-     * @Route("/umbraSkillScroll/{inventory}", methods={"POST"})
+     * @Route("/arcanaSkillScroll/{inventory}", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function increaseArcana(
