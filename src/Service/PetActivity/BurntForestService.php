@@ -37,8 +37,8 @@ class BurntForestService
 
     public function __construct(
         PetExperienceService $petExperienceService, ResponseService $responseService, InventoryService $inventoryService,
-        UserQuestRepository $userQuestRepository, IRandom $squirrel3,
-        HattierService $hattierService, EntityManagerInterface $em, FieldGuideService $fieldGuideService
+        UserQuestRepository $userQuestRepository, IRandom $squirrel3, HattierService $hattierService,
+        EntityManagerInterface $em, FieldGuideService $fieldGuideService
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -54,7 +54,7 @@ class BurntForestService
     public function adventure(ComputedPetSkills $petWithSkills)
     {
         $pet = $petWithSkills->getPet();
-        $maxSkill = 10 + ($petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal()) / 2 - $pet->getAlcohol();
+        $maxSkill = 10 + ($petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal()) / 2 - $pet->getAlcohol() + $petWithSkills->getExploreUmbraBonus();
 
         $maxSkill = NumberFunctions::clamp($maxSkill, 1, 15);
 

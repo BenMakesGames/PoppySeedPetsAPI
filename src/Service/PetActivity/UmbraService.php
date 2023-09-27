@@ -92,7 +92,8 @@ class UmbraService
         {
             $weather = WeatherService::getWeather(new \DateTimeImmutable(), $pet);
 
-            $skill = 10 + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal(); // psychedelics bonus is built into getUmbra()
+            // psychedelics bonus is built into getUmbra()
+            $skill = 10 + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getExploreUmbraBonus();
 
             $skill = NumberFunctions::clamp($skill, 1, 23);
 
@@ -250,7 +251,7 @@ class UmbraService
     {
         $pet = $petWithSkills->getPet();
 
-        $skill = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
+        $skill = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getExploreUmbraBonus());
 
         if($skill >= 11)
         {
@@ -303,7 +304,7 @@ class UmbraService
         $hasEideticMemory = $pet->hasMerit(MeritEnum::EIDETIC_MEMORY);
         $hasRelevantSpirit = $pet->getSpiritCompanion() !== null && $pet->getSpiritCompanion()->getStar() === SpiritCompanionStarEnum::ALTAIR;
 
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal());
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getExploreUmbraBonus());
 
         $rewards = [
             'Quintessence' => 'some',
@@ -620,7 +621,7 @@ class UmbraService
 
         $pet = $petWithSkills->getPet();
 
-        $fishingSkill = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() + $petWithSkills->getUmbra()->getTotal());
+        $fishingSkill = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getExploreUmbraBonus());
 
         $roll = $this->squirrel3->rngNextInt(1, $fishingSkill);
 
@@ -799,7 +800,7 @@ class UmbraService
     {
         $pet = $petWithSkills->getPet();
 
-        $umbraCheck = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getPerception()->getTotal());
+        $umbraCheck = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getExploreUmbraBonus());
 
         if($umbraCheck >= 12)
         {
@@ -950,7 +951,7 @@ class UmbraService
             return $activityLog;
         }
 
-        if($this->squirrel3->rngNextInt(1, 20) + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getPerception()->getTotal() < 18)
+        if($this->squirrel3->rngNextInt(1, 20) + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getExploreUmbraBonus() < 18)
         {
             $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra, but all they found was a Crooked Stick.', '')
                 ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra', 'Dark', 'Gathering' ]))
@@ -1052,7 +1053,9 @@ class UmbraService
 
         $didWhat = 'harvested this from a Cursed Garden in the Umbra';
 
-        if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) < 15)
+        $skillCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getExploreUmbraBonus());
+
+        if($skillCheck < 15)
         {
             $pet->increaseFood(-1);
 
@@ -1088,7 +1091,7 @@ class UmbraService
         }
         else
         {
-            if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 25)
+            if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getExploreUmbraBonus()) >= 25)
                 $loot[] = $this->squirrel3->rngNextFromArray([ 'Nutmeg', 'Eggplant', 'Silica Grounds' ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a Cursed Garden, and harvested ' . ArrayFunctions::list_nice($loot) . '.', '')

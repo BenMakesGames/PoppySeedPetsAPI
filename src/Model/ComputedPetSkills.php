@@ -318,6 +318,26 @@ class ComputedPetSkills
         return $skill;
     }
 
+    /**
+     * @Groups({"myPet"})
+     */
+    public function getExploreUmbraBonus(): TotalPetSkill
+    {
+        $skill = new TotalPetSkill();
+
+        return $skill;
+    }
+
+    /**
+     * @Groups({"myPet"})
+     */
+    public function getMagicBindingBonus(): TotalPetSkill
+    {
+        $skill = new TotalPetSkill();
+
+        return $skill;
+    }
+
     // MISC EFFECTS
 
     /**
