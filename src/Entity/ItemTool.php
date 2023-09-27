@@ -40,7 +40,7 @@ class ItemTool
     /**
      * @ORM\Column(type="integer")
      */
-    private $umbra = 0;
+    private $arcana = 0;
 
     /**
      * @ORM\Column(type="integer")
@@ -236,7 +236,7 @@ class ItemTool
 
     public function getArcana(): int
     {
-        return $this->umbra;
+        return $this->arcana;
     }
 
     public function getCrafts(): int
