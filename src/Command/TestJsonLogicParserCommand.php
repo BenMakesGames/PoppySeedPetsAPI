@@ -2,7 +2,6 @@
 namespace App\Command;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
 use App\Service\JsonLogicParserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -10,7 +9,7 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class TestJsonLogicParserCommand extends PoppySeedPetsCommand
 {
-    private $jsonLogicParserService;
+    private JsonLogicParserService $jsonLogicParserService;
     private EntityManagerInterface $em;
 
     public function __construct(JsonLogicParserService $jsonLogicParserService, EntityManagerInterface $em)

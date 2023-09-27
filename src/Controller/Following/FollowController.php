@@ -8,7 +8,6 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Repository\UserFollowingRepository;
-use App\Repository\UserRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

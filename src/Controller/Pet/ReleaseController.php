@@ -2,7 +2,6 @@
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
-use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Exceptions\PSPInvalidOperationException;
@@ -14,7 +13,6 @@ use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
 use App\Model\PetShelterPet;
 use App\Repository\PetRepository;
-use App\Repository\UserRepository;
 use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;

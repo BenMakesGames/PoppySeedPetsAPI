@@ -8,8 +8,8 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class UserUnlockedFeatureHelpers
 {
-    // warning: side-effects!
-    private static $createdThisRequest = [];
+    // warning: side effects!
+    private static array $createdThisRequest = [];
 
     public static function create(EntityManagerInterface $em, User $user, string $feature)
     {

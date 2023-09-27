@@ -6,7 +6,6 @@ use App\Entity\User;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\StringFunctions;
-use App\Repository\UserRepository;
 use App\Service\IRandom;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;

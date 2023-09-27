@@ -7,7 +7,6 @@ use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\PlayerLogHelpers;
-use App\Repository\UserRepository;
 use App\Service\PassphraseResetService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;

@@ -7,12 +7,13 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\UserStatEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
 use App\Functions\PlayerLogHelpers;
+use App\Functions\UserFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
-use App\Repository\UserRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -106,7 +107,10 @@ class KappaService
 
         if($skills >= 5)
         {
-            $owner = UserRepository::findOneRecentlyActive($this->em, $pet->getOwner(), 72);
+            $owner = UserFunctions::findOneRecentlyActive($this->em, $pet->getOwner(), 72);
+
+            if(!$owner)
+                throw new PSPNotFoundException('Hm... there\'s no one to return it to! (I guess no one\'s been playing Poppy Seed Pets...)');
 
             $this->em->remove($pet->getTool());
             $pet->setTool(null);
@@ -129,7 +133,10 @@ class KappaService
         }
         else if($this->rng->rngNextInt(1, 3) > 1)
         {
-            $owner = UserRepository::findOneRecentlyActive($this->em, $pet->getOwner(), 72);
+            $owner = UserFunctions::findOneRecentlyActive($this->em, $pet->getOwner(), 72);
+
+            if(!$owner)
+                throw new PSPNotFoundException('Hm... there\'s no one to return it to! (I guess no one\'s been playing Poppy Seed Pets...)');
 
             $this->em->remove($pet->getTool());
             $pet->setTool(null);

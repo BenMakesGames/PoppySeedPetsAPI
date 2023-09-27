@@ -3,7 +3,7 @@ namespace App\Service;
 
 use App\Entity\Inventory;
 use App\Enum\LocationEnum;
-use App\Repository\UserRepository;
+use App\Functions\UserFunctions;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -35,7 +35,7 @@ class HotPotatoService
     {
         $owner = $inventory->getOwner();
 
-        $target = UserRepository::findOneRecentlyActive($this->em, $owner, 24);
+        $target = UserFunctions::findOneRecentlyActive($this->em, $owner, 24);
 
         if($target === null)
             return $this->responseService->itemActionSuccess('Hm... there\'s no one to toss it to! (I guess no one\'s been playing Poppy Seed Pets...)');

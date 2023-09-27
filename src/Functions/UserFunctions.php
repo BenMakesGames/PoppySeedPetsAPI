@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Repository;
+namespace App\Functions;
 
 use App\Entity\User;
 use App\Service\Squirrel3;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
 
-final class UserRepository
+final class UserFunctions
 {
     public static function findOneRecentlyActive(EntityManagerInterface $em, User $except, int $hours = 24): ?User
     {
