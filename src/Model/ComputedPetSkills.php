@@ -213,7 +213,7 @@ class ComputedPetSkills
     /**
      * @Groups({"myPet"})
      */
-    public function getUmbra(): TotalPetSkill
+    public function getArcana(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
         $skill->base = $this->pet->getSkills()->getUmbra();

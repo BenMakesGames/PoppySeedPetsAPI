@@ -128,7 +128,7 @@ class ChocolateMansion
         $loot = [];
 
         $combatRoll = $this->rng->rngNextInt(1, $this->rng->rngNextInt(16, 20) + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl(false)->getTotal());
-        $magicRoll = $this->rng->rngNextInt(1, $this->rng->rngNextInt(16, 20) + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getUmbra()->getTotal());
+        $magicRoll = $this->rng->rngNextInt(1, $this->rng->rngNextInt(16, 20) + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getArcana()->getTotal());
 
         if($combatRoll > $magicRoll)
         {

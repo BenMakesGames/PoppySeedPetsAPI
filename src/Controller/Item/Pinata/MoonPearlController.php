@@ -58,7 +58,7 @@ class MoonPearlController extends AbstractController
         if($helper)
         {
             $helperWithSkills = $helper->getComputedSkills();
-            $skill = 20 + $helperWithSkills->getUmbra()->getTotal() + $helperWithSkills->getIntelligence()->getTotal() + $helperWithSkills->getDexterity()->getTotal();
+            $skill = 20 + $helperWithSkills->getArcana()->getTotal() + $helperWithSkills->getIntelligence()->getTotal() + $helperWithSkills->getDexterity()->getTotal();
 
             if($squirrel3->rngNextInt(1, $skill) >= 16)
             {

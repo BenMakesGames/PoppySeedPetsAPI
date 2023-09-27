@@ -31,7 +31,7 @@ class FriendlyRivalsService
         $p2WithSkills = $p2->getPet()->getComputedSkills();
 
         $p1Skills = [
-            'knowledge of the umbra' => $p1WithSkills->getUmbra()->getTotal(),
+            'knowledge of the umbra' => $p1WithSkills->getArcana()->getTotal(),
             'raw strength' => $p1WithSkills->getStrength()->getTotal(),
             'fighting prowess' => $p1WithSkills->getBrawl()->getTotal(),
             'scientific knowledge' => $p1WithSkills->getScience()->getTotal(),
@@ -40,7 +40,7 @@ class FriendlyRivalsService
         ];
 
         $p2Skills = [
-            'knowledge of the umbra' => $p2WithSkills->getUmbra()->getTotal(),
+            'knowledge of the umbra' => $p2WithSkills->getArcana()->getTotal(),
             'raw strength' => $p2WithSkills->getStrength()->getTotal(),
             'fighting prowess' => $p2WithSkills->getBrawl()->getTotal(),
             'scientific knowledge' => $p2WithSkills->getScience()->getTotal(),
@@ -49,7 +49,7 @@ class FriendlyRivalsService
         ];
 
         $combinedSkills = [
-            'knowledge of the umbra' => $p1WithSkills->getUmbra()->getTotal() + $p2WithSkills->getUmbra()->getTotal(),
+            'knowledge of the umbra' => $p1WithSkills->getArcana()->getTotal() + $p2WithSkills->getArcana()->getTotal(),
             'raw strength' => $p1WithSkills->getStrength()->getTotal() + $p2WithSkills->getStrength()->getTotal(),
             'fighting prowess' => $p1WithSkills->getBrawl()->getTotal() + $p2WithSkills->getBrawl()->getTotal(),
             'scientific knowledge' => $p1WithSkills->getScience()->getTotal() + $p2WithSkills->getScience()->getTotal(),

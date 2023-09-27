@@ -168,7 +168,7 @@ class PhilosophersStoneService
 
         $changes = new PetChanges($pet);
 
-        $skill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getUmbra()->getTotal();
+        $skill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getArcana()->getTotal();
 
         $gotTheThing = $this->petQuestRepository->findOrCreate($pet, 'Got Vesica Hydrargyrum', 0);
 

@@ -1908,7 +1908,7 @@ class CraftingService
     {
         $pet = $petWithSkills->getPet();
 
-        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
+        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
         if($umbraCheck < 15)
         {

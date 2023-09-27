@@ -91,7 +91,7 @@ class IceCreamDaydream
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal());
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getArcana()->getTotal());
 
         if($roll >= 15)
         {

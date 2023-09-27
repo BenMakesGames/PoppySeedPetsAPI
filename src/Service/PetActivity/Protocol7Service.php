@@ -724,7 +724,7 @@ class Protocol7Service
 
         if($pet->isInGuild(GuildEnum::TAPESTRIES))
         {
-            $check = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + max($petWithSkills->getUmbra()->getTotal(), $petWithSkills->getScience()->getTotal()));
+            $check = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + max($petWithSkills->getArcana()->getTotal(), $petWithSkills->getScience()->getTotal()));
         }
         else
         {

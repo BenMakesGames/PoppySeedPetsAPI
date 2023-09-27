@@ -819,7 +819,7 @@ class FishingService
         {
             if($this->squirrel3->rngNextInt(1, 4) === 1)
             {
-                if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal()) >= 15)
+                if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal()) >= 15)
                 {
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at a Foggy Lake, caught a Ghost Fish, and harvested Quintessence from it.', 'items/resource/quintessence')
                         ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fishing' ]))

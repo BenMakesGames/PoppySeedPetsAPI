@@ -54,7 +54,7 @@ class BurntForestService
     public function adventure(ComputedPetSkills $petWithSkills)
     {
         $pet = $petWithSkills->getPet();
-        $maxSkill = 10 + ($petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal()) / 2 - $pet->getAlcohol() + $petWithSkills->getExploreUmbraBonus();
+        $maxSkill = 10 + ($petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getArcana()->getTotal()) / 2 - $pet->getAlcohol() + $petWithSkills->getExploreUmbraBonus();
 
         $maxSkill = NumberFunctions::clamp($maxSkill, 1, 15);
 
@@ -162,7 +162,7 @@ class BurntForestService
     private function findAWoundedFairy(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         if($roll >= 11)
         {
@@ -258,7 +258,7 @@ class BurntForestService
     private function findBurningTree(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraRoll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
+        $umbraRoll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal());
         $brawlRoll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal());
         $exp = 1;
 
@@ -373,7 +373,7 @@ class BurntForestService
     private function findTearInTheTapestry(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
         if($roll >= 13)
         {

@@ -932,7 +932,7 @@ class HuntingService
 
         if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
         {
-            $skill = 10 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getUmbra()->getTotal();
+            $skill = 10 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getArcana()->getTotal();
 
             if($this->squirrel3->rngNextInt(1, $skill) >= 15)
             {
@@ -958,7 +958,7 @@ class HuntingService
         }
         else
         {
-            $brawlSkill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getUmbra()->getTotal();
+            $brawlSkill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getArcana()->getTotal();
             $stealthSkill = 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal();
 
             if($this->squirrel3->rngNextInt(1, $brawlSkill) >= 15)
@@ -1017,7 +1017,7 @@ class HuntingService
 
         if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
         {
-            $skill = 10 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getUmbra()->getTotal();
+            $skill = 10 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getArcana()->getTotal();
 
             if($this->squirrel3->rngNextInt(1, $skill) >= 15)
             {
@@ -1054,7 +1054,7 @@ class HuntingService
 
         if($pet->isInGuild(GuildEnum::THE_UNIVERSE_FORGETS))
         {
-            $skill = 10 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getUmbra()->getTotal();
+            $skill = 10 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getArcana()->getTotal();
 
             if($this->squirrel3->rngNextInt(1, $skill) >= 15)
             {

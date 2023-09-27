@@ -856,7 +856,7 @@ class GatheringService
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getUmbra()->getTotal());
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getArcana()->getTotal());
         $success = $roll >= 12;
 
         $pet->increaseSafety($this->squirrel3->rngNextInt(2, 4));
@@ -1032,7 +1032,7 @@ class GatheringService
         {
             $pet->increaseFood(-1);
 
-            if($this->squirrel3->rngNextInt(1, 20) + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal() >= 15)
+            if($this->squirrel3->rngNextInt(1, 20) + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getArcana()->getTotal() >= 15)
             {
                 $loot[] = $this->squirrel3->rngNextFromArray($possibleLoot);
                 $loot[] = $this->squirrel3->rngNextFromArray($possibleLoot);
