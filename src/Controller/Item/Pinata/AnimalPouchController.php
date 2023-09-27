@@ -9,7 +9,6 @@ use App\Repository\EnchantmentRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -69,7 +68,7 @@ class AnimalPouchController extends AbstractController
      */
     public function openRaccoonPouch(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService, Squirrel3 $squirrel3
+        ResponseService $responseService, IRandom $squirrel3
     )
     {
         /** @var User $user */

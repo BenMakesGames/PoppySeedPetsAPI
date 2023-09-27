@@ -1,6 +1,7 @@
 <?php
 namespace App\Functions;
 
+use App\Service\IRandom;
 use App\Service\Squirrel3;
 
 final class StringFunctions
@@ -11,12 +12,12 @@ final class StringFunctions
         return mb_strlen($string) === strlen($ISOd);
     }
 
-    public static function startsWith(string $haystack, string $needle)
+    public static function startsWith(string $haystack, string $needle): bool
     {
         return strpos($haystack, $needle) === 0;
     }
 
-    public static function randomPassword(Squirrel3 $squirrel3): string
+    public static function randomPassword(IRandom $squirrel3): string
     {
         $words = [];
 
@@ -33,11 +34,10 @@ final class StringFunctions
 
     public static function randomString(string $characters, int $length): string
     {
-        $squirrel3 = new Squirrel3();
         $string = '';
 
         for($i = 0; $i < $length; $i++)
-            $string .= $characters[$squirrel3->rngNextInt(0, strlen($characters) - 1)];
+            $string .= $characters[random_int(0, strlen($characters) - 1)];
 
         return $string;
     }

@@ -2,7 +2,6 @@
 namespace App\Controller;
 
 use App\Entity\Inventory;
-use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -14,15 +13,14 @@ use App\Functions\GrammarFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PlayerLogHelpers;
 use App\Model\FoodWithSpice;
-use App\Repository\InventoryRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\Clock;
 use App\Service\FieldGuideService;
 use App\Service\Holidays\HalloweenService;
+use App\Service\IRandom;
 use App\Service\PetActivity\EatingService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -101,7 +99,7 @@ class HalloweenController extends AbstractController
      */
     public function giveCandy(
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
-        Request $request, Clock $clock, Squirrel3 $squirrel3, EatingService $eatingService,
+        Request $request, Clock $clock, IRandom $squirrel3, EatingService $eatingService,
         FieldGuideService $fieldGuideService
     )
     {

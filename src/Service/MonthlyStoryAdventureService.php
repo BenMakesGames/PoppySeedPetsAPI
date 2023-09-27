@@ -29,7 +29,7 @@ class MonthlyStoryAdventureService
         MonthlyStoryAdventureStepRepository $monthlyStoryAdventureStepRepository,
         UserMonthlyStoryAdventureStepCompletedRepository $userMonthlyStoryAdventureStepCompletedRepository,
         InventoryService $inventoryService,
-        EntityManagerInterface $em, Squirrel3 $squirrel3, HattierService $hattierService
+        EntityManagerInterface $em, IRandom $squirrel3, HattierService $hattierService
     )
     {
         $this->monthlyStoryAdventureStepRepository = $monthlyStoryAdventureStepRepository;

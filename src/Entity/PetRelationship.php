@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
 use App\Enum\RelationshipEnum;
-use App\Service\Squirrel3;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
@@ -86,11 +85,9 @@ class PetRelationship
 
     public function __construct()
     {
-        $squirrel3 = new Squirrel3();
-
         $this->metOn = new \DateTimeImmutable();
         $this->lastMet = new \DateTimeImmutable();
-        $this->timeUntilChange = $squirrel3->rngNextInt($squirrel3->rngNextInt(20, 30), $squirrel3->rngNextInt(50, 80));
+        $this->timeUntilChange = random_int(random_int(20, 30), random_int(50, 80));
     }
 
     public function getId(): ?int
@@ -193,8 +190,7 @@ class PetRelationship
 
     public function setTimeUntilChange()
     {
-        $squirrel3 = new Squirrel3();
-        $this->timeUntilChange = $squirrel3->rngNextInt($squirrel3->rngNextInt(20, 30), $squirrel3->rngNextInt(40, 50));
+        $this->timeUntilChange = random_int(random_int(20, 30), random_int(40, 50));
     }
 
     public function decrementTimeUntilChange(float $multiplier = 1): self

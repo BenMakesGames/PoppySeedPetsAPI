@@ -12,7 +12,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class MeteoriteSmithingService
@@ -26,7 +25,7 @@ class MeteoriteSmithingService
 
     public function __construct(
         PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
-        HouseSimService $houseSimService, Squirrel3 $squirrel3, EntityManagerInterface $em
+        HouseSimService $houseSimService, IRandom $squirrel3, EntityManagerInterface $em
     )
     {
         $this->petExperienceService = $petExperienceService;

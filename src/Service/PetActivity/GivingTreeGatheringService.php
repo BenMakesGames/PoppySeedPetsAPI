@@ -13,7 +13,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class GivingTreeGatheringService
@@ -26,7 +25,7 @@ class GivingTreeGatheringService
 
     public function __construct(
         InventoryService $inventoryService, EntityManagerInterface $em, ResponseService $responseService,
-        PetExperienceService $petExperienceService, Squirrel3 $squirrel3
+        PetExperienceService $petExperienceService, IRandom $squirrel3
     )
     {
         $this->responseService = $responseService;

@@ -18,7 +18,6 @@ use App\Service\FieldGuideService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HouseMonsterService
@@ -31,7 +30,7 @@ class HouseMonsterService
     private FieldGuideService $fieldGuideService;
 
     public function __construct(
-        Squirrel3 $squirrel3, UserStatsRepository $userStatsRepository, InventoryService $inventoryService,
+        IRandom $squirrel3, UserStatsRepository $userStatsRepository, InventoryService $inventoryService,
         EntityManagerInterface $em, PetExperienceService $petExperienceService, FieldGuideService $fieldGuideService
     )
     {

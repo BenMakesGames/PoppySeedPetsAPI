@@ -41,7 +41,7 @@ class BeehiveService
         'Potato' => 10,
     ];
 
-    public function __construct(EntityManagerInterface $em, Squirrel3 $squirrel3)
+    public function __construct(EntityManagerInterface $em, IRandom $squirrel3)
     {
         $this->em = $em;
         $this->squirrel3 = $squirrel3;

@@ -8,7 +8,6 @@ use App\Model\SummoningScrollMonster;
 use App\Repository\PetRepository;
 use App\Service\PetActivity\HouseMonsterService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,7 +24,7 @@ class EvilSentientBeetleController extends AbstractController
      */
     public function summonSomethingUnfriendly(
         Inventory $inventory, ResponseService $responseService, PetRepository $petRepository,
-        EntityManagerInterface $em, HouseMonsterService $houseMonsterService, Squirrel3 $squirrel3
+        EntityManagerInterface $em, HouseMonsterService $houseMonsterService
     )
     {
         /** @var User $user */

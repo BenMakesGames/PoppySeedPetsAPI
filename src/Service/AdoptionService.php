@@ -51,7 +51,7 @@ class AdoptionService
         return $fee;
     }
 
-    private function getNumberOfPets(User $user, Squirrel3 $squirrel3): int
+    private function getNumberOfPets(User $user, IRandom $squirrel3): int
     {
         $bonus = $this->getPetsAdopted($user) > 0 && $squirrel3->rngNextInt(1, 31) === 1 ? 10 : 0;
 
@@ -62,8 +62,7 @@ class AdoptionService
     {
         $nowString = $this->clock->now->format('Y-m-d');
 
-        $squirrel3 = new Squirrel3();
-        $squirrel3->setSeed($user->getDailySeed());
+        $squirrel3 = new Squirrel3($user->getDailySeed());
 
         $numPets = $this->getNumberOfPets($user, $squirrel3);
         $numSeasonalPets = $this->numberOfSeasonalPets($numPets, $squirrel3);
@@ -219,7 +218,7 @@ class AdoptionService
         return [ $pets, $dialog ];
     }
 
-    public function numberOfSeasonalPets(int $totalPets, Squirrel3 $squirrel3): int
+    public function numberOfSeasonalPets(int $totalPets, IRandom $squirrel3): int
     {
         $monthDay = $this->clock->getMonthAndDay();
 

@@ -12,9 +12,9 @@ use App\Functions\ActivityHelpers;
 use App\Functions\PetActivityLogFactory;
 use App\Repository\PetRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,7 +32,7 @@ class MoonPearlController extends AbstractController
     public function smash(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, PetRepository $petRepository, PetExperienceService $petExperienceService,
-        Squirrel3 $squirrel3
+        IRandom $squirrel3
     )
     {
         /** @var User $user */

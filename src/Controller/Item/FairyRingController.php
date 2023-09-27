@@ -5,8 +5,8 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,7 +22,7 @@ class FairyRingController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function takeApart(
-        Inventory $inventory, ResponseService $responseService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, IRandom $squirrel3,
         EntityManagerInterface $em, InventoryService $inventoryService
     )
     {

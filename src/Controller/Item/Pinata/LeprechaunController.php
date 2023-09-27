@@ -6,12 +6,10 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
-use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
-use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,7 +25,7 @@ class LeprechaunController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function lootPotOfGold(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, UserStatsRepository $userStatsRepository
     )
     {
@@ -62,7 +60,7 @@ class LeprechaunController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function readGreenScroll(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
         ResponseService $responseService, UserStatsRepository $userStatsRepository
     )
     {

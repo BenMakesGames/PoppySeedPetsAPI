@@ -9,8 +9,8 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\TraderRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,7 +28,7 @@ class LinensController extends AbstractController
      */
     public function rummageThroughLinens(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, Squirrel3 $squirrel3
+        EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -72,7 +72,7 @@ class LinensController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function giveToTrader(
-        Inventory $inventory, ResponseService $responseService, Squirrel3 $rng,
+        Inventory $inventory, ResponseService $responseService, IRandom $rng,
         EntityManagerInterface $em, TraderRepository $traderRepository
     )
     {

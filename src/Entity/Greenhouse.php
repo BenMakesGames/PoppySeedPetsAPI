@@ -213,10 +213,8 @@ class Greenhouse
 
     public function setComposterBonusCountdown(): self
     {
-        $squirrel3 = new Squirrel3();
-
         if($this->composterBonusCountdown <= 0)
-            $this->composterBonusCountdown += $squirrel3->rngNextInt(3 * 20, 7 * 20);
+            $this->composterBonusCountdown += random_int(3 * 20, 7 * 20);
 
         return $this;
     }

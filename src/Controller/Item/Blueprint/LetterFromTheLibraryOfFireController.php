@@ -8,9 +8,9 @@ use App\Entity\User;
 use App\Functions\ColorFunctions;
 use App\Repository\DragonRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetAssistantService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -68,7 +68,7 @@ The Library of Fire is always open. We look forward to seeing you!');
      */
     public function meltSeal(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, DragonRepository $dragonRepository, Squirrel3 $squirrel3,
+        EntityManagerInterface $em, DragonRepository $dragonRepository, IRandom $squirrel3,
         PetAssistantService $petAssistantService
     )
     {

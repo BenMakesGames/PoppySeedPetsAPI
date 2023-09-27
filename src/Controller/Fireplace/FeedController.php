@@ -15,9 +15,9 @@ use App\Functions\RequestFunctions;
 use App\Repository\InventoryRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetAssistantService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +35,7 @@ class FeedController extends AbstractController
      */
     public function feedFireplace(
         Request $request, InventoryRepository $inventoryRepository, ResponseService $responseService,
-        EntityManagerInterface $em, InventoryService $inventoryService, Squirrel3 $rng,
+        EntityManagerInterface $em, InventoryService $inventoryService, IRandom $rng,
         UserStatsRepository $userStatsRepository
     )
     {

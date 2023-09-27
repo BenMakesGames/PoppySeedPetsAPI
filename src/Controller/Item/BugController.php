@@ -19,9 +19,9 @@ use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\StoryService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -93,7 +93,7 @@ class BugController extends AbstractController
     public function feedBug(
         Inventory $inventory, ResponseService $responseService, UserStatsRepository $userStatsRepository,
         EntityManagerInterface $em, Request $request, InventoryRepository $inventoryRepository,
-        InventoryService $inventoryService, Squirrel3 $squirrel3
+        InventoryService $inventoryService, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -194,7 +194,7 @@ class BugController extends AbstractController
      */
     public function adopt(
         Inventory $inventory, EntityManagerInterface $em, MeritRepository $meritRepository,
-        ResponseService $responseService, PetFactory $petFactory, Squirrel3 $squirrel3
+        ResponseService $responseService, PetFactory $petFactory, IRandom $squirrel3
     )
     {
         /** @var User $user */

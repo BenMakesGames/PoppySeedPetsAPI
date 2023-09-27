@@ -39,7 +39,7 @@ class PetRelationshipService
 
     public function __construct(
         EntityManagerInterface $em, PregnancyService $pregnancyService, FriendlyRivalsService $friendlyRivalsService,
-        LoveService $loveService, RelationshipChangeService $relationshipChangeService, Squirrel3 $squirrel3
+        LoveService $loveService, RelationshipChangeService $relationshipChangeService, IRandom $squirrel3
     )
     {
         $this->em = $em;

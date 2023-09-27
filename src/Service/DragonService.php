@@ -77,7 +77,7 @@ class DragonService
 
     public function __construct(
         EntityManagerInterface $em, InventoryService $inventoryService, ResponseService $responseService,
-        Clock $clock, UserStatsRepository $userStatsRepository, Squirrel3 $rng,
+        Clock $clock, UserStatsRepository $userStatsRepository, IRandom $rng,
         DragonRepository $dragonRepository, HattierService $hattierService, TransactionService $transactionService
     )
     {

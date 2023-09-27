@@ -32,7 +32,7 @@ class CookingService
     public function __construct(
         RecipeRepository $recipeRepository, InventoryService $inventoryService, EntityManagerInterface $em,
         UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
-        RecipeAttemptedRepository $recipeAttemptedRepository, Squirrel3 $squirrel3
+        RecipeAttemptedRepository $recipeAttemptedRepository, IRandom $squirrel3
     )
     {
         $this->recipeRepository = $recipeRepository;

@@ -13,8 +13,8 @@ use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
 use App\Model\PetShelterPet;
 use App\Repository\PetRepository;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,7 +34,7 @@ class ReleaseController extends AbstractController
      */
     public function releasePet(
         Pet $pet, Request $request, ResponseService $responseService, UserPasswordHasherInterface $passwordEncoder,
-        EntityManagerInterface $em, PetRepository $petRepository, Squirrel3 $rng
+        EntityManagerInterface $em, PetRepository $petRepository, IRandom $rng
     )
     {
         /** @var User $user */

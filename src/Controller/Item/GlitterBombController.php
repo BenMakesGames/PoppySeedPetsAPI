@@ -8,8 +8,8 @@ use App\Enum\StatusEffectEnum;
 use App\Functions\StatusEffectHelpers;
 use App\Repository\PetRepository;
 use App\Service\HotPotatoService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,7 +26,7 @@ class GlitterBombController extends AbstractController
      */
     public function toss(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        PetRepository $petRepository, Squirrel3 $squirrel3, HotPotatoService $hotPotatoService
+        PetRepository $petRepository, IRandom $squirrel3, HotPotatoService $hotPotatoService
     )
     {
         /** @var User $user */

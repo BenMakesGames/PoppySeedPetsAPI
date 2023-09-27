@@ -13,8 +13,8 @@ use App\Repository\TraderRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,7 +33,7 @@ class TraderController extends AbstractController
      */
     public function getExchanges(
         TraderService $traderService, ResponseService $responseService, TraderRepository $traderRepository,
-        EntityManagerInterface $em, Squirrel3 $rng
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */

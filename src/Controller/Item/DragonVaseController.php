@@ -18,14 +18,13 @@ use App\Functions\InventoryModifierFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
-use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,7 +41,7 @@ class DragonVaseController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function smash(
-        Inventory $inventory, ResponseService $responseService, Squirrel3 $rng, PetRepository $petRepository,
+        Inventory $inventory, ResponseService $responseService, IRandom $rng, PetRepository $petRepository,
         PetExperienceService $petExperienceService, InventoryService $inventoryService,
         EntityManagerInterface $em
     )
@@ -117,7 +116,7 @@ class DragonVaseController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function read(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
         UserQuestRepository $userQuestRepository, Request $request, UserStatsRepository $userStatsRepository
     )
     {

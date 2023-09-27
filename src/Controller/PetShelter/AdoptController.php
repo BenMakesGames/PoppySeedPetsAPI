@@ -16,9 +16,9 @@ use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\AdoptionService;
+use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,7 +38,7 @@ class AdoptController extends AbstractController
     public function adoptPet(
         int $id, AdoptionService $adoptionService, Request $request,
         ResponseService $responseService, EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
-        UserQuestRepository $userQuestRepository, TransactionService $transactionService, Squirrel3 $squirrel3,
+        UserQuestRepository $userQuestRepository, TransactionService $transactionService, IRandom $squirrel3,
         MeritRepository $meritRepository, PetFactory $petFactory
     )
     {

@@ -13,9 +13,9 @@ use App\Repository\InventoryRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserStatsRepository;
+use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,7 +40,7 @@ class PhilosophersStoneController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function useStone(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
         PetFactory $petFactory, Request $request, InventoryRepository $inventoryRepository,
         UserStatsRepository $userStatsRepository
     )

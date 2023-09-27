@@ -16,8 +16,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
-use App\Service\TransactionService;
 
 class TwuWuvCraftingService
 {
@@ -34,7 +32,7 @@ class TwuWuvCraftingService
     public function __construct(
         PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
         ItemRepository $itemRepository, CoinSmithingService $coinSmithingService, HouseSimService $houseSimService,
-        SilverSmithingService $silverSmithingService, Squirrel3 $squirrel3,
+        SilverSmithingService $silverSmithingService, IRandom $squirrel3,
         PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {

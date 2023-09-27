@@ -8,10 +8,10 @@ use App\Enum\ParkEventTypeEnum;
 use App\Model\ParkEvent\KinBallParticipant;
 use App\Model\ParkEvent\TriDChessParticipant;
 use App\Repository\PetRepository;
+use App\Service\IRandom;
 use App\Service\ParkEvent\JoustingService;
 use App\Service\ParkEvent\KinBallService;
 use App\Service\ParkEvent\TriDChessService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -21,18 +21,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RunParkEventsCommand extends Command
 {
-    private $kinBallService;
-    private $petRepository;
-    private $em;
-    private $triDChessService;
-    private $joustingService;
-    private $logger;
-    private $squirrel3;
+    private KinBallService $kinBallService;
+    private PetRepository $petRepository;
+    private EntityManagerInterface $em;
+    private TriDChessService $triDChessService;
+    private JoustingService $joustingService;
+    private LoggerInterface $logger;
+    private IRandom $squirrel3;
 
     public function __construct(
         KinBallService $kinBallService, PetRepository $petRepository, EntityManagerInterface $em,
         TriDChessService $triDChessService, JoustingService $joustingService, LoggerInterface $logger,
-        Squirrel3 $squirrel3
+        IRandom $squirrel3
     )
     {
         $this->kinBallService = $kinBallService;

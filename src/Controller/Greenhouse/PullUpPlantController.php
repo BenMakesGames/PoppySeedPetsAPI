@@ -8,8 +8,8 @@ use App\Enum\PollinatorEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\PlayerLogHelpers;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,7 +26,7 @@ class PullUpPlantController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function pullUpPlant(
-        GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
+        GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
         InventoryService $inventoryService
     ): JsonResponse
     {

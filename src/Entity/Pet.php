@@ -1087,13 +1087,11 @@ class Pet
 
     public function setParkEventType(?string $parkEventType): self
     {
-        $squirrel3 = new Squirrel3();
-
         if($parkEventType !== null && !ParkEventTypeEnum::isAValue($parkEventType))
             throw new \InvalidArgumentException('"' . $parkEventType . '" is not a valid park event type.');
 
         $this->parkEventType = $parkEventType;
-        $this->parkEventOrder = $squirrel3->rngNextInt(0, 2000000000);
+        $this->parkEventOrder = random_int(0, 2000000000);
 
         return $this;
     }

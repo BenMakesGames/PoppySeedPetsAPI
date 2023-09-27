@@ -6,8 +6,8 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -51,7 +51,7 @@ class MagpieDealController extends AbstractController
      */
     public function getFeathersAndEggs(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, Squirrel3 $squirrel3
+        EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         /** @var User $user */

@@ -26,7 +26,7 @@ class ParkService
     private Clock $clock;
 
     public function __construct(
-        Squirrel3 $squirrel3, InventoryService $inventoryService, UserQuestRepository $userQuestRepository,
+        IRandom $squirrel3, InventoryService $inventoryService, UserQuestRepository $userQuestRepository,
         EntityManagerInterface $em, HattierService $hattierService, Clock $clock
     )
     {

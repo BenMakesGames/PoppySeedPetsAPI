@@ -11,7 +11,6 @@ use App\Enum\RelationshipEnum;
 use App\Functions\PetActivityLogFactory;
 use App\Repository\PetActivityLogTagRepository;
 use App\Service\IRandom;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class RelationshipChangeService
@@ -21,7 +20,7 @@ class RelationshipChangeService
     private EntityManagerInterface $em;
 
     public function __construct(
-        LoveService $loveService, Squirrel3 $squirrel3, EntityManagerInterface $em
+        LoveService $loveService, IRandom $squirrel3, EntityManagerInterface $em
     )
     {
         $this->loveService = $loveService;

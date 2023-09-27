@@ -29,7 +29,7 @@ class HouseService
     public function __construct(
         PetActivityService $petActivityService, CacheItemPoolInterface $cache,
         EntityManagerInterface $em, UserQuestRepository $userQuestRepository, InventoryService $inventoryService,
-        Squirrel3 $squirrel3, HouseSimService $houseSimService, SagaSagaService $sagaSagaService,
+        IRandom $squirrel3, HouseSimService $houseSimService, SagaSagaService $sagaSagaService,
         PetSocialActivityService $petSocialActivityService, PerformanceProfiler $performanceProfiler
     )
     {

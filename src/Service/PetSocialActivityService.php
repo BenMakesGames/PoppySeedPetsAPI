@@ -15,6 +15,7 @@ use App\Enum\SpiritCompanionStarEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
 use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRelationshipRepository;
@@ -26,7 +27,6 @@ use Doctrine\ORM\EntityManagerInterface;
 class PetSocialActivityService
 {
     private EntityManagerInterface $em;
-    private ResponseService $responseService;
     private PetRelationshipService $petRelationshipService;
     private PetGroupService $petGroupService;
     private PetExperienceService $petExperienceService;
@@ -38,15 +38,14 @@ class PetSocialActivityService
     private PerformanceProfiler $performanceProfiler;
 
     public function __construct(
-        EntityManagerInterface $em, ResponseService $responseService, PetRelationshipService $petRelationshipService,
-        Squirrel3 $squirrel3, PetGroupService $petGroupService, PetExperienceService $petExperienceService,
-        PetRelationshipRepository $petRelationshipRepository, HoliService $holiService,
-        PregnancyService $pregnancyService, AwaOdoriService $awaOdoriService, PerformanceProfiler $performanceProfiler
+        EntityManagerInterface $em, PetRelationshipService $petRelationshipService, IRandom $squirrel3,
+        PetGroupService $petGroupService, PetExperienceService $petExperienceService, HoliService $holiService,
+        PetRelationshipRepository $petRelationshipRepository, PregnancyService $pregnancyService,
+        AwaOdoriService $awaOdoriService, PerformanceProfiler $performanceProfiler
     )
     {
         $this->em = $em;
         $this->squirrel3 = $squirrel3;
-        $this->responseService = $responseService;
         $this->petRelationshipService = $petRelationshipService;
         $this->petGroupService = $petGroupService;
         $this->petExperienceService = $petExperienceService;
@@ -540,7 +539,9 @@ class PetSocialActivityService
             }
         }
 
-        $activityLog = $this->responseService->createActivityLog($pet, $message, 'companions/' . $companion->getImage(), $changes->compare($pet))
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
+            ->setIcon('companions/' . $companion->getImage())
+            ->setChanges($changes->compare($pet))
             ->addInterestingness($activityInterestingness)
             ->addTags(PetActivityLogTagRepository::findByNames($this->em, $activityTags))
         ;

@@ -6,8 +6,8 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,7 +24,7 @@ class AntQueensFavorController extends AbstractController
      */
     public function getBugStuff(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, Squirrel3 $rng
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -75,7 +75,7 @@ class AntQueensFavorController extends AbstractController
      */
     public function getFood(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, Squirrel3 $rng
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -127,7 +127,7 @@ class AntQueensFavorController extends AbstractController
      */
     public function craftingSupplies(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, Squirrel3 $rng
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */

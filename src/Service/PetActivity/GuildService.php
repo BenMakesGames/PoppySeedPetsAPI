@@ -32,13 +32,11 @@ class GuildService
     private PetExperienceService $petExperienceService;
     private GizubisGardenService $gizubisGardenService;
     private IRandom $squirrel3;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         GuildRepository $guildRepository, EntityManagerInterface $em, ResponseService $responseService,
         InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        GizubisGardenService $gizubisGardenService, IRandom $squirrel3,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        GizubisGardenService $gizubisGardenService, IRandom $squirrel3
     )
     {
         $this->guildRepository = $guildRepository;
@@ -48,7 +46,6 @@ class GuildService
         $this->petExperienceService = $petExperienceService;
         $this->gizubisGardenService = $gizubisGardenService;
         $this->squirrel3 = $squirrel3;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     public function joinGuildProjectE(Pet $pet): PetActivityLog
@@ -69,7 +66,7 @@ class GuildService
             $pet->getName() . ' accessed Project-E, and stumbled upon The Hall of Nine - a meeting place for members of nine major Guilds.'
         );
 
-        $activityLog->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Project-E', 'Guild' ]));
+        $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E', 'Guild' ]));
 
         return $activityLog;
     }
@@ -92,7 +89,7 @@ class GuildService
             $pet->getName() . ' visited the Library of Fire, and stumbled upon a meeting between members from the nine major Guilds.'
         );
 
-        $activityLog->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'The Umbra', 'Guild' ]));
+        $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Guild' ]));
 
         return $activityLog;
     }
@@ -128,7 +125,7 @@ class GuildService
         {
             $activityLog
                 ->setChanges($changes->compare($petWithSkills->getPet()))
-                ->addTag($this->petActivityLogTagRepository->findOneBy([ 'title' => 'Guild' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Guild' ]))
             ;
         }
 

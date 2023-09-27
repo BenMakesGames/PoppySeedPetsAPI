@@ -6,8 +6,8 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -54,7 +54,7 @@ class BaabbleController extends AbstractController
      */
     public function openBlackBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -108,7 +108,7 @@ class BaabbleController extends AbstractController
      */
     public function openWhiteBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -166,7 +166,7 @@ class BaabbleController extends AbstractController
      */
     public function openGoldBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -227,7 +227,7 @@ class BaabbleController extends AbstractController
      */
     public function openShinyBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, IRandom $squirrel3
     )
     {
         /** @var User $user */

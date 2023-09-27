@@ -38,7 +38,7 @@ class PetFactory
     ];
 
     public function __construct(
-        EntityManagerInterface $em, MeritRepository $meritRepository, Squirrel3 $squirrel3
+        EntityManagerInterface $em, MeritRepository $meritRepository, IRandom $squirrel3
     )
     {
         $this->em = $em;

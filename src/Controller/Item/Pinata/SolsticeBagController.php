@@ -9,8 +9,8 @@ use App\Functions\ArrayFunctions;
 use App\Repository\EnchantmentRepository;
 use App\Service\HattierService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,7 +26,7 @@ class SolsticeBagController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openSummerSolsticeBag(
-        Inventory $bag, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $bag, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         EntityManagerInterface $em, HattierService $hattierService
     )
     {
@@ -75,7 +75,7 @@ class SolsticeBagController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openWinterSolsticeBag(
-        Inventory $bag, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $bag, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         EntityManagerInterface $em, HattierService $hattierService
     )
     {

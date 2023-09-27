@@ -4,6 +4,7 @@ namespace App\Service;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetGroup;
+use App\Entity\PetRelationship;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetGroupTypeEnum;
 use App\Enum\RelationshipEnum;
@@ -31,25 +32,21 @@ class PetGroupService
         PetGroupTypeEnum::SPORTSBALL => 'sportsball team',
     ];
 
-    private $em;
-    private $petRepository;
-    private $responseService;
-    private $petExperienceService;
-    private $bandService;
-    private $astronomyClubService;
+    private EntityManagerInterface $em;
+    private PetExperienceService $petExperienceService;
+    private BandService $bandService;
+    private AstronomyClubService $astronomyClubService;
     private IRandom $squirrel3;
     private GamingGroupService $gamingGroupService;
     private SportsBallService $sportsBallService;
 
     public function __construct(
-        EntityManagerInterface $em, PetRepository $petRepository, ResponseService $responseService,
-        PetExperienceService $petExperienceService, BandService $bandService, AstronomyClubService $astronomyClubService,
-        Squirrel3 $squirrel3, GamingGroupService $gamingGroupService, SportsBallService $sportsBallService
+        EntityManagerInterface $em, PetExperienceService $petExperienceService, BandService $bandService,
+        AstronomyClubService $astronomyClubService, IRandom $squirrel3, GamingGroupService $gamingGroupService,
+        SportsBallService $sportsBallService
     )
     {
         $this->em = $em;
-        $this->petRepository = $petRepository;
-        $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
         $this->bandService = $bandService;
         $this->astronomyClubService = $astronomyClubService;
@@ -201,7 +198,7 @@ class PetGroupService
             return false;
 
         /** @var Pet[] $recruit */
-        $recruits = $this->petRepository->createQueryBuilder('p')
+        $recruits = $this->em->getRepository(Pet::class)->createQueryBuilder('p')
             ->select('p2')
             ->distinct(true)
             ->leftJoin('App:PetRelationship', 'r', Join::WITH, 'r.pet = p.id')
@@ -352,12 +349,48 @@ class PetGroupService
             return 3;
     }
 
+    /**
+     * @return Pet[]
+     */
+    private static function findFriendsWithFewGroups(Pet $pet): array
+    {
+        $friendlyRelationships = [
+            RelationshipEnum::FRIEND,
+            RelationshipEnum::BFF,
+            RelationshipEnum::FWB,
+            RelationshipEnum::MATE
+        ];
+
+        $relationshipsWithFewGroups = array_filter(
+            $pet->getPetRelationships()->toArray(),
+            function(PetRelationship $r) use($friendlyRelationships, $pet)
+            {
+                $otherSide = $r->getRelationship()->getRelationshipWith($pet);
+
+                return
+                    //
+                    $r->getCurrentRelationship() !== RelationshipEnum::BROKE_UP &&
+
+                    // as long as both pets WANT a friendly relationship, they'll do this
+                    $otherSide &&
+                    in_array($otherSide->getRelationshipGoal(), $friendlyRelationships) &&
+                    in_array($r->getRelationshipGoal(), $friendlyRelationships) &&
+
+                    // the pets involved must not already have too many group commitments
+                    $r->getRelationship()->getGroups()->count() < $r->getRelationship()->getMaximumGroups()
+                ;
+            }
+        );
+
+        return array_map(function(PetRelationship $p) { return $p->getRelationship(); }, $relationshipsWithFewGroups);
+    }
+
     public function createGroup(Pet $pet): ?PetGroup
     {
         /** @var ComputedPetSkills[] $availableFriends */
         $availableFriends = array_values(array_map(function(Pet $pet) {
             return $pet->getComputedSkills();
-        }, $this->petRepository->findFriendsWithFewGroups($pet)));
+        }, self::findFriendsWithFewGroups($pet)));
 
         // the more groups you're in, the more friends you need to start another group
         // (reduces the chances of having duplicate-member groups)
@@ -446,7 +479,8 @@ class PetGroupService
 
         $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
 
-        $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started a new ' . $groupType['description'] . ' with ' . ArrayFunctions::list_nice($friendNames) . '.', $groupType['icon']);
+        PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started a new ' . $groupType['description'] . ' with ' . ArrayFunctions::list_nice($friendNames) . '.')
+            ->setIcon($groupType['icon']);
 
         return $group;
     }

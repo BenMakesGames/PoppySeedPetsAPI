@@ -39,13 +39,11 @@ class EatingService
     private EntityManagerInterface $em;
     private PetExperienceService $petExperienceService;
     private UserStatsRepository $userStatsRepository;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         IRandom $squirrel3, CravingService $cravingService,
         InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
-        PetExperienceService $petExperienceService, UserStatsRepository $userStatsRepository,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        PetExperienceService $petExperienceService, UserStatsRepository $userStatsRepository
     )
     {
         $this->squirrel3 = $squirrel3;
@@ -55,7 +53,6 @@ class EatingService
         $this->em = $em;
         $this->petExperienceService = $petExperienceService;
         $this->userStatsRepository = $userStatsRepository;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     /**
@@ -90,7 +87,7 @@ class EatingService
             else
                 $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' immediately ate the ' . $food->name . '.');
 
-            $activityLog->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Eating' ]));
+            $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Eating' ]));
         }
 
         return true;
@@ -205,7 +202,7 @@ class EatingService
 
             $activityLog
                 ->setChanges($changes->compare($pet))
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Lucky Food' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Lucky Food' ]))
             ;
         }
 
@@ -372,7 +369,7 @@ class EatingService
             }
 
             return $this->responseService->createActivityLog($pet, $message, $icon, $petChanges->compare($pet))
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Eating' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Eating' ]))
             ;
         }
         else
@@ -380,13 +377,13 @@ class EatingService
             if(count($tooPoisonous) > 0)
             {
                 return $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but ' . $this->squirrel3->rngNextFromArray($tooPoisonous) . ' really isn\'t appealing right now.', '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Eating' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Eating' ]))
                 ;
             }
             else
             {
                 return $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but they\'re too full to eat anymore.', '')
-                    ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Eating' ]))
+                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Eating' ]))
                 ;
             }
         }

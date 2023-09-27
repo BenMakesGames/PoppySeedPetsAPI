@@ -1,14 +1,11 @@
 <?php
 namespace App\Service\PetActivity\Crafting;
 
-use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
-use App\Functions\ArrayFunctions;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -19,7 +16,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class NotReallyCraftsService
@@ -33,7 +29,7 @@ class NotReallyCraftsService
     private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         PetExperienceService $petExperienceService, EntityManagerInterface $em, HouseSimService $houseSimService,
         PetActivityLogTagRepository $petActivityLogTagRepository
     )

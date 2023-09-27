@@ -8,7 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CompareRNGPerformanceCommand extends Command
 {
-    public const ITERATIONS = 100;
+    public const ITERATIONS = 10000;
 
     public function __construct()
     {
@@ -35,12 +35,44 @@ class CompareRNGPerformanceCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        echo "\n";
+
+        // mt_rand test:
+        echo self::ITERATIONS . ' iterations of mt_rand...' . "\n";
+
+        [ $mtRandDiffBits, $mtRandTime ] = $this->testMtRand();
+
+        echo 'time   : ' . round($mtRandTime * 1000, 4) . 'ms' . "\n";
+        echo '%diff  : ' . (array_sum($mtRandDiffBits) / self::ITERATIONS) . "\n";
+        echo "\n";
+
+        // random_int test
+        echo self::ITERATIONS . ' iterations of random_int...' . "\n";
+
+        [ $randomIntDiffBits, $randomIntTime ] = $this->testRandomInt();
+
+        echo 'time   : ' . round($randomIntTime * 1000, 4) . 'ms' . "\n";
+        echo '%diff  : ' . (array_sum($randomIntDiffBits) / self::ITERATIONS) . "\n";
+        echo "\n";
+
+        // Squirrel3 test:
+        echo self::ITERATIONS . ' iterations of squirrel3...' . "\n";
+
+        [ $squirrel3DiffBits, $squirrel3Time ] = $this->testSquirrel3();
+
+        echo 'time   : ' . round($squirrel3Time * 1000, 4) . 'ms' . "\n";
+        echo '%diff  : ' . (array_sum($squirrel3DiffBits) / self::ITERATIONS) . "\n";
+        echo "\n";
+
+        return Command::SUCCESS;
+    }
+
+    public function testMtRand(): array
+    {
         mt_srand();
         $mtRandDiffBits = [];
 
-        $output->writeln(self::ITERATIONS . ' iterations of mt_rand...');
-
-        $previous = mt_rand(0, 0xFFFFFFFF);
+        $previous = mt_rand(0, 0xFFFFFFFF); // to test bit distribution, we must ask for bits in even distribution
 
         for($i = 0; $i < self::ITERATIONS; $i++)
         {
@@ -51,12 +83,47 @@ class CompareRNGPerformanceCommand extends Command
             $previous = $r;
         }
 
+        $mtRandTime = microtime(true);
+
+        for($i = 0; $i < self::ITERATIONS; $i++)
+            mt_rand(0, 9000000); // NOT a power of 2, since that's unlikely IRL, but MAY perform better
+
+        $mtRandTime = microtime(true) - $mtRandTime;
+
+        return [ $mtRandDiffBits, $mtRandTime ];
+    }
+
+    public function testRandomInt(): array
+    {
+        $randomIntDiffBits = [];
+
+        $previous = random_int(0, 0xFFFFFFFF); // to test bit distribution, we must ask for bits in even distribution
+
+        for($i = 0; $i < self::ITERATIONS; $i++)
+        {
+            $r = random_int(0, 0xFFFFFFFF);
+
+            $randomIntDiffBits[] = CompareRNGPerformanceCommand::NumberOfSetBits($r ^ $previous) / 32;
+
+            $previous = $r;
+        }
+
+        $randomIntTime = microtime(true);
+
+        for($i = 0; $i < self::ITERATIONS; $i++)
+            random_int(0, 9000000); // NOT a power of 2, since that's unlikely IRL, but MAY perform better
+
+        $randomIntTime = microtime(true) - $randomIntTime;
+
+        return [ $randomIntDiffBits, $randomIntTime ];
+    }
+
+    public function testSquirrel3(): array
+    {
         $squirrel3 = new Squirrel3();
         $squirrel3DiffBits = [];
 
-        $output->writeln(self::ITERATIONS . ' iterations of squirrel3...');
-
-        $previous = $squirrel3->rngNextInt(0, 0xFFFFFFFF);
+        $previous = $squirrel3->rngNextInt(0, 0xFFFFFFFF); // to test bit distribution, we must ask for bits in even distribution
 
         for($i = 0; $i < self::ITERATIONS; $i++)
         {
@@ -67,9 +134,13 @@ class CompareRNGPerformanceCommand extends Command
             $previous = $r;
         }
 
-        $output->writeln('mt_rand % diff  : ' . array_sum($mtRandDiffBits) / self::ITERATIONS);
-        $output->writeln('Squirrel3 % diff: ' . array_sum($squirrel3DiffBits) / self::ITERATIONS);
+        $squirrel3Time = microtime(true);
 
-        return Command::SUCCESS;
+        for($i = 0; $i < self::ITERATIONS; $i++)
+            $squirrel3->rngNextInt(0, 9000000); // NOT a power of 2, since that's unlikely IRL, but MAY perform better
+
+        $squirrel3Time = microtime(true) - $squirrel3Time;
+
+        return [ $squirrel3DiffBits, $squirrel3Time ];
     }
 }

@@ -16,7 +16,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class EventLanternService
@@ -32,7 +31,7 @@ class EventLanternService
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        EntityManagerInterface $em, Squirrel3 $squirrel3, Clock $clock,
+        EntityManagerInterface $em, IRandom $squirrel3, Clock $clock,
         HouseSimService $houseSimService, PetActivityLogTagRepository $petActivityLogTagRepository
     )
     {

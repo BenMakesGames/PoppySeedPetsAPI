@@ -21,7 +21,6 @@ use App\Service\IRandom;
 use App\Service\PetActivity\Crafting\Helpers\CoinSmithingService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -39,7 +38,7 @@ class MagicBindingService
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        ItemRepository $itemRepository, Squirrel3 $squirrel3, CoinSmithingService $coinSmithingService,
+        ItemRepository $itemRepository, IRandom $squirrel3, CoinSmithingService $coinSmithingService,
         HouseSimService $houseSimService, HattierService $hattierService, EntityManagerInterface $em
     )
     {

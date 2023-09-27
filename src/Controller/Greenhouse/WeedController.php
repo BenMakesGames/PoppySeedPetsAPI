@@ -17,9 +17,9 @@ use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\Clock;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetAssistantService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,7 +38,7 @@ class WeedController extends AbstractController
      */
     public function weedPlants(
         ResponseService $responseService, UserQuestRepository $userQuestRepository, EntityManagerInterface $em,
-        InventoryService $inventoryService, Squirrel3 $squirrel3, Clock $clock
+        InventoryService $inventoryService, IRandom $squirrel3, Clock $clock
     ): JsonResponse
     {
         /** @var User $user */

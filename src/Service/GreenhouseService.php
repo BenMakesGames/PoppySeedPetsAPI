@@ -39,7 +39,7 @@ class GreenhouseService
     private Clock $clock;
 
     public function __construct(
-        InventoryService $inventoryService, PetFactory $petFactory, Squirrel3 $squirrel3,
+        InventoryService $inventoryService, PetFactory $petFactory, IRandom $squirrel3,
         EntityManagerInterface $em, UserStatsRepository $userStatsRepository, UserQuestRepository $userQuestRepository,
         NormalizerInterface $normalizer, Clock $clock
     )

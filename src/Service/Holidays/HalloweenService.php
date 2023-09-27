@@ -10,23 +10,26 @@ use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
+use App\Service\Squirrel3;
+use Doctrine\ORM\EntityManagerInterface;
 
 class HalloweenService
 {
-    private $userQuestRepository;
-    private $petRepository;
-    private $inventoryService;
-    private $inventoryRepository;
+    private UserQuestRepository $userQuestRepository;
+    private InventoryService $inventoryService;
+    private EntityManagerInterface $em;
+    private IRandom $rng;
 
     public function __construct(
-        UserQuestRepository $userQuestRepository, PetRepository $petRepository, InventoryService $inventoryService,
-        InventoryRepository $inventoryRepository
+        UserQuestRepository $userQuestRepository, InventoryService $inventoryService,
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         $this->userQuestRepository = $userQuestRepository;
-        $this->petRepository = $petRepository;
         $this->inventoryService = $inventoryService;
-        $this->inventoryRepository = $inventoryRepository;
+        $this->em = $em;
+        $this->rng = $rng;
     }
 
     public function getNextTrickOrTreater(User $user): UserQuest
@@ -38,15 +41,50 @@ class HalloweenService
     {
         $trickOrTreater = $this->userQuestRepository->findOrCreate($user, 'Trick-or-Treater', 0);
 
-        $pet = $trickOrTreater->getValue() === 0 ? null : $this->petRepository->find($trickOrTreater->getValue());
+        $pet = $trickOrTreater->getValue() === 0 ? null : $this->em->getRepository(Pet::class)->find($trickOrTreater->getValue());
 
         if($pet === null || $pet->getTool() === null || $pet->getHat() === null || $pet->getOwner()->getId() === $user->getId())
         {
-            $pet = $this->petRepository->findRandomTrickOrTreater($user);
+            $pet = $this->findRandomTrickOrTreater($user);
             $trickOrTreater->setValue($pet ? $pet->getId() : 0);
         }
 
         return $pet;
+    }
+
+    public function findRandomTrickOrTreater(User $user): ?Pet
+    {
+        $oneDayAgo = (new \DateTimeImmutable())->modify('-24 hours');
+
+        $numberOfPets = (int)$this->em->getRepository(Pet::class)->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->andWhere('p.tool IS NOT NULL')
+            ->andWhere('p.hat IS NOT NULL')
+            ->andWhere('p.lastInteracted >= :oneDayAgo')
+            ->andWhere('p.owner != :user')
+            ->setParameter('oneDayAgo', $oneDayAgo)
+            ->setParameter('user', $user->getId())
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+
+        if($numberOfPets === 0)
+            return null;
+
+        $offset = $this->rng->rngNextInt(0, $numberOfPets - 1);
+
+        return $this->em->getRepository(Pet::class)->createQueryBuilder('p')
+            ->andWhere('p.tool IS NOT NULL')
+            ->andWhere('p.hat IS NOT NULL')
+            ->andWhere('p.lastInteracted >= :oneDayAgo')
+            ->andWhere('p.owner != :user')
+            ->setParameter('oneDayAgo', $oneDayAgo)
+            ->setParameter('user', $user->getId())
+            ->setFirstResult($offset)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleResult()
+        ;
     }
 
     public function resetTrickOrTreater(User $user)
@@ -95,7 +133,7 @@ class HalloweenService
      */
     public function getCandy(User $user): array
     {
-        return $this->inventoryRepository->createQueryBuilder('i')
+        return $this->em->getRepository(Inventory::class)->createQueryBuilder('i')
             ->andWhere('i.owner = :user')
             ->andWhere('i.location = :home')
             ->leftJoin('i.item', 'item')

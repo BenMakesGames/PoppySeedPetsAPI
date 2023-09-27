@@ -8,8 +8,8 @@ use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,7 +25,7 @@ class SeaController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function invokeSeaScroll(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {

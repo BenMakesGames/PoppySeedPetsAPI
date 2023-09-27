@@ -11,9 +11,9 @@ use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,7 +30,7 @@ class BeeLarvaController extends AbstractController
      */
     public function hatch(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, Squirrel3 $rng,
+        InventoryService $inventoryService, IRandom $rng,
         PetFactory $petFactory, MeritRepository $meritRepository
     )
     {

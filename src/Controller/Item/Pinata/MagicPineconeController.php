@@ -3,11 +3,12 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Repository\SpiceRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,9 +26,10 @@ class MagicPineconeController extends AbstractController
     public function raid(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
         ResponseService $responseService, SpiceRepository $spiceRepository,
-        Squirrel3 $squirrel3
+        IRandom $squirrel3
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'magicPinecone/#/open');

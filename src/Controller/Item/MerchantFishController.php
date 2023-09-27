@@ -7,11 +7,10 @@ use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\StoryEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Functions\ArrayFunctions;
 use App\Model\StoryStep;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\StoryService;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,7 +29,7 @@ class MerchantFishController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function read(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
         StoryService $storyService, Request $request, TraderService $traderService, InventoryService $inventoryService
     )
     {

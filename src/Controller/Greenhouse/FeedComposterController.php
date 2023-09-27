@@ -18,8 +18,8 @@ use App\Repository\SpiceRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\GreenhouseService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -46,7 +46,7 @@ class FeedComposterController extends AbstractController
     public function feedComposter(
         ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository,
         InventoryService $inventoryService, EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
-        Squirrel3 $squirrel3, GreenhouseService $greenhouseService
+        IRandom $squirrel3, GreenhouseService $greenhouseService
     ): JsonResponse
     {
         /** @var User $user */

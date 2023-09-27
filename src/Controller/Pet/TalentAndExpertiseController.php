@@ -10,8 +10,8 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetActivityLogFactory;
 use App\Repository\MeritRepository;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,7 +28,7 @@ class TalentAndExpertiseController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function pickTalent(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
@@ -98,7 +98,7 @@ class TalentAndExpertiseController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function pickExpertise(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         if($pet->getOwner()->getId() !== $this->getUser()->getId())

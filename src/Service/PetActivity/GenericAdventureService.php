@@ -11,6 +11,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -34,7 +35,6 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class GenericAdventureService
 {
-    private ResponseService $responseService;
     private InventoryService $inventoryService;
     private PetExperienceService $petExperienceService;
     private UserQuestRepository $userQuestRepository;
@@ -48,7 +48,7 @@ class GenericAdventureService
     private FieldGuideService $fieldGuideService;
 
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService,
+        InventoryService $inventoryService,
         PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
         TransactionService $transactionService, IRandom $squirrel3, HattierService $hattierService,
         UserBirthdayService $userBirthdayService, DragonRepository $dragonRepository,
@@ -56,7 +56,6 @@ class GenericAdventureService
         FieldGuideService $fieldGuideService
     )
     {
-        $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->userQuestRepository = $userQuestRepository;
         $this->petExperienceService = $petExperienceService;
@@ -80,7 +79,7 @@ class GenericAdventureService
         {
             $pet->getHat()->changeItem(ItemRepository::findOneByName($this->em, 'William, Shush'));
 
-            return $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, some random dude jumped out of nowhere and shot an arrow in %pet:' . $pet->getId() . '.name%\'s Red!', '')
+            return PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, some random dude jumped out of nowhere and shot an arrow in %pet:' . $pet->getId() . '.name%\'s Red!')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ;
         }
@@ -106,7 +105,8 @@ class GenericAdventureService
                 case MeritEnum::NOTHING_TO_FEAR: $pet->increaseSafety(72); break;
             }
 
-            return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name%, having become a grandparent, has been thinking about their life up until this point, and adopted a new philosophy: ' . $newMerit . '!', '', $changes->compare($pet))
+            return PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name%, having become a grandparent, has been thinking about their life up until this point, and adopted a new philosophy: ' . $newMerit . '!')
+                ->setChanges($changes->compare($pet))
                 ->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP)
             ;
         }
@@ -124,7 +124,7 @@ class GenericAdventureService
         {
             $rescuedAFairy->setValue((new \DateTimeImmutable())->format('Y-m-d H:i:s'));
 
-            $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a raccoon carrying a House Fairy in its mouth. The raccoon stared at %pet:' . $pet->getId() . '.name% for a moment, then dropped the House Fairy and scurried away.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a raccoon carrying a House Fairy in its mouth. The raccoon stared at %pet:' . $pet->getId() . '.name% for a moment, then dropped the House Fairy and scurried away.')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fae-kind' ]))
             ;
@@ -169,7 +169,7 @@ class GenericAdventureService
 
             $pet->getOwner()->getGreenhouse()->setVisitingBird($bird);
 
-            return $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a huge ' . $bird . ' swoop into the Greenhouse and land on the Bird Bath!', '')
+            return PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a huge ' . $bird . ' swoop into the Greenhouse and land on the Bird Bath!')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Greenhouse' ]))
             ;
@@ -255,28 +255,29 @@ class GenericAdventureService
         $event = $this->squirrel3->rngNextInt(1, 4);
         if($event === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they spotted a bunch of ants carrying ' . $describeReward . '! %pet:' . $pet->getId() . '.name% took the ' . $reward[1] . ', brushed the ants off, and returned home.', 'items/bug/ant-conga')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they spotted a bunch of ants carrying ' . $describeReward . '! %pet:' . $pet->getId() . '.name% took the ' . $reward[1] . ', brushed the ants off, and returned home.')
+                ->setIcon('items/bug/ant-conga')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
             ;
             $comment = $pet->getName() . ' stole this from some ants.';
         }
         else if($event === 2)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw ' . $describeReward . ' floating downstream on a log! %pet:' . $pet->getId() . '.name% caught up to the log, and took the ' . $reward[1] . '.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw ' . $describeReward . ' floating downstream on a log! %pet:' . $pet->getId() . '.name% caught up to the log, and took the ' . $reward[1] . '.')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
             ;
             $comment = $pet->getName() . ' found this floating on a log.';
         }
         else if($event === 3)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw ' . $describeReward . ' poking out of a bag near a dumpster! %pet:' . $pet->getId() . '.name% took the ' . $reward[1] . ', and returned home.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw ' . $describeReward . ' poking out of a bag near a dumpster! %pet:' . $pet->getId() . '.name% took the ' . $reward[1] . ', and returned home.')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Dumpster-diving' ]))
             ;
             $comment = $pet->getName() . ' found this near a dumpster.';
         }
         else //if($event === 4)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a raccoon carrying ' . $describeReward . ' in its mouth. The raccoon stared at %pet:' . $pet->getId() . '.name% for a moment, then dropped the ' . $reward[1] . ' and scurried away.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a raccoon carrying ' . $describeReward . ' in its mouth. The raccoon stared at %pet:' . $pet->getId() . '.name% for a moment, then dropped the ' . $reward[1] . ' and scurried away.')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
             ;
             $comment = 'A startled raccoon dropped this while ' . $pet->getName() . ' was out.';
@@ -314,7 +315,7 @@ class GenericAdventureService
     {
         UserUnlockedFeatureHelpers::create($this->em, $pet->getOwner(), $feature);
 
-        return $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' explored the town a bit, and stumbled upon a ' . $description . '! (Check it out in the menu!)', '')
+        return PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' explored the town a bit, and stumbled upon a ' . $description . '! (Check it out in the menu!)')
             ->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY)
         ;
     }

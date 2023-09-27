@@ -27,9 +27,7 @@ final class UserFunctions
         if($numberOfUsers === 0)
             return null;
 
-        $squirrel3 = new Squirrel3();
-
-        $offset = $squirrel3->rngNextInt(0, $numberOfUsers - 1);
+        $offset = random_int(0, $numberOfUsers - 1);
 
         $userQuery = $userRepository->createQueryBuilder('u')
             ->andWhere('u.lastActivity >= :oneDayAgo')

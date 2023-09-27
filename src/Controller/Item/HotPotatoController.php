@@ -8,8 +8,8 @@ use App\Functions\ArrayFunctions;
 use App\Repository\UserStatsRepository;
 use App\Service\HotPotatoService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,7 +27,7 @@ class HotPotatoController extends AbstractController
      */
     public function toss(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, Squirrel3 $squirrel3, HotPotatoService $hotPotatoService,
+        InventoryService $inventoryService, IRandom $squirrel3, HotPotatoService $hotPotatoService,
         UserStatsRepository $userStatsRepository
     )
     {
@@ -89,7 +89,7 @@ class HotPotatoController extends AbstractController
      */
     public function tossChocolateBomb(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, Squirrel3 $squirrel3, HotPotatoService $hotPotatoService
+        InventoryService $inventoryService, IRandom $squirrel3, HotPotatoService $hotPotatoService
     )
     {
         /** @var User $user */
@@ -147,7 +147,7 @@ class HotPotatoController extends AbstractController
      */
     public function tossHongbao(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        Squirrel3 $squirrel3, HotPotatoService $hotPotatoService, TransactionService $transactionService
+        IRandom $squirrel3, HotPotatoService $hotPotatoService, TransactionService $transactionService
     )
     {
         /** @var User $user */

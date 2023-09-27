@@ -4,6 +4,7 @@ namespace App\Service\PetActivity;
 use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\PetActivityLogFactory;
 use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
@@ -15,18 +16,16 @@ use Doctrine\ORM\EntityManagerInterface;
 class UserBirthdayService
 {
     private UserQuestRepository $userQuestRepository;
-    private ResponseService $responseService;
     private InventoryService $inventoryService;
     private MuseumService $museumService;
     private EntityManagerInterface $em;
 
     public function __construct(
-        UserQuestRepository $userQuestRepository, ResponseService $responseService, InventoryService $inventoryService,
+        UserQuestRepository $userQuestRepository, InventoryService $inventoryService,
         MuseumService $museumService, EntityManagerInterface $em
     )
     {
         $this->userQuestRepository = $userQuestRepository;
-        $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->museumService = $museumService;
         $this->em = $em;
@@ -52,10 +51,10 @@ class UserBirthdayService
 
         $birthdayPresentsReceived->setValue($birthdayPresentsReceived->getValue() + 1);
 
-        return $this->responseService->createActivityLog(
+        return PetActivityLogFactory::createUnreadLog(
+            $this->em,
             $petWithSkills->getPet(),
-            'For your ' . $years . '-year Anniversary, ' . ActivityHelpers::PetName($petWithSkills->getPet()) . ' made you a muffin!',
-            ''
+            'For your ' . $years . '-year Anniversary, ' . ActivityHelpers::PetName($petWithSkills->getPet()) . ' made you a muffin!'
         );
     }
 }

@@ -19,7 +19,6 @@ use App\Repository\PetQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PhilosophersStoneService
@@ -31,7 +30,7 @@ class PhilosophersStoneService
     private EntityManagerInterface $em;
 
     public function __construct(
-        Squirrel3 $rng, PetQuestRepository $petQuestRepository, InventoryService $inventoryService,
+        IRandom $rng, PetQuestRepository $petQuestRepository, InventoryService $inventoryService,
         EntityManagerInterface $em, PetExperienceService $petExperienceService
     )
     {

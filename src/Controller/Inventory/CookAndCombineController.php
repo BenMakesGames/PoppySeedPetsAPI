@@ -13,8 +13,8 @@ use App\Functions\InventoryModifierFunctions;
 use App\Repository\InventoryRepository;
 use App\Service\CookingService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,7 +32,7 @@ class CookAndCombineController extends AbstractController
      */
     public function prepareRecipe(
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
-        EntityManagerInterface $em, CookingService $cookingService, Squirrel3 $squirrel3
+        EntityManagerInterface $em, CookingService $cookingService, IRandom $squirrel3
     )
     {
         /** @var User $user */

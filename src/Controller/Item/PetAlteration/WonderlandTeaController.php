@@ -5,11 +5,10 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Exceptions\PSPInvalidOperationException;
-use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\PetRepository;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,7 +26,7 @@ class WonderlandTeaController extends AbstractController
      */
     public function serveTinyTea(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, Squirrel3 $squirrel3
+        PetRepository $petRepository, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -64,7 +63,7 @@ class WonderlandTeaController extends AbstractController
      */
     public function serveTremendousTea(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, Squirrel3 $squirrel3
+        PetRepository $petRepository, IRandom $squirrel3
     )
     {
         /** @var User $user */

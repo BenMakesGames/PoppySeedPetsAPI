@@ -34,6 +34,7 @@ class HollowEarthService
     private TransactionService $transactionService;
     private ResponseService $responseService;
     private UserStatsRepository $userStatsRepository;
+    private IRandom $rng;
 
     public const DICE_ITEMS = [
         'Glowing "Two-sided Die"' => 2,
@@ -50,7 +51,7 @@ class HollowEarthService
         HollowEarthTileRepository $hollowEarthTileRepository, EntityManagerInterface $em,
         InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, ResponseService $responseService,
-        UserStatsRepository $userStatsRepository
+        UserStatsRepository $userStatsRepository, IRandom $rng
     )
     {
         $this->hollowEarthTileRepository = $hollowEarthTileRepository;
@@ -60,6 +61,7 @@ class HollowEarthService
         $this->transactionService = $transactionService;
         $this->responseService = $responseService;
         $this->userStatsRepository = $userStatsRepository;
+        $this->rng = $rng;
     }
 
     public function unlockHollowEarth(User $user): void
@@ -107,7 +109,7 @@ class HollowEarthService
 
     public function getMap(User $player): array
     {
-        $map = $this->hollowEarthTileRepository->findAllInBounds();
+        $map = HollowEarthTileRepository::findAllInBounds($this->em);
         $playerTiles = $this->em->getRepository(HollowEarthPlayerTile::class)->findBy([ 'player' => $player ]);
         $playerTilesByTile = [];
 
@@ -186,7 +188,7 @@ class HollowEarthService
     public function moveTo(HollowEarthPlayer $player, int $id): void
     {
         if($id == -1)
-            $tile = $this->hollowEarthTileRepository->findRandom();
+            HollowEarthTileRepository::findRandom($this->em, $this->rng);
         else
             $tile = $this->hollowEarthTileRepository->find($id);
 

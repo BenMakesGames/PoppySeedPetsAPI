@@ -7,8 +7,8 @@ use App\Entity\User;
 use App\Repository\EnchantmentRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,7 +24,7 @@ class AliceAndBobController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function alicesSecretTeaTime(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, ResponseService $responseService
     )
     {
@@ -96,7 +96,7 @@ class AliceAndBobController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function alicesSecretCards(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, ResponseService $responseService
     )
     {
@@ -123,7 +123,7 @@ class AliceAndBobController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function bobsSecretFish(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, ResponseService $responseService
     )
     {
@@ -168,7 +168,7 @@ class AliceAndBobController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function bobsTool(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, ResponseService $responseService
     )
     {

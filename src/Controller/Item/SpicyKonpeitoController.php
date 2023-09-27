@@ -6,8 +6,8 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\PetColorFunctions;
 use App\Repository\DragonRepository;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,7 +25,7 @@ class SpicyKonpeitoController extends AbstractController
     public function feedToDragon(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         DragonRepository $dragonRepository, PetColorFunctions $petColorChangingService,
-        Squirrel3 $rng
+        IRandom $rng
     )
     {
         $user = $this->getUser();

@@ -10,12 +10,7 @@ class Squirrel3 implements IRandom
 
     public function __construct(?int $seed = null)
     {
-        $this->setSeed($seed ?? random_int(0, PHP_INT_MAX));
-    }
-
-    public function setSeed(int $seed)
-    {
-        $this->seed = $seed;
+        $this->seed = $seed ?? random_int(0, PHP_INT_MAX);
     }
 
     public function rngNext(): int

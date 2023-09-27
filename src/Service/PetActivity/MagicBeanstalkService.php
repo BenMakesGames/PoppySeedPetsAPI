@@ -17,8 +17,6 @@ use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class MagicBeanstalkService
@@ -29,7 +27,7 @@ class MagicBeanstalkService
     private EntityManagerInterface $em;
 
     public function __construct(
-        InventoryService $inventoryService, PetExperienceService $petExperienceService, Squirrel3 $squirrel3,
+        InventoryService $inventoryService, PetExperienceService $petExperienceService, IRandom $squirrel3,
         EntityManagerInterface $em
     )
     {

@@ -15,7 +15,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
-use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -32,7 +31,7 @@ class BandService
 
     public function __construct(
         EntityManagerInterface $em, PetRelationshipService $petRelationshipService, InventoryService $inventoryService,
-        PetExperienceService $petExperienceService, TransactionService $transactionService, Squirrel3 $squirrel3
+        PetExperienceService $petExperienceService, TransactionService $transactionService, IRandom $squirrel3
     )
     {
         $this->em = $em;

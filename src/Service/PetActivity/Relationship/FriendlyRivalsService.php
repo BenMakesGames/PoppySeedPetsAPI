@@ -5,10 +5,8 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
 use App\Enum\RelationshipEnum;
-use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
-use App\Model\ComputedPetSkills;
-use App\Service\Squirrel3;
+use App\Service\IRandom;
 use Doctrine\ORM\EntityManagerInterface;
 
 class FriendlyRivalsService
@@ -16,7 +14,7 @@ class FriendlyRivalsService
     private $em;
     private $squirrel3;
 
-    public function __construct(EntityManagerInterface $em, Squirrel3 $squirrel3)
+    public function __construct(EntityManagerInterface $em, IRandom $squirrel3)
     {
         $this->em = $em;
         $this->squirrel3 = $squirrel3;

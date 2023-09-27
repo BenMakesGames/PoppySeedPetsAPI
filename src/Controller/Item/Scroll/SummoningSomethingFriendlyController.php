@@ -13,9 +13,9 @@ use App\Functions\GrammarFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Repository\PetRepository;
 use App\Repository\UserStatsRepository;
+use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,7 +33,7 @@ class SummoningSomethingFriendlyController extends AbstractController
      */
     public function summonSomethingFriendly(
         Inventory $inventory, ResponseService $responseService, UserStatsRepository $userStatsRepository,
-        EntityManagerInterface $em, PetFactory $petFactory, Squirrel3 $squirrel3
+        EntityManagerInterface $em, PetFactory $petFactory, IRandom $squirrel3
     ): JsonResponse
     {
         /** @var User $user */

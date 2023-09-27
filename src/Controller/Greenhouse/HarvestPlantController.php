@@ -25,9 +25,9 @@ use App\Service\FieldGuideService;
 use App\Service\GreenhouseService;
 use App\Service\HattierService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetActivity\GreenhouseAdventureService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -48,7 +48,7 @@ class HarvestPlantController extends AbstractController
         GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService, UserStatsRepository $userStatsRepository, PetRepository $petRepository,
         UserQuestRepository $userQuestRepository, GreenhouseAdventureService $greenhouseAdventureService,
-        GreenhouseService $greenhouseService, Squirrel3 $squirrel3, FieldGuideService $fieldGuideService,
+        GreenhouseService $greenhouseService, IRandom $squirrel3, FieldGuideService $fieldGuideService,
         HattierService $hattierService, TransactionService $transactionService
     ): JsonResponse
     {

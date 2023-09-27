@@ -24,7 +24,6 @@ use App\Service\PetActivity\Crafting\Helpers\StickCraftingService;
 use App\Service\PetActivity\Crafting\Helpers\TwuWuvCraftingService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -43,8 +42,8 @@ class CraftingService
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         StickCraftingService $stickCraftingService, EventLanternService $eventLanternService,
-        TwuWuvCraftingService $twuWuvCraftingService, Squirrel3 $squirrel3,
-        HouseSimService $houseSimService, EntityManagerInterface $em
+        TwuWuvCraftingService $twuWuvCraftingService, IRandom $squirrel3, HouseSimService $houseSimService,
+        EntityManagerInterface $em
     )
     {
         $this->responseService = $responseService;

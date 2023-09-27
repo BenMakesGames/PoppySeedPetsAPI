@@ -3,7 +3,6 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Entity\Item;
 use App\Entity\ItemGroup;
 use App\Entity\Pet;
 use App\Entity\User;
@@ -23,7 +22,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -154,7 +152,7 @@ class BoxController extends AbstractController
      */
     public function openSmallOreBox(
         Inventory $box, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, Squirrel3 $squirrel3
+        EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -192,7 +190,7 @@ class BoxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openBoxBox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -267,7 +265,7 @@ class BoxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openCerealBox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -298,7 +296,7 @@ class BoxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openBakers(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository
     )
     {
@@ -347,7 +345,7 @@ class BoxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openFruitsNVeggies(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository
     )
     {
@@ -395,7 +393,7 @@ class BoxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openNatureBox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -439,7 +437,7 @@ class BoxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openMonsterBox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -762,7 +760,7 @@ class BoxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openPaperBag(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -1015,7 +1013,7 @@ class BoxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openGoldChest(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository
     )
     {
@@ -1185,7 +1183,7 @@ class BoxController extends AbstractController
     public function openChocolateChest(
         Inventory $box, ResponseService $responseService, InventoryService $inventoryService,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em,
-        Squirrel3 $squirrel3
+        IRandom $squirrel3
     )
     {
         /** @var User $user */

@@ -12,8 +12,8 @@ use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\InventoryRepository;
 use App\Service\HollowEarthService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,7 +34,7 @@ class PlayController extends AbstractController
     public function continueActing(
         HollowEarthService $hollowEarthService, ResponseService $responseService, EntityManagerInterface $em,
         Request $request, InventoryRepository $inventoryRepository, TransactionService $transactionService,
-        Squirrel3 $squirrel3
+        IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -245,7 +245,7 @@ class PlayController extends AbstractController
 
     private function continueActingPetChallenge(
         array $action, HollowEarthPlayer $player, ParameterBag $params, HollowEarthService $hollowEarthService,
-        Squirrel3 $squirrel3
+        IRandom $squirrel3
     )
     {
         // old tiles refer to the "umbra" skill, but that is no longer a skill; it was renamed to arcana, so:

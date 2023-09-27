@@ -8,8 +8,8 @@ use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,7 +25,7 @@ class ResourcesController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function readResourcesScroll(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
         ResponseService $responseService, UserStatsRepository $userStatsRepository
     )
     {
@@ -75,7 +75,7 @@ class ResourcesController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function readResourcesScrollForFood(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, Squirrel3 $squirrel3,
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
         ResponseService $responseService, UserStatsRepository $userStatsRepository
     )
     {

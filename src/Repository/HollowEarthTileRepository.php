@@ -4,8 +4,9 @@ namespace App\Repository;
 
 use App\Entity\HollowEarthTile;
 use App\Enum\HollowEarthMoveDirectionEnum;
-use App\Service\Squirrel3;
+use App\Service\IRandom;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -25,9 +26,9 @@ class HollowEarthTileRepository extends ServiceEntityRepository
     /**
      * @return HollowEarthTile[]
      */
-    public function findAllInBounds()
+    public static function findAllInBounds(EntityManagerInterface $em)
     {
-        return $this->createQueryBuilder('t')
+        return $em->getRepository(HollowEarthTile::class)->createQueryBuilder('t')
             ->andWhere('t.moveDirection != :zero')
             ->setParameter('zero', HollowEarthMoveDirectionEnum::ZERO)
             ->getQuery()
@@ -35,19 +36,17 @@ class HollowEarthTileRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findRandom(): HollowEarthTile
+    public static function findRandom(EntityManagerInterface $em, IRandom $rng): HollowEarthTile
     {
-        $squirrel3 = new Squirrel3();
-
-        $numberOfTiles = (int)$this->createQueryBuilder('t')
+        $numberOfTiles = (int)$em->getRepository(HollowEarthTile::class)->createQueryBuilder('t')
             ->select('COUNT(t.id)')
             ->getQuery()
             ->getSingleScalarResult()
         ;
 
-        $offset = $squirrel3->rngNextInt(0, $numberOfTiles - 1);
+        $offset = $rng->rngNextInt(0, $numberOfTiles - 1);
 
-        return $this->createQueryBuilder('p')
+        return $em->getRepository(HollowEarthTile::class)->createQueryBuilder('p')
             ->setFirstResult($offset)
             ->setMaxResults(1)
             ->getQuery()

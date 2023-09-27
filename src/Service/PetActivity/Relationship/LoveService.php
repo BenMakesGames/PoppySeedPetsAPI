@@ -8,15 +8,15 @@ use App\Enum\MeritEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
+use App\Service\IRandom;
 use App\Service\PetActivity\PregnancyService;
-use App\Service\Squirrel3;
 
 class LoveService
 {
-    private $pregnancyService;
-    private $squirrel3;
+    private PregnancyService $pregnancyService;
+    private IRandom $squirrel3;
 
-    public function __construct(PregnancyService $pregnancyService, Squirrel3 $squirrel3)
+    public function __construct(PregnancyService $pregnancyService, IRandom $squirrel3)
     {
         $this->pregnancyService = $pregnancyService;
         $this->squirrel3 = $squirrel3;

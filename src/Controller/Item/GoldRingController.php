@@ -11,9 +11,9 @@ use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,7 +29,7 @@ class GoldRingController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function smash(
-        Inventory $inventory, ResponseService $responseService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, IRandom $squirrel3,
         EntityManagerInterface $em
     )
     {
@@ -70,7 +70,7 @@ class GoldRingController extends AbstractController
     public function collect100(
         Inventory $inventory, EntityManagerInterface $em, InventoryService $inventoryService,
         ResponseService $responseService, MeritRepository $meritRepository,
-        PetFactory $petFactory, Squirrel3 $squirrel3
+        PetFactory $petFactory, IRandom $squirrel3
     )
     {
         /** @var User $user */

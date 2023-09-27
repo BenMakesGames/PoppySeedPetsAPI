@@ -1,6 +1,7 @@
 <?php
 namespace App\Service\PetActivity;
 
+use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Entity\UserLetter;
@@ -15,7 +16,6 @@ use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\LetterRepository;
 use App\Repository\PetActivityLogTagRepository;
-use App\Repository\PetRepository;
 use App\Repository\UserLetterRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
@@ -23,7 +23,6 @@ use App\Service\IRandom;
 use App\Service\MuseumService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class LetterService
@@ -31,7 +30,6 @@ class LetterService
     private UserQuestRepository $userQuestRepository;
     private InventoryService $inventoryService;
     private ResponseService $responseService;
-    private PetRepository $petRepository;
     private PetExperienceService $petExperienceService;
     private MuseumService $museumService;
     private LetterRepository $letterRepository;
@@ -41,15 +39,13 @@ class LetterService
 
     public function __construct(
         UserQuestRepository $userQuestRepository, InventoryService $inventoryService, ResponseService $responseService,
-        PetRepository $petRepository, PetExperienceService $petExperienceService, MuseumService $museumService,
-        LetterRepository $letterRepository, UserLetterRepository $userLetterRepository,
-        EntityManagerInterface $em, IRandom $squirrel3
+        PetExperienceService $petExperienceService, MuseumService $museumService, LetterRepository $letterRepository,
+        UserLetterRepository $userLetterRepository, EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         $this->userQuestRepository = $userQuestRepository;
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
-        $this->petRepository = $petRepository;
         $this->petExperienceService = $petExperienceService;
         $this->museumService = $museumService;
         $this->letterRepository = $letterRepository;
@@ -186,7 +182,7 @@ class LetterService
 
         $petChanges = new PetChanges($pet);
 
-        $courier = $this->petRepository->findRandomCourier($pet);
+        $courier = $this->findRandomCourier($pet);
 
         if($courier === null)
         {
@@ -269,6 +265,49 @@ class LetterService
         $response->activityLog = $activityLog;
 
         return $response;
+    }
+
+    private function findRandomCourier(Pet $except): ?Pet
+    {
+        $oneMonthAgo = (new \DateTimeImmutable())->modify('-1 month');
+
+        $numberEligible = (int)$this->em->getRepository(Pet::class)->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->join('p.owner', 'o')
+            ->join('p.guildMembership', 'm')
+            ->join('m.guild', 'g')
+            ->andWhere('o.lastActivity>=:oneMonthAgo')
+            ->andWhere('p.id!=:exceptPetId')
+            ->andWhere('g.name=:correspondence')
+            ->andWhere('m.level>=10')
+            ->setParameter('oneMonthAgo', $oneMonthAgo)
+            ->setParameter('exceptPetId', $except->getId())
+            ->setParameter('correspondence', 'Correspondence')
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+
+        if($numberEligible === 0)
+            return null;
+
+        $petIndex = $this->squirrel3->rngNextInt(0, $numberEligible - 1);
+
+        return $this->em->getRepository(Pet::class)->createQueryBuilder('p')
+            ->join('p.owner', 'o')
+            ->join('p.guildMembership', 'm')
+            ->join('m.guild', 'g')
+            ->andWhere('o.lastActivity>=:oneMonthAgo')
+            ->andWhere('p.id!=:exceptPetId')
+            ->andWhere('g.name=:correspondence')
+            ->andWhere('m.level>=10')
+            ->setParameter('oneMonthAgo', $oneMonthAgo)
+            ->setParameter('exceptPetId', $except->getId())
+            ->setParameter('correspondence', 'Correspondence')
+            ->setFirstResult($petIndex)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleResult()
+        ;
     }
 
     private function giveNextLetter(User $user, string $sender, string $comment): UserLetter

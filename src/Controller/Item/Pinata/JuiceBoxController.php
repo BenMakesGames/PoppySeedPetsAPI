@@ -7,8 +7,8 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,7 +25,7 @@ class JuiceBoxController extends AbstractController
      */
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, Squirrel3 $rng, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em, IRandom $rng, UserStatsRepository $userStatsRepository
     )
     {
         /** @var User $user */

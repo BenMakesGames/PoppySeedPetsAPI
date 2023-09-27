@@ -5,12 +5,10 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPNotEnoughCurrencyException;
-use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,7 +26,7 @@ class TelephoneController extends AbstractController
      */
     public function pizza(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        UserQuestRepository $userQuestRepository, TransactionService $transactionService, Squirrel3 $rng,
+        UserQuestRepository $userQuestRepository, TransactionService $transactionService, IRandom $rng,
         InventoryService $inventoryService
     )
     {
@@ -63,6 +61,8 @@ class TelephoneController extends AbstractController
 
         foreach($pizzas as $pizza)
             $inventoryService->receiveItem($pizza, $user, $user, 'You ordered this pizza over the telephone.', LocationEnum::HOME);
+
+        $em->flush();
 
         return $responseService->itemActionSuccess('You ordered some pizza over the telephone. It\'s on its way-- no, wait, it\'s already here! (So speedy and so smart!)');
     }

@@ -15,8 +15,8 @@ use App\Functions\UserUnlockedFeatureHelpers;
 use App\Repository\DragonRepository;
 use App\Repository\InventoryRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +35,7 @@ class FeedWhelpController extends AbstractController
     public function feedWhelp(
         Request $request, InventoryRepository $inventoryRepository, ResponseService $responseService,
         InventoryService $inventoryService, EntityManagerInterface $em, DragonRepository $dragonRepository,
-        Squirrel3 $squirrel3
+        IRandom $squirrel3
     )
     {
         /** @var User $user */

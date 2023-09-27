@@ -3,9 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Dream;
-use App\Entity\HollowEarthTile;
 use App\Service\IRandom;
-use App\Service\Squirrel3;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

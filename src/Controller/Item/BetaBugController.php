@@ -16,9 +16,9 @@ use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
+use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -70,7 +70,7 @@ class BetaBugController extends AbstractController
     public function useBug(
         Inventory $inventory, Request $request, InventoryRepository $inventoryRepository,
         ResponseService $responseService, EntityManagerInterface $em, PetFactory $petFactory,
-        Squirrel3 $rng, MeritRepository $meritRepository
+        IRandom $rng, MeritRepository $meritRepository
     )
     {
         /** @var User $user */
@@ -150,7 +150,7 @@ class BetaBugController extends AbstractController
     ];
 
     private static function createCookingBuddy(
-        ResponseService $responseService, EntityManagerInterface $em, PetFactory $petFactory, Squirrel3 $rng,
+        ResponseService $responseService, EntityManagerInterface $em, PetFactory $petFactory, IRandom $rng,
         Inventory $inventoryItem, User $user, Merit $startingMerit, ?string $startingHatItem
     )
     {

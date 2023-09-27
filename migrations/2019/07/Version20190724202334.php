@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace DoctrineMigrations;
 
-use App\Entity\SpiritCompanion;
 use App\Enum\SpiritCompanionStarEnum;
-use App\Functions\ArrayFunctions;
 use App\Service\Squirrel3;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;

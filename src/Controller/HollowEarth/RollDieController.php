@@ -11,8 +11,8 @@ use App\Functions\CalendarFunctions;
 use App\Repository\InventoryRepository;
 use App\Service\HollowEarthService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +31,7 @@ class RollDieController extends AbstractController
     public function rollDie(
         ResponseService $responseService, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
         HollowEarthService $hollowEarthService, Request $request, InventoryService $inventoryService,
-        Squirrel3 $squirrel3
+        IRandom $squirrel3
     )
     {
         /** @var User $user */

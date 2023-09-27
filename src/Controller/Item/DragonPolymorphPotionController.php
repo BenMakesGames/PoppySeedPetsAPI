@@ -6,8 +6,8 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Exceptions\PSPNotFoundException;
 use App\Repository\DragonRepository;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,7 +23,7 @@ class DragonPolymorphPotionController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function drink(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
         DragonRepository $dragonRepository
     )
     {

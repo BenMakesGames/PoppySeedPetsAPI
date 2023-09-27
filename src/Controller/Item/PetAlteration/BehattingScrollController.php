@@ -12,8 +12,8 @@ use App\Functions\PetActivityLogFactory;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserStatsRepository;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +31,7 @@ class BehattingScrollController extends AbstractController
      */
     public function readBehattingScroll(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, Squirrel3 $squirrel3, UserStatsRepository $userStatsRepository
+        PetRepository $petRepository, IRandom $squirrel3, UserStatsRepository $userStatsRepository
     )
     {
         /** @var User $user */

@@ -21,7 +21,7 @@ class RecyclingService
     private Clock $clock;
 
     public function __construct(
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, Squirrel3 $squirrel3,
+        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, IRandom $squirrel3,
         ResponseService $responseService, TransactionService $transactionService, Clock $clock
     )
     {

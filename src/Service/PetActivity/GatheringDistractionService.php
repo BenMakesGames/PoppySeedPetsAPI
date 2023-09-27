@@ -13,7 +13,6 @@ use App\Service\FieldGuideService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -26,7 +25,7 @@ class GatheringDistractionService
     private EntityManagerInterface $em;
 
     public function __construct(
-        Squirrel3 $squirrel3, PetExperienceService $petExperienceService, ResponseService $responseService,
+        IRandom $squirrel3, PetExperienceService $petExperienceService, ResponseService $responseService,
         FieldGuideService $fieldGuideService, EntityManagerInterface $em
     )
     {

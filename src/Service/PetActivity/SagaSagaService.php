@@ -15,7 +15,6 @@ use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class SagaSagaService
@@ -27,7 +26,7 @@ class SagaSagaService
     private UserStatsRepository $userStatsRepository;
 
     public function __construct(
-        Squirrel3 $rng, InventoryService $inventoryService, EntityManagerInterface $em,
+        IRandom $rng, InventoryService $inventoryService, EntityManagerInterface $em,
         ResponseService $responseService,
         UserStatsRepository $userStatsRepository
     )

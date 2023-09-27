@@ -6,7 +6,6 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -50,7 +49,7 @@ class HeartessenceController extends AbstractController
      */
     public function getMagicSmoke(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, Squirrel3 $squirrel3
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */

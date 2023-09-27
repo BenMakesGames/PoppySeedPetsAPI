@@ -8,8 +8,8 @@ use App\Exceptions\PSPNotFoundException;
 use App\Repository\InventoryRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +26,7 @@ class StrongboxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openLittleStrongbox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
         TransactionService $transactionService
     )
@@ -78,7 +78,7 @@ class StrongboxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openVeryStrongbox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
         TransactionService $transactionService
     )
@@ -140,7 +140,7 @@ class StrongboxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openOutrageouslyStrongbox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository
     )
     {

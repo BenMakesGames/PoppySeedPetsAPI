@@ -13,23 +13,23 @@ use App\Repository\EnchantmentRepository;
 use App\Repository\PetActivityLogTagRepository;
 use App\Service\HattierService;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class GreenhouseAdventureService
 {
     private ResponseService $responseService;
     private InventoryService $inventoryService;
-    private Squirrel3 $squirrel3;
+    private IRandom $squirrel3;
     private PetExperienceService $petExperienceService;
     private HattierService $hattierService;
     private EntityManagerInterface $em;
 
     function __construct(
         ResponseService $responseService, InventoryService $inventoryService,
-        Squirrel3 $squirrel3, PetExperienceService $petExperienceService,
+        IRandom $squirrel3, PetExperienceService $petExperienceService,
         HattierService $hattierService, EntityManagerInterface $em
     )
     {

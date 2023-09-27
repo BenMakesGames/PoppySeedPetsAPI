@@ -360,7 +360,9 @@ class BlueprintController extends AbstractController
 
         $responseService->addFlashMessage($flashMessage);
 
-        $activityLog = PetActivityLogFactory::createUnreadLog($em, $pet, $logMessage, 'ui/affection', $changes->compare($pet))
+        $activityLog = PetActivityLogFactory::createUnreadLog($em, $pet, $logMessage)
+            ->setIcon('ui/affection')
+            ->setChanges($changes->compare($pet))
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
         ;
 

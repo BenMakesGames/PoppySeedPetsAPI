@@ -7,8 +7,8 @@ use App\Entity\User;
 use App\Repository\ItemRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,7 +25,7 @@ class HatBoxController extends AbstractController
      */
     public function openHatBox(
         Inventory $box, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, Squirrel3 $squirrel3
+        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         /** @var User $user */

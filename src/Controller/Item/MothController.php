@@ -15,8 +15,8 @@ use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -64,7 +64,7 @@ class MothController extends AbstractController
     public function releaseMoths(
         ResponseService $responseService, UserStatsRepository $userStatsRepository,
         EntityManagerInterface $em, Request $request, InventoryRepository $inventoryRepository,
-        Squirrel3 $rng, InventoryService $inventoryService
+        IRandom $rng, InventoryService $inventoryService
     )
     {
         /** @var User $user */

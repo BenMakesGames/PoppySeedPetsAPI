@@ -16,7 +16,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class SportsBallService
@@ -31,7 +30,7 @@ class SportsBallService
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, InventoryService $inventoryService,
-        PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3
+        PetRelationshipService $petRelationshipService, IRandom $squirrel3
     )
     {
         $this->petExperienceService = $petExperienceService;

@@ -112,7 +112,7 @@ class PetActivityService
         GenericAdventureService $genericAdventureService, PetSummonedAwayService $petSummonedAwayService,
         Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService,
         PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService,
-        PregnancyService $pregnancyService, Squirrel3 $squirrel3, ChocolateMansion $chocolateMansion,
+        PregnancyService $pregnancyService, IRandom $squirrel3, ChocolateMansion $chocolateMansion,
         PetExperienceService $petExperienceService, DreamingAndDaydreamingService $dreamingAndDaydreamingService,
         MagicBeanstalkService $beanStalkService, GatheringHolidayAdventureService $gatheringHolidayAdventureService,
         GuildService $guildService, BurntForestService $burntForestService, InventoryService $inventoryService,

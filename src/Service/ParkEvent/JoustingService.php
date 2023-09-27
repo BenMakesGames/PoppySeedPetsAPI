@@ -22,7 +22,6 @@ use App\Service\IRandom;
 use App\Service\ParkService;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
-use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -42,20 +41,20 @@ class JoustingService implements ParkEventInterface
 
     private $results = '';
 
-    private $round = 0;
+    private int $round = 0;
 
-    private $petExperienceService;
-    private $em;
-    private $petRelationshipService;
-    private $transactionService;
-    private $inventoryService;
+    private PetExperienceService $petExperienceService;
+    private EntityManagerInterface $em;
+    private PetRelationshipService $petRelationshipService;
+    private TransactionService $transactionService;
+    private InventoryService $inventoryService;
     private IRandom $squirrel3;
     private ParkService $parkService;
     private UserStatsRepository $userStatsRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, PetRelationshipService $petRelationshipService,
-        TransactionService $transactionService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        TransactionService $transactionService, InventoryService $inventoryService, IRandom $squirrel3,
         ParkService $parkService, UserStatsRepository $userStatsRepository
     )
     {
@@ -255,7 +254,7 @@ class JoustingService implements ParkEventInterface
 
         for($round = 0; $round < 4; $round++)
         {
-            $clashResult = new JoustingClashResult($team1, $team2);
+            $clashResult = new JoustingClashResult($this->squirrel3, $team1, $team2);
 
             $this->results .= '1. ' . $this->describeClash($clashResult) . "\n";
 

@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Enum\SpiritCompanionStarEnum;
-use App\Functions\ArrayFunctions;
 use App\Service\Squirrel3;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;

@@ -8,8 +8,8 @@ use App\Functions\ArrayFunctions;
 use App\Repository\SpiceRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -36,7 +36,7 @@ class GnomesFavorController extends AbstractController
      */
     public function getQuint(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, Squirrel3 $rng, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em, IRandom $rng, UserStatsRepository $userStatsRepository
     )
     {
         /** @var User $user */
@@ -67,7 +67,7 @@ class GnomesFavorController extends AbstractController
      */
     public function getFood(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, Squirrel3 $squirrel3, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em, IRandom $squirrel3, UserStatsRepository $userStatsRepository
     )
     {
         /** @var User $user */
@@ -127,7 +127,7 @@ class GnomesFavorController extends AbstractController
      */
     public function getTreasure(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, Squirrel3 $rng, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em, IRandom $rng, UserStatsRepository $userStatsRepository
     )
     {
         /** @var User $user */

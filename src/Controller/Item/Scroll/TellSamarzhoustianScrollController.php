@@ -8,8 +8,8 @@ use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,7 +26,7 @@ class TellSamarzhoustianScrollController extends AbstractController
      */
     public function read(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService, Squirrel3 $squirrel3, UserStatsRepository $userStatsRepository
+        ResponseService $responseService, IRandom $squirrel3, UserStatsRepository $userStatsRepository
     )
     {
         /** @var User $user */

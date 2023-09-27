@@ -25,18 +25,16 @@ class Caerbannog
     private IRandom $rng;
     private InventoryService $inventoryService;
     private PetExperienceService $petExperienceService;
-    private ResponseService $responseService;
 
     public function __construct(
         EntityManagerInterface $em, IRandom $rng, InventoryService $inventoryService,
-        PetExperienceService $petExperienceService, ResponseService $responseService
+        PetExperienceService $petExperienceService
     )
     {
         $this->em = $em;
         $this->rng = $rng;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
-        $this->responseService = $responseService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -117,7 +115,8 @@ class Caerbannog
             }
 
             $pet->increaseEsteem(ceil($exp / 2) * 2);
-            $activityLog = $this->responseService->createActivityLog($pet, $petName . ' went to the Caerbannog Cave, and encountered one of the terrifying creatures living there! ' . $petName . ' proved victorious, returning home with ' . ArrayFunctions::list_nice($loot) . '!', 'items/key/carrot')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $petName . ' went to the Caerbannog Cave, and encountered one of the terrifying creatures living there! ' . $petName . ' proved victorious, returning home with ' . ArrayFunctions::list_nice($loot) . '!')
+                ->setIcon('items/key/carrot')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
             ;
             $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ], $activityLog);

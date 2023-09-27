@@ -7,8 +7,8 @@ use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,7 +27,7 @@ class RichesController extends AbstractController
     public function invokeMinorRichesScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService,
-        Squirrel3 $squirrel3
+        IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -63,7 +63,7 @@ class RichesController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function invokeMajorRichesScroll(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsRepository $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
     )
     {

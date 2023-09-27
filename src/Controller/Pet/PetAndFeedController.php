@@ -10,10 +10,10 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\InventoryRepository;
+use App\Service\IRandom;
 use App\Service\PetActivity\EatingService;
 use App\Service\PetAndPraiseService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,7 +30,7 @@ class PetAndFeedController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function pet(
-        Pet $pet, ResponseService $responseService, EntityManagerInterface $em, Squirrel3 $rng,
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
         PetAndPraiseService $petAndPraiseService
     )
     {

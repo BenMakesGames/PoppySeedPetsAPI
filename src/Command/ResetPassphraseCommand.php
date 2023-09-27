@@ -7,7 +7,6 @@ use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\StringFunctions;
 use App\Service\IRandom;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,7 +20,7 @@ class ResetPassphraseCommand extends Command
     private IRandom $squirrel3;
 
     public function __construct(
-        EntityManagerInterface $em, UserPasswordHasherInterface $passwordEncoder, Squirrel3 $squirrel3
+        EntityManagerInterface $em, UserPasswordHasherInterface $passwordEncoder, IRandom $squirrel3
     )
     {
         $this->em = $em;

@@ -99,11 +99,9 @@ class PetSkills
 
     public function __construct()
     {
-        $squirrel3 = new Squirrel3();
-
         for($x = 0; $x < 5; $x++)
         {
-            switch($squirrel3->rngNextInt(1, 5))
+            switch(random_int(1, 5))
             {
                 case 1: $this->strength++; break;
                 case 2: $this->intelligence++; break;

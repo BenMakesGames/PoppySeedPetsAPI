@@ -23,7 +23,6 @@ use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PregnancyService
@@ -38,10 +37,9 @@ class PregnancyService
     private IRandom $squirrel3;
 
     public function __construct(
-        EntityManagerInterface $em, ResponseService $responseService,
-        PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
-        UserStatsRepository $userStatsRepository, MeritRepository $meritRepository, PetFactory $petFactory,
-        Squirrel3 $squirrel3
+        EntityManagerInterface $em, ResponseService $responseService, PetExperienceService $petExperienceService,
+        UserQuestRepository $userQuestRepository, UserStatsRepository $userStatsRepository,
+        MeritRepository $meritRepository, PetFactory $petFactory, IRandom $squirrel3
     )
     {
         $this->em = $em;

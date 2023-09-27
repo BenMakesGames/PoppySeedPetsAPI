@@ -4,8 +4,6 @@ namespace App\Command;
 use App\Entity\Pet;
 use App\Repository\PetRepository;
 use App\Service\IRandom;
-use App\Service\PetGroupService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,7 +17,7 @@ class AssignActivityPersonalitiesCommand extends Command
     private PetRepository $petRepository;
     private IRandom $rng;
 
-    public function __construct(PetRepository $petRepository, EntityManagerInterface $em, Squirrel3 $squirrel3)
+    public function __construct(PetRepository $petRepository, EntityManagerInterface $em, IRandom $squirrel3)
     {
         $this->petRepository = $petRepository;
         $this->em = $em;

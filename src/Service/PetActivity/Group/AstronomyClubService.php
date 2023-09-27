@@ -21,7 +21,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class AstronomyClubService
@@ -38,7 +37,7 @@ class AstronomyClubService
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, InventoryService $inventoryService,
-        PetRelationshipService $petRelationshipService, Squirrel3 $squirrel3, HattierService $hattierService,
+        PetRelationshipService $petRelationshipService, IRandom $squirrel3, HattierService $hattierService,
         Clock $clock
     )
     {

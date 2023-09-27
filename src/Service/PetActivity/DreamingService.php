@@ -16,7 +16,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class DreamingService
@@ -31,7 +30,7 @@ class DreamingService
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService,
-        PetExperienceService $petExperienceService, ItemRepository $itemRepository, Squirrel3 $squirrel3,
+        PetExperienceService $petExperienceService, ItemRepository $itemRepository, IRandom $squirrel3,
         DreamRepository $dreamRepository, EntityManagerInterface $em
     )
     {

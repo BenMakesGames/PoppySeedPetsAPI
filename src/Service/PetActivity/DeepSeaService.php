@@ -23,7 +23,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class DeepSeaService
@@ -38,7 +37,7 @@ class DeepSeaService
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        Squirrel3 $squirrel3, HattierService $hattierService, FieldGuideService $fieldGuideService,
+        IRandom $squirrel3, HattierService $hattierService, FieldGuideService $fieldGuideService,
         EntityManagerInterface $em
     )
     {

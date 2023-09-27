@@ -13,9 +13,9 @@ use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\InventoryModifierFunctions;
 use App\Repository\InventoryRepository;
+use App\Service\IRandom;
 use App\Service\MarketService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\CacheItemPoolInterface;
@@ -35,7 +35,7 @@ class BuyController extends AbstractController
      */
     public function buy(
         Request $request, ResponseService $responseService, CacheItemPoolInterface $cache, EntityManagerInterface $em,
-        InventoryRepository $inventoryRepository, Squirrel3 $squirrel3, TransactionService $transactionService,
+        InventoryRepository $inventoryRepository, IRandom $squirrel3, TransactionService $transactionService,
         MarketService $marketService
     )
     {

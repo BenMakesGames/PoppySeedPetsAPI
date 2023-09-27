@@ -4,7 +4,6 @@ namespace App\Service;
 interface IRandom
 {
     function __construct(?int $seed = null);
-    function setSeed(int $seed);
     function rngNext(): int;
     function rngNextFloat(): float;
     function rngNextBool(): bool;

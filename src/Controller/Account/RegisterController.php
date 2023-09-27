@@ -11,10 +11,10 @@ use App\Functions\ProfanityFilterFunctions;
 use App\Functions\StringFunctions;
 use App\Repository\MeritRepository;
 use App\Service\InventoryService;
+use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
 use App\Service\SessionService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +35,7 @@ class RegisterController extends AbstractController
     public function register(
         Request $request, EntityManagerInterface $em, ResponseService $responseService, SessionService $sessionService,
         UserPasswordHasherInterface $userPasswordEncoder, InventoryService $inventoryService,
-        MeritRepository $meritRepository, PetFactory $petFactory, Squirrel3 $squirrel3
+        MeritRepository $meritRepository, PetFactory $petFactory, IRandom $squirrel3
     )
     {
         $theme = $request->request->get('theme');

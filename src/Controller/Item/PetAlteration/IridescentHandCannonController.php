@@ -15,8 +15,8 @@ use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Service\HattierService;
+use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,7 +34,7 @@ class IridescentHandCannonController extends AbstractController
      */
     public function fireHandCannon(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetColorFunctions $petColorChangingService, Squirrel3 $squirrel3, HattierService $hattierService
+        PetColorFunctions $petColorChangingService, IRandom $squirrel3, HattierService $hattierService
     )
     {
         /** @var User $user */
@@ -90,15 +90,15 @@ class IridescentHandCannonController extends AbstractController
         {
             $comment = 'This was once an Iridescent Hand Cannon.';
 
-            if($squirrel3->rngNextInt(1, 2) === 1)
+            if($squirrel3->rngNextBool())
             {
                 $comment .= ' Then it got rusty and fell apart.';
 
-                if($squirrel3->rngNextInt(1, 2) === 1)
+                if($squirrel3->rngNextBool())
                 {
                     $comment .= ' At the same time!';
 
-                    if($squirrel3->rngNextInt(1, 2) === 1)
+                    if($squirrel3->rngNextBool())
                         $comment .= ' (It\'s more common than you\'d think!)';
                 }
             }

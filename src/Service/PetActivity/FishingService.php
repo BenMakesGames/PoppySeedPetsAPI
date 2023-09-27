@@ -21,7 +21,6 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,7 +39,7 @@ class FishingService
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, UserQuestRepository $userQuestRepository, Squirrel3 $squirrel3,
+        TransactionService $transactionService, UserQuestRepository $userQuestRepository, IRandom $squirrel3,
         FieldGuideService $fieldGuideService, GatheringDistractionService $gatheringDistractions,
         EntityManagerInterface $em
     )

@@ -17,9 +17,9 @@ use App\Functions\PetActivityLogFactory;
 use App\Repository\GuildRepository;
 use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
+use App\Service\IRandom;
 use App\Service\PetRelationshipService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\Typeahead\PetRelationshipTypeaheadService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -153,7 +153,7 @@ class SelfReflectionController extends AbstractController
      */
     public function reconcileWithAnotherPet(
         Pet $pet, Request $request, ResponseService $responseService, PetRelationshipRepository $petRelationshipRepository,
-        EntityManagerInterface $em, Squirrel3 $squirrel3
+        EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         /** @var User $user */

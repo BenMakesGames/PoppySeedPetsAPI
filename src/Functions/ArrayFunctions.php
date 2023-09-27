@@ -1,8 +1,6 @@
 <?php
 namespace App\Functions;
 
-use App\Service\Squirrel3;
-
 final class ArrayFunctions
 {
     public static function any(iterable $array, callable $delegate): bool
@@ -79,7 +77,6 @@ final class ArrayFunctions
 
     public static function pick_one_weighted(iterable $array, callable $weightingDelegate)
     {
-        $squirrel3 = new Squirrel3();
         $items = [];
         $total = 0;
 
@@ -98,7 +95,7 @@ final class ArrayFunctions
             $total += $weight;
         }
 
-        $index = $squirrel3->rngNextInt(0, $total - 1);
+        $index = random_int(0, $total - 1);
 
         foreach($items as $item)
         {

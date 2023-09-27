@@ -12,9 +12,9 @@ use App\Functions\PetColorFunctions;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
+use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,7 +30,7 @@ class EggController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function hatchPolyp(
-        Inventory $inventory, ResponseService $responseService, Squirrel3 $squirrel3, EntityManagerInterface $em,
+        Inventory $inventory, ResponseService $responseService, IRandom $squirrel3, EntityManagerInterface $em,
         PetFactory $petFactory
     )
     {
@@ -115,7 +115,7 @@ class EggController extends AbstractController
     public function hatchWeirdBlueEgg(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
         EntityManagerInterface $em, MeritRepository $meritRepository,
-        PetFactory $petFactory, Squirrel3 $squirrel3
+        PetFactory $petFactory, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -196,7 +196,7 @@ class EggController extends AbstractController
      */
     public function openMetalBox(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
-        EntityManagerInterface $em, MeritRepository $meritRepository, PetFactory $petFactory, Squirrel3 $squirrel3
+        EntityManagerInterface $em, MeritRepository $meritRepository, PetFactory $petFactory, IRandom $squirrel3
     )
     {
         /** @var User $user */

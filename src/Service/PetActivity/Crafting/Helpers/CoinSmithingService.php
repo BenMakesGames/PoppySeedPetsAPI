@@ -9,11 +9,9 @@ use App\Enum\PetSkillEnum;
 use App\Model\ComputedPetSkills;
 use App\Repository\PetActivityLogTagRepository;
 use App\Service\HouseSimService;
-use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -27,7 +25,7 @@ class CoinSmithingService
     private EntityManagerInterface $em;
 
     public function __construct(
-        PetExperienceService $petExperienceService, Squirrel3 $squirrel3, HouseSimService $houseSimService,
+        PetExperienceService $petExperienceService, IRandom $squirrel3, HouseSimService $houseSimService,
         TransactionService $transactionService, ResponseService $responseService,
         EntityManagerInterface $em
     )

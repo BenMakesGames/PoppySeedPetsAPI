@@ -20,8 +20,6 @@ use App\Service\IRandom;
 use App\Service\ParkService;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
-use App\Service\PetActivityService;
-use App\Service\Squirrel3;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -54,7 +52,7 @@ class KinBallService implements ParkEventInterface
 
     public function __construct(
         EntityManagerInterface $em, PetRelationshipService $petRelationshipService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, InventoryService $inventoryService, Squirrel3 $squirrel3,
+        TransactionService $transactionService, InventoryService $inventoryService, IRandom $squirrel3,
         ParkService $parkService, UserStatsRepository $userStatsRepository
     )
     {
