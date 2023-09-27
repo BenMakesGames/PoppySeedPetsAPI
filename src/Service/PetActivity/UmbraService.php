@@ -15,6 +15,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\NumberFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Model\WeatherData;
@@ -35,7 +36,6 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class UmbraService
 {
-    private ResponseService $responseService;
     private InventoryService $inventoryService;
     private PetExperienceService $petExperienceService;
     private TransactionService $transactionService;
@@ -50,13 +50,12 @@ class UmbraService
     private Clock $clock;
 
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
+        InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, GuildService $guildService, StrangeUmbralEncounters $strangeUmbralEncounters,
         FieldGuideService $fieldGuideService, DragonRepository $dragonRepository, IRandom $squirrel3,
         HattierService $hattierService, EntityManagerInterface $em, LeonidsService $leonidsService, Clock $clock
     )
     {
-        $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
@@ -173,7 +172,8 @@ class UmbraService
     {
         $exp = ceil($roll / 10);
 
-        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% crossed into the Umbra, but the Storm was too harsh; %pet:' . $pet->getId() . '.name% retreated before finding anything.', 'icons/activity-logs/confused')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% crossed into the Umbra, but the Storm was too harsh; %pet:' . $pet->getId() . '.name% retreated before finding anything.')
+            ->setIcon('icons/activity-logs/confused')
             ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra' ]))
         ;
 
@@ -193,7 +193,7 @@ class UmbraService
 
             if($this->squirrel3->rngNextInt(1, 5) === 1)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Library of Fire\'s arboretum, and found the brick with your name on it!', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited the Library of Fire\'s arboretum, and found the brick with your name on it!')
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra' ]))
                 ;
 
@@ -204,7 +204,7 @@ class UmbraService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the Library of Fire\'s arboretum.', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited the Library of Fire\'s arboretum.')
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra' ]))
                 ;
 
@@ -229,7 +229,7 @@ class UmbraService
             else if($floor === 30)
                 $floor = 31;
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited the ' . GrammarFunctions::ordinalize($floor) . ' floor of the Library of Fire, and read a random book...', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited the ' . GrammarFunctions::ordinalize($floor) . ' floor of the Library of Fire, and read a random book...')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra' ]))
             ;
 
@@ -255,21 +255,24 @@ class UmbraService
 
             if($reward === 1)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, 'In the Umbra, ' . '%pet:' . $pet->getId() . '.name% found an outcropping of rocks where the full force of the Storm could not reach. Some Grandparoot was growing there; %pet:' . $pet->getId() . '.name% took one.', 'items/veggie/grandparoot')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'In the Umbra, ' . '%pet:' . $pet->getId() . '.name% found an outcropping of rocks where the full force of the Storm could not reach. Some Grandparoot was growing there; %pet:' . $pet->getId() . '.name% took one.')
+                    ->setIcon('items/veggie/grandparoot')
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Gathering' ]))
                 ;
                 $this->inventoryService->petCollectsItem('Grandparoot', $pet, $pet->getName() . ' pulled this up from between some rocks in the Umbra.', $activityLog);
             }
             else if($reward === 2)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, 'In the Umbra, ' . '%pet:' . $pet->getId() . '.name% found an outcropping of rocks where the full force of the Storm could not reach. A dry bush once grew there; %pet:' . $pet->getId() . '.name% took a Crooked Stick from its remains.', 'items/plant/stick-crooked')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'In the Umbra, ' . '%pet:' . $pet->getId() . '.name% found an outcropping of rocks where the full force of the Storm could not reach. A dry bush once grew there; %pet:' . $pet->getId() . '.name% took a Crooked Stick from its remains.')
+                    ->setIcon('items/plant/stick-crooked')
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Gathering' ]))
                 ;
                 $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' took this from the remains of a dead bush in the Umbra.', $activityLog);
             }
             else // if($reward === 3)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, 'In the Umbra, ' . '%pet:' . $pet->getId() . '.name% found an outcropping of rocks where the full force of the Storm could not reach. A small Blackberry bush was growing there; %pet:' . $pet->getId() . '.name% took a few berries.', 'items/fruit/blackberries')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'In the Umbra, ' . '%pet:' . $pet->getId() . '.name% found an outcropping of rocks where the full force of the Storm could not reach. A small Blackberry bush was growing there; %pet:' . $pet->getId() . '.name% took a few berries.')
+                    ->setIcon('items/fruit/blackberries')
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Gathering' ]))
                 ;
                 $this->inventoryService->petCollectsItem('Blackberries', $pet, $pet->getName() . ' harvested these exceptionally-dark Blackberries from a rock-sheltered berry bush in the Umbra.', $activityLog);
@@ -282,7 +285,8 @@ class UmbraService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'In the Umbra, ' . '%pet:' . $pet->getId() . '.name% found an outcropping of rocks where the full force of the Storm could not reach. Some weeds were growing there, but nothing of value.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'In the Umbra, ' . '%pet:' . $pet->getId() . '.name% found an outcropping of rocks where the full force of the Storm could not reach. Some weeds were growing there, but nothing of value.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Gathering' ]))
             ;
 
@@ -330,7 +334,7 @@ class UmbraService
 
             if($this->squirrel3->rngNextInt(1, 2) === 1)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. ' . $messageDetail . '; the spirit was very thankful, and insisted that ' . $pet->getName() . ' take ' . $rewards[$reward] . ' ' . $reward . '.', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. ' . $messageDetail . '; the spirit was very thankful, and insisted that ' . $pet->getName() . ' take ' . $rewards[$reward] . ' ' . $reward . '.')
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra' ]))
                 ;
                 $this->inventoryService->petCollectsItem($reward, $pet, $pet->getName() . ' received this from a friendly spirit as thanks for helping it navigate the Umbra.', $activityLog);
@@ -338,7 +342,7 @@ class UmbraService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. ' . $messageDetail . '; the spirit was very thankful, and wished ' . $pet->getName() . ' well.', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. ' . $messageDetail . '; the spirit was very thankful, and wished ' . $pet->getName() . ' well.')
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra' ]))
                 ;
                 $pet->increaseEsteem(4);
@@ -359,7 +363,7 @@ class UmbraService
         {
             if($this->squirrel3->rngNextInt(1, 2) === 1)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. ' . $pet->getName() . ' was able to point the way; the spirit was very thankful, and insisted that ' . $pet->getName() . ' take ' . $rewards[$reward] . ' ' . $reward . '.', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. ' . $pet->getName() . ' was able to point the way; the spirit was very thankful, and insisted that ' . $pet->getName() . ' take ' . $rewards[$reward] . ' ' . $reward . '.')
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra' ]))
                 ;
                 $this->inventoryService->petCollectsItem($reward, $pet, $pet->getName() . ' received this from a friendly spirit as thanks for helping it navigate the Umbra.', $activityLog);
@@ -367,7 +371,7 @@ class UmbraService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. ' . $pet->getName() . ' was able to point the way; the spirit was very thankful, and wished ' . $pet->getName() . ' well.', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. ' . $pet->getName() . ' was able to point the way; the spirit was very thankful, and wished ' . $pet->getName() . ' well.')
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra' ]))
                 ;
                 $pet->increaseEsteem(4);
@@ -380,7 +384,8 @@ class UmbraService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. It asked for directions, but ' . $pet->getName() . ' didn\'t know how to help.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. It asked for directions, but ' . $pet->getName() . ' didn\'t know how to help.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra' ]))
             ;
 
@@ -404,7 +409,7 @@ class UmbraService
         {
             $drizzlyBearDiscovery = 'While exploring the Umbra, ' . $petName . ' stumbled upon a Drizzly Bear emerging from a dark river. It shook itself off, sending rain into the material world.';
 
-            $activityLog = $this->responseService->createActivityLog($pet, $drizzlyBearDiscovery . ' ' . $petName . ' caught some, and brought it home.' , '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $drizzlyBearDiscovery . ' ' . $petName . ' caught some, and brought it home.')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Stealth' ]))
             ;
 
@@ -416,7 +421,7 @@ class UmbraService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . $petName . ' stumbled upon a Drizzly Bear emerging from a dark river. ' . $petName . ' tried to hide, but the Drizzly Bear spotted them, so ' . $petName . ' backed off, and returned home.' , '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . $petName . ' stumbled upon a Drizzly Bear emerging from a dark river. ' . $petName . ' tried to hide, but the Drizzly Bear spotted them, so ' . $petName . ' backed off, and returned home.')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Stealth' ]))
             ;
 
@@ -439,7 +444,7 @@ class UmbraService
 
         if($pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 80) === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a Little Strongbox! Lucky~!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a Little Strongbox! Lucky~!')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Lucky~!' ]))
             ;
@@ -453,7 +458,7 @@ class UmbraService
 
         if($this->squirrel3->rngNextInt(1, 100) === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a Little Strongbox, and took it!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a Little Strongbox, and took it!')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra' ]))
             ;
@@ -472,7 +477,7 @@ class UmbraService
 
         if($pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 50) === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a ' . $die . '! Lucky~!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a ' . $die . '! Lucky~!')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Lucky~!' ]))
             ;
@@ -486,7 +491,7 @@ class UmbraService
 
         if($this->squirrel3->rngNextInt(1, 80) === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a ' . $die . ', and took it!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a ' . $die . ', and took it!')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra' ]))
             ;
 
@@ -499,7 +504,8 @@ class UmbraService
 
         $this->transactionService->getMoney($pet->getOwner(), 2, $pet->getName() . ' found this on the shores of a dark river in the Umbra.');
 
-        $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted 2~~m~~. No one else was around, so...', 'icons/activity-logs/moneys')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted 2~~m~~. No one else was around, so...')
+            ->setIcon('icons/activity-logs/moneys')
             ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Moneys' ]))
         ;
 
@@ -540,7 +546,8 @@ class UmbraService
 
                 $prizeItem = ItemRepository::findOneByName($this->em, $prize);
 
-                $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; but ' . $pet->getName() . ' endured its attacks long enough to calm it down! It eventually wandered away, dropping ' . $prizeItem->getNameWithArticle() . ' as it went...', 'guilds/light-and-shadow')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; but ' . $pet->getName() . ' endured its attacks long enough to calm it down! It eventually wandered away, dropping ' . $prizeItem->getNameWithArticle() . ' as it went...')
+                    ->setIcon('guilds/light-and-shadow')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Guild' ]))
                 ;
@@ -554,7 +561,8 @@ class UmbraService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly. ' . $pet->getName() . ' tried to endure its attacks long enough to calm it down, but was eventually forced to retreat!', 'guilds/light-and-shadow')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly. ' . $pet->getName() . ' tried to endure its attacks long enough to calm it down, but was eventually forced to retreat!')
+                    ->setIcon('guilds/light-and-shadow')
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Guild' ]))
                 ;
 
@@ -579,14 +587,15 @@ class UmbraService
             if($pet->isInGuild(GuildEnum::THE_UNIVERSE_FORGETS))
             {
                 $pet->getGuildMembership()->increaseReputation();
-                $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; but ' . $pet->getName() . ' ' . $defeated . ', and claimed its ' . $prize . '!', 'guilds/the-universe-forgets')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; but ' . $pet->getName() . ' ' . $defeated . ', and claimed its ' . $prize . '!')
+                    ->setIcon('guilds/the-universe-forgets')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Fighting' ]))
                 ;
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; but ' . $pet->getName() . ' ' . $defeated . ', and claimed its ' . $prize . '!', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; but ' . $pet->getName() . ' ' . $defeated . ', and claimed its ' . $prize . '!')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Fighting' ]))
                 ;
@@ -598,7 +607,7 @@ class UmbraService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; ' . $pet->getName() . ' made a hasty retreat.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; ' . $pet->getName() . ' made a hasty retreat.')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Fighting' ]))
             ;
 
@@ -623,7 +632,7 @@ class UmbraService
 
         if($this->squirrel3->rngNextInt(1, 200) == 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% decided to fish in a dark river, and pulled up a Jelling Polyp!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% decided to fish in a dark river, and pulled up a Jelling Polyp!')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Fishing' ]))
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
             ;
@@ -667,7 +676,7 @@ class UmbraService
 
             if($roll >= 18)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% decided to fish in a dark river. They caught ' . $fish . ', and harvested its ' . $prizes[0] . ' and ' . $prizes[1] . '.', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% decided to fish in a dark river. They caught ' . $fish . ', and harvested its ' . $prizes[0] . ' and ' . $prizes[1] . '.')
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Fishing' ]))
                 ;
                 $this->inventoryService->petCollectsItem($prizes[0], $pet, $pet->getName() . ' got this from fishing in the Umbra.', $activityLog);
@@ -675,7 +684,7 @@ class UmbraService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% decided to fish in a dark river. They caught ' . $fish . ', and harvested its ' . $prizes[0] . '.', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% decided to fish in a dark river. They caught ' . $fish . ', and harvested its ' . $prizes[0] . '.')
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Fishing' ]))
                 ;
                 $this->inventoryService->petCollectsItem($prizes[0], $pet, $pet->getName() . ' got this from fishing in the Umbra.', $activityLog);
@@ -687,7 +696,7 @@ class UmbraService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% decided to fish in a dark river. Plenty of strange things swam by, but ' . $pet->getName() . ' didn\'t manage to catch any of them.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% decided to fish in a dark river. Plenty of strange things swam by, but ' . $pet->getName() . ' didn\'t manage to catch any of them.')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Fishing' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
@@ -738,7 +747,7 @@ class UmbraService
                     $loot[] = 'Fluff';
 
                 $pet->increaseEsteem(3);
-                $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' fell into a giant cocoon. While trying to find their way out, ' . ActivityHelpers::PetName($pet) . ' was ambushed by one of Noetala\'s guard, but was able to defeat it!', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' fell into a giant cocoon. While trying to find their way out, ' . ActivityHelpers::PetName($pet) . ' was ambushed by one of Noetala\'s guard, but was able to defeat it!')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Stealth', 'Fighting' ]))
                 ;
@@ -754,7 +763,7 @@ class UmbraService
 
                 $pet->increaseEsteem(-3);
                 $pet->increaseSafety(-$this->squirrel3->rngNextInt(4, 8));
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% fell into a giant cocoon. While trying to find their way out, ' . $pet->getName() . ' was ambushed by one of Noetala\'s guard, and was wounded and covered in Fluff before being able to escape!', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% fell into a giant cocoon. While trying to find their way out, ' . $pet->getName() . ' was ambushed by one of Noetala\'s guard, and was wounded and covered in Fluff before being able to escape!')
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Stealth', 'Fighting' ]))
                 ;
                 $didWhat = 'was attacked by one of Noetala\'s guard, and covered in this';
@@ -773,7 +782,7 @@ class UmbraService
             if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15)
                 $loot[] = 'Fluff';
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stumbled upon Noetala\'s giant cocoon. They snuck around inside for a bit, and made off with ' . ArrayFunctions::list_nice($loot) . '.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon Noetala\'s giant cocoon. They snuck around inside for a bit, and made off with ' . ArrayFunctions::list_nice($loot) . '.')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Stealth' ]))
             ;
@@ -809,7 +818,7 @@ class UmbraService
 
                 $pet->increaseEsteem(2);
 
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle that was obviously home to vampires. They snuck around inside for a while, and made off with some ' . $loot . '.', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle that was obviously home to vampires. They snuck around inside for a while, and made off with some ' . $loot . '.')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Stealth' ]))
                 ;
@@ -820,7 +829,8 @@ class UmbraService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle that was obviously home to vampires. They snuck around inside for a while, but couldn\'t find a good opportunity to steal anything.', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle that was obviously home to vampires. They snuck around inside for a while, but couldn\'t find a good opportunity to steal anything.')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Stealth' ]))
                 ;
 
@@ -833,7 +843,7 @@ class UmbraService
 
             $pet->increaseEsteem(2);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle that was apparently home to vampires! Fortunately, the vampires mistook ' . $pet->getName() . '\'s monochromatic appearance as vampirism, and welcomed them as kin. ' . $pet->getName() . ' stole a few items while none of the vampires were looking, and fled the castle as soon as they could!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle that was apparently home to vampires! Fortunately, the vampires mistook ' . $pet->getName() . '\'s monochromatic appearance as vampirism, and welcomed them as kin. ' . $pet->getName() . ' stole a few items while none of the vampires were looking, and fled the castle as soon as they could!')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra' ]))
             ;
@@ -848,7 +858,7 @@ class UmbraService
 
             $pet->increaseEsteem(2);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle that was apparently home to vampires! Fortunately, the vampires were completely taken by ' . $pet->getName() . '\'s cordiality, and they all had a simply _wonderful_ time! ' . $pet->getName() . ' received a few gifts from the vampires, then found some excuse to leave...', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle that was apparently home to vampires! Fortunately, the vampires were completely taken by ' . $pet->getName() . '\'s cordiality, and they all had a simply _wonderful_ time! ' . $pet->getName() . ' received a few gifts from the vampires, then found some excuse to leave...')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra' ]))
             ;
@@ -871,7 +881,7 @@ class UmbraService
                     ->increaseSafety(2)
                 ;
 
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle. While exploring it, a vampire attacked them! ' . $pet->getName() . ' was able to drive them away, however, and even nab ' . $loot . '!', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle. While exploring it, a vampire attacked them! ' . $pet->getName() . ' was able to drive them away, however, and even nab ' . $loot . '!')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Fighting' ]))
                 ;
@@ -887,7 +897,7 @@ class UmbraService
                     ->increaseSafety(-2)
                 ;
 
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle. While exploring it, a vampire attacked them! ' . $pet->getName() . ', caught completely by surprise, was forced to flee...', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle. While exploring it, a vampire attacked them! ' . $pet->getName() . ', caught completely by surprise, was forced to flee...')
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Fighting' ]))
                 ;
 
@@ -906,7 +916,7 @@ class UmbraService
 
         if($petWithSkills->getCanSeeInTheDark()->getTotal() <= 0)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered into a deep, dark part of the Umbra, but they didn\'t have a light, so turned back...', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% wandered into a deep, dark part of the Umbra, but they didn\'t have a light, so turned back...')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Dark' ]))
             ;
@@ -923,7 +933,7 @@ class UmbraService
         {
             if($this->squirrel3->rngNextInt(1, 20) + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() >= 18)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra. A fox spirit leapt out of nowhere and attacked, and %pet:' . $pet->getId() . '.name% fought back, liberating the creature\'s Quintessence, and... its nuts?', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra. A fox spirit leapt out of nowhere and attacked, and %pet:' . $pet->getId() . '.name% fought back, liberating the creature\'s Quintessence, and... its nuts?')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Dark', 'Fighting' ]))
                 ;
@@ -936,7 +946,7 @@ class UmbraService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra until a fox spirit leapt out of nowhere and attacked! %pet:' . $pet->getId() . '.name% was taken aback by the creature\'s ferocity, and fled the quag...', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra until a fox spirit leapt out of nowhere and attacked! %pet:' . $pet->getId() . '.name% was taken aback by the creature\'s ferocity, and fled the quag...')
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Dark', 'Fighting' ]))
                 ;
 
@@ -949,7 +959,7 @@ class UmbraService
 
         if($this->squirrel3->rngNextInt(1, 20) + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getExploreUmbraBonus()->getTotal() < 18)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra, but all they found was a Crooked Stick.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra, but all they found was a Crooked Stick.')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Dark', 'Gathering' ]))
             ;
             $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' found this in a frozen quag in the deep Umbra.', $activityLog);
@@ -962,7 +972,7 @@ class UmbraService
 
         if($this->squirrel3->rngNextBool())
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra. Their eyes caught the glint of some frost-covered Marshmallows, which they took!', '');
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra. Their eyes caught the glint of some frost-covered Marshmallows, which they took!');
 
             $activityLog
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
@@ -973,9 +983,7 @@ class UmbraService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra. Their eyes caught the glint of some Everice, which they took!', '');
-
-            $activityLog
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra. Their eyes caught the glint of some Everice, which they took!')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Dark', 'Gathering' ]))
             ;
@@ -1016,7 +1024,7 @@ class UmbraService
                 ->increaseEsteem(3)
                 ->increaseSafety(3)
             ;
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered an Abandondero! It whipped out a laser gun, but ' . $pet->getName() . ' ' . $defeated . ', defeated it, and claimed its ' . ArrayFunctions::list_nice($prizes) . '!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered an Abandondero! It whipped out a laser gun, but ' . $pet->getName() . ' ' . $defeated . ', defeated it, and claimed its ' . ArrayFunctions::list_nice($prizes) . '!')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Fighting' ]))
             ;
@@ -1027,7 +1035,7 @@ class UmbraService
         else
         {
             $pet->increaseSafety(-4);
-            $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered an Abandondero! It whipped out a laser gun, and took a few shots at ' . $pet->getName() . ', who made a hasty retreat.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered an Abandondero! It whipped out a laser gun, and took a few shots at ' . $pet->getName() . ', who made a hasty retreat.')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Fighting' ]))
             ;
 
@@ -1061,7 +1069,7 @@ class UmbraService
                     $loot[] = 'Quintessence';
 
                 $pet->increaseEsteem($this->squirrel3->rngNextInt(1, 2));
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a Cursed Garden, but while looking for food, was attacked by an Angry Spirit. ' . $pet->getName() . ' defeated the Angry Spirit, and took its ' . ArrayFunctions::list_nice($loot) . '.', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a Cursed Garden, but while looking for food, was attacked by an Angry Spirit. ' . $pet->getName() . ' defeated the Angry Spirit, and took its ' . ArrayFunctions::list_nice($loot) . '.')
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Stealth', 'Fighting' ]))
                 ;
                 $didWhat = 'defeated an Angry Spirit in the Umbra, and got this';
@@ -1075,7 +1083,7 @@ class UmbraService
                     ->increaseEsteem(-2)
                     ->increaseSafety(-4)
                 ;
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a Cursed Garden, but, while looking for food, was attacked and routed by an Angry Spirit.', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a Cursed Garden, but, while looking for food, was attacked and routed by an Angry Spirit.')
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Stealth', 'Fighting' ]))
                 ;
 
@@ -1090,7 +1098,7 @@ class UmbraService
             if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getExploreUmbraBonus()->getTotal()) >= 25)
                 $loot[] = $this->squirrel3->rngNextFromArray([ 'Nutmeg', 'Eggplant', 'Silica Grounds' ]);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a Cursed Garden, and harvested ' . ArrayFunctions::list_nice($loot) . '.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a Cursed Garden, and harvested ' . ArrayFunctions::list_nice($loot) . '.')
                 ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Stealth', 'Gathering' ]))
             ;
 
@@ -1106,7 +1114,7 @@ class UmbraService
 
     public function speakToBunnySpirit(Pet $pet): PetActivityLog
     {
-        $activityLog = $this->responseService->createActivityLog($pet, 'A rabbit spirit visited %pet:' . $pet->getId() . '.name%, and the two talked for a while, about this world, and the other...', '')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'A rabbit spirit visited %pet:' . $pet->getId() . '.name%, and the two talked for a while, about this world, and the other...')
             ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra' ]))
         ;
         $this->petExperienceService->gainExp($pet, 10, [ PetSkillEnum::ARCANA, PetSkillEnum::NATURE ], $activityLog);

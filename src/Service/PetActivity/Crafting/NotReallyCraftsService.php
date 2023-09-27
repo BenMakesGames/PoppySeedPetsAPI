@@ -26,12 +26,10 @@ class NotReallyCraftsService
     private EntityManagerInterface $em;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        PetExperienceService $petExperienceService, EntityManagerInterface $em, HouseSimService $houseSimService,
-        PetActivityLogTagRepository $petActivityLogTagRepository
+        PetExperienceService $petExperienceService, EntityManagerInterface $em, HouseSimService $houseSimService
     )
     {
         $this->responseService = $responseService;
@@ -40,7 +38,6 @@ class NotReallyCraftsService
         $this->em = $em;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
     }
 
     /**
@@ -126,7 +123,7 @@ class NotReallyCraftsService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% sifted through a Planetary Ring, and found ' . $loot . $exclaim, '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames($tags))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags))
             ;
 
             $this->inventoryService->petCollectsEnhancedItem($loot, null, $spice, $pet, $pet->getName() . ' found this in a Planetary Ring.', $activityLog);
@@ -137,7 +134,7 @@ class NotReallyCraftsService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% sifted through a Planetary Ring, looking for something interesting, but couldn\'t find anything.', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Gathering', 'Physics' ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering', 'Physics' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::NATURE ], $activityLog);

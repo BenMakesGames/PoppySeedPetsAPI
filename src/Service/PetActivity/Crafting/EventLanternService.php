@@ -26,13 +26,11 @@ class EventLanternService
     private EntityManagerInterface $em;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
-    private PetActivityLogTagRepository $petActivityLogTagRepository;
     private Clock $clock;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        EntityManagerInterface $em, IRandom $squirrel3, Clock $clock,
-        HouseSimService $houseSimService, PetActivityLogTagRepository $petActivityLogTagRepository
+        EntityManagerInterface $em, IRandom $squirrel3, Clock $clock, HouseSimService $houseSimService
     )
     {
         $this->inventoryService = $inventoryService;
@@ -41,7 +39,6 @@ class EventLanternService
         $this->em = $em;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
-        $this->petActivityLogTagRepository = $petActivityLogTagRepository;
         $this->clock = $clock;
     }
 
@@ -107,7 +104,7 @@ class EventLanternService
         if($roll < 15)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a seasonal lantern, but couldn\'t come up with a fitting design...', 'icons/activity-logs/confused')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Special Event', $activityTag ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Crafting', 'Special Event', $activityTag ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -121,7 +118,7 @@ class EventLanternService
             $this->houseSimService->getState()->loseOneOf($this->squirrel3, [ 'Jar of Fireflies', 'Candle' ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a ' . $lanternName . ' out of a Crooked Fishing Rod!', '')
-                ->addTags($this->petActivityLogTagRepository->deprecatedFindByNames([ 'Crafting', 'Special Event', $activityTag ]))
+                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Crafting', 'Special Event', $activityTag ]))
             ;
 
             $this->inventoryService->petCollectsItem($lanternName, $pet, $pet->getName() . ' created this.', $activityLog);
