@@ -247,5 +247,8 @@ class Music
 
         // Moldy Peaches
         'I kiss you on the brain in the shadow of a train; kiss you all starry-eyed, my body\'s swingin\' from side to side. I don\'t see what anyone can see in anyone else... bu-ut you...',
+
+        // Sesame Street
+        'One-two-three four-five, six-seven-eight nine-ten, eleven twelve... twelve!',
     ];
 }
