@@ -370,7 +370,12 @@ class HollowEarthService
         }
 
         if(array_key_exists('exp', $event))
-            $this->petExperienceService->gainExp($pet, $event['exp']['amount'], $event['exp']['stats'], $activityLog);
+        {
+            // old tiles refer to the "umbra" skill, but that is no longer a skill; it was renamed to arcana, so:
+            $stats = array_map(fn($stat) => $stat === 'umbra' ? 'arcana' : $stat, $event['exp']['stats']);
+
+            $this->petExperienceService->gainExp($pet, $event['exp']['amount'], $stats, $activityLog);
+        }
 
         if(array_key_exists('receiveItems', $event))
             $this->receiveItems($player, $pet, $petChanges, $event['receiveItems'], $activityLog);

@@ -248,7 +248,7 @@ class PlayController extends AbstractController
         Squirrel3 $squirrel3
     )
     {
-        $stats = $action['stats'];
+        $stats = array_map(fn($stat) => $stat === 'umbra' ? 'arcana' : $stat, $action['stats']);
         $score = $action['baseRoll'];
 
         foreach($stats as $stat)
