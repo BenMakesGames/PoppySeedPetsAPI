@@ -248,6 +248,7 @@ class PlayController extends AbstractController
         Squirrel3 $squirrel3
     )
     {
+        // old tiles refer to the "umbra" skill, but that is no longer a skill; it was renamed to arcana, so:
         $stats = array_map(fn($stat) => $stat === 'umbra' ? 'arcana' : $stat, $action['stats']);
         $score = $action['baseRoll'];
 
