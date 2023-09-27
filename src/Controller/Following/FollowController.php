@@ -28,8 +28,8 @@ class FollowController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function add(
-        Request $request, UserRepository $userRepository, UserFollowingRepository $userFollowingRepository,
-        ResponseService $responseService, EntityManagerInterface $em
+        Request $request, UserFollowingRepository $userFollowingRepository, ResponseService $responseService,
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -40,7 +40,7 @@ class FollowController extends AbstractController
         if($followingId === $user->getId())
             throw new PSPInvalidOperationException('You can\'t follow yourself! That\'s so RANDOM! You\'re so RANDOM!');
 
-        $following = $userRepository->find($followingId);
+        $following = $em->getRepository(User::class)->find($followingId);
 
         if(!$following)
             throw new PSPNotFoundException('Could not find a person with that number.');

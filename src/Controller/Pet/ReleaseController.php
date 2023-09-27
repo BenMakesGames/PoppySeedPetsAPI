@@ -8,6 +8,7 @@ use App\Enum\PetLocationEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\ActivityHelpers;
+use App\Functions\ArrayFunctions;
 use App\Functions\EquipmentFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
@@ -35,7 +36,7 @@ class ReleaseController extends AbstractController
      */
     public function releasePet(
         Pet $pet, Request $request, ResponseService $responseService, UserPasswordHasherInterface $passwordEncoder,
-        EntityManagerInterface $em, UserRepository $userRepository, PetRepository $petRepository, Squirrel3 $rng
+        EntityManagerInterface $em, PetRepository $petRepository, Squirrel3 $rng
     )
     {
         /** @var User $user */
@@ -60,9 +61,17 @@ class ReleaseController extends AbstractController
         EquipmentFunctions::unequipPet($pet);
         EquipmentFunctions::unhatPet($pet);
 
+        // to prevent people from releasing rude names for other players to pick up, rename the pet unless it has one
+        // of the game's default names:
+        $sanitizedOriginalPetName = ucwords(strtolower(trim($pet->getName())));
+
+        $newName = ArrayFunctions::any(PetShelterPet::PET_NAMES, fn($n) => $n == $sanitizedOriginalPetName)
+            ? $sanitizedOriginalPetName // do NOT preserve the original capitalization, in case the player hid a bad word in just the capital letters, for example
+            : $rng->rngNextFromArray(PetShelterPet::PET_NAMES);
+
         $pet
-            ->setName($rng->rngNextFromArray(PetShelterPet::PET_NAMES)) // to prevent people from releasing rude names for other players to pick up
-            ->setOwner($userRepository->findOneBy([ 'email' => 'the-wilds@poppyseedpets.com' ]))
+            ->setName($newName)
+            ->setOwner($em->getRepository(User::class)->findOneBy([ 'email' => 'the-wilds@poppyseedpets.com' ]))
             ->setParkEventType(null)
             ->setNote('')
             ->setCostume('')

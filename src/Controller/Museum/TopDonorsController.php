@@ -1,13 +1,14 @@
 <?php
 namespace App\Controller\Museum;
 
+use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Model\FilterResults;
-use App\Repository\UserRepository;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,13 +27,13 @@ class TopDonorsController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getTopDonors(
-        Request $request, ResponseService $responseService, UserRepository $userRepository
+        Request $request, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         if(!$this->getUser()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
             throw new PSPNotUnlockedException('Museum');
 
-        $qb = $userRepository->createQueryBuilder('u')
+        $qb = $em->getRepository(User::class)->createQueryBuilder('u')
             ->select('u AS user,s.value AS itemsDonated')
             ->leftJoin('App:UserStats', 's', Expr\Join::WITH, 's.user = u.id')
             ->andWhere('s.stat = :statName')

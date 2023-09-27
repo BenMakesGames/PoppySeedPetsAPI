@@ -1,11 +1,9 @@
 <?php
 namespace App\Controller\Patreon;
 
+use App\Entity\User;
 use App\Entity\UserSubscription;
 use App\Exceptions\PSPFormValidationException;
-use App\Repository\UserRepository;
-use App\Repository\UserSubscriptionRepository;
-use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -24,9 +22,7 @@ class ConnectAccountController extends AbstractController
      * @DoesNotRequireHouseHours()
      */
     public function connectPatreonAccount(
-        Request $request, ResponseService $responseService, UserRepository $userRepository,
-        UserSubscriptionRepository $userSubscriptionRepository,
-        EntityManagerInterface $em
+        Request $request, EntityManagerInterface $em
     )
     {
         $code = $request->query->get('code');
@@ -35,7 +31,7 @@ class ConnectAccountController extends AbstractController
         if(!$code || !$userId)
             throw new PSPFormValidationException('Code and state are required.');
 
-        $user = $userRepository->find($userId);
+        $user = $em->getRepository(User::class)->find($userId);
 
         if(!$user)
             throw new PSPFormValidationException('Invalid state.');
@@ -51,7 +47,7 @@ class ConnectAccountController extends AbstractController
 
         $patreonUserId = (int)$patreonUser['data']['id'];
 
-        $subscription = $userSubscriptionRepository->findOneBy([
+        $subscription = $em->getRepository(UserSubscription::class)->findOneBy([
             'patreonUserId' => $patreonUserId
         ]);
 

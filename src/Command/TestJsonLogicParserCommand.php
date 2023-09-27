@@ -1,20 +1,22 @@
 <?php
 namespace App\Command;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\JsonLogicParserService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 
 class TestJsonLogicParserCommand extends PoppySeedPetsCommand
 {
     private $jsonLogicParserService;
-    private $userRepository;
+    private EntityManagerInterface $em;
 
-    public function __construct(JsonLogicParserService $jsonLogicParserService, UserRepository $userRepository)
+    public function __construct(JsonLogicParserService $jsonLogicParserService, EntityManagerInterface $em)
     {
         $this->jsonLogicParserService = $jsonLogicParserService;
-        $this->userRepository = $userRepository;
+        $this->em = $em;
 
         parent::__construct();
     }
@@ -32,7 +34,7 @@ class TestJsonLogicParserCommand extends PoppySeedPetsCommand
     protected function doCommand(): int
     {
         $userId = $this->input->getArgument('user');
-        $user = $this->userRepository->find($userId);
+        $user = $this->em->getRepository(User::class)->find($userId);
 
         if(!$user)
         {

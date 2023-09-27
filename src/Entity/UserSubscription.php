@@ -2,14 +2,13 @@
 
 namespace App\Entity;
 
-use App\Enum\Enum;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\PatreonTierEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass=UserSubscriptionRepository::class)
+ * @ORM\Entity()
  */
 class UserSubscription
 {

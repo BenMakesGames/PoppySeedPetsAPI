@@ -9,15 +9,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class HotPotatoService
 {
-    private UserRepository $userRepository;
     private EntityManagerInterface $em;
     private ResponseService $responseService;
 
-    public function __construct(
-        UserRepository $userRepository, EntityManagerInterface $em, ResponseService $responseService
-    )
+    public function __construct(EntityManagerInterface $em, ResponseService $responseService)
     {
-        $this->userRepository = $userRepository;
         $this->em = $em;
         $this->responseService = $responseService;
     }

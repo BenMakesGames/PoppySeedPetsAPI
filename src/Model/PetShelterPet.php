@@ -7,57 +7,62 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class PetShelterPet
 {
     public const PET_NAMES = [
-        'Aalina', 'Aaron', 'Abrahil', 'Aedoc', 'Aelfric', 'Alain', 'Alda', 'Aldreda', 'Aldus', 'Alienora', 'Aliette',
-        'Amis', 'Artaca', 'Aureliana',
+        'Aalina', 'Aaron', 'Abrahil', 'Addy', 'Aedoc', 'Aelfric', 'Aimery', 'Alain', 'Alda', 'Aldreda', 'Aldus',
+        'Alienora', 'Aliette', 'Amée', 'Amis', 'Amphelise', 'Arlotto', 'Artaca', 'Auberi', 'Aureliana',
 
-        'Batu', 'Belka', 'Berislav', 'Bezzhen', 'Biedeluue', 'Blicze', 'Bogdan', 'Bogdana',
+        'Batu', 'Belka', 'Berislav', 'Bezzhen', 'Biedeluue', 'Blicze', 'Bogdan', 'Bogdana', 'Bogumir', 'Bradan',
+        'Bratomil',
 
-        'Cateline', 'Ceinguled', 'Ceri', 'Ceslinus', 'Chedomir', 'Christien', 'Clement', 'Col', 'Cyra', 'Czestobor',
+        'Cateline', 'Ceinguled', 'Ceri', 'Ceslinus', 'Chedomir', 'Christien', 'Clement', 'Coilean', 'Col', 'Cynbel',
+        'Cyra', 'Czestobor',
 
-        'Dagena', 'Denyw', 'Dicun', 'Disideri', 'Dmitrei', 'Dragomir',
+        'Dagena', 'Dalibor', 'Denyw', 'Dicun', 'Disideri', 'Dmitrei', 'Dragomir', 'Dye',
 
-        'Eda', 'Eileve', 'Elis', 'Emilija', 'Enguerrand', 'Enim', 'Enynny', 'Erasmus', 'Estienne', 'Eve',
+        'Eda', 'Eileve', 'Elena', 'Elis', 'Elric', 'Emilija', 'Enguerrand', 'Enim', 'Enynny', 'Erasmus', 'Estienne',
+        'Eve',
 
         'Felix', 'Fiora', 'Firmin', 'Fluri', 'Frotlildis',
 
         'Galine', 'Garnier', 'Garsea', 'Gennoveus', 'Genoveva', 'Geoffroi', 'Gidie', 'Giliana', 'Godelive', 'Gomes',
-        'Gubin',
+        'Gosse', 'Gubin', 'Guiscard', 'Gwennan',
 
-        'Hamon', 'Hamon',
+        'Hamon', 'Hamon', 'Hopcyn', 'Hunfrid',
 
         'Ibb', 'Idzi',
 
-        'Jadviga', 'Jehanne', 'Jurian',
+        'Jadviga', 'Jehanne', 'Jocosa', 'Josse', 'Jurian',
 
-        'Kaija', 'Kain', 'Kima', 'Kinborough', 'Kint', 'Kirik', 'Klara', 'Kryspin',
+        'Kaija', 'Kain', 'Kazimir', 'Kima', 'Kinborough', 'Kint', 'Kirik', 'Klara', 'Kryspin',
 
         'Larkin', 'Leodhild', 'Leon', 'Levi', 'Lorencio', 'Lowri', 'Lucass', 'Ludmila',
 
         'Maccos', 'Maeldoi', 'Magdalena', 'Makrina', 'Malik', 'Margaret', 'Marsley', 'Masayasu', 'Mateline',
-        'Mathias', 'Matty', 'Maurifius', 'Meduil', 'Melita', 'Meoure', 'Merewen', 'Milesent', 'Milian', 'Mold',
-        'Montgomery', 'Morys',
+        'Mathias', 'Matty', 'Maurifius', 'Meduil', 'Melita', 'Meoure', 'Merewen', 'Milian', 'Millicent', 'Mold',
+        'Molle', 'Montgomery', 'Morys', 'Muriel',
 
-        'Newt', 'Nicholina', 'Nilus', 'Noe', 'Nuño',
+        'Nascimbene', 'Newt', 'Nicholina', 'Nilus', 'Noe', 'Noll', 'Nuño',
 
         'Onfroi', 'Oswyn',
 
-        'Paperclip', 'Perkhta', 'Pesczek',
+        'Paperclip', 'Perkhta', 'Pesczek', 'Pridbjørn',
 
         'Radomil', 'Raven', 'Regina', 'Reina', 'Rimoete', 'Rocatos', 'Rostislav', 'Rozalia', 'Rum', 'Runne', 'Ryd',
 
-        'Saewine', 'Sancha', 'Sandivoi', 'Skenfrith', 'Sulimir', 'Sybil',
+        'Saewine', 'Sancha', 'Sandivoi', 'Skenfrith', 'Sulimir', 'Sunnifa', 'Sybil',
 
-        'Taki', 'Talan', 'Tede', 'Tephaine', 'Tetris', 'Tiecia', 'Timur', 'Toregene', 'Trenewydd',
+        'Taki', 'Talan', 'Tede', 'Temüjin', 'Tephaine', 'Tetris', 'Tiecia', 'Timur', 'Tomila', 'Toregene', 'Trenewydd',
 
-        'Usk',
+        'Úna', 'Usk',
 
-        'Vasilii', 'Vitseslav', 'Vivka',
+        'Vasilii', 'Venceslaus', 'Vitseslav', 'Vivka',
 
-        'Wilkin', 'Wrexham', 'Wymond',
+        'Wilkin', 'Wilmot', 'Wrexham', 'Wybert', 'Wymond',
+
+        'Ximeno',
 
         'Yaromir', 'Yrian', 'Ysabeau', 'Ystradewel',
 
-        'Zofija', 'Zygmunt'
+        'Zofija', 'Zuan', 'Zygmunt'
     ];
 
     public const PET_HALLOWEEN_NAMES = [

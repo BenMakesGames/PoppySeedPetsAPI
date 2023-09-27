@@ -31,7 +31,7 @@ class SecurityController extends AbstractController
      */
     public function updateEmail(
         Request $request, ResponseService $responseService, UserPasswordHasherInterface $passwordEncoder,
-        UserRepository $userRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -52,7 +52,7 @@ class SecurityController extends AbstractController
         if(str_ends_with($newEmail, '@poppyseedpets.com') || str_ends_with($newEmail, '.poppyseedpets.com'))
             throw new PSPFormValidationException('poppyseedpets.com e-mail addresses cannot be used.');
 
-        $alreadyInUse = $userRepository->findOneBy([ 'email' => $newEmail ]);
+        $alreadyInUse = $em->getRepository(User::class)->findOneBy([ 'email' => $newEmail ]);
 
         if($alreadyInUse && $alreadyInUse->getId() != $user->getId())
             throw new PSPFormValidationException('That e-mail address is already in use.');
@@ -111,7 +111,7 @@ class SecurityController extends AbstractController
      * @Route("/requestPassphraseReset", methods={"POST"})
      */
     public function requestPassphraseReset(
-        Request $request, UserRepository $userRepository, ResponseService $responseService,
+        Request $request, EntityManagerInterface $em, ResponseService $responseService,
         PassphraseResetService $passphraseResetService
     )
     {
@@ -123,7 +123,7 @@ class SecurityController extends AbstractController
         if(!filter_var($email, FILTER_VALIDATE_EMAIL))
             throw new PSPFormValidationException('E-mail address is invalid.');
 
-        $user = $userRepository->findOneBy([ 'email' => $email ]);
+        $user = $em->getRepository(User::class)->findOneBy([ 'email' => $email ]);
 
         if(!$user)
             throw new PSPNotFoundException('There is no user with that e-mail address.');
