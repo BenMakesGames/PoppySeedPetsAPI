@@ -819,20 +819,20 @@ class FishingService
         {
             if($this->squirrel3->rngNextInt(1, 4) === 1)
             {
-                if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getIntelligence()->getTotal()) >= 15)
+                if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal()) >= 15)
                 {
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at a Foggy Lake, caught a Ghost Fish, and harvested Quintessence from it.', 'items/resource/quintessence')
                         ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fishing' ]))
                     ;
                     $this->inventoryService->petCollectsItem('Quintessence', $pet, 'From a Ghost Fish that ' . $pet->getName() . ' fished at a Foggy Lake.', $activityLog);
-                    $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::UMBRA ], $activityLog);
+                    $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::ARCANA ], $activityLog);
                 }
                 else
                 {
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at a Foggy Lake, and caught a Ghost Fish, but failed to harvest any Quintessence from it.', '')
                         ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fishing' ]))
                     ;
-                    $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::UMBRA ], $activityLog);
+                    $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::ARCANA ], $activityLog);
                 }
             }
             else

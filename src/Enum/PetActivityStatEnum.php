@@ -14,7 +14,7 @@ final class PetActivityStatEnum
     public const HUNT = 'hunt';
     public const PROTOCOL_7 = 'protocol7';
     public const PROGRAM = 'program';
-    public const UMBRA = 'umbra';
+    public const UMBRA = 'umbra'; // do NOT rename this to "Arcana" - this actually represents time spent in the Umbra!
     public const PARK_EVENT = 'parkevent';
     public const OTHER = 'other';
 }

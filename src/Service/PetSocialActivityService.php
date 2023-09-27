@@ -335,7 +335,7 @@ class PetSocialActivityService
                     // a king
                     if($this->squirrel3->rngNextInt(1, 3) === 1)
                     {
-                        $teachingStat = PetSkillEnum::UMBRA;
+                        $teachingStat = PetSkillEnum::ARCANA;
                         $message = '%pet:' . $pet->getId() . '.name% listened to ' . $companion->getName() . '\'s stories about the various lands of the near and far Umbra...';
                     }
                     else

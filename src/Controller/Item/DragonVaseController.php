@@ -74,7 +74,7 @@ class DragonVaseController extends AbstractController
         {
             $changes = new PetChanges($pet);
 
-            $skill = $rng->rngNextFromArray([ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ]);
+            $skill = $rng->rngNextFromArray([ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ]);
 
             $description = $skill == PetSkillEnum::BRAWL ? 'pounced on' : 'bound';
 

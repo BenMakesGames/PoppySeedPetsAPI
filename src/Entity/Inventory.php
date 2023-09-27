@@ -428,11 +428,11 @@ class Inventory
         ;
     }
 
-    public function umbraBonus(): int
+    public function arcanaBonus(): int
     {
         return
-            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getUmbra() : 0) +
-            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getUmbra() : 0)
+            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getArcana() : 0) +
+            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getArcana() : 0)
         ;
     }
 

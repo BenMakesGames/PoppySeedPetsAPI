@@ -139,7 +139,7 @@ class PetExperienceService
             [ PetSkillEnum::STEALTH, StatusEffectEnum::FOCUSED_STEALTH ],
             [ PetSkillEnum::SCIENCE, StatusEffectEnum::FOCUSED_SCIENCE ],
             [ PetSkillEnum::MUSIC, StatusEffectEnum::FOCUSED_MUSIC ],
-            [ PetSkillEnum::UMBRA, StatusEffectEnum::FOCUSED_UMBRA ],
+            [ PetSkillEnum::ARCANA, StatusEffectEnum::FOCUSED_ARCANA ],
         ];
 
         foreach($possibleEffects as $effect)

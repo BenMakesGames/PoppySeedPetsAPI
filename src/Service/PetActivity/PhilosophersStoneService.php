@@ -19,7 +19,6 @@ use App\Repository\PetQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\ResponseService;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -169,7 +168,7 @@ class PhilosophersStoneService
 
         $changes = new PetChanges($pet);
 
-        $skill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getUmbra()->getTotal();
+        $skill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getArcana()->getTotal();
 
         $gotTheThing = $this->petQuestRepository->findOrCreate($pet, 'Got Vesica Hydrargyrum', 0);
 
@@ -242,7 +241,7 @@ class PhilosophersStoneService
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $activityLogMessage);
             }
 
-            $this->petExperienceService->gainExp($pet, $roll >= 20 ? 3 : 2, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, $roll >= 20 ? 3 : 2, [ PetSkillEnum::ARCANA ], $activityLog);
         }
 
         $activityLog

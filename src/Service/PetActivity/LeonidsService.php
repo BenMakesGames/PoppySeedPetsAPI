@@ -70,7 +70,7 @@ class LeonidsService
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::BRAWL ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA, PetSkillEnum::BRAWL ], $activityLog);
 
             $this->inventoryService->petCollectsItem('Stardust', $pet, $pet->getName() . ' got this in their fur while playing with werecreatures in the Umbra!', $activityLog);
 
@@ -101,7 +101,7 @@ class LeonidsService
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
         }
         else
         {
@@ -120,7 +120,7 @@ class LeonidsService
                     $activityLog->setEntry($activityLog->getEntry() . ' (Even a silvery ' . $pet->getHat()->getFullItemName() . ' isn\'t going to keep away a whole pack of werecreatures!)');
                 }
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::STEALTH ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA, PetSkillEnum::STEALTH ], $activityLog);
 
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::UMBRA, false);
             }
@@ -131,7 +131,7 @@ class LeonidsService
                 $this->inventoryService->petCollectsItem('Stardust', $pet, $pet->getName() . ' gathered this from fallen Leonids in the Umbra!', $activityLog);
                 $this->inventoryService->petCollectsItem('Stardust', $pet, $pet->getName() . ' gathered this from fallen Leonids in the Umbra!', $activityLog);
 
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA, PetSkillEnum::STEALTH ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA, PetSkillEnum::STEALTH ], $activityLog);
 
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
             }
@@ -141,7 +141,7 @@ class LeonidsService
 
                 $this->inventoryService->petCollectsItem('Stardust', $pet, $pet->getName() . ' gathered this from fallen Leonids in the Umbra!', $activityLog);
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::STEALTH ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA, PetSkillEnum::STEALTH ], $activityLog);
 
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
             }
@@ -169,7 +169,7 @@ class LeonidsService
 
             $pet->getGuildMembership()->increaseReputation();
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
         }
         else
         {
@@ -187,7 +187,7 @@ class LeonidsService
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' got this by defeating an angry raccoon spirit they encountered in the Umbra while gathering Stardust! It snarled at ' . $pet->getName() . ', and attacked, but ' . $pet->getName() . ' overpowered the spirit, and drove it away!', $activityLog);
                 $this->inventoryService->petCollectsItem('Stardust', $pet, $pet->getName() . ' gathered this from fallen Leonids in the Umbra, after defeating a large raccoon spirit!', $activityLog);
 
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA, PetSkillEnum::BRAWL ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA, PetSkillEnum::BRAWL ], $activityLog);
             }
             else
             {
@@ -197,7 +197,7 @@ class LeonidsService
 
                 $this->inventoryService->petCollectsItem('Stardust', $pet, $pet->getName() . ' got this all over themselves during a fight with a large raccoon spirit in the Umbra!', $activityLog);
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA, PetSkillEnum::BRAWL ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA, PetSkillEnum::BRAWL ], $activityLog);
             }
         }
 
@@ -208,7 +208,7 @@ class LeonidsService
     {
         $pet = $petWithSkills->getPet();
 
-        $gatheringRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getUmbra()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $gatheringRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
 
         if($gatheringRoll >= 10)
         {
@@ -220,7 +220,7 @@ class LeonidsService
 
                 $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' received this from some fairies after helping them gather tons of Stardust in the Umbra!', $activityLog);
 
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
             }
             else
             {
@@ -228,7 +228,7 @@ class LeonidsService
 
                 $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they ran into some fairies. After working at it for a while, they all took a break, and the fairies shared some of their food!', '');
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
             }
 
             $spice = SpiceRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
@@ -254,7 +254,7 @@ class LeonidsService
 
             $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they ran into some fairies. They all hung out and kept each other company while gathering Stardust for a while...', '');
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
         }
 
         $this->inventoryService->petCollectsItem('Stardust', $pet, $pet->getName() . ' gathered this with some fairies they met in the Umbra!', $activityLog);

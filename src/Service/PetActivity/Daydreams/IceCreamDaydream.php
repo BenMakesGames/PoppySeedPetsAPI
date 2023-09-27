@@ -91,7 +91,7 @@ class IceCreamDaydream
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal());
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getArcana()->getTotal());
 
         if($roll >= 15)
         {
@@ -102,7 +102,7 @@ class IceCreamDaydream
 
             $this->inventoryService->petCollectsItem('Mini Chocolate Chip Cookies', $pet, $pet->getName() . ' found this in a daydream.', $log);
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $log);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $log);
 
             return $log;
         }
@@ -113,7 +113,7 @@ class IceCreamDaydream
                 $petWithSkills->getPet(),
                 ActivityHelpers::PetName($pet) . ' daydreamed they were surfing on a wave of mint chocolate ice cream, dodging pieces of cookies as they went. A whole cookie hit them in the face, jolting them back to reality!');
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $log);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $log);
 
             return $log;
         }

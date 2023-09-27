@@ -60,7 +60,7 @@ class PetSkills
     /**
      * @ORM\Column(type="integer")
      */
-    private $umbra = 0;
+    private $arcana = 0;
 
     /**
      * @ORM\Column(type="integer")
@@ -122,7 +122,7 @@ class PetSkills
     public function getTotal(): int
     {
         return
-            $this->nature + $this->brawl + $this->umbra + $this->stealth + $this->crafts + $this->music + $this->science
+            $this->nature + $this->brawl + $this->arcana + $this->stealth + $this->crafts + $this->music + $this->science
         ;
     }
 
@@ -252,14 +252,14 @@ class PetSkills
         return $this;
     }
 
-    public function getUmbra(): int
+    public function getArcana(): int
     {
-        return $this->umbra;
+        return $this->arcana;
     }
 
-    public function setUmbra(int $umbra): self
+    public function setArcana(int $arcana): self
     {
-        $this->umbra = $umbra;
+        $this->arcana = $arcana;
 
         return $this;
     }

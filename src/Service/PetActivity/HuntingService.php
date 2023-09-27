@@ -932,7 +932,7 @@ class HuntingService
 
         if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
         {
-            $skill = 10 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getUmbra()->getTotal();
+            $skill = 10 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getArcana()->getTotal();
 
             if($this->squirrel3->rngNextInt(1, $skill) >= 15)
             {
@@ -950,7 +950,7 @@ class HuntingService
                     ->increaseEsteem(3)
                 ;
 
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
 
                 return $activityLog;
@@ -958,7 +958,7 @@ class HuntingService
         }
         else
         {
-            $brawlSkill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getUmbra()->getTotal();
+            $brawlSkill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getArcana()->getTotal();
             $stealthSkill = 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal();
 
             if($this->squirrel3->rngNextInt(1, $brawlSkill) >= 15)
@@ -971,7 +971,7 @@ class HuntingService
                     ->increaseEsteem(2)
                 ;
 
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
 
                 return $activityLog;
@@ -990,7 +990,7 @@ class HuntingService
 
                 $pet->increaseEsteem(2);
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
 
                 return $activityLog;
@@ -1001,7 +1001,7 @@ class HuntingService
             ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hunting' ]))
         ;
         $pet->increaseSafety(-3);
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::HUNT, false);
 
         return $activityLog;
@@ -1017,7 +1017,7 @@ class HuntingService
 
         if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
         {
-            $skill = 10 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getUmbra()->getTotal();
+            $skill = 10 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getArcana()->getTotal();
 
             if($this->squirrel3->rngNextInt(1, $skill) >= 15)
             {
@@ -1033,7 +1033,7 @@ class HuntingService
                 $pet->increaseSafety(2);
                 $pet->increaseEsteem(3);
 
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
 
                 return $activityLog;
@@ -1045,7 +1045,7 @@ class HuntingService
                 ;
                 $pet->increaseEsteem(-$this->squirrel3->rngNextInt(2, 3));
                 $pet->increaseSafety(-$this->squirrel3->rngNextInt(1, 3));
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
 
                 return $activityLog;
@@ -1054,7 +1054,7 @@ class HuntingService
 
         if($pet->isInGuild(GuildEnum::THE_UNIVERSE_FORGETS))
         {
-            $skill = 10 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getUmbra()->getTotal();
+            $skill = 10 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getArcana()->getTotal();
 
             if($this->squirrel3->rngNextInt(1, $skill) >= 15)
             {
@@ -1070,7 +1070,7 @@ class HuntingService
                 $pet->increaseSafety(3);
                 $pet->increaseEsteem(2);
 
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
 
                 return $activityLog;
@@ -1082,7 +1082,7 @@ class HuntingService
                 ;
                 $pet->increaseEsteem(-$this->squirrel3->rngNextInt(1, 3));
                 $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 3));
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
 
                 return $activityLog;

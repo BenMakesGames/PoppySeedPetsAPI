@@ -64,7 +64,7 @@ class WerecreatureEncounterService
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, array_merge($tags, [ 'Werecreature', 'Fighting' ])))
                 ;
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
 
                 $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' scared off a werecreature, and received this.', $activityLog);
@@ -96,7 +96,7 @@ class WerecreatureEncounterService
                     ->addTags(PetActivityLogTagRepository::findByNames($this->em, array_merge($tags, [ 'Werecreature', 'Fighting' ])))
                 ;
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::UMBRA ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
 
                 $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' chased off a werecreature, and received this.', $activityLog);

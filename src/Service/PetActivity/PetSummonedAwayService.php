@@ -106,7 +106,7 @@ class PetSummonedAwayService
         $this->petExperienceService->gainExp(
             $pet,
             $this->squirrel3->rngNextInt(1, 3),
-            [ PetSkillEnum::BRAWL, PetSkillEnum::BRAWL, PetSkillEnum::UMBRA ],
+            [ PetSkillEnum::BRAWL, PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ],
             $activityLog
         );
 
@@ -189,17 +189,17 @@ class PetSummonedAwayService
                 break;
             case 4:
                 $activity = 'perform a very-specific dance while holding some candles';
-                $skill = PetSkillEnum::UMBRA;
+                $skill = PetSkillEnum::ARCANA;
                 $tags = [ 'The Umbra' ];
                 break;
             case 5:
                 $activity = 'draw a series of symbols in geometric shapes on the ground';
-                $skill = PetSkillEnum::UMBRA;
+                $skill = PetSkillEnum::ARCANA;
                 $tags = [ 'Magic-binding' ];
                 break;
             case 6:
                 $activity = 'keep an eye on a trapped spirit while the wizard tended to other things';
-                $skill = PetSkillEnum::UMBRA;
+                $skill = PetSkillEnum::ARCANA;
                 $tags = [ 'The Umbra' ];
                 break;
             case 7:

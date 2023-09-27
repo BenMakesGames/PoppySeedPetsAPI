@@ -257,7 +257,7 @@ class DragonService
                 if($helperSkills->getScience()->getTotal() >= 5)
                     $possibleItems[] = 'Space Junk';
 
-                if($helperSkills->getUmbra()->getTotal() >= 5 || $helper->hasMerit(MeritEnum::NATURAL_CHANNEL))
+                if($helperSkills->getArcana()->getTotal() >= 5 || $helper->hasMerit(MeritEnum::NATURAL_CHANNEL))
                     $possibleItems[] = 'Quintessence';
 
                 if($helper->hasMerit(MeritEnum::LOLLIGOVORE))

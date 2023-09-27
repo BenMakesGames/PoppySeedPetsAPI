@@ -31,7 +31,7 @@ class Music
         'I don\'t know... who it is... but it probably is Fhqwhgaaaaads. I asked my friend Joe; I asked my friend Jake: they said it was Fhqwhgads!',
 
         // Portal
-        'This was a triumph. I\'m making a note here: huge success. It\'s haarrd to ooooverstaaaate my saaaatisfadtion...',
+        'This was a triumph. I\'m making a note here: huge success. It\'s haarrd to ooooverstaaaate my saaaatisfaction...',
 
         // B-52s
         'Everybody\'s movin\'; everybody\'s groovin\', baby! Folks linin\' up outside just to get down!',
@@ -247,5 +247,8 @@ class Music
 
         // Moldy Peaches
         'I kiss you on the brain in the shadow of a train; kiss you all starry-eyed, my body\'s swingin\' from side to side. I don\'t see what anyone can see in anyone else... bu-ut you...',
+
+        // Sesame Street
+        'One-two-three four-five, six-seven-eight nine-ten, eleven twelve... twelve!',
     ];
 }

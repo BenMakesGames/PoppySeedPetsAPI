@@ -49,7 +49,7 @@ class SagaSagaService
         if($pet->getSkills()->getStealth() >= 5) $possibleSkills[] = PetSkillEnum::STEALTH;
         if($pet->getSkills()->getNature() >= 5) $possibleSkills[] = PetSkillEnum::NATURE;
         if($pet->getSkills()->getBrawl() >= 5) $possibleSkills[] = PetSkillEnum::BRAWL;
-        if($pet->getSkills()->getUmbra() >= 5) $possibleSkills[] = PetSkillEnum::UMBRA;
+        if($pet->getSkills()->getArcana() >= 5) $possibleSkills[] = PetSkillEnum::ARCANA;
         if($pet->getSkills()->getCrafts() >= 5) $possibleSkills[] = PetSkillEnum::CRAFTS;
         if($pet->getSkills()->getMusic() >= 5) $possibleSkills[] = PetSkillEnum::MUSIC;
         if($pet->getSkills()->getScience() >= 5) $possibleSkills[] = PetSkillEnum::SCIENCE;
@@ -74,7 +74,7 @@ class SagaSagaService
             ->setStealth(0)
             ->setNature(0)
             ->setBrawl(0)
-            ->setUmbra(0)
+            ->setArcana(0)
             ->setCrafts(0)
             ->setMusic(0)
             ->setScience(0)

@@ -933,11 +933,11 @@ class PetActivityService
         if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
             return 0;
 
-        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal();
+        $desire = $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal();
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
-            $desire += $pet->getTool()->getItem()->getTool()->getUmbra();
+            $desire += $pet->getTool()->getItem()->getTool()->getArcana();
 
         if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CRAFTING_MAGIC))
             $desire += 4;
@@ -971,10 +971,10 @@ class PetActivityService
     public function generateExploreUmbraDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
-        $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getUmbra()->getTotal();
+        $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getExploreUmbraBonus()->getTotal();
 
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
-            $desire += $pet->getTool()->getItem()->getTool()->getUmbra();
+            $desire += $pet->getTool()->getItem()->getTool()->getArcana();
 
         if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::UMBRA))
             $desire += 4;

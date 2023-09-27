@@ -113,7 +113,7 @@ class StatusEffect
             StatusEffectEnum::FOCUSED_NATURE,
             StatusEffectEnum::FOCUSED_SCIENCE,
             StatusEffectEnum::FOCUSED_STEALTH,
-            StatusEffectEnum::FOCUSED_UMBRA,
+            StatusEffectEnum::FOCUSED_ARCANA,
             StatusEffectEnum::FOCUSED_CRAFTS,
             StatusEffectEnum::FOCUSED_BRAWL,
             StatusEffectEnum::FOCUSED_MUSIC,
