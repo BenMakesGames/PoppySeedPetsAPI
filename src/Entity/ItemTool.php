@@ -364,7 +364,7 @@ class ItemTool
             $modifiers[] = 'protects from heat';
 
         if($this->getFocusSkill())
-            $modifiers[] = 'learn faster when using ' . $this->getFocusSkill();
+            $modifiers[] = 'learn faster when using ' . ucfirst($this->getFocusSkill());
 
         if($this->getWhenGather())
         {
