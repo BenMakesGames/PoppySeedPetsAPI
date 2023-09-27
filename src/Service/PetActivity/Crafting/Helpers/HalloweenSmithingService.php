@@ -1,16 +1,13 @@
 <?php
 namespace App\Service\PetActivity\Crafting\Helpers;
 
-use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
-use App\Functions\ArrayFunctions;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
-use App\Repository\PetActivityLogTagRepository;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -70,7 +67,7 @@ class HalloweenSmithingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% applied heat to ' . $itemUsedItem->getNameWithArticle() . ', and shaped it into ' . $makes->getNameWithArticle() . '!', 'items/' . $makes->getImage())
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Crafting', 'Smithing', 'Special Event', 'Halloween' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting', 'Smithing', 'Special Event', 'Halloween' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -80,7 +77,7 @@ class HalloweenSmithingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to shape a bucket into ' . $makes->getNameWithArticle() . ', but couldn\'t get the heat just right.', 'icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Crafting', 'Smithing', 'Special Event', 'Halloween' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting', 'Smithing', 'Special Event', 'Halloween' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);

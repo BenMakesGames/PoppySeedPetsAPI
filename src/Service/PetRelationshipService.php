@@ -10,7 +10,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\PetActivityLogFactory;
-use App\Repository\PetActivityLogTagRepository;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Service\PetActivity\PregnancyService;
 use App\Service\PetActivity\Relationship\FriendlyRivalsService;
 use App\Service\PetActivity\Relationship\LoveService;
@@ -261,8 +261,8 @@ class PetRelationshipService
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, $groupTags))
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $groupTags))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout' ]))
         ;
 
         $meetDescription = str_replace([ '%p1%', '%p2%'], [ '%pet:' . $otherPet->getId() . '.name%', '%pet:' . $pet->getId() . '.name%' ], $metActivityLogTemplate);
@@ -289,8 +289,8 @@ class PetRelationshipService
         $otherPetActivityLog
             ->setIcon($icon)
             ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, $groupTags))
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $groupTags))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout' ]))
         ;
 
         return [ $petRelationship, $otherPetRelationship ];
@@ -377,8 +377,8 @@ class PetRelationshipService
         {
             PetActivityLogFactory::createUnreadLog($this->em, $p1->getPet(), $p1Description)
                 ->setIcon($icon)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, $groupTags))
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $groupTags))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout' ]))
             ;
         }
 
@@ -386,8 +386,8 @@ class PetRelationshipService
         {
             PetActivityLogFactory::createUnreadLog($this->em, $p2->getPet(), $p2Description)
                 ->setIcon($icon)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, $groupTags))
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $groupTags))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout' ]))
             ;
         }
     }
@@ -632,7 +632,7 @@ class PetRelationshipService
 
         $p1Log = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
             ->setIcon('icons/activity-logs/friend')
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, $extraTags))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $extraTags))
         ;
 
         $p2Log = $pet->getOwner()->getId() == $friend->getOwner()->getId()
@@ -641,7 +641,7 @@ class PetRelationshipService
 
         $p2Log
             ->setIcon('icons/activity-logs/friend')
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, $extraTags))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $extraTags))
         ;
 
         return [ $p1Log, $p2Log ];

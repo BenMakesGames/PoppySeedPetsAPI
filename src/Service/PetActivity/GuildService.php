@@ -12,11 +12,11 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\GrammarFunctions;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\GuildRepository;
-use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -66,7 +66,7 @@ class GuildService
             $pet->getName() . ' accessed Project-E, and stumbled upon The Hall of Nine - a meeting place for members of nine major Guilds.'
         );
 
-        $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E', 'Guild' ]));
+        $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Guild' ]));
 
         return $activityLog;
     }
@@ -89,7 +89,7 @@ class GuildService
             $pet->getName() . ' visited the Library of Fire, and stumbled upon a meeting between members from the nine major Guilds.'
         );
 
-        $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra', 'Guild' ]));
+        $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Guild' ]));
 
         return $activityLog;
     }
@@ -125,7 +125,7 @@ class GuildService
         {
             $activityLog
                 ->setChanges($changes->compare($petWithSkills->getPet()))
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Guild' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Guild' ]))
             ;
         }
 

@@ -10,10 +10,10 @@ use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
 use App\Functions\CalendarFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PlayerLogHelpers;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\Clock;
 use App\Service\InventoryService;
@@ -169,7 +169,7 @@ class WeedController extends AbstractController
             $activityLogEntry
                 ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
                 ->setChanges($changes->compare($helper))
-                ->addTags(PetActivityLogTagRepository::findByNames($em, [ 'Add-on Assistance', 'Greenhouse' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($em, [ 'Add-on Assistance', 'Greenhouse' ]))
             ;
         }
 

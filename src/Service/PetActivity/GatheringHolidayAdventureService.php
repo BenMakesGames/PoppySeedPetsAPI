@@ -9,9 +9,9 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\AdventureMath;
 use App\Functions\NumberFunctions;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -113,7 +113,7 @@ class GatheringHolidayAdventureService
         {
             $activityLog
                 ->setChanges($changes->compare($pet))
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Special Event', self::HOLIDAY_TAGS[$holiday] ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Special Event', self::HOLIDAY_TAGS[$holiday] ]))
             ;
         }
 

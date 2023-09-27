@@ -7,9 +7,9 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
 use App\Model\PetChanges;
-use App\Repository\PetActivityLogTagRepository;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -80,7 +80,7 @@ class AwaOdoriService
             ->getQuery()
             ->execute();
 
-        $awaOdoriTag = PetActivityLogTagRepository::findByNames($this->em, [ 'Awa Odori' ]);
+        $awaOdoriTag = PetActivityLogTagHelpers::findByNames($this->em, [ 'Awa Odori' ]);
 
         $petNames = [ '%pet:' . $pet->getId() . '.name%' ];
 

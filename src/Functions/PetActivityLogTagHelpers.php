@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Repository;
+namespace App\Functions;
 
 use App\Entity\PetActivityLogTag;
 use App\Exceptions\PSPNotFoundException;
 use Doctrine\ORM\EntityManagerInterface;
 
-final class PetActivityLogTagRepository
+final class PetActivityLogTagHelpers
 {
     /**
      * @param string[] $names
@@ -17,7 +17,7 @@ final class PetActivityLogTagRepository
         $tags = [];
 
         foreach($names as $name)
-            $tags[] = PetActivityLogTagRepository::findOneByName($em, $name);
+            $tags[] = PetActivityLogTagHelpers::findOneByName($em, $name);
 
         return $tags;
     }

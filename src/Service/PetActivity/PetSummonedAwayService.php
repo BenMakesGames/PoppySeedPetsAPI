@@ -5,10 +5,10 @@ use App\Entity\PetActivityLog;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
-use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -100,7 +100,7 @@ class PetSummonedAwayService
         }
 
         $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned')
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting' ]))
         ;
 
         $this->petExperienceService->gainExp(
@@ -154,7 +154,7 @@ class PetSummonedAwayService
         $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them made them ' . $activity . '. Once the task was completed, ' . $pet->getName() . ' returned home, still holding ' . $lootItem->getNameWithArticle() . '!';
 
         $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned')
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags))
         ;
 
         $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' was summoned by a wizard to ' . $activity . '; they returned home with this!', $activityLog);
@@ -214,7 +214,7 @@ class PetSummonedAwayService
         $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them made them ' . $activity . '. Once the task was completed, ' . $pet->getName() . ' returned home!';
 
         $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned')
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags))
         ;
 
         $this->petExperienceService->gainExp($pet, $this->squirrel3->rngNextInt(1, 2), [ $skill ], $activityLog);
@@ -250,7 +250,7 @@ class PetSummonedAwayService
         $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned to ' . $location . '. The wizard that summoned them made them ' . $description . ' until the spell ended, and they were returned home! (At least they managed to pocket some ' . $loot . ' before the spell ended!)';
 
         $activityLog = $this->responseService->createActivityLog($pet, $message, 'icons/activity-logs/summoned')
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags))
         ;
 
         $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' was summoned by a wizard to do hard labor; while ' . $descriptioning . ', they stole this!', $activityLog);

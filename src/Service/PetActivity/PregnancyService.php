@@ -12,10 +12,10 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\UserStatEnum;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PetColorFunctions;
 use App\Model\PetShelterPet;
 use App\Repository\MeritRepository;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
@@ -263,7 +263,7 @@ class PregnancyService
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::GAVE_BIRTH)
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Pregnancy' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Pregnancy' ]))
         ;
 
         $pet->setPregnancy(null);

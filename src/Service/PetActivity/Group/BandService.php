@@ -1,7 +1,6 @@
 <?php
 namespace App\Service\PetActivity\Group;
 
-use App\Entity\PetActivityLog;
 use App\Entity\PetGroup;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
@@ -9,8 +8,8 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\GroupNameGenerator;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\PetChanges;
-use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -213,7 +212,7 @@ class BandService
                 ->setIcon(self::ACTIVITY_ICON)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->setChanges($changes->compare($pet))
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout', 'Band' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Band' ]))
             ;
         }
     }
@@ -236,7 +235,7 @@ class BandService
                 ->setIcon(self::ACTIVITY_ICON)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->setChanges($changes->compare($pet))
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout', 'Band', 'Moneys' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Band', 'Moneys' ]))
             ;
         }
     }
@@ -302,7 +301,7 @@ class BandService
                     ->setIcon(self::ACTIVITY_ICON)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout', 'Band' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Band' ]))
                 ;
 
                 $activityLogsPerPet[$member->getId()] = $activityLog;
@@ -330,7 +329,7 @@ class BandService
                     ->setIcon(self::ACTIVITY_ICON)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout', 'Band' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Band' ]))
                 ;
 
                 $activityLogsPerPet[$member->getId()] = $activityLog;

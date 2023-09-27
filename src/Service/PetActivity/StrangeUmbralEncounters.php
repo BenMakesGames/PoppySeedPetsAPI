@@ -8,9 +8,9 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Repository\EnchantmentRepository;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\SpiceRepository;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
@@ -69,7 +69,7 @@ class StrangeUmbralEncounters
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the umbra, ' . ActivityHelpers::PetName($pet) . ' ' . $encounter['description'])
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags))
         ;
 
         $this->petExperienceService->gainExp($pet, 1, $encounter['skills'], $activityLog);
@@ -122,14 +122,14 @@ class StrangeUmbralEncounters
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring some ruins in the Umbra, ' . '%pet:' . $pet->getId() . '.name% was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language %pet:' . $pet->getId() . '.name% didn\'t know. %pet:' . $pet->getId() . '.name%\'s ' . $pet->getTool()->getItem()->getName() . ' began to glow, and the old man left...')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
             ;
         }
         else
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring some ruins in the Umbra, ' . '%pet:' . $pet->getId() . '.name% was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language %pet:' . $pet->getId() . '.name% didn\'t know. Frustrated, the old man left.')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
             ;
         }
 
@@ -145,7 +145,7 @@ class StrangeUmbralEncounters
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $discoveryMessage . ' They gathered up as much of the "rain" as they could.')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'The Umbra' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
         ;
 
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);

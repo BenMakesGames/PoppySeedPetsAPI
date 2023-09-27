@@ -11,8 +11,8 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\PetChanges;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\SpiceRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -151,7 +151,7 @@ class HarvestController extends AbstractController
                 $activityLog
                     ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
                     ->setChanges($changes->compare($helper))
-                    ->addTags(PetActivityLogTagRepository::findByNames($em, [ 'Add-on Assistance', 'Beehive' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($em, [ 'Add-on Assistance', 'Beehive' ]))
                 ;
             }
 

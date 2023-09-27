@@ -10,8 +10,8 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\SpiceRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -52,7 +52,7 @@ class LeonidsService
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Umbra', 'Special Event', 'Leonids' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Umbra', 'Special Event', 'Leonids' ]))
         ;
 
         return $activityLog;
@@ -148,7 +148,7 @@ class LeonidsService
         }
 
         return $activityLog
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Werecreature' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Werecreature' ]))
         ;
     }
 
@@ -161,7 +161,7 @@ class LeonidsService
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
             $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they encountered a large raccoon spirit, gathering Stardust. It snarled at ' . ActivityHelpers::PetName($pet) . ', but they calmed it down, and helped it gather some Stardust (it\'s the Light and Shadow way)! In addition to getting some Stardust of their own, the spirit gave ' . ActivityHelpers::PetName($pet) . ' some Quintesence as thanks!', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Guild' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Guild' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Stardust', $pet, $pet->getName() . ' gathered this with a large raccoon spirit they met in the Umbra!', $activityLog);
@@ -180,7 +180,7 @@ class LeonidsService
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
                 $activityLog = $this->responseService->createActivityLog($pet, $this->getActivityLogPrefix($pet) . ' There, they encountered a large raccoon spirit, gathering Stardust. It snarled at ' . ActivityHelpers::PetName($pet) . ', but they calmed it down, and helped it gather some Stardust (it\'s the Light and Shadow way)! In addition to getting some Stardust of their own, the spirit gave ' . ActivityHelpers::PetName($pet) . ' some Quintesence as thanks!', '')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting' ]))
                 ;
 
                 $loot = $this->rng->rngNextFromArray([ 'Fluff', 'Talon', 'Quintessence' ]);
@@ -260,7 +260,7 @@ class LeonidsService
         $this->inventoryService->petCollectsItem('Stardust', $pet, $pet->getName() . ' gathered this with some fairies they met in the Umbra!', $activityLog);
 
         return $activityLog
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fae-kind' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fae-kind' ]))
         ;
     }
 

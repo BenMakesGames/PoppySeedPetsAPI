@@ -17,11 +17,11 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\PetChanges;
 use App\Repository\HollowEarthTileRepository;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -367,7 +367,7 @@ class HollowEarthService
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $description)
                 ->setIcon(($currentCard && $currentCard->getImage()) ? ('hollow-earth/tile/' . $currentCard->getImage()) : '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hollow Earth' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Hollow Earth' ]))
             ;
         }
 
@@ -410,7 +410,7 @@ class HollowEarthService
 
             $activityLog = PetActivityLogFactory::createReadLog($this->em, $player->getChosenPet(), 'While exploring the Hollow Earth, ' . $player->getChosenPet()->getName() . ' received ' . ArrayFunctions::list_nice($items) . '.')
                 ->setIcon(($currentCard && $currentCard->getImage()) ? ('hollow-earth/tile/' . $currentCard->getImage()) : '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Hollow Earth' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Hollow Earth' ]))
                 ->setChanges($petChanges->compare($pet))
             ;
         }

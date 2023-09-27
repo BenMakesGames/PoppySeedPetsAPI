@@ -16,12 +16,12 @@ use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
 use App\Model\FoodWithSpice;
 use App\Model\FortuneCookie;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\CravingService;
 use App\Service\InventoryService;
@@ -87,7 +87,7 @@ class EatingService
             else
                 $activityLog->setEntry($activityLog->getEntry() . ' ' . $pet->getName() . ' immediately ate the ' . $food->name . '.');
 
-            $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Eating' ]));
+            $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating' ]));
         }
 
         return true;
@@ -202,7 +202,7 @@ class EatingService
 
             $activityLog
                 ->setChanges($changes->compare($pet))
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Lucky Food' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Lucky Food' ]))
             ;
         }
 
@@ -369,7 +369,7 @@ class EatingService
             }
 
             return $this->responseService->createActivityLog($pet, $message, $icon, $petChanges->compare($pet))
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Eating' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating' ]))
             ;
         }
         else
@@ -377,13 +377,13 @@ class EatingService
             if(count($tooPoisonous) > 0)
             {
                 return $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but ' . $this->squirrel3->rngNextFromArray($tooPoisonous) . ' really isn\'t appealing right now.', '')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Eating' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating' ]))
                 ;
             }
             else
             {
                 return $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but they\'re too full to eat anymore.', '')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Eating' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating' ]))
                 ;
             }
         }

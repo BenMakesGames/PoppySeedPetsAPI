@@ -13,11 +13,11 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
 use App\Service\BeehiveService;
 use App\Service\InventoryService;
@@ -373,7 +373,7 @@ class BlueprintController extends AbstractController
             $activityLog
                 ->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP)
                 ->setEntry($activityLog->getEntry() . ' +1 ' . ucfirst($skill) . '!')
-                ->addTags(PetActivityLogTagRepository::findByNames($em, [ 'Level-up' ]));
+                ->addTags(PetActivityLogTagHelpers::findByNames($em, [ 'Level-up' ]));
         }
     }
 }

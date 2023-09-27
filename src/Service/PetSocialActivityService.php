@@ -16,8 +16,8 @@ use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\PetChanges;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRelationshipRepository;
 use App\Service\PetActivity\Holiday\AwaOdoriService;
 use App\Service\PetActivity\Holiday\HoliService;
@@ -543,7 +543,7 @@ class PetSocialActivityService
             ->setIcon('companions/' . $companion->getImage())
             ->setChanges($changes->compare($pet))
             ->addInterestingness($activityInterestingness)
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, $activityTags))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $activityTags))
         ;
 
         if($teachingStat)
@@ -596,12 +596,12 @@ class PetSocialActivityService
 
         $petLog
             ->setChanges($petChanges->compare($pet->getPet()))
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ '1-on-1 Hangout' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ '1-on-1 Hangout' ]))
         ;
 
         $friendLog
             ->setChanges($friendChanges->compare($friend->getPet()))
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ '1-on-1 Hangout' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ '1-on-1 Hangout' ]))
         ;
     }
 

@@ -9,7 +9,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\PetActivityLogFactory;
-use App\Repository\PetActivityLogTagRepository;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Service\IRandom;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -469,8 +469,8 @@ class RelationshipChangeService
             $p2->getPet(), $message
         );
 
-        $p1Log->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags));
-        $p2Log->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags));
+        $p1Log->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags));
+        $p2Log->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags));
 
         return [ $p1Log, $p2Log ];
     }
@@ -600,8 +600,8 @@ class RelationshipChangeService
             $icon
         );
 
-        $p1Log->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags));
-        $p2Log->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags));
+        $p1Log->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags));
+        $p2Log->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags));
 
         return [ $p1Log, $p2Log ];
     }

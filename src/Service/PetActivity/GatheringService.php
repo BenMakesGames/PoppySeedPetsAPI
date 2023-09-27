@@ -21,12 +21,12 @@ use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\NumberFunctions;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
@@ -174,7 +174,7 @@ class GatheringService
         if($this->squirrel3->rngNextInt(1, 2000) < $petWithSkills->getPerception()->getTotal())
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to an Abandoned Quarry, and happened to find a piece of Striped Microcline!', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
@@ -257,7 +257,7 @@ class GatheringService
             $this->responseService->setReloadPets($petJoinsHouse);
 
             $activityLog = $this->responseService->createActivityLog($pet, $newPetInfo['FindDescription'] . ' ' . $extraMessage, '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::ARCANA ], $activityLog);
@@ -269,7 +269,7 @@ class GatheringService
             $bone = $this->squirrel3->rngNextFromArray([ 'Rib', 'Stereotypical Bone' ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to an Abandoned Quarry, and happened to find a ' . $bone . '!', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
 
             $this->inventoryService->petCollectsItem($bone, $pet, $pet->getName() . ' found this at an Abandoned Quarry!', $activityLog);
@@ -280,7 +280,7 @@ class GatheringService
         else if($petWithSkills->getStrength()->getTotal() < 4)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a huge block of Limestone at an Abandoned Quarry, and, with all their might, pushed, dragged, and "rolled" it home.', 'items/mineral/limestone')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
             $pet->increaseFood(-2);
             $this->inventoryService->petCollectsItem('Limestone', $pet, $pet->getName() . ' found this at an Abandoned Quarry. It was really heavy!', $activityLog);
@@ -290,7 +290,7 @@ class GatheringService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a huge block of Limestone at an Abandoned Quarry, and carried it home.', 'items/mineral/limestone')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
             $this->inventoryService->petCollectsItem('Limestone', $pet, $pet->getName() . ' found this at an Abandoned Quarry.', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
@@ -305,14 +305,14 @@ class GatheringService
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::GATHER, false);
 
         return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out gathering, but couldn\'t find anything.', 'icons/activity-logs/confused')
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
         ;
     }
 
     private function foundPaperBag(Pet $pet): PetActivityLog
     {
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a Paper Bag just, like, lyin\' around.', 'items/bag/paper')
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
         ;
 
         $this->inventoryService->petCollectsItem('Paper Bag', $pet, $pet->getName() . ' found this just lyin\' around.', $activityLog);
@@ -330,7 +330,7 @@ class GatheringService
             $message = '%pet:' . $pet->getId() . '.name% found a Tea Bush, and grabbed a few Tea Leaves, as well as some Worms which had surfaced to escape the rain.';
 
             $activityLog = $this->responseService->createActivityLog($pet, $message, 'items/veggie/tea-leaves')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Tea Leaves', $pet, $pet->getName() . ' harvested this from a Tea Bush.', $activityLog);
@@ -341,7 +341,7 @@ class GatheringService
             $message = '%pet:' . $pet->getId() . '.name% found a Tea Bush, and grabbed a few Tea Leaves.';
 
             $activityLog = $this->responseService->createActivityLog($pet, $message, 'items/veggie/tea-leaves')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Tea Leaves', $pet, $pet->getName() . ' harvested this from a Tea Bush.', $activityLog);
@@ -377,14 +377,14 @@ class GatheringService
         if($this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 10)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% harvested berries from a Thorny ' . $harvest . ' Bush.', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
         }
         else
         {
             $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% got scratched up harvesting berries from a Thorny ' . $harvest . ' Bush.', 'icons/activity-logs/wounded')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
         }
 
@@ -393,7 +393,7 @@ class GatheringService
             $activityLog
                 ->setEntry($activityLog->getEntry() . ' Hm-what? There was a Pinecone in the bush, too?!')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Special Event', 'Stocking Stuffing Season' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Special Event', 'Stocking Stuffing Season' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Pinecone', $pet, $pet->getName() . ' found this in a Thorny ' . $harvest . ' Bush.', $activityLog);
@@ -425,7 +425,7 @@ class GatheringService
             if($petWithSkills->getCanSeeInTheDark()->getTotal() <= 0)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a Hollow Log, but it was too dark inside to see anything.', '')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering', 'Dark' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Dark' ]))
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
@@ -434,7 +434,7 @@ class GatheringService
             else if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getBrawl(false)->getTotal()) >= 15)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' looked inside a Hollow Log, and found a Huge Toad! They got the jump on it, wrestled it to the ground, and claimed its Toadstool!', 'items/fungus/toadstool')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering', 'Fighting', 'Dark', 'Stealth' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Fighting', 'Dark', 'Stealth' ]))
                 ;
                 $this->inventoryService->petCollectsItem('Toadstool', $pet, $pet->getName() . ' harvested this from the back of a Huge Toad found inside a Hollow Log.', $activityLog);
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH, PetSkillEnum::BRAWL ], $activityLog);
@@ -446,7 +446,7 @@ class GatheringService
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' looked inside a Hollow Log, and found a Huge Toad, but it hopped into the woods, and ' . ActivityHelpers::PetName($pet) . ' lost sight of it!', '')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering', 'Fighting', 'Dark', 'Stealth' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Fighting', 'Dark', 'Stealth' ]))
                 ;
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH, PetSkillEnum::BRAWL ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
@@ -458,7 +458,7 @@ class GatheringService
         {
             $activityLog = $this->responseService->createActivityLog($pet, 'Resting on top of a Hollow Log, ' . ActivityHelpers::PetName($pet) . ' spotted a Red Bow! (Hot dang!)', 'items/hat/bow-red')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
             $this->inventoryService->petCollectsItem('Red Bow', $pet, $pet->getName() . ' found this on top of a Hollow Log!', $activityLog);
 
@@ -472,7 +472,7 @@ class GatheringService
             if($this->squirrel3->rngNextBool())
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% broke a Crooked Stick off of a Hollow Log.', 'items/plant/stick-crooked')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
                 ;
                 $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' broke this off of a Hollow Log.', $activityLog);
             }
@@ -481,14 +481,14 @@ class GatheringService
                 if($petWithSkills->getCanSeeInTheDark()->getTotal() > 0)
                 {
                     $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' looked inside a Hollow Log, and found a Grandparoot!', '')
-                        ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering', 'Dark' ]))
+                        ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Dark' ]))
                     ;
                     $this->inventoryService->petCollectsItem('Grandparoot', $pet, $pet->getName() . ' found this growing inside a Hollow Log.', $activityLog);
                 }
                 else
                 {
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a Hollow Log, but it was too dark inside to see anything.', '')
-                        ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering', 'Dark' ]))
+                        ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Dark' ]))
                     ;
                     $success = false;
                 }
@@ -517,13 +517,13 @@ class GatheringService
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stole an Egg from a Bird Nest. Hm-what? There was a Pinecone up there, too!', '');
                 $activityLog
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering', 'Stealth', 'Special Event', 'Stocking Stuffing Season' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Stealth', 'Special Event', 'Stocking Stuffing Season' ]))
                 ;
             }
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stole an Egg from a Bird Nest.', '')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering', 'Stealth' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Stealth' ]))
                 ;
             }
 
@@ -545,7 +545,7 @@ class GatheringService
             if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal()) >= 15)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to steal an Egg from a Bird Nest, was spotted by a parent bird, and was able to defeat it in combat!', '')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering', 'Stealth', 'Fighting' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Stealth', 'Fighting' ]))
                 ;
                 $this->inventoryService->petCollectsItem('Egg', $pet, $pet->getName() . ' stole this from a Bird Nest, after a fight.', $activityLog);
                 $this->inventoryService->petCollectsItem('Fluff', $pet, $pet->getName() . ' stole this from a Bird Nest, after a fight.', $activityLog);
@@ -555,7 +555,7 @@ class GatheringService
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to steal an Egg from a Bird Nest, but was spotted by a parent bird, and chased off!', '')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering', 'Stealth', 'Fighting' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Stealth', 'Fighting' ]))
                 ;
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH, PetSkillEnum::BRAWL ], $activityLog);
                 $pet->increaseEsteem(-$this->squirrel3->rngNextInt(1, 2));
@@ -589,7 +589,7 @@ class GatheringService
 
                 $pet->increaseEsteem($this->squirrel3->rngNextInt(1, 2));
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to a Sandy Beach, but while looking around, was attacked by a Giant Seagull. ' . $pet->getName() . ' defeated the Giant Seagull, and took its ' . ArrayFunctions::list_nice($loot) . '.', '')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering', 'Stealth', 'Fighting' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Stealth', 'Fighting' ]))
                 ;
                 $didWhat = 'defeated a Giant Seagull at the Beach, and got this';
 
@@ -602,7 +602,7 @@ class GatheringService
             {
                 $pet->increaseEsteem(-$this->squirrel3->rngNextInt(1, 2));
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to a Sandy Beach, but was attacked and routed by a Giant Seagull.', '')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering', 'Stealth', 'Fighting' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Stealth', 'Fighting' ]))
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::NATURE ], $activityLog);
@@ -632,7 +632,7 @@ class GatheringService
                 $lootList = $loot;
                 $lootList[] = $moneys . '~~m~~';
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to a Sandy Beach, and stole ' . ArrayFunctions::list_nice($lootList) . ' while the seagulls weren\'t paying attention.', '')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering', 'Stealth', 'Moneys' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Stealth', 'Moneys' ]))
                 ;
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::NATURE ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::GATHER, true);
@@ -640,7 +640,7 @@ class GatheringService
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to a Sandy Beach, and stole ' . ArrayFunctions::list_nice($loot) . ' while the seagulls weren\'t paying attention.', '')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering', 'Stealth' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Stealth' ]))
                 ;
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::NATURE ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
@@ -695,7 +695,7 @@ class GatheringService
 
                 $pet->increaseEsteem($this->squirrel3->rngNextInt(1, 2));
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found an Overgrown Garden, but while looking for food, was attacked by an Angry Mole. ' . $pet->getName() . ' defeated the Angry Mole, and took its ' . ArrayFunctions::list_nice($loot) . '.', 'icons/activity-logs/overgrown-garden')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering', 'Stealth', 'Fighting' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Stealth', 'Fighting' ]))
                 ;
                 $didWhat = 'defeated an Angry Mole in an Overgrown Garden, and got this';
 
@@ -706,7 +706,7 @@ class GatheringService
             {
                 $pet->increaseEsteem(-$this->squirrel3->rngNextInt(1, 2));
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found an Overgrown Garden, but, while looking for food, was attacked and routed by an Angry Mole.', '')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering', 'Stealth', 'Fighting' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Stealth', 'Fighting' ]))
                 ;
                 $loot = [];
 
@@ -735,7 +735,7 @@ class GatheringService
                 $loot[] = 'Honeydont';
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% snuck into an Overgrown Garden, and harvested ' . ArrayFunctions::list_nice($loot) . '.', 'icons/activity-logs/overgrown-garden')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering', 'Stealth' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Stealth' ]))
             ;
 
             if($lucky)
@@ -743,7 +743,7 @@ class GatheringService
                 $activityLog
                     ->setEntry($activityLog->getEntry() . ' (Honeydont?! Lucky~!)')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Lucky~!' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Lucky~!' ]))
                 ;
             }
 
@@ -764,7 +764,7 @@ class GatheringService
         if($petWithSkills->getCanSeeInTheDark()->getTotal() <= 0)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found an Old Iron Mine, but all the ore must have been hidden deep inside, and ' . $pet->getName() . ' didn\'t have a light.', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Mining', 'Dark' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Mining', 'Dark' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
@@ -813,7 +813,7 @@ class GatheringService
             }
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found an Old Iron Mine. It was dark, but thanks to their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', they easily dug up some ' . $loot . $punctuation, '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags))
             ;
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' dug this out of an Old Iron Mine' . $punctuation, $activityLog);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
@@ -823,7 +823,7 @@ class GatheringService
         {
             $pet->increaseFood(-2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found an Old Iron Mine. It was dark, but despite their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', they were unable to dig anything up before getting tired out.', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Mining', 'Dark' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Mining', 'Dark' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::GATHER, false);
@@ -873,7 +873,7 @@ class GatheringService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a lone Naner Tree in the island\'s Micro-Jungle. They left a small offering for Nang Tani... who appeared out of thin air, and gave them ' . $loot->getNameWithArticle() . '!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
 
@@ -884,7 +884,7 @@ class GatheringService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a lone Naner Tree in the island\'s Micro-Jungle. They left a small offering for Nang Tani, and left.', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
         }
@@ -937,14 +937,14 @@ class GatheringService
         if(count($loot) === 0)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% entered the island\'s Micro-Jungle, but couldn\'t find anything.', 'icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
         }
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% entered the island\'s Micro-Jungle, and got ' . ArrayFunctions::list_nice($loot) . '.', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
 
             foreach($loot as $itemName)
@@ -1017,7 +1017,7 @@ class GatheringService
             }
 
             $activityLog
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
@@ -1045,7 +1045,7 @@ class GatheringService
 
                 $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 3));
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% got lost in a Wild Hedgemaze, and ran into a Hedgemaze Sphinx. ' . $pet->getName() . ' was able to solve its riddle, and kept exploring, coming away with ' . ArrayFunctions::list_nice($loot) . '.', '')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
                 ;
 
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA, PetSkillEnum::NATURE ], $activityLog);
@@ -1055,7 +1055,7 @@ class GatheringService
             {
                 $pet->increaseEsteem(-$this->squirrel3->rngNextInt(1, 2));
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% got lost in a Wild Hedgemaze, and ran into a Hedgemaze Sphinx. The sphinx asked a really hard question; ' . $pet->getName() . ' wasn\'t able to answer it, and was consequentially ejected from the maze.', '')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA, PetSkillEnum::NATURE ], $activityLog);
@@ -1093,7 +1093,7 @@ class GatheringService
                 $tags[] = 'Lucky~!';
             }
 
-            $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags));
+            $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags));
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
 
@@ -1119,7 +1119,7 @@ class GatheringService
             $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Île Volcan', '%pet:' . $pet->getId() . '.name% explored the island\'s Volcano.');
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the island\'s Volcano, but couldn\'t find anything.', 'icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
@@ -1130,7 +1130,7 @@ class GatheringService
             $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Île Volcan', '%pet:' . $pet->getId() . '.name% climbed to the top of the island\'s Volcano.');
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% climbed to the top of the island\'s Volcano, and captured some Lightning in a Bottle!', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Lightning in a Bottle', $pet, $pet->getName() . ' captured this on the top of the island\'s Volcano!', $activityLog);
@@ -1147,7 +1147,7 @@ class GatheringService
             ]));
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the island\'s Volcano, and got ' . $loot->getNameWithArticle() . '.', 'items/' . $loot->getImage())
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
 
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this near the island\'s Volcano.', $activityLog);
@@ -1205,7 +1205,7 @@ class GatheringService
             }
 
             $activityLog
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Mining' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Mining' ]))
             ;
 
             foreach($loot as $item)
@@ -1219,7 +1219,7 @@ class GatheringService
             if($petWithSkills->getCanSeeInTheDark()->getTotal() >= 0)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored a huge cave, and tried to explore it, but got lost for a while!', 'icons/activity-logs/confused')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Mining' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Mining' ]))
                 ;
 
                 $pet->increaseSafety(-4);
@@ -1227,7 +1227,7 @@ class GatheringService
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a huge cave, and tried to explore it, but got lost in the dark for a while!', 'icons/activity-logs/confused')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Mining' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Mining' ]))
                 ;
 
                 $pet->increaseSafety(-8);
@@ -1297,14 +1297,14 @@ class GatheringService
         if(count($allLoot) === 0)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored deep in the island\'s Micro-Jungle, but couldn\'t find anything.', 'icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
         }
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored deep in the island\'s Micro-Jungle, and got ' . ArrayFunctions::list_nice($allLoot) . '.', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
 
             $tropicalSpice = SpiceRepository::findOneByName($this->em, 'Tropical');
@@ -1358,7 +1358,7 @@ class GatheringService
         if(count($loot) === 0)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored deep in the island\'s Micro-Jungle, and found a ruined settlement. They looked around for a while, but didn\'t really find anything...', 'icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
         }
@@ -1367,7 +1367,7 @@ class GatheringService
             sort($loot);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored deep in the island\'s Micro-Jungle, and found a ruined settlement. They looked around for a while, and scavenged up ' . ArrayFunctions::list_nice($loot) . '.', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
 
             foreach($loot as $itemName)
@@ -1395,7 +1395,7 @@ class GatheringService
             $pet = $petWithSkills->getPet();
 
             $activityLog
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Heatstroke' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Heatstroke' ]))
             ;
 
             if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)

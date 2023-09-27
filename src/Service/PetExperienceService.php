@@ -15,8 +15,8 @@ use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\UserUnlockedFeatureHelpers;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -125,7 +125,7 @@ class PetExperienceService
         }
 
         if($activityLog && $levelUp)
-            $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Level-up' ]));
+            $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Level-up' ]));
 
         return $levelUp;
     }
@@ -289,7 +289,7 @@ class PetExperienceService
         PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% gave Twu Wuv to %user:' . $pet->getOwner()->getId() . '.Name% for Valentine\'s Day! (Two of them! Two Twu Wuvs!)')
             ->setIcon('items/resource/twu-wuv')
             ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Special Event', 'Valentine\'s' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Special Event', 'Valentine\'s' ]))
         ;
 
         $alreadyReceived->setValue(true);

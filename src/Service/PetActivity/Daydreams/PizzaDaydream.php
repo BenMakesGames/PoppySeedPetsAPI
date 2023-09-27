@@ -13,10 +13,10 @@ use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
-use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -60,7 +60,7 @@ class PizzaDaydream
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         $log
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Dream' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Dream' ]))
             ->setIcon('icons/status-effect/daydream-pizza')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ->setChanges($changes->compare($pet));
@@ -94,13 +94,13 @@ class PizzaDaydream
             $this->transactionService->getMoney($otherPet->getOwner(), 2, $otherPet->getName() . ' received a tip for delivering a pizza in a dream... which was also apparently real?!?');
 
             PetActivityLogFactory::createUnreadLog($this->em, $otherPet, ActivityHelpers::PetName($otherPet) . ' dreamed they delivered a pizza to ' . ActivityHelpers::PetName($pet) . ', who tipped them 2~~m~~. When they woke up, they were holding the 2~~m~~!')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Dream' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Dream' ]))
             ;
         }
         else
         {
             PetActivityLogFactory::createReadLog($this->em, $otherPet, ActivityHelpers::PetName($otherPet) . ' dreamed they delivered a pizza to ' . ActivityHelpers::PetName($pet) . ', who tipped them 2~~m~~. When they woke up, they were holding the 2~~m~~!')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Dream' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Dream' ]))
             ;
         }
 
@@ -154,7 +154,7 @@ class PizzaDaydream
         if($pet->hasMerit(MeritEnum::GOURMAND))
         {
             $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' daydreamed they were exploring a planet made of pizza. They stayed for a while, ate (a true Gourmand!), and picked up various toppings: ' . ArrayFunctions::list_nice($loot) . '. When they snapped back to reality, they had everything they picked up in the daydream!')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gourmand', 'Eating' ]));
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gourmand', 'Eating' ]));
 
             $pet->increaseFood(8);
         }
@@ -191,7 +191,7 @@ class PizzaDaydream
         if($pet->hasMerit(MeritEnum::GOURMAND))
         {
             $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' daydreamed they were on a conveyor belt in a pizza factory making bubblegum pizzas. When they got under a giant nozzle dispensing bubblegum sauce, they opened wide and guzzled it down (a true Gourmand!), getting covered in bubblegum sauce in the process. When they snapped back to reality, they were covered in bubblegum!')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gourmand', 'Eating' ]));
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gourmand', 'Eating' ]));
 
             $pet->increaseFood(8);
         }

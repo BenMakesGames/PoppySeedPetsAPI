@@ -5,11 +5,11 @@ use App\Entity\PetActivityLog;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\CalendarFunctions;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Model\HouseSimRecipe;
 use App\Repository\ItemRepository;
-use App\Repository\PetActivityLogTagRepository;
 use App\Service\Clock;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
@@ -104,7 +104,7 @@ class EventLanternService
         if($roll < 15)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a seasonal lantern, but couldn\'t come up with a fitting design...', 'icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Crafting', 'Special Event', $activityTag ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting', 'Special Event', $activityTag ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -118,7 +118,7 @@ class EventLanternService
             $this->houseSimService->getState()->loseOneOf($this->squirrel3, [ 'Jar of Fireflies', 'Candle' ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a ' . $lanternName . ' out of a Crooked Fishing Rod!', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Crafting', 'Special Event', $activityTag ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting', 'Special Event', $activityTag ]))
             ;
 
             $this->inventoryService->petCollectsItem($lanternName, $pet, $pet->getName() . ' created this.', $activityLog);

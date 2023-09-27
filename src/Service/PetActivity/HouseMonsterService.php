@@ -2,17 +2,16 @@
 namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
-use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\PetChanges;
 use App\Model\SummoningScrollMonster;
 use App\Model\SummoningScrollMonsterElementEnum;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
@@ -218,7 +217,7 @@ class HouseMonsterService
                 $tags[] = 'Level-up';
 
             $activityLog
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, $tags))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags))
                 ->setChanges($changes);
         }
 

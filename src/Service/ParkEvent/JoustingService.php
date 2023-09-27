@@ -3,7 +3,6 @@ namespace App\Service\ParkEvent;
 
 use App\Entity\ParkEvent;
 use App\Entity\Pet;
-use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -11,11 +10,11 @@ use App\Enum\PetSkillEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ParkEvent\JoustingClashResult;
 use App\Model\ParkEvent\JoustingParticipant;
 use App\Model\ParkEvent\JoustingTeam;
 use App\Model\PetChanges;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -454,7 +453,7 @@ class JoustingService implements ParkEventInterface
         $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, $log)
             ->setIcon('icons/activity-logs/park')
             ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT)
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Park Event', 'Jousting' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Park Event', 'Jousting' ]))
         ;
 
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ], $log);

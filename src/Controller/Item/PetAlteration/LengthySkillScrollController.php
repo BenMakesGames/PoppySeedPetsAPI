@@ -10,7 +10,7 @@ use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetActivityLogFactory;
-use App\Repository\PetActivityLogTagRepository;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -60,7 +60,7 @@ class LengthySkillScrollController extends AbstractController
 
         PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% was read ' . $inventory->getItem()->getNameWithArticle() . ', increasing their ' . ucfirst($skill) . ' to ' . $pet->getSkills()->getStat($skill) . '!')
             ->setIcon('items/scroll/lengthy-skill')
-            ->addTags(PetActivityLogTagRepository::findByNames($em, [ 'Level-up' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($em, [ 'Level-up' ]))
         ;
 
         $em->flush();

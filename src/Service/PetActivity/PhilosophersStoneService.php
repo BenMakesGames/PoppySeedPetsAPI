@@ -11,10 +11,10 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\EquipmentFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -149,7 +149,7 @@ class PhilosophersStoneService
 
         $activityLog
             ->setChanges($changes->compare($pet))
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Adventure!' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
         ;
 
         return $activityLog;
@@ -245,7 +245,7 @@ class PhilosophersStoneService
 
         $activityLog
             ->setChanges($changes->compare($pet))
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Adventure!' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
         ;
 
         return $activityLog;
@@ -348,7 +348,7 @@ class PhilosophersStoneService
 
         $activityLog
             ->setChanges($changes->compare($pet))
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Adventure!' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
         ;
 
         return $activityLog;
@@ -388,7 +388,7 @@ class PhilosophersStoneService
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY)
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Adventure!' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
             ->setChanges($changes->compare($pet))
         ;
 

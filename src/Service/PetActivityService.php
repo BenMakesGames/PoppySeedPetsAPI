@@ -21,12 +21,12 @@ use App\Functions\CalendarFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\InventoryModifierFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\FoodWithSpice;
 use App\Model\PetChanges;
 use App\Model\PetChangesSummary;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\PetActivity\BurntForestService;
 use App\Service\PetActivity\Caerbannog;
@@ -186,7 +186,7 @@ class PetActivityService
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% nibbled on their ' . InventoryModifierFunctions::getNameWithModifiers($pet->getTool()) . '.')
                 ->setIcon('icons/activity-logs/just-the-fork')
                 ->setChanges($changes)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Eating' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating' ]))
             ;
         }
         else
@@ -496,7 +496,7 @@ class PetActivityService
 
                 PetActivityLogFactory::createUnreadLog($this->em, $pet, $description . ' %pet:' . $pet->getId() . '.name% wanted to make something, but couldn\'t find any materials to work with.')
                     ->setIcon('icons/activity-logs/house-too-full')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'House Too Full' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'House Too Full' ]))
                 ;
             }
             else
@@ -517,7 +517,7 @@ class PetActivityService
                 $activityLog->setEntry($description . ' ' . $activityLog->getEntry());
 
                 if($activityLog->getChanges()->containsLevelUp())
-                    $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Level-up' ]));
+                    $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Level-up' ]));
             }
 
             return;
@@ -1222,7 +1222,7 @@ class PetActivityService
 
             PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:'. $pet->getId() . '.name% eats the ' . $itemOnBody . ' off their body in no time flat! (Ah~! A true Gourmand!)')
                 ->setChanges($changes->compare($pet))
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Eating', 'Gourmand' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating', 'Gourmand' ]))
             ;
             return false;
         }

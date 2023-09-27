@@ -8,10 +8,10 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\AdventureMath;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\PetQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -141,7 +141,7 @@ class Protocol7Service
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::SCIENCE ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
-        $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E' ]));
+        $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]));
 
         return $activityLog;
     }
@@ -174,7 +174,7 @@ class Protocol7Service
             ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Project-E, following some breadcrumbs left by other members of Time\'s Arrow. They reached ' . $locationAndAction . ', eventually piecing together ' . $item->getNameWithArticle() . '!', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E', 'Guild' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Guild' ]))
             ;
 
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' found this while ' . $actioning . ' in Project-E.', $activityLog);
@@ -185,7 +185,7 @@ class Protocol7Service
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Project-E, following some breadcrumbs left by other members of Time\'s Arrow, but they lost the trail, and weren\'t able to find it again.', 'icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E', 'Guild' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Guild' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -204,7 +204,7 @@ class Protocol7Service
         if($roll < 10)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Project-E, and went to a Dwarfcraft excavation site. They dug for a while, but didn\'t find anything interesting.', 'icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E', 'Guild' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Guild' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -251,7 +251,7 @@ class Protocol7Service
         }
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Project-E, and went to a Dwarfcraft excavation site. They dug for a while, and found ' . $loot . $exclaim, '')
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E', 'Guild' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Guild' ]))
         ;
 
         $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while digging at a Dwarfcraft excavation site.', $activityLog);
@@ -281,7 +281,7 @@ class Protocol7Service
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Project-E. Correspondence had some message-delivery jobs, so %pet:' . $pet->getId() . '.name% picked a couple up, earning ' . $moneys . '~~m~~ for their trouble.', '')
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E', 'Guild', 'Moneys' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Guild', 'Moneys' ]))
         ;
     }
 
@@ -299,7 +299,7 @@ class Protocol7Service
 
         $activityLog = $this->responseService->createActivityLog($pet, 'In Project-E, ' . '%pet:' . $pet->getId() . '.name% ran into a girl named Annabellastasia, who handed %pet:' . $pet->getId() . '.name% a Black Bow.', 'items/hat/bow-black')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
         ;
         $this->inventoryService->petCollectsItem('Black Bow', $pet, $pet->getName() . ' received this from a girl named Annabellastasia in Project-E.', $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
@@ -337,7 +337,7 @@ class Protocol7Service
 
                 $activityLog = $this->responseService->createActivityLog($pet, $logMessage, 'items/resource/digital/pointer')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E', 'Guild' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Guild' ]))
                 ;
                 $this->inventoryService->petCollectsItem('Pointer', $pet, $pet->getName() . ' received this from a Garbage Collector in Project-E.', $activityLog);
             }
@@ -345,7 +345,7 @@ class Protocol7Service
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% saw a Garbage Collector in Project-E, and took one of the Pointers it was discarding.', 'items/resource/digital/pointer')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
                 ;
                 $this->inventoryService->petCollectsItem('Pointer', $pet, $pet->getName() . ' took this from a Garbage Collector in Project-E.', $activityLog);
             }
@@ -358,13 +358,13 @@ class Protocol7Service
             if($pet->isInGuild(GuildEnum::TIMES_ARROW))
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% met with a Garbage Collector in Project-E. It was happy to help a member of Time\'s Arrow, but didn\'t have anything at the moment.', '')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E', 'Guild' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Guild' ]))
                 ;
             }
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% saw a Garbage Collector passing by in Project-E, but couldn\'t catch up to it.', '')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
                 ;
             }
 
@@ -405,14 +405,14 @@ class Protocol7Service
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was assaulted by ' . $baddie . ' in Layer 02 of Project-E, but defeated it, and took its ' . $loot . '!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
             ;
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated ' . $baddie . ', and took this.', $activityLog);
         }
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Layer 02 of Project-E, but ' . $baddie . ' hijacked their session.', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
             ;
         }
 
@@ -453,7 +453,7 @@ class Protocol7Service
             $pet->increaseEsteem(8);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was assaulted by ' . $baddie . ' in a protected sector of Project-E, but defeated it, and took its Pynʞ! Whoa!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
             $this->inventoryService->petCollectsItem('Pynʞ', $pet, $pet->getName() . ' defeated ' . $baddie . ', and got _this!_', $activityLog);
@@ -464,7 +464,7 @@ class Protocol7Service
             $pet->increaseEsteem(8);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was assaulted by ' . $baddie . ' in a protected sector of Project-E, but defeated it, and took its Pynʞ! (Lucky~!)', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
             $this->inventoryService->petCollectsItem('Pynʞ', $pet, $pet->getName() . ' defeated ' . $baddie . ', and got _this!_ (Lucky~!)', $activityLog);
@@ -475,7 +475,7 @@ class Protocol7Service
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was assaulted by ' . $baddie . ' in a protected sector of Project-E, but defeated it, and took its ' . $loot . '!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated ' . $baddie . ', and took this.', $activityLog);
@@ -484,7 +484,7 @@ class Protocol7Service
         {
             $pet->increaseSafety(-1);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to access a protected sector of Project-E, but couldn\'t get elevated permissions.', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
         }
@@ -518,7 +518,7 @@ class Protocol7Service
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% watched a video ' . $video['subject'] . ' in Project-E, and got ' . $lootItem->getNameWithArticle() . ' out of it.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
             ;
             $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' got this by watching a video ' . $video['subject'] . ' in Project-E.' , $activityLog);
 
@@ -528,7 +528,7 @@ class Protocol7Service
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% watched a video ' . $video['subject'] . ' in Project-E, but didn\'t really get anything out of it.', 'icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -565,7 +565,7 @@ class Protocol7Service
             $pet->increaseEsteem(8);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was assaulted by ' . $baddie . ' on an insecure port in Project-E, but defeated it, and took its Pynʞ! Whoa!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
             $this->inventoryService->petCollectsItem('Pynʞ', $pet, $pet->getName() . ' defeated ' . $baddie . ', and got _this!_', $activityLog);
@@ -576,7 +576,7 @@ class Protocol7Service
             $pet->increaseEsteem(8);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was assaulted by ' . $baddie . ' on an insecure port in Project-E, but defeated it, and took its Pynʞ! (Lucky~!)', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
             $this->inventoryService->petCollectsItem('Pynʞ', $pet, $pet->getName() . ' defeated ' . $baddie . ', and got _this!_ (Lucky~!)', $activityLog);
@@ -587,7 +587,7 @@ class Protocol7Service
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was assaulted by ' . $baddie . ' on an insecure port in Project-E, but defeated it, and took its ' . $loot . '!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
             ;
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated ' . $baddie . ', and took this.', $activityLog);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -596,7 +596,7 @@ class Protocol7Service
         {
             $pet->increaseSafety(-1);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed an insecure port in Project-E, but their service was disrupted by ' . $baddie . '.', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
         }
@@ -615,7 +615,7 @@ class Protocol7Service
         if($check < 15)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name%\'s line was suddenly shorted while they were exploring Project-E!', 'icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E', 'Physics' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Physics' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
@@ -623,7 +623,7 @@ class Protocol7Service
         else if($this->squirrel3->rngNextInt(1, max(10, 50 - $pet->getSkills()->getIntelligence())) === 1)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name%\'s line was suddenly shorted while they were exploring Project-E. %pet:' . $pet->getId() . '.name% managed to capture some Lightning in a Bottle before being forcefully disconnected!', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E', 'Physics' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Physics' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Lightning in a Bottle', $pet, $pet->getName() . ' captured this on a shorted line of Project-E!', $activityLog);
@@ -634,7 +634,7 @@ class Protocol7Service
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name%\'s line was suddenly shorted while they were exploring Project-E. %pet:' . $pet->getId() . '.name% managed to grab a couple Pointers before being forcefully disconnected.', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E', 'Physics' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Physics' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Pointer', $pet, $pet->getName() . ' captured this on a shorted line of Project-E!', $activityLog);
@@ -684,7 +684,7 @@ class Protocol7Service
         if($this->squirrel3->rngNextInt(1, 100) === 1)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% ' . $snuck . ' into a Walled Garden, but ran into a Pirate doing the same! ' . $pet->getName() . ' defeated the Pirate, stole its Jolliest Roger, and ran off before the Walled Garden\'s security system detected them! Yarr!', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E', 'Fighting', 'Stealth' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Fighting', 'Stealth' ]))
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ;
 
@@ -698,7 +698,7 @@ class Protocol7Service
         else if($check < 15)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried ' . $toSneak . ' into a Walled Garden within Project-E, but was kicked out.', 'icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E', 'Stealth' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Stealth' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::STEALTH ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
@@ -706,7 +706,7 @@ class Protocol7Service
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% ' . $snuck . ' into a Walled Garden within Project-E, and plucked a Macintosh that was growing there.', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E', 'Stealth' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Stealth' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Macintosh', $pet, $pet->getName() . ' found this growing in a Walled Garden within Project-E!', $activityLog);
@@ -736,7 +736,7 @@ class Protocol7Service
         if($check < 20)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a corrupt sector, but wasn\'t able to recover any data.', 'icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
@@ -745,7 +745,7 @@ class Protocol7Service
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a corrupt sector, and managed to recover a Lo-res Crown from it! Lucky~!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E', 'Lucky~!' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Lucky~!' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Lo-res Crown', $pet, $pet->getName() . ' recovered this from a corrupt sector of Project-E! Lucky~!', $activityLog);
@@ -758,7 +758,7 @@ class Protocol7Service
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a corrupt sector, and managed to recover a Lo-res Crown from it!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Lo-res Crown', $pet, $pet->getName() . ' recovered this from a corrupt sector of Project-E!', $activityLog);
@@ -798,14 +798,14 @@ class Protocol7Service
             {
                 $pet->getGuildMembership()->increaseReputation();
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a corrupt sector in Project-E, but was able to repair it as they would repair the fabric of reality, and recover a ' . $otherLoot . ', and ' . $loot . ' from it!', 'guilds/tapestries')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E', 'Guild', 'The Umbra' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Guild', 'The Umbra' ]))
                 ;
                 $itemComment = $pet->getName() . ' recovered this by repairing a corrupt sector of Project-E!';
             }
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a corrupt sector, and managed to recover a ' . $otherLoot . ', and ' . $loot . ' from it!', '')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Project-E' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
                 ;
                 $itemComment = $pet->getName() . ' recovered this from a corrupt sector of Project-E!';
             }
@@ -813,7 +813,7 @@ class Protocol7Service
             if($lucky)
             {
                 $activityLog->setEntry($activityLog->getEntry() . ' Lucky~!')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Lucky~!' ]));
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Lucky~!' ]));
                 $itemComment .= ' Lucky~!';
             }
 

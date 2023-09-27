@@ -10,9 +10,9 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
-use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -53,7 +53,7 @@ class FoodFightDaydream
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         $log
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Dream' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Dream' ]))
             ->setIcon('icons/status-effect/daydream-food-fight')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ->setChanges($changes->compare($pet));
@@ -72,7 +72,7 @@ class FoodFightDaydream
                 $petWithSkills->getPet(),
                 ActivityHelpers::PetName($pet) . ' daydreamed they encountered a chocolate dragon! It roared and flapped its wings menacingly, but ' . ActivityHelpers::PetName($pet) . ' just started eating it, starting with its legs! (Ah~! A true Gourmand!) Midway into finishing the dragon, ' . ActivityHelpers::PetName($pet) . ' snapped back to reality, a piece of the dragon still in their hands...');
 
-            $log->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gourmand', 'Eating' ]));
+            $log->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gourmand', 'Eating' ]));
 
             $pet->increaseFood(8)->increaseEsteem(4);
 

@@ -13,10 +13,10 @@ use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
-use App\Repository\PetActivityLogTagRepository;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
 use App\Service\InventoryService;
@@ -127,7 +127,7 @@ class DeepSeaService
 
             if($activityLog)
             {
-                $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine' ]));
+                $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine' ]));
                 return $activityLog;
             }
         }
@@ -143,7 +143,7 @@ class DeepSeaService
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to get the Submarine started, but forgot one of the steps, causing the whole thing to freak out and shut down :|', 'icons/activity-logs/confused')
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine' ]))
         ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
@@ -156,7 +156,7 @@ class DeepSeaService
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% took the Submarine out to sea, but didn\'t really get anywhere... some Algae got stuck to the hull, though, so there\'s that!', 'items/tool/submarine')
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine' ]))
         ;
 
         $this->inventoryService->petCollectsItem('Algae', $pet, $pet->getName() . ' cleaned this off the Submarine.', $activityLog);
@@ -178,7 +178,7 @@ class DeepSeaService
             if($this->squirrel3->rngNextInt(1, 100) === 1)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the shelf sea using the Submarine, and found a Dino Skull!', 'items/tool/submarine')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Fishing' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fishing' ]))
                 ;
 
                 $this->inventoryService->petCollectsItem('Dino Skull', $pet, $pet->getName() . ' found this while exploring the shelf sea using the Submarine!', $activityLog);
@@ -194,7 +194,7 @@ class DeepSeaService
                 ]);
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the shelf sea using the Submarine. All they found was ' . $loot . '...', 'items/tool/submarine')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Fishing' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fishing' ]))
                 ;
 
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while exploring the shelf sea using the Submarine.', $activityLog);
@@ -207,7 +207,7 @@ class DeepSeaService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the shelf sea using the Submarine. (Pretty!)', 'items/tool/submarine')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Fishing' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fishing' ]))
             ;
 
             $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
@@ -230,7 +230,7 @@ class DeepSeaService
             if($this->squirrel3->rngNextInt(1, 200) === 1)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the shelf sea using the Submarine. They spotted a lone Jelling Polyp while they were out there, and took it home!', 'items/tool/submarine')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Gathering' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Gathering' ]))
                     ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
                 ;
 
@@ -243,7 +243,7 @@ class DeepSeaService
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the shelf sea using the Submarine. They caught a jellyfish while they were out there. (Yum! Jellyfish Jelly!)', 'items/tool/submarine')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Fishing' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fishing' ]))
                 ;
 
                 $this->inventoryService->petCollectsItem('Jellyfish Jelly', $pet, $pet->getName() . ' found this while exploring the shelf sea using the Submarine.', $activityLog);
@@ -256,7 +256,7 @@ class DeepSeaService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the shelf sea using the Submarine. A smack of jellyfish swam by; ' . $pet->getName() . ' watched in wonder...', 'items/tool/submarine')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Fishing' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fishing' ]))
             ;
 
             $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
@@ -285,7 +285,7 @@ class DeepSeaService
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% explored the Coral Reef using the Submarine, and found ' . ($loot === 'Cucumber' ? 'a sea ' : '') . $loot . '.')
                 ->setIcon('items/tool/submarine')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Fishing' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fishing' ]))
             ;
 
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while exploring the Coral Reef using the Submarine.', $activityLog);
@@ -303,7 +303,7 @@ class DeepSeaService
             else
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started exploring the Coral Reef using the Submarine, but was chased off by a swarm of Jellyfish...', '');
 
-            $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Fishing' ]));
+            $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fishing' ]));
 
             $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Coral Reef', $activityLog->getEntry());
 
@@ -323,7 +323,7 @@ class DeepSeaService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine, but it was too dark to see anything...', 'icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Fishing', 'Dark' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fishing', 'Dark' ]))
             ;
         }
         else if($roll >= 14)
@@ -335,7 +335,7 @@ class DeepSeaService
             else
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% used the Submarine (and their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ') and found a hexactinellid deep in the ocean... and took some of its Glass.', 'items/tool/submarine');
 
-            $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Fishing', 'Dark' ]));
+            $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fishing', 'Dark' ]));
 
             $this->inventoryService->petCollectsItem('Glass', $pet, $pet->getName() . ' took this from a hexactinellid while exploring the depths of the ocean using the Submarine.', $activityLog);
 
@@ -349,7 +349,7 @@ class DeepSeaService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine (and their ' . ActivityHelpers::SourceOfLight($petWithSkills) . '), but didn\'t find anything...', 'icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Fishing', 'Dark' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fishing', 'Dark' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
@@ -375,7 +375,7 @@ class DeepSeaService
             if($pet->isInGuild(GuildEnum::HIGH_IMPACT))
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Giant Squid while exploring the deep sea! As a member of High Impact, they immediately stepped up to the challenge, fought the squid, and stole a few Tentacles before it swam away!', 'items/tool/submarine')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Fighting', 'Guild' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fighting', 'Guild' ]))
                 ;
                 $roll += 5; // guaranteed to get at least 1 more tentacle
                 $pet->getGuildMembership()->increaseReputation();
@@ -383,7 +383,7 @@ class DeepSeaService
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Giant Squid while exploring the deep sea! They got out of the Submarine and fought it off, stealing a couple Tentacles!', 'items/tool/submarine')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Fighting' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fighting' ]))
                 ;
             }
 
@@ -404,7 +404,7 @@ class DeepSeaService
             $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Giant Squid while exploring the deep sea! As a member of High Impact, they immediately stepped up to the challenge, but the squid attacked viciously, and ' . $pet->getName() . ' was forced to retreat...', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Fighting', 'Guild' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fighting', 'Guild' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
@@ -414,7 +414,7 @@ class DeepSeaService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Giant Squid while exploring the deep sea! They got away as quickly as they could!', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Fighting' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fighting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
@@ -428,7 +428,7 @@ class DeepSeaService
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
 
         $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the deep sea, %pet:' . $pet->getId() . '.name% watched a pod of whales go by! ' . $pet->getName() . ' swam and sang along with them for a while...', 'items/tool/submarine')
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine' ]))
         ;
 
         $pet->increaseLove($this->squirrel3->rngNextInt(2, 4));
@@ -449,7 +449,7 @@ class DeepSeaService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::FISH, false);
 
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine, but it was too dark to see anything...', 'icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Gathering', 'Dark' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Gathering', 'Dark' ]))
             ;
         }
 
@@ -465,7 +465,7 @@ class DeepSeaService
             ];
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine (and their ' . ActivityHelpers::SourceOfLight($petWithSkills) . '), and found a submarine volcano! They looked around for a little while and scooped up some ' . ArrayFunctions::list_nice($loot) . ' before surfacing.', 'items/tool/submarine')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Gathering', 'Dark' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Gathering', 'Dark' ]))
             ;
 
             foreach($loot as $itemName)
@@ -478,7 +478,7 @@ class DeepSeaService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine (and their ' . ActivityHelpers::SourceOfLight($petWithSkills) . '), and found a submarine volcano! They had to resurface before they could collect anything, though.', 'icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Gathering', 'Dark' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Gathering', 'Dark' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
         }
@@ -489,7 +489,7 @@ class DeepSeaService
             {
                 $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was hot, but their ' . ActivityHelpers::SourceOfHeatProtection($petWithSkills) . ' protected them.')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Gathering', 'Dark', 'Heatstroke' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Gathering', 'Dark', 'Heatstroke' ]))
                 ;
             }
             else
@@ -502,7 +502,7 @@ class DeepSeaService
                 else
                     $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was CRAZY hot, and %pet:' . $pet->getId() . '.name% got a bit light-headed while cramped inside the Submarine.');
 
-                $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Gathering', 'Dark', 'Heatstroke' ]));
+                $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Gathering', 'Dark', 'Heatstroke' ]));
             }
         }
 
@@ -569,7 +569,7 @@ class DeepSeaService
             $fleetDiscovery = '%pet:' . $pet->getId() . '.name% explored the ocean using the Submarine, and found a sunken ship!';
 
             $activityLog = $this->responseService->createActivityLog($pet, $fleetDiscovery . ' Inside was ' . ArrayFunctions::list_nice($loot) . $andMore, 'items/tool/submarine')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Gathering' ]))
             ;
 
             foreach($loot as $itemName)
@@ -592,7 +592,7 @@ class DeepSeaService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started exploring a coral reef using the Submarine, but was chased off by some sharks...', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Submarine', 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Gathering' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);

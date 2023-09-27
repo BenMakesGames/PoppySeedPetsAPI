@@ -5,8 +5,8 @@ use App\Entity\Pet;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\PetChanges;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -72,7 +72,7 @@ class PetAndPraiseService
         PetActivityLogFactory::createUnreadLog($this->em, $pet, '%user:' . $pet->getOwner()->getId() . '.Name% pet ' . '%pet:' . $pet->getId() . '.name%.')
             ->setIcon('ui/affection')
             ->setChanges($changes->compare($pet))
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Petting' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Petting' ]))
         ;
 
         $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PETTED_A_PET);

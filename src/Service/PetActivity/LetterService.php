@@ -11,11 +11,11 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\UnlockableFeatureEnum;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\LetterRepository;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserLetterRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
@@ -239,7 +239,7 @@ class LetterService
 
             $courierActivity = $this->responseService->createActivityLog($courier, '%pet:' . $courier->getId() . '.name% - on a job for Correspondence - delivered a Letter from ' . $sender . ' to ' . $descriptionForCourier, 'icons/activity-logs/letter')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Guild', 'Mail' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Guild', 'Mail' ]))
             ;
 
             $courierActivity->setChanges($courierChanges->compare($courier));
@@ -249,7 +249,7 @@ class LetterService
 
         $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a courier delivered them a Letter from ' . $sender . '! The courier was ' . $descriptionForPet, 'icons/activity-logs/letter')
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Mail' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Mail' ]))
         ;
 
         $activityLog->setChanges($petChanges->compare($pet));

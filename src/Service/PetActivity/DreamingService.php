@@ -9,9 +9,9 @@ use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Functions\GrammarFunctions;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Repository\DreamRepository;
 use App\Repository\ItemRepository;
-use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -150,7 +150,7 @@ class DreamingService
 
         return $this->responseService->createActivityLog($pet, $eventDescription, '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Dream' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Dream' ]))
         ;
     }
 

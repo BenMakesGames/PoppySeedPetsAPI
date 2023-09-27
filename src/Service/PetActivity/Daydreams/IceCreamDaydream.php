@@ -8,9 +8,9 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
-use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -51,7 +51,7 @@ class IceCreamDaydream
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         $log
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Dream' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Dream' ]))
             ->setIcon('icons/status-effect/daydream-ice-cream')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ->setChanges($changes->compare($pet));
@@ -70,7 +70,7 @@ class IceCreamDaydream
                 $petWithSkills->getPet(),
                 ActivityHelpers::PetName($pet) . ' daydreamed about a city sculpted from ever-frozen ice cream where rivers of Neapolitan Ice Cream flowed. They scooped up some of the neapolitan (and ate some, too - a true Gourmand!) before snapping back to reality.');
 
-            $log->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Eating', 'Gourmand' ]));
+            $log->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating', 'Gourmand' ]));
 
             $pet->increaseFood(8);
         }
@@ -130,7 +130,7 @@ class IceCreamDaydream
                 $petWithSkills->getPet(),
                 ActivityHelpers::PetName($pet) . ' daydreamed they were a giant in a world where mountains were scoops of ice cream, shaping new landscapes. They created mountain ranges of rocky road (and ate some, too - a true Gourmand!), then snapped back to reality!');
 
-            $log->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Eating', 'Gourmand' ]));
+            $log->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating', 'Gourmand' ]));
 
             $pet->increaseFood(8);
         }

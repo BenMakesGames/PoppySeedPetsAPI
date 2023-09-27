@@ -4,11 +4,10 @@ namespace App\Service\PetActivity;
 use App\Entity\PetActivityLog;
 use App\Enum\DistractionLocationEnum;
 use App\Enum\EnumInvalidValueException;
-use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
-use App\Repository\PetActivityLogTagRepository;
 use App\Service\FieldGuideService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -54,7 +53,7 @@ class GatheringDistractionService
 
         $activityLog = $this->responseService->createActivityLog($pet, $description, '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Gathering' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
         ;
 
         $this->petExperienceService->gainExp($pet, 1, $distraction['skills'], $activityLog);

@@ -2,7 +2,6 @@
 namespace App\Service;
 
 use App\Entity\Pet;
-use App\Entity\PetActivityLog;
 use App\Entity\PetGroup;
 use App\Entity\PetRelationship;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -10,10 +9,9 @@ use App\Enum\PetGroupTypeEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
-use App\Repository\PetActivityLogTagRepository;
-use App\Repository\PetRepository;
 use App\Service\PetActivity\Group\AstronomyClubService;
 use App\Service\PetActivity\Group\BandService;
 use App\Service\PetActivity\Group\GamingGroupService;
@@ -173,7 +171,7 @@ class PetGroupService
             $log
                 ->setChanges($changes->compare($member))
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout' ]))
             ;
         }
 
@@ -256,7 +254,7 @@ class PetGroupService
 
             $log
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout' ]))
             ;
         }
 
@@ -278,7 +276,7 @@ class PetGroupService
             PetActivityLogFactory::createUnreadLog($this->em, $member, $group->getName() . ' tried to recruit another member, but couldn\'t find anyone. They decided to disband :(')
                 ->setChanges($changes->compare($member))
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout' ]))
             ;
         }
 
@@ -332,7 +330,7 @@ class PetGroupService
             $log
                 ->setChanges($changes->compare($member))
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout' ]))
             ;
         }
     }
@@ -473,7 +471,7 @@ class PetGroupService
 
             PetActivityLogFactory::createUnreadLog($this->em, $friendPet, $friendPet->getName() . ' was invited to join ' . $pet->getName() . '\'s new ' . self::GROUP_TYPE_NAMES[$type] . ', ' . $group->getName() . '!')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Group Hangout' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout' ]))
             ;
         }
 

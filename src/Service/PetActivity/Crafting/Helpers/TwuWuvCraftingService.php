@@ -6,9 +6,9 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Repository\ItemRepository;
-use App\Repository\PetActivityLogTagRepository;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -54,7 +54,7 @@ class TwuWuvCraftingService
             $this->houseSimService->getState()->loseItem('Twu Wuv', 1);
             $pet->increaseEsteem(2);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made a Wed Bawwoon with the power of Twu Wuv!')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Crafting' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' made this with the power of Twu Wuv!', $activityLog);
@@ -63,7 +63,7 @@ class TwuWuvCraftingService
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a Wed Bawwoon, but couldn\'t get the shape right...')
                 ->setIcon('icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Crafting' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -91,7 +91,7 @@ class TwuWuvCraftingService
 
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to forge Cupid, but broke the String :(')
                     ->setIcon('icons/activity-logs/broke-string')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Crafting' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
                 ;
 
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
@@ -117,7 +117,7 @@ class TwuWuvCraftingService
             $this->houseSimService->getState()->loseItem('Twu Wuv', 1);
             $pet->increaseEsteem(2);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% forged Cupid with the power of Twu Wuv!')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Crafting' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' forged this with the power of Twu Wuv!', $activityLog);
@@ -127,7 +127,7 @@ class TwuWuvCraftingService
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to forge Cupid, but couldn\'t get the shape right...')
                 ->setIcon('icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Crafting' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);

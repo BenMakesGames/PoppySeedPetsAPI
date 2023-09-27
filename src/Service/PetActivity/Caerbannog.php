@@ -9,14 +9,13 @@ use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
-use App\Repository\PetActivityLogTagRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class Caerbannog
@@ -51,7 +50,7 @@ class Caerbannog
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Adventure!' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
             ->setChanges($changes->compare($pet))
         ;
 
@@ -117,7 +116,7 @@ class Caerbannog
             $pet->increaseEsteem(ceil($exp / 2) * 2);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $petName . ' went to the Caerbannog Cave, and encountered one of the terrifying creatures living there! ' . $petName . ' proved victorious, returning home with ' . ArrayFunctions::list_nice($loot) . '!')
                 ->setIcon('items/key/carrot')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting' ]))
             ;
             $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
@@ -129,7 +128,7 @@ class Caerbannog
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $petName . ' went to the Caerbannog Cave, and encountered one of the terrifying creatures living there, and was forced to flee! (They grabbed ' . $lootItem->getNameWithArticle() . ' on their way out, at least!)')
                 ->setIcon('items/key/carrot')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Fighting' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);

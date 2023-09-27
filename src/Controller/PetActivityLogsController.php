@@ -1,11 +1,12 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\PetActivityLogTag;
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
-use App\Repository\PetActivityLogTagRepository;
 use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,9 +39,9 @@ class PetActivityLogsController extends AbstractController
      * @Route("/getAllTags", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function getAllTags(ResponseService $responseService, PetActivityLogTagRepository $petActivityLogTagRepository)
+    public function getAllTags(ResponseService $responseService, EntityManagerInterface $em)
     {
-        $tags = $petActivityLogTagRepository->findAll();
+        $tags = $em->getRepository(PetActivityLogTag::class)->findAll();
 
         return $responseService->success($tags, [ SerializationGroupEnum::PET_ACTIVITY_LOGS ]);
     }

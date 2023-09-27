@@ -9,8 +9,8 @@ use App\Enum\PetSkillEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Repository\MeritRepository;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -86,7 +86,7 @@ class SagaSagaService
 
         PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' got 5 points in ' . $skill . ', and was transformed into a skill scroll! All that remains is their ghost...')
             ->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY)
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Level-up' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Level-up' ]))
         ;
 
         $this->responseService->setReloadPets(true);

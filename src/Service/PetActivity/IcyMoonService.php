@@ -12,9 +12,9 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\SpiceRepository;
 use App\Service\FieldGuideService;
 use App\Service\HouseSimService;
@@ -103,7 +103,7 @@ class IcyMoonService
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, false);
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to explore an Icy Moon, but a blizzard started up, and they were unable to make any progress.', 'icons/activity-logs/confused')
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Icy Moon' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Icy Moon' ]))
         ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
@@ -124,7 +124,7 @@ class IcyMoonService
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to explore an Icy Moon, but got lost in the endless snowfields. They picked up a chunk of Everice, at least.', '')
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Icy Moon', 'Gathering' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Icy Moon', 'Gathering' ]))
         ;
 
         $this->inventoryService->petCollectsEnhancedItem('Everice', null, $this->getIcySpice(), $pet, $pet->getName() . ' found this in a snowfield on an Icy Moon.', $activityLog);
@@ -139,7 +139,7 @@ class IcyMoonService
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored an Icy Moon. They found a field of rocks that poked up out of the moon\'s icy surface, and grabbed a sample to take home.', '')
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Icy Moon', 'Gathering' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Icy Moon', 'Gathering' ]))
         ;
 
         $this->inventoryService->petCollectsEnhancedItem('Rock', null, $this->getIcySpice(), $pet, $pet->getName() . ' found this in a field of rocks on an Icy Moon.', $activityLog);
@@ -180,7 +180,7 @@ class IcyMoonService
             }
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored an Icy Moon, and found a Cryovolcano! It was a bit cold, but they rummaged through the deposits, and found a sample of ' . $loot . '!' . $extra, '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Icy Moon', 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Icy Moon', 'Gathering' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, $roll >= 25 ? 3 : 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
@@ -191,7 +191,7 @@ class IcyMoonService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored an Icy Moon, and found a Cryovolcano! The water was scary-cold, so they watched it from a distance for a while before finally moving on...', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Icy Moon', 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Icy Moon', 'Gathering' ]))
             ;
 
             $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
@@ -223,7 +223,7 @@ class IcyMoonService
             if($pet->isInGuild(GuildEnum::HIGH_IMPACT))
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Mini Crystalline Entity while exploring an Icy Moon! As a member of High Impact, they immediately stepped up to the challenge and fought the creature, breaking off a piece of it before it flew away!', '')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Icy Moon', 'Fighting', 'Guild' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Icy Moon', 'Fighting', 'Guild' ]))
                 ;
                 $roll += 5; // greater chance to get more stuff
                 $pet->getGuildMembership()->increaseReputation();
@@ -231,7 +231,7 @@ class IcyMoonService
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Mini Crystalline Entity while exploring an Icy Moon! They fought the creature, breaking off a piece of it before it flew away!', '')
-                    ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Icy Moon', 'Fighting' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Icy Moon', 'Fighting' ]))
                 ;
             }
 
@@ -250,7 +250,7 @@ class IcyMoonService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Mini Crystalline Entity while exploring an Icy Moon! As a member of High Impact, they immediately stepped up to the challenge, but the creature was wildly throwing sparks and electricity, and ' . $pet->getName() . ' was forced to retreat...', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Icy Moon', 'Fighting', 'Guild' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Icy Moon', 'Fighting', 'Guild' ]))
             ;
 
             if($pet->hasMerit(MeritEnum::SHOCK_RESISTANT))
@@ -270,7 +270,7 @@ class IcyMoonService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Mini Crystalline Entity while exploring an Icy Moon! The creature was wildly throwing sparks and electricity, and ' . $pet->getName() . ' was forced to retreat...', '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Icy Moon', 'Fighting' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Icy Moon', 'Fighting' ]))
             ;
 
             if($pet->hasMerit(MeritEnum::SHOCK_RESISTANT))
@@ -299,7 +299,7 @@ class IcyMoonService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::GATHER, false);
 
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found an entrance to the core of an Icy Moon, but it was too dark to see anything...', 'icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Icy Moon', 'Gathering', 'Dark' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Icy Moon', 'Gathering', 'Dark' ]))
             ;
         }
 
@@ -321,7 +321,7 @@ class IcyMoonService
                 $period = '.';
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found an entrance to the core of an Icy Moon! It was dark inside, but thanks to their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ' they found some ' . ArrayFunctions::list_nice($loot) . $period, '')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Icy Moon', 'Gathering', 'Dark' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Icy Moon', 'Gathering', 'Dark' ]))
             ;
 
             foreach($loot as $itemName)
@@ -335,7 +335,7 @@ class IcyMoonService
                 {
                     $activityLog->setEntry($activityLog->getEntry() . ' The core was hot, but their ' . ActivityHelpers::SourceOfHeatProtection($petWithSkills) . ' protected them.')
                         ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                        ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Icy Moon', 'Gathering', 'Dark', 'Heatstroke' ]))
+                        ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Icy Moon', 'Gathering', 'Dark', 'Heatstroke' ]))
                     ;
                 }
                 else
@@ -348,7 +348,7 @@ class IcyMoonService
                     else
                         $activityLog->setEntry($activityLog->getEntry() . ' The core was CRAZY hot, and %pet:' . $pet->getId() . '.name% got a bit light-headed while while crawling through the tunnels.');
 
-                    $activityLog->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Icy Moon', 'Gathering', 'Dark', 'Heatstroke' ]));
+                    $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Icy Moon', 'Gathering', 'Dark', 'Heatstroke' ]));
                 }
             }
 
@@ -371,7 +371,7 @@ class IcyMoonService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::GATHER, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found the entrance to the core of an Icy Moon! It was dark inside, and even with their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ' they were unable to find anything...', 'icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Icy Moon', 'Gathering', 'Dark' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Icy Moon', 'Gathering', 'Dark' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::NATURE ], $activityLog);
         }

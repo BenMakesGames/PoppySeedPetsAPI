@@ -11,9 +11,9 @@ use App\Exceptions\PSPNotFoundException;
 use App\Functions\CalendarFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PlayerLogHelpers;
 use App\Model\FoodWithSpice;
-use App\Repository\PetActivityLogTagRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\Clock;
 use App\Service\FieldGuideService;
@@ -167,7 +167,7 @@ class HalloweenController extends AbstractController
             PetActivityLogFactory::createUnreadLog($em, $trickOrTreater, $logMessage)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
                 ->setIcon('ui/halloween')
-                ->addTags(PetActivityLogTagRepository::findByNames($em, [ 'Special Event', 'Halloween' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($em, [ 'Special Event', 'Halloween' ]))
             ;
 
             PlayerLogHelpers::create(

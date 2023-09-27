@@ -3,11 +3,10 @@ namespace App\Service\PetActivity\Crafting\Helpers;
 
 use App\Entity\Item;
 use App\Entity\PetActivityLog;
-use App\Enum\LocationEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
-use App\Repository\PetActivityLogTagRepository;
 use App\Service\HouseSimService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -46,7 +45,7 @@ class CoinSmithingService
         $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 8));
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $triedToMake->getNameWithArticle() . ', but they accidentally burned themselves! :(', 'icons/activity-logs/burn')
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Smithing' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
         ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -66,7 +65,7 @@ class CoinSmithingService
         $pet->increaseFood(-1);
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $triedToMake->getNameWithArticle() . ' from a Silver Bar, but spilled some of the silver, and almost burned themselves! They used the leftovers to make ' . $moneys . '~~m~~ worth of silver coins, instead.', 'icons/activity-logs/moneys')
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Smithing', 'Moneys' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing', 'Moneys' ]))
         ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
@@ -86,7 +85,7 @@ class CoinSmithingService
         $pet->increaseFood(-1);
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $triedToMake->getNameWithArticle() . ' from a Gold Bar, but spilled some of the gold, and almost burned themselves! They used the leftovers to make ' . $moneys . '~~m~~ worth of gold coins, instead.', 'icons/activity-logs/moneys')
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Smithing', 'Moneys' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing', 'Moneys' ]))
         ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);

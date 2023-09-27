@@ -7,10 +7,10 @@ use App\Entity\PetActivityLog;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\NumberFunctions;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
-use App\Repository\PetActivityLogTagRepository;
 use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -87,7 +87,7 @@ class GreenhouseAdventureService
         }
 
         $activityLog
-            ->addTags(PetActivityLogTagRepository::findByNames($this->em, [ 'Greenhouse' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Greenhouse' ]))
             ->setChanges($changes->compare($pet))
         ;
 
