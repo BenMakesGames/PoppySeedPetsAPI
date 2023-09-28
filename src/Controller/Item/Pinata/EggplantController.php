@@ -93,6 +93,15 @@ class EggplantController extends AbstractController
             else
                 $message .= ' Oh, and what\'s this? There\'s a purple bow inside! You clean it off, and keep it, as well!';
         }
+        else if($squirrel3->rngNextInt(1, 100) === 1)
+        {
+            $inventoryService->receiveItem('Mysterious Seed', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
+
+            if($eggs === 0)
+                $message .= ' Oh, but what\'s this? There\'s a weird seed inside! You clean it off, and keep it!';
+            else
+                $message .= ' Oh, and what\'s this? There\'s a weird seed inside! You clean it off, and keep it, as well!';
+        }
 
         $em->remove($inventory);
 
