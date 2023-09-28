@@ -66,9 +66,11 @@ Other good offerings include:
 * Flowers; Rice Flower in particular
 * Talons & Wings (be careful with this one!)
 
+Paper is not the only medium to which summoning magic can be bound, of course. There are stories of seeds stained magenta during the winter months, and dark mirrors forged from meteorites. Keep your eyes and mind open, and you will discover many methods of summoning.  
+
 ### Food & Drink
 
-* Hallucinogens can grant access to the Umbra, even to those untrained in cosmology. Toadstools are a well-known example, but many aren\'t aware that Royal Jelly also has this property.
+* Hallucinogens can grant access to the Umbra, even to those untrained in Arcana. Toadstools are a well-known example; Royal Jelly also has this property.
 * A drink known as "Dreamwalker\'s Tea" - made from Ginger, Witch-hazel, and Rice Flower - pushes the drinker\'s sleeping mind to the Dreamscapes, areas of the Umbra which border dreams.
   * Dreamwalker\'s Tea, combined with fruit pie, produces an elixir that causes its drinker to shrink in size!
   * Dreamwalker\'s Tea, combined with plain sugar cookies, produces an elixir that causes its drinker to GROW in size!
