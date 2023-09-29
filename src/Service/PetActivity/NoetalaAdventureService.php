@@ -65,7 +65,7 @@ class NoetalaAdventureService
         $activityNames = array_map(fn(Pet $pet) => ActivityHelpers::PetName($pet), $petsAtHome);
         $names = array_map(fn(Pet $pet) => $pet->getName(), $petsAtHome);
 
-        $message = ActivityHelpers::UserName($user) . ' stepped into the portal with ' . ArrayFunctions::list_nice($activityNames) . ', and found yourselves in a black space whose edges could not be seen. (Some dark pocket of the Umbra, no doubt.) A huge, bat-like wing emerged from the shadows, radiating a terrifying aura. ';
+        $message = ActivityHelpers::UserName($user, true) . ' stepped into the portal with ' . ArrayFunctions::list_nice($activityNames) . ', and found yourselves in a black space whose edges could not be seen. (Some dark pocket of the Umbra, no doubt.) A huge, bat-like wing emerged from the shadows, radiating a terrifying aura. ';
         $success = false;
 
         if($totalSkill < 8)

@@ -390,8 +390,13 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Skill Scroll: Brawl'), 1);
                 break;
 
-            case BadgeEnum::DEFEATED_NOETALAS_WING:
+            case BadgeEnum::DEFEATED_NOETALAS_WING_1:
                 $progress = [ 'target' => 1, 'current' => self::getStatTotal($em, $user, [ 'Defeated Noetala\'s Wing' ]) ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Behatting Scroll'), 1);
+                break;
+
+            case BadgeEnum::DEFEATED_NOETALAS_WING_2:
+                $progress = [ 'target' => 2, 'current' => self::getStatTotal($em, $user, [ 'Defeated Noetala\'s Wing' ]) ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Skill Scroll: Arcana'), 1);
                 break;
 

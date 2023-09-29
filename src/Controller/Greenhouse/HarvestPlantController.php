@@ -47,7 +47,7 @@ class HarvestPlantController extends AbstractController
      */
     public function harvestPlant(
         GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, UserStatsRepository $userStatsRepository, PetRepository $petRepository,
+        InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
         UserQuestRepository $userQuestRepository, GreenhouseAdventureService $greenhouseAdventureService,
         GreenhouseService $greenhouseService, IRandom $squirrel3, FieldGuideService $fieldGuideService,
         HattierService $hattierService, TransactionService $transactionService,
@@ -92,12 +92,16 @@ class HarvestPlantController extends AbstractController
             {
                 if($noetalaAdventureService->fightNoetalasWing($user))
                 {
+                    $responseService->addFlashMessage('After leaving the portal, it closed with a snap!');
                     $em->remove($plant);
                 }
 
                 $em->flush();
 
-                return $responseService->success();
+                return $responseService->success(
+                    $greenhouseService->getGreenhouseResponseData($user),
+                    [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE, SerializationGroupEnum::HELPER_PET ]
+                );
             }
 
             throw new PSPInvalidOperationException($plant->getPlant()->getName() . ' cannot be harvested!');
@@ -218,7 +222,7 @@ class HarvestPlantController extends AbstractController
         }
         else
         {
-            $eligiblePets = $petRepository->findBy([
+            $eligiblePets = $em->getRepository(Pet::class)->findBy([
                 'owner' => $user->getId(),
                 'location' => PetLocationEnum::HOME
             ]);
