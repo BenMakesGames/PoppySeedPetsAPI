@@ -9,9 +9,36 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class StatusEffectHelpers
 {
+    public const BITES = [
+        StatusEffectEnum::BITTEN_BY_A_VAMPIRE,
+        StatusEffectEnum::BITTEN_BY_A_WERECREATURE
+    ];
+
+    public static function isImmuneToStatusEffect(Pet $pet, string $status): bool
+    {
+        $hasSilverblood = $pet->hasMerit(MeritEnum::SILVERBLOOD);
+        $hasVampireBite = $pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE);
+
+        if($status == StatusEffectEnum::WEREFORM && ($hasSilverblood || $hasVampireBite))
+            return true;
+
+        $statusIsABite = ArrayFunctions::any(self::BITES, fn($bite) => $bite == $status);
+
+        if($statusIsABite)
+        {
+            $alreadyHasABite = ArrayFunctions::any(self::BITES, fn($bite) => $pet->hasStatusEffect($bite));
+            $immuneToBites = $alreadyHasABite || $hasSilverblood;
+
+            if($immuneToBites)
+                return true;
+        }
+
+        return false;
+    }
+
     public static function applyStatusEffect(EntityManagerInterface $em, Pet $pet, string $status, int $durationInMinutes)
     {
-        if($pet->hasMerit(MeritEnum::SILVERBLOOD) && ($status == StatusEffectEnum::BITTEN_BY_A_WERECREATURE || $status == StatusEffectEnum::WEREFORM || $status == StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
+        if(self::isImmuneToStatusEffect($pet, $status))
             return;
 
         $maxDuration = StatusEffectHelpers::getStatusEffectMaxDuration($status);
