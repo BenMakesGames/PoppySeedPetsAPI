@@ -12,6 +12,7 @@ use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
 use App\Functions\NumberFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -573,13 +574,27 @@ class FishingService
         {
             if($this->squirrel3->rngNextInt(1, 2) === 1 && $pet->hasMerit(MeritEnum::SOOTHING_VOICE))
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at a Waterfall Basin. There, ' . $pet->getName() . '\'s humming caught the attention of a mermaid, who became fascinated by ' . $pet->getName() . '\'s Soothing Voice. After listening for a while, she gave ' . $pet->getName() . ' a Basket of Fish, and left.', '')
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fishing' ]))
-                ;
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::MUSIC ], $activityLog);
-                $this->inventoryService->petCollectsItem('Basket of Fish', $pet, $pet->getName() . ' received this from a Waterfall Basin mermaid who was enchanted by ' . $pet->getName() . '\'s Soothing Voice.', $activityLog);
+                if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE) || ($pet->getTool() && $pet->getTool()->isGrayscaling()))
+                {
+                    $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% went fishing at a Waterfall Basin. There, ' . $pet->getName() . '\'s humming caught the attention of a mermaid! However, the mermaid saw ' . ActivityHelpers::PetName($pet) . '\'s ghastly appearance, gasped, and swam away as quickly as they could!')
+                        ->setIcon('icons/status-effect/bite-vampire')
+                        ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                        ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fishing' ]))
+                    ;
+                    $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::MUSIC, PetSkillEnum::ARCANA ], $activityLog);
 
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::FISH, true);
+                    $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::FISH, false);
+                }
+                else
+                {
+                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at a Waterfall Basin. There, ' . $pet->getName() . '\'s humming caught the attention of a mermaid, who became fascinated by ' . $pet->getName() . '\'s Soothing Voice. After listening for a while, she gave ' . $pet->getName() . ' a Basket of Fish, and left.', '')
+                        ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fishing' ]))
+                    ;
+                    $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::MUSIC ], $activityLog);
+                    $this->inventoryService->petCollectsItem('Basket of Fish', $pet, $pet->getName() . ' received this from a Waterfall Basin mermaid who was enchanted by ' . $pet->getName() . '\'s Soothing Voice.', $activityLog);
+
+                    $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::FISH, true);
+                }
             }
             else
             {

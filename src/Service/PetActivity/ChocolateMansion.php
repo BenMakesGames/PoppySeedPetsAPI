@@ -209,6 +209,7 @@ class ChocolateMansion
         $description = $this->getEntryDescription($pet) . 'They entered the cellar, where a vampire was lying in wait! ';
         $loot = [];
         $tags = [];
+        $icon = '';
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl(false)->getTotal());
         $extraInterestingness = 0;
 
@@ -224,6 +225,7 @@ class ChocolateMansion
 
             $loot[] = $item;
             $tags[] = 'Stealth';
+            $icon = 'icons/status-effect/bite-vampire';
 
             $description .= 'Fortunately, %pet:' . $pet->getId() . '.name%\'s vampire bite tricked the vampire into thinking they were the same sort of creatures! After apologizing, the vampire offered %pet:' . $pet->getId() . '.name% ' . $item->getNameWithArticle() . '. They accepted, and left as quickly as seemed polite.';
             $extraInterestingness = PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY;
@@ -292,6 +294,7 @@ class ChocolateMansion
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $description)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags))
+            ->setIcon($icon)
             ->addInterestingness($extraInterestingness)
         ;
 

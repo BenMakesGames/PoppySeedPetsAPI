@@ -122,7 +122,7 @@ class HuntingService
                     break;
                 case 7:
                 case 8:
-                    if($this->canRescueAnotherHouseFairy($pet->getOwner()))
+                    if($this->canRescueAnotherHouseFairy($pet->getOwner()) && !$pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
                         $activityLog = $this->rescueHouseFairy($pet);
                     else if($useThanksgivingPrey)
                         $activityLog = $this->huntedTurkey($petWithSkills);
@@ -166,8 +166,10 @@ class HuntingService
                         $activityLog = $this->huntedPossessedTurkey($petWithSkills);
                     else if($usePassoverPrey)
                         $activityLog = $this->noGoats($pet);
-                    else
+                    else if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
                         $activityLog = $this->huntedSatyr($petWithSkills);
+                    else
+                        $this->huntedPaperGolem($petWithSkills); // fallback, in case none of the above are good
                     break;
                 case 19:
                 case 20:

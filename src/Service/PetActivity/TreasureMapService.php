@@ -248,6 +248,10 @@ class TreasureMapService
             $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a Leprechaun approached them... but upon seeing %pet:' . $pet->getId() . '.name%\'s pale visage, fled screaming into the woods! (Oops!) %pet:' . $pet->getId() . '.name% put their ' . $pet->getTool()->getFullItemName() . ' down...', '')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fae-kind', 'Adventure!' ]))
             ;
+
+            if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
+                $activityLog->setIcon('icons/status-effect/bite-vampire');
+
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
             EquipmentFunctions::unequipPet($pet);
             return $activityLog;
