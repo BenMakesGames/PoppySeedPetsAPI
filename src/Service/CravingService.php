@@ -56,7 +56,7 @@ class CravingService
     public function maybeAddCraving(Pet $pet)
     {
         if(
-            !$pet->hasMerit(MeritEnum::AFFECTIONLESS) &&
+            (!$pet->hasMerit(MeritEnum::AFFECTIONLESS) || $pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE)) &&
             !CravingService::petHasCraving($pet) &&
             $pet->getFullnessPercent() >= 0.5 &&
             $pet->getSafety() >= 8
@@ -67,12 +67,8 @@ class CravingService
 
             if($craving === null)
             {
-                $foodGroup = $pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE)
-                    ? $this->em->getRepository(ItemGroup::class)->findOneBy([ 'name' => 'Bloody' ])
-                    : $this->getRandomCravingItemGroup();
-
                 $craving = (new PetCraving())
-                    ->setFoodGroup($foodGroup)
+                    ->setFoodGroup($this->getRandomCravingItemGroup($pet))
                     ->setCreatedOn(new \DateTimeImmutable())
                 ;
                 $this->em->persist($craving);
@@ -81,7 +77,7 @@ class CravingService
             else if($craving->getSatisfiedOn() && $craving->getSatisfiedOn() <= $fiveDaysAgo)
             {
                 $craving
-                    ->setFoodGroup($this->getRandomCravingItemGroup())
+                    ->setFoodGroup($this->getRandomCravingItemGroup($pet))
                     ->setCreatedOn(new \DateTimeImmutable())
                     ->setSatisfiedOn(null)
                 ;
@@ -89,8 +85,11 @@ class CravingService
         }
     }
 
-    private function getRandomCravingItemGroup(): ItemGroup
+    private function getRandomCravingItemGroup(Pet $pet): ItemGroup
     {
+        if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
+            return $this->em->getRepository(ItemGroup::class)->findOneBy([ 'name' => 'Bloody' ]);
+
         $cravingGroups = $this->em->getRepository(ItemGroup::class)->findBy([ 'isCraving' => 1 ]);
 
         return $this->rng->rngNextFromArray($cravingGroups);
