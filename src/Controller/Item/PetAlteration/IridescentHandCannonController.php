@@ -7,6 +7,7 @@ use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\MeritEnum;
+use App\Enum\StatusEffectEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
@@ -49,6 +50,9 @@ class IridescentHandCannonController extends AbstractController
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
+
+        if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
+            throw new PSPInvalidOperationException('It seems ' . $pet->getName() . '\'s vampire bite is preventing this from working!');
 
         if($pet->getTool())
         {

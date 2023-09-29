@@ -462,7 +462,7 @@ class PetActivityService
         if($this->dreamingAndDaydreamingService->maybeDreamOrDaydream($petWithSkills))
             return;
 
-        if($this->maybeReceiveFairyGodmotherItem($pet))
+        if($this->maybeReceiveFairyGodmotherVisit($pet))
             return;
 
         if($this->maybeReceiveAthenasGift($pet))
@@ -1115,10 +1115,33 @@ class PetActivityService
         return false;
     }
 
-    private function maybeReceiveFairyGodmotherItem(Pet $pet): bool
+    private function maybeReceiveFairyGodmotherVisit(Pet $pet): bool
     {
         if(!$pet->hasMerit(MeritEnum::FAIRY_GODMOTHER))
             return false;
+
+        if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE) && $this->squirrel3->rngNextInt(1, 20) === 1)
+        {
+            $changes = new PetChanges($pet);
+
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' was thinking about what to do, when their Fairy Godmother showed up! "Let\'s do something about that nasty Vampire bite!" she said, and with a flick of her wand, ' . ActivityHelpers::PetName($pet) . '\'s vampire bite was healed! "Much better! <small>Nasty creatures, those!</small> You take care, now!"')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+            ;
+
+            $pet
+                ->increaseSafety(12)
+                ->increaseLove(12)
+                ->increaseEsteem(12)
+            ;
+
+            $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE));
+
+            $this->petExperienceService->spendTime($pet, 15, PetActivityStatEnum::OTHER, null);
+
+            $activityLog->setChanges($changes->compare($pet));
+
+            return true;
+        }
 
         if($this->squirrel3->rngNextInt(1, 650) !== 1)
             return false;

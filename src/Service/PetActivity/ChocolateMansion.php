@@ -212,7 +212,23 @@ class ChocolateMansion
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl(false)->getTotal());
         $extraInterestingness = 0;
 
-        if($pet->getTool() && $pet->getTool()->isGrayscaling())
+        if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
+        {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, true);
+            $expAmount = 1;
+            $expStats = [ PetSkillEnum::STEALTH ];
+
+            $item = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
+                'Blood Wine', 'Chocolate Wine',
+            ]));
+
+            $loot[] = $item;
+            $tags[] = 'Stealth';
+
+            $description .= 'Fortunately, %pet:' . $pet->getId() . '.name%\'s vampire bite tricked the vampire into thinking they were the same sort of creatures! After apologizing, the vampire offered %pet:' . $pet->getId() . '.name% ' . $item->getNameWithArticle() . '. They accepted, and left as quickly as seemed polite.';
+            $extraInterestingness = PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY;
+        }
+        else if($pet->getTool() && $pet->getTool()->isGrayscaling())
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, true);
             $expAmount = 1;
