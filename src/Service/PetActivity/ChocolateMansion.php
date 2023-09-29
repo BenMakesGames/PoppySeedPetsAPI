@@ -19,6 +19,7 @@ use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\PetQuestRepository;
 use App\Repository\UserQuestRepository;
+use App\Service\Clock;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -40,11 +41,12 @@ class ChocolateMansion
     private EntityManagerInterface $em;
     private IRandom $rng;
     private FieldGuideService $fieldGuideService;
+    private Clock $clock;
 
     public function __construct(
         UserQuestRepository $userQuestRepository, IRandom $squirrel3, InventoryService $inventoryService,
         PetExperienceService $petExperienceService, PetQuestRepository $petQuestRepository, EntityManagerInterface $em,
-        FieldGuideService $fieldGuideService
+        FieldGuideService $fieldGuideService, Clock $clock
     )
     {
         $this->userQuestRepository = $userQuestRepository;
@@ -54,6 +56,7 @@ class ChocolateMansion
         $this->petQuestRepository = $petQuestRepository;
         $this->em = $em;
         $this->fieldGuideService = $fieldGuideService;
+        $this->clock = $clock;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -282,7 +285,7 @@ class ChocolateMansion
                 $description .= '%pet:' . $pet->getId() . '.name% fought valiantly, and the vampire was forced to flee! Afterwards, %pet:' . $pet->getId() . '.name% explored the cellar, and got a glass of Blood Wine, and Chocolate Wine.';
             }
         }
-        else if($roll < 2)
+        else if($roll < 2 && $this->clock->getMonthAndDay() >= 1000 && $this->clock->getMonthAndDay() < 1200)
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
             $expAmount = 2;

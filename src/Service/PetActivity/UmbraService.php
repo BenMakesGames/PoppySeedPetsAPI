@@ -906,7 +906,7 @@ class UmbraService
 
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
             }
-            else if($brawlCheck < 2)
+            else if($brawlCheck < 2 && $this->clock->getMonthAndDay() >= 1000 && $this->clock->getMonthAndDay() < 1200)
             {
                 $pet
                     ->increaseEsteem(-3)
