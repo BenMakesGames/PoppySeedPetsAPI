@@ -41,15 +41,15 @@ class IceCreamDaydream
         $pet = $petWithSkills->getPet();
         $changes = new PetChanges($pet);
 
-        switch($this->rng->rngNextInt(1, 5))
-        {
-            case 1: $log = $this->doCityOfFrozenIceCream($petWithSkills); break;
-            case 2: $log = $this->doMintChocolateSurfing($petWithSkills); break;
-            case 3: $log = $this->doShapeIceCreamLandscapes($petWithSkills); break;
-            case 4: $log = $this->doFlavorfulStalactites($petWithSkills); break;
-            case 5: $log = $this->doGelatoFortuneTeller($petWithSkills); break;
-            default: throw new \Exception("Unknown Ice Cream Day Dream adventure! (Ben screwed up!)");
-        }
+        $adventures = [
+            [ $this, 'doCityOfFrozenIceCream' ],
+            [ $this, 'doMintChocolateSurfing' ],
+            [ $this, 'doShapeIceCreamLandscapes' ],
+            [ $this, 'doFlavorfulStalactites' ],
+            [ $this, 'doGelatoFortuneTeller' ],
+        ];
+
+        $log = $this->rng->rngNextFromArray($adventures)($petWithSkills);
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 

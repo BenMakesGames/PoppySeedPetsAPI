@@ -104,12 +104,12 @@ class FatedAdventureService
                 'Candied Lotus Petals', 'Chocolate-covered Honeycomb', 'Cup of Life', 'Dandelion Wine',
                 'Everlasting Syllabub', 'Fruits & Veggies Box', 'Goodberries', 'Ginger Beer', 'Ginger Beer', 'Mochi',
                 'Pavé aux Noix', 'Qabrêk Splàdj', 'Regular-sized Pumpkin', 'Thicc Mints', 'Scroll of Fruit',
-            ], 6);
+            ], 8);
 
             sort($loot);
 
             foreach($loot as $item)
-                $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' found this in mysterious puzzle room beneath the town, and in so doing fulfilled their delicious fate.', $log);
+                $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' found this in a mysterious puzzle room beneath the town, and in so doing fulfilled their delicious fate.', $log);
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::OTHER, null);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $log);

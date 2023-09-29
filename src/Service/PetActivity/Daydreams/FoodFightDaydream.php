@@ -41,14 +41,14 @@ class FoodFightDaydream
         $pet = $petWithSkills->getPet();
         $changes = new PetChanges($pet);
 
-        switch($this->rng->rngNextInt(1, 4))
-        {
-            case 1: $log = $this->doChocolateDragon($petWithSkills); break;
-            case 2: $log = $this->doCombatOnPowderedSugarBeach($petWithSkills); break;
-            case 3: $log = $this->doPuddingBeastsInCustardCanyon($petWithSkills); break;
-            case 4: $log = $this->doVegetableWarriors($petWithSkills); break;
-            default: throw new \Exception("Unknown Pizza Day Dream adventure! (Ben screwed up!)");
-        }
+        $adventures = [
+            [ $this, 'doChocolateDragon' ],
+            [ $this, 'doCombatOnPowderedSugarBeach' ],
+            [ $this, 'doPuddingBeastsInCustardCanyon' ],
+            [ $this, 'doVegetableWarriors' ],
+        ];
+
+        $log = $this->rng->rngNextFromArray($adventures)($petWithSkills);
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 

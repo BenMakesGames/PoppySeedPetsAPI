@@ -48,14 +48,14 @@ class PizzaDaydream
         $pet = $petWithSkills->getPet();
         $changes = new PetChanges($pet);
 
-        switch($this->rng->rngNextInt(1, 4))
-        {
-            case 1: $log = $this->doPizzaDelivery($petWithSkills); break;
-            case 2: $log = $this->doExplorePizzaPlanet($petWithSkills); break;
-            case 3: $log = $this->doMozzarellaCloud($petWithSkills); break;
-            case 4: $log = $this->doBubblegumSauce($petWithSkills); break;
-            default: throw new \Exception("Unknown Pizza Day Dream adventure! (Ben screwed up!)");
-        }
+        $adventures = [
+            [ $this, 'doPizzaDelivery' ],
+            [ $this, 'doExplorePizzaPlanet' ],
+            [ $this, 'doMozzarellaCloud' ],
+            [ $this, 'doBubblegumSauce' ],
+        ];
+
+        $log = $this->rng->rngNextFromArray($adventures)($petWithSkills);
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
