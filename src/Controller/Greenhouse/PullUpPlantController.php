@@ -46,6 +46,14 @@ class PullUpPlantController extends AbstractController
 
             $inventoryService->receiveItem('Magic Beans', $user, $user, 'Received by pulling up a Magic Beanstalk, apparently. Magically.', LocationEnum::HOME);
         }
+        else if($plant->getPlant()->getName() === 'Midnight Arch')
+        {
+            $flashMessage = 'Pulling up the arch is surprisingly easy, but perhaps more surprising, you find yourself a Mysterious Seed, instead of a stalk!';
+            $logMessage .= ' ' . $flashMessage;
+            $responseService->addFlashMessage($flashMessage);
+
+            $inventoryService->receiveItem('Mysterious Seed', $user, $user, 'Received by pulling up a Midnight Arch, apparently. Magically.', LocationEnum::HOME);
+        }
         else if($plant->getPlant()->getName() === 'Goat' && $plant->getIsAdult())
         {
             $flashMessage = 'The goat, startled, runs into the jungle, shedding a bit of Fluff in the process.';

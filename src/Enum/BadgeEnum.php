@@ -72,6 +72,8 @@ final class BadgeEnum
     public const DEFEATED_SUMMONED_MONSTER_10 = 'DefeatedSummonedMonster10';
     public const DEFEATED_SUMMONED_MONSTER_100 = 'DefeatedSummonedMonster100';
 
+    public const DEFEATED_NOETALAS_WING = 'DefeatedNoetalasWing';
+
     public const ASCENDED_TOWER_OF_TRIALS_1 = 'TowerOfTrials1';
     public const ASCENDED_TOWER_OF_TRIALS_10 = 'TowerOfTrials10';
     public const ASCENDED_TOWER_OF_TRIALS_100 = 'TowerOfTrials100';

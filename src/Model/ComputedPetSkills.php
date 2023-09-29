@@ -38,6 +38,7 @@ class ComputedPetSkills
 
         $skill->statusEffects =
             ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 1 : 0) +
+            ($this->pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE) ? 1 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::VIVACIOUS) ? 1 : 0)
         ;
 
@@ -59,6 +60,7 @@ class ComputedPetSkills
 
         $skill->statusEffects =
             ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 1 : 0) +
+            ($this->pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE) ? 1 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::VIVACIOUS) ? 1 : 0)
         ;
 
@@ -136,6 +138,7 @@ class ComputedPetSkills
         $skill->base = $this->pet->getSkills()->getNature();
         $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->natureBonus() : 0;
         $skill->statusEffects =
+            ($this->pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE) ? -3 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::HEX_HEXED) ? 6 - $this->pet->getSkills()->getNature() : 0) +
             ($this->pet->getSkills()->getNature() < 10 && $this->pet->hasStatusEffect(StatusEffectEnum::FOCUSED_NATURE) ? 3 : 0)
         ;
@@ -154,6 +157,7 @@ class ComputedPetSkills
         $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->brawlBonus($allowRanged) : 0;
         $skill->statusEffects =
             ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 3 : 0) +
+            ($this->pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE) ? 2 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::RAWR) ? 1 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::HEX_HEXED) ? 6 - $this->pet->getSkills()->getBrawl() : 0) +
             ($skill->base < 10 && $this->pet->hasStatusEffect(StatusEffectEnum::FOCUSED_BRAWL) ? 3 : 0)
@@ -181,6 +185,7 @@ class ComputedPetSkills
         ;
 
         $skill->statusEffects =
+            ($this->pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE) ? 2 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::HEX_HEXED) ? 6 - $this->pet->getSkills()->getStealth() : 0) +
             ($this->pet->getSkills()->getStealth() < 10 && $this->pet->hasStatusEffect(StatusEffectEnum::FOCUSED_STEALTH) ? 3 : 0)
         ;
@@ -220,7 +225,6 @@ class ComputedPetSkills
         $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->arcanaBonus() : 0;
         $skill->merits = ($this->pet->hasMerit(MeritEnum::LUMINARY_ESSENCE) ? 1 : 0);
         $skill->statusEffects =
-            ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 3 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::HEX_HEXED) ? 6 - $this->pet->getSkills()->getArcana() : 0) +
             ceil($this->pet->getPsychedelic() * 5 / $this->pet->getMaxPsychedelic()) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::OUT_OF_THIS_WORLD) ? 1 : 0) +
@@ -324,6 +328,10 @@ class ComputedPetSkills
     public function getExploreUmbraBonus(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
+
+        $skill->statusEffects =
+            ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 3 : 0)
+        ;
 
         return $skill;
     }

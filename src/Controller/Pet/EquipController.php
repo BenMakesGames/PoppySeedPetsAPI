@@ -47,7 +47,7 @@ class EquipController extends AbstractController
             throw new PSPInvalidOperationException('Pets that aren\'t home cannot be interacted with.');
 
         if(
-            $pet->hasStatusEffect(StatusEffectEnum::WEREFORM) &&
+            ($pet->hasStatusEffect(StatusEffectEnum::WEREFORM)) &&
             $inventory->getItem()->getTreasure() &&
             $inventory->getItem()->getTreasure()->getSilver() > 0
         )

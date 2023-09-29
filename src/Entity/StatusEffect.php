@@ -107,6 +107,7 @@ class StatusEffect
             StatusEffectEnum::BUBBLEGUMD,
             StatusEffectEnum::OIL_COVERED,
 
+            StatusEffectEnum::BITTEN_BY_A_VAMPIRE,
             StatusEffectEnum::BITTEN_BY_A_WERECREATURE,
             StatusEffectEnum::WEREFORM,
 

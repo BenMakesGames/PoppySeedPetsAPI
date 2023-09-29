@@ -40,9 +40,10 @@ class WerebaneController extends AbstractController
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
 
-        if(!$pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_WERECREATURE))
-            throw new PSPInvalidOperationException('But it tastes, like, REALLY gross, and ' . $pet->getName() . ' hasn\'t been bitten by a werecreature, anyway, so... not worth!');
+        if(!$pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_WERECREATURE) && !$pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
+            throw new PSPInvalidOperationException('But it tastes, like, REALLY gross, and ' . $pet->getName() . ' hasn\'t been bitten by anything supernatural, anyway, so... not worth!');
 
+        $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE));
         $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::BITTEN_BY_A_WERECREATURE));
 
         if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))

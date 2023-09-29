@@ -5,6 +5,7 @@ final class StatusEffectEnum
 {
     use Enum;
 
+    public const BITTEN_BY_A_VAMPIRE = 'Bitten (by a Vampire)';
     public const BITTEN_BY_A_WERECREATURE = 'Bitten (by a Werecreature)';
     public const CAFFEINATED = 'Caffeinated';
     public const TIRED = 'Tired';

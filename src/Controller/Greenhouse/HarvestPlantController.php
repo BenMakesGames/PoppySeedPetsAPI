@@ -27,6 +27,7 @@ use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetActivity\GreenhouseAdventureService;
+use App\Service\PetActivity\NoetalaAdventureService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -49,7 +50,8 @@ class HarvestPlantController extends AbstractController
         InventoryService $inventoryService, UserStatsRepository $userStatsRepository, PetRepository $petRepository,
         UserQuestRepository $userQuestRepository, GreenhouseAdventureService $greenhouseAdventureService,
         GreenhouseService $greenhouseService, IRandom $squirrel3, FieldGuideService $fieldGuideService,
-        HattierService $hattierService, TransactionService $transactionService
+        HattierService $hattierService, TransactionService $transactionService,
+        NoetalaAdventureService $noetalaAdventureService
     ): JsonResponse
     {
         /** @var User $user */
@@ -85,6 +87,17 @@ class HarvestPlantController extends AbstractController
 
                     return $responseService->success();
                 }
+            }
+            else if($plant->getPlant()->getName() === 'Midnight Arch')
+            {
+                if($noetalaAdventureService->fightNoetalasWing($user))
+                {
+                    $em->remove($plant);
+                }
+
+                $em->flush();
+
+                return $responseService->success();
             }
 
             throw new PSPInvalidOperationException($plant->getPlant()->getName() . ' cannot be harvested!');

@@ -11,7 +11,7 @@ final class StatusEffectHelpers
 {
     public static function applyStatusEffect(EntityManagerInterface $em, Pet $pet, string $status, int $durationInMinutes)
     {
-        if(($status == StatusEffectEnum::BITTEN_BY_A_WERECREATURE || $status == StatusEffectEnum::WEREFORM) && $pet->hasMerit(MeritEnum::SILVERBLOOD))
+        if($pet->hasMerit(MeritEnum::SILVERBLOOD) && ($status == StatusEffectEnum::BITTEN_BY_A_WERECREATURE || $status == StatusEffectEnum::WEREFORM || $status == StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
             return;
 
         $maxDuration = StatusEffectHelpers::getStatusEffectMaxDuration($status);

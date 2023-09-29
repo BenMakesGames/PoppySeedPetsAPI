@@ -181,7 +181,7 @@ class HouseMonsterService
                 $result .= "\n\n" . ArrayFunctions::list_nice($unprotectedPetNames) . ' ' . (count($unprotectedPetNames) === 1 ? 'was' : 'were') . ' unprotected from the ' . $monster->name . '\'s flames, and got singed!';
             else if($monster->element === SummoningScrollMonsterElementEnum::ELECTRICITY)
                 $result .= "\n\n" . ArrayFunctions::list_nice($unprotectedPetNames) . ' ' . (count($unprotectedPetNames) === 1 ? 'was' : 'were') . ' unprotected from the ' . $monster->name . '\'s sparks, and got zapped!';
-            else if($monster->element === SummoningScrollMonsterElementEnum::ELECTRICITY)
+            else if($monster->element === SummoningScrollMonsterElementEnum::DARKNESS)
                 $result .= "\n\n" . ArrayFunctions::list_nice($unprotectedPetNames) . ' ' . (count($unprotectedPetNames) === 1 ? 'was' : 'were') . ' consumed by ' . $monster->name . '\'s darkness, and became terrified!';
 
             foreach($unprotectedPets as $pet)
