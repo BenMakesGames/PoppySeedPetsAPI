@@ -17,7 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class CravingService
 {
     private EntityManagerInterface $em;
-    private IRandom $squirrel3;
+    private IRandom $rng;
     private PetExperienceService $petExperienceService;
 
     public function __construct(
@@ -25,7 +25,7 @@ class CravingService
     )
     {
         $this->em = $em;
-        $this->squirrel3 = $squirrel3;
+        $this->rng = $squirrel3;
         $this->petExperienceService = $petExperienceService;
     }
 
@@ -67,8 +67,12 @@ class CravingService
 
             if($craving === null)
             {
+                $foodGroup = $pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE)
+                    ? $this->em->getRepository(ItemGroup::class)->findOneBy([ 'name' => 'Bloody' ])
+                    : $this->getRandomCravingItemGroup();
+
                 $craving = (new PetCraving())
-                    ->setFoodGroup($this->getRandomCravingItemGroup())
+                    ->setFoodGroup($foodGroup)
                     ->setCreatedOn(new \DateTimeImmutable())
                 ;
                 $this->em->persist($craving);
@@ -89,7 +93,7 @@ class CravingService
     {
         $cravingGroups = $this->em->getRepository(ItemGroup::class)->findBy([ 'isCraving' => 1 ]);
 
-        return $this->squirrel3->rngNextFromArray($cravingGroups);
+        return $this->rng->rngNextFromArray($cravingGroups);
     }
 
     public static function foodMeetsCraving(Pet $pet, Item $food): bool
@@ -112,7 +116,7 @@ class CravingService
 
         $this->petExperienceService->gainAffection($pet, 2);
 
-        $statusEffect = $this->squirrel3->rngNextFromArray([
+        $statusEffect = $this->rng->rngNextFromArray([
             StatusEffectEnum::INSPIRED,
             StatusEffectEnum::ONEIRIC,
             StatusEffectEnum::VIVACIOUS,
