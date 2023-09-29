@@ -21,11 +21,11 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class MeritRepository extends ServiceEntityRepository
 {
-    private IRandom $squirrel3;
+    private IRandom $rng;
 
-    public function __construct(ManagerRegistry $registry, IRandom $squirrel3)
+    public function __construct(ManagerRegistry $registry, IRandom $rng)
     {
-        $this->squirrel3 = $squirrel3;
+        $this->rng = $rng;
 
         parent::__construct($registry, Merit::class);
     }
@@ -49,12 +49,12 @@ class MeritRepository extends ServiceEntityRepository
 
     public function getRandomStartingMerit(): Merit
     {
-        return MeritRepository::findOneByName($this->getEntityManager(), $this->squirrel3->rngNextFromArray(MeritInfo::POSSIBLE_STARTING_MERITS));
+        return MeritRepository::findOneByName($this->getEntityManager(), $this->rng->rngNextFromArray(MeritInfo::POSSIBLE_STARTING_MERITS));
     }
 
     public function getRandomFirstPetStartingMerit(): Merit
     {
-        return MeritRepository::findOneByName($this->getEntityManager(), $this->squirrel3->rngNextFromArray(MeritInfo::POSSIBLE_FIRST_PET_STARTING_MERITS));
+        return MeritRepository::findOneByName($this->getEntityManager(), $this->rng->rngNextFromArray(MeritInfo::POSSIBLE_FIRST_PET_STARTING_MERITS));
     }
 
     public function getRandomAdoptedPetStartingMerit(): Merit
@@ -63,6 +63,6 @@ class MeritRepository extends ServiceEntityRepository
             return $m !== MeritEnum::HYPERCHROMATIC && $m !== MeritEnum::SPECTRAL;
         });
 
-        return MeritRepository::findOneByName($this->getEntityManager(), $this->squirrel3->rngNextFromArray($possibleMerits));
+        return MeritRepository::findOneByName($this->getEntityManager(), $this->rng->rngNextFromArray($possibleMerits));
     }
 }

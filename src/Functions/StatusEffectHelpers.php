@@ -91,11 +91,20 @@ final class StatusEffectHelpers
             else
                 PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% turned into a Werecreature!');
         }
-        else if(mb_substr($status, 0, 8) === 'Focused ')
+        else if(StringFunctions::startsWith($status, 'Focused ('))
         {
+            // the "Focused" family of status effects are mutually exclusive
             $statusEffectsToRemove = array_merge(
                 $statusEffectsToRemove,
-                array_filter($pet->getStatusEffects()->toArray(), fn(StatusEffect $se) => mb_substr($se->getStatus(), 0, 8) === 'Focused ' && $se->getStatus() !== $status)
+                array_filter($pet->getStatusEffects()->toArray(), fn(StatusEffect $se) => StringFunctions::startsWith($se->getStatus(), 'Focused (') && $se->getStatus() !== $status)
+            );
+        }
+        else if(StringFunctions::startsWith($status, 'Fated ('))
+        {
+            // the "Fated" family of status effects are mutually exclusive
+            $statusEffectsToRemove = array_merge(
+                $statusEffectsToRemove,
+                array_filter($pet->getStatusEffects()->toArray(), fn(StatusEffect $se) => StringFunctions::startsWith($se->getStatus(), 'Fated (') && $se->getStatus() !== $status)
             );
         }
 

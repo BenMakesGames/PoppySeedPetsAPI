@@ -6,9 +6,11 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
@@ -39,12 +41,13 @@ class IceCreamDaydream
         $pet = $petWithSkills->getPet();
         $changes = new PetChanges($pet);
 
-        switch($this->rng->rngNextInt(1, 4))
+        switch($this->rng->rngNextInt(1, 5))
         {
             case 1: $log = $this->doCityOfFrozenIceCream($petWithSkills); break;
             case 2: $log = $this->doMintChocolateSurfing($petWithSkills); break;
             case 3: $log = $this->doShapeIceCreamLandscapes($petWithSkills); break;
             case 4: $log = $this->doFlavorfulStalactites($petWithSkills); break;
+            case 5: $log = $this->doGelatoFortuneTeller($petWithSkills); break;
             default: throw new \Exception("Unknown Ice Cream Day Dream adventure! (Ben screwed up!)");
         }
 
@@ -157,6 +160,31 @@ class IceCreamDaydream
             ActivityHelpers::PetName($pet) . ' daydreamed they discovered crystal caverns where the stalactites dripped flavors unknown to the modern world. They bottled some up before snapping back to reality...');
 
         $this->inventoryService->petCollectsItem('Mystery Syrup', $pet, $pet->getName() . ' found this in a daydream.', $log);
+
+        return $log;
+    }
+
+    private function doGelatoFortuneTeller(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $possibleFates = [
+            StatusEffectEnum::FATED_DELICIOUSNESS => 'unavoidable deliciousness',
+            StatusEffectEnum::FATED_SOAKEDLY => 'a watery grave',
+            StatusEffectEnum::FATED_LUNARLY => 'the lunar surface',
+        ];
+
+        $fate = $this->rng->rngNextFromArray(array_keys($possibleFates));
+
+        $log = PetActivityLogFactory::createUnreadLog(
+            $this->em,
+            $petWithSkills->getPet(),
+            ActivityHelpers::PetName($pet) . ' daydreamed they met an enchanted ice cream vendor who could foresee the future in swirls of gelato. "I see ' . $possibleFates[$fate] . ' in your future," they said in a raspy voice before ' . ActivityHelpers::PetName($pet) . ' snapped back to reality.'
+        );
+
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $log);
+
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, $fate, 1);
 
         return $log;
     }

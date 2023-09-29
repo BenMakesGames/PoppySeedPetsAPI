@@ -3,13 +3,16 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\StatusEffect;
 use App\Enum\BirdBathBirdEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\UserUnlockedFeatureHelpers;
@@ -37,41 +40,43 @@ class GenericAdventureService
     private PetExperienceService $petExperienceService;
     private UserQuestRepository $userQuestRepository;
     private TransactionService $transactionService;
-    private IRandom $squirrel3;
+    private IRandom $rng;
     private HattierService $hattierService;
     private UserBirthdayService $userBirthdayService;
     private DragonRepository $dragonRepository;
     private DragonHostageService $dragonHostageService;
     private EntityManagerInterface $em;
     private FieldGuideService $fieldGuideService;
+    private FatedAdventureService $fatedAdventureService;
 
     public function __construct(
         InventoryService $inventoryService,
         PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
-        TransactionService $transactionService, IRandom $squirrel3, HattierService $hattierService,
+        TransactionService $transactionService, IRandom $rng, HattierService $hattierService,
         UserBirthdayService $userBirthdayService, DragonRepository $dragonRepository,
-        DragonHostageService $dragonHostageService, EntityManagerInterface $em,
-        FieldGuideService $fieldGuideService
+        DragonHostageService $dragonHostageService, EntityManagerInterface $em, FieldGuideService $fieldGuideService,
+        FatedAdventureService $fatedAdventureService
     )
     {
         $this->inventoryService = $inventoryService;
         $this->userQuestRepository = $userQuestRepository;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
-        $this->squirrel3 = $squirrel3;
+        $this->rng = $rng;
         $this->hattierService = $hattierService;
         $this->userBirthdayService = $userBirthdayService;
         $this->dragonRepository = $dragonRepository;
         $this->dragonHostageService = $dragonHostageService;
         $this->em = $em;
         $this->fieldGuideService = $fieldGuideService;
+        $this->fatedAdventureService = $fatedAdventureService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
 
         if($pet->getHat() && $pet->getHat()->getItem()->getName() === 'Red')
         {
@@ -85,7 +90,7 @@ class GenericAdventureService
         if($pet->getIsGrandparent() && !$pet->getClaimedGrandparentMerit())
         {
             /** @var string $newMerit */
-            $newMerit = $this->squirrel3->rngNextFromArray([
+            $newMerit = $this->rng->rngNextFromArray([
                 MeritEnum::NEVER_EMBARRASSED, MeritEnum::EVERLASTING_LOVE, MeritEnum::NOTHING_TO_FEAR
             ]);
 
@@ -114,13 +119,12 @@ class GenericAdventureService
         if($birthdayEvent)
             return $birthdayEvent;
 
-        $level = $pet->getLevel();
-        $changes = new PetChanges($pet);
-
         $rescuedAFairy = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Rescued a House Fairy from a Raccoon', null);
         if(!$rescuedAFairy->getValue())
         {
             $rescuedAFairy->setValue((new \DateTimeImmutable())->format('Y-m-d H:i:s'));
+
+            $changes = new PetChanges($pet);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a raccoon carrying a House Fairy in its mouth. The raccoon stared at %pet:' . $pet->getId() . '.name% for a moment, then dropped the House Fairy and scurried away.')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
@@ -161,9 +165,9 @@ class GenericAdventureService
             }
         }
 
-        if($pet->getOwner()->getGreenhouse() && $pet->getOwner()->getGreenhouse()->getHasBirdBath() && !$pet->getOwner()->getGreenhouse()->getVisitingBird() && $this->squirrel3->rngNextInt(1, 20) === 1)
+        if($pet->getOwner()->getGreenhouse() && $pet->getOwner()->getGreenhouse()->getHasBirdBath() && !$pet->getOwner()->getGreenhouse()->getVisitingBird() && $this->rng->rngNextInt(1, 20) === 1)
         {
-            $bird = BirdBathBirdEnum::getRandomValue($this->squirrel3);
+            $bird = BirdBathBirdEnum::getRandomValue($this->rng);
 
             $pet->getOwner()->getGreenhouse()->setVisitingBird($bird);
 
@@ -173,7 +177,7 @@ class GenericAdventureService
             ;
         }
 
-        if($pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::DragonDen) && $this->squirrel3->rngNextInt(1, 20) === 1)
+        if($pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::DragonDen) && $this->rng->rngNextInt(1, 20) === 1)
         {
             $dragon = $this->dragonRepository->findAdult($pet->getOwner());
 
@@ -187,7 +191,22 @@ class GenericAdventureService
             }
         }
 
-        if($level >= 10 && $this->squirrel3->rngNextInt(1, 130) === 1)
+        $activityLog = $this->fatedAdventureService->maybeResolveFate($petWithSkills);
+
+        if($activityLog)
+            return $activityLog;
+
+        return $this->doGenericAdventure($petWithSkills);
+    }
+
+    private function doGenericAdventure(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $level = $pet->getLevel();
+
+        $changes = new PetChanges($pet);
+
+        if($level >= 10 && $this->rng->rngNextInt(1, 130) === 1)
             $reward = [ 'a ', 'Secret Seashell' ];
         else
         {
@@ -223,7 +242,7 @@ class GenericAdventureService
                 if($pet->hasMerit(MeritEnum::BEHATTED))
                     $possibleRewards[] = [ 'a ', 'Tinfoil Hat' ];
                 else
-                    $possibleRewards[] = [ $this->squirrel3->rngNextInt(4, 8), 'moneys' ];
+                    $possibleRewards[] = [ $this->rng->rngNextInt(4, 8), 'moneys' ];
             }
 
             if($level >= 25)
@@ -236,13 +255,13 @@ class GenericAdventureService
             {
                 $possibleRewards[] = [ 'a chunk of ', 'Dark Matter' ];
 
-                if($this->squirrel3->rngNextInt(1, 20) === 1)
+                if($this->rng->rngNextInt(1, 20) === 1)
                     $possibleRewards[] = [ 'a ', 'Species Transmigration Serum' ];
                 else
-                    $possibleRewards[] = [ $this->squirrel3->rngNextInt(8, 12), 'moneys' ];
+                    $possibleRewards[] = [ $this->rng->rngNextInt(8, 12), 'moneys' ];
             }
 
-            $reward = $this->squirrel3->rngNextFromArray($possibleRewards);
+            $reward = $this->rng->rngNextFromArray($possibleRewards);
         }
 
         if($reward[1] === 'moneys')
@@ -250,7 +269,8 @@ class GenericAdventureService
         else
             $describeReward = $reward[0] . $reward[1];
 
-        $event = $this->squirrel3->rngNextInt(1, 4);
+        $event = $this->rng->rngNextInt(1, 4);
+
         if($event === 1)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they spotted a bunch of ants carrying ' . $describeReward . '! %pet:' . $pet->getId() . '.name% took the ' . $reward[1] . ', brushed the ants off, and returned home.')
@@ -291,7 +311,7 @@ class GenericAdventureService
         {
             if($reward[1] === 'Fishkebab')
             {
-                $spice = SpiceRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray([
+                $spice = SpiceRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
                     'Spicy', 'with Ketchup', 'Cheesy', 'Fishy', 'Ducky', 'Onion\'d',
                 ]));
             }

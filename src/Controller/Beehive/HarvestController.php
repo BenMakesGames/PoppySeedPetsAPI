@@ -33,8 +33,7 @@ class HarvestController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function harvest(
-        ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, IRandom $squirrel3
+        ResponseService $responseService, EntityManagerInterface $em, InventoryService $inventoryService, IRandom $rng
     )
     {
         /** @var User $user */
@@ -72,7 +71,7 @@ class HarvestController extends AbstractController
                 'Crooked Stick', 'Fluff', 'Yellow Dye', 'Glue', 'Sugar', 'Sugar', 'Sugar', 'Antenna',
             ];
 
-            $item = $squirrel3->rngNextFromArray($possibleItems);
+            $item = $rng->rngNextFromArray($possibleItems);
 
             $newItems = [
                 $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' took this from their Beehive.', LocationEnum::HOME)
@@ -89,14 +88,14 @@ class HarvestController extends AbstractController
                 {
                     $gathering = $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal();
 
-                    $extraItem1 = PetAssistantService::getExtraItem($squirrel3, $gathering,
+                    $extraItem1 = PetAssistantService::getExtraItem($rng, $gathering,
                         [ 'Tea Leaves', 'Blueberries', 'Blackberries', 'Grandparoot', 'Orange', 'Red' ],
                         [ 'Onion', 'Paper', 'Naner', 'Iron Ore' ],
                         [ 'Gypsum', 'Mixed Nuts', 'Apricot', 'Silver Ore', ],
                         [ 'Gold Ore', 'Liquid-hot Magma' ]
                     );
 
-                    $extraItem2 = PetAssistantService::getExtraItem($squirrel3, $gathering,
+                    $extraItem2 = PetAssistantService::getExtraItem($rng, $gathering,
                         [ 'Agrimony', 'Blueberries', 'Blackberries', 'Orange', 'Red' ],
                         [ 'Onion', 'Tomato', 'Naner', 'Sunflower' ],
                         [ 'Mint', 'Mixed Nuts', 'Apricot', 'Melowatern', ],
@@ -116,13 +115,13 @@ class HarvestController extends AbstractController
                     $total = $gathering + $hunting;
 
                     if($total < 2)
-                        $doGatherAction = $squirrel3->rngNextBool();
+                        $doGatherAction = $rng->rngNextBool();
                     else
-                        $doGatherAction = $squirrel3->rngNextInt(1, $total) <= $gathering;
+                        $doGatherAction = $rng->rngNextInt(1, $total) <= $gathering;
 
                     if($doGatherAction)
                     {
-                        $extraItem = PetAssistantService::getExtraItem($squirrel3, $gathering,
+                        $extraItem = PetAssistantService::getExtraItem($rng, $gathering,
                             [ 'Tea Leaves', 'Blueberries', 'Blackberries', 'Grandparoot', 'Orange', 'Red' ],
                             [ 'Onion', 'Paper', 'Naner', 'Iron Ore' ],
                             [ 'Gypsum', 'Mixed Nuts', 'Apricot', 'Silver Ore', ],
@@ -133,7 +132,7 @@ class HarvestController extends AbstractController
                     }
                     else
                     {
-                        $extraItem = PetAssistantService::getExtraItem($squirrel3, $hunting,
+                        $extraItem = PetAssistantService::getExtraItem($rng, $hunting,
                             [ 'Scales', 'Feathers', 'Egg' ],
                             [ 'Toadstool', 'Talon', 'Onion' ],
                             [ 'Toad Legs', 'Jar of Fireflies' ],
@@ -159,7 +158,7 @@ class HarvestController extends AbstractController
             {
                 if($newItem->getItem()->getName() === 'Crooked Stick' || $newItem->getItem()->getFood())
                 {
-                    if($squirrel3->rngNextInt(1, 20) === 1)
+                    if($rng->rngNextInt(1, 20) === 1)
                         $newItem->setSpice(SpiceRepository::findOneByName($em, 'of Queens'));
                     else
                         $newItem->setSpice(SpiceRepository::findOneByName($em, 'Anthophilan'));

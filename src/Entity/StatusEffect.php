@@ -123,6 +123,12 @@ class StatusEffect
             StatusEffectEnum::DAYDREAM_PIZZA,
             StatusEffectEnum::DAYDREAM_FOOD_FIGHT,
 
+            StatusEffectEnum::FATED_DELICIOUSNESS,
+            StatusEffectEnum::FATED_SOAKEDLY,
+            StatusEffectEnum::FATED_ELECTRICALLY,
+            StatusEffectEnum::FATED_FERALLY,
+            StatusEffectEnum::FATED_LUNARLY,
+
             StatusEffectEnum::LAPINE_WHISPERS,
             StatusEffectEnum::ONEIRIC,
             StatusEffectEnum::GOBBLE_GOBBLE,

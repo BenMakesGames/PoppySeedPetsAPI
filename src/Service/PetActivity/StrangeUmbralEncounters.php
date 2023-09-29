@@ -6,9 +6,11 @@ use App\Entity\PetActivityLog;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Repository\EnchantmentRepository;
 use App\Repository\SpiceRepository;
@@ -111,6 +113,14 @@ class StrangeUmbralEncounters
     // Agares is a spirit-duke. now you know.
     private function encounterAgares(Pet $pet): PetActivityLog
     {
+        $fate = $this->squirrel3->rngNextFromArray([
+            StatusEffectEnum::FATED_DELICIOUSNESS,
+            StatusEffectEnum::FATED_SOAKEDLY,
+            StatusEffectEnum::FATED_ELECTRICALLY,
+            StatusEffectEnum::FATED_FERALLY,
+            StatusEffectEnum::FATED_LUNARLY,
+        ]);
+
         if($pet->getTool() && !$pet->getTool()->getEnchantment())
         {
             $enchantment = EnchantmentRepository::findOneByName($this->em, 'of Agares');
@@ -120,18 +130,20 @@ class StrangeUmbralEncounters
                 ->addComment('This item was enchanted by an old man riding an alligator and holding a goshawk!')
             ;
 
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring some ruins in the Umbra, ' . '%pet:' . $pet->getId() . '.name% was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language %pet:' . $pet->getId() . '.name% didn\'t know. %pet:' . $pet->getId() . '.name%\'s ' . $pet->getTool()->getItem()->getName() . ' began to glow, and the old man left...')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring some ruins in the Umbra, ' . '%pet:' . $pet->getId() . '.name% was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language %pet:' . $pet->getId() . '.name% didn\'t know, but it was clearly a prediction of the future. %pet:' . $pet->getId() . '.name%\'s ' . $pet->getTool()->getItem()->getName() . ' began to glow, and the old man left...')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
             ;
         }
         else
         {
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring some ruins in the Umbra, ' . '%pet:' . $pet->getId() . '.name% was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language %pet:' . $pet->getId() . '.name% didn\'t know. Frustrated, the old man left.')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring some ruins in the Umbra, ' . '%pet:' . $pet->getId() . '.name% was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language %pet:' . $pet->getId() . '.name% didn\'t know, but it was clearly a prediction of the future.')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
             ;
         }
+
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, $fate, 1);
 
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
