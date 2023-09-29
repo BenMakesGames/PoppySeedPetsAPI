@@ -17,6 +17,7 @@ use App\Functions\GrammarFunctions;
 use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Model\WeatherData;
@@ -905,11 +906,26 @@ class UmbraService
 
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
             }
+            else if($brawlCheck < 2)
+            {
+                $pet
+                    ->increaseEsteem(-3)
+                    ->increaseSafety(-6)
+                ;
+
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle. While exploring it, a vampire attacked them! ' . $pet->getName() . ', caught completely by surprise, was forced to flee, but not before getting bitten... (Uh oh!)')
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Fighting' ]))
+                ;
+
+                StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BITTEN_BY_A_VAMPIRE, 1);
+
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
+            }
             else
             {
                 $pet
-                    ->increaseEsteem(-2)
-                    ->increaseSafety(-2)
+                    ->increaseEsteem(-3)
+                    ->increaseSafety(-3)
                 ;
 
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle. While exploring it, a vampire attacked them! ' . $pet->getName() . ', caught completely by surprise, was forced to flee...')

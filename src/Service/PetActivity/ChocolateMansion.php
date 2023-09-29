@@ -13,6 +13,7 @@ use App\Enum\StatusEffectEnum;
 use App\Functions\AdventureMath;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
@@ -281,11 +282,27 @@ class ChocolateMansion
                 $description .= '%pet:' . $pet->getId() . '.name% fought valiantly, and the vampire was forced to flee! Afterwards, %pet:' . $pet->getId() . '.name% explored the cellar, and got a glass of Blood Wine, and Chocolate Wine.';
             }
         }
+        else if($roll < 2)
+        {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
+            $expAmount = 2;
+            $expStats = [ PetSkillEnum::BRAWL ];
+
+            $pet->increaseSafety(-6);
+
+            $description .= '%pet:' . $pet->getId() . '.name% was overwhelmed by the attack, and forced to flee... but not before getting bitten! (Uh oh!)';
+
+            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BITTEN_BY_A_VAMPIRE, 1);
+
+            $tags[] = 'Fighting';
+        }
         else
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
             $expAmount = 2;
             $expStats = [ PetSkillEnum::BRAWL ];
+
+            $pet->increaseSafety(-3);
 
             $description .= '%pet:' . $pet->getId() . '.name% was overwhelmed by the attack, and forced to flee!';
 
