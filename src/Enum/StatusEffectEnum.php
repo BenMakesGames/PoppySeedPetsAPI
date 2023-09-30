@@ -53,4 +53,5 @@ final class StatusEffectEnum
     public const DAYDREAM_ICE_CREAM = 'Daydreaming (Ice Cream)';
     public const DAYDREAM_PIZZA = 'Daydreaming (Pizza)';
     public const DAYDREAM_FOOD_FIGHT = 'Daydreaming (Food Fight)';
+    public const DAYDREAM_NOODLES = 'Daydreaming (Noodles)';
 }
