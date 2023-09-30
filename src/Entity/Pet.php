@@ -390,6 +390,12 @@ class Pet
      */
     private $lunchboxIndex;
 
+    /**
+     * @ORM\Column(type="smallint")
+     * @Groups({"myPet"})
+     */
+    private $wereform;
+
     public function __construct()
     {
         $squirrel3 = new Squirrel3();
@@ -402,6 +408,7 @@ class Pet
         $this->statusEffects = new ArrayCollection();
         $this->extroverted = $squirrel3->rngNextInt(-1, 1);
         $this->bonusMaximumFriends = $squirrel3->rngNextInt(-2, 2);
+        $this->wereform = $squirrel3->rngNextInt(0, 5);
 
         if($squirrel3->rngNextInt(1, 5) > 1)
             $this->sexDrive = 1; // 80% sexual
@@ -1882,6 +1889,18 @@ class Pet
     public function setLunchboxIndex(int $lunchboxIndex): self
     {
         $this->lunchboxIndex = $lunchboxIndex;
+
+        return $this;
+    }
+
+    public function getWereform(): ?int
+    {
+        return $this->wereform;
+    }
+
+    public function setWereform(int $wereform): self
+    {
+        $this->wereform = $wereform;
 
         return $this;
     }
