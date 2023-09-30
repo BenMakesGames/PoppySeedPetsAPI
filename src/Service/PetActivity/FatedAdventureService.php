@@ -14,6 +14,7 @@ use App\Functions\PetActivityLogFactory;
 use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Repository\EnchantmentRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -140,18 +141,38 @@ class FatedAdventureService
 
             $pet->increaseEsteem(12);
 
+            $curiousEnchantment = EnchantmentRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
+                'Bright',
+                'Cursed',
+                'Burnt',
+                'Piercing',
+                'Captain\'s',
+                'Triangulating',
+                'Frumious',
+                'Magnetic',
+                'of Tides',
+                'Fearsome',
+            ]));
+
             $loot = $this->rng->rngNextSubsetFromArray([
                 'Gold Chest', 'Gold Ring', 'Gold Key', 'Tile: Gold Vein', 'Silver Bar', 'Shiny Pail', 'Blackonite',
                 'Black Flag', 'Gold Dragon Ingot', 'Compass', 'Magic Hourglass', 'Gypsum Dragon', 'Magic Mirror',
                 'Kumis', 'Minor Scroll of Riches', 'Scroll of Resources', 'Scroll of the Sea',
-            ], 5);
+            ], 6);
 
             $loot[] = 'Gold Bar';
+            $loot[] = 'Curious Cutlass';
 
             sort($loot);
 
             foreach($loot as $item)
-                $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' found this in safe in a sunken ship, and in so doing fulfilled their watery fate.', $log);
+            {
+                $enchantment = $item === 'Curious Cutlass'
+                    ? $curiousEnchantment
+                    : null;
+
+                $this->inventoryService->petCollectsEnhancedItem($item, $enchantment, null, $pet, $pet->getName() . ' found this in safe in a sunken ship, and in so doing fulfilled their watery fate.', $log);
+            }
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::OTHER, null);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $log);

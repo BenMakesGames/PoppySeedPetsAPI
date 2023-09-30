@@ -264,9 +264,69 @@ class ItemTool
         return $this->smithing;
     }
 
-    public function getScience(): ?int
+    public function getScience(): int
     {
         return $this->science;
+    }
+
+    public function setStealth(int $stealth): self
+    {
+        $this->stealth = $stealth;
+        return $this;
+    }
+
+    public function setNature(int $nature): self
+    {
+        $this->nature = $nature;
+        return $this;
+    }
+
+    public function setBrawl(int $brawl): self
+    {
+        $this->brawl = $brawl;
+        return $this;
+    }
+
+    public function setArcana(int $arcana): self
+    {
+        $this->arcana = $arcana;
+        return $this;
+    }
+
+    public function setCrafts(int $crafts): self
+    {
+        $this->crafts = $crafts;
+        return $this;
+    }
+
+    public function setFishing(int $fishing): self
+    {
+        $this->fishing = $fishing;
+        return $this;
+    }
+
+    public function setGathering(int $gathering): self
+    {
+        $this->gathering = $gathering;
+        return $this;
+    }
+
+    public function setMusic(int $music): self
+    {
+        $this->music = $music;
+        return $this;
+    }
+
+    public function setSmithing(int $smithing): self
+    {
+        $this->smithing = $smithing;
+        return $this;
+    }
+
+    public function setScience(int $science): self
+    {
+        $this->science = $science;
+        return $this;
     }
 
     public function getGripX(): float
