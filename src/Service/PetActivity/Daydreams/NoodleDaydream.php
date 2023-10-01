@@ -53,7 +53,7 @@ class NoodleDaydream
 
         $log
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Dream' ]))
-            ->setIcon('icons/status-effect/daydream-noodle')
+            ->setIcon('icons/status-effect/daydream-noodles')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ->setChanges($changes->compare($pet));
 
