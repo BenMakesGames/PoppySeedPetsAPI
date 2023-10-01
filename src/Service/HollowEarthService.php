@@ -365,7 +365,7 @@ class HollowEarthService
 
             $currentCard = $this->getEffectiveTileCard($player, $player->getCurrentTile());
 
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $description)
+            $activityLog = PetActivityLogFactory::createReadLog($this->em, $pet, $description)
                 ->setIcon(($currentCard && $currentCard->getImage()) ? ('hollow-earth/tile/' . $currentCard->getImage()) : '')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Hollow Earth' ]))
             ;
