@@ -54,7 +54,7 @@ class DirtyLumpController extends AbstractController
             $rng->rngNextFromArray([ 'Tile: Hidden Alcove', 'Tile: Run-down Orchard' ]),
             'Tower Chest',
             'Major Scroll of Riches',
-            'Scroll of Resources',
+            'Sand-covered... Something',
             'Monster Box',
             'Lunchbox Paint',
             $rng->rngNextFromArray([ 'Flowerbomb', 'Giant Turkey Leg' ]),
