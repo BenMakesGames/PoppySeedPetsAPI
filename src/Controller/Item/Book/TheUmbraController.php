@@ -66,7 +66,7 @@ Other good offerings include:
 * Flowers; Rice Flower in particular
 * Talons & Wings (be careful with this one!)
 
-Paper is not the only medium to which summoning magic can be bound, of course. There are stories of seeds stained magenta during the winter months, and dark mirrors forged from meteorites. Keep your eyes and mind open, and you will discover many methods of summoning.  
+Paper is not the only medium to which summoning magic can be bound, of course. There are stories of seeds stained magenta during harvest season, and dark mirrors forged from meteorites. Keep your eyes and mind open, and you will discover many methods of summoning.  
 
 ### Food & Drink
 
