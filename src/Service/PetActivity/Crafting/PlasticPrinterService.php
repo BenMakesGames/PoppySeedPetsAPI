@@ -25,26 +25,21 @@ class PlasticPrinterService
     private InventoryService $inventoryService;
     private ResponseService $responseService;
     private PetExperienceService $petExperienceService;
-    private ItemRepository $itemRepository;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
     private EntityManagerInterface $em;
-    private Clock $clock;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        ItemRepository $itemRepository, Clock $clock, IRandom $squirrel3, HouseSimService $houseSimService,
-        EntityManagerInterface $em
+        IRandom $squirrel3, HouseSimService $houseSimService, EntityManagerInterface $em
     )
     {
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
-        $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
         $this->em = $em;
-        $this->clock = $clock;
     }
 
     /**
@@ -174,7 +169,7 @@ class PlasticPrinterService
 
             if($getExtraStuff)
             {
-                $extraLoot = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
+                $extraLoot = ItemRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray([
                     'Fluff', 'Feathers', 'Dark Matter', 'Aging Powder', 'Baking Powder', 'Spider', 'Moon Dust',
                 ]));
 
@@ -294,85 +289,48 @@ class PlasticPrinterService
     {
         $pet = $petWithSkills->getPet();
 
-        $allPlasticItems = [
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
+
+        if($roll < 10)
+            return $this->printerActingUp($pet);
+
+        $itemToCraft = ItemRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray([
             'Small Plastic Bucket',
             'Plastic Shovel',
             'Egg Carton',
             'Ruler',
             'Plastic Boomerang',
-        ];
+        ]));
 
-        $beingHalloweeny = false;
+        $this->houseSimService->getState()->loseItem('Plastic', 1);
 
-        if(CalendarFunctions::isHalloweenCrafting($this->clock->now))
+        $pet->increaseEsteem(2);
+
+        if($roll >= 30 && $pet->hasMerit(MeritEnum::BEHATTED))
         {
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
-            {
-                $item = $this->itemRepository->deprecatedFindOneByName('Small Plastic Bucket');
-                $beingHalloweeny = true;
-            }
-            else
-            {
-                $allPlasticItemsExceptBucket = array_filter($allPlasticItems, function($item) {
-                    return $item !== 'Small Plastic Bucket';
-                });
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created ' . $itemToCraft->getNameWithArticle() . '... and a pair of Googly Eyes with bits of leftover Plastic!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 30)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ '3D Printing' ]))
+            ;
 
-                $item = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray($allPlasticItemsExceptBucket));
-            }
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
+
+            $this->inventoryService->petCollectsItem('Googly Eyes', $pet, $pet->getName() . ' created this from Plastic.', $activityLog);
         }
         else
         {
-            $item = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray($allPlasticItems));
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created ' . $itemToCraft->getNameWithArticle() . '.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ '3D Printing' ]))
+            ;
         }
 
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
+        $this->inventoryService->petCollectsItem($itemToCraft, $pet, $pet->getName() . ' created this from Plastic.', $activityLog);
 
-        if($roll >= 10)
-        {
-            $this->houseSimService->getState()->loseItem('Plastic', 1);
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ], $activityLog);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PLASTIC_PRINT, true);
 
-            $pet->increaseEsteem(2);
-
-            if($beingHalloweeny)
-            {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wants to make a Halloween-themed bucket, and created ' . $item->getNameWithArticle() . ' as a base.', '')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ '3D Printing', 'Special Event', 'Halloween' ]))
-                ;
-            }
-            else
-            {
-                if($roll >= 30 && $pet->hasMerit(MeritEnum::BEHATTED))
-                {
-                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created ' . $item->getNameWithArticle() . '... and a pair of Googly Eyes with bits of leftover Plastic!', '')
-                        ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 30)
-                        ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ '3D Printing' ]))
-                    ;
-
-                    $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
-
-                    $this->inventoryService->petCollectsItem('Googly Eyes', $pet, $pet->getName() . ' created this from Plastic.', $activityLog);
-                }
-                else
-                {
-                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created ' . $item->getNameWithArticle() . '.', '')
-                        ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
-                        ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ '3D Printing' ]))
-                    ;
-                }
-            }
-
-            $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from Plastic.', $activityLog);
-
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PLASTIC_PRINT, true);
-
-            return $activityLog;
-        }
-        else
-        {
-            return $this->printerActingUp($pet);
-        }
+        return $activityLog;
     }
 
     public function createPlasticIdol(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -380,27 +338,23 @@ class PlasticPrinterService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getScience()->getTotal(), $petWithSkills->getCrafts()->getTotal()));
 
-        if($roll >= 13)
-        {
-            $this->houseSimService->getState()->loseItem('Plastic', 1);
-
-            $pet->increaseEsteem(2);
-
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Plastic Idol.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ '3D Printing' ]))
-            ;
-            $this->inventoryService->petCollectsItem('Plastic Idol', $pet, $pet->getName() . ' created this from Plastic.', $activityLog);
-
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PLASTIC_PRINT, true);
-
-            return $activityLog;
-        }
-        else
-        {
+        if($roll < 13)
             return $this->printerActingUp($pet);
-        }
+
+        $this->houseSimService->getState()->loseItem('Plastic', 1);
+
+        $pet->increaseEsteem(2);
+
+        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Plastic Idol.', '')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ '3D Printing' ]))
+        ;
+        $this->inventoryService->petCollectsItem('Plastic Idol', $pet, $pet->getName() . ' created this from Plastic.', $activityLog);
+
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ], $activityLog);
+        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PLASTIC_PRINT, true);
+
+        return $activityLog;
     }
 
     public function createDinoGrabbyArm(ComputedPetSkills $petWithSkills): PetActivityLog

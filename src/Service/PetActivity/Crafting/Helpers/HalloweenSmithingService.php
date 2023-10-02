@@ -49,7 +49,7 @@ class HalloweenSmithingService
             'Upside-down, Yellow Plastic Bucket'
         ];
 
-        $makes = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
+        $makes = ItemRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray([
             'Ecstatic Pumpkin Bucket',
             'Distressed Pumpkin Bucket',
             'Unconvinced Pumpkin Bucket',

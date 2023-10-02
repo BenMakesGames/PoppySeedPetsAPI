@@ -105,7 +105,7 @@ final class CalendarFunctions
     public static function isHalloweenCrafting(\DateTimeInterface $dt)
     {
         $monthAndDay = (int)$dt->format('nd');
-        return $monthAndDay >= 1017 && $monthAndDay <= 1031;
+        return $monthAndDay >= 1000 && $monthAndDay < 1100;
     }
 
     public static function isSaintMartinsDayCrafting(\DateTimeInterface $dt)
