@@ -1,16 +1,14 @@
 <?php
-namespace App\Controller;
+namespace App\Controller\Hattier;
 
 use App\Entity\User;
 use App\Entity\UserUnlockedAura;
-use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\PetRepository;
-use App\Service\HattierService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,25 +20,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/hattier")
  */
-class HattierController extends AbstractController
+class ApplyAuraController extends AbstractController
 {
-    /**
-     * @Route("/unlockedStyles", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function getUnlockedAuras(HattierService $hattierService, ResponseService $responseService)
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        return $responseService->success(
-            [
-                'available' => $hattierService->getAurasAvailable($user),
-            ],
-            [ SerializationGroupEnum::MY_AURAS ]
-        );
-    }
-
     /**
      * @Route("/buy", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")

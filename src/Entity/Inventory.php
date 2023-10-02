@@ -71,7 +71,6 @@ class Inventory
 
     /**
      * @ORM\OneToOne(targetEntity=Pet::class, mappedBy="tool")
-     * @Groups({"myInventory"})
      */
     private $holder;
 
@@ -93,7 +92,6 @@ class Inventory
 
     /**
      * @ORM\OneToOne(targetEntity=Pet::class, mappedBy="hat")
-     * @Groups({"myInventory"})
      */
     private $wearer;
 
@@ -101,7 +99,7 @@ class Inventory
      * @ORM\Column(type="boolean")
      * @Groups({"myInventory"})
      */
-    private $lockedToOwner = false;
+    private bool $lockedToOwner = false;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\LunchboxItem", mappedBy="inventoryItem", cascade={"remove"})
@@ -124,6 +122,12 @@ class Inventory
      * @ORM\Column(type="string", length=100)
      */
     private $fullItemName;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Item::class)
+     * @Groups({"myInventory", "myPet"})
+     */
+    private $illusion;
 
     public function __construct()
     {
@@ -557,5 +561,17 @@ class Inventory
     public function getFullItemName(): ?string
     {
         return $this->fullItemName;
+    }
+
+    public function getIllusion(): ?Item
+    {
+        return $this->illusion;
+    }
+
+    public function setIllusion(?Item $illusion): self
+    {
+        $this->illusion = $illusion;
+
+        return $this;
     }
 }
