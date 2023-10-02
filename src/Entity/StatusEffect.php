@@ -122,6 +122,7 @@ class StatusEffect
             StatusEffectEnum::DAYDREAM_ICE_CREAM,
             StatusEffectEnum::DAYDREAM_PIZZA,
             StatusEffectEnum::DAYDREAM_FOOD_FIGHT,
+            StatusEffectEnum::DAYDREAM_NOODLES,
 
             StatusEffectEnum::FATED_DELICIOUSNESS,
             StatusEffectEnum::FATED_SOAKEDLY,
