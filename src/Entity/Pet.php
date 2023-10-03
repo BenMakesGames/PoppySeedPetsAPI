@@ -649,7 +649,7 @@ class Pet
             return '';
         else if($this->hasStatusEffect(StatusEffectEnum::EGGPLANT_CURSED))
             return '673192';
-        else if($this->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE) || ($this->getTool() && $this->getTool()->isGrayscaling()))
+        else if(($this->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE) && !$this->hasMerit(MeritEnum::BLUSH_OF_LIFE)) || ($this->getTool() && $this->getTool()->isGrayscaling()))
             return ColorFunctions::GrayscalifyHex($this->getColorA());
         else if($this->getTool() && $this->getTool()->isGreenifying())
             return ColorFunctions::ChangeHue($this->getColorA(), (25 + $this->id % 14) / 100);
@@ -667,7 +667,7 @@ class Pet
             return '';
         else if($this->hasStatusEffect(StatusEffectEnum::EGGPLANT_CURSED))
             return '8b48c1';
-        else if($this->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE) || ($this->getTool() && $this->getTool()->isGrayscaling()))
+        else if(($this->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE) && !$this->hasMerit(MeritEnum::BLUSH_OF_LIFE)) || ($this->getTool() && $this->getTool()->isGrayscaling()))
             return ColorFunctions::GrayscalifyHex($this->getColorB());
         else if($this->getTool() && $this->getTool()->isGreenifying())
             return ColorFunctions::ChangeHue($this->getColorB(), (25 + $this->id % 14) / 100);

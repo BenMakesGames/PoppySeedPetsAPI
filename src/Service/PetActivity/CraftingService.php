@@ -9,6 +9,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\CalendarFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
@@ -404,7 +405,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Stereotypical Bone', 1);
             $pet->increaseEsteem(2);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Stereotypical Torch.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Stereotypical Torch.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
@@ -415,7 +416,8 @@ class CraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Stereotypical Torch, but couldn\'t figure it out.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a Stereotypical Torch, but couldn\'t figure it out.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
@@ -436,7 +438,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Tea Leaves', 1);
             $this->houseSimService->getState()->loseItem('Trowel', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Tea Trowel.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Tea Trowel.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Tea Trowel', $pet, $pet->getName() . ' made this.', $activityLog);
@@ -446,7 +448,8 @@ class CraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Tea Trowel... or was it a Tea _Towel?_ It\'s all very confusing.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a Tea Trowel... or was it a Tea _Towel?_ It\'s all very confusing.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
@@ -468,7 +471,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Feathers', 1);
             $this->houseSimService->getState()->loseItem('Yellow Dye', 1);
             $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created an Owl Trowel.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created an Owl Trowel.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Owl Trowel', $pet, $pet->getName() . ' made this.', $activityLog);
@@ -478,7 +481,8 @@ class CraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make an Owl Trowel, but couldn\'t figure it out.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make an Owl Trowel, but couldn\'t figure it out.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
@@ -502,7 +506,7 @@ class CraftingService
         {
             $this->houseSimService->getState()->loseItem('Fiberglass', 1);
             $pet->increaseSafety(-4);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a ' . $item . ', but accidentally cut themselves on the Fiberglass! :(', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a ' . $item . ', but accidentally cut themselves on the Fiberglass! :(')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
@@ -515,7 +519,7 @@ class CraftingService
 
             $pet->increaseEsteem(2);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a ' . $item . ' from Fiberglass.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made a ' . $item . ' from Fiberglass.')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
@@ -526,7 +530,8 @@ class CraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a ' . $item . ', but the Fiberglass wasn\'t cooperating.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a ' . $item . ', but the Fiberglass wasn\'t cooperating.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
@@ -546,7 +551,7 @@ class CraftingService
         {
             $this->houseSimService->getState()->loseItem('White Cloth', 1);
             $pet->increaseEsteem(-2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried decorate a Flute, but while trying to make ribbons, accidentally tore the White Cloth to shreds...', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried decorate a Flute, but while trying to make ribbons, accidentally tore the White Cloth to shreds...')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
@@ -559,7 +564,8 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Flute', 1);
             $this->houseSimService->getState()->loseItem('Glass Pendulum', 1);
             $pet->increaseEsteem(3);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Decorated Flute.', 'items/tool/instrument/flute-decorated')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Decorated Flute.')
+                ->setIcon('items/tool/instrument/flute-decorated')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
@@ -570,7 +576,8 @@ class CraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% thought it might be cool to decorate a Flute, but couldn\'t think of something stylish enough.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% thought it might be cool to decorate a Flute, but couldn\'t think of something stylish enough.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
@@ -590,7 +597,7 @@ class CraftingService
         {
             $this->houseSimService->getState()->loseItem('Smallish Pumpkin', 1);
             $pet->increaseFood(6);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Drumpkin, but broke the Smallish Pumpkin :( Not wanting to waste it, %pet:' . $pet->getId() . '.name% ate the remains...)', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a Drumpkin, but broke the Smallish Pumpkin :( Not wanting to waste it, %pet:' . $pet->getId() . '.name% ate the remains...)')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting', 'Smithing', 'Eating' ]))
             ;
 
@@ -603,7 +610,8 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Smallish Pumpkin', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(3);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Drumpkin!', 'items/tool/instrument/drumpkin')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Drumpkin!')
+                ->setIcon('items/tool/instrument/drumpkin')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting', 'Smithing' ]))
             ;
@@ -614,7 +622,8 @@ class CraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Drumpkin, but couldn\'t get the Plastic thin enough...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a Drumpkin, but couldn\'t get the Plastic thin enough...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting', 'Smithing' ]))
             ;
 
@@ -634,7 +643,7 @@ class CraftingService
         {
             $this->houseSimService->getState()->loseItem('Potato', 1);
             $pet->increaseFood(4);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make Paper, but messed up the Potato :( (Not wanting to waste it, %pet:' . $pet->getId() . '.name% ate the remains...)', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make Paper, but messed up the Potato :( (Not wanting to waste it, %pet:' . $pet->getId() . '.name% ate the remains...)')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting', 'Eating' ]))
             ;
 
@@ -651,7 +660,8 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Rice Flour', 1);
             $this->houseSimService->getState()->loseItem('Potato', 1);
             $pet->increaseEsteem($paperCount * 2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created ' . $paperCount . ' Paper!', 'items/resource/paper')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created ' . $paperCount . ' Paper!')
+                ->setIcon('items/resource/paper')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 5 + $paperCount * 5)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
@@ -664,7 +674,8 @@ class CraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make Paper, but almost wasted the Rice Flour...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make Paper, but almost wasted the Rice Flour...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
@@ -685,7 +696,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Feathers', 1);
             $this->houseSimService->getState()->loseItem('Hunting Spear', 1);
             $pet->increaseEsteem(1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Decorated Spear.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Decorated Spear.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Decorated Spear', $pet, $pet->getName() . ' decorated a Hunting Spear with Feathers to make this.', $activityLog);
@@ -695,7 +706,8 @@ class CraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to decorate a Hunting Spear with Feathers, but couldn\'t get the look just right.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to decorate a Hunting Spear with Feathers, but couldn\'t get the look just right.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
@@ -716,7 +728,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Leaf Spear', 1);
             $this->houseSimService->getState()->loseItem('White Feathers', 1);
             $pet->increaseEsteem(4);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Fishing Recorder.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Fishing Recorder.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
@@ -730,7 +742,8 @@ class CraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make a Fishing Recorder, but couldn\'t figure out where all the holes should go...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% wanted to make a Fishing Recorder, but couldn\'t figure out where all the holes should go...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
@@ -761,7 +774,8 @@ class CraftingService
                 $and = 'it looks pretty bad-ass!';
             }
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Double Scythe; ' . $and, 'items/tool/scythe/double')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Double Scythe; ' . $and)
+                ->setIcon('items/tool/scythe/double')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
@@ -774,7 +788,8 @@ class CraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% thought it might be cool to make a Double Scythe, but then doubted themself...', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% thought it might be cool to make a Double Scythe, but then doubted themself...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
@@ -795,7 +810,8 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Fish Bones', 1);
             $this->houseSimService->getState()->loseItem('Garden Shovel', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Fish Head Shovel!', 'items/tool/shovel/fish-head')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Fish Head Shovel!')
+                ->setIcon('items/tool/shovel/fish-head')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
@@ -809,13 +825,15 @@ class CraftingService
         {
             if($this->squirrel3->rngNextInt(1, 10) === 1)
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make a Fish Head Shovel, but couldn\'t figure out how to arrange the bones #relatable', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% wanted to make a Fish Head Shovel, but couldn\'t figure out how to arrange the bones #relatable')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
                 ;
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make a Fish Head Shovel, but couldn\'t figure out how to arrange the bones...', 'icons/activity-logs/confused')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% wanted to make a Fish Head Shovel, but couldn\'t figure out how to arrange the bones...')
+                    ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
                 ;
             }
@@ -837,7 +855,8 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Scythe', 1);
             $this->houseSimService->getState()->loseItem('Garden Shovel', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Farmer\'s Multi-tool!', 'items/tool/shovel/multi-tool')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Farmer\'s Multi-tool!')
+                ->setIcon('items/tool/shovel/multi-tool')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
@@ -850,7 +869,8 @@ class CraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to combine a Scythe and a Garden Shovel, but couldn\'t decide which of the two tools to start with?', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% wanted to combine a Scythe and a Garden Shovel, but couldn\'t decide which of the two tools to start with?')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
@@ -882,7 +902,8 @@ class CraftingService
             {
                 $pet->increaseEsteem(3);
 
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% spun some ' . $spunWhat . ' into TWO ' . $making->getName() . '!', 'items/' . $making->getImage())
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% spun some ' . $spunWhat . ' into TWO ' . $making->getName() . '!')
+                    ->setIcon('items/' . $making->getImage())
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $difficulty + 12)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
                 ;
@@ -896,7 +917,8 @@ class CraftingService
             {
                 $pet->increaseEsteem(1);
 
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% spun some ' . $spunWhat . ' into ' . $making->getName() . '.', 'items/' . $making->getImage())
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% spun some ' . $spunWhat . ' into ' . $making->getName() . '.')
+                    ->setIcon('items/' . $making->getImage())
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $difficulty)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
                 ;
@@ -909,7 +931,8 @@ class CraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to spin some ' . $making->getName() . ', but couldn\'t figure it out.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to spin some ' . $making->getName() . ', but couldn\'t figure it out.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
@@ -947,7 +970,7 @@ class CraftingService
             $pet->increaseFood($this->squirrel3->rngNextInt(2, 4));
             $pet->increaseEsteem(-2);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started making ' . $making->getNameWithArticle() . ', but ended up eating the Chocolate Bar, instead >_>', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started making ' . $making->getNameWithArticle() . ', but ended up eating the Chocolate Bar, instead >_>')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting', 'Eating' ]))
             ;
 
@@ -965,7 +988,8 @@ class CraftingService
             {
                 $pet->increaseEsteem(4);
 
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% molded a Chocolate Bar into TWO ' . $making->getName() . 's!', 'items/' . $making->getImage())
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% molded a Chocolate Bar into TWO ' . $making->getName() . 's!')
+                    ->setIcon('items/' . $making->getImage())
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
                 ;
@@ -976,7 +1000,8 @@ class CraftingService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% molded a Chocolate Bar into ' . $making->getNameWithArticle() . '.', 'items/' . $making->getImage())
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% molded a Chocolate Bar into ' . $making->getNameWithArticle() . '.')
+                    ->setIcon('items/' . $making->getImage())
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
                 ;
@@ -988,7 +1013,7 @@ class CraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make ' . $making->getNameWithArticle() . ', but couldn\'t get the mold right...', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make ' . $making->getNameWithArticle() . ', but couldn\'t get the mold right...')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
@@ -1013,7 +1038,7 @@ class CraftingService
             if($this->squirrel3->rngNextInt(1, 10) === 1)
                 $message .= ' (Aren\'t the leaves themselves green? Where are all these colors coming from?!)';
 
-            $activityLog = $this->responseService->createActivityLog($pet, $message, '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Black Tea', $pet, $pet->getName() . ' accidentally made this while trying to extract Yellow Dye from Tea Leaves.', $activityLog);
@@ -1026,7 +1051,8 @@ class CraftingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('Tea Leaves', 1);
             $pet->increaseEsteem(1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% extracted Yellow Dye from some Tea Leaves.', 'items/resource/dye-yellow')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% extracted Yellow Dye from some Tea Leaves.')
+                ->setIcon('items/resource/dye-yellow')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Yellow Dye', $pet, $pet->getName() . ' extracted this from Tea Leaves.', $activityLog);
@@ -1034,7 +1060,8 @@ class CraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to extract Yellow Dye from some Tea Leaves, but wasn\'t sure how to start.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% wanted to extract Yellow Dye from some Tea Leaves, but wasn\'t sure how to start.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
@@ -1055,7 +1082,8 @@ class CraftingService
         {
             $this->houseSimService->getState()->loseItem('Scales');
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% extracted Green Dye _and_ Glue from some Scales!', 'items/animal/scales')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% extracted Green Dye _and_ Glue from some Scales!')
+                ->setIcon('items/animal/scales')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Green Dye', $pet, $pet->getName() . ' extracted this from Scales.', $activityLog);
@@ -1068,7 +1096,8 @@ class CraftingService
         {
             $this->houseSimService->getState()->loseItem('Scales');
             $pet->increaseEsteem(1);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% extracted ' . $itemName . ' from some Scales.', 'items/animal/scales')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% extracted ' . $itemName . ' from some Scales.')
+                ->setIcon('items/animal/scales')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' extracted this from Scales.', $activityLog);
@@ -1078,7 +1107,8 @@ class CraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to extract ' . $itemName . ' from some Scales, but wasn\'t sure how to start.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% wanted to extract ' . $itemName . ' from some Scales, but wasn\'t sure how to start.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
@@ -1117,14 +1147,14 @@ class CraftingService
                     [ 'item' => 'Fruit Basket', 'goodies' => 'fruit' ],
                 ]);
 
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Fabric Mâché Basket. Once they were done, a fairy appeared out of nowhere, and filled the basket up with ' . $transformation['goodies'] . '!', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Fabric Mâché Basket. Once they were done, a fairy appeared out of nowhere, and filled the basket up with ' . $transformation['goodies'] . '!')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting', 'Fae-kind' ]))
                 ;
                 $this->inventoryService->petCollectsItem($transformation['item'], $pet, $pet->getName() . ' created a Fabric Mâché Basket; once they were done, a fairy appeared and filled it with ' . $transformation['goodies'] . '!', $activityLog);
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a ' . $item . '.', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a ' . $item . '.')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
                 ;
                 $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from White Cloth and Glue.', $activityLog);
@@ -1134,7 +1164,8 @@ class CraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make some Fabric Mâché, but couldn\'t come up with a good pattern.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make some Fabric Mâché, but couldn\'t come up with a good pattern.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
@@ -1159,7 +1190,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Gold Triangle', 3);
             $this->houseSimService->getState()->loseItem('Glue', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Gold Trifecta.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Gold Trifecta.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
             $this->inventoryService->petCollectsItem('Gold Trifecta', $pet, $pet->getName() . ' created by gluing together three Gold Triangles.', $activityLog);
@@ -1171,7 +1202,8 @@ class CraftingService
         }
         else
         {
-            $activityLog =  $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make a Gold Trifecta, but wasn\'t sure how to begin...', 'icons/activity-logs/confused')
+            $activityLog =  PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% wanted to make a Gold Trifecta, but wasn\'t sure how to begin...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
 
