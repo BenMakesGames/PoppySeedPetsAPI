@@ -22,7 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class ApplyIllusionController extends AbstractController
 {
     /**
-     * @Route("/{inventory}/read", methods={"GET"})
+     * @Route("/{inventory}/read", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function buyIllusion(
@@ -35,8 +35,8 @@ class ApplyIllusionController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'scrollOfIllusions');
 
-        $petId = $request->query->getInt('petId');
-        $illusionId = $request->query->getInt('illusionId');
+        $petId = $request->request->getInt('petId');
+        $illusionId = $request->request->getInt('illusionId');
 
         $pet = $em->getRepository(Pet::class)->findOneBy([
             'id' => $petId,

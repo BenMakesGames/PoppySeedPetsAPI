@@ -6,6 +6,8 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
+use App\Exceptions\PSPNotFoundException;
+use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
@@ -21,9 +23,14 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class BuyFromIllusionistController extends AbstractController
 {
     private const INVENTORY = [
-        'Scroll of Illusions' => 200,
-        'Blush of Life' => 200,
-        'On Vampires' => 25,
+        'Scroll of Illusions' => [ 'moneys' => 200, 'recyclingPoints' => 100, 'bloodWine' => 2 ],
+        'Blush of Life' => [ 'moneys' => 200, 'recyclingPoints' => 100, 'bloodWine' => 2 ],
+        'Mysterious Seed' => [ 'moneys' => 150, 'recyclingPoints' => 75, 'bloodWine' => 1 ],
+        'Tile: Giant Bat' => [ 'moneys' => 100, 'recyclingPoints' => 50, 'bloodWine' => 1 ],
+        'Tile: Bats!' => [ 'moneys' => 100, 'recyclingPoints' => 50, 'bloodWine' => 1 ],
+        'Magpie\'s Deal' => [ 'moneys' => 50, 'recyclingPoints' => 25, 'bloodWine' => 1 ],
+        'Quinacridone Magenta Dye' => [ 'moneys' => 50, 'recyclingPoints' => 25, 'bloodWine' => 1 ],
+        'On Vampires' => [ 'moneys' => 25, 'recyclingPoints' => 15, 'bloodWine' => 1 ],
     ];
 
     /**
@@ -39,16 +46,37 @@ class BuyFromIllusionistController extends AbstractController
         $user = $this->getUser();
 
         $item = $request->request->get('item');
+        $payWith = $request->request->get('payWith');
+
+        if($payWith !== 'moneys' && $payWith !== 'recyclingPoints' && $payWith !== 'bloodWine')
+            throw new PSPFormValidationException('You must choose whether to pay with moneys, recycling points, or Blood Wine.');
 
         if(!array_key_exists($item, self::INVENTORY))
             throw new PSPFormValidationException('That item is not for sale.');
 
-        $cost = self::INVENTORY[$item];
+        $cost = self::INVENTORY[$item][$payWith];
 
-        if($user->getMoneys() < $cost)
-            throw new PSPNotEnoughCurrencyException($cost . '~~m~~', $user->getMoneys() . '~~m~~');
+        if($payWith === 'moneys')
+        {
+            if($user->getMoneys() < $cost)
+                throw new PSPNotEnoughCurrencyException($cost . '~~m~~', $user->getMoneys() . '~~m~~');
 
-        $transactionService->spendMoney($user, $cost, 'Bought ' . $item . ' from the Illusionist.');
+            $transactionService->spendMoney($user, $cost, 'Bought ' . $item . ' from the Illusionist.');
+        }
+        else if($payWith === 'recyclingPoints')
+        {
+            if($user->getRecyclePoints() < $cost)
+                throw new PSPNotEnoughCurrencyException($cost . '♺', $user->getRecyclePoints() . '♺');
+        }
+        else if($payWith === 'bloodWine')
+        {
+            $bloodWineId = ItemRepository::getIdByName($em, 'Blood Wine');
+
+            if($inventoryService->loseItem($user, $bloodWineId, [ LocationEnum::HOME, LocationEnum::BASEMENT], $cost) === 0)
+                throw new PSPNotFoundException('You do not have enough Blood Wine.');
+        }
+        else
+            throw new \Exception('This should never happen. Ben made a boo-boo.');
 
         $inventoryService->receiveItem($item, $user, $user, 'Purchased from the Illusionist.', LocationEnum::HOME);
 

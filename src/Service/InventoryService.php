@@ -599,6 +599,9 @@ class InventoryService
             $quantity
         );
 
+        if(count($inventory) < $quantity)
+            return 0;
+
         foreach($inventory as $i)
         {
             if($i->getHolder()) $i->getHolder()->setTool(null);
