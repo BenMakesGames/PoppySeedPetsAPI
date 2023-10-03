@@ -56,6 +56,9 @@ class BuyFromIllusionistController extends AbstractController
 
         $cost = self::INVENTORY[$item][$payWith];
 
+        if($cost < 1)
+            throw new \Exception('Cost should not be less than 1! Ben made a mistake!');
+
         if($payWith === 'moneys')
         {
             if($user->getMoneys() < $cost)
