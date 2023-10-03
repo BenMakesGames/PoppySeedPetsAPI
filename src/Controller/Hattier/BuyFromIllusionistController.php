@@ -70,6 +70,8 @@ class BuyFromIllusionistController extends AbstractController
         {
             if($user->getRecyclePoints() < $cost)
                 throw new PSPNotEnoughCurrencyException($cost . '♺', $user->getRecyclePoints() . '♺');
+
+            $transactionService->spendRecyclingPoints($user, $cost, 'Bought ' . $item . ' from the Illusionist.');
         }
         else if($payWith === 'bloodWine')
         {
