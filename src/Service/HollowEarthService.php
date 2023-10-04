@@ -188,7 +188,7 @@ class HollowEarthService
     public function moveTo(HollowEarthPlayer $player, int $id): void
     {
         if($id == -1)
-            HollowEarthTileRepository::findRandom($this->em, $this->rng);
+            $tile = HollowEarthTileRepository::findRandom($this->em, $this->rng);
         else
             $tile = $this->hollowEarthTileRepository->find($id);
 
