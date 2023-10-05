@@ -203,7 +203,7 @@ class FatedAdventureService
     {
         $pet = $petWithSkills->getPet();
 
-        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' was out gathering in the wods, when they happened to spot a Moon Pearl on the ground. After picking it up, they found themselves surrounded by a cloud of moths! Many of the moths flew off into various parts of the woods, but several landed on ' . ActivityHelpers::PetName($pet) . ', and showed no intention of leaving. They returned home, covered in moths, and sensing they had somehow realized their moon-y fate! (Neat!)');
+        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' was out gathering in the woods, when they happened to spot a Moon Pearl on the ground. After picking it up, they found themselves surrounded by a cloud of moths! Many of the moths flew off into various parts of the woods, but several landed on ' . ActivityHelpers::PetName($pet) . ', and showed no intention of leaving. They returned home covered in moths, and sensing they had somehow realized their moon-y fate! (Neat!)');
 
         $moths = $this->rng->rngNextInt(9, 15);
 
