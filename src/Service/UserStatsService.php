@@ -29,6 +29,14 @@ class UserStatsService
         $cacheKey = self::getCacheKey($user, $statName);
 
         return $this->perRequestCache->get($cacheKey, function() use ($user, $statName) {
+            $stat = $this->em->getRepository(UserStats::class)->findOneBy([
+                'user' => $user,
+                'stat' => $statName
+            ]);
+
+            if($stat)
+                return $stat;
+
             $stat = (new UserStats())
                 ->setUser($user)
                 ->setStat($statName)
