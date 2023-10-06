@@ -244,6 +244,9 @@ class CookingService
         if($alreadyKnownRecipe)
             return false;
 
+        if(!array_key_exists($recipeName, RecipeRepository::RECIPES))
+            throw new \Exception('Cannot learn recipe "' . $recipeName . '" - it doesn\'t exist!');
+
         $knownRecipe = (new KnownRecipes())
             ->setUser($user)
             ->setRecipe($recipeName)
