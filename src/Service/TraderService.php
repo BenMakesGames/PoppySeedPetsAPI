@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Entity\DailyMarketItemAverage;
 use App\Entity\Item;
+use App\Entity\MuseumItem;
 use App\Entity\Trader;
 use App\Entity\TradesUnlocked;
 use App\Entity\User;
@@ -19,7 +20,6 @@ use App\Model\TraderOffer;
 use App\Model\TraderOfferCostOrYield;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
-use App\Repository\MuseumItemRepository;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -91,14 +91,13 @@ class TraderService
     private TransactionService $transactionService;
     private IRandom $rng;
     private InventoryRepository $inventoryRepository;
-    private MuseumItemRepository $museumItemRepository;
     private Clock $clock;
     private EntityManagerInterface $em;
     private CacheHelper $cache;
 
     public function __construct(
         InventoryService $inventoryService, TransactionService $transactionService, IRandom $squirrel3,
-        InventoryRepository $inventoryRepository, MuseumItemRepository $museumItemRepository, Clock $clock,
+        InventoryRepository $inventoryRepository, Clock $clock,
         EntityManagerInterface $em, CacheHelper $cache
     )
     {
@@ -106,7 +105,6 @@ class TraderService
         $this->transactionService = $transactionService;
         $this->rng = $squirrel3;
         $this->inventoryRepository = $inventoryRepository;
-        $this->museumItemRepository = $museumItemRepository;
         $this->clock = $clock;
         $this->em = $em;
         $this->cache = $cache;
@@ -1015,7 +1013,8 @@ class TraderService
 
         $deedForGreenhousePlot = ItemRepository::findOneByName($this->em, 'Deed for Greenhouse Plot');
 
-        if(!$this->museumItemRepository->hasUserDonated($user, $deedForGreenhousePlot))
+        // keep offering them for sale until you've donated one to the museum
+        if($this->em->getRepository(MuseumItem::class)->count([ 'user' => $user, 'item' => $deedForGreenhousePlot ]) == 0)
             return true;
 
         return false;

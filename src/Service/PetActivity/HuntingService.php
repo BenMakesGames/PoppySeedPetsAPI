@@ -1,6 +1,7 @@
 <?php
 namespace App\Service\PetActivity;
 
+use App\Entity\MuseumItem;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
@@ -27,7 +28,6 @@ use App\Functions\UserStatsHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
-use App\Repository\MuseumItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\Clock;
 use App\Service\FieldGuideService;
@@ -43,7 +43,6 @@ class HuntingService
 {
     private ResponseService $responseService;
     private InventoryService $inventoryService;
-    private MuseumItemRepository $museumItemRepository;
     private UserQuestRepository $userQuestRepository;
     private PetExperienceService $petExperienceService;
     private TransactionService $transactionService;
@@ -56,7 +55,7 @@ class HuntingService
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService,
-        MuseumItemRepository $museumItemRepository, UserQuestRepository $userQuestRepository,
+        UserQuestRepository $userQuestRepository,
         PetExperienceService $petExperienceService, TransactionService $transactionService, IRandom $squirrel3,
         Clock $clock, WerecreatureEncounterService $werecreatureEncounterService,
         GatheringDistractionService $gatheringDistractions, EntityManagerInterface $em,
@@ -65,7 +64,6 @@ class HuntingService
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
-        $this->museumItemRepository = $museumItemRepository;
         $this->userQuestRepository = $userQuestRepository;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
@@ -200,11 +198,10 @@ class HuntingService
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace))
             return false;
 
+        $houseFairy = ItemRepository::findOneByName($this->em, 'House Fairy');
+
         // if you haven't donated a fairy, then you can't rescue a second
-        if(!$this->museumItemRepository->hasUserDonated(
-            $user,
-            ItemRepository::findOneByName($this->em, 'House Fairy')
-        ))
+        if($this->em->getRepository(MuseumItem::class)->count([ 'user' => $user, 'item' => $houseFairy ]) == 0)
             return false;
 
         // if you already rescued a second, then you can't rescue a second again :P

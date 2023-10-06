@@ -1,8 +1,8 @@
 <?php
 namespace App\Controller\Account;
 
+use App\Entity\MuseumItem;
 use App\Exceptions\PSPNotFoundException;
-use App\Repository\MuseumItemRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,14 +21,13 @@ class ChangeIconController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function setIcon(
-        Request $request, MuseumItemRepository $museumItemRepository, ResponseService $responseService,
-        EntityManagerInterface $em
+        Request $request, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
         $itemId = $request->request->getInt('item');
 
-        $donated = $museumItemRepository->findOneBy([
+        $donated = $em->getRepository(MuseumItem::class)->findOneBy([
             'user' => $user->getId(),
             'item' => $itemId
         ]);

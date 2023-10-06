@@ -12,7 +12,6 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Functions\UserStatsHelpers;
 use App\Repository\InventoryRepository;
-use App\Repository\MuseumItemRepository;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,7 +32,7 @@ class DonateController extends AbstractController
      */
     public function handle(
         ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository,
-        MuseumItemRepository $museumItemRepository, EntityManagerInterface $em, TransactionService $transactionService
+        EntityManagerInterface $em, TransactionService $transactionService
     ): JsonResponse
     {
         /** @var User $user */
@@ -64,7 +63,7 @@ class DonateController extends AbstractController
                 continue;
             }
 
-            $existingItem = $museumItemRepository->findOneBy([
+            $existingItem = $em->getRepository(MuseumItem::class)->findOneBy([
                 'user' => $user,
                 'item' => $inventory[$i]->getItem()
             ]);

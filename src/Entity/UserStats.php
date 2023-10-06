@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\UserStatsRepository")
+ * @ORM\Entity()
  * @ORM\Table(
  *    uniqueConstraints={
  *        @ORM\UniqueConstraint(name="user_id_stat_idx", columns={"user_id", "stat"})

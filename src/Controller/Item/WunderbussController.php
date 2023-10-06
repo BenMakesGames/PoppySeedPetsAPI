@@ -2,12 +2,12 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\MuseumItem;
 use App\Entity\User;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Repository\ItemRepository;
-use App\Repository\MuseumItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\MuseumService;
 use App\Service\ResponseService;
@@ -46,7 +46,7 @@ class WunderbussController extends AbstractController
      */
     public function search(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        ItemRepository $itemRepository, MuseumItemRepository $museumItemRepository, UserQuestRepository $userQuestRepository,
+        ItemRepository $itemRepository, UserQuestRepository $userQuestRepository,
         MuseumService $museumService
     )
     {
@@ -70,7 +70,7 @@ class WunderbussController extends AbstractController
         if(!$itemToFind)
             throw new PSPNotFoundException('The item you selected could not be found... that\'s really weird. Reload and try again??');
 
-        $donatedItem = $museumItemRepository->findOneBy([
+        $donatedItem = $em->getRepository(MuseumItem::class)->findOneBy([
             'item' => $itemToFind,
             'user' => $user,
         ]);
