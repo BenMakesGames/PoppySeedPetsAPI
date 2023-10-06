@@ -480,6 +480,7 @@ class RecipeRepository
         [ 'name' => 'Pavé aux Noix', 'ingredients' => '12:1,14:1,65:1,511:1', 'makes' => '1246:2' ],
         [ 'name' => 'Pavé Chocolat aux Noix', 'ingredients' => '12:1,14:1,65:1,116:1,511:1', 'makes' => '1247:2' ],
         [ 'name' => 'Pepino Dulce', 'ingredients' => '131:1,1129:1', 'makes' => '1128:1' ],
+        [ 'name' => 'Peruvian Ceviche', 'ingredients' => '7:1,33:1,248:1,1205:1', 'makes' => '1305:2' ],
         [ 'name' => 'Philosopher\'s Stone', 'ingredients' => '1137:1,1138:1,1139:1,1140:1', 'makes' => '1141:1' ],
         [ 'name' => 'Photon (from Hawking Radiation)', 'ingredients' => '10:1,537:1', 'makes' => '957:1' ],
         [ 'name' => 'Pickled Veggie Slices (Carrots)', 'ingredients' => '6:1,146:1', 'makes' => '1078:2' ],
