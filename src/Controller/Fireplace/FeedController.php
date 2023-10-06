@@ -12,8 +12,8 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Functions\PlayerLogHelpers;
 use App\Functions\RequestFunctions;
+use App\Functions\UserStatsHelpers;
 use App\Repository\InventoryRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetAssistantService;
@@ -81,7 +81,7 @@ class FeedController extends AbstractController
 
             PlayerLogHelpers::create($em, $user, $entry, [ 'Fireplace' ]);
 
-            UserStatsRepository::incrementStat($em, $user, UserStatEnum::ITEMS_THROWN_INTO_THE_FIREPLACE, count($fuelUsed));
+            UserStatsHelpers::incrementStat($em, $user, UserStatEnum::ITEMS_THROWN_INTO_THE_FIREPLACE, count($fuelUsed));
         }
 
         if($fireplace->getHelper() && $fireplace->getSoot() >= 18 * 60)

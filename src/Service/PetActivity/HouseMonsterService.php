@@ -9,10 +9,10 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\UserStatsHelpers;
 use App\Model\PetChanges;
 use App\Model\SummoningScrollMonster;
 use App\Model\SummoningScrollMonsterElementEnum;
-use App\Repository\UserStatsRepository;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -189,12 +189,12 @@ class HouseMonsterService
         if($won)
         {
             $message = ArrayFunctions::list_nice($petNames) . ' got this by defeating ' . $monster->nameWithArticle . '.';
-            UserStatsRepository::incrementStat($this->em, $user, 'Won Against Something... Unfriendly');
+            UserStatsHelpers::incrementStat($this->em, $user, 'Won Against Something... Unfriendly');
         }
         else
         {
             $message = ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'was' : 'were') . ' defeated by ' . $monster->nameWithArticle . ', but managed to ' . $grab . ' this during the fight.';
-            UserStatsRepository::incrementStat($this->em, $user, 'Lost Against Something... Unfriendly');
+            UserStatsHelpers::incrementStat($this->em, $user, 'Lost Against Something... Unfriendly');
         }
 
         foreach($loot as $item)

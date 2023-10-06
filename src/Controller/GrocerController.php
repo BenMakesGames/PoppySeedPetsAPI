@@ -7,9 +7,9 @@ use App\Enum\LocationEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
+use App\Functions\UserStatsHelpers;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\GrocerService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -160,7 +160,7 @@ class GrocerController extends AbstractController
             }
         }
 
-        UserStatsRepository::incrementStat($em, $user, 'Items Purchased from Grocer', $totalQuantity);
+        UserStatsHelpers::incrementStat($em, $user, 'Items Purchased from Grocer', $totalQuantity);
 
         if($now->format('Y-m-d') === $grocerItemsDay->getValue())
             $grocerItemsQuantity->setValue($grocerItemsQuantity->getValue() + $totalQuantity);

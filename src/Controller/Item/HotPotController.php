@@ -10,10 +10,10 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\GrammarFunctions;
 use App\Functions\InventoryModifierFunctions;
+use App\Functions\UserStatsHelpers;
 use App\Repository\InventoryRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -66,7 +66,7 @@ class HotPotController extends AbstractController
 
         $usedHotPot->setValue($today);
 
-        $dippingStat = UserStatsRepository::incrementStat($em, $user, UserStatEnum::FOODS_DIPPED_IN_A_HOT_POT);
+        $dippingStat = UserStatsHelpers::incrementStat($em, $user, UserStatEnum::FOODS_DIPPED_IN_A_HOT_POT);
 
         // Hot Pot-only spices
         $possibleSpices = [

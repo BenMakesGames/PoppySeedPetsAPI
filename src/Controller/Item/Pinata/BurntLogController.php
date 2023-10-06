@@ -5,8 +5,8 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
+use App\Functions\UserStatsHelpers;
 use App\Repository\ItemRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -38,7 +38,7 @@ class BurntLogController extends AbstractController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $stat = UserStatsRepository::incrementStat($em, $user, UserStatEnum::BURNT_LOGS_BROKEN);
+        $stat = UserStatsHelpers::incrementStat($em, $user, UserStatEnum::BURNT_LOGS_BROKEN);
 
         $extraItem = ItemRepository::findOneByName($em, $squirrel3->rngNextFromArray([
             'Crooked Stick',

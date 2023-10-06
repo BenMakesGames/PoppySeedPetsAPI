@@ -11,8 +11,8 @@ use App\Enum\UserStatEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\GrammarFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\UserStatsHelpers;
 use App\Repository\PetRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
@@ -43,7 +43,7 @@ class SummoningSomethingFriendlyController extends AbstractController
 
         $em->remove($inventory);
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         $pet = null;
         $gotASentinel = false;

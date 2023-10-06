@@ -12,8 +12,8 @@ use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetRenamingHelpers;
 use App\Functions\ProfanityFilterFunctions;
+use App\Functions\UserStatsHelpers;
 use App\Repository\PetRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -49,7 +49,7 @@ class RenamingController extends AbstractController
 
         PetRenamingHelpers::renamePet($em, $pet, $request->request->get('name', ''));
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 
@@ -83,7 +83,7 @@ class RenamingController extends AbstractController
 
         PetRenamingHelpers::renameSpiritCompanion($em, $pet->getSpiritCompanion(), $request->request->get('name', ''));
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 
@@ -119,7 +119,7 @@ class RenamingController extends AbstractController
         if(\mb_strlen($newName) < 2 || \mb_strlen($newName) > 30)
             throw new PSPFormValidationException('Name must be between 2 and 30 characters long.');
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 

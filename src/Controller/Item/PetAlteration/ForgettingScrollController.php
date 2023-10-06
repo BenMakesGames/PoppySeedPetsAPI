@@ -14,10 +14,10 @@ use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\EquipmentFunctions;
 use App\Functions\MeritFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\UserStatsHelpers;
 use App\Model\MeritInfo;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -103,7 +103,7 @@ class ForgettingScrollController extends AbstractController
                 throw new PSPInvalidOperationException('That merit cannot be unlearned.');
         }
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 
@@ -173,7 +173,7 @@ class ForgettingScrollController extends AbstractController
         if($pet->getSkills()->getStat($skill) < 1)
             throw new PSPInvalidOperationException($pet->getName() . ' does not have any points of ' . $skill . ' to unlearn.');
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 

@@ -9,9 +9,9 @@ use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
+use App\Functions\UserStatsHelpers;
 use App\Model\ItemQuantity;
 use App\Repository\InventoryRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\CookingService;
 use App\Service\Filter\KnownRecipesFilterService;
 use App\Service\InventoryService;
@@ -155,7 +155,7 @@ class CookingBuddyController extends AbstractController
 
         $results = $cookingService->prepareRecipe($user, $inventoryToUse);
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::COOKED_SOMETHING);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::COOKED_SOMETHING);
 
         $em->flush();
 

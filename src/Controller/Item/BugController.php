@@ -12,12 +12,12 @@ use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ColorFunctions;
+use App\Functions\UserStatsHelpers;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetFactory;
@@ -55,7 +55,7 @@ class BugController extends AbstractController
 
         $em->remove($inventory);
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::BUGS_SQUISHED);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::BUGS_SQUISHED);
 
         $em->flush();
 
@@ -77,8 +77,8 @@ class BugController extends AbstractController
 
         $em->remove($inventory);
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::BUGS_PUT_OUTSIDE);
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::ITEMS_RECYCLED);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::BUGS_PUT_OUTSIDE);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::ITEMS_RECYCLED);
 
         $em->flush();
 
@@ -111,7 +111,7 @@ class BugController extends AbstractController
         switch($inventory->getItem()->getName())
         {
             case 'Centipede':
-                UserStatsRepository::incrementStat($em, $user, UserStatEnum::EVOLVED_A_CENTIPEDE);
+                UserStatsHelpers::incrementStat($em, $user, UserStatEnum::EVOLVED_A_CENTIPEDE);
                 $inventory
                     ->changeItem(ItemRepository::findOneByName($em, 'Moth'))
                     ->addComment($user->getName() . ' fed this Centipede, allowing it to grow up into a beautiful... Moth.')
@@ -126,7 +126,7 @@ class BugController extends AbstractController
                 break;
 
             case 'Line of Ants':
-                UserStatsRepository::incrementStat($em, $user, UserStatEnum::FED_A_LINE_OF_ANTS);
+                UserStatsHelpers::incrementStat($em, $user, UserStatEnum::FED_A_LINE_OF_ANTS);
 
                 if($item->getItem()->getName() === 'Ants on a Log')
                 {
@@ -178,7 +178,7 @@ class BugController extends AbstractController
 
         $em->remove($item);
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::BUGS_FED);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::BUGS_FED);
 
         $em->flush();
 

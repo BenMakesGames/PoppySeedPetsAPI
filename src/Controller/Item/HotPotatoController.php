@@ -5,7 +5,7 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
-use App\Repository\UserStatsRepository;
+use App\Functions\UserStatsHelpers;
 use App\Service\HotPotatoService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -76,7 +76,7 @@ class HotPotatoController extends AbstractController
         }
         else
         {
-            UserStatsRepository::incrementStat($em, $user, UserStatEnum::TOSSED_A_HOT_POTATO);
+            UserStatsHelpers::incrementStat($em, $user, UserStatEnum::TOSSED_A_HOT_POTATO);
 
             return $hotPotatoService->tossItem($inventory);
         }

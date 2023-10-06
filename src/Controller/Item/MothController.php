@@ -11,9 +11,9 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
+use App\Functions\UserStatsHelpers;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -148,7 +148,7 @@ class MothController extends AbstractController
         if($gotLove)
             $items[] = 'Chang\'e\'s Love';
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::BUGS_PUT_OUTSIDE, $mothCount);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::BUGS_PUT_OUTSIDE, $mothCount);
 
         $quantitiesByItem = [];
 

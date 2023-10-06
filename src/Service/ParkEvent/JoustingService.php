@@ -11,11 +11,11 @@ use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\UserStatsHelpers;
 use App\Model\ParkEvent\JoustingClashResult;
 use App\Model\ParkEvent\JoustingParticipant;
 use App\Model\ParkEvent\JoustingTeam;
 use App\Model\PetChanges;
-use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ParkService;
@@ -423,7 +423,7 @@ class JoustingService implements ParkEventInterface
             $comment = $pet->getName() . ' earned this by getting 1st place in a Jousting tournament with ' . $teamMate->getName() . '!';
             $this->transactionService->getMoney($pet->getOwner(), $firstPlaceMoneys, $comment);
             $this->inventoryService->petCollectsItem('Jousting Gold Trophy', $pet, $comment, null);
-            UserStatsRepository::incrementStat($this->em, $pet->getOwner(), 'Gold Trophies Earned', 1);
+            UserStatsHelpers::incrementStat($this->em, $pet->getOwner(), 'Gold Trophies Earned', 1);
 
             $log = $pet->getName() . ' played in a Jousting tournament with ' . $teamMate->getName() . ', and won! The whole thing!';
         }
@@ -443,7 +443,7 @@ class JoustingService implements ParkEventInterface
             $comment = $pet->getName() . ' earned this by getting 2nd place in a Jousting tournament with ' . $teamMate->getName() . '!';
             $this->transactionService->getMoney($pet->getOwner(), $secondPlaceMoneys, $comment);
             $this->inventoryService->petCollectsItem('Jousting Silver Trophy', $pet, $comment, null);
-            UserStatsRepository::incrementStat($this->em, $pet->getOwner(), 'Silver Trophies Earned', 1);
+            UserStatsHelpers::incrementStat($this->em, $pet->getOwner(), 'Silver Trophies Earned', 1);
         }
 
         $pet->increaseEsteem(2 * $team->wins);

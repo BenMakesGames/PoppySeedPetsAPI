@@ -6,10 +6,9 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
-use App\Repository\UserStatsRepository;
+use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
-use App\Service\RecyclingService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -38,7 +37,7 @@ class StrangeFieldController extends AbstractController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::STRANGE_FIELDS_COLLAPSED);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::STRANGE_FIELDS_COLLAPSED);
 
         $possibleItems = [
             'Tachyon', 'Photon',

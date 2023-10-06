@@ -9,9 +9,9 @@ use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\UserStatsHelpers;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -53,7 +53,7 @@ class BehattingScrollController extends AbstractController
         if(!$merit)
             throw new \Exception('The ' . MeritEnum::BEHATTED . ' Merit does not exist! This is a terrible programming error. Someone please tell Ben.');
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 

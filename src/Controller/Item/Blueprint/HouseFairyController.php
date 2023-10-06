@@ -12,11 +12,11 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetColorFunctions;
+use App\Functions\UserStatsHelpers;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -175,7 +175,7 @@ class HouseFairyController extends AbstractController
             ->setStockingColorB($stockingColors[1])
         ;
 
-        if(UserStatsRepository::getStatValue($em, $user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM) >= 400)
+        if(UserStatsHelpers::getStatValue($em, $user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM) >= 400)
             $fireplace->setMantleSize(24);
 
         $em->persist($fireplace);

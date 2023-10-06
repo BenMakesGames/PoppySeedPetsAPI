@@ -12,10 +12,10 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Functions\PlayerLogHelpers;
 use App\Functions\RequestFunctions;
+use App\Functions\UserStatsHelpers;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\SpiceRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\GreenhouseService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -109,7 +109,7 @@ class FeedComposterController extends AbstractController
         foreach($items as $item)
             $em->remove($item);
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::ITEMS_COMPOSTED, count($items));
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::ITEMS_COMPOSTED, count($items));
 
         $user->getGreenhouse()
             ->setComposterFood($remainingFertilizer)

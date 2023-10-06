@@ -8,9 +8,9 @@ use App\Enum\UserStatEnum;
 use App\Functions\CalendarFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\DateFunctions;
+use App\Functions\UserStatsHelpers;
 use App\Model\ChineseCalendarInfo;
 use App\Model\PetShelterPet;
-use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class AdoptionService
@@ -31,7 +31,7 @@ class AdoptionService
 
     public function getPetsAdopted(User $user): int
     {
-        return UserStatsRepository::getStatValue($this->em, $user, UserStatEnum::PETS_ADOPTED);
+        return UserStatsHelpers::getStatValue($this->em, $user, UserStatEnum::PETS_ADOPTED);
     }
 
     public function getAdoptionFee(User $user): int

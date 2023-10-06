@@ -6,7 +6,7 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\UserStatEnum;
-use App\Repository\UserStatsRepository;
+use App\Functions\UserStatsHelpers;
 use App\Service\HouseService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -49,7 +49,7 @@ class MagicHourglassController extends AbstractController
 
         $em->remove($inventory);
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::MAGIC_HOURGLASSES_SMASHED);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::MAGIC_HOURGLASSES_SMASHED);
 
         $query = $em->createQuery('
             UPDATE App\Entity\PetHouseTime AS ht

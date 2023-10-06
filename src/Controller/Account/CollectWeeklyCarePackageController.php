@@ -8,7 +8,7 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
-use App\Repository\UserStatsRepository;
+use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -42,7 +42,7 @@ class CollectWeeklyCarePackageController extends AbstractController
         if($days < 7)
             throw new PSPInvalidOperationException('It\'s too early to collect your weekly Care Package.');
 
-        $itemsDonated = UserStatsRepository::getStatValue($em, $user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM);
+        $itemsDonated = UserStatsHelpers::getStatValue($em, $user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM);
 
         $canGetHandicraftsBox = $itemsDonated >= 100;
         $canGetFishBag = $itemsDonated >= 450;
@@ -73,7 +73,7 @@ class CollectWeeklyCarePackageController extends AbstractController
 
         $user->setLastAllowanceCollected($user->getLastAllowanceCollected()->modify('+' . (floor($days / 7) * 7) . ' days'));
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::PLAZA_BOXES_RECEIVED, 1);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::PLAZA_BOXES_RECEIVED, 1);
 
         $em->flush();
 

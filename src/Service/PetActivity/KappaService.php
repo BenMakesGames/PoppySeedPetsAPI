@@ -12,9 +12,9 @@ use App\Functions\ActivityHelpers;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PlayerLogHelpers;
 use App\Functions\UserFunctions;
+use App\Functions\UserStatsHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
-use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -121,13 +121,13 @@ class KappaService
             $this->petExperienceService->gainAffection($pet, 2);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
 
-            UserStatsRepository::incrementStat($this->em, $owner, UserStatEnum::PETTED_A_PET, 1);
+            UserStatsHelpers::incrementStat($this->em, $owner, UserStatEnum::PETTED_A_PET, 1);
 
             PlayerLogHelpers::create($this->em, $owner, ActivityHelpers::PetName($pet) . ' returned your Shirikodama! (Some Kappa must have stolen it!) You thank ' . ActivityHelpers::PetName($pet) . ' with pets and pats before swallowing the Shirikodama.', [
                 'Shirikodama',
             ]);
 
-            UserStatsRepository::incrementStat($this->em, $pet->getOwner(), 'Returned a Shirikodama', 1);
+            UserStatsHelpers::incrementStat($this->em, $pet->getOwner(), 'Returned a Shirikodama', 1);
         }
         else if($this->rng->rngNextInt(1, 3) > 1)
         {
@@ -147,13 +147,13 @@ class KappaService
             $this->petExperienceService->gainAffection($pet, 2);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
-            UserStatsRepository::incrementStat($this->em, $owner, UserStatEnum::PETTED_A_PET, 1);
+            UserStatsHelpers::incrementStat($this->em, $owner, UserStatEnum::PETTED_A_PET, 1);
 
             PlayerLogHelpers::create($this->em, $owner, ActivityHelpers::PetName($pet) . ' returned your Shirikodama! (Some Kappa must have stolen it!) You thank ' . ActivityHelpers::PetName($pet) . ' with pets and pats before swallowing the Shirikodama.', [
                 'Shirikodama',
             ]);
 
-            UserStatsRepository::incrementStat($this->em, $pet->getOwner(), 'Returned a Shirikodama', 1);
+            UserStatsHelpers::incrementStat($this->em, $pet->getOwner(), 'Returned a Shirikodama', 1);
         }
         else
         {

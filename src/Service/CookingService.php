@@ -11,12 +11,12 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
+use App\Functions\UserStatsHelpers;
 use App\Model\ItemQuantity;
 use App\Model\PrepareRecipeResults;
 use App\Repository\InventoryRepository;
 use App\Repository\RecipeAttemptedRepository;
 use App\Repository\RecipeRepository;
-use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class CookingService
@@ -222,7 +222,7 @@ class CookingService
             }
         }
 
-        UserStatsRepository::incrementStat($this->em, $user, UserStatEnum::COOKED_SOMETHING, $multiple);
+        UserStatsHelpers::incrementStat($this->em, $user, UserStatEnum::COOKED_SOMETHING, $multiple);
 
         if($this->hasACookingBuddy($user))
         {
@@ -255,7 +255,7 @@ class CookingService
 
         $this->em->persist($knownRecipe);
 
-        UserStatsRepository::incrementStat($this->em, $user, UserStatEnum::RECIPES_LEARNED_BY_COOKING_BUDDY);
+        UserStatsHelpers::incrementStat($this->em, $user, UserStatEnum::RECIPES_LEARNED_BY_COOKING_BUDDY);
 
         return true;
     }

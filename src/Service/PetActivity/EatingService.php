@@ -18,11 +18,11 @@ use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
+use App\Functions\UserStatsHelpers;
 use App\Model\FoodWithSpice;
 use App\Model\FortuneCookie;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\CravingService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -324,7 +324,7 @@ class EatingService
             if($pet->getPregnancy())
                 $pet->getPregnancy()->increaseAffection($gain);
 
-            UserStatsRepository::incrementStat($this->em, $pet->getOwner(), UserStatEnum::FOOD_HOURS_FED_TO_PETS, $foodGained);
+            UserStatsHelpers::incrementStat($this->em, $pet->getOwner(), UserStatEnum::FOOD_HOURS_FED_TO_PETS, $foodGained);
 
             $this->cravingService->maybeAddCraving($pet);
         }

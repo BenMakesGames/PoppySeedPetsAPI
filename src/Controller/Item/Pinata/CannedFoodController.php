@@ -5,7 +5,7 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
-use App\Repository\UserStatsRepository;
+use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -37,7 +37,7 @@ class CannedFoodController extends AbstractController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $cansOpened = UserStatsRepository::findOrCreate($em, $user, UserStatEnum::CANS_OF_FOOD_OPENED);
+        $cansOpened = UserStatsHelpers::findOrCreate($em, $user, UserStatEnum::CANS_OF_FOOD_OPENED);
 
         if($cansOpened->getValue() > 2 && $squirrel3->rngNextInt(1, 50) === 1)
         {

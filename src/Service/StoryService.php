@@ -12,6 +12,7 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
+use App\Functions\UserStatsHelpers;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\ItemQuantity;
 use App\Model\StoryStep;
@@ -19,7 +20,6 @@ use App\Model\StoryStepChoice;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
-use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
@@ -268,7 +268,7 @@ class StoryService
                 break;
 
             case StoryActionTypeEnum::INCREMENT_STAT:
-                UserStatsRepository::incrementStat($this->em, $this->user, $action['stat'], array_key_exists('change', $action) ? $action['change'] : 1);
+                UserStatsHelpers::incrementStat($this->em, $this->user, $action['stat'], array_key_exists('change', $action) ? $action['change'] : 1);
                 break;
 
             case StoryActionTypeEnum::SET_QUEST_VALUE:

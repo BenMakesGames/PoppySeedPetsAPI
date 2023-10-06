@@ -17,13 +17,13 @@ use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\UserStatsHelpers;
 use App\Model\MeritInfo;
 use App\Repository\InventoryRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
-use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -95,7 +95,7 @@ class GreenhouseService
 
         $greenhouse->setVisitingBird(null);
 
-        UserStatsRepository::incrementStat($this->em, $user, UserStatEnum::LARGE_BIRDS_APPROACHED);
+        UserStatsHelpers::incrementStat($this->em, $user, UserStatEnum::LARGE_BIRDS_APPROACHED);
 
         return $message;
     }

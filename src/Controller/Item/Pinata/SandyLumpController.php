@@ -4,8 +4,8 @@ namespace App\Controller\Item\Pinata;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
+use App\Functions\UserStatsHelpers;
 use App\Repository\ItemRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -59,7 +59,7 @@ class SandyLumpController extends AbstractController
 
         $itemObject = ItemRepository::findOneByName($em, $item);
 
-        UserStatsRepository::incrementStat($em, $user, 'Cleaned a ' . $lump->getItem()->getName());
+        UserStatsHelpers::incrementStat($em, $user, 'Cleaned a ' . $lump->getItem()->getName());
 
         if($item === 'Silica Grounds')
         {

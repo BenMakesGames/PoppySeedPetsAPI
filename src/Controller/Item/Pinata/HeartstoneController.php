@@ -5,7 +5,7 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Exceptions\PSPInvalidOperationException;
-use App\Repository\UserStatsRepository;
+use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,8 +35,8 @@ class HeartstoneController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'heartstone/#/transform');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
-        $numberTransformed = UserStatsRepository::getStatValue($em, $user, self::STAT_NAME);
-        $petsWhoHaveCompletedHeartDimensionAdventures = UserStatsRepository::getStatValue($em, $user, 'Pet Completed the Heartstone Dimension');
+        $numberTransformed = UserStatsHelpers::getStatValue($em, $user, self::STAT_NAME);
+        $petsWhoHaveCompletedHeartDimensionAdventures = UserStatsHelpers::getStatValue($em, $user, 'Pet Completed the Heartstone Dimension');
 
         $numberThatCanBeTransformed = $petsWhoHaveCompletedHeartDimensionAdventures - $numberTransformed;
 
@@ -54,7 +54,7 @@ class HeartstoneController extends AbstractController
         for($i = 0; $i < 2; $i++)
             $inventoryService->receiveItem('Heartessence', $user, $user, $user->getName() . ' got this by transforming a Heartstone.', $location, $locked);
 
-        UserStatsRepository::incrementStat($em, $user, self::STAT_NAME);
+        UserStatsHelpers::incrementStat($em, $user, self::STAT_NAME);
 
         $em->remove($inventory);
 

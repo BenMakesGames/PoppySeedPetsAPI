@@ -4,8 +4,8 @@ namespace App\Controller\Item\Pinata;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
+use App\Functions\UserStatsHelpers;
 use App\Repository\ItemRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -62,7 +62,7 @@ class DirtyLumpController extends AbstractController
 
         $itemObject = ItemRepository::findOneByName($em, $item);
 
-        UserStatsRepository::incrementStat($em, $user, 'Cleaned a ' . $lump->getItem()->getName());
+        UserStatsHelpers::incrementStat($em, $user, 'Cleaned a ' . $lump->getItem()->getName());
 
         $inventoryService->receiveItem($itemObject, $user, $lump->getCreatedBy(), $user->getName() . ' found this covered in dirt.', $location, $lockedToOwner);
         $message = 'You clean off the object, which reveals itself to be ' . $itemObject->getNameWithArticle() . '!';

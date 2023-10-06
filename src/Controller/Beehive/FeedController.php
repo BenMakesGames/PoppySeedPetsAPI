@@ -9,7 +9,7 @@ use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
-use App\Repository\UserStatsRepository;
+use App\Functions\UserStatsHelpers;
 use App\Service\BeehiveService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -67,7 +67,7 @@ class FeedController extends AbstractController
         $beehiveService->fedRequestedItem($beehive, $alternate);
         $beehive->setInteractionPower();
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::FED_THE_BEEHIVE);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::FED_THE_BEEHIVE);
 
         $em->flush();
 

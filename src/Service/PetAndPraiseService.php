@@ -6,8 +6,8 @@ use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\UserStatsHelpers;
 use App\Model\PetChanges;
-use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetAndPraiseService
@@ -72,7 +72,7 @@ class PetAndPraiseService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Petting' ]))
         ;
 
-        UserStatsRepository::incrementStat($this->em, $pet->getOwner(), UserStatEnum::PETTED_A_PET);
+        UserStatsHelpers::incrementStat($this->em, $pet->getOwner(), UserStatEnum::PETTED_A_PET);
     }
 
 }

@@ -23,11 +23,11 @@ use App\Functions\InventoryModifierFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
+use App\Functions\UserStatsHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\FoodWithSpice;
 use App\Model\PetChanges;
 use App\Model\PetChangesSummary;
-use App\Repository\UserStatsRepository;
 use App\Service\PetActivity\BurntForestService;
 use App\Service\PetActivity\Caerbannog;
 use App\Service\PetActivity\ChocolateMansion;
@@ -687,7 +687,7 @@ class PetActivityService
             case 'Peacock Plushy':
             case 'Phoenix Plushy':
             case '"Roy" Plushy':
-                if($this->squirrel3->rngNextInt(1, 6) === 1 || UserStatsRepository::getStatValue($this->em, $pet->getOwner(), UserStatEnum::TRADED_WITH_THE_FLUFFMONGER) === 0)
+                if($this->squirrel3->rngNextInt(1, 6) === 1 || UserStatsHelpers::getStatValue($this->em, $pet->getOwner(), UserStatEnum::TRADED_WITH_THE_FLUFFMONGER) === 0)
                 {
                     $this->treasureMapService->doFluffmongerTrade($pet);
                     return true;

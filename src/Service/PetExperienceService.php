@@ -16,9 +16,9 @@ use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\UserStatsHelpers;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Repository\UserQuestRepository;
-use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetExperienceService
@@ -100,7 +100,7 @@ class PetExperienceService
             if($pet->getSkills()->getStat($statToLevel) >= 20)
             {
                 $pet->getSkills()->increaseScrollLevels();
-                UserStatsRepository::incrementStat($this->em, $pet->getOwner(), 'Skill Scrolls Made by Pets');
+                UserStatsHelpers::incrementStat($this->em, $pet->getOwner(), 'Skill Scrolls Made by Pets');
 
                 $newItem = $this->inventoryService->petCollectsItem('Skill Scroll: ' . $statToLevel, $pet, $pet->getName() . ', a ' . $statToLevel . '-master, produced this scroll.', null);
                 $newItem->setLockedToOwner(true);

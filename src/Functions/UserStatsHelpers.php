@@ -1,29 +1,14 @@
 <?php
 
-namespace App\Repository;
+namespace App\Functions;
 
 use App\Entity\User;
 use App\Entity\UserStats;
-use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @method UserStats|null find($id, $lockMode = null, $lockVersion = null)
- * @method UserStats|null findOneBy(array $criteria, array $orderBy = null)
- * @method UserStats[]    findAll()
- * @method UserStats[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- * @deprecated
- */
-class UserStatsRepository extends ServiceEntityRepository
+class UserStatsHelpers
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, UserStats::class);
-    }
-
     private static $userStatsPerRequestCache = [];
 
     public static function findOrCreate(EntityManagerInterface $em, User $user, string $name): UserStats
@@ -32,7 +17,7 @@ class UserStatsRepository extends ServiceEntityRepository
 
         if(!array_key_exists($cacheKey, self::$userStatsPerRequestCache))
         {
-            $stat = $em->getRepository(UserStatsRepository::class)->findOneBy([
+            $stat = $em->getRepository(UserStats::class)->findOneBy([
                 'user' => $user,
                 'stat' => $name
             ]);

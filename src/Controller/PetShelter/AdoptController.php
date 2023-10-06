@@ -10,11 +10,11 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Functions\ArrayFunctions;
 use App\Functions\ProfanityFilterFunctions;
+use App\Functions\UserStatsHelpers;
 use App\Model\PetShelterPet;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\AdoptionService;
 use App\Service\IRandom;
 use App\Service\PetFactory;
@@ -90,7 +90,7 @@ class AdoptController extends AbstractController
 
         $transactionService->spendMoney($user, $costToAdopt, 'Adopted a new pet.');
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::PETS_ADOPTED, 1);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::PETS_ADOPTED, 1);
 
         $now = (new \DateTimeImmutable())->format('Y-m-d');
 

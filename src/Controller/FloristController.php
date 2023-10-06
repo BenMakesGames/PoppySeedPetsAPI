@@ -8,7 +8,7 @@ use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
-use App\Repository\UserStatsRepository;
+use App\Functions\UserStatsHelpers;
 use App\Service\FloristService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -72,7 +72,7 @@ class FloristController extends AbstractController
 
         $statName = $userPick['item']['name'] . 's Purchased';
 
-        $stat = UserStatsRepository::incrementStat($em, $user, $statName);
+        $stat = UserStatsHelpers::incrementStat($em, $user, $statName);
 
         if($userPick['item']['name'] === 'Flowerbomb' && $stat->getValue() === 1)
             $inventoryService->receiveItem('Book of Flowers', $user, $user, 'This was delivered to you from The Florist\'s.', LocationEnum::HOME, true);

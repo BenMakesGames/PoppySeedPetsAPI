@@ -7,9 +7,8 @@ use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Enum\UserStatEnum;
+use App\Functions\UserStatsHelpers;
 use App\Model\SummoningScrollMonster;
-use App\Repository\PetRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\IRandom;
 use App\Service\PetActivity\HouseMonsterService;
 use App\Service\ResponseService;
@@ -61,7 +60,7 @@ class SummoningController extends AbstractController
 
         $result = $houseMonsterService->doFight('You read the scroll', $petsAtHome, $monster);
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         $em->flush();
 

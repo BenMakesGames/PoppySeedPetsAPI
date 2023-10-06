@@ -4,7 +4,7 @@ namespace App\Controller\Item\Pinata;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
-use App\Repository\UserStatsRepository;
+use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -53,7 +53,7 @@ class RockController extends AbstractController
             'Striped Microcline',
         ]);
 
-        UserStatsRepository::incrementStat($em, $user, 'Smashed Open a ' . $rock->getItem()->getName());
+        UserStatsHelpers::incrementStat($em, $user, 'Smashed Open a ' . $rock->getItem()->getName());
 
         $ore = $squirrel3->rngNextFromArray($ores);
         $extraItem = $squirrel3->rngNextFromArray($extraItems);

@@ -10,10 +10,9 @@ use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
-use App\Functions\PlayerLogHelpers;
+use App\Functions\UserStatsHelpers;
 use App\Repository\InventoryRepository;
 use App\Repository\MuseumItemRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -103,7 +102,7 @@ class DonateController extends AbstractController
 
         $transactionService->getMuseumFavor($user, $totalMuseumPoints, 'You donated ' . $donationSummary . ' to the Museum.');
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM, count($inventory));
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM, count($inventory));
 
         $em->flush();
 

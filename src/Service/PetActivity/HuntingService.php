@@ -23,12 +23,12 @@ use App\Functions\InventoryModifierFunctions;
 use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
+use App\Functions\UserStatsHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\MuseumItemRepository;
 use App\Repository\UserQuestRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\Clock;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
@@ -836,7 +836,7 @@ class HuntingService
 
             $this->transactionService->spendMoney($pet->getOwner(), $moneysLost, $pet->getName() . ' was outsmarted by a Thieving Magpie, ' . $description, false);
 
-            UserStatsRepository::incrementStat($this->em, $pet->getOwner(), UserStatEnum::MONEYS_STOLEN_BY_THIEVING_MAGPIES, $moneysLost);
+            UserStatsHelpers::incrementStat($this->em, $pet->getOwner(), UserStatEnum::MONEYS_STOLEN_BY_THIEVING_MAGPIES, $moneysLost);
 
             $pet
                 ->increaseEsteem(-2)

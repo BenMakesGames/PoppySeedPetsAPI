@@ -9,8 +9,8 @@ use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
+use App\Functions\UserStatsHelpers;
 use App\Model\TraderOfferCostOrYield;
-use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -55,7 +55,7 @@ final class Claim extends AbstractController
 
         $em->persist($badge);
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::ACHIEVEMENTS_CLAIMED);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::ACHIEVEMENTS_CLAIMED);
 
         self::getAchievementReward($user, $progress['reward'], $inventoryService, $transactionService);
 

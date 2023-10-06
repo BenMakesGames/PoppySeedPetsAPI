@@ -17,10 +17,9 @@ use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\GrammarFunctions;
+use App\Functions\UserStatsHelpers;
 use App\Repository\EnchantmentRepository;
-use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\FieldGuideService;
 use App\Service\GreenhouseService;
 use App\Service\HattierService;
@@ -203,7 +202,7 @@ class HarvestPlantController extends AbstractController
                 $message = 'You harvested ' . ArrayFunctions::list_nice_quantities($lootList) . '!';
         }
 
-        $plantsHarvested = UserStatsRepository::incrementStat($em, $user, UserStatEnum::HARVESTED_PLANT);
+        $plantsHarvested = UserStatsHelpers::incrementStat($em, $user, UserStatEnum::HARVESTED_PLANT);
 
         if($plantsHarvested->getValue() === 3)
         {

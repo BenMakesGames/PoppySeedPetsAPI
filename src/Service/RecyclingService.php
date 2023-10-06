@@ -8,7 +8,7 @@ use App\Enum\UserStatEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
-use App\Repository\UserStatsRepository;
+use App\Functions\UserStatsHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 
 class RecyclingService
@@ -80,7 +80,7 @@ class RecyclingService
 
             if($i->getItem()->hasUseAction('bug/#/putOutside'))
             {
-                UserStatsRepository::incrementStat($this->em, $user, UserStatEnum::BUGS_PUT_OUTSIDE);
+                UserStatsHelpers::incrementStat($this->em, $user, UserStatEnum::BUGS_PUT_OUTSIDE);
                 $this->em->remove($i);
                 continue;
             }
@@ -106,7 +106,7 @@ class RecyclingService
 
         if($totalRecyclingPointsEarned > 0 || $totalItemsRecycled > 0)
         {
-            UserStatsRepository::incrementStat($this->em, $user, UserStatEnum::ITEMS_RECYCLED, $totalItemsRecycled);
+            UserStatsHelpers::incrementStat($this->em, $user, UserStatEnum::ITEMS_RECYCLED, $totalItemsRecycled);
 
             $this->transactionService->getRecyclingPoints(
                 $user,

@@ -10,10 +10,10 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\UserStatsHelpers;
 use App\Model\ParkEvent\KinBallParticipant;
 use App\Model\ParkEvent\KinBallTeam;
 use App\Model\PetChanges;
-use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ParkService;
@@ -212,7 +212,7 @@ class KinBallService implements ParkEventInterface
                     $comment = $participant->pet->getName() . ' earned this in a game of Kin-Ball!';
                     $this->transactionService->getMoney($participant->pet->getOwner(), $firstPlaceMoneys, $comment);
                     $this->inventoryService->petCollectsItem('Kin-Ball Gold Trophy', $participant->pet, $comment, null);
-                    UserStatsRepository::incrementStat($this->em, $participant->pet->getOwner(), 'Gold Trophies Earned', 1);
+                    UserStatsHelpers::incrementStat($this->em, $participant->pet->getOwner(), 'Gold Trophies Earned', 1);
                     $activityLogEntry = $participant->pet->getName() . ' played a game of Kin-Ball, and was on the winning team! They received ' . $firstPlaceMoneys . '~~m~~!';
                 }
                 else

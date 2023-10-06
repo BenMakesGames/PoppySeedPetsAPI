@@ -19,10 +19,10 @@ use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
+use App\Functions\UserStatsHelpers;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\PetChanges;
 use App\Repository\HollowEarthTileRepository;
-use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HollowEarthService
@@ -237,7 +237,7 @@ class HollowEarthService
             ->setCurrentAction($action)
         ;
 
-        UserStatsRepository::incrementStat($this->em, $player->getUser(), UserStatEnum::HOLLOW_EARTH_SPACES_MOVED, $movesRemaining - $player->getMovesRemaining());
+        UserStatsHelpers::incrementStat($this->em, $player->getUser(), UserStatEnum::HOLLOW_EARTH_SPACES_MOVED, $movesRemaining - $player->getMovesRemaining());
     }
 
     private function getNextTile(HollowEarthPlayer $player): HollowEarthTile

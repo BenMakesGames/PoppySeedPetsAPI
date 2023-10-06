@@ -6,7 +6,7 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
-use App\Repository\UserStatsRepository;
+use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -37,7 +37,7 @@ class LeprechaunController extends AbstractController
 
         $em->remove($inventory);
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::LOOTED_A_POT_OF_GOLD);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::LOOTED_A_POT_OF_GOLD);
 
         $location = $inventory->getLocation();
         $locked = $inventory->getLockedToOwner();
@@ -70,8 +70,8 @@ class LeprechaunController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'leprechaun/greenScroll/#/read');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
-        UserStatsRepository::incrementStat($em, $user, 'Read ' . $inventory->getItem()->getNameWithArticle());
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+        UserStatsHelpers::incrementStat($em, $user, 'Read ' . $inventory->getItem()->getNameWithArticle());
 
         $numberOfItems = 3;
 

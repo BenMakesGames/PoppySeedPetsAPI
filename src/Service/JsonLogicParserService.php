@@ -3,7 +3,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
-use App\Repository\UserStatsRepository;
+use App\Functions\UserStatsHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -83,7 +83,7 @@ class JsonLogicParserService
             {
                 $stat = substr($expression, 11, strlen($expression) - 12);
 
-                return UserStatsRepository::getStatValue($this->em, $user, $stat);
+                return UserStatsHelpers::getStatValue($this->em, $user, $stat);
             }
             else
             {

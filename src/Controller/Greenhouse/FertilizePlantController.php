@@ -11,8 +11,8 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\GrammarFunctions;
 use App\Functions\PlayerLogHelpers;
+use App\Functions\UserStatsHelpers;
 use App\Repository\InventoryRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\GreenhouseService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -58,7 +58,7 @@ class FertilizePlantController extends AbstractController
 
         $plant->increaseGrowth($fertilizer->getItem()->getFertilizer());
 
-        UserStatsRepository::incrementStat($em, $user, UserStatEnum::FERTILIZED_PLANT);
+        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::FERTILIZED_PLANT);
 
         $plantNameArticle = GrammarFunctions::indefiniteArticle($plant->getPlant()->getName());
 

@@ -11,10 +11,10 @@ use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\InventoryModifierFunctions;
+use App\Functions\UserStatsHelpers;
 use App\Repository\MarketBidRepository;
 use App\Repository\MarketListingRepository;
 use App\Repository\UserQuestRepository;
-use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class MarketService
@@ -133,9 +133,9 @@ class MarketService
 
     public function transferItemToPlayer(Inventory $item, User $newOwner, int $location, int $sellPrice)
     {
-        UserStatsRepository::incrementStat($this->em, $item->getOwner(), UserStatEnum::TOTAL_MONEYS_EARNED_IN_MARKET, $sellPrice);
-        UserStatsRepository::incrementStat($this->em, $item->getOwner(), UserStatEnum::ITEMS_SOLD_IN_MARKET, 1);
-        UserStatsRepository::incrementStat($this->em, $newOwner, UserStatEnum::ITEMS_BOUGHT_IN_MARKET, 1);
+        UserStatsHelpers::incrementStat($this->em, $item->getOwner(), UserStatEnum::TOTAL_MONEYS_EARNED_IN_MARKET, $sellPrice);
+        UserStatsHelpers::incrementStat($this->em, $item->getOwner(), UserStatEnum::ITEMS_SOLD_IN_MARKET, 1);
+        UserStatsHelpers::incrementStat($this->em, $newOwner, UserStatEnum::ITEMS_BOUGHT_IN_MARKET, 1);
 
         $item
             ->setOwner($newOwner)

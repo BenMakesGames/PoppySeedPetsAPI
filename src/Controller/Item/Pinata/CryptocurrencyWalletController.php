@@ -5,8 +5,8 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Exceptions\PSPNotFoundException;
+use App\Functions\UserStatsHelpers;
 use App\Repository\InventoryRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -41,7 +41,7 @@ class CryptocurrencyWalletController extends AbstractController
         if(!$key)
             throw new PSPNotFoundException('It\'s locked! (It\'s got a little lock on it, and everything!) You\'ll need a Password to open it...');
 
-        UserStatsRepository::incrementStat($em, $user, 'Opened a ' . $inventory->getItem()->getName());
+        UserStatsHelpers::incrementStat($em, $user, 'Opened a ' . $inventory->getItem()->getName());
 
         if($squirrel3->rngNextInt(1, 4) === 1)
         {

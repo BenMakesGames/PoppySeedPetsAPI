@@ -4,8 +4,8 @@ namespace App\Controller\Item\Pinata;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
+use App\Functions\UserStatsHelpers;
 use App\Repository\ItemRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -53,7 +53,7 @@ class HatBoxController extends AbstractController
             'Pizzaface',
         ]));
 
-        UserStatsRepository::incrementStat($em, $user, 'Opened ' . $box->getItem()->getNameWithArticle());
+        UserStatsHelpers::incrementStat($em, $user, 'Opened ' . $box->getItem()->getNameWithArticle());
 
         if($hatItem->getName() === 'Gray Bow')
         {

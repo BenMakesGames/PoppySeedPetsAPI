@@ -14,11 +14,11 @@ use App\Enum\RelationshipEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PetColorFunctions;
+use App\Functions\UserStatsHelpers;
 use App\Model\PetShelterPet;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\PetFactory;
@@ -288,7 +288,7 @@ class PregnancyService
             ->increaseFood(-$this->squirrel3->rngNextInt(8, 16))
         ;
 
-        UserStatsRepository::incrementStat($this->em, $user, UserStatEnum::PETS_BIRTHED);
+        UserStatsHelpers::incrementStat($this->em, $user, UserStatEnum::PETS_BIRTHED);
     }
 
     private const CANONICALIZED_FORBIDDEN_COMBINED_NAMES = [

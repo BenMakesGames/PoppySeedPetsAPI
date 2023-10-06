@@ -10,8 +10,8 @@ use App\Enum\UserStatEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\UserStatsHelpers;
 use App\Repository\MeritRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -87,7 +87,7 @@ class SagaSagaService
 
         $this->responseService->setReloadPets(true);
 
-        UserStatsRepository::incrementStat($this->em, $pet->getOwner(), UserStatEnum::COMPLETED_A_SAGA_SAGA);
+        UserStatsHelpers::incrementStat($this->em, $pet->getOwner(), UserStatEnum::COMPLETED_A_SAGA_SAGA);
 
         return true;
     }

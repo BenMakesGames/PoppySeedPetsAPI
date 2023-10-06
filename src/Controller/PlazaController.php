@@ -6,8 +6,8 @@ use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ArrayFunctions;
+use App\Functions\UserStatsHelpers;
 use App\Model\AvailableHolidayBox;
-use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\MuseumService;
 use App\Service\PlazaService;
@@ -48,7 +48,7 @@ class PlazaController extends AbstractController
             $box->userQuestEntity->setValue(true);
 
         if(strpos($box->itemName, 'Box') !== false || strpos($box->itemName, 'Bag') !== false)
-            UserStatsRepository::incrementStat($em, $user, UserStatEnum::PLAZA_BOXES_RECEIVED, $box->quantity);
+            UserStatsHelpers::incrementStat($em, $user, UserStatEnum::PLAZA_BOXES_RECEIVED, $box->quantity);
 
         for($i = 0; $i < $box->quantity; $i++)
             $inventoryService->receiveItem($box->itemName, $user, $user, $box->comment, LocationEnum::HOME, true);

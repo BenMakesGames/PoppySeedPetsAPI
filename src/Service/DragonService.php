@@ -11,11 +11,10 @@ use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
 use App\Functions\PlayerLogHelpers;
+use App\Functions\UserStatsHelpers;
 use App\Repository\DragonRepository;
 use App\Repository\EnchantmentRepository;
-use App\Repository\InventoryRepository;
 use App\Repository\SpiceRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\PetActivity\TreasureMapService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -135,7 +134,7 @@ class DragonService
 
         sort($offeringItemNames);
 
-        UserStatsRepository::incrementStat($this->em, $user, UserStatEnum::TREASURES_GIVEN_TO_DRAGON_HOARD, count($items));
+        UserStatsHelpers::incrementStat($this->em, $user, UserStatEnum::TREASURES_GIVEN_TO_DRAGON_HOARD, count($items));
 
         $silverGoodies = self::SILVER_GOODIES;
         $goldGoodies = self::GOLD_GOODIES;

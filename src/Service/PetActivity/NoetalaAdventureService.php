@@ -11,8 +11,8 @@ use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
+use App\Functions\UserStatsHelpers;
 use App\Model\PetChanges;
-use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -118,7 +118,7 @@ class NoetalaAdventureService
                 $i = ($i + 1) % count($rewards);
             }
 
-            UserStatsRepository::incrementStat($this->em, $user, 'Defeated Noetala\'s Wing');
+            UserStatsHelpers::incrementStat($this->em, $user, 'Defeated Noetala\'s Wing');
 
             $success = true;
         }

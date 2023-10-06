@@ -22,12 +22,12 @@ use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
+use App\Functions\UserStatsHelpers;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -396,7 +396,7 @@ class TreasureMapService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
         ;
 
-        UserStatsRepository::incrementStat($this->em, $pet->getOwner(), UserStatEnum::BUGS_PUT_OUTSIDE);
+        UserStatsHelpers::incrementStat($this->em, $pet->getOwner(), UserStatEnum::BUGS_PUT_OUTSIDE);
 
         foreach($loot as $itemName)
             $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' got this from ' . $location . ', which they found by following a Fruit Fly on a String.', $activityLog);
@@ -419,7 +419,7 @@ class TreasureMapService
             $this->houseSimService->getState()->loseItem('Fluff', 1);
 
             // had fluff!
-            $fluffTradedStat = UserStatsRepository::incrementStat($this->em, $pet->getOwner(), UserStatEnum::TRADED_WITH_THE_FLUFFMONGER);
+            $fluffTradedStat = UserStatsHelpers::incrementStat($this->em, $pet->getOwner(), UserStatEnum::TRADED_WITH_THE_FLUFFMONGER);
 
             $fluffmongerSpecialTrades = [
                 'Behatting Scroll' => 20,

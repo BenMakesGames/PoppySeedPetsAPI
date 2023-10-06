@@ -5,10 +5,10 @@ use App\Entity\Inventory;
 use App\Entity\Recipe;
 use App\Entity\User;
 use App\Functions\ArrayFunctions;
+use App\Functions\UserStatsHelpers;
 use App\Model\ItemQuantity;
 use App\Repository\ItemRepository;
 use App\Repository\RecipeRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -92,7 +92,7 @@ class WhisperStoneController extends AbstractController
             'To make ' . $recipes[1]->getName() . ', combine ' . $ingredients[1] . ".\"\n\n"
         ;
 
-        $stat = UserStatsRepository::incrementStat($em, $user, 'Listened to a Whisper Stone');
+        $stat = UserStatsHelpers::incrementStat($em, $user, 'Listened to a Whisper Stone');
 
         if($stat->getValue() === 1)
             $message .= 'Wait, aren\'t Whisper Stones supposed to reveal dark secrets from the spirit world?';

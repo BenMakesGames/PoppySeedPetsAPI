@@ -6,7 +6,6 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Exceptions\PSPNotFoundException;
 use App\Repository\InventoryRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;

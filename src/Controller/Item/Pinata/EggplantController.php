@@ -5,7 +5,7 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
-use App\Repository\UserStatsRepository;
+use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -77,11 +77,11 @@ class EggplantController extends AbstractController
                 $newItem->setSpice($inventory->getSpice());
             }
 
-            UserStatsRepository::incrementStat($em, $user, UserStatEnum::EGGS_HARVESTED_FROM_EGGPLANTS, $eggs);
+            UserStatsHelpers::incrementStat($em, $user, UserStatEnum::EGGS_HARVESTED_FROM_EGGPLANTS, $eggs);
         }
         else
         {
-            UserStatsRepository::incrementStat($em, $user, UserStatEnum::ROTTEN_EGGPLANTS, 1);
+            UserStatsHelpers::incrementStat($em, $user, UserStatEnum::ROTTEN_EGGPLANTS, 1);
         }
 
         if($squirrel3->rngNextInt(1, 100) === 1)

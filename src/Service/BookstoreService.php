@@ -11,9 +11,9 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\CalendarFunctions;
+use App\Functions\UserStatsHelpers;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
-use App\Repository\UserStatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class BookstoreService
@@ -204,12 +204,12 @@ class BookstoreService
             'Cooking 101' => 15,
         ];
 
-        $flowersPurchased = UserStatsRepository::getStatValue($this->em, $user, 'Flowerbombs Purchased');
+        $flowersPurchased = UserStatsHelpers::getStatValue($this->em, $user, 'Flowerbombs Purchased');
 
         if($flowersPurchased > 0)
             $bookPrices['Book of Flowers'] = 15;
 
-        $cookedSomething = UserStatsRepository::getStatValue($this->em, $user, UserStatEnum::COOKED_SOMETHING);
+        $cookedSomething = UserStatsHelpers::getStatValue($this->em, $user, UserStatEnum::COOKED_SOMETHING);
 
         if($cookedSomething > 0)
         {
@@ -254,7 +254,7 @@ class BookstoreService
             }
         }
 
-        $itemsDonatedToMuseum = UserStatsRepository::getStatValue($this->em, $user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM);
+        $itemsDonatedToMuseum = UserStatsHelpers::getStatValue($this->em, $user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM);
 
         if($itemsDonatedToMuseum > 0)
         {
@@ -300,12 +300,12 @@ class BookstoreService
 
     public function renamingScrollAvailable(User $user): bool
     {
-        $petsAdopted = UserStatsRepository::getStatValue($this->em, $user, UserStatEnum::PETS_ADOPTED);
+        $petsAdopted = UserStatsHelpers::getStatValue($this->em, $user, UserStatEnum::PETS_ADOPTED);
 
         if($petsAdopted > 0)
             return true;
 
-        $petsBirthed = UserStatsRepository::getStatValue($this->em, $user, UserStatEnum::PETS_BIRTHED);
+        $petsBirthed = UserStatsHelpers::getStatValue($this->em, $user, UserStatEnum::PETS_BIRTHED);
 
         if($petsBirthed > 0)
             return true;

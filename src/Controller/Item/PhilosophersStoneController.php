@@ -9,10 +9,10 @@ use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
 use App\Exceptions\PSPNotFoundException;
+use App\Functions\UserStatsHelpers;
 use App\Repository\InventoryRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
@@ -67,7 +67,7 @@ class PhilosophersStoneController extends AbstractController
         if(!$species)
             throw new \Exception('Something has gone terribly wrong. Ben has been notified; hopefully he\'ll fix it within a few hours...');
 
-        UserStatsRepository::incrementStat($em, $user, 'Philosopher\'s Stones Used');
+        UserStatsHelpers::incrementStat($em, $user, 'Philosopher\'s Stones Used');
 
         $message = 'The ' . $plushy->getFullItemName() . ' has been brought to life!';
 

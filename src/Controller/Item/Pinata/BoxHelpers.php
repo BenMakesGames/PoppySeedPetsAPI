@@ -6,7 +6,7 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Functions\InventoryModifierFunctions;
-use App\Repository\UserStatsRepository;
+use App\Functions\UserStatsHelpers;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,7 +21,7 @@ class BoxHelpers
         ResponseService $responseService, EntityManagerInterface $em
     ): JsonResponse
     {
-        UserStatsRepository::incrementStat($em, $user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
+        UserStatsHelpers::incrementStat($em, $user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
 
         $itemList = array_map(fn(Inventory $i) => InventoryModifierFunctions::getNameWithModifiers($i), $newInventory);
         sort($itemList);

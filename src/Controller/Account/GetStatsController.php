@@ -1,9 +1,7 @@
 <?php
 namespace App\Controller\Account;
 
-use App\Enum\SerializationGroupEnum;
 use App\Functions\SimpleDb;
-use App\Repository\UserStatsRepository;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;

@@ -10,8 +10,8 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\GrammarFunctions;
+use App\Functions\UserStatsHelpers;
 use App\Repository\PetRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -82,7 +82,7 @@ class ShowPetsController extends AbstractController
             $em->persist($discovery);
         }
 
-        UserStatsRepository::incrementStat($em, $user, 'Species Cataloged', count($pets));
+        UserStatsHelpers::incrementStat($em, $user, 'Species Cataloged', count($pets));
 
         $em->flush();
 

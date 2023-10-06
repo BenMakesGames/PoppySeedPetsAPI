@@ -5,7 +5,7 @@ use App\Entity\User;
 use App\Entity\UserActivityLog;
 use App\Enum\UserStatEnum;
 use App\Functions\PlayerLogHelpers;
-use App\Repository\UserStatsRepository;
+use App\Functions\UserStatsHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 
 class TransactionService
@@ -30,7 +30,7 @@ class TransactionService
         $user->increaseMoneys(-$amount);
 
         if($countTotalMoneysSpentStat)
-            UserStatsRepository::incrementStat($this->em, $user, UserStatEnum::TOTAL_MONEYS_SPENT, $amount);
+            UserStatsHelpers::incrementStat($this->em, $user, UserStatEnum::TOTAL_MONEYS_SPENT, $amount);
 
         $tags = array_merge($additionalTags, [ 'Moneys' ]);
 

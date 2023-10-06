@@ -12,12 +12,12 @@ use App\Enum\PetSkillEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\UserStatsHelpers;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -100,7 +100,7 @@ class BoxController extends AbstractController
             'XOR',
         ];
 
-        $stat = UserStatsRepository::incrementStat($em, $user, 'Looted ' . $box->getItem()->getNameWithArticle());
+        $stat = UserStatsHelpers::incrementStat($em, $user, 'Looted ' . $box->getItem()->getNameWithArticle());
 
         $numberOfItems = $squirrel3->rngNextInt(3, 5);
         $containsLobster = $stat->getValue() === 1 || $squirrel3->rngNextInt(1, 4) === 1;
@@ -205,7 +205,7 @@ class BoxController extends AbstractController
         {
             $message = "What boxes will be in _this_ Box Box, I wonder?\n\nWait, what? It's _another_ Box Box?";
 
-            UserStatsRepository::incrementStat($em, $user, 'Found a Box Box Inside a Box Box');
+            UserStatsHelpers::incrementStat($em, $user, 'Found a Box Box Inside a Box Box');
 
             $inventoryService->receiveItem('Box Box', $user, $user, $user->getName() . ' found this in a Box Box... huh...', $location, $inventory->getLockedToOwner());
         }
@@ -250,7 +250,7 @@ class BoxController extends AbstractController
             $inventoryService->receiveItem($possibleItems[1], $user, $user, $user->getName() . ' found this in a Box Box.', $location, $inventory->getLockedToOwner());
         }
 
-        UserStatsRepository::incrementStat($em, $user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
+        UserStatsHelpers::incrementStat($em, $user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
 
         $em->remove($inventory);
 
@@ -621,7 +621,7 @@ class BoxController extends AbstractController
             ;
         }
 
-        UserStatsRepository::incrementStat($em, $user, 'Disassembled ' . $inventory->getItem()->getNameWithArticle());
+        UserStatsHelpers::incrementStat($em, $user, 'Disassembled ' . $inventory->getItem()->getNameWithArticle());
 
         $em->remove($inventory);
 
@@ -745,7 +745,7 @@ class BoxController extends AbstractController
         for($i = 0; $i < $sand; $i++)
             $inventoryService->receiveItem('Silica Grounds', $user, $user, $description, $location, $inventory->getLockedToOwner());
 
-        UserStatsRepository::incrementStat($em, $user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
+        UserStatsHelpers::incrementStat($em, $user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
 
         $em->remove($inventory);
 
@@ -777,7 +777,7 @@ class BoxController extends AbstractController
             'Wheat Flour', 'World\'s Best Sugar Cookie', 'Yeast', 'Yellowy Lime', 'Ponzu'
         ]));
 
-        $openedStat = UserStatsRepository::incrementStat($em, $user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
+        $openedStat = UserStatsHelpers::incrementStat($em, $user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
 
         if($item->getName() === 'Cockroach' && $squirrel3->rngNextInt(1, 3) === 1)
         {
@@ -1217,7 +1217,7 @@ class BoxController extends AbstractController
             'Mini Chocolate Chip Cookies', 'Slice of Chocolate Cream Pie', 'Chocolate Key'
         ];
 
-        UserStatsRepository::incrementStat($em, $user, 'Looted ' . $box->getItem()->getNameWithArticle());
+        UserStatsHelpers::incrementStat($em, $user, 'Looted ' . $box->getItem()->getNameWithArticle());
 
         $numberOfItems = $squirrel3->rngNextInt(2, 4);
 

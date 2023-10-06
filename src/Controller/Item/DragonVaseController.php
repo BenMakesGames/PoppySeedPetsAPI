@@ -16,11 +16,11 @@ use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\InventoryModifierFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\UserStatsHelpers;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
-use App\Repository\UserStatsRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -150,7 +150,7 @@ class DragonVaseController extends AbstractController
 
         $usedDragonVase->setValue($today);
 
-        $dippingStat = UserStatsRepository::incrementStat($em, $user, UserStatEnum::TOOLS_DIPPED_IN_A_DRAGON_VASE);
+        $dippingStat = UserStatsHelpers::incrementStat($em, $user, UserStatEnum::TOOLS_DIPPED_IN_A_DRAGON_VASE);
 
         // Dragon Vase-only bonuses
         $possibleBonuses = [

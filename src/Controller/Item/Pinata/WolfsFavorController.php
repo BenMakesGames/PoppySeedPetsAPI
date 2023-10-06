@@ -11,7 +11,7 @@ use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
-use App\Repository\UserStatsRepository;
+use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -100,7 +100,7 @@ class WolfsFavorController extends AbstractController
         foreach($loot as $item)
             $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a Wolf\'s Favor.', $location);
 
-        UserStatsRepository::incrementStat($em, $user, self::USER_STAT_NAME);
+        UserStatsHelpers::incrementStat($em, $user, self::USER_STAT_NAME);
 
         $em->remove($inventory);
 
@@ -135,7 +135,7 @@ class WolfsFavorController extends AbstractController
         foreach($loot as $item)
             $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a Wolf\'s Favor.', $location);
 
-        UserStatsRepository::incrementStat($em, $user, self::USER_STAT_NAME);
+        UserStatsHelpers::incrementStat($em, $user, self::USER_STAT_NAME);
 
         $em->remove($inventory);
 
