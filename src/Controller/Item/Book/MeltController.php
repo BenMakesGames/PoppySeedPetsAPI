@@ -3,7 +3,6 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Entity\Recipe;
 use App\Entity\User;
 use App\Model\ItemQuantity;
 use App\Repository\RecipeRepository;
@@ -19,17 +18,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class MeltController extends AbstractController
 {
-    /**
-     * @return Recipe[]
-     */
-    private function getRecipes(RecipeRepository $recipeRepository): array
+    private function getRecipes(): array
     {
-        return $recipeRepository->createQueryBuilder('r')
-            ->andWhere('r.name LIKE :melt')
-            ->setParameter('melt', 'Melt%')
-            ->getQuery()
-            ->execute()
-        ;
+        return RecipeRepository::findBy(fn($recipe) => str_starts_with($recipe['name'], 'Melt'));
     }
 
     /**
@@ -37,8 +28,7 @@ class MeltController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function upload(
-        Inventory $inventory, ResponseService $responseService, CookingService $cookingService,
-        RecipeRepository $recipeRepository
+        Inventory $inventory, ResponseService $responseService, CookingService $cookingService
     )
     {
         /** @var User $user */
@@ -46,9 +36,9 @@ class MeltController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'melt/#/upload');
 
-        $recipes = $this->getRecipes($recipeRepository);
+        $recipes = $this->getRecipes();
 
-        $message = $cookingService->showRecipesToCookingBuddy($user, $recipes);
+        $message = $cookingService->showRecipeNamesToCookingBuddy($user, $recipes);
 
         return $responseService->itemActionSuccess($message);
     }
@@ -58,13 +48,12 @@ class MeltController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function read(
-        Inventory $inventory, ResponseService $responseService, RecipeRepository $recipeRepository,
-        InventoryService $inventoryService
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService
     )
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'melt/#/read');
 
-        $recipes = $this->getRecipes($recipeRepository);
+        $recipes = $this->getRecipes();
 
         $recipeTexts = [
             '# Melt',
@@ -76,7 +65,7 @@ class MeltController extends AbstractController
 
         foreach($recipes as $recipe)
         {
-            $ingredients = $inventoryService->deserializeItemList($recipe->getIngredients());
+            $ingredients = $inventoryService->deserializeItemList($recipe['ingredients']);
 
             $ingredients = array_values(array_filter($ingredients, fn(ItemQuantity $q) => $q->item->getName() !== 'Liquid-hot Magma'));
 

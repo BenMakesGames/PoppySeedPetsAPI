@@ -4,7 +4,6 @@ namespace App\Controller\Item\Book;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
-use App\Repository\RecipeRepository;
 use App\Service\CookingService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -49,7 +48,7 @@ class FruitJuiceController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function read(
-        Inventory $inventory, ResponseService $responseService, RecipeRepository $recipeRepository
+        Inventory $inventory, ResponseService $responseService
     )
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'fruitJuice/#/read');

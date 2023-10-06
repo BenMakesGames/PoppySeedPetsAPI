@@ -3,7 +3,6 @@ namespace App\Service;
 
 use App\Entity\Inventory;
 use App\Entity\KnownRecipes;
-use App\Entity\Recipe;
 use App\Entity\RecipeAttempted;
 use App\Entity\Spice;
 use App\Entity\User;
@@ -20,7 +19,6 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class CookingService
 {
-    private RecipeRepository $recipeRepository;
     private InventoryService $inventoryService;
     private EntityManagerInterface $em;
     private UserStatsService $userStatsRepository;
@@ -29,12 +27,11 @@ class CookingService
     private IRandom $squirrel3;
 
     public function __construct(
-        RecipeRepository $recipeRepository, InventoryService $inventoryService, EntityManagerInterface $em,
+        InventoryService $inventoryService, EntityManagerInterface $em,
         UserStatsService $userStatsRepository, InventoryRepository $inventoryRepository,
         RecipeAttemptedRepository $recipeAttemptedRepository, IRandom $squirrel3
     )
     {
-        $this->recipeRepository = $recipeRepository;
         $this->inventoryService = $inventoryService;
         $this->em = $em;
         $this->userStatsRepository = $userStatsRepository;
@@ -46,11 +43,9 @@ class CookingService
     /**
      * @param ItemQuantity[] $quantities
      */
-    public function findRecipeFromQuantities(array $quantities): ?Recipe
+    public function findRecipeFromQuantities(array $quantities): ?array
     {
-        return $this->recipeRepository->findOneBy([
-            'ingredients' => InventoryService::serializeItemList($quantities)
-        ]);
+        return RecipeRepository::findOneByIngredients(InventoryService::serializeItemList($quantities));
     }
 
     /**
@@ -117,7 +112,7 @@ class CookingService
      * @param Inventory[] $inventory
      * @throws EnumInvalidValueException
      */
-    public function prepareRecipe(User $user, array $inventory): ?PrepareRecipeResults
+    public function prepareRecipe(User $user, array $inventory, bool $teachCookingBuddies): ?PrepareRecipeResults
     {
         $quantities = CookingService::buildQuantitiesFromInventory($inventory);
 
@@ -188,7 +183,7 @@ class CookingService
 
         $locationOfFirstItem = $inventory[0]->getLocation();
 
-        $makes = $this->inventoryService->deserializeItemList($recipe->getMakes());
+        $makes = $this->inventoryService->deserializeItemList($recipe['makes']);
 
         foreach($makes as $m)
             $m->quantity *= $multiple;
@@ -225,9 +220,9 @@ class CookingService
 
         $this->userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING, $multiple);
 
-        if($this->hasACookingBuddy($user))
+        if($teachCookingBuddies && $this->hasACookingBuddy($user))
         {
-            $this->learnRecipe($user, $recipe);
+            $this->learnRecipe($user, $recipe['name']);
         }
 
         $results = new PrepareRecipeResults();
@@ -239,7 +234,7 @@ class CookingService
         return $results;
     }
 
-    public function learnRecipe(User $user, Recipe $recipe): bool
+    public function learnRecipe(User $user, string $recipe): bool
     {
         $alreadyKnownRecipe = $this->em->getRepository(KnownRecipes::class)->count([
             'user' => $user,
@@ -269,20 +264,13 @@ class CookingService
         ]) > 0;
     }
 
-    public function showRecipeNamesToCookingBuddy(User $user, array $recipeNames): string
-    {
-        $recipes = $this->recipeRepository->findBy([ 'name' => $recipeNames ]);
-
-        return $this->showRecipesToCookingBuddy($user, $recipes);
-    }
-
-    public function showRecipesToCookingBuddy(User $user, array $recipes): string
+    public function showRecipeNamesToCookingBuddy(User $user, array $recipes): string
     {
         if(!$this->hasACookingBuddy($user))
             return 'You need a Cooking Buddy to do this.';
 
-        $countLearnedRecipes = ArrayFunctions::sum($recipes, function(Recipe $recipe) use($user) {
-            return $this->learnRecipe($user, $recipe) ? 1 : 0;
+        $countLearnedRecipes = ArrayFunctions::sum($recipes, function(array $recipe) use($user) {
+            return $this->learnRecipe($user, $recipe['name']) ? 1 : 0;
         });
 
         if($countLearnedRecipes === 0)

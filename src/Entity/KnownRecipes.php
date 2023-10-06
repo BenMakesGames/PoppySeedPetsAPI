@@ -24,9 +24,7 @@ class KnownRecipes
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Recipe")
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups({"knownRecipe"})
+     * @ORM\Column(type="string", length=45)
      */
     private $recipe;
 
@@ -47,12 +45,12 @@ class KnownRecipes
         return $this;
     }
 
-    public function getRecipe(): ?Recipe
+    public function getRecipe(): string
     {
         return $this->recipe;
     }
 
-    public function setRecipe(?Recipe $recipe): self
+    public function setRecipe(string $recipe): self
     {
         $this->recipe = $recipe;
 

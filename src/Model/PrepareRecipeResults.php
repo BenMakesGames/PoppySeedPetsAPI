@@ -2,7 +2,6 @@
 namespace App\Model;
 
 use App\Entity\Inventory;
-use App\Entity\Recipe;
 
 class PrepareRecipeResults
 {
@@ -12,7 +11,7 @@ class PrepareRecipeResults
     /** @var ItemQuantity[] */
     public $quantities;
 
-    /** @var Recipe */
+    /** @var array */
     public $recipe;
 
     /** @var int */

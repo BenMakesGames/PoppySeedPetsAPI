@@ -14,6 +14,19 @@ final class ArrayFunctions
         return false;
     }
 
+    public static function count(iterable $array, callable $delegate): int
+    {
+        $count = 0;
+
+        foreach($array as $item)
+        {
+            if($delegate($item))
+                $count++;
+        }
+
+        return $count;
+    }
+
     public static function all(iterable $array, callable $delegate): bool
     {
         foreach($array as $item)

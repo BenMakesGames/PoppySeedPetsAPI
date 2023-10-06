@@ -121,7 +121,7 @@ class CookAndCombineController extends AbstractController
             }
         }
 
-        $results = $cookingService->prepareRecipe($user, $inventory);
+        $results = $cookingService->prepareRecipe($user, $inventory, true);
 
         // do this before checking if anything was made
         // because if NOTHING was made, a record in "RecipeAttempted" was made :P
@@ -141,7 +141,7 @@ class CookAndCombineController extends AbstractController
 
         if($totalQuantity < 4)
             $exclaim = '.';
-        else if($totalQuantity < 10 || strpos($results->recipe->getIngredients(), ',') === false)
+        else if($totalQuantity < 10 || strpos($results->recipe['ingredients'], ',') === false)
             $exclaim = '!';
         else
             $exclaim = '! (' . $squirrel3->rngNextFromArray([ 'Dang!', 'Wow!', 'Incredible...', 'So cook! Very meal!', 'A veritable feast!', 'Such skill!' ]) . ')';

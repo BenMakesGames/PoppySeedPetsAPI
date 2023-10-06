@@ -55,12 +55,12 @@ class Cooking101Controller extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function read(
-        Inventory $inventory, ResponseService $responseService, RecipeRepository $recipeRepository
+        Inventory $inventory, ResponseService $responseService
     )
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'cooking101/#/read');
 
-        $recipeCount = $recipeRepository->count([]);
+        $recipeCount = count(RecipeRepository::RECIPES);
 
         return $responseService->itemActionSuccess('# Cooking 101
 

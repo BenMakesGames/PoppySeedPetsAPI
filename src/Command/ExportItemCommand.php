@@ -12,7 +12,6 @@ use App\Entity\ItemTreasure;
 use App\Entity\Plant;
 use App\Entity\PlantYield;
 use App\Entity\PlantYieldItem;
-use App\Entity\Recipe;
 use App\Entity\Spice;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -118,46 +117,9 @@ class ExportItemCommand extends PoppySeedPetsCommand
 
         echo "\n\n" . 'Upload image to: https://s3.console.aws.amazon.com/s3/buckets/poppyseedpets.com?region=us-east-1&prefix=assets/images/items/' . $image . "\n\n";
 
-        $anyRecipes = $this->askBool('Do you want to export any recipes?', false);
-
-        if($anyRecipes)
-        {
-            $recipes = $this->findByMakes($item);
-
-            if(!$recipes)
-                throw new \Exception('There are no recipes for this item.');
-
-            $statements = [];
-
-            foreach($recipes as $recipe)
-                $statements[] = $this->generateSql(Recipe::class, $recipe, 'recipe #' . $recipe->getId());
-
-            echo "\n" . implode("\n\n", $statements) . "\n\n";
-        }
-        else
-            echo "\n";
-
         echo "================================================================================\n\n";
 
         return 0;
-    }
-
-    /**
-     * @return Recipe[] Returns an array of Recipe objects
-     */
-    private function findByMakes(Item $item)
-    {
-        $qb = $this->em->createQueryBuilder('r');
-
-        return $qb
-            ->orWhere('r.makes LIKE :makesBeginning')
-            ->orWhere('r.makes LIKE :makesMiddle')
-            ->setParameter('makesBeginning', $item->getId() . ':%')
-            ->setParameter('makesMiddle', '%,'. $item->getId() . ':%')
-            ->orderBy('r.id', 'ASC')
-            ->getQuery()
-            ->getResult()
-        ;
     }
 
     private function generateSql(string $className, object $entity, string $comment): string

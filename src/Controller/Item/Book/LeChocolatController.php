@@ -3,7 +3,6 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Entity\Recipe;
 use App\Entity\User;
 use App\Model\ItemQuantity;
 use App\Repository\RecipeRepository;
@@ -19,18 +18,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class LeChocolatController extends AbstractController
 {
-    /**
-     * @return Recipe[]
-     */
-    private function getRecipes(RecipeRepository $recipeRepository): array
+    private function getRecipes(): array
     {
-        return $recipeRepository->createQueryBuilder('r')
-            ->andWhere('r.name LIKE :chocolat')
-            ->setParameter('chocolat', '%chocolat%')
-            ->addOrderBy('r.name', 'ASC')
-            ->getQuery()
-            ->execute()
-        ;
+        return RecipeRepository::findBy(fn($recipe) => mb_strpos(mb_strtolower($recipe['name']), 'chocolat') !== false);
     }
 
     /**
@@ -38,8 +28,7 @@ class LeChocolatController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function upload(
-        Inventory $inventory, ResponseService $responseService, CookingService $cookingService,
-        RecipeRepository $recipeRepository
+        Inventory $inventory, ResponseService $responseService, CookingService $cookingService
     )
     {
         /** @var User $user */
@@ -47,9 +36,9 @@ class LeChocolatController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'leChocolat/#/upload');
 
-        $recipes = $this->getRecipes($recipeRepository);
+        $recipes = $this->getRecipes();
 
-        $message = $cookingService->showRecipesToCookingBuddy($user, $recipes);
+        $message = $cookingService->showRecipeNamesToCookingBuddy($user, $recipes);
 
         return $responseService->itemActionSuccess($message);
     }
@@ -59,26 +48,25 @@ class LeChocolatController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function read(
-        Inventory $inventory, ResponseService $responseService, RecipeRepository $recipeRepository,
-        InventoryService $inventoryService
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService
     )
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'leChocolat/#/read');
 
-        $recipes = $this->getRecipes($recipeRepository);
+        $recipes = $this->getRecipes();
 
         $recipeTexts = [
             '# Chocolate',
             '### Table of Contents'
         ];
 
-        $recipeTexts[] = implode("\r\n", array_map(function(Recipe $r) {
-            return '* ' . $r->getName();
+        $recipeTexts[] = implode("\r\n", array_map(function($recipe) {
+            return '* ' . $recipe['name'];
         }, $recipes));
 
         foreach($recipes as $recipe)
         {
-            $ingredients = $inventoryService->deserializeItemList($recipe->getIngredients());
+            $ingredients = $inventoryService->deserializeItemList($recipe['ingredients']);
 
             usort($ingredients, fn($a, $b) => $a->item->getName() <=> $b->item->getName());
 
@@ -89,7 +77,7 @@ class LeChocolatController extends AbstractController
                     return '* ' . $q->item->getName();
             }, $ingredients);
 
-            $recipeTexts[] = '### ' . $recipe->getName() . "\r\n" . implode("\r\n", $items);
+            $recipeTexts[] = '### ' . $recipe['name'] . "\r\n" . implode("\r\n", $items);
         }
 
         return $responseService->itemActionSuccess(implode("\r\n\r\n", $recipeTexts));

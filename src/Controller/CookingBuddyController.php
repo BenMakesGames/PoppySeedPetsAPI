@@ -11,8 +11,8 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Model\ItemQuantity;
 use App\Repository\InventoryRepository;
+use App\Repository\RecipeRepository;
 use App\Service\CookingService;
-use App\Service\Filter\KnownRecipesFilterService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
@@ -21,6 +21,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Flex\Recipe;
 
 /**
  * @Route("/cookingBuddy")
@@ -38,7 +39,7 @@ class CookingBuddyController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getKnownRecipes(
-        Inventory $cookingBuddy, KnownRecipesFilterService $knownRecipesFilterService, InventoryService $inventoryService,
+        Inventory $cookingBuddy, InventoryService $inventoryService, EntityManagerInterface $em,
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository
     )
     {
@@ -48,26 +49,54 @@ class CookingBuddyController extends AbstractController
         if($cookingBuddy->getOwner()->getId() !== $user->getId() || ($cookingBuddy->getItem()->getName() !== 'Cooking Buddy' && $cookingBuddy->getItem()->getName() !== 'Cooking "Alien"'))
             throw new PSPNotFoundException('Cooking Buddy Not Found');
 
-        $knownRecipesFilterService->addRequiredFilter('user', $user->getId());
-
-        $results = $knownRecipesFilterService->getResults($request->query);
-
         $location = $request->query->getInt('location', $cookingBuddy->getLocation());
 
         if(!in_array($location, self::ALLOWED_LOCATIONS))
             throw new PSPInvalidOperationException('Cooking Buddies are only usable from the house, Basement, or Fireplace Mantle.');
+
+        $filters = $request->query->get('filter') ?? [];
+
+        if(is_array($filters) && array_key_exists('name', $filters))
+        {
+            $knownRecipes = $em->getRepository(KnownRecipes::class)->createQueryBuilder('r')
+                ->andWhere('r.user = :userId')
+                ->andWhere('r.recipe LIKE :recipeName')
+                ->setParameter('userId', $user->getId())
+                ->setParameter('recipeName', '%' . $filters['name'] . '%')
+                ->getQuery()
+                ->execute();
+        }
+        else
+        {
+            $knownRecipes = $em->getRepository(KnownRecipes::class)->findBy([ 'user' => $user->getId() ]);
+        }
+
+        $unfilteredTotal = count($knownRecipes);
+        $pageCount = ceil($unfilteredTotal / 20);
+
+        $page = max(0, min($request->query->getInt('page', 0), $pageCount));
 
         $quantities = $inventoryRepository->getInventoryQuantities($user, $location, 'name');
 
         // this feels kinda' gross, but I'm not sure how else to do it...
         $recipes = [];
 
-        foreach($results->results as $knownRecipe)
-        {
-            /** @var KnownRecipes $knownRecipe */
+        $knownRecipeNames = array_map(fn(KnownRecipes $knownRecipe) => $knownRecipe->getRecipe(), $knownRecipes);
 
-            $ingredients = $inventoryService->deserializeItemList($knownRecipe->getRecipe()->getIngredients());
-            $makes = $inventoryService->deserializeItemList($knownRecipe->getRecipe()->getMakes());
+        // build up a dictionary in advance, for fast lookup
+        $knownRecipeRecipes = [];
+
+        foreach(RecipeRepository::RECIPES as $recipe)
+        {
+            if(in_array($recipe['name'], $knownRecipeNames))
+                $knownRecipeRecipes[$recipe['name']] = $recipe;
+        }
+
+        foreach($knownRecipes as $knownRecipe)
+        {
+            $recipe = $knownRecipeRecipes[$knownRecipe->getRecipe()];
+            $ingredients = $inventoryService->deserializeItemList($recipe['ingredients']);
+            $makes = $inventoryService->deserializeItemList($recipe['makes']);
             $hasAllIngredients = true;
 
             $ingredients = array_map(function(ItemQuantity $itemQuantity) use($quantities, &$hasAllIngredients) {
@@ -87,14 +116,25 @@ class CookingBuddyController extends AbstractController
 
             $recipes[] = [
                 'id' => $knownRecipe->getId(),
-                'name' => $knownRecipe->getRecipe()->getName(),
+                'name' => $recipe['name'],
                 'ingredients' => $ingredients,
                 'makes' => $makes,
                 'canPrepare' => $hasAllIngredients,
             ];
         }
 
-        $results->results = $recipes;
+        usort($recipes, fn($a, $b) => $b['canPrepare'] == $a['canPrepare'] ? $a['name'] <=> $b['name'] : $b['canPrepare'] <=> $a['canPrepare']);
+
+        $recipePage = array_slice($recipes, $page * 20, 20);
+
+        $results = [
+            'pageSize' => 20,
+            'pageCount' => $pageCount,
+            'page' => $page,
+            'resultCount' => count($recipes),
+            'unfilteredTotal' => $unfilteredTotal,
+            'results' => $recipePage
+        ];
 
         return $responseService->success(
             [
@@ -124,9 +164,10 @@ class CookingBuddyController extends AbstractController
         if($knownRecipe->getUser()->getId() !== $user->getId())
             throw new PSPNotFoundException('Unknown recipe? Weird. Reload and try again.');
 
-        $recipe = $knownRecipe->getRecipe();
+        $recipeName = $knownRecipe->getRecipe();
+        $recipe = RecipeRepository::findOneByName($recipeName);
 
-        $ingredients = $inventoryService->deserializeItemList($recipe->getIngredients());
+        $ingredients = $inventoryService->deserializeItemList($recipe['ingredients']);
 
         $location = $request->request->getInt('location', $cookingBuddy->getLocation());
 
@@ -148,12 +189,12 @@ class CookingBuddyController extends AbstractController
             );
 
             if(count($inventory) !== $ingredient->quantity * $quantity)
-                throw new PSPInvalidOperationException('You do not have enough ' . $ingredient->item->getName() . ' to make ' . $recipe->getName() . '.');
+                throw new PSPInvalidOperationException('You do not have enough ' . $ingredient->item->getName() . ' to make ' . $recipe['name'] . '.');
 
             $inventoryToUse = array_merge($inventoryToUse, $inventory);
         }
 
-        $results = $cookingService->prepareRecipe($user, $inventoryToUse);
+        $results = $cookingService->prepareRecipe($user, $inventoryToUse, false);
 
         $userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING);
 

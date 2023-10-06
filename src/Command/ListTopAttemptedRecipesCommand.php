@@ -2,16 +2,10 @@
 
 namespace App\Command;
 
-use App\Entity\Recipe;
 use App\Functions\ArrayFunctions;
-use App\Model\ItemQuantity;
-use App\Repository\ItemRepository;
 use App\Repository\RecipeAttemptedRepository;
-use App\Repository\RecipeRepository;
 use App\Service\InventoryService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
 
 class ListTopAttemptedRecipesCommand extends PoppySeedPetsCommand
 {

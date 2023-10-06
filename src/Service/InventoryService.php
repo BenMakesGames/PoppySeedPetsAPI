@@ -616,22 +616,6 @@ class InventoryService
     }
 
     /**
-     * @param ItemQuantity[] $quantities
-     */
-    public static function totalFood(array $quantities): ItemFood
-    {
-        $food = new ItemFood();
-
-        foreach($quantities as $quantity)
-        {
-            $itemFood = $quantity->item->getFood() ?: new ItemFood();
-            $food = $food->add($itemFood->multiply($quantity->quantity));
-        }
-
-        return $food;
-    }
-
-    /**
      * @param Inventory[] $inventory
      */
     public static function inventoryInSameLocation(array $inventory): bool

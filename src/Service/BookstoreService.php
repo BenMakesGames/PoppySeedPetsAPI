@@ -248,6 +248,11 @@ class BookstoreService
                 $bookPrices['SOUP'] = 25;
             }
 
+            if($cookedSomething->getValue() >= 400)
+            {
+                $bookPrices['Cuckoo for Coconuts'] = 20;
+            }
+
             if($cookedSomething->getValue() >= 500)
             {
                 $bookPrices['Ultimate Chef'] = 500;

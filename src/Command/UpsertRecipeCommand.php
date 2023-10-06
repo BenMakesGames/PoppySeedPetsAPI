@@ -3,7 +3,7 @@
 namespace App\Command;
 
 use App\Command\Traits\AskItemTrait;
-use App\Entity\Recipe;
+use App\Entity\ItemFood;
 use App\Model\ItemQuantity;
 use App\Repository\RecipeRepository;
 use App\Service\InventoryService;
@@ -17,15 +17,13 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
     use AskItemTrait;
 
     private EntityManagerInterface $em;
-    private RecipeRepository $recipeRepository;
     private InventoryService $inventoryService;
 
     public function __construct(
-        EntityManagerInterface $em, RecipeRepository $recipeRepository, InventoryService $inventoryService
+        EntityManagerInterface $em, InventoryService $inventoryService
     )
     {
         $this->em = $em;
-        $this->recipeRepository = $recipeRepository;
         $this->inventoryService = $inventoryService;
 
         parent::__construct();
@@ -40,26 +38,34 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         ;
     }
 
+    /**
+     * @param ItemQuantity[] $quantities
+     */
+    public static function totalFood(array $quantities): ItemFood
+    {
+        $food = new ItemFood();
+
+        foreach($quantities as $quantity)
+        {
+            $itemFood = $quantity->item->getFood() ?: new ItemFood();
+            $food = $food->add($itemFood->multiply($quantity->quantity));
+        }
+
+        return $food;
+    }
+
     protected function doCommand(): int
     {
         if(strtolower($_SERVER['APP_ENV']) !== 'dev')
             throw new \Exception('Can only be run in dev environments.');
 
         $name = $this->input->getArgument('recipe');
-        $recipe = $this->recipeRepository->findOneBy(['name' => $name]);
+        $recipe = RecipeRepository::findOneByName($name);
 
         if($recipe)
-            $this->output->writeln('Updating "' . $recipe->getName() . '"');
+            $this->output->writeln('Updating "' . $name . '"');
         else
-        {
             $this->output->writeln('Creating "' . $name . '"');
-
-            $recipe = (new Recipe())
-                ->setName($name)
-            ;
-
-            $this->em->persist($recipe);
-        }
 
         $this->name($recipe, $name);
         $this->ingredients($recipe);
@@ -67,8 +73,8 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
 
         $this->em->flush();
 
-        $ingredientFood = InventoryService::totalFood($this->inventoryService->deserializeItemList($recipe->getIngredients()));
-        $makesFood = InventoryService::totalFood($this->inventoryService->deserializeItemList($recipe->getMakes()));
+        $ingredientFood = self::totalFood($this->inventoryService->deserializeItemList($recipe['ingredients']));
+        $makesFood = self::totalFood($this->inventoryService->deserializeItemList($recipe['makes']));
 
         $this->output->writeln('Ingredient food value totals:');
         $this->output->writeln('  Food: ' . $ingredientFood->getFood());
@@ -89,15 +95,15 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         return Command::SUCCESS;
     }
 
-    private function askName(string $prompt, Recipe $recipe, string $name)
+    private function askName(string $prompt, array $recipe, string $name)
     {
         $question = new Question($prompt . ' (' . $name . ') ', $name);
         $question->setValidator(function($answer) use($recipe) {
             $answer = trim($answer);
 
-            $existing = $this->recipeRepository->findOneBy([ 'name' => $answer ]);
+            $existing = RecipeRepository::findOneByName($answer);
 
-            if($existing && $existing->getId() !== $recipe->getId())
+            if($existing && $existing['ingredients'] !== $recipe['ingredients'])
                 throw new \RuntimeException('There\'s already a Recipe with that name.');
 
             return $answer;
@@ -106,27 +112,27 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         return $this->ask($question);
     }
 
-    private function name(Recipe $recipe, string $name)
+    private function name(array &$recipe, string $name)
     {
-        $recipe->setName($this->askName('What is it called?', $recipe, $name));
+        $recipe['name'] = $this->askName('What is it called?', $recipe, $name);
     }
 
-    private function ingredients(Recipe $recipe)
+    private function ingredients(array &$recipe)
     {
-        $ingredients = $this->inventoryService->deserializeItemList($recipe->getIngredients());
+        $ingredients = $this->inventoryService->deserializeItemList($recipe['ingredients']);
 
         $ingredients = $this->editItemList($ingredients, 'ingredients');
 
-        $recipe->setIngredients(InventoryService::serializeItemList($ingredients));
+        $recipe['ingredients'] = InventoryService::serializeItemList($ingredients);
     }
 
-    private function makes(Recipe $recipe)
+    private function makes(array &$recipe)
     {
-        $makes = $this->inventoryService->deserializeItemList($recipe->getMakes());
+        $makes = $this->inventoryService->deserializeItemList($recipe['makes']);
 
         $makes = $this->editItemList($makes, 'products');
 
-        $recipe->setMakes(InventoryService::serializeItemList($makes));
+        $recipe['makes'] = InventoryService::serializeItemList($makes);
     }
 
     /**
