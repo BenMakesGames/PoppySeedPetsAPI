@@ -654,6 +654,7 @@ class RecipeRepository
         [ 'name' => 'Yellow Gummies (with Agar-agar)', 'ingredients' => '12:1,32:1,357:1', 'makes' => '175:6' ],
         [ 'name' => 'Yellow Gummies (with Corn Syrup)', 'ingredients' => '12:1,25:1,32:1', 'makes' => '175:5' ],
         [ 'name' => 'Yellow Hard Candy', 'ingredients' => '12:1,32:1', 'makes' => '174:4' ],
+        [ 'name' => 'Yellowy Key-y Lime Pie', 'ingredients' => '12:1,13:1,14:1,65:1,668:1,1205:1', 'makes' => '1295:1' ],
         [ 'name' => 'Yogurt Muffins', 'ingredients' => '12:1,14:1,16:1,65:1,109:1,113:1', 'makes' => '427:3' ],
         [ 'name' => 'Zabaglione (with Blackberry Wine)', 'ingredients' => '12:1,14:1,63:1', 'makes' => '847:2' ],
         [ 'name' => 'Zabaglione (with Blueberry Wine)', 'ingredients' => '12:1,14:1,64:1', 'makes' => '847:2' ],
