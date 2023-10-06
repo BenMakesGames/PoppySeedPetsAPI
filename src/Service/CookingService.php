@@ -234,11 +234,11 @@ class CookingService
         return $results;
     }
 
-    public function learnRecipe(User $user, string $recipe): bool
+    public function learnRecipe(User $user, string $recipeName): bool
     {
         $alreadyKnownRecipe = $this->em->getRepository(KnownRecipes::class)->count([
             'user' => $user,
-            'recipe' => $recipe
+            'recipe' => $recipeName
         ]) > 0;
 
         if($alreadyKnownRecipe)
@@ -246,7 +246,7 @@ class CookingService
 
         $knownRecipe = (new KnownRecipes())
             ->setUser($user)
-            ->setRecipe($recipe)
+            ->setRecipe($recipeName)
         ;
 
         $this->em->persist($knownRecipe);
@@ -264,13 +264,13 @@ class CookingService
         ]) > 0;
     }
 
-    public function showRecipeNamesToCookingBuddy(User $user, array $recipes): string
+    public function showRecipeNamesToCookingBuddy(User $user, array $recipeNames): string
     {
         if(!$this->hasACookingBuddy($user))
             return 'You need a Cooking Buddy to do this.';
 
-        $countLearnedRecipes = ArrayFunctions::sum($recipes, function(array $recipe) use($user) {
-            return $this->learnRecipe($user, $recipe['name']) ? 1 : 0;
+        $countLearnedRecipes = ArrayFunctions::sum($recipeNames, function($recipeName) use($user) {
+            return $this->learnRecipe($user, $recipeName) ? 1 : 0;
         });
 
         if($countLearnedRecipes === 0)

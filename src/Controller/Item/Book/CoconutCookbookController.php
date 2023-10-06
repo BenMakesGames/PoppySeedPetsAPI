@@ -74,12 +74,12 @@ All you need is a Coconut! And you don't even need a whole one: a Coconut Half w
 
 #### Papeete l'a Ota
 
-It's like a chicken caesar salad, but with fish, and no cheese, and, well, there's the lime, and, uh, well... okay: I guess it's nothing like a chicken caesar salad.
-
 * Coconut Milk
 * Fish
 * Onion
 * Yellowy Lime
+
+It's like a chicken caesar salad, but with fish, and no cheese, and, well, there's the lime, and, uh, well... okay: I guess it's nothing like a chicken caesar salad.
 
 ### Rice Puddin'
 
