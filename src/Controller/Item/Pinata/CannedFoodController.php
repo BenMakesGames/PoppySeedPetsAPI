@@ -5,11 +5,11 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
-use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +26,7 @@ class CannedFoodController extends AbstractController
      */
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        EntityManagerInterface $em, TransactionService $transactionService
+        EntityManagerInterface $em, UserStatsService $userStatsRepository, TransactionService $transactionService
     )
     {
         /** @var User $user */
@@ -37,7 +37,7 @@ class CannedFoodController extends AbstractController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $cansOpened = UserStatsHelpers::findOrCreate($em, $user, UserStatEnum::CANS_OF_FOOD_OPENED);
+        $cansOpened = $userStatsRepository->findOrCreate($user, UserStatEnum::CANS_OF_FOOD_OPENED);
 
         if($cansOpened->getValue() > 2 && $squirrel3->rngNextInt(1, 50) === 1)
         {

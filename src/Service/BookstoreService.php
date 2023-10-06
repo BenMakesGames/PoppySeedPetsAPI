@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Entity\Item;
 use App\Entity\User;
+use App\Entity\UserStats;
 use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
@@ -11,7 +12,6 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\CalendarFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -204,70 +204,70 @@ class BookstoreService
             'Cooking 101' => 15,
         ];
 
-        $flowersPurchased = UserStatsHelpers::getStatValue($this->em, $user, 'Flowerbombs Purchased');
+        $flowersPurchased = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => 'Flowerbombs Purchased' ]);
 
-        if($flowersPurchased > 0)
+        if($flowersPurchased && $flowersPurchased->getValue() > 0)
             $bookPrices['Book of Flowers'] = 15;
 
-        $cookedSomething = UserStatsHelpers::getStatValue($this->em, $user, UserStatEnum::COOKED_SOMETHING);
+        $cookedSomething = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::COOKED_SOMETHING ]);
 
-        if($cookedSomething > 0)
+        if($cookedSomething)
         {
-            if($cookedSomething >= 5)
+            if($cookedSomething->getValue() >= 5)
                 $bookPrices['Candy-maker\'s Cookbook'] = 20;
 
-            if($cookedSomething >= 10)
+            if($cookedSomething->getValue() >= 10)
                 $bookPrices['Big Book of Baking'] = 25;
 
-            if($cookedSomething >= 20)
+            if($cookedSomething->getValue() >= 20)
             {
                 $bookPrices['Fish Book'] = 20;
                 $bookPrices['Of Rice'] = 50;
             }
 
-            if($cookedSomething >= 50)
+            if($cookedSomething->getValue() >= 50)
             {
                 $bookPrices['Juice'] = 15;
                 $bookPrices['We All Scream'] = 15;
             }
 
-            if($cookedSomething >= 100)
+            if($cookedSomething->getValue() >= 100)
             {
                 $bookPrices['Pie Recipes'] = 15;
                 $bookPrices['Milk: The Book'] = 30;
             }
 
-            if($cookedSomething >= 200)
+            if($cookedSomething->getValue() >= 200)
             {
                 $bookPrices['Fried'] = 25;
                 $bookPrices['The Art of Tofu'] = 25;
             }
 
-            if($cookedSomething >= 300)
+            if($cookedSomething->getValue() >= 300)
             {
                 $bookPrices['SOUP'] = 25;
             }
 
-            if($cookedSomething >= 500)
+            if($cookedSomething->getValue() >= 500)
             {
                 $bookPrices['Ultimate Chef'] = 500;
             }
         }
 
-        $itemsDonatedToMuseum = UserStatsHelpers::getStatValue($this->em, $user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM);
+        $itemsDonatedToMuseum = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]);
 
-        if($itemsDonatedToMuseum > 0)
+        if($itemsDonatedToMuseum)
         {
-            if($itemsDonatedToMuseum >= 150)
+            if($itemsDonatedToMuseum->getValue() >= 150)
                 $bookPrices['Basement Blueprint'] = 150;
 
-            if($itemsDonatedToMuseum >= 200)
+            if($itemsDonatedToMuseum->getValue() >= 200)
                 $bookPrices['Electrical Engineering Textbook'] = 50;
 
-            if($itemsDonatedToMuseum >= 300)
+            if($itemsDonatedToMuseum->getValue() >= 300)
                 $bookPrices['The Umbra'] = 25;
 
-            if($itemsDonatedToMuseum >= 600)
+            if($itemsDonatedToMuseum->getValue() >= 600)
                 $bookPrices['Book of Noods'] = 20;
         }
 
@@ -300,14 +300,14 @@ class BookstoreService
 
     public function renamingScrollAvailable(User $user): bool
     {
-        $petsAdopted = UserStatsHelpers::getStatValue($this->em, $user, UserStatEnum::PETS_ADOPTED);
+        $petsAdopted = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::PETS_ADOPTED ]);
 
-        if($petsAdopted > 0)
+        if($petsAdopted && $petsAdopted->getValue() > 0)
             return true;
 
-        $petsBirthed = UserStatsHelpers::getStatValue($this->em, $user, UserStatEnum::PETS_BIRTHED);
+        $petsBirthed = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::PETS_BIRTHED ]);
 
-        if($petsBirthed > 0)
+        if($petsBirthed && $petsBirthed->getValue() > 0)
             return true;
 
         return false;

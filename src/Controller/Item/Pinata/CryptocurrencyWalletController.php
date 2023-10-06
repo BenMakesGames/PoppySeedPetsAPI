@@ -5,12 +5,12 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Exceptions\PSPNotFoundException;
-use App\Functions\UserStatsHelpers;
 use App\Repository\InventoryRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,8 +27,8 @@ class CryptocurrencyWalletController extends AbstractController
      */
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
-        InventoryRepository $inventoryRepository, TransactionService $transactionService,
-        InventoryService $inventoryService
+        InventoryRepository $inventoryRepository, UserStatsService $userStatsRepository,
+        TransactionService $transactionService, InventoryService $inventoryService
     )
     {
         /** @var User $user */
@@ -41,7 +41,7 @@ class CryptocurrencyWalletController extends AbstractController
         if(!$key)
             throw new PSPNotFoundException('It\'s locked! (It\'s got a little lock on it, and everything!) You\'ll need a Password to open it...');
 
-        UserStatsHelpers::incrementStat($em, $user, 'Opened a ' . $inventory->getItem()->getName());
+        $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
         if($squirrel3->rngNextInt(1, 4) === 1)
         {

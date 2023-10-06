@@ -6,7 +6,6 @@ use App\Entity\ItemGroup;
 use App\Entity\MuseumItem;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
-use App\Functions\UserStatsHelpers;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -14,14 +13,17 @@ class MuseumService
 {
     private EntityManagerInterface $em;
     private ItemRepository $itemRepository;
+    private UserStatsService $userStatsRepository;
     private TransactionService $transactionService;
 
     public function __construct(
-        EntityManagerInterface $em, ItemRepository $itemRepository, TransactionService $transactionService
+        EntityManagerInterface $em, ItemRepository $itemRepository, UserStatsService $userStatsRepository,
+        TransactionService $transactionService
     )
     {
         $this->em = $em;
         $this->itemRepository = $itemRepository;
+        $this->userStatsRepository = $userStatsRepository;
         $this->transactionService = $transactionService;
     }
 
@@ -56,7 +58,7 @@ class MuseumService
 
         $this->transactionService->getMuseumFavor($user, $item->getMuseumPoints(), 'Someone, or something, donated ' . $item->getNameWithArticle() . ' to the Museum on your behalf.');
 
-        UserStatsHelpers::incrementStat($this->em, $user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM, 1);
+        $this->userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM, 1);
 
         return $museumItem;
     }

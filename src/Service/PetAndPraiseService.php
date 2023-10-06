@@ -6,7 +6,6 @@ use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
-use App\Functions\UserStatsHelpers;
 use App\Model\PetChanges;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -15,14 +14,17 @@ class PetAndPraiseService
     private PetExperienceService $petExperienceService;
     private CravingService $cravingService;
     private EntityManagerInterface $em;
+    private UserStatsService $userStatsRepository;
 
     public function __construct(
-        PetExperienceService $petExperienceService, CravingService $cravingService, EntityManagerInterface $em
+        PetExperienceService $petExperienceService, CravingService $cravingService, EntityManagerInterface $em,
+        UserStatsService $userStatsRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->cravingService = $cravingService;
         $this->em = $em;
+        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function doPet(Pet $pet)
@@ -72,7 +74,7 @@ class PetAndPraiseService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Petting' ]))
         ;
 
-        UserStatsHelpers::incrementStat($this->em, $pet->getOwner(), UserStatEnum::PETTED_A_PET);
+        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PETTED_A_PET);
     }
 
 }

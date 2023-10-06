@@ -11,12 +11,12 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -62,8 +62,9 @@ class MothController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function releaseMoths(
-        ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        InventoryRepository $inventoryRepository, IRandom $rng, InventoryService $inventoryService
+        ResponseService $responseService, UserStatsService $userStatsRepository,
+        EntityManagerInterface $em, Request $request, InventoryRepository $inventoryRepository,
+        IRandom $rng, InventoryService $inventoryService
     )
     {
         /** @var User $user */
@@ -148,7 +149,7 @@ class MothController extends AbstractController
         if($gotLove)
             $items[] = 'Chang\'e\'s Love';
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::BUGS_PUT_OUTSIDE, $mothCount);
+        $userStatsRepository->incrementStat($user, UserStatEnum::BUGS_PUT_OUTSIDE, $mothCount);
 
         $quantitiesByItem = [];
 

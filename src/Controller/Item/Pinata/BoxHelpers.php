@@ -6,8 +6,8 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Functions\InventoryModifierFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -17,11 +17,12 @@ class BoxHelpers
      * @param Inventory[] $newInventory
      */
     public static function countRemoveFlushAndRespond(
-        string $messagePrefix, User $user, Inventory $inventory, array $newInventory,
+        string $messagePrefix,
+        UserStatsService $userStatsRepository, User $user, Inventory $inventory, array $newInventory,
         ResponseService $responseService, EntityManagerInterface $em
     ): JsonResponse
     {
-        UserStatsHelpers::incrementStat($em, $user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
+        $userStatsRepository->incrementStat($user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
 
         $itemList = array_map(fn(Inventory $i) => InventoryModifierFunctions::getNameWithModifiers($i), $newInventory);
         sort($itemList);

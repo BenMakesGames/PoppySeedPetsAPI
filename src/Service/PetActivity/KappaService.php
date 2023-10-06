@@ -12,13 +12,13 @@ use App\Functions\ActivityHelpers;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PlayerLogHelpers;
 use App\Functions\UserFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class KappaService
@@ -28,10 +28,11 @@ class KappaService
     private ResponseService $responseService;
     private InventoryService $inventoryService;
     private EntityManagerInterface $em;
+    private UserStatsService $userStatsRepository;
 
     public function __construct(
         IRandom $rng, PetExperienceService $petExperienceService, ResponseService $responseService,
-        InventoryService $inventoryService, EntityManagerInterface $em
+        InventoryService $inventoryService, EntityManagerInterface $em, UserStatsService $userStatsRepository
     )
     {
         $this->rng = $rng;
@@ -39,6 +40,7 @@ class KappaService
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->em = $em;
+        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function doHuntKappa(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -121,13 +123,13 @@ class KappaService
             $this->petExperienceService->gainAffection($pet, 2);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
 
-            UserStatsHelpers::incrementStat($this->em, $owner, UserStatEnum::PETTED_A_PET, 1);
+            $this->userStatsRepository->incrementStat($owner, UserStatEnum::PETTED_A_PET, 1);
 
             PlayerLogHelpers::create($this->em, $owner, ActivityHelpers::PetName($pet) . ' returned your Shirikodama! (Some Kappa must have stolen it!) You thank ' . ActivityHelpers::PetName($pet) . ' with pets and pats before swallowing the Shirikodama.', [
                 'Shirikodama',
             ]);
 
-            UserStatsHelpers::incrementStat($this->em, $pet->getOwner(), 'Returned a Shirikodama', 1);
+            $this->userStatsRepository->incrementStat($pet->getOwner(), 'Returned a Shirikodama', 1);
         }
         else if($this->rng->rngNextInt(1, 3) > 1)
         {
@@ -147,13 +149,13 @@ class KappaService
             $this->petExperienceService->gainAffection($pet, 2);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
-            UserStatsHelpers::incrementStat($this->em, $owner, UserStatEnum::PETTED_A_PET, 1);
+            $this->userStatsRepository->incrementStat($owner, UserStatEnum::PETTED_A_PET, 1);
 
             PlayerLogHelpers::create($this->em, $owner, ActivityHelpers::PetName($pet) . ' returned your Shirikodama! (Some Kappa must have stolen it!) You thank ' . ActivityHelpers::PetName($pet) . ' with pets and pats before swallowing the Shirikodama.', [
                 'Shirikodama',
             ]);
 
-            UserStatsHelpers::incrementStat($this->em, $pet->getOwner(), 'Returned a Shirikodama', 1);
+            $this->userStatsRepository->incrementStat($pet->getOwner(), 'Returned a Shirikodama', 1);
         }
         else
         {

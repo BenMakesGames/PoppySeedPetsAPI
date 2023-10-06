@@ -5,11 +5,11 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Functions\ArrayFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Repository\SpiceRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -36,7 +36,7 @@ class GnomesFavorController extends AbstractController
      */
     public function getQuint(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng
+        EntityManagerInterface $em, IRandom $rng, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -50,7 +50,7 @@ class GnomesFavorController extends AbstractController
         for($i = 0; $i < 2; $i++)
             $inventoryService->receiveItem('Quintessence', $user, $user, $user->getName() . ' got this from a Gnome\'s Favor.', $location);
 
-        UserStatsHelpers::incrementStat($em, $user, self::USER_STAT_NAME);
+        $userStatsRepository->incrementStat($user, self::USER_STAT_NAME);
 
         $em->remove($inventory);
 
@@ -67,7 +67,7 @@ class GnomesFavorController extends AbstractController
      */
     public function getFood(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $squirrel3, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -107,7 +107,7 @@ class GnomesFavorController extends AbstractController
             ;
         }
 
-        UserStatsHelpers::incrementStat($em, $user, self::USER_STAT_NAME);
+        $userStatsRepository->incrementStat($user, self::USER_STAT_NAME);
 
         $em->remove($inventory);
 
@@ -127,7 +127,7 @@ class GnomesFavorController extends AbstractController
      */
     public function getTreasure(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng
+        EntityManagerInterface $em, IRandom $rng, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -155,7 +155,7 @@ class GnomesFavorController extends AbstractController
         for($i = 0; $i < 3; $i++)
             $newInventory[] = $inventoryService->receiveItem($possibleItems[$i], $user, $user, $user->getName() . ' got this from a Gnome\'s Favor.', $location);
 
-        UserStatsHelpers::incrementStat($em, $user, self::USER_STAT_NAME);
+        $userStatsRepository->incrementStat($user, self::USER_STAT_NAME);
 
         $em->remove($inventory);
 

@@ -9,11 +9,11 @@ use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetActivityLogFactory;
-use App\Functions\UserStatsHelpers;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +31,7 @@ class BehattingScrollController extends AbstractController
      */
     public function readBehattingScroll(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, IRandom $squirrel3
+        PetRepository $petRepository, IRandom $squirrel3, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -53,7 +53,7 @@ class BehattingScrollController extends AbstractController
         if(!$merit)
             throw new \Exception('The ' . MeritEnum::BEHATTED . ' Merit does not exist! This is a terrible programming error. Someone please tell Ben.');
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 

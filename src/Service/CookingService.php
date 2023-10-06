@@ -11,7 +11,6 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Model\ItemQuantity;
 use App\Model\PrepareRecipeResults;
 use App\Repository\InventoryRepository;
@@ -24,19 +23,21 @@ class CookingService
     private RecipeRepository $recipeRepository;
     private InventoryService $inventoryService;
     private EntityManagerInterface $em;
+    private UserStatsService $userStatsRepository;
     private InventoryRepository $inventoryRepository;
     private RecipeAttemptedRepository $recipeAttemptedRepository;
     private IRandom $squirrel3;
 
     public function __construct(
         RecipeRepository $recipeRepository, InventoryService $inventoryService, EntityManagerInterface $em,
-        InventoryRepository $inventoryRepository, RecipeAttemptedRepository $recipeAttemptedRepository,
-        IRandom $squirrel3
+        UserStatsService $userStatsRepository, InventoryRepository $inventoryRepository,
+        RecipeAttemptedRepository $recipeAttemptedRepository, IRandom $squirrel3
     )
     {
         $this->recipeRepository = $recipeRepository;
         $this->inventoryService = $inventoryService;
         $this->em = $em;
+        $this->userStatsRepository = $userStatsRepository;
         $this->inventoryRepository = $inventoryRepository;
         $this->recipeAttemptedRepository = $recipeAttemptedRepository;
         $this->squirrel3 = $squirrel3;
@@ -222,7 +223,7 @@ class CookingService
             }
         }
 
-        UserStatsHelpers::incrementStat($this->em, $user, UserStatEnum::COOKED_SOMETHING, $multiple);
+        $this->userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING, $multiple);
 
         if($this->hasACookingBuddy($user))
         {
@@ -255,7 +256,7 @@ class CookingService
 
         $this->em->persist($knownRecipe);
 
-        UserStatsHelpers::incrementStat($this->em, $user, UserStatEnum::RECIPES_LEARNED_BY_COOKING_BUDDY);
+        $this->userStatsRepository->incrementStat($user, UserStatEnum::RECIPES_LEARNED_BY_COOKING_BUDDY);
 
         return true;
     }

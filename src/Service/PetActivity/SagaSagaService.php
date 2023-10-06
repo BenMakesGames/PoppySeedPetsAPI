@@ -10,11 +10,11 @@ use App\Enum\UserStatEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
-use App\Functions\UserStatsHelpers;
 use App\Repository\MeritRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class SagaSagaService
@@ -23,15 +23,19 @@ class SagaSagaService
     private InventoryService $inventoryService;
     private EntityManagerInterface $em;
     private ResponseService $responseService;
+    private UserStatsService $userStatsRepository;
 
     public function __construct(
-        IRandom $rng, InventoryService $inventoryService, EntityManagerInterface $em, ResponseService $responseService
+        IRandom $rng, InventoryService $inventoryService, EntityManagerInterface $em,
+        ResponseService $responseService,
+        UserStatsService $userStatsRepository
     )
     {
         $this->rng = $rng;
         $this->inventoryService = $inventoryService;
         $this->em = $em;
         $this->responseService = $responseService;
+        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function petCompletedSagaSaga(Pet $pet): bool
@@ -87,7 +91,7 @@ class SagaSagaService
 
         $this->responseService->setReloadPets(true);
 
-        UserStatsHelpers::incrementStat($this->em, $pet->getOwner(), UserStatEnum::COMPLETED_A_SAGA_SAGA);
+        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::COMPLETED_A_SAGA_SAGA);
 
         return true;
     }

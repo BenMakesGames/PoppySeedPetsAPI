@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,7 +26,7 @@ class PizzaBoxController extends AbstractController
      */
     public function openPizzaBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        EntityManagerInterface $em
+        UserStatsService $userStatsRepository, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -60,7 +61,7 @@ class PizzaBoxController extends AbstractController
             ;
         }
 
-        return BoxHelpers::countRemoveFlushAndRespond('You open the box, finding', $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('You open the box, finding', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
 }

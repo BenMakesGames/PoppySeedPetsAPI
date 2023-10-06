@@ -10,10 +10,10 @@ use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,7 +32,8 @@ class DonateController extends AbstractController
      */
     public function handle(
         ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository,
-        EntityManagerInterface $em, TransactionService $transactionService
+        EntityManagerInterface $em, UserStatsService $userStatsRepository,
+        TransactionService $transactionService
     ): JsonResponse
     {
         /** @var User $user */
@@ -101,7 +102,7 @@ class DonateController extends AbstractController
 
         $transactionService->getMuseumFavor($user, $totalMuseumPoints, 'You donated ' . $donationSummary . ' to the Museum.');
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM, count($inventory));
+        $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM, count($inventory));
 
         $em->flush();
 

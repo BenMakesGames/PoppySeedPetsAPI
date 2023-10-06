@@ -5,11 +5,11 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
-use App\Functions\UserStatsHelpers;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,7 +26,7 @@ class BurntLogController extends AbstractController
      */
     public function openBurntLog(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -38,7 +38,7 @@ class BurntLogController extends AbstractController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $stat = UserStatsHelpers::incrementStat($em, $user, UserStatEnum::BURNT_LOGS_BROKEN);
+        $stat = $userStatsRepository->incrementStat($user, UserStatEnum::BURNT_LOGS_BROKEN);
 
         $extraItem = ItemRepository::findOneByName($em, $squirrel3->rngNextFromArray([
             'Crooked Stick',

@@ -11,7 +11,6 @@ use App\Enum\SpiritCompanionStarEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
-use App\Functions\UserStatsHelpers;
 use App\Model\ParkEvent\TriDChessParticipant;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
@@ -20,6 +19,7 @@ use App\Service\ParkService;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
 use App\Service\TransactionService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class TriDChessService implements ParkEventInterface
@@ -48,11 +48,12 @@ class TriDChessService implements ParkEventInterface
     private InventoryService $inventoryService;
     private IRandom $squirrel3;
     private ParkService $parkService;
+    private UserStatsService $userStatsRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, PetRelationshipService $petRelationshipService,
         TransactionService $transactionService, InventoryService $inventoryService, IRandom $squirrel3,
-        ParkService $parkService
+        ParkService $parkService, UserStatsService $userStatsRepository
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -62,6 +63,7 @@ class TriDChessService implements ParkEventInterface
         $this->inventoryService = $inventoryService;
         $this->squirrel3 = $squirrel3;
         $this->parkService = $parkService;
+        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -265,7 +267,7 @@ class TriDChessService implements ParkEventInterface
                 $comment = $participant->pet->getName() . ' earned this by getting 1st place in a Tri-D Chess tournament!';
                 $this->transactionService->getMoney($participant->pet->getOwner(), $firstPlaceMoneys, $comment);
                 $this->inventoryService->petCollectsItem('Tri-D Chess Gold Trophy', $participant->pet, $comment, null);
-                UserStatsHelpers::incrementStat($this->em, $participant->pet->getOwner(), 'Gold Trophies Earned', 1);
+                $this->userStatsRepository->incrementStat($participant->pet->getOwner(), 'Gold Trophies Earned', 1);
 
                 $activityLogEntry = $participant->pet->getName() . ' played in a Tri-D chess tournament, and won! The whole thing!';
             }
@@ -281,7 +283,7 @@ class TriDChessService implements ParkEventInterface
                 $comment = $participant->pet->getName() . ' earned this by getting 2nd place in a Tri-D Chess tournament!';
                 $this->transactionService->getMoney($participant->pet->getOwner(), $secondPlaceMoneys, $comment);
                 $this->inventoryService->petCollectsItem('Tri-D Chess Silver Trophy', $participant->pet, $comment, null);
-                UserStatsHelpers::incrementStat($this->em, $participant->pet->getOwner(), 'Silver Trophies Earned', 1);
+                $this->userStatsRepository->incrementStat($participant->pet->getOwner(), 'Silver Trophies Earned', 1);
 
                 $this->results .= $participant->pet->getName() . ' got 2nd place, and ' . $secondPlaceMoneys . '~~m~~!';
             }

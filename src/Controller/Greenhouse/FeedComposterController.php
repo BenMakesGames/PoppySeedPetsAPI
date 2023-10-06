@@ -12,7 +12,6 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Functions\PlayerLogHelpers;
 use App\Functions\RequestFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\SpiceRepository;
@@ -20,6 +19,7 @@ use App\Service\GreenhouseService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -44,8 +44,8 @@ class FeedComposterController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function feedComposter(
-        ResponseService $responseService, Request $request,
-        InventoryService $inventoryService, EntityManagerInterface $em,
+        ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository,
+        InventoryService $inventoryService, EntityManagerInterface $em, UserStatsService $userStatsRepository,
         IRandom $squirrel3, GreenhouseService $greenhouseService
     ): JsonResponse
     {
@@ -109,7 +109,7 @@ class FeedComposterController extends AbstractController
         foreach($items as $item)
             $em->remove($item);
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::ITEMS_COMPOSTED, count($items));
+        $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_COMPOSTED, count($items));
 
         $user->getGreenhouse()
             ->setComposterFood($remainingFertilizer)

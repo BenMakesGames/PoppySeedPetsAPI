@@ -9,7 +9,6 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
-use App\Functions\UserStatsHelpers;
 use App\Model\PetChanges;
 use App\Model\SummoningScrollMonster;
 use App\Model\SummoningScrollMonsterElementEnum;
@@ -17,22 +16,25 @@ use App\Service\FieldGuideService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HouseMonsterService
 {
     private IRandom $squirrel3;
+    private UserStatsService $userStatsRepository;
     private InventoryService $inventoryService;
     private EntityManagerInterface $em;
     private PetExperienceService $petExperienceService;
     private FieldGuideService $fieldGuideService;
 
     public function __construct(
-        IRandom $squirrel3, InventoryService $inventoryService, EntityManagerInterface $em,
-        PetExperienceService $petExperienceService, FieldGuideService $fieldGuideService
+        IRandom $squirrel3, UserStatsService $userStatsRepository, InventoryService $inventoryService,
+        EntityManagerInterface $em, PetExperienceService $petExperienceService, FieldGuideService $fieldGuideService
     )
     {
         $this->squirrel3 = $squirrel3;
+        $this->userStatsRepository = $userStatsRepository;
         $this->inventoryService = $inventoryService;
         $this->em = $em;
         $this->petExperienceService = $petExperienceService;
@@ -189,12 +191,12 @@ class HouseMonsterService
         if($won)
         {
             $message = ArrayFunctions::list_nice($petNames) . ' got this by defeating ' . $monster->nameWithArticle . '.';
-            UserStatsHelpers::incrementStat($this->em, $user, 'Won Against Something... Unfriendly');
+            $this->userStatsRepository->incrementStat($user, 'Won Against Something... Unfriendly');
         }
         else
         {
             $message = ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'was' : 'were') . ' defeated by ' . $monster->nameWithArticle . ', but managed to ' . $grab . ' this during the fight.';
-            UserStatsHelpers::incrementStat($this->em, $user, 'Lost Against Something... Unfriendly');
+            $this->userStatsRepository->incrementStat($user, 'Lost Against Something... Unfriendly');
         }
 
         foreach($loot as $item)

@@ -4,11 +4,11 @@ namespace App\Controller\Item\Pinata;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
-use App\Functions\UserStatsHelpers;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,7 +25,7 @@ class HatBoxController extends AbstractController
      */
     public function openHatBox(
         Inventory $box, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $squirrel3
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -53,7 +53,7 @@ class HatBoxController extends AbstractController
             'Pizzaface',
         ]));
 
-        UserStatsHelpers::incrementStat($em, $user, 'Opened ' . $box->getItem()->getNameWithArticle());
+        $userStatsRepository->incrementStat($user, 'Opened ' . $box->getItem()->getNameWithArticle());
 
         if($hatItem->getName() === 'Gray Bow')
         {

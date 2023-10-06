@@ -7,13 +7,13 @@ use App\Enum\LocationEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
-use App\Functions\UserStatsHelpers;
 use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\GrocerService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -59,7 +59,7 @@ class GrocerController extends AbstractController
     public function buy(
         Request $request, ResponseService $responseService, GrocerService $grocerService,
         TransactionService $transactionService, InventoryService $inventoryService, EntityManagerInterface $em,
-        UserQuestRepository $userQuestRepository
+        UserStatsService $userStatsRepository, UserQuestRepository $userQuestRepository
     )
     {
         $buyTo = $request->request->getInt('location');
@@ -160,7 +160,7 @@ class GrocerController extends AbstractController
             }
         }
 
-        UserStatsHelpers::incrementStat($em, $user, 'Items Purchased from Grocer', $totalQuantity);
+        $userStatsRepository->incrementStat($user, 'Items Purchased from Grocer', $totalQuantity);
 
         if($now->format('Y-m-d') === $grocerItemsDay->getValue())
             $grocerItemsQuantity->setValue($grocerItemsQuantity->getValue() + $totalQuantity);

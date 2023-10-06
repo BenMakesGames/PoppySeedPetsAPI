@@ -12,7 +12,6 @@ use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ColorFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Repository\InventoryRepository;
 use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
@@ -23,6 +22,7 @@ use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
 use App\Service\StoryService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,7 +39,7 @@ class BugController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function squishBug(
-        Inventory $inventory, ResponseService $responseService,
+        Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
         EntityManagerInterface $em, UserQuestRepository $userQuestRepository
     )
     {
@@ -55,7 +55,7 @@ class BugController extends AbstractController
 
         $em->remove($inventory);
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::BUGS_SQUISHED);
+        $userStatsRepository->incrementStat($user, UserStatEnum::BUGS_SQUISHED);
 
         $em->flush();
 
@@ -67,7 +67,8 @@ class BugController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function putBugOutside(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
+        Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -77,8 +78,8 @@ class BugController extends AbstractController
 
         $em->remove($inventory);
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::BUGS_PUT_OUTSIDE);
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::ITEMS_RECYCLED);
+        $userStatsRepository->incrementStat($user, UserStatEnum::BUGS_PUT_OUTSIDE);
+        $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_RECYCLED);
 
         $em->flush();
 
@@ -90,7 +91,7 @@ class BugController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function feedBug(
-        Inventory $inventory, ResponseService $responseService,
+        Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
         EntityManagerInterface $em, Request $request, InventoryRepository $inventoryRepository,
         InventoryService $inventoryService, IRandom $squirrel3
     )
@@ -111,7 +112,7 @@ class BugController extends AbstractController
         switch($inventory->getItem()->getName())
         {
             case 'Centipede':
-                UserStatsHelpers::incrementStat($em, $user, UserStatEnum::EVOLVED_A_CENTIPEDE);
+                $userStatsRepository->incrementStat($user, UserStatEnum::EVOLVED_A_CENTIPEDE);
                 $inventory
                     ->changeItem(ItemRepository::findOneByName($em, 'Moth'))
                     ->addComment($user->getName() . ' fed this Centipede, allowing it to grow up into a beautiful... Moth.')
@@ -126,7 +127,7 @@ class BugController extends AbstractController
                 break;
 
             case 'Line of Ants':
-                UserStatsHelpers::incrementStat($em, $user, UserStatEnum::FED_A_LINE_OF_ANTS);
+                $userStatsRepository->incrementStat($user, UserStatEnum::FED_A_LINE_OF_ANTS);
 
                 if($item->getItem()->getName() === 'Ants on a Log')
                 {
@@ -178,7 +179,7 @@ class BugController extends AbstractController
 
         $em->remove($item);
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::BUGS_FED);
+        $userStatsRepository->incrementStat($user, UserStatEnum::BUGS_FED);
 
         $em->flush();
 

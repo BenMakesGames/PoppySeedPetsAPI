@@ -6,10 +6,10 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,7 +26,7 @@ class ResourcesController extends AbstractController
      */
     public function readResourcesScroll(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
-        ResponseService $responseService
+        ResponseService $responseService, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -50,7 +50,7 @@ class ResourcesController extends AbstractController
         $location = $inventory->getLocation();
         $locked = $inventory->getLockedToOwner();
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 
@@ -76,7 +76,7 @@ class ResourcesController extends AbstractController
      */
     public function readResourcesScrollForFood(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
-        ResponseService $responseService
+        ResponseService $responseService, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -98,7 +98,7 @@ class ResourcesController extends AbstractController
         $location = $inventory->getLocation();
         $locked = $inventory->getLockedToOwner();
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 

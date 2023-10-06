@@ -6,10 +6,10 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,7 +26,7 @@ class FruitScrollController extends AbstractController
      */
     public function invokeFruitScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        EntityManagerInterface $em
+        UserStatsService $userStatsRepository, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -41,7 +41,7 @@ class FruitScrollController extends AbstractController
 
         if($r === 1)
         {
-            UserStatsHelpers::incrementStat($em, $user, 'Misread a Scroll');
+            $userStatsRepository->incrementStat($user, 'Misread a Scroll');
 
             $pectin = $squirrel3->rngNextInt($squirrel3->rngNextInt(3, 5), $squirrel3->rngNextInt(6, 10));
             $location = $inventory->getLocation();
@@ -57,7 +57,7 @@ class FruitScrollController extends AbstractController
         }
         else if($r === 2 || $r === 3) // get a bunch of the same item
         {
-            UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+            $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
             $item = $squirrel3->rngNextFromArray([
                 'Pamplemousse', 'Blackberries', 'Bunch of Naners', 'Blueberries', 'Red',
@@ -84,7 +84,7 @@ class FruitScrollController extends AbstractController
         }
         else // get a bunch of different items
         {
-            UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+            $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
             $possibleItems = [
                 'Fruits & Veggies Box',

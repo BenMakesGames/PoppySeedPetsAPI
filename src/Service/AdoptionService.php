@@ -8,7 +8,6 @@ use App\Enum\UserStatEnum;
 use App\Functions\CalendarFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\DateFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Model\ChineseCalendarInfo;
 use App\Model\PetShelterPet;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,14 +15,16 @@ use Doctrine\ORM\EntityManagerInterface;
 class AdoptionService
 {
     private EntityManagerInterface $em;
+    private UserStatsService $userStatsRepository;
     private ChineseCalendarInfo $chineseCalendarInfo;
     private Clock $clock;
 
     public function __construct(
-        EntityManagerInterface $em, Clock $clock
+        EntityManagerInterface $em, UserStatsService $userStatsRepository, Clock $clock
     )
     {
         $this->em = $em;
+        $this->userStatsRepository = $userStatsRepository;
         $this->clock = $clock;
 
         $this->chineseCalendarInfo = CalendarFunctions::getChineseCalendarInfo($this->clock->now);
@@ -31,7 +32,7 @@ class AdoptionService
 
     public function getPetsAdopted(User $user): int
     {
-        return UserStatsHelpers::getStatValue($this->em, $user, UserStatEnum::PETS_ADOPTED);
+        return $this->userStatsRepository->getStatValue($user, UserStatEnum::PETS_ADOPTED);
     }
 
     public function getAdoptionFee(User $user): int

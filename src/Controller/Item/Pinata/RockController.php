@@ -4,10 +4,10 @@ namespace App\Controller\Item\Pinata;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
-use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,7 +24,7 @@ class RockController extends AbstractController
      */
     public function smash(
         Inventory $rock, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        EntityManagerInterface $em
+        UserStatsService $userStatsRepository, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -53,7 +53,7 @@ class RockController extends AbstractController
             'Striped Microcline',
         ]);
 
-        UserStatsHelpers::incrementStat($em, $user, 'Smashed Open a ' . $rock->getItem()->getName());
+        $userStatsRepository->incrementStat($user, 'Smashed Open a ' . $rock->getItem()->getName());
 
         $ore = $squirrel3->rngNextFromArray($ores);
         $extraItem = $squirrel3->rngNextFromArray($extraItems);

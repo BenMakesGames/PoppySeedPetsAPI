@@ -9,13 +9,13 @@ use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
 use App\Exceptions\PSPNotFoundException;
-use App\Functions\UserStatsHelpers;
 use App\Repository\InventoryRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +41,8 @@ class PhilosophersStoneController extends AbstractController
      */
     public function useStone(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
-        PetFactory $petFactory, Request $request, InventoryRepository $inventoryRepository
+        PetFactory $petFactory, Request $request, InventoryRepository $inventoryRepository,
+        UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -67,7 +68,7 @@ class PhilosophersStoneController extends AbstractController
         if(!$species)
             throw new \Exception('Something has gone terribly wrong. Ben has been notified; hopefully he\'ll fix it within a few hours...');
 
-        UserStatsHelpers::incrementStat($em, $user, 'Philosopher\'s Stones Used');
+        $userStatsRepository->incrementStat($user, 'Philosopher\'s Stones Used');
 
         $message = 'The ' . $plushy->getFullItemName() . ' has been brought to life!';
 

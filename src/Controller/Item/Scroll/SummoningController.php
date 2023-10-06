@@ -7,11 +7,11 @@ use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Enum\UserStatEnum;
-use App\Functions\UserStatsHelpers;
 use App\Model\SummoningScrollMonster;
 use App\Service\IRandom;
 use App\Service\PetActivity\HouseMonsterService;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -29,7 +29,7 @@ class SummoningController extends AbstractController
      */
     public function summonSomethingUnfriendly(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        HouseMonsterService $houseMonsterService, IRandom $squirrel3
+        HouseMonsterService $houseMonsterService, IRandom $squirrel3, UserStatsService $userStatsRepository
     ): JsonResponse
     {
         /** @var User $user */
@@ -60,7 +60,7 @@ class SummoningController extends AbstractController
 
         $result = $houseMonsterService->doFight('You read the scroll', $petsAtHome, $monster);
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $em->flush();
 

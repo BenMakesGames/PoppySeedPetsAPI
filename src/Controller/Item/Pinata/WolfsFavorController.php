@@ -11,10 +11,10 @@ use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
-use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -75,7 +75,7 @@ class WolfsFavorController extends AbstractController
      */
     public function getFluffAndTalons(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng
+        EntityManagerInterface $em, IRandom $rng, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -100,7 +100,7 @@ class WolfsFavorController extends AbstractController
         foreach($loot as $item)
             $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a Wolf\'s Favor.', $location);
 
-        UserStatsHelpers::incrementStat($em, $user, self::USER_STAT_NAME);
+        $userStatsRepository->incrementStat($user, self::USER_STAT_NAME);
 
         $em->remove($inventory);
 
@@ -115,7 +115,7 @@ class WolfsFavorController extends AbstractController
      */
     public function getMoonStuff(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -135,7 +135,7 @@ class WolfsFavorController extends AbstractController
         foreach($loot as $item)
             $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a Wolf\'s Favor.', $location);
 
-        UserStatsHelpers::incrementStat($em, $user, self::USER_STAT_NAME);
+        $userStatsRepository->incrementStat($user, self::USER_STAT_NAME);
 
         $em->remove($inventory);
 

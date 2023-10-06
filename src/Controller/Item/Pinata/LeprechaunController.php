@@ -6,10 +6,10 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,7 +26,7 @@ class LeprechaunController extends AbstractController
      */
     public function lootPotOfGold(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -37,7 +37,7 @@ class LeprechaunController extends AbstractController
 
         $em->remove($inventory);
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::LOOTED_A_POT_OF_GOLD);
+        $userStatsRepository->incrementStat($user, UserStatEnum::LOOTED_A_POT_OF_GOLD);
 
         $location = $inventory->getLocation();
         $locked = $inventory->getLockedToOwner();
@@ -61,7 +61,7 @@ class LeprechaunController extends AbstractController
      */
     public function readGreenScroll(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
-        ResponseService $responseService
+        ResponseService $responseService, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -70,8 +70,8 @@ class LeprechaunController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'leprechaun/greenScroll/#/read');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
-        UserStatsHelpers::incrementStat($em, $user, 'Read ' . $inventory->getItem()->getNameWithArticle());
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, 'Read ' . $inventory->getItem()->getNameWithArticle());
 
         $numberOfItems = 3;
 

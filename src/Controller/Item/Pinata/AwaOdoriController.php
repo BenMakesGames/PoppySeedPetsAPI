@@ -6,6 +6,7 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,7 +23,7 @@ class AwaOdoriController extends AbstractController
      */
     public function openBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em
+        UserStatsService $userStatsRepository, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -42,7 +43,7 @@ class AwaOdoriController extends AbstractController
             $inventoryService->receiveItem('Music Note', $user, $user, $comment, $location, $lockedToOwner),
         ];
 
-        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
 }

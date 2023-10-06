@@ -17,7 +17,6 @@ use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\GrammarFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Repository\EnchantmentRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\FieldGuideService;
@@ -29,6 +28,7 @@ use App\Service\PetActivity\GreenhouseAdventureService;
 use App\Service\PetActivity\NoetalaAdventureService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -46,7 +46,7 @@ class HarvestPlantController extends AbstractController
      */
     public function harvestPlant(
         GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService,
+        InventoryService $inventoryService, UserStatsService $userStatsRepository,
         UserQuestRepository $userQuestRepository, GreenhouseAdventureService $greenhouseAdventureService,
         GreenhouseService $greenhouseService, IRandom $squirrel3, FieldGuideService $fieldGuideService,
         HattierService $hattierService, TransactionService $transactionService,
@@ -202,7 +202,7 @@ class HarvestPlantController extends AbstractController
                 $message = 'You harvested ' . ArrayFunctions::list_nice_quantities($lootList) . '!';
         }
 
-        $plantsHarvested = UserStatsHelpers::incrementStat($em, $user, UserStatEnum::HARVESTED_PLANT);
+        $plantsHarvested = $userStatsRepository->incrementStat($user, UserStatEnum::HARVESTED_PLANT);
 
         if($plantsHarvested->getValue() === 3)
         {

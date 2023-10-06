@@ -10,7 +10,6 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Functions\ArrayFunctions;
 use App\Functions\ProfanityFilterFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Model\PetShelterPet;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
@@ -20,6 +19,7 @@ use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,9 +36,10 @@ class AdoptController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function adoptPet(
-        int $id, AdoptionService $adoptionService, Request $request, PetFactory $petFactory,
-        ResponseService $responseService, EntityManagerInterface $em, UserQuestRepository $userQuestRepository,
-        TransactionService $transactionService, IRandom $squirrel3, MeritRepository $meritRepository
+        int $id, AdoptionService $adoptionService, Request $request,
+        ResponseService $responseService, EntityManagerInterface $em, UserStatsService $userStatsRepository,
+        UserQuestRepository $userQuestRepository, TransactionService $transactionService, IRandom $squirrel3,
+        MeritRepository $meritRepository, PetFactory $petFactory
     )
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');
@@ -90,7 +91,7 @@ class AdoptController extends AbstractController
 
         $transactionService->spendMoney($user, $costToAdopt, 'Adopted a new pet.');
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::PETS_ADOPTED, 1);
+        $userStatsRepository->incrementStat($user, UserStatEnum::PETS_ADOPTED, 1);
 
         $now = (new \DateTimeImmutable())->format('Y-m-d');
 

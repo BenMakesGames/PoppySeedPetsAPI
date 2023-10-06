@@ -11,10 +11,10 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\GrammarFunctions;
 use App\Functions\PlayerLogHelpers;
-use App\Functions\UserStatsHelpers;
 use App\Repository\InventoryRepository;
 use App\Service\GreenhouseService;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,7 +33,8 @@ class FertilizePlantController extends AbstractController
      */
     public function fertilizePlant(
         GreenhousePlant $plant, ResponseService $responseService, Request $request, EntityManagerInterface $em,
-        InventoryRepository $inventoryRepository, GreenhouseService $greenhouseService
+        InventoryRepository $inventoryRepository, UserStatsService $userStatsRepository,
+        GreenhouseService $greenhouseService
     ): JsonResponse
     {
         /** @var User $user */
@@ -58,7 +59,7 @@ class FertilizePlantController extends AbstractController
 
         $plant->increaseGrowth($fertilizer->getItem()->getFertilizer());
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::FERTILIZED_PLANT);
+        $userStatsRepository->incrementStat($user, UserStatEnum::FERTILIZED_PLANT);
 
         $plantNameArticle = GrammarFunctions::indefiniteArticle($plant->getPlant()->getName());
 

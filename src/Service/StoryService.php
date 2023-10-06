@@ -12,7 +12,6 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\ItemQuantity;
 use App\Model\StoryStep;
@@ -30,6 +29,7 @@ class StoryService
     private InventoryService $inventoryService;
     private InventoryRepository $inventoryRepository;
     private JsonLogicParserService $jsonLogicParserService;
+    private UserStatsService $userStatsRepository;
     private ResponseService $responseService;
     private MuseumService $museumService;
 
@@ -42,8 +42,9 @@ class StoryService
     private Inventory $callingInventory;
 
     public function __construct(
-        EntityManagerInterface $em, UserQuestRepository $userQuestRepository, InventoryService $inventoryService,
-        JsonLogicParserService $jsonLogicParserService, InventoryRepository $inventoryRepository,
+        EntityManagerInterface $em, UserQuestRepository $userQuestRepository,
+        InventoryService $inventoryService, JsonLogicParserService $jsonLogicParserService,
+        UserStatsService $userStatsRepository, InventoryRepository $inventoryRepository,
         ResponseService $responseService, MuseumService $museumService
     )
     {
@@ -51,6 +52,7 @@ class StoryService
         $this->userQuestRepository = $userQuestRepository;
         $this->inventoryService = $inventoryService;
         $this->jsonLogicParserService = $jsonLogicParserService;
+        $this->userStatsRepository = $userStatsRepository;
         $this->inventoryRepository = $inventoryRepository;
         $this->responseService = $responseService;
         $this->museumService = $museumService;
@@ -268,7 +270,7 @@ class StoryService
                 break;
 
             case StoryActionTypeEnum::INCREMENT_STAT:
-                UserStatsHelpers::incrementStat($this->em, $this->user, $action['stat'], array_key_exists('change', $action) ? $action['change'] : 1);
+                $this->userStatsRepository->incrementStat($this->user, $action['stat'], array_key_exists('change', $action) ? $action['change'] : 1);
                 break;
 
             case StoryActionTypeEnum::SET_QUEST_VALUE:

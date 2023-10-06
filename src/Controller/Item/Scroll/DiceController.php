@@ -5,10 +5,10 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
-use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,7 +25,7 @@ class DiceController extends AbstractController
      */
     public function readScrollOfDice(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -74,7 +74,7 @@ class DiceController extends AbstractController
             $inventoryService->receiveItem($die, $user, $user, $user->getName() . ' found this in ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
         }
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 

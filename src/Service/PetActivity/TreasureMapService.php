@@ -22,7 +22,6 @@ use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
-use App\Functions\UserStatsHelpers;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -32,11 +31,13 @@ use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class TreasureMapService
 {
     private InventoryService $inventoryService;
+    private UserStatsService $userStatsRepository;
     private EntityManagerInterface $em;
     private PetExperienceService $petExperienceService;
     private UserQuestRepository $userQuestRepository;
@@ -44,11 +45,13 @@ class TreasureMapService
     private HouseSimService $houseSimService;
 
     public function __construct(
-        InventoryService $inventoryService, EntityManagerInterface $em, PetExperienceService $petExperienceService,
-        UserQuestRepository $userQuestRepository, IRandom $squirrel3, HouseSimService $houseSimService
+        InventoryService $inventoryService, UserStatsService $userStatsRepository, EntityManagerInterface $em,
+        PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository, IRandom $squirrel3,
+        HouseSimService $houseSimService
     )
     {
         $this->inventoryService = $inventoryService;
+        $this->userStatsRepository = $userStatsRepository;
         $this->em = $em;
         $this->petExperienceService = $petExperienceService;
         $this->userQuestRepository = $userQuestRepository;
@@ -396,7 +399,7 @@ class TreasureMapService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
         ;
 
-        UserStatsHelpers::incrementStat($this->em, $pet->getOwner(), UserStatEnum::BUGS_PUT_OUTSIDE);
+        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::BUGS_PUT_OUTSIDE);
 
         foreach($loot as $itemName)
             $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' got this from ' . $location . ', which they found by following a Fruit Fly on a String.', $activityLog);
@@ -419,7 +422,7 @@ class TreasureMapService
             $this->houseSimService->getState()->loseItem('Fluff', 1);
 
             // had fluff!
-            $fluffTradedStat = UserStatsHelpers::incrementStat($this->em, $pet->getOwner(), UserStatEnum::TRADED_WITH_THE_FLUFFMONGER);
+            $fluffTradedStat = $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::TRADED_WITH_THE_FLUFFMONGER);
 
             $fluffmongerSpecialTrades = [
                 'Behatting Scroll' => 20,

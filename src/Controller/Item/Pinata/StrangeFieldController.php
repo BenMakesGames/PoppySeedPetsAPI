@@ -6,10 +6,11 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
+use App\Service\RecyclingService;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +27,7 @@ class StrangeFieldController extends AbstractController
      */
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, RecyclingService $recyclingService, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -37,7 +38,7 @@ class StrangeFieldController extends AbstractController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::STRANGE_FIELDS_COLLAPSED);
+        $userStatsRepository->incrementStat($user, UserStatEnum::STRANGE_FIELDS_COLLAPSED);
 
         $possibleItems = [
             'Tachyon', 'Photon',

@@ -8,9 +8,9 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
-use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +29,7 @@ class CollectWeeklyCarePackageController extends AbstractController
      */
     public function collectWeeklyBox(
         Request $request, EntityManagerInterface $em, ResponseService $responseService,
-        InventoryService $inventoryService
+        InventoryService $inventoryService, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -42,7 +42,7 @@ class CollectWeeklyCarePackageController extends AbstractController
         if($days < 7)
             throw new PSPInvalidOperationException('It\'s too early to collect your weekly Care Package.');
 
-        $itemsDonated = UserStatsHelpers::getStatValue($em, $user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM);
+        $itemsDonated = $userStatsRepository->getStatValue($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM);
 
         $canGetHandicraftsBox = $itemsDonated >= 100;
         $canGetFishBag = $itemsDonated >= 450;
@@ -73,7 +73,7 @@ class CollectWeeklyCarePackageController extends AbstractController
 
         $user->setLastAllowanceCollected($user->getLastAllowanceCollected()->modify('+' . (floor($days / 7) * 7) . ' days'));
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::PLAZA_BOXES_RECEIVED, 1);
+        $userStatsRepository->incrementStat($user, UserStatEnum::PLAZA_BOXES_RECEIVED, 1);
 
         $em->flush();
 

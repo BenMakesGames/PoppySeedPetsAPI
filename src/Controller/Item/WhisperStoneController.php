@@ -5,13 +5,13 @@ use App\Entity\Inventory;
 use App\Entity\Recipe;
 use App\Entity\User;
 use App\Functions\ArrayFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Model\ItemQuantity;
 use App\Repository\ItemRepository;
 use App\Repository\RecipeRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,7 +28,8 @@ class WhisperStoneController extends AbstractController
      */
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
-        RecipeRepository $recipeRepository, InventoryService $inventoryService
+        RecipeRepository $recipeRepository, InventoryService $inventoryService,
+        UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -92,7 +93,7 @@ class WhisperStoneController extends AbstractController
             'To make ' . $recipes[1]->getName() . ', combine ' . $ingredients[1] . ".\"\n\n"
         ;
 
-        $stat = UserStatsHelpers::incrementStat($em, $user, 'Listened to a Whisper Stone');
+        $stat = $userStatsRepository->incrementStat($user, 'Listened to a Whisper Stone');
 
         if($stat->getValue() === 1)
             $message .= 'Wait, aren\'t Whisper Stones supposed to reveal dark secrets from the spirit world?';

@@ -5,11 +5,11 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
-use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,7 +26,8 @@ class RichesController extends AbstractController
      */
     public function invokeMinorRichesScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, TransactionService $transactionService, IRandom $squirrel3
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService,
+        IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -36,7 +37,7 @@ class RichesController extends AbstractController
 
         $em->remove($inventory);
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $moneys = $squirrel3->rngNextInt(30, 50);
 
@@ -63,7 +64,7 @@ class RichesController extends AbstractController
      */
     public function invokeMajorRichesScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        EntityManagerInterface $em, TransactionService $transactionService
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
     )
     {
         /** @var User $user */
@@ -73,7 +74,7 @@ class RichesController extends AbstractController
 
         $em->remove($inventory);
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $moneys = $squirrel3->rngNextInt(60, 100);
 

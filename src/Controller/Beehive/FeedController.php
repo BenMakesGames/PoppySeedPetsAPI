@@ -9,10 +9,10 @@ use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
-use App\Functions\UserStatsHelpers;
 use App\Service\BeehiveService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,7 +30,7 @@ class FeedController extends AbstractController
      */
     public function feedItem(
         ResponseService $responseService, EntityManagerInterface $em, BeehiveService $beehiveService,
-        InventoryService $inventoryService, Request $request
+        InventoryService $inventoryService, Request $request, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -67,7 +67,7 @@ class FeedController extends AbstractController
         $beehiveService->fedRequestedItem($beehive, $alternate);
         $beehive->setInteractionPower();
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::FED_THE_BEEHIVE);
+        $userStatsRepository->incrementStat($user, UserStatEnum::FED_THE_BEEHIVE);
 
         $em->flush();
 

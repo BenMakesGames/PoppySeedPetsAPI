@@ -9,12 +9,13 @@ use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
-use App\Functions\UserStatsHelpers;
+use App\Functions\InMemoryCache;
 use App\Model\TraderOfferCostOrYield;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,7 +33,8 @@ final class Claim extends AbstractController
      */
     public function claim(
         ResponseService $responseService, Request $request, EntityManagerInterface $em,
-        InventoryService $inventoryService, TransactionService $transactionService, IRandom $rng
+        UserStatsService $userStatsRepository, InventoryService $inventoryService,
+        TransactionService $transactionService, IRandom $rng
     )
     {
         /** @var User $user */
@@ -43,7 +45,7 @@ final class Claim extends AbstractController
         if(!$badge || !BadgeEnum::isAValue($badge))
             throw new PSPFormValidationException('Which achievement?');
 
-        $progress = BadgeHelpers::getBadgeProgress($badge, $user, $em);
+        $progress = BadgeHelpers::getBadgeProgress($badge, $user, $em, new InMemoryCache());
 
         if(!$progress['done'])
             throw new PSPInvalidOperationException('You are not eligible to claim that achievement.');
@@ -55,7 +57,7 @@ final class Claim extends AbstractController
 
         $em->persist($badge);
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::ACHIEVEMENTS_CLAIMED);
+        $userStatsRepository->incrementStat($user, UserStatEnum::ACHIEVEMENTS_CLAIMED);
 
         self::getAchievementReward($user, $progress['reward'], $inventoryService, $transactionService);
 

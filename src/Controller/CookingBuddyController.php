@@ -9,13 +9,13 @@ use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
-use App\Functions\UserStatsHelpers;
 use App\Model\ItemQuantity;
 use App\Repository\InventoryRepository;
 use App\Service\CookingService;
 use App\Service\Filter\KnownRecipesFilterService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -111,7 +111,7 @@ class CookingBuddyController extends AbstractController
      */
     public function prepareRecipeFromMemory(
         Inventory $cookingBuddy, KnownRecipes $knownRecipe, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, InventoryRepository $inventoryRepository,
+        InventoryService $inventoryService, InventoryRepository $inventoryRepository, UserStatsService $userStatsRepository,
         CookingService $cookingService, Request $request, int $quantity = 1
     )
     {
@@ -155,7 +155,7 @@ class CookingBuddyController extends AbstractController
 
         $results = $cookingService->prepareRecipe($user, $inventoryToUse);
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::COOKED_SOMETHING);
+        $userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING);
 
         $em->flush();
 

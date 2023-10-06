@@ -5,12 +5,12 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Service\HotPotatoService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,7 +27,8 @@ class HotPotatoController extends AbstractController
      */
     public function toss(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, IRandom $squirrel3, HotPotatoService $hotPotatoService
+        InventoryService $inventoryService, IRandom $squirrel3, HotPotatoService $hotPotatoService,
+        UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -76,7 +77,7 @@ class HotPotatoController extends AbstractController
         }
         else
         {
-            UserStatsHelpers::incrementStat($em, $user, UserStatEnum::TOSSED_A_HOT_POTATO);
+            $userStatsRepository->incrementStat($user, UserStatEnum::TOSSED_A_HOT_POTATO);
 
             return $hotPotatoService->tossItem($inventory);
         }

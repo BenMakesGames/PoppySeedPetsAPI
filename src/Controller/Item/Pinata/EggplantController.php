@@ -5,10 +5,10 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
-use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,7 +25,7 @@ class EggplantController extends AbstractController
      */
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -77,11 +77,11 @@ class EggplantController extends AbstractController
                 $newItem->setSpice($inventory->getSpice());
             }
 
-            UserStatsHelpers::incrementStat($em, $user, UserStatEnum::EGGS_HARVESTED_FROM_EGGPLANTS, $eggs);
+            $userStatsRepository->incrementStat($user, UserStatEnum::EGGS_HARVESTED_FROM_EGGPLANTS, $eggs);
         }
         else
         {
-            UserStatsHelpers::incrementStat($em, $user, UserStatEnum::ROTTEN_EGGPLANTS, 1);
+            $userStatsRepository->incrementStat($user, UserStatEnum::ROTTEN_EGGPLANTS, 1);
         }
 
         if($squirrel3->rngNextInt(1, 100) === 1)

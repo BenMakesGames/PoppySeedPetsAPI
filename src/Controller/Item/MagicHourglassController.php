@@ -6,11 +6,11 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\UserStatEnum;
-use App\Functions\UserStatsHelpers;
 use App\Service\HouseService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,7 +27,8 @@ class MagicHourglassController extends AbstractController
      */
     public function shatter(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        HouseService $houseService, EntityManagerInterface $em, IRandom $squirrel3
+        HouseService $houseService, UserStatsService $userStatsRepository, EntityManagerInterface $em,
+        IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -49,7 +50,7 @@ class MagicHourglassController extends AbstractController
 
         $em->remove($inventory);
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::MAGIC_HOURGLASSES_SMASHED);
+        $userStatsRepository->incrementStat($user, UserStatEnum::MAGIC_HOURGLASSES_SMASHED);
 
         $query = $em->createQuery('
             UPDATE App\Entity\PetHouseTime AS ht

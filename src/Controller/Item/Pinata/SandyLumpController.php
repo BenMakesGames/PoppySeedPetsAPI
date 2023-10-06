@@ -4,11 +4,11 @@ namespace App\Controller\Item\Pinata;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
-use App\Functions\UserStatsHelpers;
 use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,7 +25,7 @@ class SandyLumpController extends AbstractController
      */
     public function clean(
         Inventory $lump, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        EntityManagerInterface $em
+        UserStatsService $userStatsRepository, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -59,7 +59,7 @@ class SandyLumpController extends AbstractController
 
         $itemObject = ItemRepository::findOneByName($em, $item);
 
-        UserStatsHelpers::incrementStat($em, $user, 'Cleaned a ' . $lump->getItem()->getName());
+        $userStatsRepository->incrementStat($user, 'Cleaned a ' . $lump->getItem()->getName());
 
         if($item === 'Silica Grounds')
         {

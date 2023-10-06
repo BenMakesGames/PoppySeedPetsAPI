@@ -19,7 +19,6 @@ use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
-use App\Functions\UserStatsHelpers;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\PetChanges;
 use App\Repository\HollowEarthTileRepository;
@@ -33,6 +32,7 @@ class HollowEarthService
     private PetExperienceService $petExperienceService;
     private TransactionService $transactionService;
     private ResponseService $responseService;
+    private UserStatsService $userStatsRepository;
     private IRandom $rng;
 
     public const DICE_ITEMS = [
@@ -49,7 +49,8 @@ class HollowEarthService
     public function __construct(
         HollowEarthTileRepository $hollowEarthTileRepository, EntityManagerInterface $em,
         InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, ResponseService $responseService, IRandom $rng
+        TransactionService $transactionService, ResponseService $responseService,
+        UserStatsService $userStatsRepository, IRandom $rng
     )
     {
         $this->hollowEarthTileRepository = $hollowEarthTileRepository;
@@ -58,6 +59,7 @@ class HollowEarthService
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
         $this->responseService = $responseService;
+        $this->userStatsRepository = $userStatsRepository;
         $this->rng = $rng;
     }
 
@@ -237,7 +239,7 @@ class HollowEarthService
             ->setCurrentAction($action)
         ;
 
-        UserStatsHelpers::incrementStat($this->em, $player->getUser(), UserStatEnum::HOLLOW_EARTH_SPACES_MOVED, $movesRemaining - $player->getMovesRemaining());
+        $this->userStatsRepository->incrementStat($player->getUser(), UserStatEnum::HOLLOW_EARTH_SPACES_MOVED, $movesRemaining - $player->getMovesRemaining());
     }
 
     private function getNextTile(HollowEarthPlayer $player): HollowEarthTile

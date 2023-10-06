@@ -8,11 +8,11 @@ use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Service\FloristService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,7 +45,7 @@ class FloristController extends AbstractController
      */
     public function buyFlowerbomb(
         Request $request, FloristService $floristService,
-        InventoryService $inventoryService, ResponseService $responseService,
+        InventoryService $inventoryService, ResponseService $responseService, UserStatsService $userStatsRepository,
         EntityManagerInterface $em, TransactionService $transactionService
     )
     {
@@ -72,7 +72,7 @@ class FloristController extends AbstractController
 
         $statName = $userPick['item']['name'] . 's Purchased';
 
-        $stat = UserStatsHelpers::incrementStat($em, $user, $statName);
+        $stat = $userStatsRepository->incrementStat($user, $statName);
 
         if($userPick['item']['name'] === 'Flowerbomb' && $stat->getValue() === 1)
             $inventoryService->receiveItem('Book of Flowers', $user, $user, 'This was delivered to you from The Florist\'s.', LocationEnum::HOME, true);

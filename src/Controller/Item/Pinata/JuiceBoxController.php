@@ -5,10 +5,10 @@ namespace App\Controller\Item\Pinata;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
-use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,7 +25,7 @@ class JuiceBoxController extends AbstractController
      */
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng
+        EntityManagerInterface $em, IRandom $rng, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -34,7 +34,7 @@ class JuiceBoxController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'juiceBox/#/open');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
-        $juiceBoxesOpened = UserStatsHelpers::incrementStat($em, $user, 'Juice Boxes Opened', 1)->getValue();
+        $juiceBoxesOpened = $userStatsRepository->incrementStat($user, 'Juice Boxes Opened', 1)->getValue();
 
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();

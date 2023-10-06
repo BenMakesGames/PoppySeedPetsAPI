@@ -16,7 +16,6 @@ use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\InventoryModifierFunctions;
 use App\Functions\PetActivityLogFactory;
-use App\Functions\UserStatsHelpers;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
 use App\Repository\PetRepository;
@@ -25,6 +24,7 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -117,7 +117,7 @@ class DragonVaseController extends AbstractController
      */
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
-        UserQuestRepository $userQuestRepository, Request $request
+        UserQuestRepository $userQuestRepository, Request $request, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -150,7 +150,7 @@ class DragonVaseController extends AbstractController
 
         $usedDragonVase->setValue($today);
 
-        $dippingStat = UserStatsHelpers::incrementStat($em, $user, UserStatEnum::TOOLS_DIPPED_IN_A_DRAGON_VASE);
+        $dippingStat = $userStatsRepository->incrementStat($user, UserStatEnum::TOOLS_DIPPED_IN_A_DRAGON_VASE);
 
         // Dragon Vase-only bonuses
         $possibleBonuses = [

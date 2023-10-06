@@ -40,15 +40,4 @@ class UserBadgeRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-
-    public function getClaimedBadgeNames(User $owner)
-    {
-        return $this->createQueryBuilder('b')
-            ->select('b.badge')
-            ->andWhere('b.user = :user')
-            ->setParameter('user', $owner)
-            ->getQuery()
-            ->getSingleColumnResult()
-        ;
-    }
 }

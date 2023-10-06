@@ -10,12 +10,12 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\GrammarFunctions;
 use App\Functions\InventoryModifierFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Repository\InventoryRepository;
 use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,7 +33,8 @@ class HotPotController extends AbstractController
      */
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
-        UserQuestRepository $userQuestRepository, Request $request, InventoryRepository $inventoryRepository
+        UserQuestRepository $userQuestRepository, Request $request, InventoryRepository $inventoryRepository,
+        UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -66,7 +67,7 @@ class HotPotController extends AbstractController
 
         $usedHotPot->setValue($today);
 
-        $dippingStat = UserStatsHelpers::incrementStat($em, $user, UserStatEnum::FOODS_DIPPED_IN_A_HOT_POT);
+        $dippingStat = $userStatsRepository->incrementStat($user, UserStatEnum::FOODS_DIPPED_IN_A_HOT_POT);
 
         // Hot Pot-only spices
         $possibleSpices = [

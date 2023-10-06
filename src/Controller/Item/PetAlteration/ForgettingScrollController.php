@@ -14,11 +14,11 @@ use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\EquipmentFunctions;
 use App\Functions\MeritFunctions;
 use App\Functions\PetActivityLogFactory;
-use App\Functions\UserStatsHelpers;
 use App\Model\MeritInfo;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,7 +69,7 @@ class ForgettingScrollController extends AbstractController
      */
     public function forgetMerit(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository
+        PetRepository $petRepository, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -103,7 +103,7 @@ class ForgettingScrollController extends AbstractController
                 throw new PSPInvalidOperationException('That merit cannot be unlearned.');
         }
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 
@@ -148,7 +148,7 @@ class ForgettingScrollController extends AbstractController
      */
     public function forgetSkill(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository
+        PetRepository $petRepository, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -173,7 +173,7 @@ class ForgettingScrollController extends AbstractController
         if($pet->getSkills()->getStat($skill) < 1)
             throw new PSPInvalidOperationException($pet->getName() . ' does not have any points of ' . $skill . ' to unlearn.');
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 

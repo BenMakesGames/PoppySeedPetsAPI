@@ -8,23 +8,24 @@ use App\Enum\UserStatEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
-use App\Functions\UserStatsHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 
 class RecyclingService
 {
     private EntityManagerInterface $em;
+    private UserStatsService $userStatsRepository;
     private IRandom $squirrel3;
     private ResponseService $responseService;
     private TransactionService $transactionService;
     private Clock $clock;
 
     public function __construct(
-        EntityManagerInterface $em, IRandom $squirrel3, ResponseService $responseService,
-        TransactionService $transactionService, Clock $clock
+        EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $squirrel3,
+        ResponseService $responseService, TransactionService $transactionService, Clock $clock
     )
     {
         $this->em = $em;
+        $this->userStatsRepository = $userStatsRepository;
         $this->squirrel3 = $squirrel3;
         $this->responseService = $responseService;
         $this->transactionService = $transactionService;
@@ -80,7 +81,7 @@ class RecyclingService
 
             if($i->getItem()->hasUseAction('bug/#/putOutside'))
             {
-                UserStatsHelpers::incrementStat($this->em, $user, UserStatEnum::BUGS_PUT_OUTSIDE);
+                $this->userStatsRepository->incrementStat($user, UserStatEnum::BUGS_PUT_OUTSIDE);
                 $this->em->remove($i);
                 continue;
             }
@@ -106,7 +107,7 @@ class RecyclingService
 
         if($totalRecyclingPointsEarned > 0 || $totalItemsRecycled > 0)
         {
-            UserStatsHelpers::incrementStat($this->em, $user, UserStatEnum::ITEMS_RECYCLED, $totalItemsRecycled);
+            $this->userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_RECYCLED, $totalItemsRecycled);
 
             $this->transactionService->getRecyclingPoints(
                 $user,

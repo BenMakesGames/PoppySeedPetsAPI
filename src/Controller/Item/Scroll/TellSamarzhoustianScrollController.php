@@ -6,10 +6,10 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,8 +25,8 @@ class TellSamarzhoustianScrollController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function read(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
-        ResponseService $responseService
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
+        ResponseService $responseService, IRandom $squirrel3, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -80,7 +80,7 @@ class TellSamarzhoustianScrollController extends AbstractController
             $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
         }
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $em->flush();
 

@@ -12,13 +12,13 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetColorFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -121,7 +121,7 @@ class HouseFairyController extends AbstractController
      */
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryRepository $inventoryRepository, IRandom $squirrel3,
+        InventoryRepository $inventoryRepository, UserStatsService $userStatsRepository, IRandom $squirrel3,
         PetRepository $petRepository
     )
     {
@@ -175,7 +175,7 @@ class HouseFairyController extends AbstractController
             ->setStockingColorB($stockingColors[1])
         ;
 
-        if(UserStatsHelpers::getStatValue($em, $user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM) >= 400)
+        if($userStatsRepository->getStatValue($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM) >= 400)
             $fireplace->setMantleSize(24);
 
         $em->persist($fireplace);

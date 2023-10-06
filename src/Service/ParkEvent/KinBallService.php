@@ -10,7 +10,6 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
-use App\Functions\UserStatsHelpers;
 use App\Model\ParkEvent\KinBallParticipant;
 use App\Model\ParkEvent\KinBallTeam;
 use App\Model\PetChanges;
@@ -20,6 +19,7 @@ use App\Service\ParkService;
 use App\Service\PetExperienceService;
 use App\Service\PetRelationshipService;
 use App\Service\TransactionService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class KinBallService implements ParkEventInterface
@@ -47,11 +47,12 @@ class KinBallService implements ParkEventInterface
     private InventoryService $inventoryService;
     private IRandom $squirrel3;
     private ParkService $parkService;
+    private UserStatsService $userStatsRepository;
 
     public function __construct(
         EntityManagerInterface $em, PetRelationshipService $petRelationshipService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, InventoryService $inventoryService, IRandom $squirrel3,
-        ParkService $parkService
+        ParkService $parkService, UserStatsService $userStatsRepository
     )
     {
         $this->em = $em;
@@ -61,6 +62,7 @@ class KinBallService implements ParkEventInterface
         $this->inventoryService = $inventoryService;
         $this->squirrel3 = $squirrel3;
         $this->parkService = $parkService;
+        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -212,7 +214,7 @@ class KinBallService implements ParkEventInterface
                     $comment = $participant->pet->getName() . ' earned this in a game of Kin-Ball!';
                     $this->transactionService->getMoney($participant->pet->getOwner(), $firstPlaceMoneys, $comment);
                     $this->inventoryService->petCollectsItem('Kin-Ball Gold Trophy', $participant->pet, $comment, null);
-                    UserStatsHelpers::incrementStat($this->em, $participant->pet->getOwner(), 'Gold Trophies Earned', 1);
+                    $this->userStatsRepository->incrementStat($participant->pet->getOwner(), 'Gold Trophies Earned', 1);
                     $activityLogEntry = $participant->pet->getName() . ' played a game of Kin-Ball, and was on the winning team! They received ' . $firstPlaceMoneys . '~~m~~!';
                 }
                 else

@@ -11,11 +11,11 @@ use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
-use App\Functions\UserStatsHelpers;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class NoetalaAdventureService
@@ -24,15 +24,18 @@ class NoetalaAdventureService
     private ResponseService $responseService;
     private InventoryService $inventoryService;
     private IRandom $rng;
+    private UserStatsService $userStatsRepository;
 
     public function __construct(
-        EntityManagerInterface $em, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng
+        EntityManagerInterface $em, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
+        UserStatsService $userStatsRepository
     )
     {
         $this->em = $em;
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->rng = $rng;
+        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function fightNoetalasWing(User $user): bool
@@ -118,7 +121,7 @@ class NoetalaAdventureService
                 $i = ($i + 1) % count($rewards);
             }
 
-            UserStatsHelpers::incrementStat($this->em, $user, 'Defeated Noetala\'s Wing');
+            $this->userStatsRepository->incrementStat($user, 'Defeated Noetala\'s Wing');
 
             $success = true;
         }

@@ -10,10 +10,10 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\GrammarFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Repository\PetRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,8 +30,8 @@ class ShowPetsController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function showPets(
-        EntityManagerInterface $em, Request $request, PetRepository $petRepository, ResponseService $responseService,
-        IRandom $rng
+        EntityManagerInterface $em, Request $request, PetRepository $petRepository,
+        UserStatsService $userStatsRepository, ResponseService $responseService, IRandom $rng
     )
     {
         /** @var User $user */
@@ -82,7 +82,7 @@ class ShowPetsController extends AbstractController
             $em->persist($discovery);
         }
 
-        UserStatsHelpers::incrementStat($em, $user, 'Species Cataloged', count($pets));
+        $userStatsRepository->incrementStat($user, 'Species Cataloged', count($pets));
 
         $em->flush();
 

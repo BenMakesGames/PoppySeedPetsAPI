@@ -5,9 +5,9 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Exceptions\PSPInvalidOperationException;
-use App\Functions\UserStatsHelpers;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,7 +26,7 @@ class HeartstoneController extends AbstractController
      */
     public function transform(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -35,8 +35,8 @@ class HeartstoneController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'heartstone/#/transform');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
-        $numberTransformed = UserStatsHelpers::getStatValue($em, $user, self::STAT_NAME);
-        $petsWhoHaveCompletedHeartDimensionAdventures = UserStatsHelpers::getStatValue($em, $user, 'Pet Completed the Heartstone Dimension');
+        $numberTransformed = $userStatsRepository->getStatValue($user, self::STAT_NAME);
+        $petsWhoHaveCompletedHeartDimensionAdventures = $userStatsRepository->getStatValue($user, 'Pet Completed the Heartstone Dimension');
 
         $numberThatCanBeTransformed = $petsWhoHaveCompletedHeartDimensionAdventures - $numberTransformed;
 
@@ -54,7 +54,7 @@ class HeartstoneController extends AbstractController
         for($i = 0; $i < 2; $i++)
             $inventoryService->receiveItem('Heartessence', $user, $user, $user->getName() . ' got this by transforming a Heartstone.', $location, $locked);
 
-        UserStatsHelpers::incrementStat($em, $user, self::STAT_NAME);
+        $userStatsRepository->incrementStat($user, self::STAT_NAME);
 
         $em->remove($inventory);
 

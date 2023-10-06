@@ -24,7 +24,6 @@ use App\Functions\InventoryModifierFunctions;
 use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
-use App\Functions\UserStatsHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\ItemRepository;
@@ -36,6 +35,7 @@ use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use App\Service\UserStatsService;
 use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -43,6 +43,7 @@ class HuntingService
 {
     private ResponseService $responseService;
     private InventoryService $inventoryService;
+    private UserStatsService $userStatsRepository;
     private UserQuestRepository $userQuestRepository;
     private PetExperienceService $petExperienceService;
     private TransactionService $transactionService;
@@ -54,16 +55,16 @@ class HuntingService
     private Clock $clock;
 
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService,
-        UserQuestRepository $userQuestRepository,
-        PetExperienceService $petExperienceService, TransactionService $transactionService, IRandom $squirrel3,
-        Clock $clock, WerecreatureEncounterService $werecreatureEncounterService,
-        GatheringDistractionService $gatheringDistractions, EntityManagerInterface $em,
+        ResponseService $responseService, InventoryService $inventoryService, UserStatsService $userStatsRepository,
+        UserQuestRepository $userQuestRepository, PetExperienceService $petExperienceService,
+        TransactionService $transactionService, IRandom $squirrel3, Clock $clock, EntityManagerInterface $em,
+        WerecreatureEncounterService $werecreatureEncounterService, GatheringDistractionService $gatheringDistractions,
         FieldGuideService $fieldGuideService
     )
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
+        $this->userStatsRepository = $userStatsRepository;
         $this->userQuestRepository = $userQuestRepository;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
@@ -833,7 +834,7 @@ class HuntingService
 
             $this->transactionService->spendMoney($pet->getOwner(), $moneysLost, $pet->getName() . ' was outsmarted by a Thieving Magpie, ' . $description, false);
 
-            UserStatsHelpers::incrementStat($this->em, $pet->getOwner(), UserStatEnum::MONEYS_STOLEN_BY_THIEVING_MAGPIES, $moneysLost);
+            $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::MONEYS_STOLEN_BY_THIEVING_MAGPIES, $moneysLost);
 
             $pet
                 ->increaseEsteem(-2)

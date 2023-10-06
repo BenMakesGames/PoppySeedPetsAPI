@@ -6,12 +6,12 @@ use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ArrayFunctions;
-use App\Functions\UserStatsHelpers;
 use App\Model\AvailableHolidayBox;
 use App\Service\InventoryService;
 use App\Service\MuseumService;
 use App\Service\PlazaService;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,7 +29,8 @@ class PlazaController extends AbstractController
      */
     public function collectHolidayBox(
         Request $request, PlazaService $plazaService, MuseumService $museumService,
-        InventoryService $inventoryService, EntityManagerInterface $em, ResponseService $responseService
+        InventoryService $inventoryService, EntityManagerInterface $em, ResponseService $responseService,
+        UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -48,7 +49,7 @@ class PlazaController extends AbstractController
             $box->userQuestEntity->setValue(true);
 
         if(strpos($box->itemName, 'Box') !== false || strpos($box->itemName, 'Bag') !== false)
-            UserStatsHelpers::incrementStat($em, $user, UserStatEnum::PLAZA_BOXES_RECEIVED, $box->quantity);
+            $userStatsRepository->incrementStat($user, UserStatEnum::PLAZA_BOXES_RECEIVED, $box->quantity);
 
         for($i = 0; $i < $box->quantity; $i++)
             $inventoryService->receiveItem($box->itemName, $user, $user, $box->comment, LocationEnum::HOME, true);

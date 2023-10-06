@@ -11,11 +11,11 @@ use App\Enum\UserStatEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\GrammarFunctions;
 use App\Functions\PetActivityLogFactory;
-use App\Functions\UserStatsHelpers;
 use App\Repository\PetRepository;
 use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,8 +32,8 @@ class SummoningSomethingFriendlyController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function summonSomethingFriendly(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, PetFactory $petFactory,
-        IRandom $squirrel3
+        Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
+        EntityManagerInterface $em, PetFactory $petFactory, IRandom $squirrel3
     ): JsonResponse
     {
         /** @var User $user */
@@ -43,7 +43,7 @@ class SummoningSomethingFriendlyController extends AbstractController
 
         $em->remove($inventory);
 
-        UserStatsHelpers::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $pet = null;
         $gotASentinel = false;

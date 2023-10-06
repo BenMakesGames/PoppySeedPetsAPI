@@ -11,7 +11,6 @@ use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
 use App\Functions\PlayerLogHelpers;
-use App\Functions\UserStatsHelpers;
 use App\Repository\DragonRepository;
 use App\Repository\EnchantmentRepository;
 use App\Repository\SpiceRepository;
@@ -66,6 +65,7 @@ class DragonService
 
     private EntityManagerInterface $em;
     private InventoryService $inventoryService;
+    private UserStatsService $userStatsRepository;
     private IRandom $rng;
     private DragonRepository $dragonRepository;
     private HattierService $hattierService;
@@ -75,12 +75,13 @@ class DragonService
 
     public function __construct(
         EntityManagerInterface $em, InventoryService $inventoryService, ResponseService $responseService,
-        Clock $clock, IRandom $rng, DragonRepository $dragonRepository, HattierService $hattierService,
-        TransactionService $transactionService
+        Clock $clock, UserStatsService $userStatsRepository, IRandom $rng,
+        DragonRepository $dragonRepository, HattierService $hattierService, TransactionService $transactionService
     )
     {
         $this->em = $em;
         $this->inventoryService = $inventoryService;
+        $this->userStatsRepository = $userStatsRepository;
         $this->rng = $rng;
         $this->dragonRepository = $dragonRepository;
         $this->hattierService = $hattierService;
@@ -134,7 +135,7 @@ class DragonService
 
         sort($offeringItemNames);
 
-        UserStatsHelpers::incrementStat($this->em, $user, UserStatEnum::TREASURES_GIVEN_TO_DRAGON_HOARD, count($items));
+        $this->userStatsRepository->incrementStat($user, UserStatEnum::TREASURES_GIVEN_TO_DRAGON_HOARD, count($items));
 
         $silverGoodies = self::SILVER_GOODIES;
         $goldGoodies = self::GOLD_GOODIES;

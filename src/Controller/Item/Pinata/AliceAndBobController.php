@@ -8,6 +8,7 @@ use App\Repository\EnchantmentRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,7 +25,7 @@ class AliceAndBobController extends AbstractController
      */
     public function alicesSecretTeaTime(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
-        ResponseService $responseService
+        UserStatsService $userStatsRepository, ResponseService $responseService
     )
     {
         /** @var User $user */
@@ -68,7 +69,7 @@ class AliceAndBobController extends AbstractController
         foreach($loot as $item)
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from Alice\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
 
-        return BoxHelpers::countRemoveFlushAndRespond('Inside Alice\'s Secret, you find', $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Inside Alice\'s Secret, you find', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -77,7 +78,7 @@ class AliceAndBobController extends AbstractController
      */
     public function alicesSecretHourglass(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService
+        UserStatsService $userStatsRepository, ResponseService $responseService
     )
     {
         /** @var User $user */
@@ -87,7 +88,7 @@ class AliceAndBobController extends AbstractController
 
         $item = $inventoryService->receiveItem('Hourglass', $user, $user, $user->getName() . ' got this from Alice\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
 
-        return BoxHelpers::countRemoveFlushAndRespond('Inside Alice\'s Secret, you find', $user, $inventory, [ $item ], $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Inside Alice\'s Secret, you find', $userStatsRepository, $user, $inventory, [ $item ], $responseService, $em);
     }
 
     /**
@@ -96,7 +97,7 @@ class AliceAndBobController extends AbstractController
      */
     public function alicesSecretCards(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
-        ResponseService $responseService
+        UserStatsService $userStatsRepository, ResponseService $responseService
     )
     {
         /** @var User $user */
@@ -114,7 +115,7 @@ class AliceAndBobController extends AbstractController
         foreach($loot as $item)
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from Alice\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
 
-        return BoxHelpers::countRemoveFlushAndRespond('Inside Alice\'s Secret, you find some cards? Oh, wait, no: it\'s just', $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Inside Alice\'s Secret, you find some cards? Oh, wait, no: it\'s just', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -123,7 +124,7 @@ class AliceAndBobController extends AbstractController
      */
     public function bobsSecretFish(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
-        ResponseService $responseService
+        UserStatsService $userStatsRepository, ResponseService $responseService
     )
     {
         /** @var User $user */
@@ -159,7 +160,7 @@ class AliceAndBobController extends AbstractController
         foreach($loot as $item)
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from Bob\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
 
-        return BoxHelpers::countRemoveFlushAndRespond('Inside Bob\'s Secret, you find', $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Inside Bob\'s Secret, you find', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -168,7 +169,7 @@ class AliceAndBobController extends AbstractController
      */
     public function bobsTool(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
-        ResponseService $responseService
+        UserStatsService $userStatsRepository, ResponseService $responseService
     )
     {
         /** @var User $user */
@@ -193,7 +194,7 @@ class AliceAndBobController extends AbstractController
             EnchantmentRepository::findOneByName($em, 'Bob\'s')
         );
 
-        return BoxHelpers::countRemoveFlushAndRespond('Inside Bob\'s Secret, you find', $user, $inventory, [ $item ], $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Inside Bob\'s Secret, you find', $userStatsRepository, $user, $inventory, [ $item ], $responseService, $em);
     }
 
     /**
@@ -202,7 +203,7 @@ class AliceAndBobController extends AbstractController
      */
     public function bobsBBQ(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService
+        UserStatsService $userStatsRepository, ResponseService $responseService
     )
     {
         /** @var User $user */
@@ -224,6 +225,6 @@ class AliceAndBobController extends AbstractController
         foreach($loot as $item)
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from Bob\'s Secret.', $inventory->getLocation(), $inventory->getLockedToOwner());
 
-        return BoxHelpers::countRemoveFlushAndRespond('Inside Bob\'s Secret, you find', $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Inside Bob\'s Secret, you find', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 }

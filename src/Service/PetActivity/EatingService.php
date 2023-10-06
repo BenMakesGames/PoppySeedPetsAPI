@@ -18,7 +18,6 @@ use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
-use App\Functions\UserStatsHelpers;
 use App\Model\FoodWithSpice;
 use App\Model\FortuneCookie;
 use App\Model\PetChanges;
@@ -28,6 +27,7 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class EatingService
@@ -38,11 +38,12 @@ class EatingService
     private ResponseService $responseService;
     private EntityManagerInterface $em;
     private PetExperienceService $petExperienceService;
+    private UserStatsService $userStatsRepository;
 
     public function __construct(
         IRandom $squirrel3, CravingService $cravingService,
         InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
-        PetExperienceService $petExperienceService
+        PetExperienceService $petExperienceService, UserStatsService $userStatsRepository
     )
     {
         $this->squirrel3 = $squirrel3;
@@ -51,6 +52,7 @@ class EatingService
         $this->responseService = $responseService;
         $this->em = $em;
         $this->petExperienceService = $petExperienceService;
+        $this->userStatsRepository = $userStatsRepository;
     }
 
     /**
@@ -324,7 +326,7 @@ class EatingService
             if($pet->getPregnancy())
                 $pet->getPregnancy()->increaseAffection($gain);
 
-            UserStatsHelpers::incrementStat($this->em, $pet->getOwner(), UserStatEnum::FOOD_HOURS_FED_TO_PETS, $foodGained);
+            $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::FOOD_HOURS_FED_TO_PETS, $foodGained);
 
             $this->cravingService->maybeAddCraving($pet);
         }
