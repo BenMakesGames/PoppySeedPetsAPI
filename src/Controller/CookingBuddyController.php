@@ -94,6 +94,9 @@ class CookingBuddyController extends AbstractController
 
         foreach($knownRecipes as $knownRecipe)
         {
+            if(!array_key_exists($knownRecipe->getRecipe(), $knownRecipeRecipes))
+                throw new \Exception('Recipe not found: ' . $knownRecipe->getRecipe() . '.');
+
             $recipe = $knownRecipeRecipes[$knownRecipe->getRecipe()];
             $ingredients = $inventoryService->deserializeItemList($recipe['ingredients']);
             $makes = $inventoryService->deserializeItemList($recipe['makes']);
