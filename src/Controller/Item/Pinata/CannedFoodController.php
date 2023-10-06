@@ -37,9 +37,9 @@ class CannedFoodController extends AbstractController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $cansOpened = $userStatsRepository->findOrCreate($user, UserStatEnum::CANS_OF_FOOD_OPENED);
+        $cansOpened = $userStatsRepository->incrementStat($user, UserStatEnum::CANS_OF_FOOD_OPENED);
 
-        if($cansOpened->getValue() > 2 && $squirrel3->rngNextInt(1, 50) === 1)
+        if($cansOpened->getValue() > 3 && $squirrel3->rngNextInt(1, 50) === 1)
         {
             $worms = $squirrel3->rngNextInt(4, 12);
 
@@ -65,8 +65,6 @@ class CannedFoodController extends AbstractController
         }
 
         $transactionService->getRecyclingPoints($user, 1, 'You recycled the can from some Canned Food.');
-
-        $cansOpened->increaseValue(1);
 
         $em->remove($inventory);
 

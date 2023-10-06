@@ -19,33 +19,34 @@ class UserStatsService
         $this->perRequestCache = $perRequestCache;
     }
 
-    public static function getCacheKey(User $user, string $statName)
+    private static function getCacheKey(User $user, string $statName)
     {
         return 'UserStats:' . $user->getId() . '-' . $statName;
     }
 
-    public function findOrCreate(User $user, string $statName): UserStats
+    private function findOrCreate(User $user, string $statName): UserStats
     {
-        $cacheKey = self::getCacheKey($user, $statName);
+        return $this->perRequestCache->get(
+            self::getCacheKey($user, $statName),
+            function() use ($user, $statName) {
+                $stat = $this->em->getRepository(UserStats::class)->findOneBy([
+                    'user' => $user,
+                    'stat' => $statName
+                ]);
 
-        return $this->perRequestCache->get($cacheKey, function() use ($user, $statName) {
-            $stat = $this->em->getRepository(UserStats::class)->findOneBy([
-                'user' => $user,
-                'stat' => $statName
-            ]);
+                if($stat)
+                    return $stat;
 
-            if($stat)
+                $stat = (new UserStats())
+                    ->setUser($user)
+                    ->setStat($statName)
+                ;
+
+                $this->em->persist($stat);
+
                 return $stat;
-
-            $stat = (new UserStats())
-                ->setUser($user)
-                ->setStat($statName)
-            ;
-
-            $this->em->persist($stat);
-
-            return $stat;
-        });
+            }
+        );
     }
 
     public function getStatValue(User $user, string $name): int

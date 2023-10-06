@@ -88,6 +88,9 @@ class UserStats
         return $this->value;
     }
 
+    /**
+     * @deprecated Do not call directly; use UserStatsService
+     */
     public function increaseValue(int $value): self
     {
         $this->lastTime = new \DateTimeImmutable();
