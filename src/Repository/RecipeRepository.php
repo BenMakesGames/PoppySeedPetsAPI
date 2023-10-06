@@ -165,6 +165,7 @@ class RecipeRepository
         [ 'name' => 'Cullen Skink (A)', 'ingredients' => '7:1,13:1,33:1,437:1', 'makes' => '1244:3' ],
         [ 'name' => 'Cullen Skink (B)', 'ingredients' => '7:1,13:1,33:1,438:1', 'makes' => '1244:3' ],
         [ 'name' => 'Dandelion Puff', 'ingredients' => '10:1,976:1', 'makes' => '977:1' ],
+        [ 'name' => 'Dandelion Syrup', 'ingredients' => '12:1,976:1,1205:1', 'makes' => '1292:4' ],
         [ 'name' => 'Dashi', 'ingredients' => '140:1,200:1', 'makes' => '1118:2' ],
         [ 'name' => 'Dauphinois Potatoes', 'ingredients' => '13:1,255:1,437:1', 'makes' => '1180:2' ],
         [ 'name' => 'Deep-fried Toad Legs (Creamy Milk)', 'ingredients' => '13:1,16:1,38:1,195:1', 'makes' => '374:3' ],
