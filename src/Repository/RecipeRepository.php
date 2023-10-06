@@ -162,6 +162,7 @@ class RecipeRepository
         [ 'name' => 'Corn Starch', 'ingredients' => '24:1', 'makes' => '1277:3' ],
         [ 'name' => 'Corn Syrup', 'ingredients' => '12:1,24:1,62:1', 'makes' => '25:3' ],
         [ 'name' => 'Creamed Corn', 'ingredients' => '13:1,24:1', 'makes' => '148:2' ],
+        [ 'name' => 'Cucumber Water', 'ingredients' => '1300:1', 'makes' => '1302:1' ],
         [ 'name' => 'Cullen Skink (A)', 'ingredients' => '7:1,13:1,33:1,437:1', 'makes' => '1244:3' ],
         [ 'name' => 'Cullen Skink (B)', 'ingredients' => '7:1,13:1,33:1,438:1', 'makes' => '1244:3' ],
         [ 'name' => 'Dandelion Puff', 'ingredients' => '10:1,976:1', 'makes' => '977:1' ],
