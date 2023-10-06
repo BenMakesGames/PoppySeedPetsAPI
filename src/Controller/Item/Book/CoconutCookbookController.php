@@ -46,7 +46,7 @@ class CoconutCookbookController extends AbstractController
      */
     public function read(Inventory $inventory, ResponseService $responseService)
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'candyMakerCookbook/#/read');
+        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'coconutCookbook/#/read');
 
         return $responseService->itemActionSuccess(<<<EOBOOK
 # Cuckoo for Coconuts
