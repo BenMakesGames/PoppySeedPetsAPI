@@ -570,7 +570,7 @@ class RecipeRepository
         [ 'name' => 'Spirit Polymorph Potion (B)', 'ingredients' => '55:1,135:1,368:1', 'makes' => '339:1' ],
         [ 'name' => 'Stargazy Pie', 'ingredients' => '14:1,33:1,196:1,437:1', 'makes' => '1155:2' ],
         [ 'name' => 'Sugar (from Honeycomb)', 'ingredients' => '423:1', 'makes' => '12:3' ],
-        [ 'name' => 'Sugar (Sweet Beet)', 'ingredients' => '11:1', 'makes' => '12:3' ],
+        [ 'name' => 'Sugar (from Sweet Beet)', 'ingredients' => '11:1', 'makes' => '12:3' ],
         [ 'name' => 'Sunflower Oil', 'ingredients' => '177:1', 'makes' => '195:2' ],
         [ 'name' => 'Super-simple Spaghet', 'ingredients' => '133:1,262:1', 'makes' => '350:2' ],
         [ 'name' => 'Sweet Black Tea 1', 'ingredients' => '12:1,46:1', 'makes' => '47:1' ],
