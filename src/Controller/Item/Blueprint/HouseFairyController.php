@@ -121,7 +121,7 @@ class HouseFairyController extends AbstractController
      */
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository, IRandom $squirrel3,
+        InventoryRepository $inventoryRepository, IRandom $squirrel3,
         PetRepository $petRepository
     )
     {
@@ -175,7 +175,7 @@ class HouseFairyController extends AbstractController
             ->setStockingColorB($stockingColors[1])
         ;
 
-        if($userStatsRepository->getStatValue($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM) >= 400)
+        if(UserStatsRepository::getStatValue($em, $user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM) >= 400)
             $fireplace->setMantleSize(24);
 
         $em->persist($fireplace);

@@ -72,7 +72,6 @@ class PetActivityService
     private CraftingService $craftingService;
     private MagicBindingService $magicBindingService;
     private ProgrammingService $programmingService;
-    private UserStatsRepository $userStatsRepository;
     private TreasureMapService $treasureMapService;
     private GenericAdventureService $genericAdventureService;
     private Protocol7Service $protocol7Service;
@@ -108,7 +107,6 @@ class PetActivityService
         Clock $clock, EntityManagerInterface $em, ResponseService $responseService,
         FishingService $fishingService, HeartDimensionService $heartDimensionService, IcyMoonService $icyMoonService,
         HuntingService $huntingService, GatheringService $gatheringService, CraftingService $craftingService,
-        UserStatsRepository $userStatsRepository,
         GenericAdventureService $genericAdventureService, PetSummonedAwayService $petSummonedAwayService,
         Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService,
         PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService,
@@ -132,7 +130,6 @@ class PetActivityService
         $this->huntingService = $huntingService;
         $this->gatheringService = $gatheringService;
         $this->craftingService = $craftingService;
-        $this->userStatsRepository = $userStatsRepository;
         $this->treasureMapService = $treasureMapService;
         $this->genericAdventureService = $genericAdventureService;
         $this->protocol7Service = $protocol7Service;
@@ -690,7 +687,7 @@ class PetActivityService
             case 'Peacock Plushy':
             case 'Phoenix Plushy':
             case '"Roy" Plushy':
-                if($this->squirrel3->rngNextInt(1, 6) === 1 || $this->userStatsRepository->getStatValue($pet->getOwner(), UserStatEnum::TRADED_WITH_THE_FLUFFMONGER) === 0)
+                if($this->squirrel3->rngNextInt(1, 6) === 1 || UserStatsRepository::getStatValue($this->em, $pet->getOwner(), UserStatEnum::TRADED_WITH_THE_FLUFFMONGER) === 0)
                 {
                     $this->treasureMapService->doFluffmongerTrade($pet);
                     return true;

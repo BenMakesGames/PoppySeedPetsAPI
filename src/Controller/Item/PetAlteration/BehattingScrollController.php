@@ -31,7 +31,7 @@ class BehattingScrollController extends AbstractController
      */
     public function readBehattingScroll(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, IRandom $squirrel3, UserStatsRepository $userStatsRepository
+        PetRepository $petRepository, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -53,7 +53,7 @@ class BehattingScrollController extends AbstractController
         if(!$merit)
             throw new \Exception('The ' . MeritEnum::BEHATTED . ' Merit does not exist! This is a terrible programming error. Someone please tell Ben.');
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 

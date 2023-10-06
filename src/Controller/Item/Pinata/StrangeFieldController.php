@@ -27,7 +27,7 @@ class StrangeFieldController extends AbstractController
      */
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        EntityManagerInterface $em, RecyclingService $recyclingService, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -38,7 +38,7 @@ class StrangeFieldController extends AbstractController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::STRANGE_FIELDS_COLLAPSED);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::STRANGE_FIELDS_COLLAPSED);
 
         $possibleItems = [
             'Tachyon', 'Photon',

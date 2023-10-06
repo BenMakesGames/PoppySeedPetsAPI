@@ -30,8 +30,8 @@ class ShowPetsController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function showPets(
-        EntityManagerInterface $em, Request $request, PetRepository $petRepository,
-        UserStatsRepository $userStatsRepository, ResponseService $responseService, IRandom $rng
+        EntityManagerInterface $em, Request $request, PetRepository $petRepository, ResponseService $responseService,
+        IRandom $rng
     )
     {
         /** @var User $user */
@@ -82,7 +82,7 @@ class ShowPetsController extends AbstractController
             $em->persist($discovery);
         }
 
-        $userStatsRepository->incrementStat($user, 'Species Cataloged', count($pets));
+        UserStatsRepository::incrementStat($em, $user, 'Species Cataloged', count($pets));
 
         $em->flush();
 

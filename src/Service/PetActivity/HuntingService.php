@@ -43,7 +43,6 @@ class HuntingService
 {
     private ResponseService $responseService;
     private InventoryService $inventoryService;
-    private UserStatsRepository $userStatsRepository;
     private MuseumItemRepository $museumItemRepository;
     private UserQuestRepository $userQuestRepository;
     private PetExperienceService $petExperienceService;
@@ -56,7 +55,7 @@ class HuntingService
     private Clock $clock;
 
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
+        ResponseService $responseService, InventoryService $inventoryService,
         MuseumItemRepository $museumItemRepository, UserQuestRepository $userQuestRepository,
         PetExperienceService $petExperienceService, TransactionService $transactionService, IRandom $squirrel3,
         Clock $clock, WerecreatureEncounterService $werecreatureEncounterService,
@@ -66,7 +65,6 @@ class HuntingService
     {
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
-        $this->userStatsRepository = $userStatsRepository;
         $this->museumItemRepository = $museumItemRepository;
         $this->userQuestRepository = $userQuestRepository;
         $this->petExperienceService = $petExperienceService;
@@ -838,7 +836,7 @@ class HuntingService
 
             $this->transactionService->spendMoney($pet->getOwner(), $moneysLost, $pet->getName() . ' was outsmarted by a Thieving Magpie, ' . $description, false);
 
-            $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::MONEYS_STOLEN_BY_THIEVING_MAGPIES, $moneysLost);
+            UserStatsRepository::incrementStat($this->em, $pet->getOwner(), UserStatEnum::MONEYS_STOLEN_BY_THIEVING_MAGPIES, $moneysLost);
 
             $pet
                 ->increaseEsteem(-2)

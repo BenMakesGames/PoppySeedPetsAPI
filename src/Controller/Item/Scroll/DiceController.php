@@ -25,7 +25,7 @@ class DiceController extends AbstractController
      */
     public function readScrollOfDice(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -74,7 +74,7 @@ class DiceController extends AbstractController
             $inventoryService->receiveItem($die, $user, $user, $user->getName() . ' found this in ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $lockedToOwner);
         }
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 

@@ -36,7 +36,7 @@ class GnomesFavorController extends AbstractController
      */
     public function getQuint(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -50,7 +50,7 @@ class GnomesFavorController extends AbstractController
         for($i = 0; $i < 2; $i++)
             $inventoryService->receiveItem('Quintessence', $user, $user, $user->getName() . ' got this from a Gnome\'s Favor.', $location);
 
-        $userStatsRepository->incrementStat($user, self::USER_STAT_NAME);
+        UserStatsRepository::incrementStat($em, $user, self::USER_STAT_NAME);
 
         $em->remove($inventory);
 
@@ -67,7 +67,7 @@ class GnomesFavorController extends AbstractController
      */
     public function getFood(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $squirrel3, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -107,7 +107,7 @@ class GnomesFavorController extends AbstractController
             ;
         }
 
-        $userStatsRepository->incrementStat($user, self::USER_STAT_NAME);
+        UserStatsRepository::incrementStat($em, $user, self::USER_STAT_NAME);
 
         $em->remove($inventory);
 
@@ -127,7 +127,7 @@ class GnomesFavorController extends AbstractController
      */
     public function getTreasure(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -155,7 +155,7 @@ class GnomesFavorController extends AbstractController
         for($i = 0; $i < 3; $i++)
             $newInventory[] = $inventoryService->receiveItem($possibleItems[$i], $user, $user, $user->getName() . ' got this from a Gnome\'s Favor.', $location);
 
-        $userStatsRepository->incrementStat($user, self::USER_STAT_NAME);
+        UserStatsRepository::incrementStat($em, $user, self::USER_STAT_NAME);
 
         $em->remove($inventory);
 

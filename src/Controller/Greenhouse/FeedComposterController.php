@@ -44,8 +44,8 @@ class FeedComposterController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function feedComposter(
-        ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository,
-        InventoryService $inventoryService, EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
+        ResponseService $responseService, Request $request,
+        InventoryService $inventoryService, EntityManagerInterface $em,
         IRandom $squirrel3, GreenhouseService $greenhouseService
     ): JsonResponse
     {
@@ -109,7 +109,7 @@ class FeedComposterController extends AbstractController
         foreach($items as $item)
             $em->remove($item);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_COMPOSTED, count($items));
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::ITEMS_COMPOSTED, count($items));
 
         $user->getGreenhouse()
             ->setComposterFood($remainingFertilizer)

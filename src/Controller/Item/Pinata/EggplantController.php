@@ -25,7 +25,7 @@ class EggplantController extends AbstractController
      */
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -77,11 +77,11 @@ class EggplantController extends AbstractController
                 $newItem->setSpice($inventory->getSpice());
             }
 
-            $userStatsRepository->incrementStat($user, UserStatEnum::EGGS_HARVESTED_FROM_EGGPLANTS, $eggs);
+            UserStatsRepository::incrementStat($em, $user, UserStatEnum::EGGS_HARVESTED_FROM_EGGPLANTS, $eggs);
         }
         else
         {
-            $userStatsRepository->incrementStat($user, UserStatEnum::ROTTEN_EGGPLANTS, 1);
+            UserStatsRepository::incrementStat($em, $user, UserStatEnum::ROTTEN_EGGPLANTS, 1);
         }
 
         if($squirrel3->rngNextInt(1, 100) === 1)

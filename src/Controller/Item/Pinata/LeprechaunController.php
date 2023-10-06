@@ -26,7 +26,7 @@ class LeprechaunController extends AbstractController
      */
     public function lootPotOfGold(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -37,7 +37,7 @@ class LeprechaunController extends AbstractController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::LOOTED_A_POT_OF_GOLD);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::LOOTED_A_POT_OF_GOLD);
 
         $location = $inventory->getLocation();
         $locked = $inventory->getLockedToOwner();
@@ -61,7 +61,7 @@ class LeprechaunController extends AbstractController
      */
     public function readGreenScroll(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
-        ResponseService $responseService, UserStatsRepository $userStatsRepository
+        ResponseService $responseService
     )
     {
         /** @var User $user */
@@ -70,8 +70,8 @@ class LeprechaunController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'leprechaun/greenScroll/#/read');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
-        $userStatsRepository->incrementStat($user, 'Read ' . $inventory->getItem()->getNameWithArticle());
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
+        UserStatsRepository::incrementStat($em, $user, 'Read ' . $inventory->getItem()->getNameWithArticle());
 
         $numberOfItems = 3;
 

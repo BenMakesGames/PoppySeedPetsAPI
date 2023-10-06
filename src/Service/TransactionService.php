@@ -11,14 +11,12 @@ use Doctrine\ORM\EntityManagerInterface;
 class TransactionService
 {
     private EntityManagerInterface $em;
-    private UserStatsRepository $userStatsRepository;
 
     public function __construct(
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em
     )
     {
         $this->em = $em;
-        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function spendMoney(User $user, int $amount, string $description, bool $countTotalMoneysSpentStat = true, array $additionalTags = []): UserActivityLog
@@ -32,7 +30,7 @@ class TransactionService
         $user->increaseMoneys(-$amount);
 
         if($countTotalMoneysSpentStat)
-            $this->userStatsRepository->incrementStat($user, UserStatEnum::TOTAL_MONEYS_SPENT, $amount);
+            UserStatsRepository::incrementStat($this->em, $user, UserStatEnum::TOTAL_MONEYS_SPENT, $amount);
 
         $tags = array_merge($additionalTags, [ 'Moneys' ]);
 

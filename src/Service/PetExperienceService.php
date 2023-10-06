@@ -27,21 +27,18 @@ class PetExperienceService
 
     private IRandom $squirrel3;
     private InventoryService $inventoryService;
-    private UserStatsRepository $userStatsRepository;
     private UserQuestRepository $userQuestRepository;
     private HattierService $hattierService;
     private EntityManagerInterface $em;
     private Clock $clock;
 
     public function __construct(
-        IRandom $squirrel3, InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
-        UserQuestRepository $userQuestRepository, HattierService $hattierService, EntityManagerInterface $em,
-        Clock $clock
+        IRandom $squirrel3, InventoryService $inventoryService, UserQuestRepository $userQuestRepository,
+        HattierService $hattierService, EntityManagerInterface $em, Clock $clock
     )
     {
         $this->squirrel3 = $squirrel3;
         $this->inventoryService = $inventoryService;
-        $this->userStatsRepository = $userStatsRepository;
         $this->userQuestRepository = $userQuestRepository;
         $this->hattierService = $hattierService;
         $this->em = $em;
@@ -103,7 +100,7 @@ class PetExperienceService
             if($pet->getSkills()->getStat($statToLevel) >= 20)
             {
                 $pet->getSkills()->increaseScrollLevels();
-                $this->userStatsRepository->incrementStat($pet->getOwner(), 'Skill Scrolls Made by Pets');
+                UserStatsRepository::incrementStat($this->em, $pet->getOwner(), 'Skill Scrolls Made by Pets');
 
                 $newItem = $this->inventoryService->petCollectsItem('Skill Scroll: ' . $statToLevel, $pet, $pet->getName() . ', a ' . $statToLevel . '-master, produced this scroll.', null);
                 $newItem->setLockedToOwner(true);

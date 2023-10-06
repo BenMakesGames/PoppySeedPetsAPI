@@ -25,7 +25,7 @@ class HatBoxController extends AbstractController
      */
     public function openHatBox(
         Inventory $box, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -53,7 +53,7 @@ class HatBoxController extends AbstractController
             'Pizzaface',
         ]));
 
-        $userStatsRepository->incrementStat($user, 'Opened ' . $box->getItem()->getNameWithArticle());
+        UserStatsRepository::incrementStat($em, $user, 'Opened ' . $box->getItem()->getNameWithArticle());
 
         if($hatItem->getName() === 'Gray Bow')
         {

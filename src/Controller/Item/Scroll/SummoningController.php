@@ -30,7 +30,7 @@ class SummoningController extends AbstractController
      */
     public function summonSomethingUnfriendly(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        HouseMonsterService $houseMonsterService, IRandom $squirrel3, UserStatsRepository $userStatsRepository
+        HouseMonsterService $houseMonsterService, IRandom $squirrel3
     ): JsonResponse
     {
         /** @var User $user */
@@ -61,7 +61,7 @@ class SummoningController extends AbstractController
 
         $result = $houseMonsterService->doFight('You read the scroll', $petsAtHome, $monster);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         $em->flush();
 

@@ -26,7 +26,7 @@ class PizzaBoxController extends AbstractController
      */
     public function openPizzaBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -61,7 +61,7 @@ class PizzaBoxController extends AbstractController
             ;
         }
 
-        return BoxHelpers::countRemoveFlushAndRespond('You open the box, finding', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('You open the box, finding', $user, $inventory, $newInventory, $responseService, $em);
     }
 
 }

@@ -117,7 +117,7 @@ class DragonVaseController extends AbstractController
      */
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
-        UserQuestRepository $userQuestRepository, Request $request, UserStatsRepository $userStatsRepository
+        UserQuestRepository $userQuestRepository, Request $request
     )
     {
         /** @var User $user */
@@ -150,7 +150,7 @@ class DragonVaseController extends AbstractController
 
         $usedDragonVase->setValue($today);
 
-        $dippingStat = $userStatsRepository->incrementStat($user, UserStatEnum::TOOLS_DIPPED_IN_A_DRAGON_VASE);
+        $dippingStat = UserStatsRepository::incrementStat($em, $user, UserStatEnum::TOOLS_DIPPED_IN_A_DRAGON_VASE);
 
         // Dragon Vase-only bonuses
         $possibleBonuses = [

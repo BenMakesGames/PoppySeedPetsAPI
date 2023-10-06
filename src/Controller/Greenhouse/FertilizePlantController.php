@@ -33,8 +33,7 @@ class FertilizePlantController extends AbstractController
      */
     public function fertilizePlant(
         GreenhousePlant $plant, ResponseService $responseService, Request $request, EntityManagerInterface $em,
-        InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository,
-        GreenhouseService $greenhouseService
+        InventoryRepository $inventoryRepository, GreenhouseService $greenhouseService
     ): JsonResponse
     {
         /** @var User $user */
@@ -59,7 +58,7 @@ class FertilizePlantController extends AbstractController
 
         $plant->increaseGrowth($fertilizer->getItem()->getFertilizer());
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::FERTILIZED_PLANT);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::FERTILIZED_PLANT);
 
         $plantNameArticle = GrammarFunctions::indefiniteArticle($plant->getPlant()->getName());
 

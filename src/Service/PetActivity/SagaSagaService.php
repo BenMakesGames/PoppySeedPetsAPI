@@ -23,19 +23,15 @@ class SagaSagaService
     private InventoryService $inventoryService;
     private EntityManagerInterface $em;
     private ResponseService $responseService;
-    private UserStatsRepository $userStatsRepository;
 
     public function __construct(
-        IRandom $rng, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService,
-        UserStatsRepository $userStatsRepository
+        IRandom $rng, InventoryService $inventoryService, EntityManagerInterface $em, ResponseService $responseService
     )
     {
         $this->rng = $rng;
         $this->inventoryService = $inventoryService;
         $this->em = $em;
         $this->responseService = $responseService;
-        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function petCompletedSagaSaga(Pet $pet): bool
@@ -91,7 +87,7 @@ class SagaSagaService
 
         $this->responseService->setReloadPets(true);
 
-        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::COMPLETED_A_SAGA_SAGA);
+        UserStatsRepository::incrementStat($this->em, $pet->getOwner(), UserStatEnum::COMPLETED_A_SAGA_SAGA);
 
         return true;
     }

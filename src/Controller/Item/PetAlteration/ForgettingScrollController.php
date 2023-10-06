@@ -69,7 +69,7 @@ class ForgettingScrollController extends AbstractController
      */
     public function forgetMerit(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, UserStatsRepository $userStatsRepository
+        PetRepository $petRepository
     )
     {
         /** @var User $user */
@@ -103,7 +103,7 @@ class ForgettingScrollController extends AbstractController
                 throw new PSPInvalidOperationException('That merit cannot be unlearned.');
         }
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 
@@ -148,7 +148,7 @@ class ForgettingScrollController extends AbstractController
      */
     public function forgetSkill(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, UserStatsRepository $userStatsRepository
+        PetRepository $petRepository
     )
     {
         /** @var User $user */
@@ -173,7 +173,7 @@ class ForgettingScrollController extends AbstractController
         if($pet->getSkills()->getStat($skill) < 1)
             throw new PSPInvalidOperationException($pet->getName() . ' does not have any points of ' . $skill . ' to unlearn.');
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 

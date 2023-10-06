@@ -29,7 +29,7 @@ class CollectWeeklyCarePackageController extends AbstractController
      */
     public function collectWeeklyBox(
         Request $request, EntityManagerInterface $em, ResponseService $responseService,
-        InventoryService $inventoryService, UserStatsRepository $userStatsRepository
+        InventoryService $inventoryService
     )
     {
         /** @var User $user */
@@ -42,7 +42,7 @@ class CollectWeeklyCarePackageController extends AbstractController
         if($days < 7)
             throw new PSPInvalidOperationException('It\'s too early to collect your weekly Care Package.');
 
-        $itemsDonated = $userStatsRepository->getStatValue($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM);
+        $itemsDonated = UserStatsRepository::getStatValue($em, $user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM);
 
         $canGetHandicraftsBox = $itemsDonated >= 100;
         $canGetFishBag = $itemsDonated >= 450;
@@ -73,7 +73,7 @@ class CollectWeeklyCarePackageController extends AbstractController
 
         $user->setLastAllowanceCollected($user->getLastAllowanceCollected()->modify('+' . (floor($days / 7) * 7) . ' days'));
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::PLAZA_BOXES_RECEIVED, 1);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::PLAZA_BOXES_RECEIVED, 1);
 
         $em->flush();
 

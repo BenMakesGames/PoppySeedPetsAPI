@@ -26,7 +26,7 @@ class BurntLogController extends AbstractController
      */
     public function openBurntLog(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -38,7 +38,7 @@ class BurntLogController extends AbstractController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $stat = $userStatsRepository->incrementStat($user, UserStatEnum::BURNT_LOGS_BROKEN);
+        $stat = UserStatsRepository::incrementStat($em, $user, UserStatEnum::BURNT_LOGS_BROKEN);
 
         $extraItem = ItemRepository::findOneByName($em, $squirrel3->rngNextFromArray([
             'Crooked Stick',

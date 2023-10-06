@@ -33,8 +33,7 @@ class HotPotController extends AbstractController
      */
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
-        UserQuestRepository $userQuestRepository, Request $request, InventoryRepository $inventoryRepository,
-        UserStatsRepository $userStatsRepository
+        UserQuestRepository $userQuestRepository, Request $request, InventoryRepository $inventoryRepository
     )
     {
         /** @var User $user */
@@ -67,7 +66,7 @@ class HotPotController extends AbstractController
 
         $usedHotPot->setValue($today);
 
-        $dippingStat = $userStatsRepository->incrementStat($user, UserStatEnum::FOODS_DIPPED_IN_A_HOT_POT);
+        $dippingStat = UserStatsRepository::incrementStat($em, $user, UserStatEnum::FOODS_DIPPED_IN_A_HOT_POT);
 
         // Hot Pot-only spices
         $possibleSpices = [

@@ -25,7 +25,7 @@ class JuiceBoxController extends AbstractController
      */
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -34,7 +34,7 @@ class JuiceBoxController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'juiceBox/#/open');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
-        $juiceBoxesOpened = $userStatsRepository->incrementStat($user, 'Juice Boxes Opened', 1)->getValue();
+        $juiceBoxesOpened = UserStatsRepository::incrementStat($em, $user, 'Juice Boxes Opened', 1)->getValue();
 
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();

@@ -17,12 +17,11 @@ class BoxHelpers
      * @param Inventory[] $newInventory
      */
     public static function countRemoveFlushAndRespond(
-        string $messagePrefix,
-        UserStatsRepository $userStatsRepository, User $user, Inventory $inventory, array $newInventory,
+        string $messagePrefix, User $user, Inventory $inventory, array $newInventory,
         ResponseService $responseService, EntityManagerInterface $em
     ): JsonResponse
     {
-        $userStatsRepository->incrementStat($user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
+        UserStatsRepository::incrementStat($em, $user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
 
         $itemList = array_map(fn(Inventory $i) => InventoryModifierFunctions::getNameWithModifiers($i), $newInventory);
         sort($itemList);

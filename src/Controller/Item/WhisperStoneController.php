@@ -28,8 +28,7 @@ class WhisperStoneController extends AbstractController
      */
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
-        RecipeRepository $recipeRepository, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository
+        RecipeRepository $recipeRepository, InventoryService $inventoryService
     )
     {
         /** @var User $user */
@@ -93,7 +92,7 @@ class WhisperStoneController extends AbstractController
             'To make ' . $recipes[1]->getName() . ', combine ' . $ingredients[1] . ".\"\n\n"
         ;
 
-        $stat = $userStatsRepository->incrementStat($user, 'Listened to a Whisper Stone');
+        $stat = UserStatsRepository::incrementStat($em, $user, 'Listened to a Whisper Stone');
 
         if($stat->getValue() === 1)
             $message .= 'Wait, aren\'t Whisper Stones supposed to reveal dark secrets from the spirit world?';

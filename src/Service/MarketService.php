@@ -20,7 +20,6 @@ use Doctrine\ORM\EntityManagerInterface;
 class MarketService
 {
     private EntityManagerInterface $em;
-    private UserStatsRepository $userStatsRepository;
     private MarketBidRepository $marketBidRepository;
     private InventoryService $inventoryService;
     private TransactionService $transactionService;
@@ -28,13 +27,12 @@ class MarketService
     private MarketListingRepository $marketListingRepository;
 
     public function __construct(
-        EntityManagerInterface $em, UserStatsRepository  $userStatsRepository, MarketBidRepository $marketBidRepository,
-        InventoryService $inventoryService, TransactionService $transactionService,
-        UserQuestRepository $userQuestRepository, MarketListingRepository $marketListingRepository
+        EntityManagerInterface $em, MarketBidRepository $marketBidRepository, InventoryService $inventoryService,
+        TransactionService $transactionService, UserQuestRepository $userQuestRepository,
+        MarketListingRepository $marketListingRepository
     )
     {
         $this->em = $em;
-        $this->userStatsRepository = $userStatsRepository;
         $this->marketBidRepository = $marketBidRepository;
         $this->inventoryService = $inventoryService;
         $this->transactionService = $transactionService;
@@ -135,9 +133,9 @@ class MarketService
 
     public function transferItemToPlayer(Inventory $item, User $newOwner, int $location, int $sellPrice)
     {
-        $this->userStatsRepository->incrementStat($item->getOwner(), UserStatEnum::TOTAL_MONEYS_EARNED_IN_MARKET, $sellPrice);
-        $this->userStatsRepository->incrementStat($item->getOwner(), UserStatEnum::ITEMS_SOLD_IN_MARKET, 1);
-        $this->userStatsRepository->incrementStat($newOwner, UserStatEnum::ITEMS_BOUGHT_IN_MARKET, 1);
+        UserStatsRepository::incrementStat($this->em, $item->getOwner(), UserStatEnum::TOTAL_MONEYS_EARNED_IN_MARKET, $sellPrice);
+        UserStatsRepository::incrementStat($this->em, $item->getOwner(), UserStatEnum::ITEMS_SOLD_IN_MARKET, 1);
+        UserStatsRepository::incrementStat($this->em, $newOwner, UserStatEnum::ITEMS_BOUGHT_IN_MARKET, 1);
 
         $item
             ->setOwner($newOwner)

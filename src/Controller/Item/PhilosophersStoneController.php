@@ -41,8 +41,7 @@ class PhilosophersStoneController extends AbstractController
      */
     public function useStone(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
-        PetFactory $petFactory, Request $request, InventoryRepository $inventoryRepository,
-        UserStatsRepository $userStatsRepository
+        PetFactory $petFactory, Request $request, InventoryRepository $inventoryRepository
     )
     {
         /** @var User $user */
@@ -68,7 +67,7 @@ class PhilosophersStoneController extends AbstractController
         if(!$species)
             throw new \Exception('Something has gone terribly wrong. Ben has been notified; hopefully he\'ll fix it within a few hours...');
 
-        $userStatsRepository->incrementStat($user, 'Philosopher\'s Stones Used');
+        UserStatsRepository::incrementStat($em, $user, 'Philosopher\'s Stones Used');
 
         $message = 'The ' . $plushy->getFullItemName() . ' has been brought to life!';
 

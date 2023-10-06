@@ -35,8 +35,7 @@ class FeedController extends AbstractController
      */
     public function feedFireplace(
         Request $request, InventoryRepository $inventoryRepository, ResponseService $responseService,
-        EntityManagerInterface $em, InventoryService $inventoryService, IRandom $rng,
-        UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em, InventoryService $inventoryService, IRandom $rng
     )
     {
         /** @var User $user */
@@ -82,7 +81,7 @@ class FeedController extends AbstractController
 
             PlayerLogHelpers::create($em, $user, $entry, [ 'Fireplace' ]);
 
-            $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_THROWN_INTO_THE_FIREPLACE, count($fuelUsed));
+            UserStatsRepository::incrementStat($em, $user, UserStatEnum::ITEMS_THROWN_INTO_THE_FIREPLACE, count($fuelUsed));
         }
 
         if($fireplace->getHelper() && $fireplace->getSoot() >= 18 * 60)

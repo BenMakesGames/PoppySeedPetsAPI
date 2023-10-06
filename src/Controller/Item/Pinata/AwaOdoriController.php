@@ -23,7 +23,7 @@ class AwaOdoriController extends AbstractController
      */
     public function openBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -43,7 +43,7 @@ class AwaOdoriController extends AbstractController
             $inventoryService->receiveItem('Music Note', $user, $user, $comment, $location, $lockedToOwner),
         ];
 
-        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $user, $inventory, $newInventory, $responseService, $em);
     }
 
 }

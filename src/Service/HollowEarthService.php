@@ -33,7 +33,6 @@ class HollowEarthService
     private PetExperienceService $petExperienceService;
     private TransactionService $transactionService;
     private ResponseService $responseService;
-    private UserStatsRepository $userStatsRepository;
     private IRandom $rng;
 
     public const DICE_ITEMS = [
@@ -50,8 +49,7 @@ class HollowEarthService
     public function __construct(
         HollowEarthTileRepository $hollowEarthTileRepository, EntityManagerInterface $em,
         InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, ResponseService $responseService,
-        UserStatsRepository $userStatsRepository, IRandom $rng
+        TransactionService $transactionService, ResponseService $responseService, IRandom $rng
     )
     {
         $this->hollowEarthTileRepository = $hollowEarthTileRepository;
@@ -60,7 +58,6 @@ class HollowEarthService
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
         $this->responseService = $responseService;
-        $this->userStatsRepository = $userStatsRepository;
         $this->rng = $rng;
     }
 
@@ -240,7 +237,7 @@ class HollowEarthService
             ->setCurrentAction($action)
         ;
 
-        $this->userStatsRepository->incrementStat($player->getUser(), UserStatEnum::HOLLOW_EARTH_SPACES_MOVED, $movesRemaining - $player->getMovesRemaining());
+        UserStatsRepository::incrementStat($this->em, $player->getUser(), UserStatEnum::HOLLOW_EARTH_SPACES_MOVED, $movesRemaining - $player->getMovesRemaining());
     }
 
     private function getNextTile(HollowEarthPlayer $player): HollowEarthTile

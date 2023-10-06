@@ -18,7 +18,6 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class BookstoreService
 {
-    private UserStatsRepository $userStatsRepository;
     private UserQuestRepository $userQuestRepository;
     private InventoryService $inventoryService;
     private EntityManagerInterface $em;
@@ -118,11 +117,10 @@ class BookstoreService
     ];
 
     public function __construct(
-        UserStatsRepository $userStatsRepository, UserQuestRepository $userQuestRepository,
-        InventoryService $inventoryService, EntityManagerInterface $em, Clock $clock
+        UserQuestRepository $userQuestRepository, InventoryService $inventoryService, EntityManagerInterface $em,
+        Clock $clock
     )
     {
-        $this->userStatsRepository = $userStatsRepository;
         $this->userQuestRepository = $userQuestRepository;
         $this->inventoryService = $inventoryService;
         $this->em = $em;
@@ -206,70 +204,70 @@ class BookstoreService
             'Cooking 101' => 15,
         ];
 
-        $flowersPurchased = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => 'Flowerbombs Purchased' ]);
+        $flowersPurchased = UserStatsRepository::getStatValue($this->em, $user, 'Flowerbombs Purchased');
 
-        if($flowersPurchased && $flowersPurchased->getValue() > 0)
+        if($flowersPurchased > 0)
             $bookPrices['Book of Flowers'] = 15;
 
-        $cookedSomething = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::COOKED_SOMETHING ]);
+        $cookedSomething = UserStatsRepository::getStatValue($this->em, $user, UserStatEnum::COOKED_SOMETHING);
 
-        if($cookedSomething)
+        if($cookedSomething > 0)
         {
-            if($cookedSomething->getValue() >= 5)
+            if($cookedSomething >= 5)
                 $bookPrices['Candy-maker\'s Cookbook'] = 20;
 
-            if($cookedSomething->getValue() >= 10)
+            if($cookedSomething >= 10)
                 $bookPrices['Big Book of Baking'] = 25;
 
-            if($cookedSomething->getValue() >= 20)
+            if($cookedSomething >= 20)
             {
                 $bookPrices['Fish Book'] = 20;
                 $bookPrices['Of Rice'] = 50;
             }
 
-            if($cookedSomething->getValue() >= 50)
+            if($cookedSomething >= 50)
             {
                 $bookPrices['Juice'] = 15;
                 $bookPrices['We All Scream'] = 15;
             }
 
-            if($cookedSomething->getValue() >= 100)
+            if($cookedSomething >= 100)
             {
                 $bookPrices['Pie Recipes'] = 15;
                 $bookPrices['Milk: The Book'] = 30;
             }
 
-            if($cookedSomething->getValue() >= 200)
+            if($cookedSomething >= 200)
             {
                 $bookPrices['Fried'] = 25;
                 $bookPrices['The Art of Tofu'] = 25;
             }
 
-            if($cookedSomething->getValue() >= 300)
+            if($cookedSomething >= 300)
             {
                 $bookPrices['SOUP'] = 25;
             }
 
-            if($cookedSomething->getValue() >= 500)
+            if($cookedSomething >= 500)
             {
                 $bookPrices['Ultimate Chef'] = 500;
             }
         }
 
-        $itemsDonatedToMuseum = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]);
+        $itemsDonatedToMuseum = UserStatsRepository::getStatValue($this->em, $user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM);
 
-        if($itemsDonatedToMuseum)
+        if($itemsDonatedToMuseum > 0)
         {
-            if($itemsDonatedToMuseum->getValue() >= 150)
+            if($itemsDonatedToMuseum >= 150)
                 $bookPrices['Basement Blueprint'] = 150;
 
-            if($itemsDonatedToMuseum->getValue() >= 200)
+            if($itemsDonatedToMuseum >= 200)
                 $bookPrices['Electrical Engineering Textbook'] = 50;
 
-            if($itemsDonatedToMuseum->getValue() >= 300)
+            if($itemsDonatedToMuseum >= 300)
                 $bookPrices['The Umbra'] = 25;
 
-            if($itemsDonatedToMuseum->getValue() >= 600)
+            if($itemsDonatedToMuseum >= 600)
                 $bookPrices['Book of Noods'] = 20;
         }
 
@@ -302,14 +300,14 @@ class BookstoreService
 
     public function renamingScrollAvailable(User $user): bool
     {
-        $petsAdopted = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::PETS_ADOPTED ]);
+        $petsAdopted = UserStatsRepository::getStatValue($this->em, $user, UserStatEnum::PETS_ADOPTED);
 
-        if($petsAdopted && $petsAdopted->getValue() > 0)
+        if($petsAdopted > 0)
             return true;
 
-        $petsBirthed = $this->userStatsRepository->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::PETS_BIRTHED ]);
+        $petsBirthed = UserStatsRepository::getStatValue($this->em, $user, UserStatEnum::PETS_BIRTHED);
 
-        if($petsBirthed && $petsBirthed->getValue() > 0)
+        if($petsBirthed > 0)
             return true;
 
         return false;

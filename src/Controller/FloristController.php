@@ -45,7 +45,7 @@ class FloristController extends AbstractController
      */
     public function buyFlowerbomb(
         Request $request, FloristService $floristService,
-        InventoryService $inventoryService, ResponseService $responseService, UserStatsRepository $userStatsRepository,
+        InventoryService $inventoryService, ResponseService $responseService,
         EntityManagerInterface $em, TransactionService $transactionService
     )
     {
@@ -72,7 +72,7 @@ class FloristController extends AbstractController
 
         $statName = $userPick['item']['name'] . 's Purchased';
 
-        $stat = $userStatsRepository->incrementStat($user, $statName);
+        $stat = UserStatsRepository::incrementStat($em, $user, $statName);
 
         if($userPick['item']['name'] === 'Flowerbomb' && $stat->getValue() === 1)
             $inventoryService->receiveItem('Book of Flowers', $user, $user, 'This was delivered to you from The Florist\'s.', LocationEnum::HOME, true);

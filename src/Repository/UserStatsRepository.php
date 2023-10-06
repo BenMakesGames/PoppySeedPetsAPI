@@ -7,6 +7,7 @@ use App\Entity\UserStats;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -23,15 +24,15 @@ class UserStatsRepository extends ServiceEntityRepository
         parent::__construct($registry, UserStats::class);
     }
 
-    private $userStatsPerRequestCache = [];
+    private static $userStatsPerRequestCache = [];
 
-    public function findOrCreate(User $user, string $name): UserStats
+    public static function findOrCreate(EntityManagerInterface $em, User $user, string $name): UserStats
     {
         $cacheKey = $user->getId() . '-' . $name;
 
-        if(!array_key_exists($cacheKey, $this->userStatsPerRequestCache))
+        if(!array_key_exists($cacheKey, self::$userStatsPerRequestCache))
         {
-            $stat = $this->findOneBy([
+            $stat = $em->getRepository(UserStatsRepository::class)->findOneBy([
                 'user' => $user,
                 'stat' => $name
             ]);
@@ -43,25 +44,25 @@ class UserStatsRepository extends ServiceEntityRepository
                     ->setStat($name)
                 ;
 
-                $this->getEntityManager()->persist($stat);
+                $em->persist($stat);
             }
 
-            $this->userStatsPerRequestCache[$cacheKey] = $stat;
+            self::$userStatsPerRequestCache[$cacheKey] = $stat;
         }
 
-        return $this->userStatsPerRequestCache[$cacheKey];
+        return self::$userStatsPerRequestCache[$cacheKey];
     }
 
-    public function getStatValue(User $user, string $name): int
+    public static function getStatValue(EntityManagerInterface $em, User $user, string $name): int
     {
-        $stat = $this->findOrCreate($user, $name);
+        $stat = self::findOrCreate($em, $user, $name);
 
         return $stat->getValue();
     }
 
-    public function incrementStat(User $user, string $name, int $change = 1): UserStats
+    public static function incrementStat(EntityManagerInterface $em, User $user, string $name, int $change = 1): UserStats
     {
-        $stat = $this->findOrCreate($user, $name);
+        $stat = self::findOrCreate($em, $user, $name);
 
         $oldValue = $stat->getValue();
 

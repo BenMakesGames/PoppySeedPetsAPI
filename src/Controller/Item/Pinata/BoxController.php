@@ -80,9 +80,8 @@ class BoxController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function openOreBox(
-        Inventory $box, ResponseService $responseService, InventoryService $inventoryService,
-        PetExperienceService $petExperienceService, UserStatsRepository $userStatsRepository, EntityManagerInterface $em,
-        IRandom $squirrel3
+        Inventory $box, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        PetExperienceService $petExperienceService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -101,7 +100,7 @@ class BoxController extends AbstractController
             'XOR',
         ];
 
-        $stat = $userStatsRepository->incrementStat($user, 'Looted ' . $box->getItem()->getNameWithArticle());
+        $stat = UserStatsRepository::incrementStat($em, $user, 'Looted ' . $box->getItem()->getNameWithArticle());
 
         $numberOfItems = $squirrel3->rngNextInt(3, 5);
         $containsLobster = $stat->getValue() === 1 || $squirrel3->rngNextInt(1, 4) === 1;
@@ -191,7 +190,7 @@ class BoxController extends AbstractController
      */
     public function openBoxBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -206,7 +205,7 @@ class BoxController extends AbstractController
         {
             $message = "What boxes will be in _this_ Box Box, I wonder?\n\nWait, what? It's _another_ Box Box?";
 
-            $userStatsRepository->incrementStat($user, 'Found a Box Box Inside a Box Box');
+            UserStatsRepository::incrementStat($em, $user, 'Found a Box Box Inside a Box Box');
 
             $inventoryService->receiveItem('Box Box', $user, $user, $user->getName() . ' found this in a Box Box... huh...', $location, $inventory->getLockedToOwner());
         }
@@ -251,7 +250,7 @@ class BoxController extends AbstractController
             $inventoryService->receiveItem($possibleItems[1], $user, $user, $user->getName() . ' found this in a Box Box.', $location, $inventory->getLockedToOwner());
         }
 
-        $userStatsRepository->incrementStat($user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
+        UserStatsRepository::incrementStat($em, $user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
 
         $em->remove($inventory);
 
@@ -266,7 +265,7 @@ class BoxController extends AbstractController
      */
     public function openCerealBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -288,7 +287,7 @@ class BoxController extends AbstractController
         for($i = 0; $i < 7; $i++)
             $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Corn', 'Wheat', 'Rice' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
 
-        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -297,7 +296,7 @@ class BoxController extends AbstractController
      */
     public function openBakers(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository
+        EntityManagerInterface $em, UserQuestRepository $userQuestRepository
     )
     {
         /** @var User $user */
@@ -337,7 +336,7 @@ class BoxController extends AbstractController
                 $newInventory[$i]->setSpice($spice);
         }
 
-        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -346,7 +345,7 @@ class BoxController extends AbstractController
      */
     public function openFruitsNVeggies(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository
+        EntityManagerInterface $em, UserQuestRepository $userQuestRepository
     )
     {
         /** @var User $user */
@@ -385,7 +384,7 @@ class BoxController extends AbstractController
                 $newInventory[$i]->setSpice($spice);
         }
 
-        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -394,7 +393,7 @@ class BoxController extends AbstractController
      */
     public function openNatureBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -429,7 +428,7 @@ class BoxController extends AbstractController
                 $newInventory[$i]->setSpice($spice);
         }
 
-        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -438,7 +437,7 @@ class BoxController extends AbstractController
      */
     public function openMonsterBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -473,7 +472,7 @@ class BoxController extends AbstractController
                 $newInventory[$i]->setSpice($spice);
         }
 
-        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -482,7 +481,7 @@ class BoxController extends AbstractController
      */
     public function openHandicrafts(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -513,7 +512,7 @@ class BoxController extends AbstractController
             $newInventory[] = $inventoryService->receiveItem($itemName, $user, $user, $description, $location, $inventory->getLockedToOwner());
         }
 
-        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -522,7 +521,7 @@ class BoxController extends AbstractController
      */
     public function openGamingBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -560,7 +559,7 @@ class BoxController extends AbstractController
         if($squirrel3->rngNextInt(1, 10) === 1)
             $newInventory[] = $inventoryService->receiveItem('Glowing Twenty-sided Die', $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
 
-        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -569,7 +568,7 @@ class BoxController extends AbstractController
      */
     public function openBagOfBeans(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -592,7 +591,7 @@ class BoxController extends AbstractController
             ;
         }
 
-        return BoxHelpers::countRemoveFlushAndRespond('You upturn the bag, finding', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('You upturn the bag, finding', $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -601,7 +600,7 @@ class BoxController extends AbstractController
      */
     public function disassemblePepperbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -622,7 +621,7 @@ class BoxController extends AbstractController
             ;
         }
 
-        $userStatsRepository->incrementStat($user, 'Disassembled ' . $inventory->getItem()->getNameWithArticle());
+        UserStatsRepository::incrementStat($em, $user, 'Disassembled ' . $inventory->getItem()->getNameWithArticle());
 
         $em->remove($inventory);
 
@@ -688,7 +687,7 @@ class BoxController extends AbstractController
      */
     public function raidSandbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -746,7 +745,7 @@ class BoxController extends AbstractController
         for($i = 0; $i < $sand; $i++)
             $inventoryService->receiveItem('Silica Grounds', $user, $user, $description, $location, $inventory->getLockedToOwner());
 
-        $userStatsRepository->incrementStat($user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
+        UserStatsRepository::incrementStat($em, $user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
 
         $em->remove($inventory);
 
@@ -761,7 +760,7 @@ class BoxController extends AbstractController
      */
     public function openPaperBag(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -778,7 +777,7 @@ class BoxController extends AbstractController
             'Wheat Flour', 'World\'s Best Sugar Cookie', 'Yeast', 'Yellowy Lime', 'Ponzu'
         ]));
 
-        $openedStat = $userStatsRepository->incrementStat($user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
+        $openedStat = UserStatsRepository::incrementStat($em, $user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
 
         if($item->getName() === 'Cockroach' && $squirrel3->rngNextInt(1, 3) === 1)
         {
@@ -843,7 +842,7 @@ class BoxController extends AbstractController
      */
     public function open4thOfJulyBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -866,7 +865,7 @@ class BoxController extends AbstractController
             $inventoryService->receiveItem('Blue Firework', $user, $user, $comment, $location, $lockedToOwner),
         ];
 
-        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -875,7 +874,7 @@ class BoxController extends AbstractController
      */
     public function openBastilleDayBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, IRandom $rng
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -903,7 +902,7 @@ class BoxController extends AbstractController
         foreach($items as $item)
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location, $lockedToOwner);
 
-        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -912,7 +911,7 @@ class BoxController extends AbstractController
      */
     public function openCincoDeMayoBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -935,7 +934,7 @@ class BoxController extends AbstractController
             $inventoryService->receiveItem('Red Firework', $user, $user, $comment, $location, $lockedToOwner),
         ];
 
-        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -944,7 +943,7 @@ class BoxController extends AbstractController
      */
     public function openNewYearBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -974,7 +973,7 @@ class BoxController extends AbstractController
         for($x = $squirrel3->rngNextInt(4, 5); $x > 0; $x--)
             $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray($alcohol), $user, $user, $comment, $location, $lockedToOwner);
 
-        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -983,7 +982,7 @@ class BoxController extends AbstractController
      */
     public function openChineseNewYearBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -1005,7 +1004,7 @@ class BoxController extends AbstractController
             $inventoryService->receiveItem('Gold Dragon Ingot', $user, $user, $comment, $location, $lockedToOwner),
         ];
 
-        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1014,7 +1013,7 @@ class BoxController extends AbstractController
      */
     public function openGoldChest(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository
+        EntityManagerInterface $em, InventoryRepository $inventoryRepository
     )
     {
         /** @var User $user */
@@ -1052,7 +1051,7 @@ class BoxController extends AbstractController
 
         $em->remove($key);
 
-        return BoxHelpers::countRemoveFlushAndRespond('You used a Gold Key to open the Gold Chest, and revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('You used a Gold Key to open the Gold Chest, and revealed', $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1061,7 +1060,7 @@ class BoxController extends AbstractController
      */
     public function openRubyChest(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -1091,7 +1090,7 @@ class BoxController extends AbstractController
         foreach($items as $item)
             $newInventory[] = $inventoryService->receiveItem($item, $user, $user, $comment, $location, $inventory->getLockedToOwner());
 
-        return BoxHelpers::countRemoveFlushAndRespond('You opened the Ruby Chest... whoa: it\'s got', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('You opened the Ruby Chest... whoa: it\'s got', $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1100,7 +1099,7 @@ class BoxController extends AbstractController
      */
     public function openTowerBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -1126,7 +1125,7 @@ class BoxController extends AbstractController
         if($squirrel3->rngNextInt(1, 10) === 1)
             $newInventory[] = $inventoryService->receiveItem('Secret Seashell', $user, $user, $message, $location, $inventory->getLockedToOwner());
 
-        return BoxHelpers::countRemoveFlushAndRespond('Opening the chest revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the chest revealed', $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1135,7 +1134,7 @@ class BoxController extends AbstractController
      */
     public function openFishBag(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -1173,7 +1172,7 @@ class BoxController extends AbstractController
         if($squirrel3->rngNextInt(1, 20) === 1)
             $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Merchant Fish', 'Secret Seashell', 'Ceremonial Trident' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
 
-        return BoxHelpers::countRemoveFlushAndRespond('Opening the bag revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the bag revealed', $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -1182,8 +1181,7 @@ class BoxController extends AbstractController
      */
     public function openChocolateChest(
         Inventory $box, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em,
-        IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -1219,7 +1217,7 @@ class BoxController extends AbstractController
             'Mini Chocolate Chip Cookies', 'Slice of Chocolate Cream Pie', 'Chocolate Key'
         ];
 
-        $userStatsRepository->incrementStat($user, 'Looted ' . $box->getItem()->getNameWithArticle());
+        UserStatsRepository::incrementStat($em, $user, 'Looted ' . $box->getItem()->getNameWithArticle());
 
         $numberOfItems = $squirrel3->rngNextInt(2, 4);
 

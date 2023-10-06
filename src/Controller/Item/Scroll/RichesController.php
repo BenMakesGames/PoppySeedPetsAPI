@@ -26,8 +26,7 @@ class RichesController extends AbstractController
      */
     public function invokeMinorRichesScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService,
-        IRandom $squirrel3
+        EntityManagerInterface $em, TransactionService $transactionService, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -37,7 +36,7 @@ class RichesController extends AbstractController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         $moneys = $squirrel3->rngNextInt(30, 50);
 
@@ -64,7 +63,7 @@ class RichesController extends AbstractController
      */
     public function invokeMajorRichesScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
+        EntityManagerInterface $em, TransactionService $transactionService
     )
     {
         /** @var User $user */
@@ -74,7 +73,7 @@ class RichesController extends AbstractController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         $moneys = $squirrel3->rngNextInt(60, 100);
 

@@ -25,7 +25,7 @@ class DirtyLumpController extends AbstractController
      */
     public function clean(
         Inventory $lump, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -62,7 +62,7 @@ class DirtyLumpController extends AbstractController
 
         $itemObject = ItemRepository::findOneByName($em, $item);
 
-        $userStatsRepository->incrementStat($user, 'Cleaned a ' . $lump->getItem()->getName());
+        UserStatsRepository::incrementStat($em, $user, 'Cleaned a ' . $lump->getItem()->getName());
 
         $inventoryService->receiveItem($itemObject, $user, $lump->getCreatedBy(), $user->getName() . ' found this covered in dirt.', $location, $lockedToOwner);
         $message = 'You clean off the object, which reveals itself to be ' . $itemObject->getNameWithArticle() . '!';

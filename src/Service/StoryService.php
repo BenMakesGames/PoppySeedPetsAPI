@@ -30,7 +30,6 @@ class StoryService
     private InventoryService $inventoryService;
     private InventoryRepository $inventoryRepository;
     private JsonLogicParserService $jsonLogicParserService;
-    private UserStatsRepository $userStatsRepository;
     private ResponseService $responseService;
     private MuseumService $museumService;
 
@@ -43,9 +42,8 @@ class StoryService
     private Inventory $callingInventory;
 
     public function __construct(
-        EntityManagerInterface $em, UserQuestRepository $userQuestRepository,
-        InventoryService $inventoryService, JsonLogicParserService $jsonLogicParserService,
-        UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
+        EntityManagerInterface $em, UserQuestRepository $userQuestRepository, InventoryService $inventoryService,
+        JsonLogicParserService $jsonLogicParserService, InventoryRepository $inventoryRepository,
         ResponseService $responseService, MuseumService $museumService
     )
     {
@@ -53,7 +51,6 @@ class StoryService
         $this->userQuestRepository = $userQuestRepository;
         $this->inventoryService = $inventoryService;
         $this->jsonLogicParserService = $jsonLogicParserService;
-        $this->userStatsRepository = $userStatsRepository;
         $this->inventoryRepository = $inventoryRepository;
         $this->responseService = $responseService;
         $this->museumService = $museumService;
@@ -271,7 +268,7 @@ class StoryService
                 break;
 
             case StoryActionTypeEnum::INCREMENT_STAT:
-                $this->userStatsRepository->incrementStat($this->user, $action['stat'], array_key_exists('change', $action) ? $action['change'] : 1);
+                UserStatsRepository::incrementStat($this->em, $this->user, $action['stat'], array_key_exists('change', $action) ? $action['change'] : 1);
                 break;
 
             case StoryActionTypeEnum::SET_QUEST_VALUE:

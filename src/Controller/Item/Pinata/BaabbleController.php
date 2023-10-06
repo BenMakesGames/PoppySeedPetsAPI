@@ -54,7 +54,7 @@ class BaabbleController extends AbstractController
      */
     public function openBlackBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -90,7 +90,7 @@ class BaabbleController extends AbstractController
 
         $items[] = $weirdItem;
 
-        $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
+        UserStatsRepository::incrementStat($em, $user, 'Opened a ' . $inventory->getItem()->getName());
 
         $em->remove($inventory);
 
@@ -108,7 +108,7 @@ class BaabbleController extends AbstractController
      */
     public function openWhiteBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -148,7 +148,7 @@ class BaabbleController extends AbstractController
 
         $items[] = $weirdItem;
 
-        $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
+        UserStatsRepository::incrementStat($em, $user, 'Opened a ' . $inventory->getItem()->getName());
 
         $em->remove($inventory);
 
@@ -166,7 +166,7 @@ class BaabbleController extends AbstractController
      */
     public function openGoldBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -206,7 +206,7 @@ class BaabbleController extends AbstractController
 
         shuffle($noteworthy);
 
-        $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
+        UserStatsRepository::incrementStat($em, $user, 'Opened a ' . $inventory->getItem()->getName());
 
         $em->remove($inventory);
 
@@ -227,7 +227,7 @@ class BaabbleController extends AbstractController
      */
     public function openShinyBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -267,7 +267,7 @@ class BaabbleController extends AbstractController
 
         shuffle($noteworthy);
 
-        $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
+        UserStatsRepository::incrementStat($em, $user, 'Opened a ' . $inventory->getItem()->getName());
 
         $em->remove($inventory);
 

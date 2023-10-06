@@ -26,7 +26,7 @@ class HeartstoneController extends AbstractController
      */
     public function transform(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -35,8 +35,8 @@ class HeartstoneController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'heartstone/#/transform');
         ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
 
-        $numberTransformed = $userStatsRepository->getStatValue($user, self::STAT_NAME);
-        $petsWhoHaveCompletedHeartDimensionAdventures = $userStatsRepository->getStatValue($user, 'Pet Completed the Heartstone Dimension');
+        $numberTransformed = UserStatsRepository::getStatValue($em, $user, self::STAT_NAME);
+        $petsWhoHaveCompletedHeartDimensionAdventures = UserStatsRepository::getStatValue($em, $user, 'Pet Completed the Heartstone Dimension');
 
         $numberThatCanBeTransformed = $petsWhoHaveCompletedHeartDimensionAdventures - $numberTransformed;
 
@@ -54,7 +54,7 @@ class HeartstoneController extends AbstractController
         for($i = 0; $i < 2; $i++)
             $inventoryService->receiveItem('Heartessence', $user, $user, $user->getName() . ' got this by transforming a Heartstone.', $location, $locked);
 
-        $userStatsRepository->incrementStat($user, self::STAT_NAME);
+        UserStatsRepository::incrementStat($em, $user, self::STAT_NAME);
 
         $em->remove($inventory);
 

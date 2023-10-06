@@ -25,7 +25,7 @@ class SandyLumpController extends AbstractController
      */
     public function clean(
         Inventory $lump, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -59,7 +59,7 @@ class SandyLumpController extends AbstractController
 
         $itemObject = ItemRepository::findOneByName($em, $item);
 
-        $userStatsRepository->incrementStat($user, 'Cleaned a ' . $lump->getItem()->getName());
+        UserStatsRepository::incrementStat($em, $user, 'Cleaned a ' . $lump->getItem()->getName());
 
         if($item === 'Silica Grounds')
         {

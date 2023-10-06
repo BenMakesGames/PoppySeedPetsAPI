@@ -32,8 +32,8 @@ class SummoningSomethingFriendlyController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function summonSomethingFriendly(
-        Inventory $inventory, ResponseService $responseService, UserStatsRepository $userStatsRepository,
-        EntityManagerInterface $em, PetFactory $petFactory, IRandom $squirrel3
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, PetFactory $petFactory,
+        IRandom $squirrel3
     ): JsonResponse
     {
         /** @var User $user */
@@ -43,7 +43,7 @@ class SummoningSomethingFriendlyController extends AbstractController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         $pet = null;
         $gotASentinel = false;

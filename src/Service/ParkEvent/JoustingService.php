@@ -49,12 +49,11 @@ class JoustingService implements ParkEventInterface
     private InventoryService $inventoryService;
     private IRandom $squirrel3;
     private ParkService $parkService;
-    private UserStatsRepository $userStatsRepository;
 
     public function __construct(
         PetExperienceService $petExperienceService, EntityManagerInterface $em, PetRelationshipService $petRelationshipService,
         TransactionService $transactionService, InventoryService $inventoryService, IRandom $squirrel3,
-        ParkService $parkService, UserStatsRepository $userStatsRepository
+        ParkService $parkService
     )
     {
         $this->petExperienceService = $petExperienceService;
@@ -64,7 +63,6 @@ class JoustingService implements ParkEventInterface
         $this->inventoryService = $inventoryService;
         $this->squirrel3 = $squirrel3;
         $this->parkService = $parkService;
-        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -425,7 +423,7 @@ class JoustingService implements ParkEventInterface
             $comment = $pet->getName() . ' earned this by getting 1st place in a Jousting tournament with ' . $teamMate->getName() . '!';
             $this->transactionService->getMoney($pet->getOwner(), $firstPlaceMoneys, $comment);
             $this->inventoryService->petCollectsItem('Jousting Gold Trophy', $pet, $comment, null);
-            $this->userStatsRepository->incrementStat($pet->getOwner(), 'Gold Trophies Earned', 1);
+            UserStatsRepository::incrementStat($this->em, $pet->getOwner(), 'Gold Trophies Earned', 1);
 
             $log = $pet->getName() . ' played in a Jousting tournament with ' . $teamMate->getName() . ', and won! The whole thing!';
         }
@@ -445,7 +443,7 @@ class JoustingService implements ParkEventInterface
             $comment = $pet->getName() . ' earned this by getting 2nd place in a Jousting tournament with ' . $teamMate->getName() . '!';
             $this->transactionService->getMoney($pet->getOwner(), $secondPlaceMoneys, $comment);
             $this->inventoryService->petCollectsItem('Jousting Silver Trophy', $pet, $comment, null);
-            $this->userStatsRepository->incrementStat($pet->getOwner(), 'Silver Trophies Earned', 1);
+            UserStatsRepository::incrementStat($this->em, $pet->getOwner(), 'Silver Trophies Earned', 1);
         }
 
         $pet->increaseEsteem(2 * $team->wins);

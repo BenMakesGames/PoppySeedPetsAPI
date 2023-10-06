@@ -32,8 +32,7 @@ final class Claim extends AbstractController
      */
     public function claim(
         ResponseService $responseService, Request $request, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository, InventoryService $inventoryService,
-        TransactionService $transactionService, IRandom $rng
+        InventoryService $inventoryService, TransactionService $transactionService, IRandom $rng
     )
     {
         /** @var User $user */
@@ -56,7 +55,7 @@ final class Claim extends AbstractController
 
         $em->persist($badge);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ACHIEVEMENTS_CLAIMED);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::ACHIEVEMENTS_CLAIMED);
 
         self::getAchievementReward($user, $progress['reward'], $inventoryService, $transactionService);
 

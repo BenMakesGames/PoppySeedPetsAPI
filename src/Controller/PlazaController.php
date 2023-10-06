@@ -29,8 +29,7 @@ class PlazaController extends AbstractController
      */
     public function collectHolidayBox(
         Request $request, PlazaService $plazaService, MuseumService $museumService,
-        InventoryService $inventoryService, EntityManagerInterface $em, ResponseService $responseService,
-        UserStatsRepository $userStatsRepository
+        InventoryService $inventoryService, EntityManagerInterface $em, ResponseService $responseService
     )
     {
         /** @var User $user */
@@ -49,7 +48,7 @@ class PlazaController extends AbstractController
             $box->userQuestEntity->setValue(true);
 
         if(strpos($box->itemName, 'Box') !== false || strpos($box->itemName, 'Bag') !== false)
-            $userStatsRepository->incrementStat($user, UserStatEnum::PLAZA_BOXES_RECEIVED, $box->quantity);
+            UserStatsRepository::incrementStat($em, $user, UserStatEnum::PLAZA_BOXES_RECEIVED, $box->quantity);
 
         for($i = 0; $i < $box->quantity; $i++)
             $inventoryService->receiveItem($box->itemName, $user, $user, $box->comment, LocationEnum::HOME, true);

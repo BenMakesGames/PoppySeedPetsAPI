@@ -26,7 +26,7 @@ class FarmerController extends AbstractController
      */
     public function invokeFarmerScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository
+        EntityManagerInterface $em, UserQuestRepository $userQuestRepository
     )
     {
         /** @var User $user */
@@ -37,7 +37,7 @@ class FarmerController extends AbstractController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         if($user->getGreenhouse())
         {

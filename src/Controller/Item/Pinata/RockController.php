@@ -24,7 +24,7 @@ class RockController extends AbstractController
      */
     public function smash(
         Inventory $rock, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -53,7 +53,7 @@ class RockController extends AbstractController
             'Striped Microcline',
         ]);
 
-        $userStatsRepository->incrementStat($user, 'Smashed Open a ' . $rock->getItem()->getName());
+        UserStatsRepository::incrementStat($em, $user, 'Smashed Open a ' . $rock->getItem()->getName());
 
         $ore = $squirrel3->rngNextFromArray($ores);
         $extraItem = $squirrel3->rngNextFromArray($extraItems);

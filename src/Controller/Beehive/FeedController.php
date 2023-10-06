@@ -30,7 +30,7 @@ class FeedController extends AbstractController
      */
     public function feedItem(
         ResponseService $responseService, EntityManagerInterface $em, BeehiveService $beehiveService,
-        InventoryService $inventoryService, Request $request, UserStatsRepository $userStatsRepository
+        InventoryService $inventoryService, Request $request
     )
     {
         /** @var User $user */
@@ -67,7 +67,7 @@ class FeedController extends AbstractController
         $beehiveService->fedRequestedItem($beehive, $alternate);
         $beehive->setInteractionPower();
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::FED_THE_BEEHIVE);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::FED_THE_BEEHIVE);
 
         $em->flush();
 

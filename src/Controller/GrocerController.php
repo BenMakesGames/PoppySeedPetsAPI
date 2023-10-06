@@ -59,7 +59,7 @@ class GrocerController extends AbstractController
     public function buy(
         Request $request, ResponseService $responseService, GrocerService $grocerService,
         TransactionService $transactionService, InventoryService $inventoryService, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository, UserQuestRepository $userQuestRepository
+        UserQuestRepository $userQuestRepository
     )
     {
         $buyTo = $request->request->getInt('location');
@@ -160,7 +160,7 @@ class GrocerController extends AbstractController
             }
         }
 
-        $userStatsRepository->incrementStat($user, 'Items Purchased from Grocer', $totalQuantity);
+        UserStatsRepository::incrementStat($em, $user, 'Items Purchased from Grocer', $totalQuantity);
 
         if($now->format('Y-m-d') === $grocerItemsDay->getValue())
             $grocerItemsQuantity->setValue($grocerItemsQuantity->getValue() + $totalQuantity);

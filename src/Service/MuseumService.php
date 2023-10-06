@@ -15,18 +15,16 @@ class MuseumService
 {
     private EntityManagerInterface $em;
     private ItemRepository $itemRepository;
-    private UserStatsRepository $userStatsRepository;
     private MuseumItemRepository $museumItemRepository;
     private TransactionService $transactionService;
 
     public function __construct(
-        EntityManagerInterface $em, ItemRepository $itemRepository, UserStatsRepository $userStatsRepository,
+        EntityManagerInterface $em, ItemRepository $itemRepository,
         MuseumItemRepository $museumItemRepository, TransactionService $transactionService
     )
     {
         $this->em = $em;
         $this->itemRepository = $itemRepository;
-        $this->userStatsRepository = $userStatsRepository;
         $this->museumItemRepository = $museumItemRepository;
         $this->transactionService = $transactionService;
     }
@@ -62,7 +60,7 @@ class MuseumService
 
         $this->transactionService->getMuseumFavor($user, $item->getMuseumPoints(), 'Someone, or something, donated ' . $item->getNameWithArticle() . ' to the Museum on your behalf.');
 
-        $this->userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM, 1);
+        UserStatsRepository::incrementStat($this->em, $user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM, 1);
 
         return $museumItem;
     }

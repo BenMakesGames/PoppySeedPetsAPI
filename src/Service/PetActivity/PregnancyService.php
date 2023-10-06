@@ -31,22 +31,20 @@ class PregnancyService
     private ResponseService $responseService;
     private PetExperienceService $petExperienceService;
     private UserQuestRepository $userQuestRepository;
-    private UserStatsRepository $userStatsRepository;
     private MeritRepository $meritRepository;
     private PetFactory $petFactory;
     private IRandom $squirrel3;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, PetExperienceService $petExperienceService,
-        UserQuestRepository $userQuestRepository, UserStatsRepository $userStatsRepository,
-        MeritRepository $meritRepository, PetFactory $petFactory, IRandom $squirrel3
+        UserQuestRepository $userQuestRepository, MeritRepository $meritRepository, PetFactory $petFactory,
+        IRandom $squirrel3
     )
     {
         $this->em = $em;
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
         $this->userQuestRepository = $userQuestRepository;
-        $this->userStatsRepository = $userStatsRepository;
         $this->meritRepository = $meritRepository;
         $this->petFactory = $petFactory;
         $this->squirrel3 = $squirrel3;
@@ -290,7 +288,7 @@ class PregnancyService
             ->increaseFood(-$this->squirrel3->rngNextInt(8, 16))
         ;
 
-        $this->userStatsRepository->incrementStat($user, UserStatEnum::PETS_BIRTHED);
+        UserStatsRepository::incrementStat($this->em, $user, UserStatEnum::PETS_BIRTHED);
     }
 
     private const CANONICALIZED_FORBIDDEN_COMBINED_NAMES = [

@@ -38,12 +38,11 @@ class EatingService
     private ResponseService $responseService;
     private EntityManagerInterface $em;
     private PetExperienceService $petExperienceService;
-    private UserStatsRepository $userStatsRepository;
 
     public function __construct(
         IRandom $squirrel3, CravingService $cravingService,
         InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
-        PetExperienceService $petExperienceService, UserStatsRepository $userStatsRepository
+        PetExperienceService $petExperienceService
     )
     {
         $this->squirrel3 = $squirrel3;
@@ -52,7 +51,6 @@ class EatingService
         $this->responseService = $responseService;
         $this->em = $em;
         $this->petExperienceService = $petExperienceService;
-        $this->userStatsRepository = $userStatsRepository;
     }
 
     /**
@@ -326,7 +324,7 @@ class EatingService
             if($pet->getPregnancy())
                 $pet->getPregnancy()->increaseAffection($gain);
 
-            $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::FOOD_HOURS_FED_TO_PETS, $foodGained);
+            UserStatsRepository::incrementStat($this->em, $pet->getOwner(), UserStatEnum::FOOD_HOURS_FED_TO_PETS, $foodGained);
 
             $this->cravingService->maybeAddCraving($pet);
         }

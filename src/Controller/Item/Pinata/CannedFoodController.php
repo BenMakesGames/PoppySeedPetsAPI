@@ -26,7 +26,7 @@ class CannedFoodController extends AbstractController
      */
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, TransactionService $transactionService
+        EntityManagerInterface $em, TransactionService $transactionService
     )
     {
         /** @var User $user */
@@ -37,7 +37,7 @@ class CannedFoodController extends AbstractController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $cansOpened = $userStatsRepository->findOrCreate($user, UserStatEnum::CANS_OF_FOOD_OPENED);
+        $cansOpened = UserStatsRepository::findOrCreate($em, $user, UserStatEnum::CANS_OF_FOOD_OPENED);
 
         if($cansOpened->getValue() > 2 && $squirrel3->rngNextInt(1, 50) === 1)
         {

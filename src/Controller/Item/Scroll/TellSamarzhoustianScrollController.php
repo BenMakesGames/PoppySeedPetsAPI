@@ -25,8 +25,8 @@ class TellSamarzhoustianScrollController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function read(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService, IRandom $squirrel3, UserStatsRepository $userStatsRepository
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
+        ResponseService $responseService
     )
     {
         /** @var User $user */
@@ -80,7 +80,7 @@ class TellSamarzhoustianScrollController extends AbstractController
             $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
         }
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         $em->flush();
 

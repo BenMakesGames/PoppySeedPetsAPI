@@ -27,8 +27,7 @@ class HotPotatoController extends AbstractController
      */
     public function toss(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, IRandom $squirrel3, HotPotatoService $hotPotatoService,
-        UserStatsRepository $userStatsRepository
+        InventoryService $inventoryService, IRandom $squirrel3, HotPotatoService $hotPotatoService
     )
     {
         /** @var User $user */
@@ -77,7 +76,7 @@ class HotPotatoController extends AbstractController
         }
         else
         {
-            $userStatsRepository->incrementStat($user, UserStatEnum::TOSSED_A_HOT_POTATO);
+            UserStatsRepository::incrementStat($em, $user, UserStatEnum::TOSSED_A_HOT_POTATO);
 
             return $hotPotatoService->tossItem($inventory);
         }

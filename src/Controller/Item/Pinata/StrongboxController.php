@@ -27,8 +27,7 @@ class StrongboxController extends AbstractController
      */
     public function openLittleStrongbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        TransactionService $transactionService
+        EntityManagerInterface $em, InventoryRepository $inventoryRepository, TransactionService $transactionService
     )
     {
         /** @var User $user */
@@ -70,7 +69,7 @@ class StrongboxController extends AbstractController
 
         $em->remove($key);
 
-        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed ' . $moneys . '~~m~~,', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed ' . $moneys . '~~m~~,', $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -79,8 +78,7 @@ class StrongboxController extends AbstractController
      */
     public function openVeryStrongbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        TransactionService $transactionService
+        EntityManagerInterface $em, InventoryRepository $inventoryRepository, TransactionService $transactionService
     )
     {
         /** @var User $user */
@@ -132,7 +130,7 @@ class StrongboxController extends AbstractController
 
         $em->remove($key);
 
-        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed ' . $moneys . '~~m~~,', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed ' . $moneys . '~~m~~,', $user, $inventory, $newInventory, $responseService, $em);
     }
 
     /**
@@ -141,7 +139,7 @@ class StrongboxController extends AbstractController
      */
     public function openOutrageouslyStrongbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository
+        EntityManagerInterface $em, InventoryRepository $inventoryRepository
     )
     {
         /** @var User $user */
@@ -177,6 +175,6 @@ class StrongboxController extends AbstractController
 
         $em->remove($key);
 
-        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $user, $inventory, $newInventory, $responseService, $em);
     }
 }

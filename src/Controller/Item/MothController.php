@@ -62,9 +62,8 @@ class MothController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function releaseMoths(
-        ResponseService $responseService, UserStatsRepository $userStatsRepository,
-        EntityManagerInterface $em, Request $request, InventoryRepository $inventoryRepository,
-        IRandom $rng, InventoryService $inventoryService
+        ResponseService $responseService, EntityManagerInterface $em, Request $request,
+        InventoryRepository $inventoryRepository, IRandom $rng, InventoryService $inventoryService
     )
     {
         /** @var User $user */
@@ -149,7 +148,7 @@ class MothController extends AbstractController
         if($gotLove)
             $items[] = 'Chang\'e\'s Love';
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::BUGS_PUT_OUTSIDE, $mothCount);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::BUGS_PUT_OUTSIDE, $mothCount);
 
         $quantitiesByItem = [];
 

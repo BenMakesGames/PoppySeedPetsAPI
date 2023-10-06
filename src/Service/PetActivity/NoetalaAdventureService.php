@@ -24,18 +24,15 @@ class NoetalaAdventureService
     private ResponseService $responseService;
     private InventoryService $inventoryService;
     private IRandom $rng;
-    private UserStatsRepository $userStatsRepository;
 
     public function __construct(
-        EntityManagerInterface $em, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng
     )
     {
         $this->em = $em;
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->rng = $rng;
-        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function fightNoetalasWing(User $user): bool
@@ -121,7 +118,7 @@ class NoetalaAdventureService
                 $i = ($i + 1) % count($rewards);
             }
 
-            $this->userStatsRepository->incrementStat($user, 'Defeated Noetala\'s Wing');
+            UserStatsRepository::incrementStat($this->em, $user, 'Defeated Noetala\'s Wing');
 
             $success = true;
         }

@@ -75,7 +75,7 @@ class WolfsFavorController extends AbstractController
      */
     public function getFluffAndTalons(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -100,7 +100,7 @@ class WolfsFavorController extends AbstractController
         foreach($loot as $item)
             $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a Wolf\'s Favor.', $location);
 
-        $userStatsRepository->incrementStat($user, self::USER_STAT_NAME);
+        UserStatsRepository::incrementStat($em, $user, self::USER_STAT_NAME);
 
         $em->remove($inventory);
 
@@ -115,7 +115,7 @@ class WolfsFavorController extends AbstractController
      */
     public function getMoonStuff(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -135,7 +135,7 @@ class WolfsFavorController extends AbstractController
         foreach($loot as $item)
             $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a Wolf\'s Favor.', $location);
 
-        $userStatsRepository->incrementStat($user, self::USER_STAT_NAME);
+        UserStatsRepository::incrementStat($em, $user, self::USER_STAT_NAME);
 
         $em->remove($inventory);
 

@@ -27,8 +27,7 @@ class MagicHourglassController extends AbstractController
      */
     public function shatter(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        HouseService $houseService, UserStatsRepository $userStatsRepository, EntityManagerInterface $em,
-        IRandom $squirrel3
+        HouseService $houseService, EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -50,7 +49,7 @@ class MagicHourglassController extends AbstractController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::MAGIC_HOURGLASSES_SMASHED);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::MAGIC_HOURGLASSES_SMASHED);
 
         $query = $em->createQuery('
             UPDATE App\Entity\PetHouseTime AS ht

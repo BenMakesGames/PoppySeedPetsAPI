@@ -26,7 +26,7 @@ class MusicController extends AbstractController
      */
     public function invokeMusicScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsRepository $userStatsRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -37,7 +37,7 @@ class MusicController extends AbstractController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         $commonItems = [
             'Flute', 'Fiberglass Flute', 'Music Note', 'Gold Triangle'

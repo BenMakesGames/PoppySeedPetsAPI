@@ -4,17 +4,18 @@ namespace App\Service;
 use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
 use App\Repository\UserStatsRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
 class JsonLogicParserService
 {
     private LoggerInterface $logger;
-    private UserStatsRepository $userStatsRepository;
+    private EntityManagerInterface $em;
 
-    public function __construct(LoggerInterface $logger, UserStatsRepository $userStatsRepository)
+    public function __construct(LoggerInterface $logger, EntityManagerInterface $em)
     {
         $this->logger = $logger;
-        $this->userStatsRepository = $userStatsRepository;
+        $this->em = $em;
     }
 
     public function evaluate($expression, User $user)
@@ -82,7 +83,7 @@ class JsonLogicParserService
             {
                 $stat = substr($expression, 11, strlen($expression) - 12);
 
-                return $this->userStatsRepository->getStatValue($user, $stat);
+                return UserStatsRepository::getStatValue($this->em, $user, $stat);
             }
             else
             {

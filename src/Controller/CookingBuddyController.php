@@ -111,7 +111,7 @@ class CookingBuddyController extends AbstractController
      */
     public function prepareRecipeFromMemory(
         Inventory $cookingBuddy, KnownRecipes $knownRecipe, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, InventoryRepository $inventoryRepository, UserStatsRepository $userStatsRepository,
+        InventoryService $inventoryService, InventoryRepository $inventoryRepository,
         CookingService $cookingService, Request $request, int $quantity = 1
     )
     {
@@ -155,7 +155,7 @@ class CookingBuddyController extends AbstractController
 
         $results = $cookingService->prepareRecipe($user, $inventoryToUse);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::COOKED_SOMETHING);
 
         $em->flush();
 

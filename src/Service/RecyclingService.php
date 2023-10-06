@@ -14,19 +14,17 @@ use Doctrine\ORM\EntityManagerInterface;
 class RecyclingService
 {
     private EntityManagerInterface $em;
-    private UserStatsRepository $userStatsRepository;
     private IRandom $squirrel3;
     private ResponseService $responseService;
     private TransactionService $transactionService;
     private Clock $clock;
 
     public function __construct(
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, IRandom $squirrel3,
-        ResponseService $responseService, TransactionService $transactionService, Clock $clock
+        EntityManagerInterface $em, IRandom $squirrel3, ResponseService $responseService,
+        TransactionService $transactionService, Clock $clock
     )
     {
         $this->em = $em;
-        $this->userStatsRepository = $userStatsRepository;
         $this->squirrel3 = $squirrel3;
         $this->responseService = $responseService;
         $this->transactionService = $transactionService;
@@ -82,7 +80,7 @@ class RecyclingService
 
             if($i->getItem()->hasUseAction('bug/#/putOutside'))
             {
-                $this->userStatsRepository->incrementStat($user, UserStatEnum::BUGS_PUT_OUTSIDE);
+                UserStatsRepository::incrementStat($this->em, $user, UserStatEnum::BUGS_PUT_OUTSIDE);
                 $this->em->remove($i);
                 continue;
             }
@@ -108,7 +106,7 @@ class RecyclingService
 
         if($totalRecyclingPointsEarned > 0 || $totalItemsRecycled > 0)
         {
-            $this->userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_RECYCLED, $totalItemsRecycled);
+            UserStatsRepository::incrementStat($this->em, $user, UserStatEnum::ITEMS_RECYCLED, $totalItemsRecycled);
 
             $this->transactionService->getRecyclingPoints(
                 $user,

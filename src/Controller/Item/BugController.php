@@ -39,7 +39,7 @@ class BugController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function squishBug(
-        Inventory $inventory, ResponseService $responseService, UserStatsRepository $userStatsRepository,
+        Inventory $inventory, ResponseService $responseService,
         EntityManagerInterface $em, UserQuestRepository $userQuestRepository
     )
     {
@@ -55,7 +55,7 @@ class BugController extends AbstractController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::BUGS_SQUISHED);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::BUGS_SQUISHED);
 
         $em->flush();
 
@@ -67,8 +67,7 @@ class BugController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function putBugOutside(
-        Inventory $inventory, ResponseService $responseService, UserStatsRepository $userStatsRepository,
-        EntityManagerInterface $em
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -78,8 +77,8 @@ class BugController extends AbstractController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::BUGS_PUT_OUTSIDE);
-        $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_RECYCLED);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::BUGS_PUT_OUTSIDE);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::ITEMS_RECYCLED);
 
         $em->flush();
 
@@ -91,7 +90,7 @@ class BugController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function feedBug(
-        Inventory $inventory, ResponseService $responseService, UserStatsRepository $userStatsRepository,
+        Inventory $inventory, ResponseService $responseService,
         EntityManagerInterface $em, Request $request, InventoryRepository $inventoryRepository,
         InventoryService $inventoryService, IRandom $squirrel3
     )
@@ -112,7 +111,7 @@ class BugController extends AbstractController
         switch($inventory->getItem()->getName())
         {
             case 'Centipede':
-                $userStatsRepository->incrementStat($user, UserStatEnum::EVOLVED_A_CENTIPEDE);
+                UserStatsRepository::incrementStat($em, $user, UserStatEnum::EVOLVED_A_CENTIPEDE);
                 $inventory
                     ->changeItem(ItemRepository::findOneByName($em, 'Moth'))
                     ->addComment($user->getName() . ' fed this Centipede, allowing it to grow up into a beautiful... Moth.')
@@ -127,7 +126,7 @@ class BugController extends AbstractController
                 break;
 
             case 'Line of Ants':
-                $userStatsRepository->incrementStat($user, UserStatEnum::FED_A_LINE_OF_ANTS);
+                UserStatsRepository::incrementStat($em, $user, UserStatEnum::FED_A_LINE_OF_ANTS);
 
                 if($item->getItem()->getName() === 'Ants on a Log')
                 {
@@ -179,7 +178,7 @@ class BugController extends AbstractController
 
         $em->remove($item);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::BUGS_FED);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::BUGS_FED);
 
         $em->flush();
 

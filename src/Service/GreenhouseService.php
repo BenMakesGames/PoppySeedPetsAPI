@@ -32,22 +32,19 @@ class GreenhouseService
     private InventoryService $inventoryService;
     private PetFactory $petFactory;
     private EntityManagerInterface $em;
-    private UserStatsRepository $userStatsRepository;
     private IRandom $squirrel3;
     private UserQuestRepository $userQuestRepository;
     private NormalizerInterface $normalizer;
     private Clock $clock;
 
     public function __construct(
-        InventoryService $inventoryService, PetFactory $petFactory, IRandom $squirrel3,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, UserQuestRepository $userQuestRepository,
-        NormalizerInterface $normalizer, Clock $clock
+        InventoryService $inventoryService, PetFactory $petFactory, IRandom $squirrel3, EntityManagerInterface $em,
+        UserQuestRepository $userQuestRepository, NormalizerInterface $normalizer, Clock $clock
     )
     {
         $this->inventoryService = $inventoryService;
         $this->petFactory = $petFactory;
         $this->em = $em;
-        $this->userStatsRepository = $userStatsRepository;
         $this->squirrel3 = $squirrel3;
         $this->userQuestRepository = $userQuestRepository;
         $this->normalizer = $normalizer;
@@ -98,7 +95,7 @@ class GreenhouseService
 
         $greenhouse->setVisitingBird(null);
 
-        $this->userStatsRepository->incrementStat($user, UserStatEnum::LARGE_BIRDS_APPROACHED);
+        UserStatsRepository::incrementStat($this->em, $user, UserStatEnum::LARGE_BIRDS_APPROACHED);
 
         return $message;
     }

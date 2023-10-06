@@ -24,21 +24,19 @@ class CookingService
     private RecipeRepository $recipeRepository;
     private InventoryService $inventoryService;
     private EntityManagerInterface $em;
-    private UserStatsRepository $userStatsRepository;
     private InventoryRepository $inventoryRepository;
     private RecipeAttemptedRepository $recipeAttemptedRepository;
     private IRandom $squirrel3;
 
     public function __construct(
         RecipeRepository $recipeRepository, InventoryService $inventoryService, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository, InventoryRepository $inventoryRepository,
-        RecipeAttemptedRepository $recipeAttemptedRepository, IRandom $squirrel3
+        InventoryRepository $inventoryRepository, RecipeAttemptedRepository $recipeAttemptedRepository,
+        IRandom $squirrel3
     )
     {
         $this->recipeRepository = $recipeRepository;
         $this->inventoryService = $inventoryService;
         $this->em = $em;
-        $this->userStatsRepository = $userStatsRepository;
         $this->inventoryRepository = $inventoryRepository;
         $this->recipeAttemptedRepository = $recipeAttemptedRepository;
         $this->squirrel3 = $squirrel3;
@@ -224,7 +222,7 @@ class CookingService
             }
         }
 
-        $this->userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING, $multiple);
+        UserStatsRepository::incrementStat($this->em, $user, UserStatEnum::COOKED_SOMETHING, $multiple);
 
         if($this->hasACookingBuddy($user))
         {
@@ -257,7 +255,7 @@ class CookingService
 
         $this->em->persist($knownRecipe);
 
-        $this->userStatsRepository->incrementStat($user, UserStatEnum::RECIPES_LEARNED_BY_COOKING_BUDDY);
+        UserStatsRepository::incrementStat($this->em, $user, UserStatEnum::RECIPES_LEARNED_BY_COOKING_BUDDY);
 
         return true;
     }

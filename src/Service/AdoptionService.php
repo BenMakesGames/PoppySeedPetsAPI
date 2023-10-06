@@ -16,16 +16,14 @@ use Doctrine\ORM\EntityManagerInterface;
 class AdoptionService
 {
     private EntityManagerInterface $em;
-    private UserStatsRepository $userStatsRepository;
     private ChineseCalendarInfo $chineseCalendarInfo;
     private Clock $clock;
 
     public function __construct(
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository, Clock $clock
+        EntityManagerInterface $em, Clock $clock
     )
     {
         $this->em = $em;
-        $this->userStatsRepository = $userStatsRepository;
         $this->clock = $clock;
 
         $this->chineseCalendarInfo = CalendarFunctions::getChineseCalendarInfo($this->clock->now);
@@ -33,7 +31,7 @@ class AdoptionService
 
     public function getPetsAdopted(User $user): int
     {
-        return $this->userStatsRepository->getStatValue($user, UserStatEnum::PETS_ADOPTED);
+        return UserStatsRepository::getStatValue($this->em, $user, UserStatEnum::PETS_ADOPTED);
     }
 
     public function getAdoptionFee(User $user): int

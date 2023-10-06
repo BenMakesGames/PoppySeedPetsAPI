@@ -33,7 +33,7 @@ class RenamingController extends AbstractController
      */
     public function readRenamingScroll(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, UserStatsRepository $userStatsRepository
+        PetRepository $petRepository
     )
     {
         /** @var User $user */
@@ -49,7 +49,7 @@ class RenamingController extends AbstractController
 
         PetRenamingHelpers::renamePet($em, $pet, $request->request->get('name', ''));
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 
@@ -64,7 +64,7 @@ class RenamingController extends AbstractController
      */
     public function renameSpiritCompanion(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, UserStatsRepository $userStatsRepository
+        PetRepository $petRepository
     )
     {
         /** @var User $user */
@@ -83,7 +83,7 @@ class RenamingController extends AbstractController
 
         PetRenamingHelpers::renameSpiritCompanion($em, $pet->getSpiritCompanion(), $request->request->get('name', ''));
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 
@@ -98,7 +98,7 @@ class RenamingController extends AbstractController
      */
     public function renameYourself(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        TransactionService $transactionService, UserStatsRepository $userStatsRepository
+        TransactionService $transactionService
     )
     {
         /** @var User $user */
@@ -119,7 +119,7 @@ class RenamingController extends AbstractController
         if(\mb_strlen($newName) < 2 || \mb_strlen($newName) > 30)
             throw new PSPFormValidationException('Name must be between 2 and 30 characters long.');
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);
 

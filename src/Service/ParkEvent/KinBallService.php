@@ -47,12 +47,11 @@ class KinBallService implements ParkEventInterface
     private InventoryService $inventoryService;
     private IRandom $squirrel3;
     private ParkService $parkService;
-    private UserStatsRepository $userStatsRepository;
 
     public function __construct(
         EntityManagerInterface $em, PetRelationshipService $petRelationshipService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, InventoryService $inventoryService, IRandom $squirrel3,
-        ParkService $parkService, UserStatsRepository $userStatsRepository
+        ParkService $parkService
     )
     {
         $this->em = $em;
@@ -62,7 +61,6 @@ class KinBallService implements ParkEventInterface
         $this->inventoryService = $inventoryService;
         $this->squirrel3 = $squirrel3;
         $this->parkService = $parkService;
-        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool
@@ -214,7 +212,7 @@ class KinBallService implements ParkEventInterface
                     $comment = $participant->pet->getName() . ' earned this in a game of Kin-Ball!';
                     $this->transactionService->getMoney($participant->pet->getOwner(), $firstPlaceMoneys, $comment);
                     $this->inventoryService->petCollectsItem('Kin-Ball Gold Trophy', $participant->pet, $comment, null);
-                    $this->userStatsRepository->incrementStat($participant->pet->getOwner(), 'Gold Trophies Earned', 1);
+                    UserStatsRepository::incrementStat($this->em, $participant->pet->getOwner(), 'Gold Trophies Earned', 1);
                     $activityLogEntry = $participant->pet->getName() . ' played a game of Kin-Ball, and was on the winning team! They received ' . $firstPlaceMoneys . '~~m~~!';
                 }
                 else

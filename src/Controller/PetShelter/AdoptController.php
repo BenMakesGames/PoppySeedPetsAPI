@@ -36,10 +36,9 @@ class AdoptController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function adoptPet(
-        int $id, AdoptionService $adoptionService, Request $request,
-        ResponseService $responseService, EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
-        UserQuestRepository $userQuestRepository, TransactionService $transactionService, IRandom $squirrel3,
-        MeritRepository $meritRepository, PetFactory $petFactory
+        int $id, AdoptionService $adoptionService, Request $request, PetFactory $petFactory,
+        ResponseService $responseService, EntityManagerInterface $em, UserQuestRepository $userQuestRepository,
+        TransactionService $transactionService, IRandom $squirrel3, MeritRepository $meritRepository
     )
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');
@@ -91,7 +90,7 @@ class AdoptController extends AbstractController
 
         $transactionService->spendMoney($user, $costToAdopt, 'Adopted a new pet.');
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::PETS_ADOPTED, 1);
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::PETS_ADOPTED, 1);
 
         $now = (new \DateTimeImmutable())->format('Y-m-d');
 

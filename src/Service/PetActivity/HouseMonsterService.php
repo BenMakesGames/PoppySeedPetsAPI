@@ -22,19 +22,17 @@ use Doctrine\ORM\EntityManagerInterface;
 class HouseMonsterService
 {
     private IRandom $squirrel3;
-    private UserStatsRepository $userStatsRepository;
     private InventoryService $inventoryService;
     private EntityManagerInterface $em;
     private PetExperienceService $petExperienceService;
     private FieldGuideService $fieldGuideService;
 
     public function __construct(
-        IRandom $squirrel3, UserStatsRepository $userStatsRepository, InventoryService $inventoryService,
-        EntityManagerInterface $em, PetExperienceService $petExperienceService, FieldGuideService $fieldGuideService
+        IRandom $squirrel3, InventoryService $inventoryService, EntityManagerInterface $em,
+        PetExperienceService $petExperienceService, FieldGuideService $fieldGuideService
     )
     {
         $this->squirrel3 = $squirrel3;
-        $this->userStatsRepository = $userStatsRepository;
         $this->inventoryService = $inventoryService;
         $this->em = $em;
         $this->petExperienceService = $petExperienceService;
@@ -191,12 +189,12 @@ class HouseMonsterService
         if($won)
         {
             $message = ArrayFunctions::list_nice($petNames) . ' got this by defeating ' . $monster->nameWithArticle . '.';
-            $this->userStatsRepository->incrementStat($user, 'Won Against Something... Unfriendly');
+            UserStatsRepository::incrementStat($this->em, $user, 'Won Against Something... Unfriendly');
         }
         else
         {
             $message = ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'was' : 'were') . ' defeated by ' . $monster->nameWithArticle . ', but managed to ' . $grab . ' this during the fight.';
-            $this->userStatsRepository->incrementStat($user, 'Lost Against Something... Unfriendly');
+            UserStatsRepository::incrementStat($this->em, $user, 'Lost Against Something... Unfriendly');
         }
 
         foreach($loot as $item)

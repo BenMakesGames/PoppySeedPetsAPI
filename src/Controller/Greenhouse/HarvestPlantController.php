@@ -47,7 +47,7 @@ class HarvestPlantController extends AbstractController
      */
     public function harvestPlant(
         GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, UserStatsRepository $userStatsRepository,
+        InventoryService $inventoryService,
         UserQuestRepository $userQuestRepository, GreenhouseAdventureService $greenhouseAdventureService,
         GreenhouseService $greenhouseService, IRandom $squirrel3, FieldGuideService $fieldGuideService,
         HattierService $hattierService, TransactionService $transactionService,
@@ -203,7 +203,7 @@ class HarvestPlantController extends AbstractController
                 $message = 'You harvested ' . ArrayFunctions::list_nice_quantities($lootList) . '!';
         }
 
-        $plantsHarvested = $userStatsRepository->incrementStat($user, UserStatEnum::HARVESTED_PLANT);
+        $plantsHarvested = UserStatsRepository::incrementStat($em, $user, UserStatEnum::HARVESTED_PLANT);
 
         if($plantsHarvested->getValue() === 3)
         {

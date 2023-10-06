@@ -67,7 +67,6 @@ class DragonService
 
     private EntityManagerInterface $em;
     private InventoryService $inventoryService;
-    private UserStatsRepository $userStatsRepository;
     private IRandom $rng;
     private DragonRepository $dragonRepository;
     private HattierService $hattierService;
@@ -77,13 +76,12 @@ class DragonService
 
     public function __construct(
         EntityManagerInterface $em, InventoryService $inventoryService, ResponseService $responseService,
-        Clock $clock, UserStatsRepository $userStatsRepository, IRandom $rng,
-        DragonRepository $dragonRepository, HattierService $hattierService, TransactionService $transactionService
+        Clock $clock, IRandom $rng, DragonRepository $dragonRepository, HattierService $hattierService,
+        TransactionService $transactionService
     )
     {
         $this->em = $em;
         $this->inventoryService = $inventoryService;
-        $this->userStatsRepository = $userStatsRepository;
         $this->rng = $rng;
         $this->dragonRepository = $dragonRepository;
         $this->hattierService = $hattierService;
@@ -137,7 +135,7 @@ class DragonService
 
         sort($offeringItemNames);
 
-        $this->userStatsRepository->incrementStat($user, UserStatEnum::TREASURES_GIVEN_TO_DRAGON_HOARD, count($items));
+        UserStatsRepository::incrementStat($this->em, $user, UserStatEnum::TREASURES_GIVEN_TO_DRAGON_HOARD, count($items));
 
         $silverGoodies = self::SILVER_GOODIES;
         $goldGoodies = self::GOLD_GOODIES;

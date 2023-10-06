@@ -34,8 +34,7 @@ class DonateController extends AbstractController
      */
     public function handle(
         ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository,
-        MuseumItemRepository $museumItemRepository, EntityManagerInterface $em, UserStatsRepository $userStatsRepository,
-        TransactionService $transactionService
+        MuseumItemRepository $museumItemRepository, EntityManagerInterface $em, TransactionService $transactionService
     ): JsonResponse
     {
         /** @var User $user */
@@ -104,7 +103,7 @@ class DonateController extends AbstractController
 
         $transactionService->getMuseumFavor($user, $totalMuseumPoints, 'You donated ' . $donationSummary . ' to the Museum.');
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM, count($inventory));
+        UserStatsRepository::incrementStat($em, $user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM, count($inventory));
 
         $em->flush();
 

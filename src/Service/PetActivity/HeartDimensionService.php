@@ -28,18 +28,16 @@ class HeartDimensionService
     private InventoryService $inventoryService;
     private IRandom $squirrel3;
     private EntityManagerInterface $em;
-    private UserStatsRepository $userStatsRepository;
 
     public function __construct(
         InventoryService $inventoryService, PetExperienceService $petExperienceService, IRandom $squirrel3,
-        EntityManagerInterface $em, UserStatsRepository $userStatsRepository
+        EntityManagerInterface $em
     )
     {
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->squirrel3 = $squirrel3;
         $this->em = $em;
-        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function canAdventure(Pet $pet): bool
@@ -341,7 +339,7 @@ class HeartDimensionService
 
         $message = ActivityHelpers::PetName($pet) . ' made one last trip to the Heart Dimensions, navigating the maze surrounding its core, and reaching the center. The maze shattered, and ' . ActivityHelpers::PetName($pet) . ' awoke. (You can now transform an additional Heartstone!)';
 
-        $this->userStatsRepository->incrementStat($pet->getOwner(), 'Pet Completed the Heartstone Dimension');
+        UserStatsRepository::incrementStat($this->em, $pet->getOwner(), 'Pet Completed the Heartstone Dimension');
 
         EquipmentFunctions::unequipPet($pet);
 

@@ -15,17 +15,14 @@ class PetAndPraiseService
     private PetExperienceService $petExperienceService;
     private CravingService $cravingService;
     private EntityManagerInterface $em;
-    private UserStatsRepository $userStatsRepository;
 
     public function __construct(
-        PetExperienceService $petExperienceService, CravingService $cravingService, EntityManagerInterface $em,
-        UserStatsRepository $userStatsRepository
+        PetExperienceService $petExperienceService, CravingService $cravingService, EntityManagerInterface $em
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->cravingService = $cravingService;
         $this->em = $em;
-        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function doPet(Pet $pet)
@@ -75,7 +72,7 @@ class PetAndPraiseService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Petting' ]))
         ;
 
-        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PETTED_A_PET);
+        UserStatsRepository::incrementStat($this->em, $pet->getOwner(), UserStatEnum::PETTED_A_PET);
     }
 
 }
