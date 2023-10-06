@@ -158,6 +158,7 @@ class RecipeRepository
         [ 'name' => 'Complex Fish Taco (A)', 'ingredients' => '33:1,312:1,396:1,713:1', 'makes' => '714:2' ],
         [ 'name' => 'Complex Fish Taco (B)', 'ingredients' => '397:1,713:1', 'makes' => '714:1' ],
         [ 'name' => 'Cool Fierierstone', 'ingredients' => '482:1,937:1', 'makes' => '108:1,136:1,422:1' ],
+        [ 'name' => 'Coquito', 'ingredients' => '13:1,533:1,646:1', 'makes' => '1319:2' ],
         [ 'name' => 'Corn Starch', 'ingredients' => '24:1', 'makes' => '1277:3' ],
         [ 'name' => 'Corn Syrup', 'ingredients' => '12:1,24:1,62:1', 'makes' => '25:3' ],
         [ 'name' => 'Creamed Corn', 'ingredients' => '13:1,24:1', 'makes' => '148:2' ],

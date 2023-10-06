@@ -65,7 +65,14 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         if($recipe)
             $this->output->writeln('Updating "' . $name . '"');
         else
+        {
             $this->output->writeln('Creating "' . $name . '"');
+            $recipe = [
+                'name' => $name,
+                'ingredients' => '',
+                'makes' => ''
+            ];
+        }
 
         $this->name($recipe, $name);
         $this->ingredients($recipe);
@@ -83,7 +90,7 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         $this->output->writeln('  Alcohol : ' . $ingredientFood->getAlcohol());
         $this->output->writeln('  Caffeine: ' . $ingredientFood->getCaffeine());
         $this->output->writeln('  Trippy  : ' . $ingredientFood->getPsychedelic());
-
+        $this->output->writeln('');
         $this->output->writeln('Product food value totals:');
         $this->output->writeln('  Food: ' . $makesFood->getFood());
         $this->output->writeln('  Love: ' . $makesFood->getLove());
@@ -91,6 +98,10 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         $this->output->writeln('  Alcohol : ' . $makesFood->getAlcohol());
         $this->output->writeln('  Caffeine: ' . $makesFood->getCaffeine());
         $this->output->writeln('  Trippy  : ' . $makesFood->getPsychedelic());
+        $this->output->writeln('');
+        $this->output->writeln('PHP:');
+        $escapedName = str_replace("'", "\\'", $name);
+        $this->output->writeln("[ 'name' => '$escapedName', 'ingredients' => '{$recipe['ingredients']}', 'makes' => '{$recipe['makes']}' ],");
 
         return Command::SUCCESS;
     }

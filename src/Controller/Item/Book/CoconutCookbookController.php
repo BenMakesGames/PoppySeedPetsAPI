@@ -26,7 +26,7 @@ class CoconutCookbookController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'candyMakerCookbook/#/upload');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'coconutCookbook/#/upload');
 
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             'Coconut Milk',
