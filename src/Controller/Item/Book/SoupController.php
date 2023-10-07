@@ -43,7 +43,7 @@ class SoupController extends AbstractController
             'Miso Soup',
             'Pumpkin Soup',
             'Tomato Soup',
-            'Vishyssoise',
+            'Vichyssoise (with Milk)',
         ]);
 
         return $responseService->itemActionSuccess(strtoupper($message));
@@ -146,7 +146,7 @@ Makes three smallish bowls!
 * Onion
 * Tomato
 
-#### Vishyssoise
+#### Vichyssoise
 
 * Creamy Milk
 * Onion

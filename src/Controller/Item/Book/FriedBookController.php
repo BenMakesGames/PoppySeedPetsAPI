@@ -52,8 +52,8 @@ class FriedBookController extends AbstractController
 
             'Pan-fried Fish (with Butter)',
             'Pan-fried Fish (with Oil)',
-            'Pan-fried Tofu (with Butter)',
-            'Pan-fried Tofu (with Oil)',
+            'Pan-fried Tofu (using Butter)',
+            'Pan-fried Tofu (using Oil)',
         ]);
 
         return $responseService->itemActionSuccess($message);
