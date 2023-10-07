@@ -20,7 +20,7 @@ class RiceBookController extends AbstractController
         'Onigiri',
         'Fish Onigiri',
         'Mini Melowatern Onigiri',
-        'Plain Fried Rice',
+        'Plain Fried Rice (A)',
         'Tentacle Fried Rice',
         'Tofu Fried Rice',
         'Vegetable Fried Rice',
