@@ -51,3 +51,9 @@ services:
         - '@doctrine.orm.default_entity_manager'
       tags:
         - { name: 'doctrine.orm.entity_listener', event: 'postLoad', entity: 'App\Entity\Inventory' }
+
+    App\DoctrineEventListeners\PetLoadListener:
+      arguments:
+        - '@doctrine.orm.default_entity_manager'
+      tags:
+        - { name: 'doctrine.orm.entity_listener', event: 'postLoad', entity: 'App\Entity\Pet' }
