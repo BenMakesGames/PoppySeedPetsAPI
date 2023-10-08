@@ -6,33 +6,30 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ItemRepository;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HalloweenSmithingService
 {
     private PetExperienceService $petExperienceService;
     private InventoryService $inventoryService;
-    private ResponseService $responseService;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
     private EntityManagerInterface $em;
 
     public function __construct(
-        PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
-        IRandom $squirrel3, HouseSimService $houseSimService,
-        EntityManagerInterface $em
+        PetExperienceService $petExperienceService, InventoryService $inventoryService, IRandom $squirrel3,
+        HouseSimService $houseSimService, EntityManagerInterface $em
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->inventoryService = $inventoryService;
-        $this->responseService = $responseService;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
         $this->em = $em;
@@ -63,7 +60,8 @@ class HalloweenSmithingService
             $itemUsedItem = ItemRepository::findOneByName($this->em, $itemUsed);
             $pet->increaseEsteem(2);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% applied heat to ' . $itemUsedItem->getNameWithArticle() . ', and shaped it into ' . $makes->getNameWithArticle() . '!', 'items/' . $makes->getImage())
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% applied heat to ' . $itemUsedItem->getNameWithArticle() . ', and shaped it into ' . $makes->getNameWithArticle() . '!')
+                ->setIcon('items/' . $makes->getImage())
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting', 'Smithing', 'Special Event', 'Halloween' ]))
             ;
@@ -74,7 +72,8 @@ class HalloweenSmithingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to shape a bucket into ' . $makes->getNameWithArticle() . ', but couldn\'t get the heat just right.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to shape a bucket into ' . $makes->getNameWithArticle() . ', but couldn\'t get the heat just right.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting', 'Smithing', 'Special Event', 'Halloween' ]))
             ;
 
