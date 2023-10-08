@@ -84,7 +84,7 @@ final class RecipeRepository
         [ 'name' => 'Blueberry Wine Vinegar', 'ingredients' => '10:1,64:1', 'makes' => '146:2' ],
         [ 'name' => 'Blueberry Wine', 'ingredients' => '3:1,10:1', 'makes' => '62:1,64:1' ],
         [ 'name' => 'Blueberry Yogurt', 'ingredients' => '3:1,113:1', 'makes' => '150:2' ],
-        [ 'name' => 'Box of Ores', 'ingredients' => '280:1,1130:1', 'makes' => '280:1' ],
+        [ 'name' => 'Box of Ores', 'ingredients' => '1130:1,1191:1', 'makes' => '280:1' ],
         [ 'name' => 'Brownie with Orange Marmalade', 'ingredients' => '183:1,243:1', 'makes' => '389:1' ],
         [ 'name' => 'Brownie', 'ingredients' => '12:1,14:1,16:1,65:1,109:1,116:1', 'makes' => '243:3' ],
         [ 'name' => 'Bruschetta', 'ingredients' => '112:1,133:1,195:1', 'makes' => '1240:2' ],
