@@ -109,10 +109,18 @@ class HalloweenController extends AbstractController
         if(!CalendarFunctions::isHalloween($clock->now))
             throw new PSPInvalidOperationException('It isn\'t Halloween!');
 
-        $candy = $em->getRepository(Inventory::class)->find($request->request->getInt('candy'));
-        $toGivingTree = $request->request->getBoolean('toGivingTree', false);
+        $inventoryId = $request->request->getInt('candy');
 
-        if(!$candy || $candy->getOwner()->getId() !== $user->getId() || $candy->getLocation() !== LocationEnum::HOME)
+        if($inventoryId < 1)
+            throw new PSPInvalidOperationException('You must select a candy to give!');
+
+        $candy = $em->getRepository(Inventory::class)->findOneBy([
+            'id' => $inventoryId,
+            'owner' => $user->getId(),
+            'location' => LocationEnum::HOME
+        ]);
+
+        if(!$candy)
             throw new PSPNotFoundException('The selected candy could not be found... reload and try again?');
 
         if(!$candy->getItem()->getFood())
@@ -120,6 +128,8 @@ class HalloweenController extends AbstractController
 
         if(!$candy->getItem()->getFood()->getIsCandy())
             throw new PSPInvalidOperationException($candy->getItem()->getName() . ' isn\'t quiiiiiiite a candy.');
+
+        $toGivingTree = $request->request->getBoolean('toGivingTree', false);
 
         $nextTrickOrTreater = $halloweenService->getNextTrickOrTreater($user);
 

@@ -109,11 +109,11 @@ class HalloweenService
         switch($treated->getValue() % 61)
         {
             case 1: $item = 'Crooked Stick'; break;
-            case 3: $item = 'Glowing Four-sided Die'; break;
+            case 3: $item = 'Super-wrinkled Cloth'; break;
             case 8: $item = 'Smallish Pumpkin'; break;
             case 15: $item = 'Glowing Six-sided Die'; break;
             case 25: $item = 'Behatting Scroll'; break;
-            case 40: $item = 'Glowing Eight-sided Die'; break;
+            case 40: $item = 'Blood Wine'; break;
             case 60: $item = 'Witch\'s Hat'; break;
         }
 
@@ -138,7 +138,7 @@ class HalloweenService
             ->andWhere('i.location = :home')
             ->leftJoin('i.item', 'item')
             ->leftJoin('item.food', 'food')
-            ->andWhere('food.love > food.food - food.junk / 2')
+            ->andWhere('food.isCandy=1')
             ->setParameter('user', $user->getId())
             ->setParameter('home', LocationEnum::HOME)
             ->getQuery()
