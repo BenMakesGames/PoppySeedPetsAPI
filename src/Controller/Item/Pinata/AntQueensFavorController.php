@@ -42,7 +42,6 @@ class AntQueensFavorController extends AbstractController
             'NUL',
             'Rock',
             'Glowing Six-sided Die',
-            'Secret Seashell',
             'Mysterious Seed',
             'Paper Bag',
             'Really Big Leaf',

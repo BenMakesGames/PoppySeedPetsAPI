@@ -1076,8 +1076,9 @@ class BoxController extends AbstractController
             'Ruby Feather',
             'Key Ring',
             'Major Scroll of Riches',
-            'Secret Seashell',
+            'Blackonite',
             'Hollow Earth Booster Pack',
+            'Magic Hourglass',
         ];
 
         $items = $squirrel3->rngNextSubsetFromArray($possibleItems, 3);
