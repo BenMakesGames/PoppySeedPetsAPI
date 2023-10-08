@@ -276,6 +276,14 @@ class BookstoreService
                 $bookPrices['Book of Noods'] = 20;
         }
 
+        $numberOfFeaturesUnlocked = count($user->getUnlockedFeatures());
+
+        if($numberOfFeaturesUnlocked >= 15)
+            $bookPrices['The Science of Ensmallening'] = 100;
+
+        if($numberOfFeaturesUnlocked >= 18)
+            $bookPrices['The Science of Embiggening'] = 100;
+
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace))
             $bookPrices['Melt'] = 25;
 
@@ -353,14 +361,14 @@ class BookstoreService
      */
     private function serializeShopInventory(array $inventory): array
     {
-        $items = $this->em->getRepository(Item::class)
-            ->findBy([ 'name' => array_keys($inventory) ], [ 'name' => 'ASC' ]);
+        $itemNames = array_keys($inventory);
 
         return array_map(
-            fn(Item $item) => [
-                'item' => $item,
-                'price' => $inventory[$item->getName()]
-            ], $items
+            fn(string $itemName) => [
+                'item' => ItemRepository::findOneByName($this->em, $itemName),
+                'price' => $inventory[$itemName]
+            ],
+            $itemNames
         );
     }
 

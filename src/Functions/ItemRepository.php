@@ -8,6 +8,11 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class ItemRepository
 {
+    public static function findByNames(EntityManagerInterface $em, array $itemNames): array
+    {
+        return array_map(fn(string $itemName) => self::findOneByName($em, $itemName), $itemNames);
+    }
+
     public static function findOneByName(EntityManagerInterface $em, string $itemName): Item
     {
         $item = $em->getRepository(Item::class)->createQueryBuilder('i')

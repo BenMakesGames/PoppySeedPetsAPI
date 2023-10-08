@@ -117,7 +117,7 @@ class InventoryService
             [$itemId, $quantity] = \explode(':', $item);
             $itemQuantity = new ItemQuantity();
 
-            $itemQuantity->item = $this->em->getRepository(Item::class)->find($itemId);
+            $itemQuantity->item = ItemRepository::findOneById($this->em, $itemId);
             $itemQuantity->quantity = (int)$quantity;
 
             $quantities[] = $itemQuantity;

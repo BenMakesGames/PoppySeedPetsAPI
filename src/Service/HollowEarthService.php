@@ -16,6 +16,7 @@ use App\Enum\HollowEarthRequiredActionEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
@@ -451,21 +452,19 @@ class HollowEarthService
 
     public function getTrades(HollowEarthPlayer $player)
     {
-        $items = $this->em->getRepository(Item::class)->findBy([
-            'name' => [
-                'Potion of Arcana',
-                'Potion of Brawling',
-                'Potion of Crafts',
-                'Potion of Music',
-                'Potion of Nature',
-                'Potion of Science',
-                'Potion of Stealth',
-                'Fruits & Veggies Box',
-                'Small Box of Ores',
-                'Magic Smoke',
-                'Quintessence',
-                'Bag of Beans',
-            ]
+        $items = ItemRepository::findByNames($this->em, [
+            'Potion of Arcana',
+            'Potion of Brawling',
+            'Potion of Crafts',
+            'Potion of Music',
+            'Potion of Nature',
+            'Potion of Science',
+            'Potion of Stealth',
+            'Fruits & Veggies Box',
+            'Small Box of Ores',
+            'Magic Smoke',
+            'Quintessence',
+            'Bag of Beans',
         ]);
 
         return [

@@ -33,7 +33,7 @@ class RijndaelController extends AbstractController
         if(!$searchForId)
             throw new PSPFormValidationException('An item to search for must be selected!');
 
-        $itemToFind = $em->getRepository(Item::class)->find($searchForId);
+        $itemToFind = ItemRepository::findOneById($em, $searchForId);
 
         if(!$itemToFind)
             throw new PSPNotFoundException('The item you selected could not be found... that\'s really weird. Reload and try again??');
