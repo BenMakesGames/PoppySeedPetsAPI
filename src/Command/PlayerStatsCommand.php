@@ -28,8 +28,8 @@ class PlayerStatsCommand extends PoppySeedPetsCommand
     {
         $now = new \DateTimeImmutable();
 
-        $activityQuery = $this->em->createQuery('SELECT COUNT(u.id) FROM \\App\\Entity\\User AS u WHERE u.lastActivity>=?0');
-        $newUsersQuery = $this->em->createQuery('SELECT COUNT(u.id) FROM \\App\\Entity\\User AS u WHERE u.registeredOn>=?0');
+        $activityQuery = $this->em->createQuery('SELECT COUNT(u.id) FROM App\Entity\User AS u WHERE u.lastActivity>=?0');
+        $newUsersQuery = $this->em->createQuery('SELECT COUNT(u.id) FROM App\Entity\User AS u WHERE u.registeredOn>=?0');
 
         $data = [
             'Activity in the Last 1 Day' => $this->getCount($activityQuery, $now->modify('-24 hours')->format('Y-m-d H:i:s')),

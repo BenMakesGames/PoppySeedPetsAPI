@@ -132,7 +132,7 @@ class ResponseService
 
         // for whatever reason, doing this results in fewer serialization deadlocks
         $query = $this->em->createQuery('
-            DELETE FROM App\\Entity\\UnreadPetActivityLog l
+            DELETE FROM App\Entity\UnreadPetActivityLog l
             WHERE l.petActivityLog IN (:messageIds)
         ');
 
