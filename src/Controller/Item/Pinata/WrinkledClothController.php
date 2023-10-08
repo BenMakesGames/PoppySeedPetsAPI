@@ -29,8 +29,7 @@ class WrinkledClothController extends AbstractController
      */
     public function ironWrinkledCloth(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        TransactionService $transactionService
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository
     )
     {
         /** @var User $user */
@@ -65,6 +64,8 @@ class WrinkledClothController extends AbstractController
             [ 'item' => 'Mixed Nuts', 'newCloth' => 'Filthy Cloth' ],
             [ 'item' => 'Rice Flour', 'newCloth' => 'Filthy Cloth' ],
             [ 'item' => 'Grilled Fish', 'newCloth' => 'Filthy Cloth' ],
+            [ 'item' => 'Glue', 'newCloth' => 'Filthy Cloth' ],
+            [ 'item' => 'Shoyu Tamago', 'newCloth' => 'Filthy Cloth' ],
 
             [ 'item' => 'Brownie', 'newCloth' => 'Chocolate-stained Cloth' ],
         ]);
@@ -73,26 +74,26 @@ class WrinkledClothController extends AbstractController
 
         $loot = $inventoryService->receiveItem($lootInfo['item'], $user, $user, $comment, $location);
 
+        $stat = $userStatsRepository->incrementStat($user, 'Ironed ' . $inventory->getItem()->getNameWithArticle());
+
         $inventory
             ->addComment('You straighted out the ' . $inventory->getItem()->getName() . ' into ' . $loot->getItem()->getNameWithArticle() . '...')
             ->changeItem(ItemRepository::findOneByName($em, $lootInfo['newCloth']));
 
-        $stat = $userStatsRepository->incrementStat($user, 'Ironed ' . $inventory->getItem()->getNameWithArticle());
-
-        if($loot['item'] === 'Super-wrinkled Cloth')
+        if($lootInfo['item'] === 'Super-wrinkled Cloth')
             $message = 'Ironing out the cloth, you found _another_ ' . $loot->getItem()->getNameWithArticle() . ' tangled up inside! (Whoa! Meta!)';
         else
             $message = 'Ironing out the cloth, you found ' . $loot->getItem()->getNameWithArticle() . ' tangled up inside!';
 
         if($lootInfo['newCloth'] !== 'White Cloth')
-            $message = ' Unfortunately, what with all the ironing, you unintentionally made the cloth completely filthy... (Why is house cleaning so harrrrrd!)';
+            $message .= ' Unfortunately, what with all the ironing, you unintentionally filthified the cloth... (Why is house cleaning so harrrrrd!)';
 
         if($stat->getValue() == 4 || ($stat->getValue() >= 8 && $rng->rngNextInt(1, $stat->getValue()) <= 2))
         {
-            $message = ' Also, the Iron (Bar) broke while you were ironing! Agh! Why do these things happen?!?';
+            $message .= ' Also, the Iron (Bar) broke while you were ironing! Agh! Why do these things happen?!?';
 
             if($stat->getValue() == 4)
-                $message .= ' (And _how?_ Like, what about an Iron _Bar_ can-- \*sigh\* you know, never mind. It\'s... it\'s fine. Whatever.)';
+                $message .= ' (And _how??_ Like, what about an Iron _Bar_ can-- \*sigh\* you know, never mind. It\'s... it\'s fine. Whatever.)';
 
             $em->remove($ironBar);
         }
