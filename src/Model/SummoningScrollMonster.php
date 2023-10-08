@@ -61,7 +61,7 @@ class SummoningScrollMonster
         $monster->name = 'Ifrit';
         $monster->nameWithArticle = 'Ifrit';
         $monster->majorReward = 'Gold Crown';
-        $monster->minorRewards = [ 'Quintessence', 'White Cloth' ];
+        $monster->minorRewards = [ 'Quintessence', 'Super-wrinkled Cloth' ];
         $monster->element = SummoningScrollMonsterElementEnum::FIRE;
 
         return $monster;

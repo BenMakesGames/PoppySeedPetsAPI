@@ -1,0 +1,106 @@
+<?php
+namespace App\Controller\Item\Pinata;
+
+use App\Controller\Item\ItemControllerHelpers;
+use App\Entity\Inventory;
+use App\Entity\User;
+use App\Exceptions\PSPNotFoundException;
+use App\Functions\ArrayFunctions;
+use App\Functions\ItemRepository;
+use App\Repository\InventoryRepository;
+use App\Service\InventoryService;
+use App\Service\IRandom;
+use App\Service\ResponseService;
+use App\Service\TransactionService;
+use App\Service\UserStatsService;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
+/**
+ * @Route("/item/wrinkledCloth")
+ */
+class WrinkledClothController extends AbstractController
+{
+    /**
+     * @Route("/{inventory}/iron", methods={"POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     */
+    public function ironWrinkledCloth(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
+        TransactionService $transactionService
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'wrinkledCloth/#/iron');
+        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+
+        $ironBar = $inventoryRepository->findOneToConsume($user, 'Iron Bar');
+
+        if(!$ironBar)
+            throw new PSPNotFoundException('You\'ll need an Iron (... Bar) to do that!');
+
+        $comment = $user->getName() . ' found this inside ' . $inventory->getItem()->getNameWithArticle() . '.';
+
+        $lootInfo = $rng->rngNextFromArray([
+            [ 'item' => 'Fluff', 'newCloth' => 'White Cloth' ],
+            [ 'item' => 'Plastic', 'newCloth' => 'White Cloth' ],
+            [ 'item' => 'Glowing Six-sided Die', 'newCloth' => 'White Cloth' ],
+            [ 'item' => 'Super-wrinkled Cloth', 'newCloth' => 'White Cloth' ],
+            [ 'item' => 'Feathers', 'newCloth' => 'White Cloth' ],
+            [ 'item' => 'Gold Ring', 'newCloth' => 'White Cloth' ],
+            [ 'item' => 'Talon', 'newCloth' => 'White Cloth' ],
+            [ 'item' => 'Tiny Scroll of Resources', 'newCloth' => 'White Cloth' ],
+            [ 'item' => 'Password', 'newCloth' => 'White Cloth' ],
+            [ 'item' => 'Quintessence', 'newCloth' => 'White Cloth' ],
+            [ 'item' => 'Secret Seashell', 'newCloth' => 'White Cloth' ],
+
+            [ 'item' => 'Sand-covered... Something', 'newCloth' => 'Filthy Cloth' ],
+            [ 'item' => 'Butter', 'newCloth' => 'Filthy Cloth' ],
+            [ 'item' => 'Cheese Ravioli', 'newCloth' => 'Filthy Cloth' ],
+            [ 'item' => 'Mixed Nuts', 'newCloth' => 'Filthy Cloth' ],
+            [ 'item' => 'Rice Flour', 'newCloth' => 'Filthy Cloth' ],
+            [ 'item' => 'Grilled Fish', 'newCloth' => 'Filthy Cloth' ],
+
+            [ 'item' => 'Brownie', 'newCloth' => 'Chocolate-stained Cloth' ],
+        ]);
+
+        $location = $inventory->getLocation();
+
+        $loot = $inventoryService->receiveItem($lootInfo['item'], $user, $user, $comment, $location);
+
+        $inventory
+            ->addComment('You straighted out the ' . $inventory->getItem()->getName() . ' into ' . $loot->getItem()->getNameWithArticle() . '...')
+            ->changeItem(ItemRepository::findOneByName($em, $lootInfo['newCloth']));
+
+        $stat = $userStatsRepository->incrementStat($user, 'Ironed ' . $inventory->getItem()->getNameWithArticle());
+
+        if($loot['item'] === 'Super-wrinkled Cloth')
+            $message = 'Ironing out the cloth, you found _another_ ' . $loot->getItem()->getNameWithArticle() . ' tangled up inside! (Whoa! Meta!)';
+        else
+            $message = 'Ironing out the cloth, you found ' . $loot->getItem()->getNameWithArticle() . ' tangled up inside!';
+
+        if($lootInfo['newCloth'] !== 'White Cloth')
+            $message = ' Unfortunately, what with all the ironing, you unintentionally made the cloth completely filthy... (Why is house cleaning so harrrrrd!)';
+
+        if($stat->getValue() == 4 || ($stat->getValue() >= 8 && $rng->rngNextInt(1, $stat->getValue()) <= 2))
+        {
+            $message = ' Also, the Iron (Bar) broke while you were ironing! Agh! Why do these things happen?!?';
+
+            if($stat->getValue() == 4)
+                $message .= ' (And _how?_ Like, what about an Iron _Bar_ can-- \*sigh\* you know, never mind. It\'s... it\'s fine. Whatever.)';
+
+            $em->remove($ironBar);
+        }
+
+        $em->flush();
+
+        $responseService->setReloadInventory();
+
+        return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
+    }
+}

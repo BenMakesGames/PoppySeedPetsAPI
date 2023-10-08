@@ -42,14 +42,7 @@ class LinensController extends AbstractController
 
         $baseNumberOfCloth = $squirrel3->rngNextInt(1, 2);
 
-        if($squirrel3->rngNextInt(1, 2) === 1)
-        {
-            $extraItem = $squirrel3->rngNextInt(1, 10) == 1
-                ? $squirrel3->rngNextFromArray([ '4-function Calculator', 'Coconut', 'Glowing Six-sided Die', 'Music Note', 'Paper', 'Password', 'Red Hard Candy', 'Sand Dollar', 'Spider', 'Tentacle' ])
-                : 'Filthy Cloth';
-        }
-        else
-            $extraItem = 'White Cloth';
+        $extraItem = $squirrel3->rngNextFromArray([ 'White Cloth', 'Super-wrinkled Cloth' ]);
 
         $inventoryService->receiveItem($extraItem, $user, $user, $user->getName() . ' found this in a pile of Linens and Things.', $location, $lockedToOwner);
 
@@ -59,12 +52,10 @@ class LinensController extends AbstractController
         $em->remove($inventory);
         $em->flush();
 
-        if($extraItem === 'White Cloth')
-            return $responseService->itemActionSuccess('You rummaged around in the pile, and pulled out ' . ($baseNumberOfCloth + 1) . ' pieces of good cloth...', [ 'itemDeleted' => true ]);
-        else if($extraItem === 'Filthy Cloth')
-            return $responseService->itemActionSuccess('You rummaged around in the pile, and pulled out ' . $baseNumberOfCloth . ' ' . ($baseNumberOfCloth === 1 ? 'piece' : 'pieces') . ' of good cloth... and 1 piece of BAD cloth...', [ 'itemDeleted' => true ]);
+        if($extraItem === 'Super-wrinkled Cloth')
+            return $responseService->itemActionSuccess('You rummaged around in the pile, and pulled out ' . $baseNumberOfCloth . ' ' . ($baseNumberOfCloth === 1 ? 'piece' : 'pieces') . ' of good cloth... and 1 piece of Super-wrinkled Cloth...', [ 'itemDeleted' => true ]);
         else
-            return $responseService->itemActionSuccess('You rummaged around in the pile, and pulled out ' . $baseNumberOfCloth . ' ' . ($baseNumberOfCloth === 1 ? 'piece' : 'pieces') . ' of good cloth, and what\'s this? Tangled up in the folds of cloth is a ' . $extraItem . '!', [ 'itemDeleted' => true ]);
+            return $responseService->itemActionSuccess('You rummaged around in the pile, and pulled out ' . ($baseNumberOfCloth + 1) . ' pieces of good cloth...', [ 'itemDeleted' => true ]);
     }
 
     /**

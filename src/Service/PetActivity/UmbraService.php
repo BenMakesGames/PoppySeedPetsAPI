@@ -890,7 +890,7 @@ class UmbraService
 
             if($brawlCheck >= 20)
             {
-                $loot = $this->squirrel3->rngNextFromArray([ 'White Cloth', 'Talon', 'Quintessence' ]);
+                $loot = $this->squirrel3->rngNextFromArray([ 'Super-wrinkled Cloth', 'White Cloth', 'Talon', 'Quintessence' ]);
 
                 $pet
                     ->increaseEsteem(2)
