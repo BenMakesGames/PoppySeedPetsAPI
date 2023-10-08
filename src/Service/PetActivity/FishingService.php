@@ -721,6 +721,8 @@ class FishingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fishing' ]))
             ;
 
+            $this->inventoryService->petCollectsItem('Seaweed', $pet, 'Some Seaweed that ' . $pet->getName() . ' fished up.', $activityLog);
+
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
         }
