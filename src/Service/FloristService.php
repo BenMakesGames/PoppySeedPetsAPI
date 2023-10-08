@@ -5,7 +5,7 @@ use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\CalendarFunctions;
 use App\Functions\DateFunctions;
-use App\Repository\ItemRepository;
+use App\Functions\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class FloristService

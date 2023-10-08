@@ -2,7 +2,6 @@
 namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
-use App\Entity\Enchantment;
 use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\User;
@@ -11,9 +10,9 @@ use App\Enum\StatusEffectEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
+use App\Functions\ItemRepository;
 use App\Functions\PetColorFunctions;
 use App\Repository\EnchantmentRepository;
-use App\Repository\ItemRepository;
 use App\Repository\MeritRepository;
 use App\Service\HattierService;
 use App\Service\IRandom;

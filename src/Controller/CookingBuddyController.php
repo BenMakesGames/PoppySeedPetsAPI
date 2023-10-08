@@ -9,9 +9,9 @@ use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
+use App\Functions\RecipeRepository;
 use App\Model\ItemQuantity;
 use App\Repository\InventoryRepository;
-use App\Repository\RecipeRepository;
 use App\Service\CookingService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -21,7 +21,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Flex\Recipe;
 
 /**
  * @Route("/cookingBuddy")

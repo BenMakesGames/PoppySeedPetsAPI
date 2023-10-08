@@ -5,7 +5,7 @@ use App\Entity\Inventory;
 use App\Entity\Item;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
-use App\Repository\ItemRepository;
+use App\Functions\ItemRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;

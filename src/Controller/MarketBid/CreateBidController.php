@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\MarketBid;
 
+use App\Entity\Inventory;
 use App\Entity\MarketBid;
 use App\Entity\User;
 use App\Enum\LocationEnum;
@@ -11,8 +12,7 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
-use App\Repository\InventoryRepository;
-use App\Repository\ItemRepository;
+use App\Functions\ItemRepository;
 use App\Repository\MarketBidRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -33,9 +33,8 @@ class CreateBidController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function createBid(
-        Request $request, ResponseService $responseService, ItemRepository $itemRepository,
-        TransactionService $transactionService, MarketBidRepository $marketBidRepository,
-        InventoryService $inventoryService, EntityManagerInterface $em, InventoryRepository $inventoryRepository
+        Request $request, ResponseService $responseService, TransactionService $transactionService,
+        MarketBidRepository $marketBidRepository, InventoryService $inventoryService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -69,7 +68,10 @@ class CreateBidController extends AbstractController
 
         $itemId = $request->request->getInt('item');
 
-        $item = $itemRepository->find($itemId);
+        if($itemId <= 0)
+            throw new PSPFormValidationException('You must select an item to bid on.');
+
+        $item = ItemRepository::findOneById($em, $itemId);
 
         if(!$item)
             throw new PSPNotFoundException('Could not find that item.');
@@ -86,7 +88,7 @@ class CreateBidController extends AbstractController
 
         $bid = $request->request->getInt('bid');
 
-        $availableToBuy = (int)$inventoryRepository->createQueryBuilder('i')
+        $availableToBuy = (int)$em->getRepository(Inventory::class)->createQueryBuilder('i')
             ->select('COUNT(i.id)')
             ->andWhere('i.owner!=:user')
             ->andWhere('i.sellPrice<=:price')

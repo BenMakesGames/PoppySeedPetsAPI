@@ -4,8 +4,8 @@ namespace App\Command;
 
 use App\Command\Traits\AskItemTrait;
 use App\Entity\ItemFood;
+use App\Functions\RecipeRepository;
 use App\Model\ItemQuantity;
-use App\Repository\RecipeRepository;
 use App\Service\InventoryService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;

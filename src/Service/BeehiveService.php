@@ -3,7 +3,7 @@ namespace App\Service;
 
 use App\Entity\Beehive;
 use App\Entity\User;
-use App\Repository\ItemRepository;
+use App\Functions\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class BeehiveService

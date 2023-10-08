@@ -9,9 +9,9 @@ use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Functions\GrammarFunctions;
+use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Repository\DreamRepository;
-use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -23,21 +23,19 @@ class DreamingService
     private InventoryService $inventoryService;
     private ResponseService $responseService;
     private PetExperienceService $petExperienceService;
-    private ItemRepository $itemRepository;
     private IRandom $squirrel3;
     private DreamRepository $dreamRepository;
     private EntityManagerInterface $em;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService,
-        PetExperienceService $petExperienceService, ItemRepository $itemRepository, IRandom $squirrel3,
+        PetExperienceService $petExperienceService, IRandom $squirrel3,
         DreamRepository $dreamRepository, EntityManagerInterface $em
     )
     {
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
-        $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
         $this->dreamRepository = $dreamRepository;
         $this->em = $em;
@@ -132,7 +130,7 @@ class DreamingService
         }
 
         $itemName = $this->squirrel3->rngNextFromArray($possibleItems);
-        $item = $this->itemRepository->deprecatedFindOneByName($itemName);
+        $item = ItemRepository::findOneByName($this->em, $itemName);
 
         $dream = $this->dreamRepository->findRandom($this->squirrel3);
 

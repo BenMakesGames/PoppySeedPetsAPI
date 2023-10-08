@@ -8,13 +8,13 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Repository\EnchantmentRepository;
-use App\Repository\ItemRepository;
 use App\Service\Clock;
 use App\Service\HattierService;
 use App\Service\HouseSimService;
@@ -31,7 +31,6 @@ class MagicBindingService
     private InventoryService $inventoryService;
     private ResponseService $responseService;
     private PetExperienceService $petExperienceService;
-    private ItemRepository $itemRepository;
     private IRandom $squirrel3;
     private CoinSmithingService $coinSmithingService;
     private HouseSimService $houseSimService;
@@ -41,14 +40,13 @@ class MagicBindingService
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        ItemRepository $itemRepository, IRandom $squirrel3, CoinSmithingService $coinSmithingService,
+        IRandom $squirrel3, CoinSmithingService $coinSmithingService,
         HouseSimService $houseSimService, HattierService $hattierService, EntityManagerInterface $em, Clock $clock
     )
     {
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
-        $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
         $this->coinSmithingService = $coinSmithingService;
         $this->houseSimService = $houseSimService;
@@ -1395,7 +1393,7 @@ class MagicBindingService
     {
         $pet = $petWithSkills->getPet();
 
-        $loot = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
+        $loot = ItemRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray([
             'Alien Tissue', 'Apricot PB&J', 'Baking Powder', 'Blue Balloon', 'Candied Ginger', 'Chili Calamari',
             'Deed for Greenhouse Plot', 'Egg Carton', 'Feathers', 'Fortuneless Cookie', 'Glowing Ten-sided Die',
             'Iron Ore', 'Limestone', 'Papadum', 'Password', 'Purple Gummies', 'Red Yogurt', 'Toadstool', 'Welcome Note',
@@ -1485,7 +1483,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
-        $makingItem = $this->itemRepository->deprecatedFindOneByName('Wunderbuss');
+        $makingItem = ItemRepository::findOneByName($this->em, 'Wunderbuss');
 
         if($umbraCheck === 1)
         {
@@ -1532,7 +1530,7 @@ class MagicBindingService
         $pet = $petWithSkills->getPet();
         $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
-        $makingItem = $this->itemRepository->deprecatedFindOneByName('Ambu Lance');
+        $makingItem = ItemRepository::findOneByName($this->em, 'Ambu Lance');
 
         if($umbraCheck < 22)
         {
@@ -2408,7 +2406,7 @@ class MagicBindingService
         if($uniqueIngredient == 'Silver Bar' && $pet->hasMerit(MeritEnum::SILVERBLOOD))
             $umbraCheck += 5;
 
-        $scrollItem = $this->itemRepository->deprecatedFindOneByName($scroll);
+        $scrollItem = ItemRepository::findOneByName($this->em, $scroll);
 
         if($umbraCheck < 15)
         {

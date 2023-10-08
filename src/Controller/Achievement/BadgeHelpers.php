@@ -8,8 +8,8 @@ use App\Entity\UserUnlockedFeature;
 use App\Enum\BadgeEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\InMemoryCache;
+use App\Functions\ItemRepository;
 use App\Model\TraderOfferCostOrYield;
-use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class BadgeHelpers

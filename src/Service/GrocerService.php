@@ -2,8 +2,8 @@
 namespace App\Service;
 
 use App\Functions\CalendarFunctions;
+use App\Functions\ItemRepository;
 use App\Functions\RandomFunctions;
-use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class GrocerService

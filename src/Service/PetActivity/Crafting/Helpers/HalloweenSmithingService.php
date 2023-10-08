@@ -5,9 +5,9 @@ use App\Entity\PetActivityLog;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
-use App\Repository\ItemRepository;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -20,21 +20,19 @@ class HalloweenSmithingService
     private PetExperienceService $petExperienceService;
     private InventoryService $inventoryService;
     private ResponseService $responseService;
-    private ItemRepository $itemRepository;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
     private EntityManagerInterface $em;
 
     public function __construct(
         PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
-        ItemRepository $itemRepository, IRandom $squirrel3, HouseSimService $houseSimService,
+        IRandom $squirrel3, HouseSimService $houseSimService,
         EntityManagerInterface $em
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
-        $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
         $this->em = $em;
@@ -62,7 +60,7 @@ class HalloweenSmithingService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::SMITH, true);
 
             $itemUsed = $this->houseSimService->getState()->loseOneOf($this->squirrel3, $buckets);
-            $itemUsedItem = $this->itemRepository->deprecatedFindOneByName($itemUsed);
+            $itemUsedItem = ItemRepository::findOneByName($this->em, $itemUsed);
             $pet->increaseEsteem(2);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% applied heat to ' . $itemUsedItem->getNameWithArticle() . ', and shaped it into ' . $makes->getNameWithArticle() . '!', 'items/' . $makes->getImage())

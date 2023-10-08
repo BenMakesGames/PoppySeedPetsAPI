@@ -4,7 +4,7 @@ namespace App\Service;
 use App\Entity\DragonHostage;
 use App\Entity\Item;
 use App\Enum\DragonHostageTypeEnum;
-use App\Repository\ItemRepository;
+use App\Functions\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class DragonHostageService

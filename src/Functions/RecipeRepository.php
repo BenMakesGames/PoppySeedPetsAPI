@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Repository;
+namespace App\Functions;
 
-use App\Functions\ArrayFunctions;
-
-class RecipeRepository
+final class RecipeRepository
 {
     public const RECIPES = [
         [ 'name' => '"Chicken" Noodle Soup (with Fish)', 'ingredients' => '30:1,33:1,262:1', 'makes' => '323:2' ],

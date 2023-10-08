@@ -6,23 +6,21 @@ use App\Entity\ItemGroup;
 use App\Entity\MuseumItem;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
-use App\Repository\ItemRepository;
+use App\Functions\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class MuseumService
 {
     private EntityManagerInterface $em;
-    private ItemRepository $itemRepository;
     private UserStatsService $userStatsRepository;
     private TransactionService $transactionService;
 
     public function __construct(
-        EntityManagerInterface $em, ItemRepository $itemRepository, UserStatsService $userStatsRepository,
+        EntityManagerInterface $em, UserStatsService $userStatsRepository,
         TransactionService $transactionService
     )
     {
         $this->em = $em;
-        $this->itemRepository = $itemRepository;
         $this->userStatsRepository = $userStatsRepository;
         $this->transactionService = $transactionService;
     }
@@ -35,7 +33,7 @@ class MuseumService
         if(is_string($item))
             $item = ItemRepository::findOneByName($this->em, $item);
         else if(is_numeric($item))
-            $item = $this->itemRepository->find($item);
+            $item = ItemRepository::findOneById($this->em, $item);
 
         $museumItem = $this->em->getRepository(MuseumItem::class)->findOneBy([
             'user' => $user,

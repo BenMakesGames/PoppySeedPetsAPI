@@ -6,7 +6,7 @@ use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
-use App\Repository\ItemRepository;
+use App\Functions\ItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;

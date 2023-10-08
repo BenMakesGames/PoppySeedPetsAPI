@@ -5,9 +5,9 @@ use App\Entity\PetActivityLog;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
-use App\Repository\ItemRepository;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -20,21 +20,18 @@ class IronSmithingService
     private PetExperienceService $petExperienceService;
     private InventoryService $inventoryService;
     private ResponseService $responseService;
-    private ItemRepository $itemRepository;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
     private EntityManagerInterface $em;
 
     public function __construct(
         PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
-        ItemRepository $itemRepository, IRandom $squirrel3, HouseSimService $houseSimService,
-        EntityManagerInterface $em
+        IRandom $squirrel3, HouseSimService $houseSimService, EntityManagerInterface $em
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
-        $this->itemRepository = $itemRepository;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
         $this->em = $em;
@@ -412,7 +409,7 @@ class IronSmithingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
-        $item = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
+        $item = ItemRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray([
             'Scythe',
             'Garden Shovel'
         ]));
@@ -521,7 +518,7 @@ class IronSmithingService
 
     public function createHeavyTool(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $makes = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
+        $makes = ItemRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray([
             'Heavy Hammer',
             'Heavy Lance'
         ]));

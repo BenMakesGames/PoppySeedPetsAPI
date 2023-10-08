@@ -7,7 +7,7 @@ use App\Enum\LocationEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
-use App\Repository\ItemRepository;
+use App\Functions\ItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\GrocerService;
 use App\Service\InventoryService;

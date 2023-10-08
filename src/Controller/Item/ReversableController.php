@@ -2,7 +2,7 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Repository\ItemRepository;
+use App\Functions\ItemRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;

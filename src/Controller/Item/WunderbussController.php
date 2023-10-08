@@ -7,7 +7,7 @@ use App\Entity\User;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
-use App\Repository\ItemRepository;
+use App\Functions\ItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\MuseumService;
 use App\Service\ResponseService;
@@ -46,8 +46,7 @@ class WunderbussController extends AbstractController
      */
     public function search(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        ItemRepository $itemRepository, UserQuestRepository $userQuestRepository,
-        MuseumService $museumService
+        UserQuestRepository $userQuestRepository, MuseumService $museumService
     )
     {
         /** @var User $user */
@@ -65,7 +64,7 @@ class WunderbussController extends AbstractController
         if(!$searchForId)
             throw new PSPFormValidationException('An item to search for must be selected!');
 
-        $itemToFind = $itemRepository->find($searchForId);
+        $itemToFind = ItemRepository::findOneById($em, $searchForId);
 
         if(!$itemToFind)
             throw new PSPNotFoundException('The item you selected could not be found... that\'s really weird. Reload and try again??');

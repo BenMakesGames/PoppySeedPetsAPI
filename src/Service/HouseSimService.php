@@ -5,12 +5,12 @@ use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Functions\ItemRepository;
 use App\Model\HouseSim;
 use App\Model\HouseSimRecipe;
 use App\Model\IHouseSim;
 use App\Model\ItemQuantity;
 use App\Model\NoHouseSim;
-use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HouseSimService

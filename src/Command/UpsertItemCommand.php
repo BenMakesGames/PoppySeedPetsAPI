@@ -10,7 +10,6 @@ use App\Entity\ItemHat;
 use App\Entity\ItemTool;
 use App\Enum\FlavorEnum;
 use App\Enum\PetSkillEnum;
-use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,12 +20,10 @@ class UpsertItemCommand extends PoppySeedPetsCommand
     use AskItemTrait;
 
     private EntityManagerInterface $em;
-    private ItemRepository $itemRepository;
 
-    public function __construct(EntityManagerInterface $em, ItemRepository $itemRepository)
+    public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
-        $this->itemRepository = $itemRepository;
 
         parent::__construct();
     }
@@ -46,7 +43,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
             throw new \Exception('Can only be run in dev environments.');
 
         $name = $this->input->getArgument('item');
-        $item = $this->itemRepository->findOneBy(['name' => $name]);
+        $item = $this->em->getRepository(Item::class)->findOneBy(['name' => $name]);
 
         if($item)
             $this->output->writeln('Updating "' . $item->getName() . '"');
@@ -82,7 +79,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
         $question->setValidator(function($answer) use($item) {
             $answer = trim($answer);
 
-            $existing = $this->itemRepository->findOneBy([ 'name' => $answer ]);
+            $existing = $this->em->getRepository(Item::class)->findOneBy([ 'name' => $answer ]);
 
             if($existing && $existing->getId() !== $item->getId())
                 throw new \RuntimeException('There\'s already an Item with that name.');

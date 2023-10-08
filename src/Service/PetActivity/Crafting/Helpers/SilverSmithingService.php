@@ -7,9 +7,9 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
-use App\Repository\ItemRepository;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -22,7 +22,6 @@ class SilverSmithingService
     private PetExperienceService $petExperienceService;
     private InventoryService $inventoryService;
     private ResponseService $responseService;
-    private ItemRepository $itemRepository;
     private CoinSmithingService $coinSmithingService;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
@@ -30,14 +29,13 @@ class SilverSmithingService
 
     public function __construct(
         PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
-        ItemRepository $itemRepository, CoinSmithingService $coinSmithingService, IRandom $squirrel3,
-        HouseSimService $houseSimService, EntityManagerInterface $em
+        CoinSmithingService $coinSmithingService, IRandom $squirrel3, HouseSimService $houseSimService,
+        EntityManagerInterface $em
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
-        $this->itemRepository = $itemRepository;
         $this->coinSmithingService = $coinSmithingService;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
@@ -66,7 +64,7 @@ class SilverSmithingService
         $pet = $petWithSkills->getPet();
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
-        $silverKey = $this->itemRepository->deprecatedFindOneByName('Silver Key');
+        $silverKey = ItemRepository::findOneByName($this->em, 'Silver Key');
 
         if($pet->hasMerit(MeritEnum::SILVERBLOOD))
             $roll += 5;
@@ -124,7 +122,7 @@ class SilverSmithingService
             [ 'item' => 'Silver Colander', 'image' => 'items/tool/colander', 'difficulty' => 13, 'experience' => 1 ],
         ]);
 
-        $makingItem = $this->itemRepository->deprecatedFindOneByName($making['item']);
+        $makingItem = ItemRepository::findOneByName($this->em, $making['item']);
 
         $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
@@ -270,7 +268,7 @@ class SilverSmithingService
         if($pet->hasMerit(MeritEnum::SILVERBLOOD))
             $roll += 5;
 
-        $makingItem = $this->itemRepository->deprecatedFindOneByName('Sylvan Fishing Rod');
+        $makingItem = ItemRepository::findOneByName($this->em, 'Sylvan Fishing Rod');
 
         if($roll <= 2)
         {
@@ -364,7 +362,7 @@ class SilverSmithingService
         if($pet->hasMerit(MeritEnum::SILVERBLOOD))
             $roll += 5;
 
-        $makingItem = $this->itemRepository->deprecatedFindOneByName('Sharktooth Axe');
+        $makingItem = ItemRepository::findOneByName($this->em, 'Sharktooth Axe');
 
         if($roll == 1)
         {
@@ -488,7 +486,7 @@ class SilverSmithingService
         if($pet->hasMerit(MeritEnum::SILVERBLOOD))
             $roll += 5;
 
-        $makingItem = $this->itemRepository->deprecatedFindOneByName('Lightning Axe');
+        $makingItem = ItemRepository::findOneByName($this->em, 'Lightning Axe');
 
         if($roll <= 2)
         {

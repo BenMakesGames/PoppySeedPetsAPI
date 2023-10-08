@@ -13,7 +13,7 @@ use App\Entity\Plant;
 use App\Entity\PlantYield;
 use App\Entity\PlantYieldItem;
 use App\Entity\Spice;
-use App\Repository\ItemRepository;
+use App\Functions\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 

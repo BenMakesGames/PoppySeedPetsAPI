@@ -4,30 +4,31 @@ namespace App\Service\PetActivity;
 use App\Entity\PetActivityLog;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\ItemRepository;
 use App\Model\ComputedPetSkills;
-use App\Repository\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 
 class GizubisGardenService
 {
     private PetExperienceService $petExperienceService;
     private ResponseService $responseService;
     private InventoryService $inventoryService;
-    private ItemRepository $itemRepository;
+    private EntityManagerInterface $em;
     private IRandom $squirrel3;
 
     public function __construct(
         PetExperienceService $petExperienceService, ResponseService $responseService, InventoryService $inventoryService,
-        ItemRepository $itemRepository, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         $this->petExperienceService = $petExperienceService;
         $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
-        $this->itemRepository = $itemRepository;
+        $this->em = $em;
         $this->squirrel3 = $squirrel3;
     }
 
@@ -99,7 +100,7 @@ class GizubisGardenService
         }
         else if($roll >= 13)
         {
-            $loot = $this->itemRepository->deprecatedFindOneByName($this->squirrel3->rngNextFromArray([
+            $loot = ItemRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray([
                 'Red', 'Crooked Stick', 'Apricot', 'Orange', 'Naner', 'Pamplemousse', 'Avocado'
             ]));
 

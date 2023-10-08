@@ -2,7 +2,7 @@
 namespace App\Command\Traits;
 
 use App\Entity\Item;
-use App\Repository\ItemRepository;
+use App\Functions\ItemRepository;
 use Symfony\Component\Console\Question\Question;
 
 trait AskItemTrait

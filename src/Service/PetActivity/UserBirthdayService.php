@@ -4,13 +4,12 @@ namespace App\Service\PetActivity;
 use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Model\ComputedPetSkills;
-use App\Repository\ItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\MuseumService;
-use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class UserBirthdayService

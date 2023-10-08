@@ -1,11 +1,10 @@
 <?php
 namespace App\Controller;
 
-use App\Annotations\DoesNotRequireHouseHours;
 use App\Entity\PetSpecies;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPNotFoundException;
-use App\Repository\ItemRepository;
+use App\Functions\ItemRepository;
 use App\Service\Filter\ItemFilterService;
 use App\Service\Filter\MeritFilterService;
 use App\Service\Filter\PetSpeciesFilterService;

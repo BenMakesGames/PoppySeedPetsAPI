@@ -10,11 +10,11 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\NumberFunctions;
+use App\Functions\RecipeRepository;
 use App\Model\ItemQuantity;
 use App\Model\PrepareRecipeResults;
 use App\Repository\InventoryRepository;
 use App\Repository\RecipeAttemptedRepository;
-use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class CookingService

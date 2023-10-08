@@ -12,7 +12,7 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\CalendarFunctions;
-use App\Repository\ItemRepository;
+use App\Functions\ItemRepository;
 use App\Repository\UserQuestRepository;
 use Doctrine\ORM\EntityManagerInterface;
 

@@ -7,7 +7,7 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
-use App\Repository\ItemRepository;
+use App\Functions\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\MuseumService;
 use App\Service\ResponseService;
