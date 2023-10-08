@@ -27,7 +27,7 @@ class RichesController extends AbstractController
     public function invokeMinorRichesScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService,
-        IRandom $squirrel3
+        IRandom $rng
     )
     {
         /** @var User $user */
@@ -39,12 +39,12 @@ class RichesController extends AbstractController
 
         $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
-        $moneys = $squirrel3->rngNextInt(30, 50);
+        $moneys = $rng->rngNextInt(30, 50);
 
-        $item = $squirrel3->rngNextFromArray([ 'Little Strongbox', 'Bag of Beans' ]);
+        $item = $rng->rngNextFromArray([ 'Little Strongbox', 'Bag of Beans' ]);
         $location = $inventory->getLocation();
 
-        if($squirrel3->rngNextInt(1, 10) === 1)
+        if($rng->rngNextInt(1, 10) === 1)
             $transactionService->getMoney($user, $moneys, 'Conjured by a Minor Scroll of Riches. (Hopefully not out of a bank, or dragon\'s hoard, or something...)');
         else
             $transactionService->getMoney($user, $moneys, 'Conjured by a Minor Scroll of Riches.');
@@ -63,7 +63,7 @@ class RichesController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function invokeMajorRichesScroll(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
     )
     {
@@ -76,12 +76,12 @@ class RichesController extends AbstractController
 
         $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
-        $moneys = $squirrel3->rngNextInt(60, 100);
+        $moneys = $rng->rngNextInt(60, 100);
 
-        $item = $squirrel3->rngNextFromArray([ 'Striped Microcline', 'Firestone', 'Moon Pearl', 'Blackonite' ]);
+        $item = $rng->rngNextFromArray([ 'Striped Microcline', 'Firestone', 'Moon Pearl', 'Blackonite' ]);
         $location = $inventory->getLocation();
 
-        if($squirrel3->rngNextInt(1, 10) === 1)
+        if($rng->rngNextInt(1, 10) === 1)
             $transactionService->getMoney($user, $moneys, 'Conjured by a Scroll of Major Riches. (Hopefully not out of a bank, or dragon\'s hoard, or something...)');
         else
             $transactionService->getMoney($user, $moneys, 'Conjured by a Scroll of Major Riches.');
