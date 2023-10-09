@@ -7,8 +7,8 @@ use Doctrine\ORM\QueryBuilder;
 
 class PetRelationshipTypeaheadService extends TypeaheadService
 {
-    /** @var Pet */ private $pet;
-    /** @var string[] */ private $relationships;
+    private Pet $pet;
+    /** @var string[] */ private array $relationships;
 
     public function __construct(EntityManagerInterface $em)
     {

@@ -344,6 +344,6 @@ class LetterService
 
 class LetterResponse
 {
-    /** @var UserLetter */ public $letter;
-    /** @var PetActivityLog */ public $activityLog;
+    public UserLetter $letter;
+    public PetActivityLog $activityLog;
 }

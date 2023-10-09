@@ -6,8 +6,6 @@ use App\Entity\HollowEarthTile;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
-use App\Repository\HollowEarthPlayerTileRepository;
-use App\Repository\HollowEarthTileRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

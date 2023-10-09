@@ -38,7 +38,6 @@ class AssignActivityPersonalitiesCommand extends Command
     {
         $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
 
-        /** @var Pet[] $pets */
         $pets = $this->getPetsWithoutActivityPersonalities();
 
         if(count($pets) === 0)
@@ -63,6 +62,9 @@ class AssignActivityPersonalitiesCommand extends Command
         return 0;
     }
 
+    /**
+     * @return Pet[]
+     */
     private function getPetsWithoutActivityPersonalities(): array
     {
         return $this->petRepository->findBy([ 'activityPersonality' => 0 ], null, self::BATCH_SIZE);

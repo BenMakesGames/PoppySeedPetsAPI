@@ -3,9 +3,9 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
-use App\Repository\PetRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,8 +23,7 @@ class LunchboxPaintController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function paintLunchbox(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
     )
     {
         $user = $this->getUser();
@@ -32,7 +31,7 @@ class LunchboxPaintController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'lunchboxPaint');
 
         $petId = $request->request->getInt('pet', 0);
-        $pet = $petRepository->find($petId);
+        $pet = $em->getRepository(Pet::class)->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();

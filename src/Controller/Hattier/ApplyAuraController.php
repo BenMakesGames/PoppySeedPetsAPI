@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Hattier;
 
+use App\Entity\Pet;
 use App\Entity\User;
 use App\Entity\UserUnlockedAura;
 use App\Exceptions\PSPFormValidationException;
@@ -8,7 +9,6 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
-use App\Repository\PetRepository;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,8 +27,8 @@ class ApplyAuraController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function applyAura(
-        Request $request, PetRepository $petRepository, TransactionService $transactionService,
-        EntityManagerInterface $em, ResponseService $responseService
+        Request $request, TransactionService $transactionService, EntityManagerInterface $em,
+        ResponseService $responseService
     )
     {
         $payWith = strtolower($request->request->getAlpha('payWith', 'moneys'));
@@ -57,7 +57,7 @@ class ApplyAuraController extends AbstractController
             throw new PSPFormValidationException('You must choose whether to pay with moneys or with recycling points.');
         }
 
-        $pet = $petRepository->find($petId);
+        $pet = $em->getRepository(Pet::class)->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();

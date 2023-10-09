@@ -40,7 +40,7 @@ class BlueprintController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function installComposter(
-        Inventory $inventory, ResponseService $responseService, PetRepository $petRepository, Request $request,
+        Inventory $inventory, ResponseService $responseService, Request $request,
         PetExperienceService $petExperienceService, EntityManagerInterface $em
     )
     {
@@ -55,7 +55,7 @@ class BlueprintController extends AbstractController
         if($user->getGreenhouse()->getHasComposter())
             return $responseService->error(200, [ 'Your Greenhouse already has a Composter!' ]);
 
-        $pet = $this->getPet($request, $petRepository);
+        $pet = $this->getPet($request, $em);
 
         $em->remove($inventory);
 
@@ -85,7 +85,7 @@ class BlueprintController extends AbstractController
      */
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, PetExperienceService $petExperienceService
+        PetExperienceService $petExperienceService
     )
     {
         /** @var User $user */
@@ -96,7 +96,7 @@ class BlueprintController extends AbstractController
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
             return $responseService->itemActionSuccess('You\'ve already got a Basement!');
 
-        $pet = $this->getPet($request, $petRepository);
+        $pet = $this->getPet($request, $em);
 
         UserUnlockedFeatureHelpers::create($em, $user, UnlockableFeatureEnum::Basement);
 
@@ -124,8 +124,8 @@ class BlueprintController extends AbstractController
      */
     public function buildBeehive(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        InventoryRepository $inventoryRepository, BeehiveService $beehiveService, PetExperienceService $petExperienceService,
-        PetRepository $petRepository
+        InventoryRepository $inventoryRepository, BeehiveService $beehiveService,
+        PetExperienceService $petExperienceService
     )
     {
         /** @var User $user */
@@ -148,7 +148,7 @@ class BlueprintController extends AbstractController
             throw new PSPInvalidOperationException('Goodness! It\'s so small! You\'ll need a magnifying glass of some kind...');
         }
 
-        $pet = $this->getPet($request, $petRepository);
+        $pet = $this->getPet($request, $em);
 
         $em->remove($inventory);
 
@@ -185,7 +185,7 @@ class BlueprintController extends AbstractController
      */
     public function claim(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, PetExperienceService $petExperienceService
+        PetExperienceService $petExperienceService
     )
     {
         /** @var User $user */
@@ -198,7 +198,7 @@ class BlueprintController extends AbstractController
             throw new PSPInvalidOperationException('You\'ve already claimed a plot in the Greenhouse.');
         }
 
-        $pet = $this->getPet($request, $petRepository);
+        $pet = $this->getPet($request, $em);
 
         $greenhouse = new Greenhouse();
 
@@ -227,7 +227,7 @@ class BlueprintController extends AbstractController
      */
     public function buildBirdBath(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, InventoryRepository $inventoryRepository, PetExperienceService $petExperienceService
+        InventoryRepository $inventoryRepository, PetExperienceService $petExperienceService
     )
     {
         /** @var User $user */
@@ -241,7 +241,7 @@ class BlueprintController extends AbstractController
         if($user->getGreenhouse()->getHasBirdBath())
             return $responseService->error(200, [ 'Your Greenhouse already has a Bird Bath!' ]);
 
-        $pet = $this->getPet($request, $petRepository);
+        $pet = $this->getPet($request, $em);
 
         $ironBar = $inventoryRepository->findOneToConsume($user, 'Iron Bar');
 
@@ -280,7 +280,7 @@ class BlueprintController extends AbstractController
      */
     public function installFishStatue(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, InventoryRepository $inventoryRepository, PetExperienceService $petExperienceService
+        InventoryRepository $inventoryRepository, PetExperienceService $petExperienceService
     )
     {
         /** @var User $user */
@@ -294,7 +294,7 @@ class BlueprintController extends AbstractController
         if($user->getGreenhouse()->isHasFishStatue())
             return $responseService->error(200, [ 'Your Greenhouse already has a Fish State!' ]);
 
-        $pet = $this->getPet($request, $petRepository);
+        $pet = $this->getPet($request, $em);
 
         $threeDeePrinterId = ItemRepository::getIdByName($em, '3D Printer');
 
@@ -329,10 +329,10 @@ class BlueprintController extends AbstractController
         );
     }
 
-    private function getPet(Request $request, PetRepository $petRepository): Pet
+    private function getPet(Request $request, EntityManagerInterface $em): Pet
     {
         $petId = $request->request->getInt('pet', 0);
-        $pet = $petRepository->find($petId);
+        $pet = $em->getRepository(Pet::class)->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $this->getUser()->getId())
             throw new PSPPetNotFoundException();

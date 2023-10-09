@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Beehive;
 
+use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
@@ -8,7 +9,6 @@ use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
-use App\Repository\InventoryRepository;
 use App\Service\BeehiveService;
 use App\Service\HollowEarthService;
 use App\Service\ResponseService;
@@ -28,8 +28,7 @@ class ReRollRequestController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function reRollRequest(
-        Request $request, ResponseService $responseService, EntityManagerInterface $em, BeehiveService $beehiveService,
-        InventoryRepository $inventoryRepository
+        Request $request, ResponseService $responseService, EntityManagerInterface $em, BeehiveService $beehiveService
     )
     {
         /** @var User $user */
@@ -43,7 +42,7 @@ class ReRollRequestController extends AbstractController
         if($itemId < 1)
             throw new PSPFormValidationException('A die must be selected!');
 
-        $item = $inventoryRepository->find($itemId);
+        $item = $em->getRepository(Inventory::class)->find($itemId);
 
         if(!$item || $item->getOwner()->getId() !== $user->getId())
             throw new PSPNotFoundException('The selected item does not exist! (Reload and try again?)');

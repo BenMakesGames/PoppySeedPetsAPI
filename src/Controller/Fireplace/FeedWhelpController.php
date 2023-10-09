@@ -48,7 +48,6 @@ class FeedWhelpController extends AbstractController
 
         $itemIds = RequestFunctions::getUniqueIdsOrThrow($request, 'food', 'No items were selected as food???');
 
-        /** @var Inventory[] $items */
         $items = $inventoryRepository->findBy([
             'id' => $itemIds,
             'owner' => $user->getId(),

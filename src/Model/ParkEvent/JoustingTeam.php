@@ -6,17 +6,10 @@ use App\Service\IRandom;
 
 class JoustingTeam
 {
-    /** @var Pet */
-    public $rider;
-
-    /** @var Pet */
-    public $mount;
-
-    /** @var integer */
-    public $wins = 0;
-
-    /** @var JoustingTeam */
-    public $defeatedBy;
+    public Pet $rider;
+    public Pet $mount;
+    public int $wins = 0;
+    public JoustingTeam $defeatedBy;
 
     public function __construct(Pet $pet1, Pet $pet2)
     {

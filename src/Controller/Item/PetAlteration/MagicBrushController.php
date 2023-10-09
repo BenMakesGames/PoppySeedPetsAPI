@@ -3,6 +3,7 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
@@ -30,7 +31,7 @@ class MagicBrushController extends AbstractController
      */
     public function brush(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, InventoryService $inventoryService
+        InventoryService $inventoryService
     )
     {
         /** @var User $user */
@@ -39,7 +40,7 @@ class MagicBrushController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'magicBrush');
 
         $petId = $request->request->getInt('pet', 0);
-        $pet = $petRepository->find($petId);
+        $pet = $em->getRepository(Pet::class)->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();

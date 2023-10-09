@@ -16,18 +16,17 @@ use App\Enum\HollowEarthRequiredActionEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\HollowEarthTileRepository;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\PetChanges;
-use App\Repository\HollowEarthTileRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HollowEarthService
 {
-    private HollowEarthTileRepository $hollowEarthTileRepository;
     private EntityManagerInterface $em;
     private InventoryService $inventoryService;
     private PetExperienceService $petExperienceService;
@@ -35,6 +34,8 @@ class HollowEarthService
     private ResponseService $responseService;
     private UserStatsService $userStatsRepository;
     private IRandom $rng;
+
+    public const LOST_IN_TIME_AND_SPACE_TILE_ID = 53;
 
     public const DICE_ITEMS = [
         'Glowing "Two-sided Die"' => 2,
@@ -48,13 +49,11 @@ class HollowEarthService
     ];
 
     public function __construct(
-        HollowEarthTileRepository $hollowEarthTileRepository, EntityManagerInterface $em,
-        InventoryService $inventoryService, PetExperienceService $petExperienceService,
+        EntityManagerInterface $em, InventoryService $inventoryService, PetExperienceService $petExperienceService,
         TransactionService $transactionService, ResponseService $responseService,
         UserStatsService $userStatsRepository, IRandom $rng
     )
     {
-        $this->hollowEarthTileRepository = $hollowEarthTileRepository;
         $this->em = $em;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
@@ -73,7 +72,7 @@ class HollowEarthService
             return;
 
         $hollowEarthPlayer = (new HollowEarthPlayer())
-            ->setCurrentTile($this->hollowEarthTileRepository->find(1))
+            ->setCurrentTile(HollowEarthTileRepository::findOneById($this->em, 1))
         ;
 
         $user->setHollowEarthPlayer($hollowEarthPlayer);
@@ -81,7 +80,7 @@ class HollowEarthService
 
     public function getAllCardIdsOnMap(User $player): array
     {
-        $map = $this->hollowEarthTileRepository->findAll();
+        $map = $this->em->getRepository(HollowEarthTile::class)->findAll();
         $playerTiles = $this->em->getRepository(HollowEarthPlayerTile::class)->findBy([ 'player' => $player ]);
         $playerTilesByTile = [];
 
@@ -190,7 +189,7 @@ class HollowEarthService
         if($id == -1)
             $tile = HollowEarthTileRepository::findRandom($this->em, $this->rng);
         else
-            $tile = $this->hollowEarthTileRepository->find($id);
+            $tile = HollowEarthTileRepository::findOneById($this->em, $id);
 
         if(!$tile)
             throw new \Exception('No tile found for id #' . $id);
@@ -258,10 +257,10 @@ class HollowEarthService
             default: throw new \InvalidArgumentException('Player has an unknown currentDirection: "' . $player->getCurrentDirection() . '"');
         }
 
-        return $this->hollowEarthTileRepository->findOneBy([
+        return $this->em->getRepository(HollowEarthTile::class)->findOneBy([
             'x' => $x,
             'y' => $y,
-        ]) ?? $this->hollowEarthTileRepository->find(53);
+        ]) ?? HollowEarthTileRepository::findOneById($this->em, self::LOST_IN_TIME_AND_SPACE_TILE_ID);
     }
 
     /**

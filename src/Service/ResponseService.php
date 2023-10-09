@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class ResponseService
 {
-    /** @var FlashMessage[] */ private $flashMessages = [];
+    /** @var FlashMessage[] */ private array $flashMessages = [];
     private bool $reloadInventory = false;
     private bool $reloadPets = false;
     private EntityManagerInterface $em;

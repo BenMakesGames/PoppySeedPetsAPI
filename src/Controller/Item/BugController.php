@@ -13,7 +13,6 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ColorFunctions;
 use App\Functions\ItemRepository;
-use App\Repository\InventoryRepository;
 use App\Repository\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
@@ -92,8 +91,7 @@ class BugController extends AbstractController
      */
     public function feedBug(
         Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
-        EntityManagerInterface $em, Request $request, InventoryRepository $inventoryRepository,
-        InventoryService $inventoryService, IRandom $squirrel3
+        EntityManagerInterface $em, Request $request, InventoryService $inventoryService, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -101,7 +99,7 @@ class BugController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'feedBug');
 
-        $item = $inventoryRepository->find($request->request->getInt('food'));
+        $item = $em->getRepository(Inventory::class)->find($request->request->getInt('food'));
 
         if(!$item || $item->getOwner()->getId() !== $user->getId())
             throw new PSPNotFoundException('Must select an item to feed.');

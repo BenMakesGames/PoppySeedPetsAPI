@@ -3,6 +3,7 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
@@ -69,7 +70,7 @@ class ForgettingScrollController extends AbstractController
      */
     public function forgetMerit(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, UserStatsService $userStatsRepository
+        UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -78,7 +79,7 @@ class ForgettingScrollController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'forgettingScroll');
 
         $petId = $request->request->getInt('pet', 0);
-        $pet = $petRepository->find($petId);
+        $pet = $em->getRepository(Pet::class)->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
@@ -157,7 +158,7 @@ class ForgettingScrollController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'forgettingScroll');
 
         $petId = $request->request->getInt('pet', 0);
-        $pet = $petRepository->find($petId);
+        $pet = $em->getRepository(Pet::class)->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();

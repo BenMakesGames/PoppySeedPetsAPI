@@ -1,13 +1,13 @@
 <?php
 namespace App\Controller\Zoologist;
 
+use App\Entity\Pet;
 use App\Entity\User;
 use App\Entity\UserSpeciesCollected;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Exceptions\PSPPetNotFoundException;
-use App\Repository\PetRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,7 +25,7 @@ class ReplaceSpeciesController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function replace(
-        EntityManagerInterface $em, Request $request, PetRepository $petRepository, ResponseService $responseService
+        EntityManagerInterface $em, Request $request, ResponseService $responseService
     )
     {
         /** @var User $user */
@@ -39,7 +39,7 @@ class ReplaceSpeciesController extends AbstractController
         if($petId <= 0)
             throw new PSPFormValidationException('No pets were selected.');
 
-        $pet = $petRepository->find($petId);
+        $pet = $em->getRepository(Pet::class)->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();

@@ -3,6 +3,7 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Enum\UserStatEnum;
@@ -10,7 +11,6 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetActivityLogFactory;
 use App\Repository\MeritRepository;
-use App\Repository\PetRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
@@ -31,7 +31,7 @@ class BehattingScrollController extends AbstractController
      */
     public function readBehattingScroll(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, IRandom $squirrel3, UserStatsService $userStatsRepository
+        IRandom $squirrel3, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -40,7 +40,7 @@ class BehattingScrollController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'behattingScroll');
 
         $petId = $request->request->getInt('pet', 0);
-        $pet = $petRepository->find($petId);
+        $pet = $em->getRepository(Pet::class)->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();

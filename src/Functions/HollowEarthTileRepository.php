@@ -1,26 +1,28 @@
 <?php
 
-namespace App\Repository;
+namespace App\Functions;
 
 use App\Entity\HollowEarthTile;
 use App\Enum\HollowEarthMoveDirectionEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Service\IRandom;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @method HollowEarthTile|null find($id, $lockMode = null, $lockVersion = null)
- * @method HollowEarthTile|null findOneBy(array $criteria, array $orderBy = null)
- * @method HollowEarthTile[]    findAll()
- * @method HollowEarthTile[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- * @deprecated
- */
-class HollowEarthTileRepository extends ServiceEntityRepository
+final class HollowEarthTileRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public static function findOneById(EntityManagerInterface $em, int $tileId)
     {
-        parent::__construct($registry, HollowEarthTile::class);
+        $tile = $em->getRepository(HollowEarthTile::class)->createQueryBuilder('t')
+            ->andWhere('t.id = :id')
+            ->setParameter('id', $tileId)
+            ->getQuery()
+            ->enableResultCache(24 * 60 * 60, 'HollowEarthTileRepository_FindOneById_' . $tileId)
+            ->getOneOrNullResult()
+        ;
+
+        if(!$tile) throw new PSPNotFoundException('There is no tile #' . $tileId . '.');
+
+        return $tile;
     }
 
     /**
@@ -32,6 +34,7 @@ class HollowEarthTileRepository extends ServiceEntityRepository
             ->andWhere('t.moveDirection != :zero')
             ->setParameter('zero', HollowEarthMoveDirectionEnum::ZERO)
             ->getQuery()
+            ->enableResultCache(24 * 60 * 60, 'HollowEarthTileRepository_FindAllInBounds')
             ->execute()
         ;
     }

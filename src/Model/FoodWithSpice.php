@@ -10,31 +10,31 @@ use App\Enum\FlavorEnum;
 class FoodWithSpice
 {
     public Item $baseItem;
-    public $name;
-    public $food;
-    public $love;
-    public $junk;
-    public $alcohol;
-    public $caffeine;
-    public $psychedelic;
+    public string $name;
+    public int $food;
+    public int $love;
+    public int $junk;
+    public int $alcohol;
+    public int $caffeine;
+    public int $psychedelic;
     public $randomFlavor;
-    public $containsTentacles;
+    public bool $containsTentacles;
     /** @var BonusItemChance[] */ public array $bonusItems = [];
     public $grantedSkills = [];
     public $grantedStatusEffects = [];
-    public $grantsSelfReflection = false;
-    public $earthy;
-    public $fruity;
-    public $tannic;
-    public $spicy;
-    public $creamy;
-    public $meaty;
-    public $planty;
-    public $fishy;
-    public $floral;
-    public $fatty;
-    public $oniony;
-    public $chemically;
+    public bool $grantsSelfReflection = false;
+    public int $earthy;
+    public int $fruity;
+    public int $tannic;
+    public int $spicy;
+    public int $creamy;
+    public int $meaty;
+    public int $planty;
+    public int $fishy;
+    public int $floral;
+    public int $fatty;
+    public int $oniony;
+    public int $chemically;
     /** @var Item[] */ public $leftovers = [];
 
     public function __construct(Item $item, ?Spice $spice)
@@ -122,7 +122,7 @@ class FoodWithSpice
 class BonusItemChance
 {
     public int $chance;
-    /** @var ItemGroup */ public $itemGroup;
+    public ?ItemGroup $itemGroup;
 
     public function __construct(ItemFood $food)
     {
