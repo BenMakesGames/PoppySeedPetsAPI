@@ -17,7 +17,6 @@ use App\Functions\ArrayFunctions;
 use App\Functions\MeritFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\UserUnlockedFeatureHelpers;
-use App\Repository\MeritRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,7 +33,7 @@ class AffectionRewardController extends AbstractController
      * @Route("/{pet}/availableMerits", methods={"GET"}, requirements={"pet"="\d+"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function getAvailableMerits(Pet $pet, ResponseService $responseService, MeritRepository $meritRepository)
+    public function getAvailableMerits(Pet $pet, ResponseService $responseService, EntityManagerInterface $em)
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -42,7 +41,7 @@ class AffectionRewardController extends AbstractController
         if($pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
 
-        $merits = $meritRepository->findBy([ 'name' => MeritFunctions::getAvailableMerits($pet) ]);
+        $merits = $em->getRepository(Merit::class)->findBy([ 'name' => MeritFunctions::getAvailableMerits($pet) ]);
 
         return $responseService->success($merits, [ SerializationGroupEnum::AVAILABLE_MERITS ]);
     }
@@ -52,8 +51,7 @@ class AffectionRewardController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function chooseAffectionRewardMerit(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
-        MeritRepository $meritRepository
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -70,7 +68,7 @@ class AffectionRewardController extends AbstractController
 
         $meritName = $request->request->get('merit');
 
-        $availableMerits = $meritRepository->findBy([ 'name' => MeritFunctions::getAvailableMerits($pet) ]);
+        $availableMerits = $em->getRepository(Merit::class)->findBy([ 'name' => MeritFunctions::getAvailableMerits($pet) ]);
 
         /** @var Merit $merit */
         $merit = ArrayFunctions::find_one($availableMerits, fn(Merit $m) => $m->getName() === $meritName);

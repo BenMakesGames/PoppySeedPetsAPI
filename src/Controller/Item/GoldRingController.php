@@ -69,8 +69,7 @@ class GoldRingController extends AbstractController
      */
     public function collect100(
         Inventory $inventory, EntityManagerInterface $em, InventoryService $inventoryService,
-        ResponseService $responseService, MeritRepository $meritRepository,
-        PetFactory $petFactory, IRandom $squirrel3
+        ResponseService $responseService, PetFactory $petFactory, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -129,7 +128,7 @@ class GoldRingController extends AbstractController
                 $user, $hedgehogName, $hedgehog,
                 $petColors[0], $petColors[1],
                 FlavorEnum::getRandomValue($squirrel3),
-                $meritRepository->getRandomStartingMerit()
+                MeritRepository::getRandomStartingMerit($em, $squirrel3)
             );
 
             $newPet

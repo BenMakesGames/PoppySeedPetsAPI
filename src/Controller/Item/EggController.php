@@ -114,8 +114,7 @@ class EggController extends AbstractController
      */
     public function hatchWeirdBlueEgg(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
-        EntityManagerInterface $em, MeritRepository $meritRepository,
-        PetFactory $petFactory, IRandom $squirrel3
+        EntityManagerInterface $em, PetFactory $petFactory, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -162,7 +161,7 @@ class EggController extends AbstractController
         ]) . ' ' . $user->getName();
 
         $newPet = $petFactory->createPet(
-            $user, $monkeyName, $starMonkey, '', '', FlavorEnum::getRandomValue($squirrel3), $meritRepository->getRandomStartingMerit()
+            $user, $monkeyName, $starMonkey, '', '', FlavorEnum::getRandomValue($squirrel3), MeritRepository::getRandomStartingMerit($em, $squirrel3)
         );
 
         $newPet
@@ -196,7 +195,7 @@ class EggController extends AbstractController
      */
     public function openMetalBox(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
-        EntityManagerInterface $em, MeritRepository $meritRepository, PetFactory $petFactory, IRandom $squirrel3
+        EntityManagerInterface $em, PetFactory $petFactory, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -232,7 +231,7 @@ class EggController extends AbstractController
         $message .= "\n\nAnyway, it's dashing around like it's excited to be here; it really seems to like you! In fact, it's already named itself after you??";
 
         $newPet = $petFactory->createPet(
-            $user, '', $grabber, '', '', FlavorEnum::getRandomValue($squirrel3), $meritRepository->getRandomStartingMerit()
+            $user, '', $grabber, '', '', FlavorEnum::getRandomValue($squirrel3), MeritRepository::getRandomStartingMerit($em, $squirrel3)
         );
 
         PetColorFunctions::recolorPet($squirrel3, $newPet, 0.2);

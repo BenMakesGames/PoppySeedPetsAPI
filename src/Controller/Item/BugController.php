@@ -191,8 +191,8 @@ class BugController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function adopt(
-        Inventory $inventory, EntityManagerInterface $em, MeritRepository $meritRepository,
-        ResponseService $responseService, PetFactory $petFactory, IRandom $squirrel3
+        Inventory $inventory, EntityManagerInterface $em, ResponseService $responseService, PetFactory $petFactory,
+        IRandom $rng
     )
     {
         /** @var User $user */
@@ -200,7 +200,7 @@ class BugController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'bug/#/adopt');
 
-        $petName = $squirrel3->rngNextFromArray([
+        $petName = $rng->rngNextFromArray([
             'Afrolixa', 'Alcimus', 'Antocha', 'Argyra', 'Asiola', 'Atarba', 'Atissa',
             'Beskia', 'Bothria', 'Bremia',
             'Cadrema', 'Chlorops', 'Cirrula', 'Cladura', 'Conosia', 'Cremmus',
@@ -227,13 +227,13 @@ class BugController extends AbstractController
         ]);
 
         // RANDOM!
-        $h1 = $squirrel3->rngNextInt(0, 1000) / 1000.0;
-        $s1 = $squirrel3->rngNextInt($squirrel3->rngNextInt(0, 500), 1000) / 1000.0;
-        $l1 = $squirrel3->rngNextInt($squirrel3->rngNextInt(0, 500), $squirrel3->rngNextInt(750, 1000)) / 1000.0;
+        $h1 = $rng->rngNextInt(0, 1000) / 1000.0;
+        $s1 = $rng->rngNextInt($rng->rngNextInt(0, 500), 1000) / 1000.0;
+        $l1 = $rng->rngNextInt($rng->rngNextInt(0, 500), $rng->rngNextInt(750, 1000)) / 1000.0;
 
-        $h2 = $squirrel3->rngNextInt(0, 1000) / 1000.0;
-        $s2 = $squirrel3->rngNextInt($squirrel3->rngNextInt(0, 500), 1000) / 1000.0;
-        $l2 = $squirrel3->rngNextInt($squirrel3->rngNextInt(0, 500), $squirrel3->rngNextInt(750, 1000)) / 1000.0;
+        $h2 = $rng->rngNextInt(0, 1000) / 1000.0;
+        $s2 = $rng->rngNextInt($rng->rngNextInt(0, 500), 1000) / 1000.0;
+        $l2 = $rng->rngNextInt($rng->rngNextInt(0, 500), $rng->rngNextInt(750, 1000)) / 1000.0;
 
         $colorA = ColorFunctions::HSL2Hex($h1, $s1, $l1);
         $colorB = ColorFunctions::HSL2Hex($h2, $s2, $l2);
@@ -244,13 +244,13 @@ class BugController extends AbstractController
             $em->getRepository(PetSpecies::class)->find(40),
             $colorA,
             $colorB,
-            FlavorEnum::getRandomValue($squirrel3),
-            $meritRepository->getRandomAdoptedPetStartingMerit()
+            FlavorEnum::getRandomValue($rng),
+            MeritRepository::getRandomAdoptedPetStartingMerit($em, $rng)
         );
 
         $newPet
-            ->setFoodAndSafety($squirrel3->rngNextInt(10, 12), -9)
-            ->setScale($squirrel3->rngNextInt(80, 120))
+            ->setFoodAndSafety($rng->rngNextInt(10, 12), -9)
+            ->setScale($rng->rngNextInt(80, 120))
         ;
 
         $numberOfPetsAtHome = PetRepository::getNumberAtHome($em, $user);

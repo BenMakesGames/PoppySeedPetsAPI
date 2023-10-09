@@ -69,8 +69,7 @@ class BetaBugController extends AbstractController
      */
     public function useBug(
         Inventory $inventory, Request $request, InventoryRepository $inventoryRepository,
-        ResponseService $responseService, EntityManagerInterface $em, PetFactory $petFactory,
-        IRandom $rng, MeritRepository $meritRepository
+        ResponseService $responseService, EntityManagerInterface $em, PetFactory $petFactory, IRandom $rng
     )
     {
         /** @var User $user */
@@ -89,7 +88,7 @@ class BetaBugController extends AbstractController
 
         switch($item->getItem()->getName())
         {
-            case 'Cooking Buddy': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, $meritRepository->getRandomStartingMerit(), null); break;
+            case 'Cooking Buddy': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::getRandomStartingMerit($em, $rng), null); break;
             case 'Cooking "Alien"': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::findOneByName($em, MeritEnum::BEHATTED), 'Antenna'); break;
             case 'Sentient Beetle': self::makeBeetleEvil($responseService, $em, $user, $item); break;
             case 'Rainbowsaber': self::makeGlitchedOutRainbowsaber($responseService, $em, $user, $item); break;

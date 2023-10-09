@@ -36,10 +36,9 @@ class AdoptController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function adoptPet(
-        int $id, AdoptionService $adoptionService, Request $request,
-        ResponseService $responseService, EntityManagerInterface $em, UserStatsService $userStatsRepository,
-        UserQuestRepository $userQuestRepository, TransactionService $transactionService, IRandom $squirrel3,
-        MeritRepository $meritRepository, PetFactory $petFactory
+        int $id, AdoptionService $adoptionService, Request $request, ResponseService $responseService,
+        EntityManagerInterface $em, UserStatsService $userStatsRepository, UserQuestRepository $userQuestRepository,
+        TransactionService $transactionService, IRandom $rng, PetFactory $petFactory
     )
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');
@@ -77,12 +76,12 @@ class AdoptController extends AbstractController
 
         $newPet = $petFactory->createPet(
             $user, $petName, $petToAdopt->species, $petToAdopt->colorA, $petToAdopt->colorB,
-            FlavorEnum::getRandomValue($squirrel3),
-            $meritRepository->getRandomAdoptedPetStartingMerit()
+            FlavorEnum::getRandomValue($rng),
+            MeritRepository::getRandomAdoptedPetStartingMerit($em, $rng)
         );
 
         $newPet
-            ->setFoodAndSafety($squirrel3->rngNextInt(10, 12), -9)
+            ->setFoodAndSafety($rng->rngNextInt(10, 12), -9)
             ->setScale($petToAdopt->scale)
         ;
 

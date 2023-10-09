@@ -32,14 +32,13 @@ class PregnancyService
     private PetExperienceService $petExperienceService;
     private UserQuestRepository $userQuestRepository;
     private UserStatsService $userStatsRepository;
-    private MeritRepository $meritRepository;
     private PetFactory $petFactory;
     private IRandom $squirrel3;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, PetExperienceService $petExperienceService,
         UserQuestRepository $userQuestRepository, UserStatsService $userStatsRepository,
-        MeritRepository $meritRepository, PetFactory $petFactory, IRandom $squirrel3
+        PetFactory $petFactory, IRandom $squirrel3
     )
     {
         $this->em = $em;
@@ -47,7 +46,6 @@ class PregnancyService
         $this->petExperienceService = $petExperienceService;
         $this->userQuestRepository = $userQuestRepository;
         $this->userStatsRepository = $userStatsRepository;
-        $this->meritRepository = $meritRepository;
         $this->petFactory = $petFactory;
         $this->squirrel3 = $squirrel3;
     }
@@ -169,7 +167,7 @@ class PregnancyService
             $pregnancy->getColorA(),
             $pregnancy->getColorB(),
             FlavorEnum::getRandomValue($this->squirrel3),
-            $this->meritRepository->getRandomStartingMerit()
+            MeritRepository::getRandomStartingMerit($this->em, $this->squirrel3)
         );
 
         if($pet->hasMerit(MeritEnum::DOPPEL_GENE) || $this->squirrel3->rngNextInt(1, 444) === 1)
@@ -181,7 +179,7 @@ class PregnancyService
                 $pregnancy->getColorA(),
                 $pregnancy->getColorB(),
                 FlavorEnum::getRandomValue($this->squirrel3),
-                $this->meritRepository->getRandomStartingMerit()
+                MeritRepository::getRandomStartingMerit($this->em, $this->squirrel3)
             );
         }
 

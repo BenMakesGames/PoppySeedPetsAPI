@@ -30,8 +30,7 @@ class BeeLarvaController extends AbstractController
      */
     public function hatch(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, IRandom $rng,
-        PetFactory $petFactory, MeritRepository $meritRepository
+        InventoryService $inventoryService, IRandom $rng, PetFactory $petFactory
     )
     {
         /** @var User $user */
@@ -64,7 +63,7 @@ class BeeLarvaController extends AbstractController
             $user, $beeName, $giantBeeSpecies,
             $petColors[0], $petColors[1],
             FlavorEnum::getRandomValue($rng),
-            $meritRepository->getRandomStartingMerit()
+            MeritRepository::getRandomStartingMerit($em, $rng)
         );
 
         $newPet

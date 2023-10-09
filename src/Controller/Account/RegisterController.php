@@ -34,8 +34,8 @@ class RegisterController extends AbstractController
      */
     public function register(
         Request $request, EntityManagerInterface $em, ResponseService $responseService, SessionService $sessionService,
-        UserPasswordHasherInterface $userPasswordEncoder, InventoryService $inventoryService,
-        MeritRepository $meritRepository, PetFactory $petFactory, IRandom $squirrel3
+        UserPasswordHasherInterface $userPasswordEncoder, InventoryService $inventoryService, PetFactory $petFactory,
+        IRandom $rng
     )
     {
         $theme = $request->request->get('theme');
@@ -105,18 +105,18 @@ class RegisterController extends AbstractController
 
         $em->persist($user);
 
-        $favoriteFlavor = $squirrel3->rngNextFromArray([
+        $favoriteFlavor = $rng->rngNextFromArray([
             FlavorEnum::EARTHY, FlavorEnum::FRUITY, FlavorEnum::CREAMY, FlavorEnum::MEATY, FlavorEnum::PLANTY,
             FlavorEnum::FISHY, FlavorEnum::FATTY,
         ]);
 
-        $startingMerit = $meritRepository->getRandomFirstPetStartingMerit();
+        $startingMerit = MeritRepository::getRandomFirstPetStartingMerit($em, $rng);
 
         $pet = $petFactory->createPet($user, $petName, $species, $petColorA, $petColorB, $favoriteFlavor, $startingMerit);
 
         $pet
-            ->setFoodAndSafety($squirrel3->rngNextInt(10, 12), -9)
-            ->setScale($squirrel3->rngNextInt(90, 110))
+            ->setFoodAndSafety($rng->rngNextInt(10, 12), -9)
+            ->setScale($rng->rngNextInt(90, 110))
         ;
 
         $inventoryService->receiveItem('Welcome Note', $user, null, 'This Welcome Note was waiting for ' . $user->getName() . ' in their house.', LocationEnum::HOME, true);

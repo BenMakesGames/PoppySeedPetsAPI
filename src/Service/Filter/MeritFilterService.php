@@ -1,7 +1,8 @@
 <?php
 namespace App\Service\Filter;
 
-use App\Repository\MeritRepository;
+use App\Entity\Merit;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
@@ -13,9 +14,9 @@ class MeritFilterService
 
     private $repository;
 
-    public function __construct(MeritRepository $meritRepository)
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->repository = $meritRepository;
+        $this->repository = $em->getRepository(Merit::class);
 
         $this->filterer = new Filterer(
             self::PAGE_SIZE,

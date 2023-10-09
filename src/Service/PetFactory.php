@@ -16,7 +16,6 @@ use Doctrine\ORM\EntityManagerInterface;
 class PetFactory
 {
     private EntityManagerInterface $em;
-    private MeritRepository $meritRepository;
     private IRandom $squirrel3;
 
     private const SENTINEL_NAMES = [
@@ -38,11 +37,10 @@ class PetFactory
     ];
 
     public function __construct(
-        EntityManagerInterface $em, MeritRepository $meritRepository, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         $this->em = $em;
-        $this->meritRepository = $meritRepository;
         $this->squirrel3 = $squirrel3;
     }
 
@@ -103,7 +101,7 @@ class PetFactory
 
         $startingMerit = $isSagaJelling
             ? MeritRepository::findOneByName($this->em, MeritEnum::SAGA_SAGA)
-            : $this->meritRepository->getRandomStartingMerit()
+            : MeritRepository::getRandomStartingMerit($this->em, $this->squirrel3)
         ;
 
         $name = $petSpecies->getName() === 'Sentinel'
