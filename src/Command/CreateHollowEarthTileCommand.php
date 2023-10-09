@@ -7,7 +7,6 @@ use App\Entity\Item;
 use App\Entity\ItemGroup;
 use App\Functions\ArrayFunctions;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 
 class CreateHollowEarthTileCommand extends PoppySeedPetsCommand
@@ -96,7 +95,7 @@ class CreateHollowEarthTileCommand extends PoppySeedPetsCommand
         $this->output->writeln('');
         $this->output->writeln('Run `php bin/console app:update-hollow-earth-tile-event "' . $tile->getName() . '"` to create a basic event.');
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 
     private function askName(): string

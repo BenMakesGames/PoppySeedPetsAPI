@@ -103,7 +103,7 @@ class CalculateDailyStatsCommand extends Command
         $this->em->persist($dailyStats);
         $this->em->flush();
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 
     public function getNewPlayerCount(string $firstDate)

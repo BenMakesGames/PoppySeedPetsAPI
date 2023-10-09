@@ -4,7 +4,6 @@ namespace App\Command;
 use App\Entity\User;
 use App\Service\JsonLogicParserService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 
 class TestJsonLogicParserCommand extends PoppySeedPetsCommand
@@ -38,7 +37,7 @@ class TestJsonLogicParserCommand extends PoppySeedPetsCommand
         if(!$user)
         {
             $this->output->writeln('There is no user #' . $userId . '.');
-            return Command::FAILURE;
+            return self::FAILURE;
         }
 
         $fileName = $this->input->getArgument('file');
@@ -46,7 +45,7 @@ class TestJsonLogicParserCommand extends PoppySeedPetsCommand
         if(!file_exists($fileName))
         {
             $this->output->writeln('File ' . $fileName . ' does not exist.');
-            return Command::FAILURE;
+            return self::FAILURE;
         }
 
         $expression = file_get_contents($fileName);
@@ -58,11 +57,11 @@ class TestJsonLogicParserCommand extends PoppySeedPetsCommand
         catch(\InvalidArgumentException $e)
         {
             $this->output->writeln('Read file ' . $fileName . ', but could not parse its contents as JSON.');
-            return Command::FAILURE;
+            return self::FAILURE;
         }
 
         var_dump($this->jsonLogicParserService->evaluate($data, $user));
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 }

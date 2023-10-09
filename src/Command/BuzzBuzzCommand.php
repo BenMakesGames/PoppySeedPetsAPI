@@ -63,6 +63,6 @@ class BuzzBuzzCommand extends Command
                 interaction_power > 0
         ');
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 }

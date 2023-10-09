@@ -1,7 +1,6 @@
 <?php
 namespace App\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 
 class TestChineseCalendar extends PoppySeedPetsCommand
@@ -23,6 +22,6 @@ class TestChineseCalendar extends PoppySeedPetsCommand
 
         var_export($chineseCalendar->solar($year, $month, $day));
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 }

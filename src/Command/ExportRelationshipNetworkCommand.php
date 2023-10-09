@@ -2,7 +2,6 @@
 namespace App\Command;
 
 use App\Repository\PetRelationshipRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -55,6 +54,6 @@ class ExportRelationshipNetworkCommand extends Command
             'nodes' => $pets
         ]);
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 }

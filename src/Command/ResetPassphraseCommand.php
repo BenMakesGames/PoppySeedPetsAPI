@@ -69,6 +69,6 @@ class ResetPassphraseCommand extends Command
         $output->writeln('   ' . $password);
         $output->writeln('');
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 }

@@ -111,7 +111,7 @@ class RunParkEventsCommand extends Command
             $this->logger->info('No park event to run. Took ' . round($runTime, 3) . 's.');
         }
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 
     private function playKinBall(): ?ParkEvent

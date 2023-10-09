@@ -1,7 +1,6 @@
 <?php
 namespace App\Command;
 
-use App\Functions\RandomFunctions;
 use App\Service\WeatherService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -37,6 +36,6 @@ class ShowWeatherCommand extends Command
 
         var_export($weather);
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 }

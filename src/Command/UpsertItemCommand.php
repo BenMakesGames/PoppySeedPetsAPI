@@ -11,7 +11,6 @@ use App\Entity\ItemTool;
 use App\Enum\FlavorEnum;
 use App\Enum\PetSkillEnum;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Question\Question;
 
@@ -70,7 +69,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
 
         $this->em->flush();
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 
     private function askName(string $prompt, Item $item, string $name)

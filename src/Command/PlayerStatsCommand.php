@@ -3,7 +3,6 @@ namespace App\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
-use Symfony\Component\Console\Command\Command;
 
 class PlayerStatsCommand extends PoppySeedPetsCommand
 {
@@ -49,7 +48,7 @@ class PlayerStatsCommand extends PoppySeedPetsCommand
 
         echo json_encode($data, JSON_PRETTY_PRINT);
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 
     private function getCount(Query $query, string $argument)

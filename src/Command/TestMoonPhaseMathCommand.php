@@ -2,7 +2,6 @@
 namespace App\Command;
 
 use App\Functions\DateFunctions;
-use Symfony\Component\Console\Command\Command;
 
 class TestMoonPhaseMathCommand extends PoppySeedPetsCommand
 {
@@ -44,6 +43,6 @@ class TestMoonPhaseMathCommand extends PoppySeedPetsCommand
             }
         }
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 }

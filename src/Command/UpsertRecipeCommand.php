@@ -8,7 +8,6 @@ use App\Functions\RecipeRepository;
 use App\Model\ItemQuantity;
 use App\Service\InventoryService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Question\Question;
 
@@ -103,7 +102,7 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         $escapedName = str_replace("'", "\\'", $name);
         $this->output->writeln("[ 'name' => '$escapedName', 'ingredients' => '{$recipe['ingredients']}', 'makes' => '{$recipe['makes']}' ],");
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 
     private function askName(string $prompt, array $recipe, string $name)

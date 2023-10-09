@@ -60,6 +60,6 @@ class GetRelationshipsToHangOutWithCommand extends Command
             $output->writeln('* ' . $friend->getName() . ' (#' . $friend->getId() . ')');
         }
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 }

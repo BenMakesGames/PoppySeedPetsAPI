@@ -64,7 +64,7 @@ class CompareRNGPerformanceCommand extends Command
         echo '%diff  : ' . (array_sum($squirrel3DiffBits) / self::ITERATIONS) . "\n";
         echo "\n";
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 
     public function testMtRand(): array

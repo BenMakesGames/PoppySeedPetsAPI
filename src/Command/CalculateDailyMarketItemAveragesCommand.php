@@ -1,7 +1,6 @@
 <?php
 namespace App\Command;
 
-use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -94,7 +93,7 @@ class CalculateDailyMarketItemAveragesCommand extends Command
 
         $output->writeln('Done!');
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 
     private function insert(array $sqlRows)

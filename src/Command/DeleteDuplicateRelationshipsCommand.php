@@ -36,7 +36,7 @@ class DeleteDuplicateRelationshipsCommand extends Command
         if(count($results) === 0)
         {
             echo 'No duplicate relationships were found.';
-            return Command::SUCCESS;
+            return self::SUCCESS;
         }
 
         $deleting = 0;
@@ -90,6 +90,6 @@ class DeleteDuplicateRelationshipsCommand extends Command
         $this->em->flush();
         echo 'done!' . "\n";
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 }

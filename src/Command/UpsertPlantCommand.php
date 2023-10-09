@@ -10,7 +10,6 @@ use App\Enum\PlantTypeEnum;
 use App\Functions\ArrayFunctions;
 use App\Repository\PlantRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 
 class UpsertPlantCommand extends PoppySeedPetsCommand
@@ -128,7 +127,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
 
         $this->em->flush();
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 
     private function editType(Plant $plant)

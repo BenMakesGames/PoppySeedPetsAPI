@@ -2,7 +2,6 @@
 namespace App\Command;
 
 use App\Entity\DeviceStats;
-use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -77,7 +76,7 @@ class DeviceStatsCommand extends Command
             'windowWidths' => $widths,
         ], JSON_PRETTY_PRINT);
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 
     private static function getBrowser(string $userAgent): string

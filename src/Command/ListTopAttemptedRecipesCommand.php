@@ -5,7 +5,6 @@ namespace App\Command;
 use App\Functions\ArrayFunctions;
 use App\Repository\RecipeAttemptedRepository;
 use App\Service\InventoryService;
-use Symfony\Component\Console\Command\Command;
 
 class ListTopAttemptedRecipesCommand extends PoppySeedPetsCommand
 {
@@ -57,7 +56,7 @@ class ListTopAttemptedRecipesCommand extends PoppySeedPetsCommand
                 ' | ' . ArrayFunctions::list_nice($itemStrings) . "\r\n";
         }
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 
 }

@@ -3,7 +3,6 @@ namespace App\Command;
 
 use App\Entity\ItemGrammar;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 
 class UpdateArticlesCommand extends PoppySeedPetsCommand
@@ -46,6 +45,6 @@ class UpdateArticlesCommand extends PoppySeedPetsCommand
             $this->em->flush();
         }
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 }
