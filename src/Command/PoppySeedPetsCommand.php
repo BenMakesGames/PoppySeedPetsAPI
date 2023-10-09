@@ -11,9 +11,9 @@ use Symfony\Component\Console\Question\Question;
 
 abstract class PoppySeedPetsCommand extends Command
 {
-    /** @var InputInterface */ protected $input;
-    /** @var OutputInterface */ protected $output;
-    /** @var QuestionHelper */ protected $questionHelper;
+    protected InputInterface $input;
+    protected OutputInterface $output;
+    protected QuestionHelper $questionHelper;
 
     abstract protected function doCommand(): int;
 
