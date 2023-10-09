@@ -13,7 +13,7 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ColorFunctions;
 use App\Functions\ItemRepository;
-use App\Repository\MeritRepository;
+use App\Functions\MeritRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;

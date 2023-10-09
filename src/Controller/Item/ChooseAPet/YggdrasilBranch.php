@@ -10,8 +10,6 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
-use App\Repository\MeritRepository;
-use App\Repository\PetRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;

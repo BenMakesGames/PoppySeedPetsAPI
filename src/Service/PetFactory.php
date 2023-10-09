@@ -9,8 +9,8 @@ use App\Entity\PetSpecies;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
+use App\Functions\MeritRepository;
 use App\Model\PetShelterPet;
-use App\Repository\MeritRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetFactory

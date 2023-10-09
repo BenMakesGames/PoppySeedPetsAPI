@@ -7,7 +7,7 @@ use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Exceptions\PSPPetNotFoundException;
-use App\Repository\MeritRepository;
+use App\Functions\MeritRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
