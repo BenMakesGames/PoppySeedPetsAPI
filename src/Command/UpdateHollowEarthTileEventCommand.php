@@ -67,9 +67,6 @@ class UpdateHollowEarthTileEventCommand extends PoppySeedPetsCommand
     {
         $type = $this->askChoice('What kind of event do you want to make?', array_merge(HollowEarthActionTypeEnum::getValues()), null);
 
-        if($type != null)
-            $event['type'] = $type;
-
         switch($type)
         {
             case HollowEarthActionTypeEnum::ONWARD:
@@ -126,10 +123,10 @@ class UpdateHollowEarthTileEventCommand extends PoppySeedPetsCommand
     {
         foreach([ 'food', 'safety', 'love', 'esteem' ] as $need)
         {
-            $need = $this->askInt(ucfirst($need) . ' change', 0);
+            $amount = $this->askInt(ucfirst($need) . ' change', 0);
 
-            if($need != 0)
-                $event[$need] = $need;
+            if($amount != 0)
+                $event[$need] = $amount;
         }
     }
 
@@ -258,7 +255,7 @@ class UpdateHollowEarthTileEventCommand extends PoppySeedPetsCommand
 
     private function createChooseOneEvent(array &$event)
     {
-        $event['type'] = HollowEarthActionTypeEnum::PET_CHALLENGE;
+        $event['type'] = HollowEarthActionTypeEnum::CHOOSE_ONE;
         $event['description'] = $this->askString('Description', null);
 
         $event['buttons'] = [
@@ -339,7 +336,7 @@ class UpdateHollowEarthTileEventCommand extends PoppySeedPetsCommand
         $this->createEvent($event['ifPaid']);
     }
 
-    private function createPayItemAndMoneysEvent(array $event)
+    private function createPayItemAndMoneysEvent(array &$event)
     {
         $event['type'] = HollowEarthActionTypeEnum::PAY_ITEM_AND_MONEY;
         $event['description'] = $this->askString('Description', null);

@@ -6,6 +6,7 @@ use App\Entity\HollowEarthTileCard;
 use App\Entity\Item;
 use App\Entity\ItemFood;
 use App\Entity\ItemGrammar;
+use App\Entity\ItemGroup;
 use App\Entity\ItemHat;
 use App\Entity\ItemTool;
 use App\Entity\ItemTreasure;
@@ -52,6 +53,7 @@ class ExportItemCommand extends PoppySeedPetsCommand
         echo str_repeat(' ', 40 - mb_strlen($item->getName()) / 2) . $item->getName() . "\n";
         echo "================================================================================\n";
 
+        $groups = $item->getItemGroups();
         $treasure = $item->getTreasure();
         $tool = $item->getTool();
         $hat = $item->getHat();
@@ -110,6 +112,20 @@ class ExportItemCommand extends PoppySeedPetsCommand
 
         if($grammar)
             $statements[] = $this->generateSql(ItemGrammar::class, $grammar, 'grammar');
+
+        if($groups)
+        {
+            $sql = "-- item groups\nINSERT INTO item_group_item (item_group_id, item_id) VALUES ";
+
+            $valueSqls = array_map(
+                fn(ItemGroup $group) => '(' . $group->getId() . ', ' . $item->getId() . ')',
+                $groups->toArray()
+            );
+
+            $sql .= join(', ', $valueSqls) . ';';
+
+            $statements[] = $sql;
+        }
 
         echo "\n" . implode("\n\n", $statements);
 
