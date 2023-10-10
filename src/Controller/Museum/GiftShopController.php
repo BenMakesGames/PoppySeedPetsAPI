@@ -77,13 +77,13 @@ class GiftShopController extends AbstractController
 
         $itemObject = ItemRepository::findOneByName($em, $item['item']['name']);
 
-        $itemsInBuyersHome = $inventoryService->countTotalInventory($user, LocationEnum::HOME);
+        $itemsInBuyersHome = InventoryService::countTotalInventory($em, $user, LocationEnum::HOME);
 
         $targetLocation = LocationEnum::HOME;
 
         if($itemsInBuyersHome >= User::MAX_HOUSE_INVENTORY)
         {
-            $itemsInBuyersBasement = $inventoryService->countTotalInventory($user, LocationEnum::BASEMENT);
+            $itemsInBuyersBasement = InventoryService::countTotalInventory($em, $user, LocationEnum::BASEMENT);
 
             if($itemsInBuyersBasement < User::MAX_BASEMENT_INVENTORY)
                 $targetLocation = LocationEnum::BASEMENT;

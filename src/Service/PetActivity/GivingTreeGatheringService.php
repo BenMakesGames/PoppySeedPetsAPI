@@ -17,19 +17,17 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class GivingTreeGatheringService
 {
-    private InventoryService $inventoryService;
     private ResponseService $responseService;
     private PetExperienceService $petExperienceService;
     private EntityManagerInterface $em;
     private IRandom $squirrel3;
 
     public function __construct(
-        InventoryService $inventoryService, EntityManagerInterface $em, ResponseService $responseService,
+        EntityManagerInterface $em, ResponseService $responseService,
         PetExperienceService $petExperienceService, IRandom $squirrel3
     )
     {
         $this->responseService = $responseService;
-        $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->em = $em;
         $this->squirrel3 = $squirrel3;
@@ -42,7 +40,7 @@ class GivingTreeGatheringService
         if(!$givingTree)
             throw new \Exception('The "Giving Tree" NPC does not exist in the database!');
 
-        $items = $this->inventoryService->countTotalInventory($givingTree, LocationEnum::HOME);
+        $items = InventoryService::countTotalInventory($this->em, $givingTree, LocationEnum::HOME);
 
         // just to make suuuuuuuuuuuuuuuuuuper sure that there's enough for every pet that might be doing this...
         if($items < 100)

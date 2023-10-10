@@ -116,7 +116,7 @@ class GrocerController extends AbstractController
         if(count($buyingInventory) === 0)
             throw new PSPFormValidationException('Did you forget to select something to buy?');
 
-        $existingInventoryCount = $inventoryService->countTotalInventory($user, $buyTo);
+        $existingInventoryCount = InventoryService::countTotalInventory($em, $user, $buyTo);
         $maxInventory = $buyTo === LocationEnum::BASEMENT ? User::MAX_BASEMENT_INVENTORY : User::MAX_HOUSE_INVENTORY;
 
         if($existingInventoryCount + $totalQuantity > $maxInventory)

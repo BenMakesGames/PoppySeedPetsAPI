@@ -34,7 +34,7 @@ class TelephoneController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'telephone/#/pizza');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $today = (new \DateTimeImmutable())->format('Y-m-d');
         $orderedDeliveryFood = $userQuestRepository->findOrCreate($user, 'Ordered Delivery Food', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));

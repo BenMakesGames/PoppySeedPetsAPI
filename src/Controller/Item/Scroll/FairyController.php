@@ -33,7 +33,7 @@ class FairyController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'scroll/fairy/#/read');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $lameItems = [ 'Toadstool', 'Charcoal', 'Toad Legs', 'Bird\'s-foot Trefoil', 'Coriander Flower' ];
 

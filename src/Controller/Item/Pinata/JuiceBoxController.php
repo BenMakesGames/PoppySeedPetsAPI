@@ -32,7 +32,7 @@ class JuiceBoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'juiceBox/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $juiceBoxesOpened = $userStatsRepository->incrementStat($user, 'Juice Boxes Opened', 1)->getValue();
 

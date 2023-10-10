@@ -16,13 +16,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
  * @Route("/item")
  */
-class LeafSpearController extends AbstractController
+class FrostbiteController extends AbstractController
 {
     /**
-     * @Route("/leafSpear/{inventory}/unwrap", methods={"POST"})
+     * @Route("/frostbite/{inventory}/break", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
-    public function unwrapLeafSpear(
+    public function breakFrostbite(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService
     )
@@ -30,18 +30,22 @@ class LeafSpearController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'leafSpear/#/unwrap');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'frostbite/#/break');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
+        $icicle = ItemRepository::findOneByName($em, 'Icicle');
+
+        $originalName = $inventory->getItem()->getNameWithArticle();
+
         $inventory
-            ->changeItem(ItemRepository::findOneByName($em, 'Really Big Leaf'))
-            ->addComment($user->getName() . ' untied a Leaf Spear, causing it to unroll into this.')
+            ->changeItem($icicle)
+            ->addComment($user->getName() . ' intentionally snapped ' . $originalName . ' in two; this is one of those halves.')
         ;
 
-        $inventoryService->receiveItem('String', $user, $inventory->getCreatedBy(), $user->getName() . ' pulled this off of a Leaf Spear.', $inventory->getLocation(), $inventory->getLockedToOwner());
+        $inventoryService->receiveItem($icicle, $user, $inventory->getCreatedBy(), $user->getName() . ' broke this off of ' . $originalName . '.', $inventory->getLocation(), $inventory->getLockedToOwner());
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You untie the String, and the leaf practically unrolls on its own.', [ 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You break the thing in two, yielding two Icicles!', [ 'itemDeleted' => true ]);
     }
 }

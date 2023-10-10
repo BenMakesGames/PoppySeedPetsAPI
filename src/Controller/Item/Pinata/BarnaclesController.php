@@ -31,7 +31,7 @@ class BarnaclesController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'barnacles/#/harvest');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();

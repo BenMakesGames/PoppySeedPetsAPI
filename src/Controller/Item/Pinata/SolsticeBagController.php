@@ -34,7 +34,7 @@ class SolsticeBagController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $bag, 'summerSolsticeBag/#/open');
-        ItemControllerHelpers::validateHouseSpace($bag, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($bag, $em);
 
         $location = $bag->getLocation();
         $lockedToOwner = $bag->getLockedToOwner();
@@ -83,7 +83,7 @@ class SolsticeBagController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $bag, 'winterSolsticeBag/#/open');
-        ItemControllerHelpers::validateHouseSpace($bag, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($bag, $em);
 
         $location = $bag->getLocation();
         $lockedToOwner = $bag->getLockedToOwner();

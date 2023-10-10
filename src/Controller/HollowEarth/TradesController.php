@@ -72,7 +72,7 @@ class TradesController extends AbstractController
         if($trade['maxQuantity'] < $quantity)
             throw new PSPInvalidOperationException('You do not have enough goods to make ' . $quantity . ' trade' . ($quantity == 1 ? '' : 's') . '; you can do up to ' . $trade['maxQuantity'] . ', at most.');
 
-        $itemsAtHome = $inventoryService->countTotalInventory($user, LocationEnum::HOME);
+        $itemsAtHome = InventoryService::countTotalInventory($em, $user, LocationEnum::HOME);
 
         $destination = LocationEnum::HOME;
 
@@ -82,7 +82,7 @@ class TradesController extends AbstractController
             {
                 $destination = LocationEnum::BASEMENT;
 
-                $itemsInBasement = $inventoryService->countTotalInventory($user, LocationEnum::BASEMENT);
+                $itemsInBasement = InventoryService::countTotalInventory($em, $user, LocationEnum::BASEMENT);
 
                 if($itemsInBasement + $quantity > User::MAX_BASEMENT_INVENTORY)
                 {

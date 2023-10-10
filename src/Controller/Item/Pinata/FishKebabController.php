@@ -29,7 +29,7 @@ class FishKebabController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'fishKebab/#/takeApart');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();

@@ -29,6 +29,7 @@ class KeyRingController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'keyRing/#/takeIron');
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $inventoryService->receiveItem('Iron Key', $user, $user, $user->getName() . ' pulled this off a Key Ring.', $inventory->getLocation(), $inventory->getLockedToOwner());
         $inventoryService->receiveItem('Iron Key', $user, $user, $user->getName() . ' pulled this off a Key Ring.', $inventory->getLocation(), $inventory->getLockedToOwner());
@@ -53,6 +54,7 @@ class KeyRingController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'keyRing/#/takeSilver');
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $inventoryService->receiveItem('Silver Key', $user, $user, $user->getName() . ' pulled this off a Key Ring.', $inventory->getLocation(), $inventory->getLockedToOwner());
         $inventoryService->receiveItem('Silver Key', $user, $user, $user->getName() . ' pulled this off a Key Ring.', $inventory->getLocation(), $inventory->getLockedToOwner());
@@ -77,6 +79,7 @@ class KeyRingController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'keyRing/#/takeGold');
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $inventoryService->receiveItem('Gold Key', $user, $user, $user->getName() . ' pulled this off a Key Ring.', $inventory->getLocation(), $inventory->getLockedToOwner());
         $inventoryService->receiveItem('Gold Key', $user, $user, $user->getName() . ' pulled this off a Key Ring.', $inventory->getLocation(), $inventory->getLockedToOwner());

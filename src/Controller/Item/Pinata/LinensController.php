@@ -35,7 +35,7 @@ class LinensController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'linensAndThings/#/rummage');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();

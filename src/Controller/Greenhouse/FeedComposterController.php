@@ -97,7 +97,7 @@ class FeedComposterController extends AbstractController
 
         if($itemDelta > 0)
         {
-            $itemsAtHome = $inventoryService->countTotalInventory($user, LocationEnum::HOME);
+            $itemsAtHome = InventoryService::countTotalInventory($em, $user, LocationEnum::HOME);
 
             if($itemsAtHome > 100)
                 throw new PSPInvalidOperationException('That would leave you with more items at home than you started with, and you\'re already over 100!');

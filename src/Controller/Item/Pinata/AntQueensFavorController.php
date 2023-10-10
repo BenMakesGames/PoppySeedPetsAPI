@@ -31,7 +31,7 @@ class AntQueensFavorController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'antQueensFavor/#/bugStuff');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $location = $inventory->getLocation();
 
@@ -81,7 +81,7 @@ class AntQueensFavorController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'antQueensFavor/#/candy');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $location = $inventory->getLocation();
 
@@ -133,7 +133,7 @@ class AntQueensFavorController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'antQueensFavor/#/craftingSupplies');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $location = $inventory->getLocation();
 

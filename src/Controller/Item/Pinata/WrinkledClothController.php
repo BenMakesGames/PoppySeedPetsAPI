@@ -36,7 +36,7 @@ class WrinkledClothController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'wrinkledCloth/#/iron');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $ironBar = $inventoryRepository->findOneToConsume($user, 'Iron Bar');
 

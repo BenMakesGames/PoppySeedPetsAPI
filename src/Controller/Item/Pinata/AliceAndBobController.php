@@ -32,7 +32,7 @@ class AliceAndBobController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/alicesSecret/#/teaTime');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $loot = [
             'Toadstool', 'Shortbread Cookies'
@@ -104,7 +104,7 @@ class AliceAndBobController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/alicesSecret/#/cards');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $loot = [
             'Paper', 'Paper', 'Paper', 'Paper', $squirrel3->rngNextFromArray([ 'Paper', 'Quinacridone Magenta Dye' ])
@@ -131,7 +131,7 @@ class AliceAndBobController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/bobsSecret/#/fish');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $loot = [
             'Fish',
@@ -176,7 +176,7 @@ class AliceAndBobController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/bobsSecret/#/tool');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         // apply "Bob's" bonus
         $tool = $squirrel3->rngNextFromArray([
@@ -210,7 +210,7 @@ class AliceAndBobController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/bobsSecret/#/bbq');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $loot = [
             'Charcoal',

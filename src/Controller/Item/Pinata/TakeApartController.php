@@ -30,7 +30,7 @@ class TakeApartController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'takeApart/#');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $takeApartTable = [
             'Glowing Russet Staff of Swiftness' => [

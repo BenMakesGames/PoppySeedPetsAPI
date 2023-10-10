@@ -61,7 +61,7 @@ class BaabbleController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'baabble/black/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
@@ -115,7 +115,7 @@ class BaabbleController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'baabble/white/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
@@ -173,7 +173,7 @@ class BaabbleController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'baabble/gold/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
@@ -234,7 +234,7 @@ class BaabbleController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'baabble/shiny/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();

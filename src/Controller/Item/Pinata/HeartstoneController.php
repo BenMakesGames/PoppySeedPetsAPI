@@ -33,7 +33,7 @@ class HeartstoneController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'heartstone/#/transform');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $numberTransformed = $userStatsRepository->getStatValue($user, self::STAT_NAME);
         $petsWhoHaveCompletedHeartDimensionAdventures = $userStatsRepository->getStatValue($user, 'Pet Completed the Heartstone Dimension');

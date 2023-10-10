@@ -43,7 +43,7 @@ class CreateBidController extends AbstractController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Market))
             throw new PSPNotUnlockedException('Market');
 
-        $itemsAtHome = $inventoryService->countTotalInventory($user, LocationEnum::HOME);
+        $itemsAtHome = InventoryService::countTotalInventory($em, $user, LocationEnum::HOME);
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
             $location = LocationEnum::HOME;
@@ -60,7 +60,7 @@ class CreateBidController extends AbstractController
             if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
                 throw new PSPInvalidOperationException('Your house is already overflowing with items! You\'ll need to clear some out before you can create any new bids.');
 
-            $itemsInBasement = $inventoryService->countTotalInventory($user, LocationEnum::BASEMENT);
+            $itemsInBasement = InventoryService::countTotalInventory($em, $user, LocationEnum::BASEMENT);
 
             if($itemsInBasement >= User::MAX_BASEMENT_INVENTORY)
                 throw new PSPInvalidOperationException('Your house and basement are already overflowing with items! You\'ll need to clear some space before you can create any new bids.');

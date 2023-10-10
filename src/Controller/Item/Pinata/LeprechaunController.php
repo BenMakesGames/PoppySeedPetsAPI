@@ -33,7 +33,7 @@ class LeprechaunController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'leprechaun/potOfGold/#/loot');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $em->remove($inventory);
 
@@ -68,7 +68,7 @@ class LeprechaunController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'leprechaun/greenScroll/#/read');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
         $userStatsRepository->incrementStat($user, 'Read ' . $inventory->getItem()->getNameWithArticle());

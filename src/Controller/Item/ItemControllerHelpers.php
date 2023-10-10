@@ -7,6 +7,7 @@ use App\Enum\LocationEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Service\InventoryService;
+use Doctrine\ORM\EntityManagerInterface;
 
 class ItemControllerHelpers
 {
@@ -17,14 +18,30 @@ class ItemControllerHelpers
 
         if(!$inventory->getItem()->hasUseAction($action))
             throw new PSPInvalidOperationException('That item cannot be used in that way!');
+
+        if(
+            $inventory->getLocation() !== LocationEnum::BASEMENT &&
+            $inventory->getLocation() !== LocationEnum::HOME &&
+            $inventory->getLocation() !== LocationEnum::MANTLE
+        )
+            throw new PSPInvalidOperationException('To do this, the item must be in your house, Basement, or Fireplace mantle.');
     }
 
-    public static function validateHouseSpace(Inventory $inventory, InventoryService $inventoryService)
+    public static function validateLocationSpace(Inventory $inventory, EntityManagerInterface $em)
     {
-        if($inventory->getLocation() !== LocationEnum::HOME)
-            return;
+        if($inventory->getLocation() === LocationEnum::HOME)
+            self::validateHouseSpace($inventory, $em);
+        else if($inventory->getLocation() === LocationEnum::BASEMENT)
+            self::validateBasementSpace($inventory, $em);
+        else if($inventory->getLocation() === LocationEnum::MANTLE)
+            self::validateMantleSpace($inventory, $em);
+        else
+            throw new PSPInvalidOperationException('To do this, the item must be in your house, Basement, or Fireplace mantle.');
+    }
 
-        $itemsInHouse = $inventoryService->countTotalInventory($inventory->getOwner(), LocationEnum::HOME);
+    private static function validateHouseSpace(Inventory $inventory, EntityManagerInterface $em)
+    {
+        $itemsInHouse = InventoryService::countTotalInventory($em, $inventory->getOwner(), LocationEnum::HOME);
 
         if($itemsInHouse > 150)
         {
@@ -38,5 +55,23 @@ class ItemControllerHelpers
 
             throw new PSPInvalidOperationException($message);
         }
+    }
+
+    private static function validateBasementSpace(Inventory $inventory, EntityManagerInterface $em)
+    {
+        $itemsInHouse = InventoryService::countTotalInventory($em, $inventory->getOwner(), LocationEnum::BASEMENT);
+
+        if($itemsInHouse >= User::MAX_BASEMENT_INVENTORY)
+            throw new PSPInvalidOperationException('Your basement is already stuffed! You\'ll need to clear some space, or move the ' . $inventory->getItem()->getName() . ' somewhere else before trying again.');
+    }
+
+    private static function validateMantleSpace(Inventory $inventory, EntityManagerInterface $em)
+    {
+        $itemsInHouse = InventoryService::countTotalInventory($em, $inventory->getOwner(), LocationEnum::MANTLE);
+
+        $maxMantleSize = $inventory->getOwner()->getFireplace() ? $inventory->getOwner()->getFireplace()->getMantleSize() : 12;
+
+        if($itemsInHouse >= $maxMantleSize)
+            throw new PSPInvalidOperationException('Your Mantle is already packed to the brim! You\'ll need to clear some space, or move the ' . $inventory->getItem()->getName() . ' somewhere else before trying again.');
     }
 }

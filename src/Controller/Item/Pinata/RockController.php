@@ -31,7 +31,7 @@ class RockController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $rock, 'rock/#/smash');
-        ItemControllerHelpers::validateHouseSpace($rock, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($rock, $em);
 
         $location = $rock->getLocation();
         $lockedToOwner = $rock->getLockedToOwner();

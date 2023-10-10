@@ -70,12 +70,12 @@ class InventoryService
     /**
      * @throws EnumInvalidValueException
      */
-    public function countTotalInventory(User $user, int $location): int
+    public static function countTotalInventory(EntityManagerInterface $em, User $user, int $location): int
     {
         if(!LocationEnum::isAValue($location))
             throw new EnumInvalidValueException(LocationEnum::class, $location);
 
-        return (int)$this->em->createQueryBuilder()
+        return (int)$em->createQueryBuilder()
             ->select('COUNT(i.id)')
             ->from(Inventory::class, 'i')
             ->andWhere('i.owner=:owner')
@@ -138,9 +138,7 @@ class InventoryService
         $items = [];
 
         foreach($quantities as $itemQuantity)
-        {
             $items[] = $itemQuantity->item->getId() . ':' . $itemQuantity->quantity;
-        }
 
         return \implode(',', $items);
     }

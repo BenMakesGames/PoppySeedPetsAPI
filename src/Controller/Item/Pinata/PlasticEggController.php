@@ -48,7 +48,7 @@ class PlasticEggController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'plasticEgg/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         switch($inventory->getItem()->getName())
         {

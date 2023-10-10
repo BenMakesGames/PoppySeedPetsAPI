@@ -55,7 +55,7 @@ class GoOnAdventure extends AbstractController
 
         $playedStarKindred->setValue($today);
 
-        if($inventoryService->countTotalInventory($user, LocationEnum::HOME) > 150)
+        if(InventoryService::countTotalInventory($em, $user, LocationEnum::HOME) > 150)
             throw new PSPInvalidOperationException('Your house is far too cluttered to play ★Kindred!');
 
         if($adventureService->isStepCompleted($user, $step))

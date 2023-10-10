@@ -30,7 +30,7 @@ class FairyRingController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'fairyRing/#/takeApart');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $inventory->changeItem(ItemRepository::findOneByName($em, 'Gold Ring'));
 

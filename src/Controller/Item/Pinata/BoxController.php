@@ -45,7 +45,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $box, 'box/twilight/#/open');
-        ItemControllerHelpers::validateHouseSpace($box, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($box, $em);
 
         $location = $box->getLocation();
         $lockedToOwner = $box->getLockedToOwner();
@@ -89,7 +89,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $box, 'box/ores/#/loot');
-        ItemControllerHelpers::validateHouseSpace($box, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($box, $em);
 
         $location = $box->getLocation();
         $lockedToOwner = $box->getLockedToOwner();
@@ -159,7 +159,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $box, 'box/smallOres/#/loot');
-        ItemControllerHelpers::validateHouseSpace($box, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($box, $em);
 
         $location = $box->getLocation();
         $lockedToOwner = $box->getLockedToOwner();
@@ -198,7 +198,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/box/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $location = $inventory->getLocation();
 
@@ -273,7 +273,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/cereal/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $newInventory = [];
 
@@ -304,7 +304,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/bakers/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $newInventory = [];
 
@@ -353,7 +353,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/fruits-n-veggies/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         /** @var Inventory[] $newInventory */
         $newInventory = [];
@@ -401,7 +401,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/nature/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         /** @var Inventory[] $newInventory */
         $newInventory = [];
@@ -445,7 +445,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/monster/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         /** @var Inventory[] $newInventory */
         $newInventory = [];
@@ -489,7 +489,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/handicrafts/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $location = $inventory->getLocation();
 
@@ -529,7 +529,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/gaming/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $location = $inventory->getLocation();
 
@@ -576,7 +576,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/bagOfBeans/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $newInventory = [];
 
@@ -608,7 +608,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/pepperbox/#/disassemble');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $peppers = $squirrel3->rngNextInt(4, $squirrel3->rngNextInt(6, 10));
 
@@ -695,7 +695,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/sandbox/#/raid');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $sand = $squirrel3->rngNextInt(6, $squirrel3->rngNextInt(7, 12));
 
@@ -850,7 +850,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/july4/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
@@ -882,7 +882,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/bastille/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
@@ -919,7 +919,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/may5/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
@@ -951,7 +951,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/newYear/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
@@ -990,7 +990,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/chineseNewYear/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
@@ -1021,7 +1021,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/goldChest/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $key = $inventoryRepository->findOneToConsume($user, 'Gold Key');
 
@@ -1068,7 +1068,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/rubyChest/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
@@ -1108,7 +1108,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/tower/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $newInventory = [];
 
@@ -1143,7 +1143,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/fishBag/#/open');
-        ItemControllerHelpers::validateHouseSpace($inventory, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $newInventory = [];
 
@@ -1191,7 +1191,7 @@ class BoxController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $box, 'box/chocolate/#/open');
-        ItemControllerHelpers::validateHouseSpace($box, $inventoryService);
+        ItemControllerHelpers::validateLocationSpace($box, $em);
 
         $location = $box->getLocation();
         $lockedToOwner = $box->getLockedToOwner();

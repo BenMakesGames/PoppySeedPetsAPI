@@ -32,7 +32,6 @@ class DirtyLumpController extends AbstractController
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $lump, 'dirtyLump/#/clean');
-        ItemControllerHelpers::validateHouseSpace($lump, $inventoryService);
 
         $location = $lump->getLocation();
         $lockedToOwner = $lump->getLockedToOwner();
