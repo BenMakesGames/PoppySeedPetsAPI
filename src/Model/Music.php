@@ -252,6 +252,6 @@ class Music
         'One-two-three four-five, six-seven-eight nine-ten, eleven twelve... twelve!',
 
         // Hey Ya!, by OutKast
-        'You think you\'ve got it - oh, you think you\'ve got it - but "got it" just don\'t get it when there\'s nothin\'t at aaa a-aaa a-aaa a-aaa a-aaa-all!',
+        'You think you\'ve got it - oh, you think you\'ve got it - but "got it" just don\'t get it when there\'s nothin\'t at aaa a-aaa a-aaa a-aaa a-a-all!',
     ];
 }
