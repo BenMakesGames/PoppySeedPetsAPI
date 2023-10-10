@@ -6,10 +6,13 @@ use App\Entity\PetSpecies;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\PetLocationEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ItemRepository;
 use App\Functions\MeritRepository;
 use App\Functions\PetColorFunctions;
+use App\Repository\EnchantmentRepository;
 use App\Repository\PetRepository;
+use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetFactory;
@@ -69,7 +72,7 @@ class GoldRingController extends AbstractController
      */
     public function collect100(
         Inventory $inventory, EntityManagerInterface $em, InventoryService $inventoryService,
-        ResponseService $responseService, PetFactory $petFactory, IRandom $squirrel3
+        ResponseService $responseService, PetFactory $petFactory, IRandom $rng, HattierService $hattierService
     )
     {
         /** @var User $user */
@@ -117,18 +120,18 @@ class GoldRingController extends AbstractController
 
             $hedgehog = $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Hedgehog' ]);
 
-            $hedgehogName = $squirrel3->rngNextFromArray([
+            $hedgehogName = $rng->rngNextFromArray([
                 'Speedy', 'Dash', 'Blur', 'Quickly', 'Quills', 'Boots', 'Nitro', 'Boom', 'Runner', 'Jumper',
                 'Sir Spinsalot', 'Miles', 'Blue'
             ]);
 
-            $petColors = PetColorFunctions::generateRandomPetColors($squirrel3);
+            $petColors = PetColorFunctions::generateRandomPetColors($rng);
 
             $newPet = $petFactory->createPet(
                 $user, $hedgehogName, $hedgehog,
                 $petColors[0], $petColors[1],
-                FlavorEnum::getRandomValue($squirrel3),
-                MeritRepository::getRandomStartingMerit($em, $squirrel3)
+                FlavorEnum::getRandomValue($rng),
+                MeritRepository::getRandomStartingMerit($em, $rng)
             );
 
             $newPet
@@ -136,10 +139,22 @@ class GoldRingController extends AbstractController
                 ->increaseSafety(10)
                 ->increaseEsteem(10)
                 ->increaseFood(-8)
-                ->setScale($squirrel3->rngNextInt(80, 120))
+                ->setScale($rng->rngNextInt(80, 120))
             ;
 
             $message = '100 Gold Rings!!! That\'s one extra Hedgehog!';
+
+            $gottaGoFast = EnchantmentRepository::findOneByName($em, 'Super-sonic');
+
+            if(!$hattierService->userHasUnlocked($user, $gottaGoFast))
+            {
+                $hattierService->playerUnlockAura($user, $gottaGoFast, 'You unlocked this by collecting 100 Gold Rings!');
+
+                if($user->hasUnlockedFeature(UnlockableFeatureEnum::Hattier))
+                    $message .= ' (And a new aura for the Hattier: Gotta\' Go Fast!)';
+                else
+                    $message .= ' (And something tells you you got something else, too, but you\'ll have to unlock the Hattier to find out what!)';
+            }
 
             $numberOfPetsAtHome = PetRepository::getNumberAtHome($em, $user);
 
