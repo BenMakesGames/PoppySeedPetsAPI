@@ -37,7 +37,7 @@ class StoryService
     private UserQuest $step;
     private Story $story;
     private StorySection $currentSection;
-    /** @var ItemQuantity[] */ private array $userInventory;
+    /** @var ItemQuantity[]|null */ private ?array $userInventory = null;
 
     private Inventory $callingInventory;
 

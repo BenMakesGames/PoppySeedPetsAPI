@@ -113,7 +113,7 @@ class ExportItemCommand extends PoppySeedPetsCommand
         if($grammar)
             $statements[] = $this->generateSql(ItemGrammar::class, $grammar, 'grammar');
 
-        if($groups)
+        if(count($groups) > 0)
         {
             $sql = "-- item groups\nINSERT INTO item_group_item (item_group_id, item_id) VALUES ";
 
