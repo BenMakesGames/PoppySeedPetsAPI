@@ -8,6 +8,7 @@ use App\Enum\GuildEnum;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -17,17 +18,14 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class GivingTreeGatheringService
 {
-    private ResponseService $responseService;
     private PetExperienceService $petExperienceService;
     private EntityManagerInterface $em;
     private IRandom $squirrel3;
 
     public function __construct(
-        EntityManagerInterface $em, ResponseService $responseService,
-        PetExperienceService $petExperienceService, IRandom $squirrel3
+        EntityManagerInterface $em, PetExperienceService $petExperienceService, IRandom $squirrel3
     )
     {
-        $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
         $this->em = $em;
         $this->squirrel3 = $squirrel3;
@@ -44,48 +42,46 @@ class GivingTreeGatheringService
 
         // just to make suuuuuuuuuuuuuuuuuuper sure that there's enough for every pet that might be doing this...
         if($items < 100)
-        {
             return null;
+
+        $givingTreeItems = $this->squirrel3->rngNextInt(5, 8);
+
+        $this->em->getConnection()->executeQuery(
+            '
+                UPDATE inventory
+                SET
+                    owner_id=:newOwner,
+                    modified_on=NOW()
+                WHERE owner_id=:givingTree
+                LIMIT ' . $givingTreeItems . '
+            ',
+            [
+                'newOwner' => $pet->getOwner()->getId(),
+                'givingTree' => $givingTree->getId()
+            ]
+        );
+
+        if($pet->isInGuild(GuildEnum::GIZUBIS_GARDEN, 1))
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(20, 30), PetActivityStatEnum::OTHER, null);
+
+            $pet->getGuildMembership()->increaseReputation();
+
+            return PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited The Giving Tree, and picked up several items that other players had discarded. In honor of Gizubi\'s Tree of Life, they also took a few minutes to water the Giving Tree.')
+                ->setIcon('icons/activity-logs/giving-tree')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Giving Tree', 'Guild' ]))
+            ;
         }
         else
         {
-            $givingTreeItems = $this->squirrel3->rngNextInt(5, 8);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(10, 20), PetActivityStatEnum::OTHER, null);
 
-            $this->em->getConnection()->executeQuery(
-                '
-                    UPDATE inventory
-                    SET
-                        owner_id=:newOwner,
-                        modified_on=NOW()
-                    WHERE owner_id=:givingTree
-                    LIMIT ' . $givingTreeItems . '
-                ',
-                [
-                    'newOwner' => $pet->getOwner()->getId(),
-                    'givingTree' => $givingTree->getId()
-                ]
-            );
-
-            if($pet->isInGuild(GuildEnum::GIZUBIS_GARDEN, 1))
-            {
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(20, 30), PetActivityStatEnum::OTHER, null);
-
-                $pet->getGuildMembership()->increaseReputation();
-
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited The Giving Tree, and picked up several items that other players had discarded. In honor of Gizubi\'s Tree of Life, they also took a few minutes to water the Giving Tree.', 'icons/activity-logs/giving-tree')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Giving Tree', 'Guild' ]))
-                ;
-            }
-            else
-            {
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(10, 20), PetActivityStatEnum::OTHER, null);
-
-                return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% visited The Giving Tree, and picked up several items that other players had discarded.', 'icons/activity-logs/giving-tree')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Giving Tree' ]))
-                ;
-            }
+            return PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited The Giving Tree, and picked up several items that other players had discarded.')
+                ->setIcon('icons/activity-logs/giving-tree')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Giving Tree' ]))
+            ;
         }
     }
 
