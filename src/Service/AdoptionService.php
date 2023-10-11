@@ -8,6 +8,7 @@ use App\Enum\UserStatEnum;
 use App\Functions\CalendarFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\DateFunctions;
+use App\Functions\RandomFunctions;
 use App\Model\ChineseCalendarInfo;
 use App\Model\PetShelterPet;
 use Doctrine\ORM\EntityManagerInterface;
@@ -50,11 +51,15 @@ class AdoptionService
         return $fee;
     }
 
-    private function getNumberOfPets(User $user, IRandom $squirrel3): int
+    public static function getNumberOfPets(Clock $clock): int
     {
-        $bonus = $this->getPetsAdopted($user) > 0 && $squirrel3->rngNextInt(1, 31) === 1 ? 10 : 0;
+        $year = (int)$clock->now->format('Y');
 
-        return $squirrel3->rngNextInt(4, 8) + $bonus;
+        $bonus = (RandomFunctions::squirrel3Noise($year, $clock->getMonthAndDay()) & 31) === 1 ? 10 : 0;
+
+        $extra = RandomFunctions::squirrel3Noise($year - 100, $clock->getMonthAndDay()) % 5;
+
+        return 4 + $extra + $bonus;
     }
 
     public function getDailyPets(User $user): array
@@ -63,7 +68,7 @@ class AdoptionService
 
         $squirrel3 = new Squirrel3($user->getDailySeed());
 
-        $numPets = $this->getNumberOfPets($user, $squirrel3);
+        $numPets = $this->getNumberOfPets($this->clock);
         $numSeasonalPets = $this->numberOfSeasonalPets($numPets, $squirrel3);
         $petsAdopted = $this->getPetsAdopted($user);
 
