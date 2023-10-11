@@ -95,10 +95,15 @@ class HouseService
 
         $time = microtime(true);
 
-        $petsAtHome = $this->em->getRepository(Pet::class)->findBy([
-            'owner' => $user->getId(),
-            'location' => PetLocationEnum::HOME,
-        ]);
+        $petsAtHome = $this->em->getRepository(Pet::class)->createQueryBuilder('p')
+            ->join('p.houseTime', 'ht')
+            ->andWhere('p.owner=:ownerId')
+            ->andWhere('p.location=:home')
+            ->setParameter('ownerId', $user->getId())
+            ->setParameter('home', PetLocationEnum::HOME)
+            ->getQuery()
+            ->execute()
+        ;
 
         if(count($petsAtHome) > $user->getMaxPets())
             return;
