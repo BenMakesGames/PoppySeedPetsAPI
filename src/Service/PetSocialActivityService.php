@@ -125,7 +125,7 @@ class PetSocialActivityService
                     return true;
 
                 case SocialTimeWantEnum::CREATE_GROUP:
-                    if($this->petGroupService->createGroup($pet) !== null)
+                    if($this->petGroupService->createGroup($pet))
                         return true;
                     break;
             }
