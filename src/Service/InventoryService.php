@@ -547,11 +547,9 @@ class InventoryService
                 return ItemRepository::findOneByName($this->em, 'Stinkier Bug');
             else if($itemName === 'Naner')
                 return ItemRepository::findOneByName($this->em, 'Bunch of Naners');
-            else
-                return $itemIsString ? ItemRepository::findOneByName($this->em, $item) : $item;
         }
-        else
-            return $itemIsString ? ItemRepository::findOneByName($this->em, $item) : $item;
+
+        return $itemIsString ? ItemRepository::findOneByName($this->em, $item) : $item;
     }
 
     /**
