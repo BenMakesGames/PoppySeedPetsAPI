@@ -111,13 +111,14 @@ class HouseService
         $now = new \DateTimeImmutable();
 
         /** @var Pet[] $petsWithTime */
-        $petsWithTime = array_filter($petsAtHome, fn(Pet $pet) =>
+        // array_filter preserves keys, so we use array_values to reset them, because PHP...
+        $petsWithTime = array_values(array_filter($petsAtHome, fn(Pet $pet) =>
             $pet->getHouseTime()->getActivityTime() >= 60 ||
             (
                 $pet->getHouseTime()->getSocialEnergy() >= PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT &&
                 $pet->getHouseTime()->getCanAttemptSocialHangoutAfter() < $now
             )
-        );
+        ));
 
         $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - Get petsWithTime', microtime(true) - $time);
 
