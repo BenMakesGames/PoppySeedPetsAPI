@@ -190,7 +190,7 @@ class AdoptionService
                 $pet->label = 'noom!';
                 $dialog = "Agh! This happens every year at about this time! Noombats everywhere! I don't know if it's Noombat breeding season, or what, but please adopt one of these things! If you insist, though, and ";
             }
-            else if($squirrel3->rngNextInt(1, 200) === 1)
+            else if(RandomFunctions::squirrel3Noise($i + 100, $this->clock->now->format('YNmd')) % 200 === 1)
             {
                 $pet->species = $squirrel3->rngNextFromArray(
                     $this->em->getRepository(PetSpecies::class)->findBy([
@@ -199,13 +199,13 @@ class AdoptionService
                     ])
                 );
 
-                $pet->label = $squirrel3->rngNextFromArray([
+                $pet->label = [
                     'gasp!',
                     'oh my!',
                     'whoa!',
                     'ooooh!',
                     'omg!',
-                ]);
+                ][RandomFunctions::squirrel3Noise($i, $this->clock->now->format('YNmd')) % 5];
             }
             else
                 $pet->species = $squirrel3->rngNextFromArray($allSpecies);
