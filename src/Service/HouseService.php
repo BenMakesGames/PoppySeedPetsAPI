@@ -6,8 +6,6 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
-use App\Functions\SimpleDb;
-use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\PetActivity\SagaSagaService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -97,19 +95,24 @@ class HouseService
 
         $time = microtime(true);
 
+        $petsAtHome = $this->em->getRepository(Pet::class)->findBy([
+            'owner' => $user->getId(),
+            'location' => PetLocationEnum::HOME,
+        ]);
+
+        if(count($petsAtHome) > $user->getMaxPets())
+            return;
+
+        $now = new \DateTimeImmutable();
+
         /** @var Pet[] $petsWithTime */
-        $petsWithTime = $this->em->getRepository(Pet::class)->createQueryBuilder('p')
-            ->join('p.houseTime', 'ht')
-            ->andWhere('p.owner=:user')
-            ->andWhere('(ht.activityTime>=60 OR (ht.socialEnergy>=:minimumSocialEnergy AND ht.canAttemptSocialHangoutAfter<:now))')
-            ->andWhere('p.location=:home')
-            ->setParameter('user', $user->getId())
-            ->setParameter('home', PetLocationEnum::HOME)
-            ->setParameter('minimumSocialEnergy', PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
-            ->setParameter('now', new \DateTimeImmutable())
-            ->getQuery()
-            ->execute()
-        ;
+        $petsWithTime = array_filter($petsAtHome, fn(Pet $pet) =>
+            $pet->getHouseTime()->getActivityTime() >= 60 ||
+            (
+                $pet->getHouseTime()->getSocialEnergy() >= PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT &&
+                $pet->getHouseTime()->getCanAttemptSocialHangoutAfter() < $now
+            )
+        );
 
         $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - Get petsWithTime', microtime(true) - $time);
 

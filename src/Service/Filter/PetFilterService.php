@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectRepository;
 
 class PetFilterService
 {
@@ -12,7 +13,7 @@ class PetFilterService
 
     public const PAGE_SIZE = 12;
 
-    private $repository;
+    private ObjectRepository $repository;
 
     public function __construct(ManagerRegistry $doctrine)
     {
@@ -71,10 +72,20 @@ class PetFilterService
 
     public function filterLocation(QueryBuilder $qb, $value)
     {
-        $qb
-            ->andWhere('p.location = :location')
-            ->setParameter('location', $value)
-        ;
+        if(is_array($value))
+        {
+            $qb
+                ->andWhere('p.location IN (:locations)')
+                ->setParameter('locations', $value)
+            ;
+        }
+        else
+        {
+            $qb
+                ->andWhere('p.location = :location')
+                ->setParameter('location', $value)
+            ;
+        }
     }
 
     public function filterGuild(QueryBuilder $qb, $value)

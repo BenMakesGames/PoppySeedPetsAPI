@@ -5,9 +5,10 @@ use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
+use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
-use App\Repository\PetRepository;
+use App\Functions\ArrayFunctions;
 use App\Service\Filter\PetFilterService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
@@ -16,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use App\Annotations\DoesNotRequireHouseHours;
 
 /**
  * @Route("/pet")
@@ -34,7 +36,7 @@ class DaycareController extends AbstractController
         $user = $this->getUser();
 
         $petFilterService->addRequiredFilter('owner', $user->getId());
-        $petFilterService->addRequiredFilter('location', PetLocationEnum::DAYCARE);
+        $petFilterService->addRequiredFilter('location', [ PetLocationEnum::DAYCARE, PetLocationEnum::HOME ]);
 
         $petsInDaycare = $petFilterService->getResults($request->query);
 
@@ -45,46 +47,57 @@ class DaycareController extends AbstractController
     }
 
     /**
-     * @Route("/{pet}/putInDaycare", methods={"POST"})
+     * @Route("/daycare/arrange", methods={"POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @DoesNotRequireHouseHours()
      */
-    public function putPetInDaycare(Pet $pet, ResponseService $responseService, EntityManagerInterface $em)
+    public function arrangePets(
+        ResponseService $responseService, Request $request, EntityManagerInterface $em
+    )
     {
-        if($pet->getOwner()->getId() !== $this->getUser()->getId())
+        $petIds = array_unique($request->request->get('pets') ?? []);
+
+        if(ArrayFunctions::any($petIds, fn(int $id) => $id <= 0))
+            throw new PSPFormValidationException('Invalid pet ID(s) provided.');
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $petsWantedAtHome = $em->getRepository(Pet::class)->findBy([
+            'id' => $petIds,
+            'owner' => $user
+        ]);
+
+        if(count($petsWantedAtHome) !== count($petIds))
             throw new PSPPetNotFoundException();
 
-        if(!$pet->isAtHome())
-            throw new PSPInvalidOperationException($pet->getName() . ' isn\'t at home...');
+        if(count($petsWantedAtHome) > $user->getMaxPets())
+            throw new PSPInvalidOperationException('You cannot have more than ' . $user->getMaxPets() . ' pets at home.');
 
-        $pet->setLocation(PetLocationEnum::DAYCARE);
+        if(ArrayFunctions::any($petsWantedAtHome, fn(Pet $pet) => $pet->getLocation() !== PetLocationEnum::HOME && $pet->getLocation() !== PetLocationEnum::DAYCARE))
+            throw new PSPInvalidOperationException('Pets may only be moved between home and/or Daycare.');
+
+        $petsAtHome = $em->getRepository(Pet::class)->findBy([
+            'owner' => $user,
+            'location' => PetLocationEnum::HOME
+        ]);
+
+        $petsToMoveToHome = array_filter($petsWantedAtHome, fn(Pet $pet) => $pet->getLocation() === PetLocationEnum::DAYCARE);
+        $petsToMoveToDaycare = array_filter($petsAtHome, fn(Pet $pet) => !ArrayFunctions::any($petsWantedAtHome, fn(Pet $p) => $p->getId() === $pet->getId()));
+
+        foreach($petsToMoveToHome as $pet)
+            self::takePetOutOfDaycare($pet);
+
+        foreach($petsToMoveToDaycare as $pet)
+            $pet->setLocation(PetLocationEnum::DAYCARE);
 
         $em->flush();
 
         return $responseService->success();
     }
 
-    /**
-     * @Route("/{pet}/takeOutOfDaycare", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
-    public function takePetOutOfDaycare(
-        Pet $pet, ResponseService $responseService, EntityManagerInterface $em
-    )
+    private static function takePetOutOfDaycare(Pet $pet)
     {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        if($pet->getOwner()->getId() !== $user->getId())
-            throw new PSPPetNotFoundException();
-
-        if($pet->getLocation() !== PetLocationEnum::DAYCARE)
-            throw new PSPInvalidOperationException($pet->getName() . ' isn\'t in Daycare...');
-
-        $petsAtHome = PetRepository::getNumberAtHome($em, $user);
-
-        if($petsAtHome >= $user->getMaxPets())
-            throw new PSPInvalidOperationException('Your house has too many pets as-is.');
-
         $hoursInDayCare = (\time() - $pet->getLocationMoveDate()->getTimestamp()) / (60 * 60);
 
         if($hoursInDayCare >= 4)
@@ -108,9 +121,5 @@ class DaycareController extends AbstractController
         }
 
         $pet->setLocation(PetLocationEnum::HOME);
-
-        $em->flush();
-
-        return $responseService->success();
     }
 }
