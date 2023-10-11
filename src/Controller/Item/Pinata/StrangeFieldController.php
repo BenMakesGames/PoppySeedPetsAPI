@@ -27,7 +27,7 @@ class StrangeFieldController extends AbstractController
      */
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        EntityManagerInterface $em, RecyclingService $recyclingService, UserStatsService $userStatsRepository
+        EntityManagerInterface $em, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */

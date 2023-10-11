@@ -6,6 +6,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
@@ -20,23 +21,21 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class NotReallyCraftsService
 {
-    private ResponseService $responseService;
     private InventoryService $inventoryService;
     private PetExperienceService $petExperienceService;
     private EntityManagerInterface $em;
-    private IRandom $squirrel3;
+    private IRandom $rng;
     private HouseSimService $houseSimService;
 
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        PetExperienceService $petExperienceService, EntityManagerInterface $em, HouseSimService $houseSimService
+        InventoryService $inventoryService, IRandom $rng, PetExperienceService $petExperienceService,
+        EntityManagerInterface $em, HouseSimService $houseSimService
     )
     {
-        $this->responseService = $responseService;
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->em = $em;
-        $this->squirrel3 = $squirrel3;
+        $this->rng = $rng;
         $this->houseSimService = $houseSimService;
     }
 
@@ -49,7 +48,7 @@ class NotReallyCraftsService
             throw new \InvalidArgumentException('possibilities must contain at least one item.');
 
         /** @var ActivityCallback $method */
-        $method = $this->squirrel3->rngNextFromArray($possibilities);
+        $method = $this->rng->rngNextFromArray($possibilities);
 
         $pet = $petWithSkills->getPet();
         $changes = new PetChanges($pet);
@@ -78,15 +77,15 @@ class NotReallyCraftsService
     private function siftThroughPlanetaryRing(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
 
         if($roll >= 16)
         {
             $this->houseSimService->getState()->loseItem('Planetary Ring', 1);
 
-            $lucky = $pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 70) === 1;
+            $lucky = $pet->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 70) === 1;
 
-            if($this->squirrel3->rngNextInt(1, 70) === 1 || $lucky)
+            if($this->rng->rngNextInt(1, 70) === 1 || $lucky)
             {
                 $loot = 'Meteorite';
 
@@ -94,11 +93,11 @@ class NotReallyCraftsService
             }
             else
             {
-                $loot = $this->squirrel3->rngNextFromArray([
+                $loot = $this->rng->rngNextFromArray([
                     'Everice',
                     'Silica Grounds',
                     'Iron Ore', 'Iron Ore',
-                    $this->squirrel3->rngNextFromArray([ 'Silver Ore', 'Gold Ore' ]),
+                    $this->rng->rngNextFromArray([ 'Silver Ore', 'Gold Ore' ]),
                     'Dark Matter',
                     'Glowing Six-sided Die',
                     'String',
@@ -108,7 +107,7 @@ class NotReallyCraftsService
                 $exclaim = '.';
 
                 if($loot == 'Glowing Six-sided Die')
-                    $exclaim .= ' (I guess the gods DO play dice...)';
+                    $exclaim .= ' (I guess the gods DO play dice, Einstein!)';
             }
 
             if($loot === 'String')
@@ -121,7 +120,7 @@ class NotReallyCraftsService
             $tags = [ 'Gathering', 'Physics' ];
             if($lucky) $tags[] = 'Lucky~!';
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% sifted through a Planetary Ring, and found ' . $loot . $exclaim, '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% sifted through a Planetary Ring, and found ' . $loot . $exclaim)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags))
             ;
@@ -129,16 +128,17 @@ class NotReallyCraftsService
             $this->inventoryService->petCollectsEnhancedItem($loot, null, $spice, $pet, $pet->getName() . ' found this in a Planetary Ring.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::NATURE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% sifted through a Planetary Ring, looking for something interesting, but couldn\'t find anything.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% sifted through a Planetary Ring, looking for something interesting, but couldn\'t find anything.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Physics' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::NATURE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::GATHER, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::GATHER, false);
         }
 
         return $activityLog;
