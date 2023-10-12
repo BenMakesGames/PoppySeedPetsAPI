@@ -23,6 +23,7 @@ use App\Service\PetActivity\Crafting\Helpers\MeteoriteSmithingService;
 use App\Service\PetActivity\Crafting\Helpers\SilverSmithingService;
 use App\Service\PetActivity\Crafting\Helpers\TwuWuvCraftingService;
 use App\Service\PetExperienceService;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class SmithingService
@@ -39,13 +40,15 @@ class SmithingService
     private HouseSimService $houseSimService;
     private Clock $clock;
     private EntityManagerInterface $em;
+    private TransactionService $transactionService;
 
     public function __construct(
         InventoryService $inventoryService, PetExperienceService $petExperienceService,
         GoldSmithingService $goldSmithingService, SilverSmithingService $silverSmithingService, IRandom $squirrel3,
         IronSmithingService $ironSmithingService, MeteoriteSmithingService $meteoriteSmithingService,
         HalloweenSmithingService $halloweenSmithingService, Clock $clock, EntityManagerInterface $em,
-        TwuWuvCraftingService $twuWuvCraftingService, HouseSimService $houseSimService
+        TwuWuvCraftingService $twuWuvCraftingService, HouseSimService $houseSimService,
+        TransactionService $transactionService
     )
     {
         $this->inventoryService = $inventoryService;
@@ -58,6 +61,7 @@ class SmithingService
         $this->twuWuvCraftingService = $twuWuvCraftingService;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
+        $this->transactionService = $transactionService;
         $this->em = $em;
         $this->clock = $clock;
     }
@@ -901,11 +905,13 @@ class SmithingService
 
             $this->houseSimService->getState()->loseItem('Silver Bar', 1);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a Ceremonial Trident, but melted the heck out of the Silver Bar! :( ' . $pet->getName() . ' decided to make some coins out of it, instead, and got ' . $moneys . '~~m~~.')
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing', 'Moneys' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::SMITH, false);
+
+            $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' made some silver coins after failing to forge a Ceremonial Trident.');
         }
         else if($roll >= 17)
         {
