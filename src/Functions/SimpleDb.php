@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Functions;
 
 final class SimpleDb
@@ -39,7 +38,7 @@ final class SimpleDb
 
         $driver = $parts['scheme'];
         $host = $parts['host'];
-        $port = isset($parts['port']) ? $parts['port'] : null;
+        $port = $parts['port'];
         $user = $parts['user'];
         $pass = $parts['pass'];
         $dbname = ltrim($parts['path'], '/');
