@@ -72,7 +72,7 @@ final class Claim extends AbstractController
             [ 'Hot diggity!', '!' ],
             [ 'ooooommmmmgggggggggg!', '!!1!' ],
             [ 'Congrats!', '!' ],
-            [ 'Celllll-e-brate good times-- come on!', '!' ],
+            [ 'Well I\'ll be a Star Monkey\'s uncle!', '!' ],
             [ 'Cha-ching!', ' $_$' ],
             [ 'Coo\'... coo\'...', '.' ],
             [ 'Whaaaaaaaat?!?!', '!?!?' ],
