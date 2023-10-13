@@ -25,15 +25,20 @@ class MuseumService
         $this->transactionService = $transactionService;
     }
 
+    private $donatedItemsThisRequest = [];
+
     /**
      * @param string|number|Item $item
      */
-    public function forceDonateItem(User $user, $item, ?string $comment, ?User $createdBy = null): MuseumItem
+    public function forceDonateItem(User $user, $item, ?string $comment, ?User $createdBy = null): bool
     {
         if(is_string($item))
             $item = ItemRepository::findOneByName($this->em, $item);
         else if(is_numeric($item))
             $item = ItemRepository::findOneById($this->em, $item);
+
+        if(in_array($item->getName(), $this->donatedItemsThisRequest))
+            return false;
 
         $museumItem = $this->em->getRepository(MuseumItem::class)->findOneBy([
             'user' => $user,
@@ -41,7 +46,7 @@ class MuseumService
         ]);
 
         if($museumItem)
-            return $museumItem;
+            return false;
 
         $museumItem = (new MuseumItem())
             ->setUser($user)
@@ -58,7 +63,9 @@ class MuseumService
 
         $this->userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM, 1);
 
-        return $museumItem;
+        $this->donatedItemsThisRequest[] = $item->getName();
+
+        return true;
     }
 
     public function getGiftShopInventory(User $user): array
