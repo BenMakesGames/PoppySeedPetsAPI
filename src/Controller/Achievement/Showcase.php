@@ -46,6 +46,7 @@ final class Showcase extends AbstractController
                     FROM user_badge
                     LEFT JOIN user ON user_badge.user_id = user.id
                     GROUP BY user_badge.user_id
+                    ORDER BY achievementCount DESC
                     LIMIT ?,?
                 EOSQL,
                 [ $page * self::PAGE_SIZE, self::PAGE_SIZE ]
