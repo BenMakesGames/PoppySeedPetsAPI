@@ -46,6 +46,7 @@ class FatedAdventureService
             in_array($se->getStatus(), [
                 StatusEffectEnum::FATED_DELICIOUSNESS,
                 StatusEffectEnum::FATED_SOAKEDLY,
+                StatusEffectEnum::FATED_ELECTRICALLY,
                 StatusEffectEnum::FATED_FERALLY,
                 StatusEffectEnum::FATED_LUNARLY
             ])
