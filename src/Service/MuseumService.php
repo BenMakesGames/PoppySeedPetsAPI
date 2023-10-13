@@ -40,6 +40,8 @@ class MuseumService
         if(in_array($item->getName(), $this->donatedItemsThisRequest))
             return false;
 
+        $this->donatedItemsThisRequest[] = $item->getName();
+
         $museumItem = $this->em->getRepository(MuseumItem::class)->findOneBy([
             'user' => $user,
             'item' => $item
@@ -62,8 +64,6 @@ class MuseumService
         $this->transactionService->getMuseumFavor($user, $item->getMuseumPoints(), 'Someone, or something, donated ' . $item->getNameWithArticle() . ' to the Museum on your behalf.');
 
         $this->userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM, 1);
-
-        $this->donatedItemsThisRequest[] = $item->getName();
 
         return true;
     }
