@@ -30,6 +30,8 @@ class PetFilterService
                 'owner' => [ $this, 'filterOwner' ],
                 'location' => [ $this, 'filterLocation' ],
                 'guild' => [ $this, 'filterGuild' ],
+                'merit' => [ $this, 'filterMerit' ],
+                'toolOrHat' => [ $this, 'filterToolOrHat' ],
                 'isPregnant' => [ $this, 'filterIsPregnant' ],
             ]
         );
@@ -93,12 +95,37 @@ class PetFilterService
         ;
     }
 
+    public function filterMerit(QueryBuilder $qb, $value)
+    {
+        if(!in_array('merits', $qb->getAllAliases()))
+            $qb->join('p.merits', 'merits');
+
+        $qb
+            ->andWhere('merits.id=:meritId')
+            ->setParameter('meritId', $value)
+        ;
+    }
+
     public function filterIsPregnant(QueryBuilder $qb, $value)
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('p.pregnancy IS NULL');
         else
             $qb->andWhere('p.pregnancy IS NOT NULL');
+    }
+
+    public function filterToolOrHat(QueryBuilder $qb, $value)
+    {
+        if(!in_array('hat', $qb->getAllAliases()))
+            $qb->leftJoin('p.hat', 'hat');
+
+        if(!in_array('tool', $qb->getAllAliases()))
+            $qb->leftJoin('p.tool', 'tool');
+
+        $qb
+            ->andWhere($qb->expr()->orX('hat.item=:itemId', 'tool.item=:itemId'))
+            ->setParameter('itemId', $value)
+        ;
     }
 
     function applyResultCache(Query $qb, string $cacheKey): Query
