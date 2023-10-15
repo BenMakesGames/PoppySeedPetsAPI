@@ -30,7 +30,7 @@ class PetFilterService
                 'owner' => [ $this, 'filterOwner' ],
                 'location' => [ $this, 'filterLocation' ],
                 'guild' => [ $this, 'filterGuild' ],
-                'speciesDiscovered' => [ $this, 'filterSpeciesDiscovered' ],
+                'isPregnant' => [ $this, 'filterIsPregnant' ],
             ]
         );
     }
@@ -50,15 +50,9 @@ class PetFilterService
 
     public function filterSpecies(QueryBuilder $qb, $value)
     {
-        if(!in_array('species', $qb->getAllAliases()))
-            $qb->join('p.species', 'species');
-
         $qb
-            ->andWhere($qb->expr()->orX(
-                'species.name LIKE :speciesLike',
-                'species.family LIKE :speciesLike'
-            ))
-            ->setParameter('speciesLike', '%' . $value . '%')
+            ->andWhere('p.species=:speciesId')
+            ->setParameter('speciesId', $value)
         ;
     }
 
@@ -97,6 +91,14 @@ class PetFilterService
             ->andWhere('guildMembership.guild=:guild')
             ->setParameter('guild', $value)
         ;
+    }
+
+    public function filterIsPregnant(QueryBuilder $qb, $value)
+    {
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('p.pregnancy IS NULL');
+        else
+            $qb->andWhere('p.pregnancy IS NOT NULL');
     }
 
     function applyResultCache(Query $qb, string $cacheKey): Query

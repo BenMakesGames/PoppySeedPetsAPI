@@ -5,7 +5,6 @@ use App\Entity\Guild;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\GuildRepository;
 use App\Service\Filter\GuildMemberFilterService;
-use App\Service\Filter\PetFilterService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

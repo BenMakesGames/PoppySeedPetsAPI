@@ -18,19 +18,19 @@ class PetSpecies
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"petEncyclopedia", "zoologistCatalog"})
+     * @Groups({"petEncyclopedia", "zoologistCatalog", "typeahead"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=40, unique=true)
-     * @Groups({"myPet", "petEncyclopedia", "petShelterPet", "zoologistCatalog"})
+     * @Groups({"myPet", "petEncyclopedia", "petShelterPet", "zoologistCatalog", "typeahead"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet", "userPublicProfile", "petEncyclopedia", "petPublicProfile", "petShelterPet", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "petActivityLogAndPublicPet", "helperPet", "zoologistCatalog"})
+     * @Groups({"myPet", "userPublicProfile", "petEncyclopedia", "petPublicProfile", "petShelterPet", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "petActivityLogAndPublicPet", "helperPet", "zoologistCatalog", "typeahead"})
      */
     private $image;
 
