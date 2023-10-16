@@ -5,6 +5,7 @@ use App\Entity\Inventory;
 use App\Entity\ItemTool;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
+use App\Functions\StringFunctions;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -85,7 +86,7 @@ class InventoryFilterService
 
         if(!$name) return;
 
-        if(array_key_exists('nameExactMatch', $filters) && (bool)$filters['nameExactMatch'])
+        if(array_key_exists('nameExactMatch', $filters) && StringFunctions::isTruthy($filters['nameExactMatch']))
         {
             $qb
                 ->andWhere('i.fullItemName = :nameLike')
@@ -96,7 +97,7 @@ class InventoryFilterService
         {
             $qb
                 ->andWhere('i.fullItemName LIKE :nameLike')
-                ->setParameter('nameLike', '%' . $name . '%')
+                ->setParameter('nameLike', '%' . StringFunctions::escapeMySqlWildcardCharacters($name) . '%')
             ;
         }
     }

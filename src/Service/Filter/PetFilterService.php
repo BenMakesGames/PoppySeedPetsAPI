@@ -2,6 +2,7 @@
 namespace App\Service\Filter;
 
 use App\Entity\Pet;
+use App\Functions\StringFunctions;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -33,6 +34,9 @@ class PetFilterService
                 'merit' => [ $this, 'filterMerit' ],
                 'toolOrHat' => [ $this, 'filterToolOrHat' ],
                 'isPregnant' => [ $this, 'filterIsPregnant' ],
+            ],
+            [
+                'nameExactMatch'
             ]
         );
     }
@@ -42,12 +46,26 @@ class PetFilterService
         return $this->repository->createQueryBuilder('p');
     }
 
-    public function filterName(QueryBuilder $qb, $value)
+    public function filterName(QueryBuilder $qb, $value, $filters)
     {
-        $qb
-            ->andWhere('p.name LIKE :nameLike')
-            ->setParameter('nameLike', '%' . $value . '%')
-        ;
+        $name = trim($value);
+
+        if(!$name) return;
+
+        if(array_key_exists('nameExactMatch', $filters) && StringFunctions::isTruthy($filters['nameExactMatch']))
+        {
+            $qb
+                ->andWhere('p.name = :nameLike')
+                ->setParameter('nameLike', $name)
+            ;
+        }
+        else
+        {
+            $qb
+                ->andWhere('p.name LIKE :nameLike')
+                ->setParameter('nameLike', '%' . StringFunctions::escapeMySqlWildcardCharacters($name) . '%')
+            ;
+        }
     }
 
     public function filterSpecies(QueryBuilder $qb, $value)
@@ -91,7 +109,7 @@ class PetFilterService
 
         $qb
             ->andWhere('guildMembership.guild=:guild')
-            ->setParameter('guild', $value)
+            ->setParameter('guild', (int)$value)
         ;
     }
 
@@ -102,7 +120,7 @@ class PetFilterService
 
         $qb
             ->andWhere('merits.id=:meritId')
-            ->setParameter('meritId', $value)
+            ->setParameter('meritId', (int)$value)
         ;
     }
 
@@ -124,7 +142,7 @@ class PetFilterService
 
         $qb
             ->andWhere($qb->expr()->orX('hat.item=:itemId', 'tool.item=:itemId'))
-            ->setParameter('itemId', $value)
+            ->setParameter('itemId', (int)$value)
         ;
     }
 

@@ -41,7 +41,7 @@ class ArticleFilterService
 
         $qb
             ->andWhere('designGoals.id=:designGoal')
-            ->setParameter('designGoal', $value)
+            ->setParameter('designGoal', (int)$value)
         ;
     }
 

@@ -2,6 +2,7 @@
 namespace App\Service\Typeahead;
 
 use App\Exceptions\PSPFormValidationException;
+use App\Functions\StringFunctions;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 
@@ -25,7 +26,7 @@ abstract class TypeaheadService
 
         $qb = $this->repository->createQueryBuilder('e')
             ->andWhere('e.' . $fieldToSearch . ' LIKE :searchLike')
-            ->setParameter('searchLike', $search . '%')
+            ->setParameter('searchLike', StringFunctions::escapeMySqlWildcardCharacters($search) . '%')
             ->setMaxResults($maxResults)
             ->orderBy('e.' . $fieldToSearch, 'ASC')
         ;
@@ -40,7 +41,7 @@ abstract class TypeaheadService
 
             $qb = $this->repository->createQueryBuilder('e')
                 ->andWhere('e.' . $fieldToSearch . ' LIKE :searchLike')
-                ->setParameter('searchLike', '%' . $search . '%')
+                ->setParameter('searchLike', '%' . StringFunctions::escapeMySqlWildcardCharacters($search) . '%')
                 ->orderBy('e.' . $fieldToSearch, 'ASC')
             ;
 

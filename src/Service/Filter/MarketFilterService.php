@@ -4,6 +4,7 @@ namespace App\Service\Filter;
 use App\Entity\ItemTool;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
+use App\Functions\StringFunctions;
 use App\Repository\MarketListingRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -73,7 +74,7 @@ class MarketFilterService
 
         if(!$name) return;
 
-        if(array_key_exists('nameExactMatch', $filters) && (bool)$filters['nameExactMatch'])
+        if(array_key_exists('nameExactMatch', $filters) && StringFunctions::isTruthy($filters['nameExactMatch']))
         {
             $qb
                 ->andWhere('l.fullItemName = :nameLike')
@@ -84,7 +85,7 @@ class MarketFilterService
         {
             $qb
                 ->andWhere('l.fullItemName LIKE :nameLike')
-                ->setParameter('nameLike', '%' . $name . '%')
+                ->setParameter('nameLike', '%' . StringFunctions::escapeMySqlWildcardCharacters($name) . '%')
             ;
         }
     }

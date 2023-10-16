@@ -39,7 +39,7 @@ class PetRelationshipFilterService
     {
         $qb
             ->andWhere('r.pet = :pet')
-            ->setParameter('pet', $value)
+            ->setParameter('pet', (int)$value)
         ;
     }
 

@@ -5,6 +5,7 @@ use App\Entity\Item;
 use App\Entity\ItemTool;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
+use App\Functions\StringFunctions;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Expr\Join;
@@ -71,7 +72,7 @@ class ItemFilterService
 
         if(!$name) return;
 
-        if(array_key_exists('nameExactMatch', $filters) && (bool)$filters['nameExactMatch'])
+        if(array_key_exists('nameExactMatch', $filters) && StringFunctions::isTruthy($filters['nameExactMatch']))
         {
             $qb
                 ->andWhere('i.name = :nameLike')
@@ -82,7 +83,7 @@ class ItemFilterService
         {
             $qb
                 ->andWhere('i.name LIKE :nameLike')
-                ->setParameter('nameLike', '%' . $name . '%')
+                ->setParameter('nameLike', '%' . StringFunctions::escapeMySqlWildcardCharacters($name) . '%')
             ;
         }
     }
@@ -92,7 +93,7 @@ class ItemFilterService
         $qb
             ->leftJoin('i.museumDonations', 'm', Join::WITH, 'm.user=:user')
             ->andWhere('m.id IS NULL')
-            ->setParameter('user', $value)
+            ->setParameter('user', (int)$value)
         ;
 
         $this->useResultCache = false;

@@ -10,6 +10,7 @@ use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\RecipeRepository;
+use App\Functions\StringFunctions;
 use App\Model\ItemQuantity;
 use App\Repository\InventoryRepository;
 use App\Service\CookingService;
@@ -61,7 +62,7 @@ class CookingBuddyController extends AbstractController
                 ->andWhere('r.user = :userId')
                 ->andWhere('r.recipe LIKE :recipeName')
                 ->setParameter('userId', $user->getId())
-                ->setParameter('recipeName', '%' . $filters['name'] . '%')
+                ->setParameter('recipeName', '%' . StringFunctions::escapeMySqlWildcardCharacters($filters['name']) . '%')
                 ->getQuery()
                 ->execute();
         }

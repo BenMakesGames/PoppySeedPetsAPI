@@ -61,7 +61,7 @@ class PetActivityLogsFilterService
     {
         $qb
             ->andWhere('l.pet = :pet')
-            ->setParameter('pet', $value)
+            ->setParameter('pet', (int)$value)
         ;
     }
 

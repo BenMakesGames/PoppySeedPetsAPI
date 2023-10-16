@@ -39,7 +39,7 @@ class UserLetterFilterService
     {
         $qb
             ->andWhere('l.user = :userId')
-            ->setParameter('userId', $value)
+            ->setParameter('userId', (int)$value)
         ;
     }
 

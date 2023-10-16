@@ -2,6 +2,7 @@
 namespace App\Service\Filter;
 
 use App\Entity\User;
+use App\Functions\StringFunctions;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
@@ -54,7 +55,7 @@ class UserFilterService
     {
         $qb
             ->andWhere('u.name LIKE :nameLike')
-            ->setParameter('nameLike', '%' . $value . '%')
+            ->setParameter('nameLike', '%' . StringFunctions::escapeMySqlWildcardCharacters($value) . '%')
         ;
     }
 
@@ -67,7 +68,7 @@ class UserFilterService
 
             $qb
                 ->andWhere('f.user = :followedBy')
-                ->setParameter('followedBy', $value)
+                ->setParameter('followedBy', (int)$value)
             ;
         }
     }
@@ -81,7 +82,7 @@ class UserFilterService
 
             $qb
                 ->andWhere('g.following = :following')
-                ->setParameter('following', $value)
+                ->setParameter('following', (int)$value)
             ;
         }
     }

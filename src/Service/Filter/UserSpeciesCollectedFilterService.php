@@ -42,7 +42,7 @@ class UserSpeciesCollectedFilterService
     {
         $qb
             ->andWhere('d.user = :userId')
-            ->setParameter('userId', $value)
+            ->setParameter('userId', (int)$value)
         ;
     }
 

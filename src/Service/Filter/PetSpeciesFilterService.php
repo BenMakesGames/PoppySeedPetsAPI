@@ -3,6 +3,7 @@ namespace App\Service\Filter;
 
 use App\Entity\PetSpecies;
 use App\Entity\User;
+use App\Functions\StringFunctions;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
@@ -79,14 +80,14 @@ class PetSpeciesFilterService
 
         $qb
             ->andWhere('s.name LIKE :nameLike')
-            ->setParameter('nameLike', '%' . $value . '%')
+            ->setParameter('nameLike', '%' . StringFunctions::escapeMySqlWildcardCharacters($value) . '%')
         ;
     }
 
     public function filterFamily(QueryBuilder $qb, $value)
     {
         $qb
-            ->andWhere('s.family LIKE :family')
+            ->andWhere('s.family=:family')
             ->setParameter('family', $value)
         ;
     }

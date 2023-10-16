@@ -2,6 +2,7 @@
 namespace App\Service\Filter;
 
 use App\Entity\PetGroup;
+use App\Functions\StringFunctions;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
@@ -51,7 +52,7 @@ class PetGroupFilterService
     {
         $qb
             ->andWhere('g.name LIKE :name')
-            ->setParameter('name', '%' . $value . '%')
+            ->setParameter('name', '%' . StringFunctions::escapeMySqlWildcardCharacters($value) . '%')
         ;
     }
 

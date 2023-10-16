@@ -40,7 +40,7 @@ class GuildMemberFilterService
     {
         $qb
             ->andWhere('guildMembership.guild=:guild')
-            ->setParameter('guild', $value)
+            ->setParameter('guild', (int)$value)
         ;
     }
 

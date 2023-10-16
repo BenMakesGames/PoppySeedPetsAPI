@@ -42,7 +42,7 @@ class MuseumFilterService
     {
         $qb
             ->andWhere('m.user = :userId')
-            ->setParameter('userId', $value)
+            ->setParameter('userId', (int)$value)
         ;
     }
 
