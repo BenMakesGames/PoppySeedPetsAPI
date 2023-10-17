@@ -36,9 +36,9 @@ class LeChocolatController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'leChocolat/#/upload');
 
-        $recipes = $this->getRecipes();
+        $recipeNames = array_map(fn(array $recipe) => $recipe['name'], $this->getRecipes());
 
-        $message = $cookingService->showRecipeNamesToCookingBuddy($user, $recipes);
+        $message = $cookingService->showRecipeNamesToCookingBuddy($user, $recipeNames);
 
         return $responseService->itemActionSuccess($message);
     }
