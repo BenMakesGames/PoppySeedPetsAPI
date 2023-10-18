@@ -4,6 +4,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
 use App\Entity\StatusEffect;
+use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
@@ -87,8 +88,16 @@ class FatedAdventureService
 
         if($roll < 15)
         {
-            $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' was about to go out gathering, when they spotted a drain pipe in the town they\'d never seen before. They went inside, and found a room occupied by a light-based puzzle! (Every game\'s got to have one, I guess!) It proved too difficult, however, and ' . ActivityHelpers::PetName($pet) . ' eventually gave up and returned home. Curiously, once home, they found that they were unable to recall the location of the puzzle room, and sensed that they had failed to realize their delicious fate. (Darn!)')
-                ->setIcon('icons/activity-logs/confused');
+            if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
+            {
+                $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' was about to go out gathering, when they spotted a drain pipe in the town they\'d never seen before. They went inside, and found a room occupied by a light-based puzzle! (Every game\'s got to have one, I guess!) It proved too difficult, however, and ' . ActivityHelpers::PetName($pet) . ' eventually gave up and returned home. Curiously, once home, they found that they were unable to recall the location of the puzzle room (despite their Eidetic Memory - magic?!?), and sensed that they had failed to realize their delicious fate...')
+                    ->setIcon('icons/activity-logs/confused');
+            }
+            else
+            {
+                $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' was about to go out gathering, when they spotted a drain pipe in the town they\'d never seen before. They went inside, and found a room occupied by a light-based puzzle! (Every game\'s got to have one, I guess!) It proved too difficult, however, and ' . ActivityHelpers::PetName($pet) . ' eventually gave up and returned home. Curiously, once home, they found that they were unable to recall the location of the puzzle room, and sensed that they had failed to realize their delicious fate. (Darn!)')
+                    ->setIcon('icons/activity-logs/confused');
+            }
 
             $pet->increaseEsteem(-4);
 
