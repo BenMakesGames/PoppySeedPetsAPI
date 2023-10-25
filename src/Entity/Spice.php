@@ -15,7 +15,7 @@ class Spice
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"marketItem", "greenhouseFertilizer"})
+     * @Groups({"marketItem", "greenhouseFertilizer", "fireplaceFuel"})
      */
     private $id;
 
@@ -28,13 +28,13 @@ class Spice
 
     /**
      * @ORM\Column(type="string", length=20)
-     * @Groups({"myInventory", "marketItem", "itemEncyclopedia", "myPet", "dragonTreasure", "greenhouseFertilizer"})
+     * @Groups({"myInventory", "marketItem", "itemEncyclopedia", "myPet", "dragonTreasure", "greenhouseFertilizer", "fireplaceFuel"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"myInventory", "marketItem", "itemEncyclopedia", "myPet", "dragonTreasure", "greenhouseFertilizer"})
+     * @Groups({"myInventory", "marketItem", "itemEncyclopedia", "myPet", "dragonTreasure", "greenhouseFertilizer", "fireplaceFuel"})
      */
     private $isSuffix;
 
