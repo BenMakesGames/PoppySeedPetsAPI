@@ -125,7 +125,7 @@ class Inventory
 
     /**
      * @ORM\ManyToOne(targetEntity=Item::class)
-     * @Groups({"myInventory", "myPet", "fireplaceMantle", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "fireplaceFuel", "dragonTreasure"})
+     * @Groups({"myInventory", "myPet", "fireplaceMantle", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "fireplaceFuel", "dragonTreasure"})
      */
     private $illusion;
 
