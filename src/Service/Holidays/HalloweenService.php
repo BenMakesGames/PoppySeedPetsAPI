@@ -11,6 +11,7 @@ use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
+use App\Service\PerformanceProfiler;
 use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -20,16 +21,18 @@ class HalloweenService
     private InventoryService $inventoryService;
     private EntityManagerInterface $em;
     private IRandom $rng;
+    private PerformanceProfiler $performanceProfiler;
 
     public function __construct(
         UserQuestRepository $userQuestRepository, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng
+        EntityManagerInterface $em, IRandom $rng, PerformanceProfiler $performanceProfiler
     )
     {
         $this->userQuestRepository = $userQuestRepository;
         $this->inventoryService = $inventoryService;
         $this->em = $em;
         $this->rng = $rng;
+        $this->performanceProfiler = $performanceProfiler;
     }
 
     public function getNextTrickOrTreater(User $user): UserQuest
@@ -54,6 +57,8 @@ class HalloweenService
 
     public function findRandomTrickOrTreater(User $user): ?Pet
     {
+        $time = microtime(true);
+
         $oneDayAgo = (new \DateTimeImmutable())->modify('-24 hours');
 
         $numberOfPets = (int)$this->em->getRepository(Pet::class)->createQueryBuilder('p')
@@ -69,11 +74,14 @@ class HalloweenService
         ;
 
         if($numberOfPets === 0)
+        {
+            $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - 0 pets', microtime(true) - $time);
             return null;
+        }
 
         $offset = $this->rng->rngNextInt(0, $numberOfPets - 1);
 
-        return $this->em->getRepository(Pet::class)->createQueryBuilder('p')
+        $pet = $this->em->getRepository(Pet::class)->createQueryBuilder('p')
             ->andWhere('p.tool IS NOT NULL')
             ->andWhere('p.hat IS NOT NULL')
             ->andWhere('p.lastInteracted >= :oneDayAgo')
@@ -85,6 +93,10 @@ class HalloweenService
             ->getQuery()
             ->getSingleResult()
         ;
+
+        $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - non-0 pets', microtime(true) - $time);
+
+        return $pet;
     }
 
     public function resetTrickOrTreater(User $user)

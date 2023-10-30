@@ -31,6 +31,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  *     @ORM\Index(name="park_event_order_idx", columns={"park_event_order"}),
  *     @ORM\Index(name="location_idx", columns={"location"}),
  *     @ORM\Index(name="name_idx", columns={"name"}),
+ *     @ORM\Index(name="last_interacted_idx", columns={"last_interacted"}),
  * })
  */
 class Pet
