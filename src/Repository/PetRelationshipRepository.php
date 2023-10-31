@@ -21,13 +21,9 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PetRelationshipRepository extends ServiceEntityRepository
 {
-    private PerformanceProfiler $performanceProfiler;
-
-    public function __construct(ManagerRegistry $registry, PerformanceProfiler $performanceProfiler)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, PetRelationship::class);
-
-        $this->performanceProfiler = $performanceProfiler;
     }
 
     /**
@@ -35,8 +31,6 @@ class PetRelationshipRepository extends ServiceEntityRepository
      */
     public function getRelationshipsToHangOutWith(Pet $pet): array
     {
-        $time = microtime(true);
-
         $maxFriendsToConsider = $pet->getMaximumFriends();
 
         $qb = $this->createQueryBuilder('r')
@@ -72,8 +66,6 @@ class PetRelationshipRepository extends ServiceEntityRepository
             }));
         }
 
-        $this->performanceProfiler->logExecutionTime(__METHOD__, microtime(true) - $time);
-
         return $friends;
     }
 
@@ -82,8 +74,6 @@ class PetRelationshipRepository extends ServiceEntityRepository
      */
     public function getDislikedRelationshipsWithCommitment(Pet $pet): array
     {
-        $time = microtime(true);
-
         $qb = $this->createQueryBuilder('r')
             ->leftJoin('r.pet', 'pet')
             ->leftJoin('r.relationship', 'friend')
@@ -96,8 +86,6 @@ class PetRelationshipRepository extends ServiceEntityRepository
 
         $results = $qb->getQuery()->execute();
 
-        $this->performanceProfiler->logExecutionTime(__METHOD__, microtime(true) - $time);
-
         return $results;
     }
 
@@ -106,8 +94,6 @@ class PetRelationshipRepository extends ServiceEntityRepository
      */
     public function getDislikedRelationships(Pet $pet): array
     {
-        $time = microtime(true);
-
         $qb = $this->createQueryBuilder('r')
             ->leftJoin('r.pet', 'pet')
             ->leftJoin('r.relationship', 'friend')
@@ -118,8 +104,6 @@ class PetRelationshipRepository extends ServiceEntityRepository
         ;
 
         $results = $qb->getQuery()->execute();
-
-        $this->performanceProfiler->logExecutionTime(__METHOD__, microtime(true) - $time);
 
         return $results;
     }

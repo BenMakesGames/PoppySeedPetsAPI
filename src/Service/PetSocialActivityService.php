@@ -35,13 +35,12 @@ class PetSocialActivityService
     private HoliService $holiService;
     private AwaOdoriService $awaOdoriService;
     private PregnancyService $pregnancyService;
-    private PerformanceProfiler $performanceProfiler;
 
     public function __construct(
         EntityManagerInterface $em, PetRelationshipService $petRelationshipService, IRandom $squirrel3,
         PetGroupService $petGroupService, PetExperienceService $petExperienceService, HoliService $holiService,
         PetRelationshipRepository $petRelationshipRepository, PregnancyService $pregnancyService,
-        AwaOdoriService $awaOdoriService, PerformanceProfiler $performanceProfiler
+        AwaOdoriService $awaOdoriService
     )
     {
         $this->em = $em;
@@ -53,7 +52,6 @@ class PetSocialActivityService
         $this->holiService = $holiService;
         $this->pregnancyService = $pregnancyService;
         $this->awaOdoriService = $awaOdoriService;
-        $this->performanceProfiler = $performanceProfiler;
     }
 
     public function runSocialTime(Pet $pet): bool
@@ -138,15 +136,10 @@ class PetSocialActivityService
 
     public function recomputeFriendRatings(Pet $pet)
     {
-        $time = microtime(true);
-
         $friends = $this->petRelationshipRepository->getFriends($pet);
 
         if(count($friends) == 0)
-        {
-            $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - without friends', microtime(true) - $time);
             return;
-        }
 
         $commitmentLevels = array_map(fn(PetRelationship $r) => $r->getCommitment(), $friends);
 
@@ -158,8 +151,6 @@ class PetSocialActivityService
 
         foreach($friends as $friend)
             $friend->setRating($interpolate($friend->getCommitment()));
-
-        $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - with friends', microtime(true) - $time);
     }
 
     private function hangOutWithFriend(Pet $pet): bool
@@ -220,8 +211,6 @@ class PetSocialActivityService
      */
     private function getFriendRelationships(Pet $pet, array $relationships): array
     {
-        $time = microtime(true);
-
         /** @var PetRelationship[] $friendRelationships */
         $friendRelationships = $this->petRelationshipRepository->findBy([
             'pet' => array_map(fn(PetRelationship $r) => $r->getRelationship(), $relationships),
@@ -233,8 +222,6 @@ class PetSocialActivityService
 
         foreach($friendRelationships as $fr)
             $friendRelationshipsByFriendId[$fr->getPet()->getId()] = $fr;
-
-        $this->performanceProfiler->logExecutionTime(__METHOD__, microtime(true) - $time);
 
         return $friendRelationshipsByFriendId;
     }

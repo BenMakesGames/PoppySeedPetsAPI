@@ -6,13 +6,9 @@ use App\Entity\Pet;
 use App\Entity\User;
 use App\Entity\UserQuest;
 use App\Enum\LocationEnum;
-use App\Repository\InventoryRepository;
-use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
-use App\Service\PerformanceProfiler;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HalloweenService
@@ -21,18 +17,16 @@ class HalloweenService
     private InventoryService $inventoryService;
     private EntityManagerInterface $em;
     private IRandom $rng;
-    private PerformanceProfiler $performanceProfiler;
 
     public function __construct(
         UserQuestRepository $userQuestRepository, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng, PerformanceProfiler $performanceProfiler
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         $this->userQuestRepository = $userQuestRepository;
         $this->inventoryService = $inventoryService;
         $this->em = $em;
         $this->rng = $rng;
-        $this->performanceProfiler = $performanceProfiler;
     }
 
     public function getNextTrickOrTreater(User $user): UserQuest
@@ -57,8 +51,6 @@ class HalloweenService
 
     public function findRandomTrickOrTreater(User $user): ?Pet
     {
-        $time = microtime(true);
-
         $oneDayAgo = (new \DateTimeImmutable())->modify('-24 hours');
 
         $numberOfPets = (int)$this->em->getRepository(Pet::class)->createQueryBuilder('p')
@@ -75,7 +67,6 @@ class HalloweenService
 
         if($numberOfPets === 0)
         {
-            $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - 0 pets', microtime(true) - $time);
             return null;
         }
 
@@ -93,8 +84,6 @@ class HalloweenService
             ->getQuery()
             ->getSingleResult()
         ;
-
-        $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - non-0 pets', microtime(true) - $time);
 
         return $pet;
     }

@@ -30,11 +30,10 @@ class ResponseService
     private NormalizerInterface $normalizer;
     private ?string $sessionId = null;
     private WeatherService $weatherService;
-    private PerformanceProfiler $performanceProfiler;
 
     public function __construct(
         SerializerInterface $serializer, NormalizerInterface $normalizer, EntityManagerInterface $em, Security $security,
-        WeatherService $weatherService, PerformanceProfiler $performanceProfiler
+        WeatherService $weatherService
     )
     {
         $this->serializer = $serializer;
@@ -42,7 +41,6 @@ class ResponseService
         $this->em = $em;
         $this->security = $security;
         $this->weatherService = $weatherService;
-        $this->performanceProfiler = $performanceProfiler;
     }
 
     public function setSessionId(?string $sessionId)
@@ -69,8 +67,6 @@ class ResponseService
      */
     public function success($data = null, array $groups = []): JsonResponse
     {
-        $time = microtime(true);
-
         $user = $this->getUser();
 
         if($user && $user->getIsAdmin())
@@ -111,11 +107,6 @@ class ResponseService
         ]);
 
         $response = new JsonResponse($json, Response::HTTP_OK, [], true);
-
-        if($user)
-            $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - with user', microtime(true) - $time);
-        else
-            $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - without user', microtime(true) - $time);
 
         return $response;
     }
@@ -177,8 +168,6 @@ class ResponseService
      */
     public function findUnreadForUser(User $user): array
     {
-        $time = microtime(true);
-
         $logs = SimpleDb::createReadOnlyConnection()
             ->query(
                 'SELECT l.id,l.entry,l.icon,l.changes,l.interestingness
@@ -194,8 +183,6 @@ class ResponseService
                 fn($id, $entry, $icon, $changes, $interestingness)
                     => new FlashMessage($id, $entry, $icon, unserialize($changes), $interestingness)
             );
-
-        $this->performanceProfiler->logExecutionTime(__METHOD__, microtime(true) - $time);
 
         return $logs;
     }
