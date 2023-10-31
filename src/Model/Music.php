@@ -100,6 +100,7 @@ class Music
         // They Might Be Giants
         'I found my miiiiind... on the ground belooowww... I was looking dooowwwn... it was looking baaaaack... I was in the sky, all dressed in black!',
         'Placental, the sister of her brother ma-arsupiaaal... their cousin called Monotreme; dead uncle alotheeerrriaaan...',
+        'They revaaamped the airpoorrt completely, now it looks just like a nightcluuub... everyone\'s exciteeed and confuu-uused...',
 
         // Alan Parsons Project, Eye in the Sky
         'I am the eye in the sky... looking at yoo-oou... I can read your mind. I am the maker of rules, dealing with foo-ools... I can cheat you blind.',
