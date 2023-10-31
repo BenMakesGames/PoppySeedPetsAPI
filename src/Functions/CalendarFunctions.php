@@ -133,6 +133,10 @@ final class CalendarFunctions
     public static function isHalloween(\DateTimeInterface $dt)
     {
         $monthAndDay = (int)$dt->format('nd');
+
+        // TODO: remove this after Nov 1st, 2023 :P
+        if($dt->format('Y-m-d') == '2023-11-01') return true;
+
         return $monthAndDay >= 1029 && $monthAndDay <= 1031;
     }
 
