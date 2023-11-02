@@ -11,7 +11,7 @@ final class CalendarFunctions
         return $dt->format('nd') === '812';
     }
 
-    public static function isNoombatDay(\DateTimeInterface $dt)
+    public static function isNoombatDay(\DateTimeInterface $dt): bool
     {
         $monthAndDay = (int)$dt->format('nd');
 
@@ -25,25 +25,25 @@ final class CalendarFunctions
         return $monthAndDay === $firstSaturdayOfNovember;
     }
 
-    public static function isPSPBirthday(\DateTimeInterface $dt)
+    public static function isPSPBirthday(\DateTimeInterface $dt): bool
     {
         $monthAndDay = (int)$dt->format('nd');
         return $monthAndDay >= 621 && $monthAndDay <= 623;
     }
 
-    public static function isSummerSolstice(\DateTimeInterface $dt)
+    public static function isSummerSolstice(\DateTimeInterface $dt): bool
     {
         $monthAndDay = (int)$dt->format('nd');
         return $monthAndDay >= 619 && $monthAndDay <= 622;
     }
 
-    public static function isWinterSolstice(\DateTimeInterface $dt)
+    public static function isWinterSolstice(\DateTimeInterface $dt): bool
     {
         $monthAndDay = (int)$dt->format('nd');
         return $monthAndDay >= 1220 && $monthAndDay <= 1223;
     }
 
-    public static function isThanksgivingMonsters(\DateTimeInterface $dt)
+    public static function isThanksgivingMonsters(\DateTimeInterface $dt): bool
     {
         $monthAndDay = (int)$dt->format('nd');
 
@@ -102,19 +102,19 @@ final class CalendarFunctions
         return (int)$cyberMonday->format('md') === $monthAndDay;
     }
 
-    public static function isHalloweenCrafting(\DateTimeInterface $dt)
+    public static function isHalloweenCrafting(\DateTimeInterface $dt): bool
     {
         $monthAndDay = (int)$dt->format('nd');
         return $monthAndDay >= 1000 && $monthAndDay < 1100;
     }
 
-    public static function isSaintMartinsDayCrafting(\DateTimeInterface $dt)
+    public static function isSaintMartinsDayCrafting(\DateTimeInterface $dt): bool
     {
         $monthAndDay = (int)$dt->format('nd');
         return $monthAndDay >= 1101 && $monthAndDay <= 1111;
     }
 
-    public static function isSaintPatricksDay(\DateTimeInterface $dt)
+    public static function isSaintPatricksDay(\DateTimeInterface $dt): bool
     {
         $monthAndDay = (int)$dt->format('nd');
         return $monthAndDay >= 315 && $monthAndDay <= 317;
@@ -130,82 +130,79 @@ final class CalendarFunctions
         ;
     }
 
-    public static function isHalloween(\DateTimeInterface $dt)
+    public static function isHalloween(\DateTimeInterface $dt): bool
     {
         $monthAndDay = (int)$dt->format('nd');
-
-        // TODO: remove this after Nov 1st, 2023 :P
-        if($dt->format('Y-m-d') == '2023-11-01') return true;
 
         return $monthAndDay >= 1029 && $monthAndDay <= 1031;
     }
 
-    public static function isHalloweenDay(\DateTimeInterface $dt)
+    public static function isHalloweenDay(\DateTimeInterface $dt): bool
     {
         return $dt->format('nd') === '1031';
     }
 
-    public static function isPiDay(\DateTimeInterface $dt)
+    public static function isPiDay(\DateTimeInterface $dt): bool
     {
         $monthAndDay = $dt->format('nd');
         return $monthAndDay === '314' || $monthAndDay === '722';
     }
 
-    public static function isPsyPetsBirthday(\DateTimeInterface $dt)
+    public static function isPsyPetsBirthday(\DateTimeInterface $dt): bool
     {
         $monthAndDay = $dt->format('nd');
         return $monthAndDay === '321';
     }
 
-    public static function isAprilFools(\DateTimeInterface $dt)
+    public static function isAprilFools(\DateTimeInterface $dt): bool
     {
         $monthAndDay = $dt->format('nd');
         return $monthAndDay === '401';
     }
 
-    public static function isBastilleDay(\DateTimeInterface $dt)
+    public static function isBastilleDay(\DateTimeInterface $dt): bool
     {
         $monthAndDay = (int)$dt->format('nd');
         return $monthAndDay >= 713 && $monthAndDay <= 715;
     }
 
-    public static function isCincoDeMayo(\DateTimeInterface $dt)
+    public static function isCincoDeMayo(\DateTimeInterface $dt): bool
     {
         $monthAndDay = (int)$dt->format('nd');
         return $monthAndDay >= 504 && $monthAndDay <= 506;
     }
 
-    public static function isWhiteDay(\DateTimeInterface $dt)
+    public static function isWhiteDay(\DateTimeInterface $dt): bool
     {
         $monthAndDay = $dt->format('nd');
         return $monthAndDay === '314';
     }
 
-    public static function isMayThe4th(\DateTimeInterface $dt)
+    public static function isMayThe4th(\DateTimeInterface $dt): bool
     {
         $monthAndDay = $dt->format('nd');
         return $monthAndDay === '504';
     }
 
-    public static function isAwaOdori(\DateTimeInterface $dt)
+    public static function isAwaOdori(\DateTimeInterface $dt): bool
     {
         $monthAndDay = (int)$dt->format('nd');
         return $monthAndDay >= 812 && $monthAndDay <= 815;
     }
 
-    public static function isTalkLikeAPirateDay(\DateTimeInterface $dt)
+    public static function isTalkLikeAPirateDay(\DateTimeInterface $dt): bool
     {
         $monthAndDay = $dt->format('nd');
         return $monthAndDay === '919';
     }
 
-    public static function isJuly4th(\DateTimeInterface $dt)
+    public static function isJuly4th(\DateTimeInterface $dt): bool
     {
         $monthAndDay = (int)$dt->format('nd');
         return $monthAndDay >= 703 && $monthAndDay <= 705;
     }
 
-    public static function isEarthDay(\DateTimeInterface $dt)
+    public static function isEarthDay(\DateTimeInterface $dt): bool
     {
         $monthAndDay = (int)$dt->format('nd');
         return $monthAndDay >= 420 && $monthAndDay <= 422;
@@ -239,7 +236,7 @@ final class CalendarFunctions
         return $hanukkahNo >= 1 && $hanukkahNo <= 8;
     }
 
-    public static function isValentinesOrAdjacent(\DateTimeInterface $dt)
+    public static function isValentinesOrAdjacent(\DateTimeInterface $dt): bool
     {
         $monthAndDay = (int)$dt->format('nd');
         return $monthAndDay >= 213 && $monthAndDay <= 215;
@@ -258,19 +255,19 @@ final class CalendarFunctions
         return $diff < 3;
     }
 
-    public static function isHoli(\DateTimeInterface $dt)
+    public static function isHoli(\DateTimeInterface $dt): bool
     {
         $monthAndDay = $dt->format('nd');
         return $monthAndDay === self::HOLI_MONTH_DAYS[(int)$dt->format('Y')];
     }
 
-    public static function isNewYearsHoliday(\DateTimeInterface $dt)
+    public static function isNewYearsHoliday(\DateTimeInterface $dt): bool
     {
         $monthAndDay = (int)$dt->format('nd');
-        return $monthAndDay === 1231 && $monthAndDay <= 102;
+        return $monthAndDay === 1231 || $monthAndDay <= 102;
     }
 
-    public static function isStockingStuffingSeason(\DateTimeInterface $dt)
+    public static function isStockingStuffingSeason(\DateTimeInterface $dt): bool
     {
         $monthAndDay = (int)$dt->format('nd');
         return $monthAndDay >= 1200 && $monthAndDay <= 1231;
