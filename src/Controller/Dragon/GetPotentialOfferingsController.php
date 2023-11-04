@@ -6,7 +6,6 @@ use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\DragonHelpers;
-use App\Repository\DragonRepository;
 use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
