@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Item;
 
+use App\Entity\Dragon;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Exceptions\PSPFormValidationException;
@@ -76,8 +77,10 @@ class DragonTongueController extends AbstractController
         if(mb_strlen($greeting1) > 50 || mb_strlen($greeting2) > 50 || mb_strlen($thanks1) > 50 || mb_strlen($thanks2) > 50)
             throw new PSPFormValidationException('Your greetings and thanks must be under 50 characters each. (Sorry! I don\'t make the rules! (Well, I mean, I do, but... whatever: you get it. You know how websites work.))');
 
-        if($dragon->getGreetings()[0] == $greeting1 && $dragon->getGreetings()[1] == $greeting2 && $dragon->getThanks()[0] == $thanks1 && $dragon->getThanks()[1] == $thanks2)
+        if(DragonTongueController::wordsAreEquivalent($dragon, $greeting1, $greeting2, $thanks1, $thanks2))
+        {
             throw new PSPFormValidationException('Those are the exact same greetings and thanks! (You don\'t want to waste that - mm! - _delicious_ tongue on the same old words, do you?)');
+        }
 
         $dragon
             ->setGreetings([ $greeting1, $greeting2 ])
@@ -93,5 +96,22 @@ class DragonTongueController extends AbstractController
         ;
 
         return $responseService->itemActionSuccess('The tongue, upon hearing your words, melts in your hands.\n\n' . $ick, [ 'itemDeleted' => true ]);
+    }
+
+    private static function wordsAreEquivalent(Dragon $dragon, string $greeting1, string $greeting2, string $thanks1, string $thanks2): bool
+    {
+        $greetings = $dragon->getGreetings();
+        $thanks = $dragon->getThanks();
+
+        return
+            (
+                ($greeting1 === $greetings[0] && $greeting2 === $greetings[1]) ||
+                ($greeting1 === $greetings[1] && $greeting2 === $greetings[0])
+            ) &&
+            (
+                ($thanks1 === $thanks[0] && $thanks2 === $thanks[1]) ||
+                ($thanks1 === $thanks[1] && $thanks2 === $thanks[0])
+            )
+        ;
     }
 }
