@@ -5,9 +5,11 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPNotFoundException;
+use App\Functions\DragonHelpers;
 use App\Repository\DragonRepository;
 use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,13 +24,14 @@ class GetPotentialOfferingsController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function getOfferings(
-        ResponseService $responseService, DragonRepository $dragonRepository, InventoryRepository $inventoryRepository
+        ResponseService $responseService, InventoryRepository $inventoryRepository,
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
         $user = $this->getUser();
 
-        $dragon = $dragonRepository->findAdult($user);
+        $dragon = DragonHelpers::getAdultDragon($em, $user);
 
         if(!$dragon)
             throw new PSPNotFoundException('You don\'t have an adult dragon!');

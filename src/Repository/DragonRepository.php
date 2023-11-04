@@ -28,12 +28,4 @@ class DragonRepository extends ServiceEntityRepository
             'isAdult' => false
         ]);
     }
-
-    public function findAdult(User $user): ?Dragon
-    {
-        return $this->findOneBy([
-            'owner' => $user,
-            'isAdult' => true
-        ]);
-    }
 }

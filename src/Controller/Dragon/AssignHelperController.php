@@ -4,6 +4,7 @@ namespace App\Controller\Dragon;
 use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
+use App\Functions\DragonHelpers;
 use App\Repository\DragonRepository;
 use App\Service\PetAssistantService;
 use App\Service\ResponseService;
@@ -11,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @Route("/dragon")
@@ -23,7 +25,7 @@ class AssignHelperController extends AbstractController
      */
     public function assignHelper(
         Pet $pet, ResponseService $responseService, EntityManagerInterface $em,
-        PetAssistantService $petAssistantService, DragonRepository $dragonRepository
+        PetAssistantService $petAssistantService, NormalizerInterface $normalizer
     )
     {
         /** @var User $user */
@@ -33,11 +35,8 @@ class AssignHelperController extends AbstractController
 
         $em->flush();
 
-        $dragon = $dragonRepository->findAdult($user);
+        $dragon = DragonHelpers::getAdultDragon($em, $user);
 
-        return $responseService->success($dragon, [
-            SerializationGroupEnum::MY_DRAGON,
-            SerializationGroupEnum::HELPER_PET
-        ]);
+        return $responseService->success(DragonHelpers::createDragonResponse($em, $normalizer, $user, $dragon));
     }
 }

@@ -7,9 +7,11 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\UserStatEnum;
+use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
+use App\Functions\DragonHelpers;
 use App\Functions\PlayerLogHelpers;
 use App\Repository\DragonRepository;
 use App\Repository\EnchantmentRepository;
@@ -97,10 +99,13 @@ class DragonService
      */
     public function giveTreasures(User $user, array $itemIds): string
     {
-        $dragon = $this->dragonRepository->findAdult($user);
+        $dragon = DragonHelpers::getAdultDragon($this->em, $user);
 
         if(!$dragon)
             throw new PSPNotFoundException('You don\'t have an adult dragon!');
+
+        if($dragon->getHostage())
+            throw new PSPInvalidOperationException('"This \'hostage\' is giving me a headache - I can\'t even count my gold! Can you please do something?"');
 
         $user = $dragon->getOwner();
 

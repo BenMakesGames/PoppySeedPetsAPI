@@ -8,6 +8,7 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Exceptions\PSPPetNotFoundException;
+use App\Functions\DragonHelpers;
 use App\Repository\DragonRepository;
 use App\Repository\PetRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -114,7 +115,7 @@ class PetAssistantService
     {
         self::assertOwnership($user, $pet);
 
-        $dragon = $this->dragonRepository->findAdult($user);
+        $dragon = DragonHelpers::getAdultDragon($this->em, $user);
 
         if(!$dragon)
             throw new PSPNotUnlockedException('Dragon Den');
@@ -151,7 +152,7 @@ class PetAssistantService
         }
         else if($pet->getLocation() == PetLocationEnum::DRAGON_DEN)
         {
-            $dragon = $this->dragonRepository->findAdult($user);
+            $dragon = DragonHelpers::getAdultDragon($this->em, $user);
 
             if($dragon && $user->hasUnlockedFeature(UnlockableFeatureEnum::DragonDen))
                 $dragon->setHelper(null);

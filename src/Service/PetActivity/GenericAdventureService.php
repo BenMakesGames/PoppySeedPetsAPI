@@ -10,6 +10,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ActivityHelpers;
+use App\Functions\DragonHelpers;
 use App\Functions\ItemRepository;
 use App\Functions\MeritRepository;
 use App\Functions\PetActivityLogFactory;
@@ -176,7 +177,7 @@ class GenericAdventureService
 
         if($pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::DragonDen) && $this->rng->rngNextInt(1, 20) === 1)
         {
-            $dragon = $this->dragonRepository->findAdult($pet->getOwner());
+            $dragon = DragonHelpers::getAdultDragon($this->em, $pet->getOwner());
 
             if($dragon && !$dragon->getHostage())
             {

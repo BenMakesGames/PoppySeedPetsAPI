@@ -3,14 +3,17 @@ namespace App\Controller\Dragon;
 
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
+use App\Functions\DragonHelpers;
 use App\Functions\RequestFunctions;
 use App\Repository\DragonRepository;
 use App\Service\DragonService;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @Route("/dragon")
@@ -22,8 +25,8 @@ class MakeOfferingController extends AbstractController
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function giveTreasure(
-        ResponseService $responseService, DragonRepository $dragonRepository,
-        Request $request, DragonService $dragonService
+        ResponseService $responseService, EntityManagerInterface $em,
+        Request $request, DragonService $dragonService, NormalizerInterface $normalizer
     )
     {
         /** @var User $user */
@@ -35,11 +38,8 @@ class MakeOfferingController extends AbstractController
 
         $responseService->addFlashMessage($message);
 
-        $dragon = $dragonRepository->findAdult($user);
+        $dragon = DragonHelpers::getAdultDragon($em, $user);
 
-        return $responseService->success($dragon, [
-            SerializationGroupEnum::MY_DRAGON,
-            SerializationGroupEnum::HELPER_PET,
-        ]);
+        return $responseService->success(DragonHelpers::createDragonResponse($em, $normalizer, $user, $dragon));
     }
 }
