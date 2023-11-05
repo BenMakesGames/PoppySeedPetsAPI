@@ -47,7 +47,7 @@ The virus-induced transformation is temporary, with the lycanthrope reverting to
 
 <img src="/assets/images/pets/lycanthrope/5.svg" class="float-right" width="100" />Lycanthropy is currently confined to a single island - Poppy Seed Pet Island - where the Lupine Morphological Transformation Virus (LMTV) was first identified. This unique geographical isolation has significantly shaped the island's society, animal stewardship practices, and biosecurity measures.
 
-Pet ownership and animal stewardship on the island have evolved to accommodate the unique needs of lycanthropic animals, and osland veterinarians are developing specialized knowledge and practices to ensure the health and well-being of these animals.
+Pet ownership and animal stewardship on the island have evolved to accommodate the unique needs of lycanthropic animals, and island veterinarians are developing specialized knowledge and practices to ensure the health and well-being of these animals.
 
 The island's isolation has necessitated strict biosecurity measures to prevent the spread of LMTV to other regions. No animal is allowed off the island, and humans are subject to several health checks and a quarantine period to ensure the virus remains contained to Poppy Seed Pets Island.
 
