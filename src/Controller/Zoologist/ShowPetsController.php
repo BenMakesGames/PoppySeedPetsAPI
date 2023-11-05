@@ -74,8 +74,8 @@ class ShowPetsController extends AbstractController
                 ->setUser($user)
                 ->setSpecies($pet->getSpecies())
                 ->setPetName($pet->getName())
-                ->setColorA($pet->getColorA())
-                ->setColorB($pet->getColorB())
+                ->setColorA($pet->getPerceivedColorA())
+                ->setColorB($pet->getPerceivedColorB())
                 ->setScale($pet->getScale())
             ;
 

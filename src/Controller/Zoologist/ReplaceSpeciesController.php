@@ -54,16 +54,16 @@ class ReplaceSpeciesController extends AbstractController
 
         if(
             $alreadyDiscovered->getPetName() == $pet->getName() &&
-            $alreadyDiscovered->getColorA() == $pet->getColorA() &&
-            $alreadyDiscovered->getColorB() == $pet->getColorB() &&
+            $alreadyDiscovered->getColorA() == $pet->getPerceivedColorA() &&
+            $alreadyDiscovered->getColorB() == $pet->getPerceivedColorB() &&
             $alreadyDiscovered->getScale() == $pet->getScale()
         )
             throw new PSPFormValidationException('This exact pet is already in the zoologist\'s records.');
 
         $alreadyDiscovered
             ->setPetName($pet->getName())
-            ->setColorA($pet->getColorA())
-            ->setColorB($pet->getColorB())
+            ->setColorA($pet->getPerceivedColorA())
+            ->setColorB($pet->getPerceivedColorB())
             ->setScale($pet->getScale())
         ;
 
