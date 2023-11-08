@@ -75,6 +75,16 @@ class SessionService
         $this->currentSessionId = null;
         $this->tokenStorage->setToken(null);
 
+        self::clearCookie();
+
         return true;
+    }
+
+    public static function clearCookie()
+    {
+        if($_ENV['APP_ENV'] === 'dev')
+            setcookie('sessionId', '', time() - 60 * 60, '/', 'localhost', false, true);
+        else
+            setcookie('sessionId', '', time() - 60 * 60, '/', 'poppyseedpets.com', true, true);
     }
 }

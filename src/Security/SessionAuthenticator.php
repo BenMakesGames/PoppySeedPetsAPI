@@ -2,6 +2,8 @@
 namespace App\Security;
 
 use App\Entity\UserSession;
+use App\Exceptions\PSPAccountLocked;
+use App\Exceptions\PSPSessionExpired;
 use App\Service\ResponseService;
 use App\Service\SessionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,16 +36,20 @@ class SessionAuthenticator extends AbstractAuthenticator
 
     public function supports(Request $request): bool
     {
+        if($request->cookies->has('sessionId') && strlen($request->cookies->get('sessionId')) === 40)
+            return true;
+
         return $request->headers->has('Authorization') && substr($request->headers->get('Authorization'), 0, 7) === 'Bearer ';
     }
 
     private static function getSessionIdOrThrow(Request $request): string
     {
-        $sessionId = substr($request->headers->get('Authorization'), 7);
+        $sessionId = $request->cookies->has('sessionId')
+            ? $request->cookies->get('sessionId')
+            : substr($request->headers->get('Authorization'), 7);
 
-        if (!$sessionId) {
+        if (!$sessionId)
             throw new CustomUserMessageAuthenticationException();
-        }
 
         return $sessionId;
     }
@@ -56,8 +62,9 @@ class SessionAuthenticator extends AbstractAuthenticator
 
         if(!$session || $session->getSessionExpiration() < new \DateTimeImmutable())
         {
+            SessionService::clearCookie();
             $this->responseService->setSessionId(null);
-            throw new UnauthorizedHttpException('You have been logged out due to inactivity. Please log in again.');
+            throw new PSPSessionExpired();
         }
 
         $user = $session->getUser();
@@ -65,12 +72,7 @@ class SessionAuthenticator extends AbstractAuthenticator
         if($user->getIsLocked())
         {
             $this->responseService->setSessionId(null);
-            // technically, this should be a Forbidden exception, because we know who the user is,
-            // but the client is programmed to auto log a user out when they receive a 401 (Unauthorized).
-            // there are legit reasons a user might be Forbidden that we DON'T want them to be logged
-            // out for (ex: accessing the Fireplace before they unlocked it).
-
-            throw new UnauthorizedHttpException('This account has been locked.');
+            throw new PSPAccountLocked();
         }
 
         $this->sessionService->setCurrentSession($sessionId);

@@ -1,6 +1,7 @@
 <?php
 namespace App\EventSubscriber;
 
+use App\Exceptions\PSPAccountLocked;
 use App\Exceptions\PSPException;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPHoursMustBeRun;
@@ -8,6 +9,7 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
+use App\Exceptions\PSPSessionExpired;
 use App\Exceptions\PSPTooManyRequests;
 use App\Functions\StringFunctions;
 use App\Service\ResponseService;
@@ -94,6 +96,19 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
         else if($e instanceof PSPFormValidationException || $e instanceof PSPInvalidOperationException || $e instanceof PSPNotEnoughCurrencyException)
         {
             $event->setResponse($this->responseService->error(Response::HTTP_UNPROCESSABLE_ENTITY, [ $e->getMessage() ]));
+        }
+        else if($e instanceof PSPSessionExpired)
+        {
+            $event->setResponse($this->responseService->error(Response::HTTP_UNAUTHORIZED, [ $e->getMessage() ]));
+        }
+        else if($e instanceof PSPAccountLocked)
+        {
+            // technically, this should be a Forbidden exception, because we know who the user is. BUT:
+            // the client is programmed to auto log a user out when they receive a 401 (Unauthorized),
+            // and there are legit reasons a user might be Forbidden that we DON'T want them to be logged
+            // out for (ex: accessing the Fireplace before they unlocked it). SO: we return an
+            // unauthorized, instead >_>
+            $event->setResponse($this->responseService->error(Response::HTTP_UNAUTHORIZED, [ $e->getMessage() ]));
         }
         else if($this->kernel->getEnvironment() !== 'dev')
         {

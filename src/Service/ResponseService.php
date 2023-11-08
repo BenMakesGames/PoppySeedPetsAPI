@@ -85,7 +85,12 @@ class ResponseService
             $responseData['activity'] = $this->normalizer->normalize($activity, null, [ 'groups' => [ SerializationGroupEnum::PET_ACTIVITY_LOGS ] ]);
 
         if($this->sessionId !== null)
-            $responseData['sessionId'] = $this->sessionId;
+        {
+            if($_ENV['APP_ENV'] === 'dev')
+                setcookie('sessionId', $this->sessionId, time() + 60 * 60 * 24 * 7, '/', 'localhost', false, true);
+            else
+                setcookie('sessionId', $this->sessionId, time() + 60 * 60 * 24 * 7, '/', 'poppyseedpets.com', true, true);
+        }
 
         $weather = WeatherService::getWeather(new \DateTimeImmutable(), null);
 
