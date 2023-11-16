@@ -263,5 +263,8 @@ class Music
 
         // Truly, by Delerium
         'So truuuuuuly, if there is liiight then I wanna see-ee-ee i-i-it... nooowww that I know what I am lookin\' fooorrr...',
+
+        // Danger! (High Voltage)
+        'Danger! Danger! High voltage! When we touch, when we kiss, when we touch, when we kiss!!',
     ];
 }
