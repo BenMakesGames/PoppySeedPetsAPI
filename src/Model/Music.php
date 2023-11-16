@@ -269,5 +269,11 @@ class Music
 
         // Ciao, Ciao
         'Con le mani, con le mani, con le mani, ciao-ciao! Con i piedi, con i piedi, con i piedi, ciao-ciao!',
+
+        // High, by Polygon
+        'Answers... passing by. Lasers... super-fly. Question... question-mark. Dot, dot, dot, dot...',
+
+        // Paper Booklet, by Pola & Bryson
+        'Bam, boom-boom-boom-boom... ... ... ... *clap* *clap* *clap* *clap* *clap* *clap* *clap* *clap*... baaaam, boooooom-boom!',
     ];
 }
