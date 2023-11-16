@@ -52,7 +52,7 @@ class LeonidsService
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Umbra', 'Special Event', 'Leonids' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Special Event', 'Leonids' ]))
         ;
 
         return $activityLog;
