@@ -32,7 +32,7 @@ final class PetActivityLogTagHelpers
             ->getOneOrNullResult();
 
         if(!$tag)
-            throw new PSPNotFoundException('Could not find tag with name "' . $name . '"!');
+            throw new \Exception('Could not find tag with name "' . $name . '"!');
 
         return $tag;
     }
