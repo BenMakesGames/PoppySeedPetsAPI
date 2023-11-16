@@ -32,7 +32,7 @@ final class PetActivityLogTagHelpers
             ->getOneOrNullResult();
 
         if(!$tag)
-            throw new \Exception('Could not find tag with name "' . $name . '"!');
+            throw new \InvalidArgumentException('Could not find tag with name "' . $name . '"!');
 
         return $tag;
     }
