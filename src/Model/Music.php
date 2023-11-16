@@ -134,7 +134,7 @@ class Music
         // Tim Minchin
         'I know in the past my outlook has been limited... I couldn\'t see examples of where life had been definitive...',
 
-        // Gorillaz
+        // Feel Good Inc., by Gorillaz
         'You got a new horizon, it\'s ephemeral style... a melancholy town where we never smile...',
 
         // Fatboy Slim, Weapon of Choice
@@ -254,5 +254,14 @@ class Music
 
         // Hey Ya!, by OutKast
         'You think you\'ve got it - oh, you think you\'ve got it - but "got it" just don\'t get it when there\'s nothin\'t at aaa a-aaa a-aaa a-aaa a-a-all!',
+
+        // Steven Universe
+        'The odds are against us, it won\'t be easy, but: we\'re not gonna do it alone!',
+
+        // Out of my Mind, by Jamie Berry
+        'I keep thinkin\' \'bou-- \'bou-- \'bou-- \'bou-- \'bou-- \'bou-- out of my mi-- mi-- mi-- mi-- mi-- mi-- I keep thinkin\'!',
+
+        // Truly, by Delerium
+        'So truuuuuuly, if there is liiight then I wanna see-ee-ee i-i-it... nooowww that I know what I am lookin\' fooorrr...',
     ];
 }
