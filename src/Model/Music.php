@@ -290,5 +290,8 @@ class Music
 
         // Wash My Hands, by Kormac
         'Gonna wash my haaands of you... wash my haaands of you... when you\'ve got me in your power, your kisses turn all sour, oh! I\'m gonna wash my hands... of you...',
+
+        // I Am Not a Robot, by Marina and the Diamonds
+        'It\'s okay to say you\'ve got a weak spot. You don\'t always have to be. on. top... Better to be haaated... then lo-o-oved for what you\'re not.',
     ];
 }
