@@ -277,6 +277,18 @@ class Music
         'Bam, boom-boom-boom-boom... ... ... ... *clap* *clap* *clap* *clap* *clap* *clap* *clap* *clap*... baaaam, boooooom-boom!',
 
         // We Love, by Ramses B
-        'We love! We-- ah, we love (we love). We (we) love-- ah, we love (love)... we-- we... we love...',
+        'We love. We-- ah, we love (we love). We (we) love-- ah, we love (love)... we-- we... we love... (\'cause you know how... \'cause you know how...)',
+
+        // Time, by Jungle
+        'Say it again! Ooooooh, just hold on tight. Don\'t let it in. Yeeeaaahhh, I\'ll run all night - don\'t let me!',
+
+        // Razor Sharp
+        'Unh! ... Unh! ... ... RAZOR SHARP!',
+
+        // Under the Sun, by Seba
+        'We are the stars under the Suuuuuuuuuuun... riding the wave of life as one; taking our time to feel the love.',
+
+        // Wash My Hands, by Kormac
+        'Gonna wash my haaands of you... wash my haaands of you... when you\'ve got me in your power, your kisses turn all sour, oh! I\'m gonna wash my hands... of you...',
     ];
 }
