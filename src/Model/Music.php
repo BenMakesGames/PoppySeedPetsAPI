@@ -275,5 +275,8 @@ class Music
 
         // Paper Booklet, by Pola & Bryson
         'Bam, boom-boom-boom-boom... ... ... ... *clap* *clap* *clap* *clap* *clap* *clap* *clap* *clap*... baaaam, boooooom-boom!',
+
+        // We Love, by Ramses B
+        'We love! We-- ah, we love (we love). We (we) love-- ah, we love (love)... we-- we... we love...',
     ];
 }
