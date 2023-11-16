@@ -265,6 +265,9 @@ class Music
         'So truuuuuuly, if there is liiight then I wanna see-ee-ee i-i-it... nooowww that I know what I am lookin\' fooorrr...',
 
         // Danger! (High Voltage)
-        'Danger! Danger! High voltage! When we touch, when we kiss, when we touch, when we kiss!!',
+        'Danger! Danger! High voltage! When we touch; when we kiss; when we touch; when we kiss!!',
+
+        // Ciao, Ciao
+        'Con le mani, con le mani, con le mani, ciao-ciao! Con i piedi, con i piedi, con i piedi, ciao-ciao!',
     ];
 }
