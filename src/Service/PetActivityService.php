@@ -39,6 +39,7 @@ use App\Service\PetActivity\CraftingService;
 use App\Service\PetActivity\DeepSeaService;
 use App\Service\PetActivity\DreamingAndDaydreamingService;
 use App\Service\PetActivity\EatingService;
+use App\Service\PetActivity\FatedAdventureService;
 use App\Service\PetActivity\FishingService;
 use App\Service\PetActivity\GatheringHolidayAdventureService;
 use App\Service\PetActivity\GatheringService;
@@ -102,6 +103,7 @@ class PetActivityService
     private IcyMoonService $icyMoonService;
     private KappaService $kappaService;
     private DreamingAndDaydreamingService $dreamingAndDaydreamingService;
+    private FatedAdventureService $fatedAdventureService;
 
     public function __construct(
         Clock $clock, EntityManagerInterface $em, ResponseService $responseService,
@@ -119,7 +121,8 @@ class PetActivityService
         Caerbannog $caerbannog, TreasureMapService $treasureMapService, EatingService $eatingService,
         HouseSimService $houseSimService, MagicBindingService $magicBindingService, SmithingService $smithingService,
         CravingService $cravingService, PlasticPrinterService $plasticPrinterService,
-        PhilosophersStoneService $philosophersStoneService, KappaService $kappaService
+        PhilosophersStoneService $philosophersStoneService, KappaService $kappaService,
+        FatedAdventureService $fatedAdventureService
     )
     {
         $this->clock = $clock;
@@ -163,6 +166,7 @@ class PetActivityService
         $this->philosophersStoneService = $philosophersStoneService;
         $this->icyMoonService = $icyMoonService;
         $this->kappaService = $kappaService;
+        $this->fatedAdventureService = $fatedAdventureService;
     }
 
     public function runHour(Pet $pet)
@@ -521,6 +525,9 @@ class PetActivityService
 
             return;
         }
+
+        if($this->fatedAdventureService->maybeResolveFate($petWithSkills))
+            return;
 
         if($this->squirrel3->rngNextInt(1, $hasEventPersonality ? 48 : 50) === 1)
         {

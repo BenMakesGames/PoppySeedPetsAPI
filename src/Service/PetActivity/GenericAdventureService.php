@@ -41,19 +41,16 @@ class GenericAdventureService
     private IRandom $rng;
     private HattierService $hattierService;
     private UserBirthdayService $userBirthdayService;
-    private DragonRepository $dragonRepository;
     private DragonHostageService $dragonHostageService;
     private EntityManagerInterface $em;
     private FieldGuideService $fieldGuideService;
-    private FatedAdventureService $fatedAdventureService;
 
     public function __construct(
         InventoryService $inventoryService,
         PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
         TransactionService $transactionService, IRandom $rng, HattierService $hattierService,
-        UserBirthdayService $userBirthdayService, DragonRepository $dragonRepository,
-        DragonHostageService $dragonHostageService, EntityManagerInterface $em, FieldGuideService $fieldGuideService,
-        FatedAdventureService $fatedAdventureService
+        UserBirthdayService $userBirthdayService, DragonHostageService $dragonHostageService,
+        EntityManagerInterface $em, FieldGuideService $fieldGuideService
     )
     {
         $this->inventoryService = $inventoryService;
@@ -63,11 +60,9 @@ class GenericAdventureService
         $this->rng = $rng;
         $this->hattierService = $hattierService;
         $this->userBirthdayService = $userBirthdayService;
-        $this->dragonRepository = $dragonRepository;
         $this->dragonHostageService = $dragonHostageService;
         $this->em = $em;
         $this->fieldGuideService = $fieldGuideService;
-        $this->fatedAdventureService = $fatedAdventureService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -188,8 +183,6 @@ class GenericAdventureService
                 $dragon->setHostage($hostage);
             }
         }
-
-        $activityLog = $this->fatedAdventureService->maybeResolveFate($petWithSkills);
 
         if($activityLog)
             return $activityLog;

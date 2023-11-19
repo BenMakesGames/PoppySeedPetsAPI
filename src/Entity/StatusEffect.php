@@ -44,6 +44,11 @@ class StatusEffect
      */
     private $timeRemaining = 0;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $counter = 0;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -139,6 +144,18 @@ class StatusEffect
         }
 
         $this->timeRemaining -= $time;
+
+        return $this;
+    }
+
+    public function getCounter(): int
+    {
+        return $this->counter;
+    }
+
+    public function incrementCounter(): self
+    {
+        $this->counter++;
 
         return $this;
     }

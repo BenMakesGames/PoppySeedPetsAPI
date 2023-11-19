@@ -43,6 +43,7 @@ class FatedAdventureService
     {
         $pet = $petWithSkills->getPet();
 
+        /** @var StatusEffect $fatedStatusEffect */
         $fatedStatusEffect = ArrayFunctions::find_one($pet->getStatusEffects()->toArray(), fn(StatusEffect $se) =>
             in_array($se->getStatus(), [
                 StatusEffectEnum::FATED_DELICIOUSNESS,
@@ -55,6 +56,14 @@ class FatedAdventureService
 
         if(!$fatedStatusEffect)
             return null;
+
+        $oneInX = 100 - $fatedStatusEffect->getCounter();
+
+        if($oneInX > 1 && $this->rng->rngNextInt(1, $oneInX) > 1)
+        {
+            $fatedStatusEffect->incrementCounter();
+            return null;
+        }
 
         $fateName = $fatedStatusEffect->getStatus();
 
