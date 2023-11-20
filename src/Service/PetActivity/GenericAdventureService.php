@@ -184,9 +184,6 @@ class GenericAdventureService
             }
         }
 
-        if($activityLog)
-            return $activityLog;
-
         return $this->doGenericAdventure($petWithSkills);
     }
 
