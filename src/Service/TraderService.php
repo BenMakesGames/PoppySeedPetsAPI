@@ -383,15 +383,6 @@ class TraderService
             ),
             TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Turkey King'), 1)
-                ],
-                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Bleached Turkey Head'), 1) ],
-                'Oh, I don\'t need any moneys. The little crown is good enough for me.',
-                $user,
-                $quantities
-            ),
-            TraderOffer::createTradeOffer(
-                [
                     TraderOfferCostOrYield::createMoney(10),
                 ],
                 [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Paint Stripper'), 1) ],
@@ -735,6 +726,19 @@ class TraderService
                     TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Hat Box'), 1),
                 ],
                 'We fish collect the things, too, you know!',
+                $user,
+                $quantities
+            );
+        }
+
+        if($this->clock->now->format('M') === 'Nov')
+        {
+            $offers[] = TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Turkey King'), 1)
+                ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Bleached Turkey Head'), 1) ],
+                'Oh, I don\'t need any moneys. The little crown is good enough for me.',
                 $user,
                 $quantities
             );
