@@ -357,7 +357,7 @@ class TraderService
                     TraderOfferCostOrYield::createMoney(10),
                 ],
                 [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Zebra "Horsey" Hat'), 1) ],
-                'Someone was telling me that zebras _aren\'t_ a kind of horse? Is that true?? You land-dwellers have confusing animals...',
+                'Someone was telling me that zebras _aren\'t_ a kind of horse? Is that true?? I can\'t keep all your weird land animals straight.',
                 $user,
                 $quantities
             ),
@@ -367,7 +367,7 @@ class TraderService
                     TraderOfferCostOrYield::createMoney(10),
                 ],
                 [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'White Horsey Hat'), 1) ],
-                'And you\'re _super_ sure zebras aren\'t horses? It just seems _really_ weird, you know??',
+                'And you\'re _super_ sure zebras aren\'t horses? It\'s just-- I\'m not-- ... you know??',
                 $user,
                 $quantities
             ),
@@ -378,6 +378,15 @@ class TraderService
                 ],
                 [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'White Horsey Hat'), 1) ],
                 'It\'s fun that horses come in so many colors! But what about, like, purple horses? Are there any of those?',
+                $user,
+                $quantities
+            ),
+            TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Turkey King'), 1)
+                ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Bleached Turkey Head'), 1) ],
+                'Oh, I don\'t need any moneys. The little crown is good enough for me.',
                 $user,
                 $quantities
             ),

@@ -8,6 +8,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\ActivityHelpers;
 use App\Functions\CalendarFunctions;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
@@ -194,6 +195,9 @@ class CraftingService
 
             if($this->houseSimService->hasInventory('Painted Camera') && $this->houseSimService->hasInventory('Antenna'))
                 $possibilities[] = new ActivityCallback($this, 'createAlienCamera', 10);
+
+            if($this->houseSimService->hasInventory('Bleached Turkey Head') && $this->houseSimService->hasInventory('Green Dye') && $this->houseSimService->hasInventory('Antenna'))
+                $possibilities[] = new ActivityCallback($this, 'createChartrurkey', 20);
 
             if($this->houseSimService->hasInventory('Iron Sword') && $this->houseSimService->hasInventory('Laser Pointer'))
                 $possibilities[] = new ActivityCallback($this, 'createLaserGuidedSword', 10);
@@ -1313,6 +1317,39 @@ class CraftingService
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+        }
+
+        return $activityLog;
+    }
+
+    private function createChartrurkey(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+
+        if($roll >= 20)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->houseSimService->getState()->loseItem('Bleached Turkey Head', 1);
+            $this->houseSimService->getState()->loseItem('Glue', 1);
+            $this->houseSimService->getState()->loseItem('Antenna', 1);
+            $this->houseSimService->getState()->loseItem('Green Dye', 1);
+            $pet->increaseEsteem(2);
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% gussied up a Bleached Turkey Head with Green Dye and some Antenna. You know: as you do.')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
+            ;
+            $this->inventoryService->petCollectsItem('Chartrurkey', $pet, $pet->getName() . ' created by gluing some Antennae to a Painted Camera.', $activityLog);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ], $activityLog);
+        }
+        else
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% wanted to do something silly to a Bleached Turkey Head, but couldn\'t decide what...')
+                ->setIcon('icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::CRAFT, false);
         }
 
         return $activityLog;
