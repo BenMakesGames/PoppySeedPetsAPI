@@ -1338,7 +1338,7 @@ class CraftingService
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% gussied up a Bleached Turkey Head with Green Dye and some Antenna. You know: as you do.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
             ;
-            $this->inventoryService->petCollectsItem('Chartrurkey', $pet, $pet->getName() . ' created by gluing some Antennae to a Painted Camera.', $activityLog);
+            $this->inventoryService->petCollectsItem('Chartrurkey', $pet, $pet->getName() . ' gussied up a Bleached Turkey Head. This is the result.', $activityLog);
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ], $activityLog);
         }
         else
