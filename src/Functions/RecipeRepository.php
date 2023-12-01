@@ -525,6 +525,8 @@ final class RecipeRepository
         [ 'name' => 'Red Pancakes', 'ingredients' => '2:1,12:1,13:1,14:1,16:1,48:1,65:1', 'makes' => '218:2' ],
         [ 'name' => 'Red PB&J', 'ingredients' => '112:1,185:1,512:1', 'makes' => '530:2' ],
         [ 'name' => 'Red Pie', 'ingredients' => '2:1,12:1,16:1,196:1', 'makes' => '221:2' ],
+        [ 'name' => 'Red Red', 'ingredients' => '4:1,7:1,33:1,133:1,170:1,195:1,248:1', 'makes' => '1344:2' ],
+        [ 'name' => 'Red Red (Vegetarian)', 'ingredients' => '4:1,7:1,133:1,170:1,195:1,248:1', 'makes' => '1345:2' ],
         [ 'name' => 'Red Wine Vinegar', 'ingredients' => '10:1,415:1', 'makes' => '146:2' ],
         [ 'name' => 'Red Wine', 'ingredients' => '2:1,10:1', 'makes' => '62:1,415:1' ],
         [ 'name' => 'Red Yogurt', 'ingredients' => '2:1,113:1', 'makes' => '274:2' ],

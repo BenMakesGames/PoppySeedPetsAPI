@@ -48,6 +48,7 @@ class FishBookController extends AbstractController
             'Pan-fried Fish (with Oil)',
             'Papeete I\'a Ota',
             'Peruvian Ceviche',
+            'Red Red',
             'Soy-ginger Fish',
             'Stargazy Pie',
             'Simple Sushi',
@@ -91,6 +92,7 @@ class FishBookController extends AbstractController
 * Pan-fried Fish
 * Papeete I\'a Ota
 * Peruvian Ceviche
+* Red Red
 * Soy-ginger Fish
 * Stargazy Pie
 * Sushi
@@ -228,6 +230,16 @@ That\'s it!
 * Yellowy Lime
 * Onion
 * Spicy Peps
+
+#### Red Red
+
+* Fish
+* Beans
+* Onion
+* Spicy Peps
+* Oil
+* Naner
+* Tomato
 
 #### Soy-ginger Fish
 
