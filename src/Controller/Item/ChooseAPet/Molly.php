@@ -75,7 +75,7 @@ class Molly extends AbstractController
 
         $actionDescription = "helped the Molly give birth to a litter of... {$babies} {$babyItem}s?? It was {$howMessyWasIt} affair, during which they collected " . ArrayFunctions::list_nice($loot) . "...";
 
-        $activityLog = PetActivityLogFactory::createReadLog($em, $pet, "%pet:{$pet->getId()}.name% ${actionDescription}")
+        $activityLog = PetActivityLogFactory::createReadLog($em, $pet, "%pet:{$pet->getId()}.name% {$actionDescription}")
             ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
         ;
 
