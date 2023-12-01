@@ -243,7 +243,7 @@ That\'s it!
 
 It gets its name from the red palm oil and red plantains used to make it; not from the inclusion of Red. Which is good, because it doesn\'t have any Red in it!
 
-(Just... just pretend the Oil comes from red palm, and that the Naners are red plantains... \'kay? \'Kay.)
+(Just... just pretend the Oil comes from red palm, and that the Naners are red plantains... \'kay? M\'kay.)
 
 #### Soy-ginger Fish
 
