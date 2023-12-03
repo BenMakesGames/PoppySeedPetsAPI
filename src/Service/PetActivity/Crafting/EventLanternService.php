@@ -8,7 +8,6 @@ use App\Functions\CalendarFunctions;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ActivityCallback;
-use App\Model\ActivityCallback8;
 use App\Model\ComputedPetSkills;
 use App\Model\HouseSimRecipe;
 use App\Model\IActivityCallback;
@@ -63,16 +62,16 @@ class EventLanternService
         if($items)
         {
             if(CalendarFunctions::isHalloweenCrafting($this->clock->now))
-                $possibilities[] = new ActivityCallback8($this->createMoonlightLantern(...), 10);
+                $possibilities[] = new ActivityCallback($this->createMoonlightLantern(...), 10);
 
             if(CalendarFunctions::isPiDayCrafting($this->clock->now))
-                $possibilities[] = new ActivityCallback8($this->createPiLantern(...), 10);
+                $possibilities[] = new ActivityCallback($this->createPiLantern(...), 10);
 
             if((int)$now->format('n') === 12)
-                $possibilities[] = new ActivityCallback8($this->createTreelightLantern(...), 10);
+                $possibilities[] = new ActivityCallback($this->createTreelightLantern(...), 10);
 
             if(CalendarFunctions::isSaintMartinsDayCrafting($this->clock->now))
-                $possibilities[] = new ActivityCallback8($this->createDapperSwanLantern(...), 10);
+                $possibilities[] = new ActivityCallback($this->createDapperSwanLantern(...), 10);
         }
 
         return $possibilities;

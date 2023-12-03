@@ -9,7 +9,6 @@ use App\Enum\PetSkillEnum;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ActivityCallback;
-use App\Model\ActivityCallback8;
 use App\Model\ComputedPetSkills;
 use App\Model\IActivityCallback;
 use App\Model\PetChanges;
@@ -18,7 +17,6 @@ use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class NotReallyCraftsService
@@ -71,7 +69,7 @@ class NotReallyCraftsService
         $possibilities = [];
 
         if($this->houseSimService->hasInventory('Planetary Ring'))
-            $possibilities[] = new ActivityCallback8($this->siftThroughPlanetaryRing(...), 10);
+            $possibilities[] = new ActivityCallback($this->siftThroughPlanetaryRing(...), 10);
 
         return $possibilities;
     }

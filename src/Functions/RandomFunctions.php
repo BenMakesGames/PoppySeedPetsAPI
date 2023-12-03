@@ -9,14 +9,12 @@ class RandomFunctions
 
     public static function squirrel3Noise(int $position, int $seed): int
     {
-        $mangled = $position;
-
-        $mangled *= self::SQUIRREL_3_BIT_NOISE_1;
+        $mangled = ($position * self::SQUIRREL_3_BIT_NOISE_1) & 0xffffffff;
         $mangled += $seed;
         $mangled ^= ($mangled >> 8);
         $mangled += self::SQUIRREL_3_BIT_NOISE_2;
         $mangled ^= ($mangled << 8);
-        $mangled *= self::SQUIRREL_3_BIT_NOISE_3;
+        $mangled = ($mangled * self::SQUIRREL_3_BIT_NOISE_3) & 0xffffffff;
         $mangled ^= ($mangled >> 8);
 
         return $mangled % 0xffffffff;

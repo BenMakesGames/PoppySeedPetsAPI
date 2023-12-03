@@ -13,7 +13,6 @@ use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ActivityCallback;
-use App\Model\ActivityCallback8;
 use App\Model\ComputedPetSkills;
 use App\Model\IActivityCallback;
 use App\Model\ItemQuantity;
@@ -53,19 +52,19 @@ class CraftingService
 
         if($this->houseSimService->hasInventory('Twu Wuv') && $this->houseSimService->hasInventory('Red Balloon'))
         {
-            $possibilities[] = new ActivityCallback($this->twuWuvCraftingService, 'createWedBawwoon', 15);
+            $possibilities[] = new ActivityCallback($this->twuWuvCraftingService->createWedBawwoon(...), 15);
         }
 
         if($this->houseSimService->hasInventory('Chocolate Bar'))
         {
             $weight = CalendarFunctions::isValentinesOrAdjacent($now) ? 80 : 8;
 
-            $possibilities[] = new ActivityCallback8($this->makeChocolateTool(...), $weight);
+            $possibilities[] = new ActivityCallback($this->makeChocolateTool(...), $weight);
         }
 
         if($this->houseSimService->hasInventory('Fluff') || $this->houseSimService->hasInventory('Cobweb'))
         {
-            $possibilities[] = new ActivityCallback8($this->spinFluffOrCobweb(...), 10);
+            $possibilities[] = new ActivityCallback($this->spinFluffOrCobweb(...), 10);
         }
 
         if($this->houseSimService->hasInventory('White Cloth'))
@@ -73,88 +72,88 @@ class CraftingService
             if($this->houseSimService->hasInventory('Quinacridone Magenta Dye'))
             {
                 if($this->houseSimService->hasInventory('Fluff') || $this->houseSimService->hasInventory('Beans'))
-                    $possibilities[] = new ActivityCallback8($this->createPeacockPlushy(...), 10);
+                    $possibilities[] = new ActivityCallback($this->createPeacockPlushy(...), 10);
             }
 
             if($this->houseSimService->hasInventory('String') && $this->houseSimService->hasInventory('Ruby Feather'))
-                $possibilities[] = new ActivityCallback8($this->createFeatheredHat(...), 10);
+                $possibilities[] = new ActivityCallback($this->createFeatheredHat(...), 10);
 
             if($this->houseSimService->hasInventory('Glass Pendulum') && $this->houseSimService->hasInventory('Flute'))
-                $possibilities[] = new ActivityCallback8($this->createDecoratedFlute(...), 10);
+                $possibilities[] = new ActivityCallback($this->createDecoratedFlute(...), 10);
 
             if($this->houseSimService->hasInventory('Stereotypical Bone'))
-                $possibilities[] = new ActivityCallback8($this->createTorchFromBone(...), 5);
+                $possibilities[] = new ActivityCallback($this->createTorchFromBone(...), 5);
         }
 
         if($this->houseSimService->hasInventory('Gold Telescope') && $this->houseSimService->hasInventory('Flying Grappling Hook'))
-            $possibilities[] = new ActivityCallback8($this->createLassoscope(...), 10);
+            $possibilities[] = new ActivityCallback($this->createLassoscope(...), 10);
 
         if($this->houseSimService->hasInventory('Tea Leaves'))
         {
-            $possibilities[] = new ActivityCallback8($this->createYellowDyeFromTeaLeaves(...), 10);
+            $possibilities[] = new ActivityCallback($this->createYellowDyeFromTeaLeaves(...), 10);
 
             if($this->houseSimService->hasInventory('Trowel'))
-                $possibilities[] = new ActivityCallback8($this->createTeaTrowel(...), 10);
+                $possibilities[] = new ActivityCallback($this->createTeaTrowel(...), 10);
         }
 
         if($this->houseSimService->hasInventory('Scales'))
         {
-            $possibilities[] = new ActivityCallback8($this->extractFromScales(...), 10);
+            $possibilities[] = new ActivityCallback($this->extractFromScales(...), 10);
 
             if($this->houseSimService->hasInventory('Talon') && $this->houseSimService->hasInventory('Wooden Sword'))
-                $possibilities[] = new ActivityCallback8($this->createSnakebite(...), 10);
+                $possibilities[] = new ActivityCallback($this->createSnakebite(...), 10);
         }
 
         if($this->houseSimService->hasInventory('Crooked Stick'))
         {
             if($this->houseSimService->hasInventory('Small, Yellow Plastic Bucket'))
-                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createNanerPicker', 10);
+                $possibilities[] = new ActivityCallback($this->stickCraftingService->createNanerPicker(...), 10);
 
             if($this->houseSimService->hasInventory('Sunflower'))
-                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createSunflowerStick', 10);
+                $possibilities[] = new ActivityCallback($this->stickCraftingService->createSunflowerStick(...), 10);
 
             if($this->houseSimService->hasInventory('Glue') || $this->houseSimService->hasInventory('String'))
             {
-                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createWoodenSword', 10);
+                $possibilities[] = new ActivityCallback($this->stickCraftingService->createWoodenSword(...), 10);
             }
 
             if($this->houseSimService->hasInventory('String'))
             {
-                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createCrookedFishingRod', 10);
+                $possibilities[] = new ActivityCallback($this->stickCraftingService->createCrookedFishingRod(...), 10);
 
                 if($this->houseSimService->hasInventory('Talon'))
-                    $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createHuntingSpear', 10);
+                    $possibilities[] = new ActivityCallback($this->stickCraftingService->createHuntingSpear(...), 10);
 
                 if($this->houseSimService->hasInventory('Hunting Spear'))
-                    $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createVeryLongSpear', 10);
+                    $possibilities[] = new ActivityCallback($this->stickCraftingService->createVeryLongSpear(...), 10);
 
                 if($this->houseSimService->hasInventory('Overly-long Spear'))
-                    $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createRidiculouslyLongSpear', 10);
+                    $possibilities[] = new ActivityCallback($this->stickCraftingService->createRidiculouslyLongSpear(...), 10);
 
                 if($this->houseSimService->hasInventory('Corn') && $this->houseSimService->hasInventory('Rice'))
-                    $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createHarvestStaff', 10);
+                    $possibilities[] = new ActivityCallback($this->stickCraftingService->createHarvestStaff(...), 10);
 
                 if($this->houseSimService->hasInventory('Red'))
-                    $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createRedFlail', 10);
+                    $possibilities[] = new ActivityCallback($this->stickCraftingService->createRedFlail(...), 10);
             }
 
             if($this->houseSimService->hasInventory('Cobweb'))
-                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createBugCatchersNet', 10);
+                $possibilities[] = new ActivityCallback($this->stickCraftingService->createBugCatchersNet(...), 10);
 
             if($this->houseSimService->hasInventory('Glue') && ($this->houseSimService->hasInventory('Wheat') || $this->houseSimService->hasInventory('Rice')))
-                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createStrawBroom', 10);
+                $possibilities[] = new ActivityCallback($this->stickCraftingService->createStrawBroom(...), 10);
 
             if($this->houseSimService->hasInventory('White Cloth'))
-                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createTorchOrFlag', 10);
+                $possibilities[] = new ActivityCallback($this->stickCraftingService->createTorchOrFlag(...), 10);
 
             if($this->houseSimService->hasInventory('Toadstool') && $this->houseSimService->hasInventory('Quintessence'))
-                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createChampignon', 10);
+                $possibilities[] = new ActivityCallback($this->stickCraftingService->createChampignon(...), 10);
 
             if($this->houseSimService->hasInventory('Glass'))
-                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createRusticMagnifyingGlass', 10);
+                $possibilities[] = new ActivityCallback($this->stickCraftingService->createRusticMagnifyingGlass(...), 10);
 
             if($this->houseSimService->hasInventory('Sweet Beet') && $this->houseSimService->hasInventory('Glue'))
-                $possibilities[] = new ActivityCallback($this->stickCraftingService, 'createSweetBeat', 10);
+                $possibilities[] = new ActivityCallback($this->stickCraftingService->createSweetBeat(...), 10);
         }
 
         if($this->houseSimService->hasInventory('Glue'))
@@ -162,197 +161,197 @@ class CraftingService
             if($this->houseSimService->hasInventory('White Cloth'))
             {
                 if($this->houseSimService->hasInventory('Fiberglass Flute'))
-                    $possibilities[] = new ActivityCallback8($this->createFiberglassPanFlute(...), 11);
+                    $possibilities[] = new ActivityCallback($this->createFiberglassPanFlute(...), 11);
 
-                $possibilities[] = new ActivityCallback8($this->createFabricMache(...), 7);
+                $possibilities[] = new ActivityCallback($this->createFabricMache(...), 7);
             }
 
             if($this->houseSimService->hasInventory('Gold Triangle', 3))
-                $possibilities[] = new ActivityCallback8($this->createGoldTrifecta(...), 10);
+                $possibilities[] = new ActivityCallback($this->createGoldTrifecta(...), 10);
 
             if($this->houseSimService->hasInventory('Ruler', 2))
-                $possibilities[] = new ActivityCallback8($this->createLSquare(...), 10);
+                $possibilities[] = new ActivityCallback($this->createLSquare(...), 10);
 
             if($this->houseSimService->hasInventory('Cooking Buddy') && $this->houseSimService->hasInventory('Antenna'))
-                $possibilities[] = new ActivityCallback8($this->createAlienCookingBuddy(...), 10);
+                $possibilities[] = new ActivityCallback($this->createAlienCookingBuddy(...), 10);
 
             if($this->houseSimService->hasInventory('Painted Camera') && $this->houseSimService->hasInventory('Antenna'))
-                $possibilities[] = new ActivityCallback8($this->createAlienCamera(...), 10);
+                $possibilities[] = new ActivityCallback($this->createAlienCamera(...), 10);
 
             if($this->houseSimService->hasInventory('Bleached Turkey Head') && $this->houseSimService->hasInventory('Green Dye') && $this->houseSimService->hasInventory('Antenna'))
-                $possibilities[] = new ActivityCallback8($this->createChartrurkey(...), 20);
+                $possibilities[] = new ActivityCallback($this->createChartrurkey(...), 20);
 
             if($this->houseSimService->hasInventory('Iron Sword') && $this->houseSimService->hasInventory('Laser Pointer'))
-                $possibilities[] = new ActivityCallback8($this->createLaserGuidedSword(...), 10);
+                $possibilities[] = new ActivityCallback($this->createLaserGuidedSword(...), 10);
         }
 
         if($this->houseSimService->hasInventory('Antenna'))
         {
             if($this->houseSimService->hasInventory('Cobweb') && $this->houseSimService->hasInventory('Fiberglass Bow'))
-                $possibilities[] = new ActivityCallback8($this->createBugBow(...), 10);
+                $possibilities[] = new ActivityCallback($this->createBugBow(...), 10);
 
             if($this->houseSimService->hasInventory('Alien Tissue'))
-                $possibilities[] = new ActivityCallback8($this->createProboscis(...), 10);
+                $possibilities[] = new ActivityCallback($this->createProboscis(...), 10);
         }
 
         if($this->houseSimService->hasInventory('String'))
         {
             if($this->houseSimService->hasInventory('Naner'))
-                $possibilities[] = new ActivityCallback8($this->createBownaner(...), 10);
+                $possibilities[] = new ActivityCallback($this->createBownaner(...), 10);
 
             if($this->houseSimService->hasInventory('Glass'))
-                $possibilities[] = new ActivityCallback8($this->createGlassPendulum(...), 10);
+                $possibilities[] = new ActivityCallback($this->createGlassPendulum(...), 10);
 
             if($this->houseSimService->hasInventory('Paper') && $this->houseSimService->hasInventory('Silver Key'))
-                $possibilities[] = new ActivityCallback8($this->createBenjaminFranklin(...), 10);
+                $possibilities[] = new ActivityCallback($this->createBenjaminFranklin(...), 10);
 
             if($this->houseSimService->hasInventory('Really Big Leaf'))
-                $possibilities[] = new ActivityCallback8($this->createLeafSpear(...), 10);
+                $possibilities[] = new ActivityCallback($this->createLeafSpear(...), 10);
 
             if($this->houseSimService->hasInventory('L-Square') && $this->houseSimService->hasInventory('Green Dye'))
-                $possibilities[] = new ActivityCallback8($this->createRibbelysComposite(...), 10);
+                $possibilities[] = new ActivityCallback($this->createRibbelysComposite(...), 10);
 
             if(
                 $this->houseSimService->hasInventory('Small Plastic Bucket') ||
                 $this->houseSimService->hasInventory('Small, Yellow Plastic Bucket')
             )
             {
-                $possibilities[] = new ActivityCallback8($this->createShortRangeTelephone(...), 10);
+                $possibilities[] = new ActivityCallback($this->createShortRangeTelephone(...), 10);
             }
 
             if($this->houseSimService->hasInventory('"Rustic" Magnifying Glass') && $this->houseSimService->hasInventory('Black Feathers'))
-                $possibilities[] = new ActivityCallback8($this->createCrowsEye(...), 10);
+                $possibilities[] = new ActivityCallback($this->createCrowsEye(...), 10);
         }
 
         if($this->houseSimService->hasInventory('Gypsum') && $this->houseSimService->hasInventory('Green Dye'))
-            $possibilities[] = new ActivityCallback8($this->createGypsumDragon(...), 9);
+            $possibilities[] = new ActivityCallback($this->createGypsumDragon(...), 9);
 
         if($this->houseSimService->hasInventory('Bownaner') && $this->houseSimService->hasInventory('Carrot'))
-            $possibilities[] = new ActivityCallback8($this->createEatYourFruitsAndVeggies(...), 10);
+            $possibilities[] = new ActivityCallback($this->createEatYourFruitsAndVeggies(...), 10);
 
         if($this->houseSimService->hasInventory('Feathers'))
         {
             if($this->houseSimService->hasInventory('Hunting Spear'))
-                $possibilities[] = new ActivityCallback8($this->createDecoratedSpear(...), 10);
+                $possibilities[] = new ActivityCallback($this->createDecoratedSpear(...), 10);
 
             if($this->houseSimService->hasInventory('Yellow Dye'))
             {
                 if($this->houseSimService->hasInventory('Fiberglass Pan Flute'))
-                    $possibilities[] = new ActivityCallback8($this->createOrnatePanFlute(...), 10);
+                    $possibilities[] = new ActivityCallback($this->createOrnatePanFlute(...), 10);
 
                 if($this->houseSimService->hasInventory('Tea Trowel'))
-                    $possibilities[] = new ActivityCallback8($this->createOwlTrowel(...), 10);
+                    $possibilities[] = new ActivityCallback($this->createOwlTrowel(...), 10);
             }
         }
 
         if($this->houseSimService->hasInventory('White Feathers') && $this->houseSimService->hasInventory('Leaf Spear'))
-            $possibilities[] = new ActivityCallback8($this->createFishingRecorder(...), 10);
+            $possibilities[] = new ActivityCallback($this->createFishingRecorder(...), 10);
 
         if($this->houseSimService->hasInventory('Decorated Spear'))
         {
             if($this->houseSimService->hasInventory('Dark Scales'))
-                $possibilities[] = new ActivityCallback8($this->createNagatooth(...), 10);
+                $possibilities[] = new ActivityCallback($this->createNagatooth(...), 10);
 
             if($this->houseSimService->hasInventory('Quintessence'))
-                $possibilities[] = new ActivityCallback8($this->createVeilPiercer(...), 10);
+                $possibilities[] = new ActivityCallback($this->createVeilPiercer(...), 10);
         }
 
         if($this->houseSimService->hasInventory('Crooked Fishing Rod'))
         {
             if($this->houseSimService->hasInventory('Yellow Dye') && $this->houseSimService->hasInventory('Green Dye'))
-                $possibilities[] = new ActivityCallback8($this->createPaintedFishingRod(...), 10);
+                $possibilities[] = new ActivityCallback($this->createPaintedFishingRod(...), 10);
 
             if($this->houseSimService->hasInventory('Carrot'))
-                $possibilities[] = new ActivityCallback8($this->createCaroteneStick(...), 10);
+                $possibilities[] = new ActivityCallback($this->createCaroteneStick(...), 10);
         }
 
         if($this->houseSimService->hasInventory('Plastic Boomerang') && $this->houseSimService->hasInventory('Quinacridone Magenta Dye'))
-            $possibilities[] = new ActivityCallback8($this->createPaintedBoomerang(...), 10);
+            $possibilities[] = new ActivityCallback($this->createPaintedBoomerang(...), 10);
 
         if($this->houseSimService->hasInventory('Yellow Dye'))
         {
             if($this->houseSimService->hasInventory('Plastic Idol'))
-                $possibilities[] = new ActivityCallback8($this->createGoldIdol(...), 10);
+                $possibilities[] = new ActivityCallback($this->createGoldIdol(...), 10);
             else
             {
                 if($this->houseSimService->hasInventory('Small Plastic Bucket'))
-                    $possibilities[] = new ActivityCallback8($this->createYellowBucket(...), 10);
+                    $possibilities[] = new ActivityCallback($this->createYellowBucket(...), 10);
 
                 if($this->houseSimService->hasInventory('Dumbbell'))
-                    $possibilities[] = new ActivityCallback8($this->createPaintedDumbbell(...), 10);
+                    $possibilities[] = new ActivityCallback($this->createPaintedDumbbell(...), 10);
 
                 if($this->houseSimService->hasInventory('Digital Camera'))
-                    $possibilities[] = new ActivityCallback8($this->createPaintedCamera(...), 10);
+                    $possibilities[] = new ActivityCallback($this->createPaintedCamera(...), 10);
             }
         }
 
         if($this->houseSimService->hasInventory('Fiberglass'))
-            $possibilities[] = new ActivityCallback8($this->createSimpleFiberglassItem(...), 10);
+            $possibilities[] = new ActivityCallback($this->createSimpleFiberglassItem(...), 10);
 
         if($this->houseSimService->hasInventory('Scythe'))
         {
             if($this->houseSimService->hasInventory('Scythe', 2))
-                $possibilities[] = new ActivityCallback8($this->createDoubleScythe(...), 10);
+                $possibilities[] = new ActivityCallback($this->createDoubleScythe(...), 10);
 
             if($this->houseSimService->hasInventory('Garden Shovel'))
-                $possibilities[] = new ActivityCallback8($this->createFarmersMultiTool(...), 10);
+                $possibilities[] = new ActivityCallback($this->createFarmersMultiTool(...), 10);
         }
 
         if($this->houseSimService->hasInventory('Garden Shovel') && $this->houseSimService->hasInventory('Fish Bones'))
-            $possibilities[] = new ActivityCallback8($this->createFishHeadShovel(...), 10);
+            $possibilities[] = new ActivityCallback($this->createFishHeadShovel(...), 10);
 
         if($this->houseSimService->hasInventory('White Flag'))
         {
             if($this->houseSimService->hasInventory('Yellow Dye'))
-                $possibilities[] = new ActivityCallback8($this->createSunFlag(...), 10);
+                $possibilities[] = new ActivityCallback($this->createSunFlag(...), 10);
 
             if($this->houseSimService->hasInventory('Green Dye'))
-                $possibilities[] = new ActivityCallback8($this->createDragonFlag(...), 10);
+                $possibilities[] = new ActivityCallback($this->createDragonFlag(...), 10);
 
             if($this->houseSimService->hasInventory('String') && $this->houseSimService->hasInventory('Crooked Stick'))
-                $possibilities[] = new ActivityCallback8($this->createBindle(...), 10);
+                $possibilities[] = new ActivityCallback($this->createBindle(...), 10);
 
             if($this->houseSimService->hasInventory('Crooked Fishing Rod'))
-                $possibilities[] = new ActivityCallback8($this->createBindle2(...), 10);
+                $possibilities[] = new ActivityCallback($this->createBindle2(...), 10);
         }
 
         if($this->houseSimService->hasInventory('Sun Flag') && $this->houseSimService->hasInventory('Sunflower Stick'))
-            $possibilities[] = new ActivityCallback8($this->createSunSunFlag(...), 10);
+            $possibilities[] = new ActivityCallback($this->createSunSunFlag(...), 10);
 
         if($this->houseSimService->hasInventory('Plastic'))
         {
             if($this->houseSimService->hasInventory('Smallish Pumpkin') && $this->houseSimService->hasInventory('Crooked Stick'))
-                $possibilities[] = new ActivityCallback8($this->createDrumpkin(...), 10);
+                $possibilities[] = new ActivityCallback($this->createDrumpkin(...), 10);
 
             if($this->houseSimService->hasInventory('Iron Bar'))
-                $possibilities[] = new ActivityCallback8($this->createGrabbyArm(...), 10);
+                $possibilities[] = new ActivityCallback($this->createGrabbyArm(...), 10);
         }
 
         if($this->houseSimService->hasInventory('Rice Flour') && $this->houseSimService->hasInventory('Potato'))
-            $possibilities[] = new ActivityCallback8($this->createRicePaper(...), 10);
+            $possibilities[] = new ActivityCallback($this->createRicePaper(...), 10);
 
         $repairWeight = ($petWithSkills->getSmithingBonus()->getTotal() >= 3 || $petWithSkills->getCrafts()->getTotal() >= 5) ? 10 : 1;
 
         if($this->houseSimService->hasInventory('Rusty Blunderbuss'))
-            $possibilities[] = new ActivityCallback8($this->repairRustyBlunderbuss(...), $repairWeight);
+            $possibilities[] = new ActivityCallback($this->repairRustyBlunderbuss(...), $repairWeight);
 
         if($this->houseSimService->hasInventory('Rusty Rapier'))
-            $possibilities[] = new ActivityCallback8($this->repairRustyRapier(...), $repairWeight);
+            $possibilities[] = new ActivityCallback($this->repairRustyRapier(...), $repairWeight);
 
         if($this->houseSimService->hasInventory('Rusted, Busted Mechanism'))
-            $possibilities[] = new ActivityCallback8($this->repairOldMechanism(...), $repairWeight);
+            $possibilities[] = new ActivityCallback($this->repairOldMechanism(...), $repairWeight);
 
         if($this->houseSimService->hasInventory('Sun-sun Flag', 2))
-            $possibilities[] = new ActivityCallback8($this->createSunSunFlagFlagSon(...), 10);
+            $possibilities[] = new ActivityCallback($this->createSunSunFlagFlagSon(...), 10);
 
         if($this->houseSimService->hasInventory('Moon Pearl'))
         {
             if($this->houseSimService->hasInventory('Plastic Fishing Rod') && $this->houseSimService->hasInventory('Talon'))
-                $possibilities[] = new ActivityCallback8($this->createPaleFlail(...), 10);
+                $possibilities[] = new ActivityCallback($this->createPaleFlail(...), 10);
         }
 
         if($this->houseSimService->hasInventory('Blue Balloon') && $this->houseSimService->hasInventory('Gold Telescope'))
-            $possibilities[] = new ActivityCallback8($this->makeSpyBalloon(...), 10);
+            $possibilities[] = new ActivityCallback($this->makeSpyBalloon(...), 10);
 
         return array_merge($possibilities, $this->eventLanternService->getCraftingPossibilities($petWithSkills));
     }
