@@ -4,10 +4,10 @@ namespace App\Serializer;
 use App\Entity\PetSpecies;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\PetRepository;
-use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
-class PetSpeciesNormalizer implements ContextAwareNormalizerInterface
+class PetSpeciesNormalizer implements NormalizerInterface
 {
     private $petRepository;
     private $normalizer;

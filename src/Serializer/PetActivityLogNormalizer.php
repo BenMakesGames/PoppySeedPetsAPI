@@ -3,13 +3,12 @@ namespace App\Serializer;
 
 use App\Entity\PetActivityLog;
 use App\Entity\UserActivityLog;
-use App\Enum\SerializationGroupEnum;
 use App\Service\CommentFormatter;
 use App\Service\FlashMessage;
-use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
-class PetActivityLogNormalizer implements ContextAwareNormalizerInterface
+class PetActivityLogNormalizer implements NormalizerInterface
 {
     private $normalizer;
     private $commentFormatter;

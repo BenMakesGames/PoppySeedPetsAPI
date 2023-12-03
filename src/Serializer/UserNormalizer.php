@@ -5,11 +5,11 @@ use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\UserFollowingRepository;
 use App\Repository\UserLetterRepository;
-use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
-class UserNormalizer implements ContextAwareNormalizerInterface
+class UserNormalizer implements NormalizerInterface
 {
     private UserFollowingRepository $userFollowingRepository;
     private UserLetterRepository $userLetterRepository;

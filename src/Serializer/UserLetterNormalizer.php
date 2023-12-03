@@ -3,10 +3,10 @@ namespace App\Serializer;
 
 use App\Entity\UserLetter;
 use App\Service\CommentFormatter;
-use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
-class UserLetterNormalizer implements ContextAwareNormalizerInterface
+class UserLetterNormalizer implements NormalizerInterface
 {
     private $normalizer;
     private $commentFormatter;

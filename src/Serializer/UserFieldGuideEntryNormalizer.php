@@ -3,10 +3,10 @@ namespace App\Serializer;
 
 use App\Entity\UserFieldGuideEntry;
 use App\Service\CommentFormatter;
-use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
-class UserFieldGuideEntryNormalizer implements ContextAwareNormalizerInterface
+class UserFieldGuideEntryNormalizer implements NormalizerInterface
 {
     private $normalizer;
     private $commentFormatter;
