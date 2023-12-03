@@ -13,15 +13,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/hollowEarth")
- */
+#[Route("/hollowEarth")]
 class RemoveTileCardController extends AbstractController
 {
-    /**
-     * @Route("/removeTileCard", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/removeTileCard", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function removeTileCard(
         Request $request, ResponseService $responseService, EntityManagerInterface $em
     )

@@ -24,10 +24,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class BlushOfLifeController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function drinkBlushOfLife(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
     )

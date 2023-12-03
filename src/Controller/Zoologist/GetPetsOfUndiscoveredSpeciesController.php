@@ -16,15 +16,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/zoologist")
- */
+#[Route("/zoologist")]
 class GetPetsOfUndiscoveredSpeciesController extends AbstractController
 {
-    /**
-     * @Route("/showable", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/showable", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getPets(
         Request $request, ResponseService $responseService
     )

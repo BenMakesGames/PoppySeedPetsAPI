@@ -16,10 +16,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  */
 class BeeController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/giveToBeehive", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/giveToBeehive", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function giveToBeehive(Inventory $inventory, EntityManagerInterface $em, ResponseService $responseService)
     {
         /** @var User $user */

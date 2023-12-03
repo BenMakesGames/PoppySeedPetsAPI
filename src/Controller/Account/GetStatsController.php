@@ -7,15 +7,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/account")
- */
+#[Route("/account")]
 class GetStatsController extends AbstractController
 {
-    /**
-     * @Route("/stats", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/stats", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getStats(ResponseService $responseService)
     {
         $stats = SimpleDb::createReadOnlyConnection()

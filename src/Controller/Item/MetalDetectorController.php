@@ -14,10 +14,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class MetalDetectorController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/tune/iron", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/tune/iron", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function tuneMetalDetectorForIron(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
@@ -34,10 +32,8 @@ class MetalDetectorController extends AbstractController
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/tune/silver", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/tune/silver", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function tuneMetalDetectorForSilver(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
@@ -54,10 +50,8 @@ class MetalDetectorController extends AbstractController
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/tune/gold", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/tune/gold", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function tuneMetalDetectorForGold(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )

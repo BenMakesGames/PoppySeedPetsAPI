@@ -25,10 +25,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class EggController extends AbstractController
 {
-    /**
-     * @Route("/jellingPolyp/{inventory}/hatch", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/jellingPolyp/{inventory}/hatch", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function hatchPolyp(
         Inventory $inventory, ResponseService $responseService, IRandom $squirrel3, EntityManagerInterface $em,
         PetFactory $petFactory
@@ -108,10 +106,8 @@ class EggController extends AbstractController
         return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/weird-blue/{inventory}/hatch", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/weird-blue/{inventory}/hatch", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function hatchWeirdBlueEgg(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
         EntityManagerInterface $em, PetFactory $petFactory, IRandom $squirrel3
@@ -189,10 +185,8 @@ class EggController extends AbstractController
         return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/metalBox/{inventory}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/metalBox/{inventory}/open", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openMetalBox(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
         EntityManagerInterface $em, PetFactory $petFactory, IRandom $squirrel3

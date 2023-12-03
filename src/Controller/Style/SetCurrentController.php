@@ -12,15 +12,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/style")
- */
+#[Route("/style")]
 class SetCurrentController extends AbstractController
 {
-    /**
-     * @Route("/{theme}/setCurrent", methods={"PATCH"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{theme}/setCurrent", methods: ["PATCH"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function setCurrent(
         UserStyle $theme, ResponseService $responseService, EntityManagerInterface $em
     )

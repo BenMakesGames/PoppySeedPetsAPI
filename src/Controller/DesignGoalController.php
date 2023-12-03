@@ -10,13 +10,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/designGoal")
- */
+#[Route("/designGoal")]
 class DesignGoalController extends AbstractController
 {
+    #[Route("", methods: ["GET"])]
     /**
-     * @Route("", methods={"GET"})
      * @DoesNotRequireHouseHours()
      */
     public function getAll(DesignGoalRepository $designGoalRepository, ResponseService $responseService)
@@ -27,8 +25,8 @@ class DesignGoalController extends AbstractController
         );
     }
 
+    #[Route("/{designGoal}", methods: ["GET"])]
     /**
-     * @Route("/{designGoal}", methods={"GET"})
      * @DoesNotRequireHouseHours()
      */
     public function getDetails(DesignGoal $designGoal, ResponseService $responseService)

@@ -18,10 +18,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class BasketController extends AbstractController
 {
-    /**
-     * @Route("/fish/{inventory}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/fish/{inventory}/open", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openBasketOfFish(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $squirrel3
@@ -63,10 +61,8 @@ class BasketController extends AbstractController
         return $responseService->itemActionSuccess('You emptied the Basket of Fish, receiving ' . ArrayFunctions::list_nice($loot) . $exclaim . ' (And you keep the Fabric Mâché Basket as well, of course.)', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/fruit/{inventory}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/fruit/{inventory}/open", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openFruitBasket(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em
@@ -93,10 +89,8 @@ class BasketController extends AbstractController
         return $responseService->itemActionSuccess('You emptied the Fruit Basket, receiving Apricot Preserves, Bluberries, and a Naner. (You keep the Fabric Mâché Basket as well, of course.)', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/flower/{inventory}/loot", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/flower/{inventory}/loot", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openFlowerBasket(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $squirrel3

@@ -16,9 +16,7 @@ use App\Annotations\DoesNotRequireHouseHours;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/following")
- */
+#[Route("/following")]
 class FollowController extends AbstractController
 {
     /**

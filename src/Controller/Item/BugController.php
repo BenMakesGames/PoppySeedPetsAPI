@@ -33,10 +33,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class BugController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/squish", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/squish", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function squishBug(
         Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
         EntityManagerInterface $em, UserQuestRepository $userQuestRepository
@@ -61,10 +59,8 @@ class BugController extends AbstractController
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/putOutside", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/putOutside", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function putBugOutside(
         Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
         EntityManagerInterface $em
@@ -85,10 +81,8 @@ class BugController extends AbstractController
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/feed", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/feed", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function feedBug(
         Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
         EntityManagerInterface $em, Request $request, InventoryService $inventoryService, IRandom $squirrel3
@@ -186,10 +180,8 @@ class BugController extends AbstractController
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/adopt", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/adopt", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function adopt(
         Inventory $inventory, EntityManagerInterface $em, ResponseService $responseService, PetFactory $petFactory,
         IRandom $rng

@@ -60,10 +60,8 @@ class HouseFairyController extends AbstractController
         return self::FAIRY_NAMES[$i->getId() % count(self::FAIRY_NAMES)];
     }
 
-    /**
-     * @Route("/{inventory}/hello", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/hello", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function sayHello(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
         EntityManagerInterface $em
@@ -115,10 +113,8 @@ class HouseFairyController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/{inventory}/buildFireplace", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/buildFireplace", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryRepository $inventoryRepository, UserStatsService $userStatsRepository, IRandom $squirrel3,
@@ -189,10 +185,8 @@ class HouseFairyController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/{inventory}/quintessence", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/quintessence", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function askAboutQuintessence(
         Inventory $inventory, ResponseService $responseService
     )

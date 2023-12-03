@@ -24,10 +24,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class BeeLarvaController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/hatch", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/hatch", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function hatch(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService, IRandom $rng, PetFactory $petFactory
@@ -96,10 +94,8 @@ class BeeLarvaController extends AbstractController
         return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/returnToBeehive", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/returnToBeehive", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function returnToBeehive(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
@@ -124,10 +120,8 @@ class BeeLarvaController extends AbstractController
         return $responseService->itemActionSuccess('You return the larva to Queen ' . $user->getBeehive()->getQueenName() . ', who thanks you for your honor and loyalty. The colony redoubles their efforts, and hey: with 1 more worker than before! (Every bee counts!)', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/giveToAntQueen", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/giveToAntQueen", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function giveToAntQueen(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService

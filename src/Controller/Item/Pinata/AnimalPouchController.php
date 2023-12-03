@@ -19,10 +19,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class AnimalPouchController extends AbstractController
 {
-    /**
-     * @Route("/magpie/{inventory}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/magpie/{inventory}/open", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openMagpiePouch(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
         ResponseService $responseService, IRandom $squirrel3
@@ -62,10 +60,8 @@ class AnimalPouchController extends AbstractController
         return $responseService->itemActionSuccess('You open the pouch, revealing ' . ArrayFunctions::list_nice($listOfItems) . '!', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/raccoon/{inventory}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/raccoon/{inventory}/open", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openRaccoonPouch(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
         ResponseService $responseService, IRandom $squirrel3

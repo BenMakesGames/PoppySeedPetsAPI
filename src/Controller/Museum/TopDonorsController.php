@@ -17,15 +17,11 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/museum")
- */
+#[Route("/museum")]
 class TopDonorsController extends AbstractController
 {
-    /**
-     * @Route("/topDonors", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/topDonors", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getTopDonors(
         Request $request, ResponseService $responseService, EntityManagerInterface $em
     )

@@ -19,15 +19,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Annotations\DoesNotRequireHouseHours;
 
-/**
- * @Route("/pet")
- */
+#[Route("/pet")]
 class DaycareController extends AbstractController
 {
-    /**
-     * @Route("/daycare", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/daycare", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getMyDaycarePets(
         ResponseService $responseService, PetFilterService $petFilterService, Request $request
     )

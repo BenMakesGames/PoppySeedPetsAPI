@@ -19,15 +19,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/fireplace")
- */
+#[Route("/fireplace")]
 class ClaimRewardsController extends AbstractController
 {
-    /**
-     * @Route("/claimRewards", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/claimRewards", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function claimRewards(
         InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
         UserQuestRepository $userQuestRepository, IRandom $squirrel3

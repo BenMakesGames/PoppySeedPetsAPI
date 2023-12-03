@@ -19,15 +19,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/hollowEarth")
- */
+#[Route("/hollowEarth")]
 class SetTileCardController extends AbstractController
 {
-    /**
-     * @Route("/setTileCard", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/setTileCard", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function setTileCard(
         Request $request,
         ResponseService $responseService, EntityManagerInterface $em, HollowEarthService $hollowEarthService

@@ -18,15 +18,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/plaza")
- */
+#[Route("/plaza")]
 class PlazaController extends AbstractController
 {
-    /**
-     * @Route("/collectHolidayBox", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/collectHolidayBox", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function collectHolidayBox(
         Request $request, PlazaService $plazaService, MuseumService $museumService,
         InventoryService $inventoryService, EntityManagerInterface $em, ResponseService $responseService,

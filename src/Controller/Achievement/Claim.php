@@ -22,15 +22,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/achievement")
- */
+#[Route("/achievement")]
 final class Claim extends AbstractController
 {
-    /**
-     * @Route("/claim", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/claim", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function claim(
         ResponseService $responseService, Request $request, EntityManagerInterface $em,
         UserStatsService $userStatsRepository, InventoryService $inventoryService,

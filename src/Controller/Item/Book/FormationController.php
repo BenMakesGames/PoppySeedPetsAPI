@@ -13,10 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class FormationController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/read", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/read", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(Inventory $inventory, ResponseService $responseService)
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'formation/#/read');

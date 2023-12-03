@@ -21,10 +21,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class StrongboxController extends AbstractController
 {
-    /**
-     * @Route("/little-strongbox/{inventory}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/little-strongbox/{inventory}/open", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openLittleStrongbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
@@ -73,10 +71,8 @@ class StrongboxController extends AbstractController
         return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed ' . $moneys . '~~m~~,', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
-    /**
-     * @Route("/very-strongbox/{inventory}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/very-strongbox/{inventory}/open", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openVeryStrongbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
@@ -135,10 +131,8 @@ class StrongboxController extends AbstractController
         return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed ' . $moneys . '~~m~~,', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
-    /**
-     * @Route("/outrageously-strongbox/{inventory}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/outrageously-strongbox/{inventory}/open", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openOutrageouslyStrongbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository

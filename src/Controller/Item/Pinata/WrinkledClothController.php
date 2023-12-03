@@ -23,10 +23,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class WrinkledClothController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/iron", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/iron", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function ironWrinkledCloth(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository

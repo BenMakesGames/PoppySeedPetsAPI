@@ -10,22 +10,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/guild")
- */
+#[Route("/guild")]
 class GuildController extends AbstractController
 {
-    /**
-     * @Route("", methods={"GET"})
-     */
+    #[Route("", methods: ["GET"])]
     public function getAll(ResponseService $responseService, GuildRepository $guildRepository)
     {
         return $responseService->success($guildRepository->findAll(), [ SerializationGroupEnum::GUILD_ENCYCLOPEDIA ]);
     }
 
-    /**
-     * @Route("/{guild}", methods={"GET"})
-     */
+    #[Route("/{guild}", methods: ["GET"])]
     public function getGuild(
         Guild $guild, ResponseService $responseService, GuildMemberFilterService $guildMemberFilterService, Request $request
     )

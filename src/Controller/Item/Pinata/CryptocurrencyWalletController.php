@@ -21,10 +21,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class CryptocurrencyWalletController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/unlock", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/unlock", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
         InventoryRepository $inventoryRepository, UserStatsService $userStatsRepository,

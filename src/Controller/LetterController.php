@@ -14,9 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/letter")
- */
+#[Route("/letter")]
 class LetterController extends AbstractController
 {
     /**
@@ -41,10 +39,8 @@ class LetterController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{letter}/read", methods={"PATCH"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{letter}/read", methods: ["PATCH"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function markRead(
         UserLetter $letter, EntityManagerInterface $em, ResponseService $responseService,
         FieldGuideService $fieldGuideService

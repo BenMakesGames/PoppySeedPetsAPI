@@ -18,10 +18,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class MagpieDealController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/quint", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/quint", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getQuint(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em
@@ -45,10 +43,8 @@ class MagpieDealController extends AbstractController
         return $responseService->itemActionSuccess('A mail magpie delivers two Quintessence. "Thus concludes our deal!" it squawks, before flying away.', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/feathersAndEggs", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/feathersAndEggs", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getFeathersAndEggs(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $squirrel3
@@ -81,10 +77,8 @@ class MagpieDealController extends AbstractController
         return $responseService->itemActionSuccess('A mail magpie delivers ' . ArrayFunctions::list_nice($itemList) . '. "Thus concludes our deal!" it squawks, before flying away.', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/sticks", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/sticks", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getSticks(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em
@@ -108,10 +102,8 @@ class MagpieDealController extends AbstractController
         return $responseService->itemActionSuccess('A mail magpie delivers five Crooked Sticks. "Thus concludes our deal!" it squawks, before flying away.', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/shinyMetals", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/shinyMetals", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getShinyMetals(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em

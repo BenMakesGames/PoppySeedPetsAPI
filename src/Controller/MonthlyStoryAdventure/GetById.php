@@ -15,15 +15,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/monthlyStoryAdventure")
- */
+#[Route("/monthlyStoryAdventure")]
 class GetById extends AbstractController
 {
-    /**
-     * @Route("/{story}", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{story}", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function handle(
         MonthlyStoryAdventure $story,
         MonthlyStoryAdventureStepRepository $monthlyStoryAdventureStepRepository,

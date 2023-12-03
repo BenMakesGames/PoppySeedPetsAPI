@@ -19,10 +19,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class SandyLumpController extends AbstractController
 {
-    /**
-     * @Route("/{lump}/clean", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{lump}/clean", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function clean(
         Inventory $lump, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsService $userStatsRepository, EntityManagerInterface $em

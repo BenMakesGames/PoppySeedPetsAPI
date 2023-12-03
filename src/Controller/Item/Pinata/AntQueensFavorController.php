@@ -18,10 +18,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class AntQueensFavorController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/bugStuff", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/bugStuff", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getBugStuff(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $rng
@@ -68,10 +66,8 @@ class AntQueensFavorController extends AbstractController
         return $responseService->itemActionSuccess('A line of ants approaches with ' . ArrayFunctions::list_nice($items) . '. "Thus concludes our deal!" they chitter, before scurrying away.', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/candy", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/candy", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getFood(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $rng
@@ -120,10 +116,8 @@ class AntQueensFavorController extends AbstractController
         return $responseService->itemActionSuccess('A line of ants approaches with ' . ArrayFunctions::list_nice($items) . '. "Thus concludes our deal!" they chitter, before scurrying away.', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/craftingSupplies", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/craftingSupplies", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function craftingSupplies(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $rng

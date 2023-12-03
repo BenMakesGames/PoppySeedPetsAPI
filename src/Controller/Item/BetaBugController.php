@@ -37,10 +37,8 @@ class BetaBugController extends AbstractController
         'Rainbowsaber'
     ];
 
-    /**
-     * @Route("/{inventory}/eligibleItems", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/eligibleItems", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getEligibleItems(Inventory $inventory, ResponseService $responseService, InventoryRepository $inventoryRepository)
     {
         /** @var User $user */
@@ -63,10 +61,8 @@ class BetaBugController extends AbstractController
         return $responseService->success($items, [ SerializationGroupEnum::MY_INVENTORY ]);
     }
 
-    /**
-     * @Route("/{inventory}/use", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/use", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function useBug(
         Inventory $inventory, Request $request, InventoryRepository $inventoryRepository,
         ResponseService $responseService, EntityManagerInterface $em, PetFactory $petFactory, IRandom $rng

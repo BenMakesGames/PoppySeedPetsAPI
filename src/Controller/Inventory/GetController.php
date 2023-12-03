@@ -15,15 +15,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/inventory")
- */
+#[Route("/inventory")]
 class GetController extends AbstractController
 {
-    /**
-     * @Route("/my", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/my", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getMyHouseInventory(
         ResponseService $responseService, ManagerRegistry $doctrine
     )
@@ -65,10 +61,8 @@ class GetController extends AbstractController
         return $responseService->success($inventory, [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MY_INVENTORY ]);
     }
 
-    /**
-     * @Route("/summary/{location}", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/summary/{location}", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getSummary(
         int $location, ResponseService $responseService, InventoryRepository $inventoryRepository
     )

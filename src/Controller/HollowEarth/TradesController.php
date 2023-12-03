@@ -16,15 +16,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/hollowEarth")
- */
+#[Route("/hollowEarth")]
 class TradesController extends AbstractController
 {
-    /**
-     * @Route("/trades", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/trades", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getTrades(ResponseService $responseService, HollowEarthService $hollowEarthService)
     {
         $user = $this->getUser();
@@ -42,10 +38,8 @@ class TradesController extends AbstractController
         return $responseService->success($trades);
     }
 
-    /**
-     * @Route("/trades/{tradeId}/exchange", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/trades/{tradeId}/exchange", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function makeExchange(
         string $tradeId, Request $request, ResponseService $responseService, EntityManagerInterface $em,
         HollowEarthService $hollowEarthService, InventoryService $inventoryService

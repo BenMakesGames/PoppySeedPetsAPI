@@ -11,16 +11,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/deviceStats")
- */
+#[Route("/deviceStats")]
 class DeviceStatsController extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()
-     * @Route("", methods={"PUT"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[Route("", methods: ["PUT"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function about(ResponseService $responseService, Request $request, EntityManagerInterface $em)
     {
         /** @var User $user */

@@ -18,10 +18,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class SpicyKonpeitoController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/give", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/give", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function feedToDragon(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         DragonRepository $dragonRepository, PetColorFunctions $petColorChangingService,

@@ -28,10 +28,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class IridescentHandCannonController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/fire", methods={"PATCH"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/fire", methods: ["PATCH"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function fireHandCannon(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetColorFunctions $petColorChangingService, IRandom $squirrel3, HattierService $hattierService

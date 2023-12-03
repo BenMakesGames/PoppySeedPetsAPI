@@ -21,10 +21,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class MagicHourglassController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/shatter", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/shatter", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function shatter(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         HouseService $houseService, UserStatsService $userStatsRepository, EntityManagerInterface $em,

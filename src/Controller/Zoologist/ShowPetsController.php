@@ -20,15 +20,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/zoologist")
- */
+#[Route("/zoologist")]
 class ShowPetsController extends AbstractController
 {
-    /**
-     * @Route("/showPets", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/showPets", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function showPets(
         EntityManagerInterface $em, Request $request, PetRepository $petRepository,
         UserStatsService $userStatsRepository, ResponseService $responseService, IRandom $rng

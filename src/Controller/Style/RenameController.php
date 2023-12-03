@@ -13,15 +13,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/style")
- */
+#[Route("/style")]
 class RenameController extends AbstractController
 {
-    /**
-     * @Route("/{theme}/rename", methods={"PATCH"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{theme}/rename", methods: ["PATCH"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function renameTheme(
         UserStyle $theme, ResponseService $responseService, EntityManagerInterface $em,
         Request $request

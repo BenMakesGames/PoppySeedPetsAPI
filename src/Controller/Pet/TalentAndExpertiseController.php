@@ -18,15 +18,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/pet")
- */
+#[Route("/pet")]
 class TalentAndExpertiseController extends AbstractController
 {
-    /**
-     * @Route("/{pet}/pickTalent", methods={"POST"}, requirements={"pet"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{pet}/pickTalent", requirements: ["pet" => "\d+"], methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function pickTalent(
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3
     )

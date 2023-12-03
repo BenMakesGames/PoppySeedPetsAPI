@@ -21,10 +21,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class StrangeFieldController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/collapse", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/collapse", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         EntityManagerInterface $em, UserStatsService $userStatsRepository

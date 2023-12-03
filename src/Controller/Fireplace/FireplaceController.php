@@ -14,9 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-/**
- * @Route("/fireplace")
- */
+#[Route("/fireplace")]
 class FireplaceController extends AbstractController
 {
     /**
@@ -50,10 +48,8 @@ class FireplaceController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/fuel", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/fuel", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getFireplaceFuel(
         InventoryRepository $inventoryRepository, ResponseService $responseService
     )
@@ -69,10 +65,8 @@ class FireplaceController extends AbstractController
         return $responseService->success($fuel, [ SerializationGroupEnum::FIREPLACE_FUEL ]);
     }
 
-    /**
-     * @Route("/whelpFood", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/whelpFood", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getWhelpFood(
         InventoryRepository $inventoryRepository, ResponseService $responseService, DragonRepository $dragonRepository
     )

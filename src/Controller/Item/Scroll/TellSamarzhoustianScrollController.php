@@ -20,10 +20,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class TellSamarzhoustianScrollController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/open", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
         ResponseService $responseService, IRandom $squirrel3, UserStatsService $userStatsRepository

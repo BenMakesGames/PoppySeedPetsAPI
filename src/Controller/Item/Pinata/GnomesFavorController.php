@@ -30,10 +30,8 @@ class GnomesFavorController extends AbstractController
         ' (Ooh! Sparkly!)',
     ];
 
-    /**
-     * @Route("/{inventory}/quint", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/quint", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getQuint(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $rng, UserStatsService $userStatsRepository
@@ -61,10 +59,8 @@ class GnomesFavorController extends AbstractController
         return $responseService->itemActionSuccess('Two Quintessence materialize in front of you with a flash! ' . $extraSilliness, [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/food", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/food", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getFood(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $squirrel3, UserStatsService $userStatsRepository
@@ -121,10 +117,8 @@ class GnomesFavorController extends AbstractController
         return $responseService->itemActionSuccess(ArrayFunctions::list_nice($itemList) . ' materialize in front of you with a flash! ' . $extraSilliness, [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/treasure", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/treasure", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getTreasure(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $rng, UserStatsService $userStatsRepository

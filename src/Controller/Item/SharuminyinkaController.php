@@ -20,10 +20,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class SharuminyinkaController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/createHope", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/createHope", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function createHope(
         Inventory $inventory, ResponseService $responseService, TraderService $traderService,
         EntityManagerInterface $em, InventoryRepository $inventoryRepository
@@ -64,10 +62,8 @@ class SharuminyinkaController extends AbstractController
             return $responseService->itemActionSuccess('You created Sharuminyinka\'s Hope.');
         }
     }
-    /**
-     * @Route("/{inventory}/createMemory", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/createMemory", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function createMemory(
         Inventory $inventory, ResponseService $responseService, TraderService $traderService,
         EntityManagerInterface $em

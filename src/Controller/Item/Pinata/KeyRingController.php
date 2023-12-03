@@ -16,10 +16,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class KeyRingController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/takeIron", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/takeIron", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function takeIronKeys(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService
@@ -41,10 +39,8 @@ class KeyRingController extends AbstractController
         return $responseService->itemActionSuccess('You pull two Iron Keys off the ring. Apparently, despite the graphic, that\'s all there was.', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/takeSilver", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/takeSilver", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function takeSilverKeys(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService
@@ -66,10 +62,8 @@ class KeyRingController extends AbstractController
         return $responseService->itemActionSuccess('You pull two Silver Keys off the ring. Apparently, despite the graphic, that\'s all there was.', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/takeGold", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/takeGold", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function takeGoldKeys(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService

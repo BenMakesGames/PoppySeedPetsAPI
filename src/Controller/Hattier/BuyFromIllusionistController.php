@@ -17,9 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/illusionist")
- */
+#[Route("/illusionist")]
 class BuyFromIllusionistController extends AbstractController
 {
     private const INVENTORY = [
@@ -33,10 +31,8 @@ class BuyFromIllusionistController extends AbstractController
         'On Vampires' => [ 'moneys' => 25, 'recyclingPoints' => 15, 'bloodWine' => 1 ],
     ];
 
-    /**
-     * @Route("/buy", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/buy", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buy(
         Request $request, TransactionService $transactionService, InventoryService $inventoryService,
         EntityManagerInterface $em, ResponseService $responseService

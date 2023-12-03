@@ -17,9 +17,7 @@ use App\Annotations\DoesNotRequireHouseHours;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/house")
- */
+#[Route("/house")]
 class RunHoursController extends AbstractController
 {
     /**

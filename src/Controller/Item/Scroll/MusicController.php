@@ -20,10 +20,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class MusicController extends AbstractController
 {
-    /**
-     * @Route("/music/{inventory}/invoke", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/music/{inventory}/invoke", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function invokeMusicScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsService $userStatsRepository, EntityManagerInterface $em

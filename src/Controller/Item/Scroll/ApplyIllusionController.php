@@ -16,15 +16,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/scrollOfIllusions")
- */
+#[Route("/scrollOfIllusions")]
 class ApplyIllusionController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/read", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/read", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buyIllusion(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         Request $request

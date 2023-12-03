@@ -48,10 +48,8 @@ class BaabbleController extends AbstractController
         'Magic Smoke', 'Lightning in a Bottle',
     ];
 
-    /**
-     * @Route("/black/{inventory}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/black/{inventory}/open", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openBlackBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $squirrel3
@@ -102,10 +100,8 @@ class BaabbleController extends AbstractController
         return $responseService->itemActionSuccess('You open the Baabble, and, like, ' . count($items) . ' items come flying out! ' . $noteworthy[0] . ', and ' . $noteworthy[1] . ', among them!', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/white/{inventory}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/white/{inventory}/open", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openWhiteBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $squirrel3
@@ -160,10 +156,8 @@ class BaabbleController extends AbstractController
         return $responseService->itemActionSuccess('You open the Baabble, and, like, ' . count($items) . ' items come flying out! ' . $noteworthy[0] . ', and ' . $noteworthy[1] . ', among them!', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/gold/{inventory}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/gold/{inventory}/open", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openGoldBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $squirrel3
@@ -221,10 +215,8 @@ class BaabbleController extends AbstractController
             return $responseService->itemActionSuccess('You open the Baabble, and, like, ' . count($items) . ' items come flying out! ' . $noteworthy[0] . ', and ' . $noteworthy[1] . ', among them!', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/shiny/{inventory}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/shiny/{inventory}/open", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openShinyBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $squirrel3

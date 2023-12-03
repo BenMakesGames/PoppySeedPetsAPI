@@ -20,10 +20,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class GlitterBombController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/toss", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/toss", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function toss(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         PetRepository $petRepository, IRandom $squirrel3, HotPotatoService $hotPotatoService

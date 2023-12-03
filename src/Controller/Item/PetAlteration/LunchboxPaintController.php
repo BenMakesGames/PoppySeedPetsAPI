@@ -18,10 +18,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class LunchboxPaintController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/paint", methods={"PATCH"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/paint", methods: ["PATCH"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function paintLunchbox(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
     )

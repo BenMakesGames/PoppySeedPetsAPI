@@ -18,15 +18,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Annotations\DoesNotRequireHouseHours;
 
-/**
- * @Route("/account")
- */
+#[Route("/account")]
 class CollectWeeklyCarePackageController extends AbstractController
 {
-    /**
-     * @Route("/collectWeeklyCarePackage", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/collectWeeklyCarePackage", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function collectWeeklyBox(
         Request $request, EntityManagerInterface $em, ResponseService $responseService,
         InventoryService $inventoryService, UserStatsService $userStatsRepository

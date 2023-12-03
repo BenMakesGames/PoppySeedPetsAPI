@@ -20,10 +20,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class RichesController extends AbstractController
 {
-    /**
-     * @Route("/minorRiches/{inventory}/invoke", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/minorRiches/{inventory}/invoke", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function invokeMinorRichesScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService,
@@ -58,10 +56,8 @@ class RichesController extends AbstractController
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/majorRiches/{inventory}/invoke", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/majorRiches/{inventory}/invoke", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function invokeMajorRichesScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService

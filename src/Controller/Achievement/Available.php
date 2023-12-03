@@ -12,15 +12,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/achievement")
- */
+#[Route("/achievement")]
 final class Available extends AbstractController
 {
-    /**
-     * @Route("/available", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/available", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getAvailable(
         ResponseService $responseService, EntityManagerInterface $em
     )

@@ -18,15 +18,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/museum")
- */
+#[Route("/museum")]
 class GiftShopController extends AbstractController
 {
-    /**
-     * @Route("/giftShop", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/giftShop", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getGiftShop(ResponseService $responseService, MuseumService $museumService)
     {
         /** @var User $user */
@@ -40,10 +36,8 @@ class GiftShopController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/giftShop/buy", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/giftShop/buy", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buyFromGiftShop(
         Request $request, ResponseService $responseService, MuseumService $museumService,
         InventoryService $inventoryService, EntityManagerInterface $em, TransactionService $transactionService

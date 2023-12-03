@@ -14,18 +14,15 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Annotations\DoesNotRequireHouseHours;
 
-/**
- * @Route("/encyclopedia")
- */
+#[Route("/encyclopedia")]
 class EncyclopediaController extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()
-     * @Route("/typeahead/item", methods={"GET"})
      */
+    #[Route("/typeahead/item", methods: ["GET"])]
     public function typeaheadSearch(
         Request $request, ResponseService $responseService, ItemTypeaheadService $itemTypeaheadService
     )
@@ -37,8 +34,8 @@ class EncyclopediaController extends AbstractController
 
     /**
      * @DoesNotRequireHouseHours()
-     * @Route("/item", methods={"GET"})
      */
+    #[Route("/item", methods: ["GET"])]
     public function itemSearch(Request $request, ItemFilterService $itemFilterService, ResponseService $responseService)
     {
         $itemFilterService->setUser($this->getUser());
@@ -51,8 +48,8 @@ class EncyclopediaController extends AbstractController
 
     /**
      * @DoesNotRequireHouseHours()
-     * @Route("/item/{itemName}", methods={"GET"})
      */
+    #[Route("/item/{itemName}", methods: ["GET"])]
     public function getItemByName(string $itemName, EntityManagerInterface $em, ResponseService $responseService)
     {
         try
@@ -69,8 +66,8 @@ class EncyclopediaController extends AbstractController
 
     /**
      * @DoesNotRequireHouseHours()
-     * @Route("/species", methods={"GET"})
      */
+    #[Route("/species", methods: ["GET"])]
     public function speciesSearch(Request $request, PetSpeciesFilterService $petSpeciesFilterService, ResponseService $responseService)
     {
         $petSpeciesFilterService->setUser($this->getUser());
@@ -83,8 +80,8 @@ class EncyclopediaController extends AbstractController
 
     /**
      * @DoesNotRequireHouseHours()
-     * @Route("/species/{speciesName}", methods={"GET"})
      */
+    #[Route("/species/{speciesName}", methods: ["GET"])]
     public function getSpeciesByName(string $speciesName, EntityManagerInterface $em, ResponseService $responseService)
     {
         $species = $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => $speciesName ]);
@@ -97,8 +94,8 @@ class EncyclopediaController extends AbstractController
 
     /**
      * @DoesNotRequireHouseHours()
-     * @Route("/merit", methods={"GET"})
      */
+    #[Route("/merit", methods: ["GET"])]
     public function getMerits(
         ResponseService $responseService, MeritFilterService $meritFilterService, Request $request
     )

@@ -21,10 +21,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class WhisperStoneController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/listen", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/listen", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
         InventoryService $inventoryService, UserStatsService $userStatsRepository

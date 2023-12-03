@@ -36,10 +36,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class DragonVaseController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/smash", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/smash", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function smash(
         Inventory $inventory, ResponseService $responseService, IRandom $rng, PetRepository $petRepository,
         PetExperienceService $petExperienceService, InventoryService $inventoryService,
@@ -111,10 +109,8 @@ class DragonVaseController extends AbstractController
             return $responseService->itemActionSuccess('You smashed the Dragon Vase, and caught some ' . $yourItem . ' before it escaped.', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/dip", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/dip", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
         UserQuestRepository $userQuestRepository, Request $request, UserStatsService $userStatsRepository

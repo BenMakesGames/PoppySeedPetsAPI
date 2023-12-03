@@ -17,10 +17,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class TakeApartController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function doIt(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService

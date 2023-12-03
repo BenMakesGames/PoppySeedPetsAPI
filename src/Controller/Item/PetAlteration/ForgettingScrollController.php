@@ -31,10 +31,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class ForgettingScrollController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/forgettableThings", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/forgettableThings", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getForgettableThings(
         Inventory $inventory, ResponseService $responseService, Request $request, PetRepository $petRepository
     )
@@ -64,10 +62,8 @@ class ForgettingScrollController extends AbstractController
         return $responseService->success($data);
     }
 
-    /**
-     * @Route("/{inventory}/forgetMerit", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/forgetMerit", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function forgetMerit(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         UserStatsService $userStatsRepository
@@ -143,10 +139,8 @@ class ForgettingScrollController extends AbstractController
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/forgetSkill", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/forgetSkill", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function forgetSkill(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository, UserStatsService $userStatsRepository

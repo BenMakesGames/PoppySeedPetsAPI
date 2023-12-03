@@ -23,10 +23,8 @@ class MeltController extends AbstractController
         return RecipeRepository::findBy(fn($recipe) => str_starts_with($recipe['name'], 'Melt'));
     }
 
-    /**
-     * @Route("/{inventory}/upload", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/upload", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function upload(
         Inventory $inventory, ResponseService $responseService, CookingService $cookingService
     )
@@ -43,10 +41,8 @@ class MeltController extends AbstractController
         return $responseService->itemActionSuccess($message);
     }
 
-    /**
-     * @Route("/{inventory}/read", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/read", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService
     )

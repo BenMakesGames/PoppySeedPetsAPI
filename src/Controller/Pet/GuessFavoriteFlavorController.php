@@ -19,15 +19,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/pet")
- */
+#[Route("/pet")]
 class GuessFavoriteFlavorController extends AbstractController
 {
-    /**
-     * @Route("/{pet}/guessFavoriteFlavor", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{pet}/guessFavoriteFlavor", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function guessFavoriteFlavor(
         Pet $pet, Request $request, ResponseService $responseService, UserQuestRepository $userQuestRepository,
         InventoryService $inventoryService, EntityManagerInterface $em

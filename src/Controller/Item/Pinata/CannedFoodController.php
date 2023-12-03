@@ -20,10 +20,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CannedFoodController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/open", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         EntityManagerInterface $em, UserStatsService $userStatsRepository, TransactionService $transactionService

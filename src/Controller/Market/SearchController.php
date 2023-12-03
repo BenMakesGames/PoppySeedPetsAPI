@@ -10,15 +10,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/market")
- */
+#[Route("/market")]
 class SearchController extends AbstractController
 {
-    /**
-     * @Route("/search", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/search", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function search(Request $request, ResponseService $responseService, MarketFilterService $marketFilterService)
     {
         /** @var User $user */

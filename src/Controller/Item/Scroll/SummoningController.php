@@ -18,15 +18,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/item/summoningScroll")
- */
+#[Route('/item/summoningScroll')]
 class SummoningController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/unfriendly", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/unfriendly", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function summonSomethingUnfriendly(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         HouseMonsterService $houseMonsterService, IRandom $squirrel3, UserStatsService $userStatsRepository
@@ -67,10 +63,8 @@ class SummoningController extends AbstractController
         return $responseService->itemActionSuccess($result, [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/unfriendly2", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/unfriendly2", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function summonSomethingFromDeepSpace(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         HouseMonsterService $houseMonsterService, IRandom $squirrel3

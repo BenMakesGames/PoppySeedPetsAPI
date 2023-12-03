@@ -12,9 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Annotations\DoesNotRequireHouseHours;
 
-/**
- * @Route("/patreon")
- */
+#[Route("/patreon")]
 class ConnectAccountController extends AbstractController
 {
     /**

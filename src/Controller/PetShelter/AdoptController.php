@@ -26,15 +26,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/petShelter")
- */
+#[Route("/petShelter")]
 class AdoptController extends AbstractController
 {
-    /**
-     * @Route("/{id}/adopt", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{id}/adopt", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function adoptPet(
         int $id, AdoptionService $adoptionService, Request $request, ResponseService $responseService,
         EntityManagerInterface $em, UserStatsService $userStatsRepository, UserQuestRepository $userQuestRepository,

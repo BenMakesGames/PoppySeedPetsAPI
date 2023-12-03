@@ -16,15 +16,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/item")
- */
+#[Route("/item")]
 class WonderlandTeaController extends AbstractController
 {
-    /**
-     * @Route("/tinyTea/{inventory}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/tinyTea/{inventory}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function serveTinyTea(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         IRandom $squirrel3
@@ -58,10 +54,8 @@ class WonderlandTeaController extends AbstractController
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/tremendousTea/{inventory}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/tremendousTea/{inventory}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function serveTremendousTea(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository, IRandom $squirrel3
@@ -95,10 +89,8 @@ class WonderlandTeaController extends AbstractController
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/totallyTea/{inventory}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/totallyTea/{inventory}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function serveTotallyTea(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository

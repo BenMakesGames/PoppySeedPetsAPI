@@ -22,15 +22,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/greenhouse")
- */
+#[Route("/greenhouse")]
 class FertilizePlantController extends AbstractController
 {
-    /**
-     * @Route("/{plant}/fertilize", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{plant}/fertilize", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function fertilizePlant(
         GreenhousePlant $plant, ResponseService $responseService, Request $request, EntityManagerInterface $em,
         InventoryRepository $inventoryRepository, UserStatsService $userStatsRepository,

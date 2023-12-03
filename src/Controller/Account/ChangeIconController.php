@@ -11,15 +11,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Annotations\DoesNotRequireHouseHours;
 
-/**
- * @Route("/account")
- */
+#[Route("/account")]
 class ChangeIconController extends AbstractController
 {
-    /**
-     * @Route("/changeIcon", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/changeIcon", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function setIcon(
         Request $request, ResponseService $responseService, EntityManagerInterface $em
     )
@@ -42,10 +38,8 @@ class ChangeIconController extends AbstractController
         return $responseService->success();
     }
 
-    /**
-     * @Route("/clearIcon", methods={"PATCH"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/clearIcon", methods: ["PATCH"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function clearIcon(ResponseService $responseService, EntityManagerInterface $em)
     {
         $user = $this->getUser();

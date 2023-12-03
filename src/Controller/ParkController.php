@@ -15,15 +15,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/park")
- */
+#[Route("/park")]
 class ParkController extends AbstractController
 {
-    /**
-     * @Route("/signUpPet/{pet}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/signUpPet/{pet}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function changePetParkEventType(Pet $pet, Request $request, EntityManagerInterface $em, ResponseService $responseService)
     {
         $parkEventType = trim($request->request->get('parkEventType', ''));
@@ -46,10 +42,8 @@ class ParkController extends AbstractController
         return $responseService->success();
     }
 
-    /**
-     * @Route("/history", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/history", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getEventHistory(
         Request $request, ResponseService $responseService, ParkEventHistoryFilterService $parkEventHistoryFilterService
     )

@@ -11,9 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Annotations\DoesNotRequireHouseHours;
 
-/**
- * @Route("/account")
- */
+#[Route("/account")]
 class SearchController extends AbstractController
 {
     /**

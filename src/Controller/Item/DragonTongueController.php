@@ -15,15 +15,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/item")
- */
+#[Route("/item")]
 class DragonTongueController extends AbstractController
 {
-    /**
-     * @Route("/dragonTongue/{inventory}/speech", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/dragonTongue/{inventory}/speech", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getSpeech(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
@@ -44,10 +40,8 @@ class DragonTongueController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/dragonTongue/{inventory}/speech", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/dragonTongue/{inventory}/speech", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function setSpeech(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         IRandom $rng

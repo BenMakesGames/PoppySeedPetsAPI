@@ -15,10 +15,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class PaperController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/unfold", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/unfold", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function unfoldPaperThing(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )

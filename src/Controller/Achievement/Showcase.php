@@ -10,17 +10,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/achievement")
- */
+#[Route("/achievement")]
 final class Showcase extends AbstractController
 {
     private const PAGE_SIZE = 20;
 
-    /**
-     * @Route("/showcase", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/showcase", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getShowcase(
         ResponseService $responseService, Request $request, PerformanceProfiler $performanceProfiler
     )

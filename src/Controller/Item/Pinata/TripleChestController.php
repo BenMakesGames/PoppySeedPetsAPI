@@ -16,15 +16,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/item")
- */
+#[Route("/item")]
 class TripleChestController extends AbstractController
 {
-    /**
-     * @Route("/tripleChest/{inventory}/openWithIronKey", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/tripleChest/{inventory}/openWithIronKey", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openWithIronKey(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
@@ -78,10 +74,8 @@ class TripleChestController extends AbstractController
         return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed ' . $moneys . '~~m~~,', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
-    /**
-     * @Route("/tripleChest/{inventory}/openWithSilverKey", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/tripleChest/{inventory}/openWithSilverKey", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openWithSilverKey(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
@@ -135,10 +129,8 @@ class TripleChestController extends AbstractController
         return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed ' . $moneys . '~~m~~,', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
-    /**
-     * @Route("/tripleChest/{inventory}/openWithGoldKey", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/tripleChest/{inventory}/openWithGoldKey", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openWithGoldKey(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository

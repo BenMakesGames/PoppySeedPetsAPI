@@ -27,10 +27,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class SummoningSomethingFriendlyController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/friendly", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/friendly", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function summonSomethingFriendly(
         Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
         EntityManagerInterface $em, PetFactory $petFactory, IRandom $squirrel3

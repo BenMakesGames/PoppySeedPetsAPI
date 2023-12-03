@@ -15,15 +15,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/market")
- */
+#[Route("/market")]
 class LimitsController extends AbstractController
 {
-    /**
-     * @Route("/limits", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/limits", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getMarketLimits(ResponseService $responseService, MarketService $marketService)
     {
         /** @var User $user */
@@ -38,10 +34,8 @@ class LimitsController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/limits/increase", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/limits/increase", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseMarketLimits(
         ResponseService $responseService, MarketService $marketService, InventoryService $inventoryService,
         EntityManagerInterface $em

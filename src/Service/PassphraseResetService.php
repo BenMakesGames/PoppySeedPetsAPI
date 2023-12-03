@@ -6,13 +6,15 @@ use App\Entity\User;
 use App\Functions\PlayerLogHelpers;
 use App\Functions\StringFunctions;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mime\Email;
 
 class PassphraseResetService
 {
-    private \Swift_Mailer $mailer;
+    private Mailer $mailer;
     private EntityManagerInterface $em;
 
-    public function __construct(\Swift_Mailer $mailer, EntityManagerInterface $em)
+    public function __construct(Mailer $mailer, EntityManagerInterface $em)
     {
         $this->mailer = $mailer;
         $this->em = $em;
@@ -64,10 +66,11 @@ class PassphraseResetService
 
     private function sendPasswordResetEmail(PassphraseResetRequest $request)
     {
-        $message = (new \Swift_Message('✿ Poppy Seed Pets: Passphrase Reset Request'))
-            ->setFrom('help+resetpassword@poppyseedpets.com')
-            ->setTo($request->getUser()->getEmail())
-            ->setBody(
+        $message = (new Email())
+            ->from('help+resetpassword@poppyseedpets.com')
+            ->to($request->getUser()->getEmail())
+            ->subject('✿ Poppy Seed Pets: Passphrase Reset Request')
+            ->text(
                 'Ah! You lost your passphrase? Sorry! Let\'s get that fixed up!' . "\n\n" .
                 'To reset your passphrase, use this link:' . "\n\n" .
                 'https://poppyseedpets.com/resetPassphrase/' . $request->getCode() . "\n"

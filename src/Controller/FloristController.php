@@ -19,15 +19,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/florist")
- */
+#[Route("/florist")]
 class FloristController extends AbstractController
 {
-    /**
-     * @Route("", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getInventory(FloristService $floristService, ResponseService $responseService)
     {
         /** @var User $user */
@@ -39,10 +35,8 @@ class FloristController extends AbstractController
         return $responseService->success($floristService->getInventory($user));
     }
 
-    /**
-     * @Route("/buy", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/buy", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buyFlowerbomb(
         Request $request, FloristService $floristService,
         InventoryService $inventoryService, ResponseService $responseService, UserStatsService $userStatsRepository,

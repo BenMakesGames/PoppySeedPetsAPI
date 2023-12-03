@@ -9,14 +9,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/petGroup")
- */
+#[Route("/petGroup")]
 class PetGroupController extends AbstractController
 {
-    /**
-     * @Route("", methods={"GET"})
-     */
+    #[Route("", methods: ["GET"])]
     public function getAllGroups(
         ResponseService $responseService, PetGroupFilterService $petGroupFilterService, Request $request
     )
@@ -27,9 +23,7 @@ class PetGroupController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/{group}", methods={"GET"})
-     */
+    #[Route("/{group}", methods: ["GET"])]
     public function getGroup(PetGroup $group, ResponseService $responseService)
     {
         return $responseService->success($group, [ SerializationGroupEnum::PET_GROUP_DETAILS ]);

@@ -13,15 +13,11 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/item")
- */
+#[Route("/item")]
 class LeafSpearController extends AbstractController
 {
-    /**
-     * @Route("/leafSpear/{inventory}/unwrap", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/leafSpear/{inventory}/unwrap", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function unwrapLeafSpear(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService

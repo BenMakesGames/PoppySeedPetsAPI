@@ -21,15 +21,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/inventory")
- */
+#[Route("/inventory")]
 class CookAndCombineController extends AbstractController
 {
-    /**
-     * @Route("/prepare", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/prepare", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function prepareRecipe(
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
         EntityManagerInterface $em, CookingService $cookingService, IRandom $squirrel3

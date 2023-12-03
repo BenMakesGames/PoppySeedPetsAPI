@@ -23,9 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/cookingBuddy")
- */
+#[Route('/cookingBuddy')]
 class CookingBuddyController extends AbstractController
 {
     private const ALLOWED_LOCATIONS = [
@@ -34,10 +32,8 @@ class CookingBuddyController extends AbstractController
         LocationEnum::MANTLE
     ];
 
-    /**
-     * @Route("/{cookingBuddy}", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{cookingBuddy}", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getKnownRecipes(
         Inventory $cookingBuddy, InventoryService $inventoryService, EntityManagerInterface $em,
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository

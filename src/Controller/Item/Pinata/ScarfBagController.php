@@ -18,10 +18,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class ScarfBagController extends AbstractController
 {
-    /**
-     * @Route("/{bag}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{bag}/open", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openScarfBag(
         Inventory $bag, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         EntityManagerInterface $em

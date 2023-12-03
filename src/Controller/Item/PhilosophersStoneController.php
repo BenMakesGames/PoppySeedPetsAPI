@@ -35,10 +35,8 @@ class PhilosophersStoneController extends AbstractController
         'Phoenix Plushy' => [ 'species' => 'Phoenix', 'colorA' => 'b03d3d', 'colorB' => 'f5e106' ],
     ];
 
-    /**
-     * @Route("/{inventory}/use", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/use", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function useStone(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
         PetFactory $petFactory, Request $request, InventoryRepository $inventoryRepository,

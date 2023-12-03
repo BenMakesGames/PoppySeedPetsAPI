@@ -17,9 +17,9 @@ monolog:
         deduplicated:
             type: deduplication
             action_level: critical
-            handler: swift
-        swift:
-            type: swift_mailer
+            handler: symfony_mailer
+        symfony_mailer:
+            type: symfony_mailer
             from_email: 'api@poppyseedpets.com'
             to_email: 'ben@poppyseedpets.com'
             subject: "Poppy Seed Pets Exception: %%message%%"

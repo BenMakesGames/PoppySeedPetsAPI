@@ -8,15 +8,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/market")
- */
+#[Route("/market")]
 class ItemHistoryController extends AbstractController
 {
-    /**
-     * @Route("/history/{itemId}", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/history/{itemId}", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getItemHistory(int $itemId, ResponseService $responseService)
     {
         $maxAge = \DateInterval::createFromDateString('7 days');

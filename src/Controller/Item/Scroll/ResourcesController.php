@@ -20,10 +20,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class ResourcesController extends AbstractController
 {
-    /**
-     * @Route("/resources/{inventory}/invoke", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/resources/{inventory}/invoke", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function readResourcesScroll(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
         ResponseService $responseService, UserStatsService $userStatsRepository
@@ -70,10 +68,8 @@ class ResourcesController extends AbstractController
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/resources/{inventory}/invokeFood", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/resources/{inventory}/invokeFood", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function readResourcesScrollForFood(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
         ResponseService $responseService, UserStatsService $userStatsRepository

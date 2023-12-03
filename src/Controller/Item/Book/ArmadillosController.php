@@ -9,15 +9,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/item/theBeginningOfTheArmadillos")
- */
+#[Route("/item/theBeginningOfTheArmadillos")]
 class ArmadillosController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/read", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/read", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(Inventory $inventory, ResponseService $responseService)
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'theBeginningOfTheArmadillos/#/read');

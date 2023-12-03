@@ -13,9 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 // allows player to buy books; inventory grows based on various criteria
 
-/**
- * @Route("/bookstore")
- */
+#[Route("/bookstore")]
 class GetAvailableBooks extends AbstractController
 {
     /**

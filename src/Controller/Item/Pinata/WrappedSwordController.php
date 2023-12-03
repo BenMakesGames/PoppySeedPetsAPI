@@ -20,10 +20,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class WrappedSwordController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/unwrap", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/unwrap", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function unwrap(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         IRandom $rng, EntityManagerInterface $em

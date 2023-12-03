@@ -15,10 +15,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class NoodsBookController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/upload", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/upload", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function upload(
         Inventory $inventory, ResponseService $responseService, CookingService $cookingService
     )
@@ -36,10 +34,8 @@ class NoodsBookController extends AbstractController
         return $responseService->itemActionSuccess($message);
     }
 
-    /**
-     * @Route("/{inventory}/read", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/read", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(Inventory $inventory, ResponseService $responseService)
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'noodsBook/#/read');

@@ -27,15 +27,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/pet")
- */
+#[Route("/pet")]
 class SelfReflectionController extends AbstractController
 {
-    /**
-     * @Route("/{pet}/selfReflection", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{pet}/selfReflection", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getGuildMembership(
         Pet $pet, ResponseService $responseService, GuildRepository $guildRepository,
         PetRelationshipRepository $petRelationshipRepository, PetRelationshipService $petRelationshipService
@@ -244,10 +240,8 @@ class SelfReflectionController extends AbstractController
         return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
     }
 
-    /**
-     * @Route("/typeahead/troubledRelationships", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/typeahead/troubledRelationships", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function troubledRelationshipsTypeaheadSearch(
         Request $request, ResponseService $responseService, PetRepository $petRepository,
         PetRelationshipTypeaheadService $petRelationshipTypeaheadService, PetRelationshipService $petRelationshipService

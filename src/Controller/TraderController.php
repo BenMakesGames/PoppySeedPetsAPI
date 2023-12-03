@@ -22,9 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/trader")
- */
+#[Route("/trader")]
 class TraderController extends AbstractController
 {
     /**
@@ -64,10 +62,8 @@ class TraderController extends AbstractController
         return $responseService->success($data, [ SerializationGroupEnum::TRADER_OFFER, SerializationGroupEnum::MARKET_ITEM ]);
     }
 
-    /**
-     * @Route("/{id}/exchange", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{id}/exchange", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function makeExchange(
         string $id, TraderService $traderService, ResponseService $responseService, EntityManagerInterface $em,
         UserQuestRepository $userQuestRepository, InventoryService $inventoryService, Request $request,

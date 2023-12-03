@@ -19,10 +19,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class AliceAndBobController extends AbstractController
 {
-    /**
-     * @Route("/alicesSecret/{inventory}/teaTime", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/alicesSecret/{inventory}/teaTime", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function alicesSecretTeaTime(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
         UserStatsService $userStatsRepository, ResponseService $responseService
@@ -72,10 +70,8 @@ class AliceAndBobController extends AbstractController
         return BoxHelpers::countRemoveFlushAndRespond('Inside Alice\'s Secret, you find', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
-    /**
-     * @Route("/alicesSecret/{inventory}/hourglass", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/alicesSecret/{inventory}/hourglass", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function alicesSecretHourglass(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
         UserStatsService $userStatsRepository, ResponseService $responseService
@@ -91,10 +87,8 @@ class AliceAndBobController extends AbstractController
         return BoxHelpers::countRemoveFlushAndRespond('Inside Alice\'s Secret, you find', $userStatsRepository, $user, $inventory, [ $item ], $responseService, $em);
     }
 
-    /**
-     * @Route("/alicesSecret/{inventory}/cards", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/alicesSecret/{inventory}/cards", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function alicesSecretCards(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
         UserStatsService $userStatsRepository, ResponseService $responseService
@@ -118,10 +112,8 @@ class AliceAndBobController extends AbstractController
         return BoxHelpers::countRemoveFlushAndRespond('Inside Alice\'s Secret, you find some cards? Oh, wait, no: it\'s just', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
-    /**
-     * @Route("/bobsSecret/{inventory}/fish", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/bobsSecret/{inventory}/fish", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function bobsSecretFish(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
         UserStatsService $userStatsRepository, ResponseService $responseService
@@ -163,10 +155,8 @@ class AliceAndBobController extends AbstractController
         return BoxHelpers::countRemoveFlushAndRespond('Inside Bob\'s Secret, you find', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
-    /**
-     * @Route("/bobsSecret/{inventory}/tool", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/bobsSecret/{inventory}/tool", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function bobsTool(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
         UserStatsService $userStatsRepository, ResponseService $responseService
@@ -197,10 +187,8 @@ class AliceAndBobController extends AbstractController
         return BoxHelpers::countRemoveFlushAndRespond('Inside Bob\'s Secret, you find', $userStatsRepository, $user, $inventory, [ $item ], $responseService, $em);
     }
 
-    /**
-     * @Route("/bobsSecret/{inventory}/bbq", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/bobsSecret/{inventory}/bbq", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function bobsBBQ(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
         UserStatsService $userStatsRepository, ResponseService $responseService

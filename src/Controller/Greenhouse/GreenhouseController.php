@@ -18,9 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/greenhouse")
- */
+#[Route("/greenhouse")]
 class GreenhouseController extends AbstractController
 {
     /**
@@ -45,10 +43,8 @@ class GreenhouseController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/seeds/{type}", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/seeds/{type}", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getSeeds(
         ResponseService $responseService, InventoryRepository $inventoryRepository,
         string $type = PlantTypeEnum::EARTH
@@ -77,10 +73,8 @@ class GreenhouseController extends AbstractController
         return $responseService->success($seeds, [ SerializationGroupEnum::MY_SEEDS ]);
     }
 
-    /**
-     * @Route("/updatePlantOrder", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/updatePlantOrder", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function updatePlantOrder(
         Request $request, ResponseService $responseService, EntityManagerInterface $em
     )

@@ -24,10 +24,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class MerchantFishController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/talk", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/talk", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
         StoryService $storyService, Request $request, TraderService $traderService, InventoryService $inventoryService

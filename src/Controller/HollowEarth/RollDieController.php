@@ -19,15 +19,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/hollowEarth")
- */
+#[Route("/hollowEarth")]
 class RollDieController extends AbstractController
 {
-    /**
-     * @Route("/roll", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/roll", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function rollDie(
         ResponseService $responseService, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
         HollowEarthService $hollowEarthService, Request $request, InventoryService $inventoryService,

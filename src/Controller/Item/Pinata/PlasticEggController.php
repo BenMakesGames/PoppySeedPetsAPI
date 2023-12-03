@@ -35,10 +35,8 @@ class PlasticEggController extends AbstractController
         'Marshmallow Bulbun',
     ];
 
-    /**
-     * @Route("/{inventory}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/open", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $squirrel3

@@ -30,15 +30,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/item")
- */
+#[Route("/item")]
 class BlueprintController extends AbstractController
 {
-    /**
-     * @Route("/installComposter/{inventory}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/installComposter/{inventory}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function installComposter(
         Inventory $inventory, ResponseService $responseService, Request $request,
         PetExperienceService $petExperienceService, EntityManagerInterface $em
@@ -79,10 +75,8 @@ class BlueprintController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/basementBlueprint/{inventory}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/basementBlueprint/{inventory}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetExperienceService $petExperienceService
@@ -118,10 +112,8 @@ class BlueprintController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/beehiveBlueprint/{inventory}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/beehiveBlueprint/{inventory}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buildBeehive(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         InventoryRepository $inventoryRepository, BeehiveService $beehiveService,
@@ -179,10 +171,8 @@ class BlueprintController extends AbstractController
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/greenhouseDeed/{inventory}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/greenhouseDeed/{inventory}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function claim(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetExperienceService $petExperienceService
@@ -221,10 +211,8 @@ class BlueprintController extends AbstractController
         return $responseService->itemActionSuccess(null, [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/birdBathBlueprint/{inventory}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/birdBathBlueprint/{inventory}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buildBirdBath(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         InventoryRepository $inventoryRepository, PetExperienceService $petExperienceService
@@ -274,10 +262,8 @@ class BlueprintController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/fishStatue/{inventory}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/fishStatue/{inventory}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function installFishStatue(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         InventoryRepository $inventoryRepository, PetExperienceService $petExperienceService

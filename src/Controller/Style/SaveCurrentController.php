@@ -11,15 +11,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/style")
- */
+#[Route("/style")]
 class SaveCurrentController extends AbstractController
 {
-    /**
-     * @Route("/current", methods={"PATCH"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/current", methods: ["PATCH"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function saveCurrentStyle(
         Request $request, EntityManagerInterface $em, ResponseService $responseService
     )

@@ -27,10 +27,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class HotPotController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/dip", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/dip", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
         UserQuestRepository $userQuestRepository, Request $request, InventoryRepository $inventoryRepository,

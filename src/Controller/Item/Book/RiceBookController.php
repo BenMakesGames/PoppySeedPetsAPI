@@ -33,10 +33,8 @@ class RiceBookController extends AbstractController
         'Zongzi',
     ];
 
-    /**
-     * @Route("/{inventory}/upload", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/upload", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function upload(
         Inventory $inventory, ResponseService $responseService, CookingService $cookingService
     )
@@ -51,10 +49,8 @@ class RiceBookController extends AbstractController
         return $responseService->itemActionSuccess($message);
     }
 
-    /**
-     * @Route("/{inventory}/read", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/read", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(Inventory $inventory, ResponseService $responseService)
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'riceBook/#/read');

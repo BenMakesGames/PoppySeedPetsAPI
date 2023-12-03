@@ -19,10 +19,8 @@ class FeatheredHatController extends AbstractController
         'Afternoon Hat' => 'Evening Hat',
     ];
 
-    /**
-     * @Route("/{inventory}/tweak", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/tweak", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function tweakHat(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )

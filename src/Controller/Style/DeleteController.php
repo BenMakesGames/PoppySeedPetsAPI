@@ -10,15 +10,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/style")
- */
+#[Route("/style")]
 class DeleteController extends AbstractController
 {
-    /**
-     * @Route("/{theme}", methods={"DELETE"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{theme}", methods: ["DELETE"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function deleteTheme(
         UserStyle $theme, ResponseService $responseService, EntityManagerInterface $em
     )

@@ -17,15 +17,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/item")
- */
+#[Route("/item")]
 class WunderbussController extends AbstractController
 {
-    /**
-     * @Route("/wunderbuss/{inventory}/usedWish", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/wunderbuss/{inventory}/usedWish", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function usedWish(
         Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository
     )
@@ -40,10 +36,8 @@ class WunderbussController extends AbstractController
         return $responseService->success($usedAWunderbuss->getValue());
     }
 
-    /**
-     * @Route("/wunderbuss/{inventory}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/wunderbuss/{inventory}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function search(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         UserQuestRepository $userQuestRepository, MuseumService $museumService

@@ -11,15 +11,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/greenhouse")
- */
+#[Route("/greenhouse")]
 class AssignHelperController extends AbstractController
 {
-    /**
-     * @Route("/assignHelper/{pet}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/assignHelper/{pet}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function assignHelper(
         Pet $pet, ResponseService $responseService, EntityManagerInterface $em, GreenhouseService $greenhouseService
     )

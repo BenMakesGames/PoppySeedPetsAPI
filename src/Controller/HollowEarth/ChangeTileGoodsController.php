@@ -12,15 +12,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/hollowEarth")
- */
+#[Route("/hollowEarth")]
 class ChangeTileGoodsController extends AbstractController
 {
-    /**
-     * @Route("/changeTileGoods", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/changeTileGoods", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function changeTileGoods(
         Request $request, ResponseService $responseService, EntityManagerInterface $em
     )

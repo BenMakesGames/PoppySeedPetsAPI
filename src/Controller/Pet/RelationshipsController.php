@@ -14,9 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-/**
- * @Route("/pet")
- */
+#[Route("/pet")]
 class RelationshipsController extends AbstractController
 {
     /**
@@ -60,9 +58,7 @@ class RelationshipsController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{pet}/familyTree", methods={"GET"})
-     */
+    #[Route("/{pet}/familyTree", methods: ["GET"])]
     public function getFamilyTree(
         Pet $pet, ResponseService $responseService, EntityManagerInterface $em
     )

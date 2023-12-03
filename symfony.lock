@@ -102,9 +102,6 @@
     "laminas/laminas-code": {
         "version": "3.5.0"
     },
-    "lavary/crunz": {
-        "version": "v2.2.0"
-    },
     "minishlink/web-push": {
         "version": "v5.2.5"
     },
@@ -128,9 +125,6 @@
     },
     "nikic/php-parser": {
         "version": "v4.9.1"
-    },
-    "opis/closure": {
-        "version": "3.5.7"
     },
     "oro/doctrine-extensions": {
         "version": "1.3.0"
@@ -272,9 +266,6 @@
     "spomky-labs/base64url": {
         "version": "v2.0.3"
     },
-    "swiftmailer/swiftmailer": {
-        "version": "v6.2.3"
-    },
     "symfony/apache-pack": {
         "version": "1.0",
         "recipe": {
@@ -400,6 +391,18 @@
     "symfony/lock": {
         "version": "v4.4.13"
     },
+    "symfony/mailer": {
+        "version": "6.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "4.3",
+            "ref": "2bf89438209656b85b9a49238c4467bff1b1f939"
+        },
+        "files": [
+            "./config/packages/mailer.yaml"
+        ]
+    },
     "symfony/maker-bundle": {
         "version": "1.0",
         "recipe": {
@@ -463,9 +466,6 @@
     "symfony/polyfill-php72": {
         "version": "v1.18.1"
     },
-    "symfony/polyfill-php73": {
-        "version": "v1.18.1"
-    },
     "symfony/polyfill-php80": {
         "version": "v1.18.1"
     },
@@ -519,9 +519,6 @@
     "symfony/security-csrf": {
         "version": "v4.4.13"
     },
-    "symfony/security-guard": {
-        "version": "v4.4.13"
-    },
     "symfony/security-http": {
         "version": "v4.4.13"
     },
@@ -536,20 +533,6 @@
     },
     "symfony/string": {
         "version": "v5.1.7"
-    },
-    "symfony/swiftmailer-bundle": {
-        "version": "2.5",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "2.5",
-            "ref": "ae4d22af30bbd484506bc1817c5a3ef72c855b93"
-        },
-        "files": [
-            "./config/packages/dev/swiftmailer.yaml",
-            "./config/packages/swiftmailer.yaml",
-            "./config/packages/test/swiftmailer.yaml"
-        ]
     },
     "symfony/translation": {
         "version": "3.3",

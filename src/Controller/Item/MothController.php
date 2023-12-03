@@ -28,9 +28,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class MothController extends AbstractController
 {
-    /**
-     * @Route("/getQuantity/{inventory}", methods={"GET"})
-     */
+    #[Route("/getQuantity/{inventory}", methods: ["GET"])]
     public function getMothInfo(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
@@ -57,10 +55,8 @@ class MothController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/release", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/release", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function releaseMoths(
         ResponseService $responseService, UserStatsService $userStatsRepository,
         EntityManagerInterface $em, Request $request, InventoryRepository $inventoryRepository,

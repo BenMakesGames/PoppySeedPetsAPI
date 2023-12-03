@@ -18,10 +18,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class MyLinksController extends AbstractController
 {
-    /**
-     * @Route("/my/interwebs", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/my/interwebs", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getMyInterwebs(ResponseService $responseService)
     {
         /** @var User $user */
@@ -38,10 +36,8 @@ class MyLinksController extends AbstractController
         return $responseService->success($myLinks);
     }
 
-    /**
-     * @Route("/my/interwebs/{link}", methods={"DELETE"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/my/interwebs/{link}", methods: ["DELETE"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function deleteLink(UserLink $link, ResponseService $responseService, EntityManagerInterface $em)
     {
         /** @var User $user */
@@ -56,10 +52,8 @@ class MyLinksController extends AbstractController
         return $responseService->success();
     }
 
-    /**
-     * @Route("/my/interwebs", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/my/interwebs", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function createLink(
         Request $request, ResponseService $responseService, EntityManagerInterface $em
     )

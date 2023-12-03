@@ -14,15 +14,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-/**
- * @Route("/account")
- */
+#[Route("/account")]
 class GetHouseController extends AbstractController
 {
-    /**
-     * @Route("/myHouse", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/myHouse", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getHouse(
         ManagerRegistry $doctrine, ResponseService $responseService,
         NormalizerInterface $normalizer

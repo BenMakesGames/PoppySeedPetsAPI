@@ -15,10 +15,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class GlowingProtojellyController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/d4", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/d4", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function d4(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
@@ -39,10 +37,8 @@ class GlowingProtojellyController extends AbstractController
         return $responseService->itemActionSuccess('The jelly turns into a Glowing Four-sided Die, and becomes solid, never to change its shape again!', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/d6", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/d6", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function d6(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
@@ -63,10 +59,8 @@ class GlowingProtojellyController extends AbstractController
         return $responseService->itemActionSuccess('The jelly turns into a Glowing Six-sided Die, and becomes solid, never to change its shape again!', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/d8", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/d8", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function d8(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )

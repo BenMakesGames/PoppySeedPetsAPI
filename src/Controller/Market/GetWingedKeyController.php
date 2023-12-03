@@ -14,15 +14,11 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/market")
- */
+#[Route("/market")]
 class GetWingedKeyController extends AbstractController
 {
-    /**
-     * @Route("/getWingedKey", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/getWingedKey", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getWingedKey(
         ResponseService $responseService, MarketService $marketService, MuseumService $museumService,
         InventoryService $inventoryService, UserQuestRepository $userQuestRepository,

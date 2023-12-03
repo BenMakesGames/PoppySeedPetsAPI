@@ -13,10 +13,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class WelcomeNoteController extends AbstractController
 {
-    /**
-     * @Route("/welcome/{inventory}/read", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/welcome/{inventory}/read", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function readWelcomeNote(Inventory $inventory, ResponseService $responseService)
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'note/welcome/#/read');

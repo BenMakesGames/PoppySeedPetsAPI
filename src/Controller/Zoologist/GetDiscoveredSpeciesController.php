@@ -13,9 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/zoologist")
- */
+#[Route("/zoologist")]
 class GetDiscoveredSpeciesController extends AbstractController
 {
     /**

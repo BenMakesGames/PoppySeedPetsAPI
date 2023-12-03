@@ -28,9 +28,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-/**
- * @Route("/halloween")
- */
+#[Route("/halloween")]
 class HalloweenController extends AbstractController
 {
     /**
@@ -52,10 +50,8 @@ class HalloweenController extends AbstractController
         return $responseService->success($nextTrickOrTreater->getValue());
     }
 
-    /**
-     * @Route("/trickOrTreater", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/trickOrTreater", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getTrickOrTreater(
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
         NormalizerInterface $normalizer, Clock $clock, UserQuestRepository $userQuestRepository
@@ -93,10 +89,8 @@ class HalloweenController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/trickOrTreater/giveCandy", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/trickOrTreater/giveCandy", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function giveCandy(
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
         Request $request, Clock $clock, IRandom $squirrel3, EatingService $eatingService,

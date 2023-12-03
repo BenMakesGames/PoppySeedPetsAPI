@@ -29,10 +29,8 @@ class AlbumController extends AbstractController
         'Bubblegum'
     ];
 
-    /**
-     * @Route("/single/{inventory}/listen", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/single/{inventory}/listen", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function listenToSingle(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $squirrel3
@@ -65,10 +63,8 @@ class AlbumController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/EP/{inventory}/listen", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/EP/{inventory}/listen", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function listenToEP(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $squirrel3
@@ -104,10 +100,8 @@ class AlbumController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/LP/{inventory}/listen", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/LP/{inventory}/listen", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function listenToLP(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $squirrel3

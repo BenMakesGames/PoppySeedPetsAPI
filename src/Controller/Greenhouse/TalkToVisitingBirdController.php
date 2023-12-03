@@ -10,15 +10,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/greenhouse")
- */
+#[Route("/greenhouse")]
 class TalkToVisitingBirdController extends AbstractController
 {
-    /**
-     * @Route("/talkToVisitingBird", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/talkToVisitingBird", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function talkToBird(
         ResponseService $responseService, EntityManagerInterface $em, GreenhouseService $greenhouseService
     )

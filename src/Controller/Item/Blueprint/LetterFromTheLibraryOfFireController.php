@@ -21,10 +21,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class LetterFromTheLibraryOfFireController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/read", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/read", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function readNote(
         Inventory $inventory, ResponseService $responseService
     )
@@ -62,10 +60,8 @@ For questions & support regarding Magma Whelps, the information desk (floor 2) c
 The Library of Fire is always open. We look forward to seeing you!');
         }
     }
-    /**
-     * @Route("/{inventory}/meltSeal", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/meltSeal", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function meltSeal(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, DragonRepository $dragonRepository, IRandom $squirrel3,

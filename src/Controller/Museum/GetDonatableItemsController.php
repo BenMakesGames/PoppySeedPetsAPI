@@ -15,15 +15,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/museum")
- */
+#[Route("/museum")]
 class GetDonatableItemsController extends AbstractController
 {
-    /**
-     * @Route("/donatable", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/donatable", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getDonatable(
         ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository
     )

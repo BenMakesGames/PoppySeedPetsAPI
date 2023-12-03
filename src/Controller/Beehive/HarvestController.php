@@ -23,15 +23,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/beehive")
- */
+#[Route("/beehive")]
 class HarvestController extends AbstractController
 {
-    /**
-     * @Route("/harvest", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/harvest", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function harvest(
         ResponseService $responseService, EntityManagerInterface $em, InventoryService $inventoryService, IRandom $rng
     )

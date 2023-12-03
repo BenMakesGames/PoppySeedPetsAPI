@@ -19,10 +19,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class GizbuisShovelController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/dig", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/dig", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function dig(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         UserQuestRepository $userQuestRepository

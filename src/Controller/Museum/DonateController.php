@@ -21,15 +21,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/museum")
- */
+#[Route("/museum")]
 class DonateController extends AbstractController
 {
-    /**
-     * @Route("/donate", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/donate", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function handle(
         ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository,
         EntityManagerInterface $em, UserStatsService $userStatsRepository,

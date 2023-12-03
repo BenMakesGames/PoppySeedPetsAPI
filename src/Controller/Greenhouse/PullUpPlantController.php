@@ -16,15 +16,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/greenhouse")
- */
+#[Route("/greenhouse")]
 class PullUpPlantController extends AbstractController
 {
-    /**
-     * @Route("/{plant}/pullUp", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{plant}/pullUp", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function pullUpPlant(
         GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
         InventoryService $inventoryService

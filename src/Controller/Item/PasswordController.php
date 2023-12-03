@@ -15,10 +15,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class PasswordController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/erase", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/erase", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function erasePassword(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )

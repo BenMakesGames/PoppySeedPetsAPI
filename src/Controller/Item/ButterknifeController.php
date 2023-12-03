@@ -15,10 +15,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class ButterknifeController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/mold", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/mold", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function moldButterknife(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )

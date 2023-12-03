@@ -16,15 +16,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/item")
- */
+#[Route("/item")]
 class SolsticeBagController extends AbstractController
 {
-    /**
-     * @Route("/summerSolsticeBag/{bag}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/summerSolsticeBag/{bag}/open", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openSummerSolsticeBag(
         Inventory $bag, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         EntityManagerInterface $em, HattierService $hattierService
@@ -70,10 +66,8 @@ class SolsticeBagController extends AbstractController
         return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/winterSolsticeBag/{bag}/open", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/winterSolsticeBag/{bag}/open", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openWinterSolsticeBag(
         Inventory $bag, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
         EntityManagerInterface $em, HattierService $hattierService

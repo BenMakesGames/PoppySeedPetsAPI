@@ -15,15 +15,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/zoologist")
- */
+#[Route("/zoologist")]
 class ReplaceSpeciesController extends AbstractController
 {
-    /**
-     * @Route("/replaceEntry", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/replaceEntry", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function replace(
         EntityManagerInterface $em, Request $request, ResponseService $responseService
     )

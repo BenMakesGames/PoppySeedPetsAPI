@@ -17,14 +17,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/pet")
- */
+#[Route("/pet")]
 class GetController extends AbstractController
 {
-    /**
-     * @Route("", methods={"GET"})
-     */
+    #[Route("", methods: ["GET"])]
     public function searchPets(Request $request, ResponseService $responseService, PetFilterService $petFilterService)
     {
         return $responseService->success(
@@ -33,10 +29,8 @@ class GetController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/my", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/my", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getMyPets(ResponseService $responseService, ManagerRegistry $doctrine)
     {
         /** @var User $user */
@@ -52,10 +46,8 @@ class GetController extends AbstractController
         return $responseService->success($petsAtHome, [ SerializationGroupEnum::MY_PET ]);
     }
 
-    /**
-     * @Route("/my/{id}", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/my/{id}", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getMyPet(ResponseService $responseService, PetRepository $petRepository, int $id)
     {
         /** @var User $user */
@@ -80,10 +72,8 @@ class GetController extends AbstractController
         return $responseService->success($pet, [ SerializationGroupEnum::PET_PUBLIC_PROFILE ]);
     }
 
-    /**
-     * @Route("/typeahead", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/typeahead", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function typeaheadSearch(
         Request $request, ResponseService $responseService, PetTypeaheadService $petTypeaheadService
     )

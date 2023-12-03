@@ -21,10 +21,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class HotPotatoController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/toss", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/toss", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function toss(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService, IRandom $squirrel3, HotPotatoService $hotPotatoService,
@@ -83,10 +81,8 @@ class HotPotatoController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/{inventory}/tossChocolateBomb", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/tossChocolateBomb", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function tossChocolateBomb(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService, IRandom $squirrel3, HotPotatoService $hotPotatoService
@@ -141,10 +137,8 @@ class HotPotatoController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/{inventory}/tossHongbao", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/tossHongbao", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function tossHongbao(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         IRandom $squirrel3, HotPotatoService $hotPotatoService, TransactionService $transactionService

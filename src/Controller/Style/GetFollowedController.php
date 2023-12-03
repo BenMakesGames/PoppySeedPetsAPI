@@ -10,15 +10,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/style")
- */
+#[Route("/style")]
 class GetFollowedController extends AbstractController
 {
-    /**
-     * @Route("/following", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/following", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getThemesOfFollowedPlayers(
         Request $request, UserStyleFilter $userStyleFilter, ResponseService $responseService
     )

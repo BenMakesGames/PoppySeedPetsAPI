@@ -13,15 +13,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/item")
- */
+#[Route("/item")]
 class RijndaelController extends AbstractController
 {
-    /**
-     * @Route("/rijndael/{inventory}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/rijndael/{inventory}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function search(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
     )

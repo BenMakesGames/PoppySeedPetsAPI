@@ -20,10 +20,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class TelephoneController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/pizza", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/pizza", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function pizza(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         UserQuestRepository $userQuestRepository, TransactionService $transactionService, IRandom $rng,

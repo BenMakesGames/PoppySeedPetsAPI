@@ -21,17 +21,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/item")
- */
+#[Route("/item")]
 class WolfsFavorController extends AbstractController
 {
     private const USER_STAT_NAME = 'Redeemed a Wolf\'s Favor';
 
-    /**
-     * @Route("/changeWereform/{inventory}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/changeWereform/{inventory}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function changePetWereform(
         Inventory $inventory, ResponseService $responseService, Request $request,
         EntityManagerInterface $em, IRandom $rng
@@ -69,10 +65,8 @@ class WolfsFavorController extends AbstractController
         return $responseService->success();
     }
 
-    /**
-     * @Route("/wolfsFavor/{inventory}/furAndClaw", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/wolfsFavor/{inventory}/furAndClaw", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getFluffAndTalons(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $rng, UserStatsService $userStatsRepository
@@ -109,10 +103,8 @@ class WolfsFavorController extends AbstractController
         return $responseService->itemActionSuccess('A fluffy pupper drops ' . ArrayFunctions::list_nice($loot) . ' off just outside your door, and bounds off into the distance.', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/wolfsFavor/{inventory}/theMoon", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/wolfsFavor/{inventory}/theMoon", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getMoonStuff(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, UserStatsService $userStatsRepository

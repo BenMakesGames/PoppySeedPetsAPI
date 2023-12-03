@@ -27,9 +27,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/greenhouse")
- */
+#[Route("/greenhouse")]
 class FeedComposterController extends AbstractController
 {
     public const FORBIDDEN_COMPOST = [
@@ -39,10 +37,8 @@ class FeedComposterController extends AbstractController
         'Twilight Fertilizer'
     ];
 
-    /**
-     * @Route("/composter/feed", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/composter/feed", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function feedComposter(
         ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository,
         InventoryService $inventoryService, EntityManagerInterface $em, UserStatsService $userStatsRepository,

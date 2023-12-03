@@ -25,10 +25,8 @@ class ReversableController extends AbstractController
         'Pie Crust' => 'Upside-down Pie Crust',
     ];
 
-    /**
-     * @Route("/{inventory}/flip", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/flip", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function flipIt(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3
     )

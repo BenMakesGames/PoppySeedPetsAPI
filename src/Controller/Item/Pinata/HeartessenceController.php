@@ -16,10 +16,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class HeartessenceController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/quintessence", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/quintessence", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getQuint(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em
@@ -43,10 +41,8 @@ class HeartessenceController extends AbstractController
         return $responseService->itemActionSuccess('The Heartessence twists, and pulls itself apart into three motes of Quintessence!', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/magicSmoke", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/magicSmoke", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getMagicSmoke(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em
@@ -70,10 +66,8 @@ class HeartessenceController extends AbstractController
         return $responseService->itemActionSuccess('The Heartessence twists, and pulls itself apart into three wisps of Magic Smoke!', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/hatBox", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/hatBox", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getHatBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em

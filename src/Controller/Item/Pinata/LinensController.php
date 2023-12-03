@@ -22,10 +22,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class LinensController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/rummage", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/rummage", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function rummageThroughLinens(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $squirrel3
@@ -58,10 +56,8 @@ class LinensController extends AbstractController
             return $responseService->itemActionSuccess('You rummaged around in the pile, and pulled out ' . ($baseNumberOfCloth + 1) . ' pieces of good cloth...', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/giveToTrader", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/giveToTrader", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function giveToTrader(
         Inventory $inventory, ResponseService $responseService, IRandom $rng,
         EntityManagerInterface $em, TraderRepository $traderRepository

@@ -10,15 +10,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/weather")
- */
+#[Route("/weather")]
 class GetForecastController extends AbstractController
 {
-    /**
-     * @Route("/forecast", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/forecast", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getForecast(
         ResponseService $responseService, WeatherService $weatherService, PlazaService $plazaService
     )

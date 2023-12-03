@@ -17,15 +17,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/inventory")
- */
+#[Route("/inventory")]
 class SellController extends AbstractController
 {
-    /**
-     * @Route("/sell", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/sell", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function setSellPrice(
         ResponseService $responseService, Request $request, EntityManagerInterface $em, MarketService $marketService,
         InventoryRepository $inventoryRepository

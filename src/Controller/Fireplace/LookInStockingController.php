@@ -16,15 +16,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-/**
- * @Route("/fireplace")
- */
+#[Route("/fireplace")]
 class LookInStockingController extends AbstractController
 {
-    /**
-     * @Route("/lookInStocking", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/lookInStocking", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function lookInStocking(
         InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
         UserQuestRepository $userQuestRepository, IRandom $squirrel3

@@ -13,15 +13,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/inventory")
- */
+#[Route("/inventory")]
 class ThrowAwayController extends AbstractController
 {
-    /**
-     * @Route("/throwAway", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/throwAway", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function throwAway(
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
         EntityManagerInterface $em, RecyclingService $recyclingService

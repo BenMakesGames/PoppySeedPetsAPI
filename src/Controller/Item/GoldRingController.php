@@ -27,10 +27,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class GoldRingController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/smash", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/smash", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function smash(
         Inventory $inventory, ResponseService $responseService, IRandom $squirrel3,
         EntityManagerInterface $em
@@ -66,10 +64,8 @@ class GoldRingController extends AbstractController
         return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/collect100", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/collect100", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function collect100(
         Inventory $inventory, EntityManagerInterface $em, InventoryService $inventoryService,
         ResponseService $responseService, PetFactory $petFactory, IRandom $rng, HattierService $hattierService

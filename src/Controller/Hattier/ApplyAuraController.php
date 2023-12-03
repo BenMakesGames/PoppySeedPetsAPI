@@ -17,15 +17,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/hattier")
- */
+#[Route("/hattier")]
 class ApplyAuraController extends AbstractController
 {
-    /**
-     * @Route("/buy", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/buy", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function applyAura(
         Request $request, TransactionService $transactionService, EntityManagerInterface $em,
         ResponseService $responseService

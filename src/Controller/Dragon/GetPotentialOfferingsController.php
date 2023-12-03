@@ -13,15 +13,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/dragon")
- */
+#[Route("/dragon")]
 class GetPotentialOfferingsController extends AbstractController
 {
-    /**
-     * @Route("/offerings", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/offerings", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getOfferings(
         ResponseService $responseService, InventoryRepository $inventoryRepository,
         EntityManagerInterface $em

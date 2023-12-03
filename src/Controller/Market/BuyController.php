@@ -24,15 +24,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/market")
- */
+#[Route("/market")]
 class BuyController extends AbstractController
 {
-    /**
-     * @Route("/buy", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/buy", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buy(
         Request $request, ResponseService $responseService, CacheItemPoolInterface $cache, EntityManagerInterface $em,
         InventoryRepository $inventoryRepository, IRandom $squirrel3, TransactionService $transactionService,

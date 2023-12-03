@@ -16,10 +16,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class AnniversaryMuffinController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/lengthySkillScroll", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/lengthySkillScroll", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function wishForLengthySkillScroll(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
@@ -41,10 +39,8 @@ class AnniversaryMuffinController extends AbstractController
         return $responseService->itemActionSuccess('You make a wish and blow out the candle... and the muffin twists itself into a Lengthy Scroll of Skill! (What was _in_ that muffin?!)', [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/museumFavor", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/museumFavor", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function wishFor700MuseumFavor(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         TransactionService $transactionService

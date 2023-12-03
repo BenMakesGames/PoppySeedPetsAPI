@@ -22,15 +22,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/hollowEarth")
- */
+#[Route("/hollowEarth")]
 class PlayController extends AbstractController
 {
-    /**
-     * @Route("/continue", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/continue", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function continueActing(
         HollowEarthService $hollowEarthService, ResponseService $responseService, EntityManagerInterface $em,
         Request $request, InventoryRepository $inventoryRepository, TransactionService $transactionService,

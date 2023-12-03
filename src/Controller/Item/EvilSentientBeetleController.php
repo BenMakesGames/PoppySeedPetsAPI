@@ -18,10 +18,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class EvilSentientBeetleController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/defeat", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/defeat", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function summonSomethingUnfriendly(
         Inventory $inventory, ResponseService $responseService, PetRepository $petRepository,
         EntityManagerInterface $em, HouseMonsterService $houseMonsterService

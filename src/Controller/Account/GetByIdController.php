@@ -20,9 +20,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Annotations\DoesNotRequireHouseHours;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-/**
- * @Route("/account")
- */
+#[Route("/account")]
 class GetByIdController extends AbstractController
 {
     /**

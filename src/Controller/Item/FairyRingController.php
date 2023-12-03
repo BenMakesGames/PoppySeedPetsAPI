@@ -17,10 +17,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class FairyRingController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/takeApart", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/takeApart", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function takeApart(
         Inventory $inventory, ResponseService $responseService, IRandom $squirrel3,
         EntityManagerInterface $em, InventoryService $inventoryService

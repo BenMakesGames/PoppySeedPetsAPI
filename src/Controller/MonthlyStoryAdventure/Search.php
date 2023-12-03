@@ -13,15 +13,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/monthlyStoryAdventure")
- */
+#[Route("/monthlyStoryAdventure")]
 class Search extends AbstractController
 {
-    /**
-     * @Route("/", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function handle(
         MonthlyStoryAdventureFilterService $filterService,
         Request $request,

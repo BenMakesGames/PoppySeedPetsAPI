@@ -13,15 +13,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/fireplace")
- */
+#[Route("/fireplace")]
 class UpdateStockingController extends AbstractController
 {
-    /**
-     * @Route("/stocking", methods={"PATCH"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/stocking", methods: ["PATCH"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function saveStockingSettings(
         Request $request, ResponseService $responseService, EntityManagerInterface $em
     )

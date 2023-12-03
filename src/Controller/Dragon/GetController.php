@@ -16,9 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-/**
- * @Route("/dragon")
- */
+#[Route("/dragon")]
 class GetController extends AbstractController
 {
     /**

@@ -14,15 +14,11 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/survey")
- */
+#[Route("/survey")]
 class SurveyController extends AbstractController
 {
-    /**
-     * @Route("/{guid}", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{guid}", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getSurveyQuestions(
         string $guid, SurveyService $surveyService, ResponseService $responseService, NormalizerInterface $normalizer
     )
@@ -47,10 +43,8 @@ class SurveyController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{guid}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{guid}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function submitSurvey(
         string $guid, SurveyService $surveyService, Request $request, ResponseService $responseService,
         EntityManagerInterface $em

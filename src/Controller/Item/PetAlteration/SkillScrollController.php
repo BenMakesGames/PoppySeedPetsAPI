@@ -18,15 +18,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/item")
- */
+#[Route("/item")]
 class SkillScrollController extends AbstractController
 {
-    /**
-     * @Route("/brawlSkillScroll/{inventory}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/brawlSkillScroll/{inventory}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseBrawl(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository
@@ -35,10 +31,8 @@ class SkillScrollController extends AbstractController
         return $this->doSkillScroll($inventory, $request, $em, $petRepository, $responseService, PetSkillEnum::BRAWL);
     }
 
-    /**
-     * @Route("/craftsSkillScroll/{inventory}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/craftsSkillScroll/{inventory}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseCrafts(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository
@@ -47,10 +41,8 @@ class SkillScrollController extends AbstractController
         return $this->doSkillScroll($inventory, $request, $em, $petRepository, $responseService, PetSkillEnum::CRAFTS);
     }
 
-    /**
-     * @Route("/musicSkillScroll/{inventory}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/musicSkillScroll/{inventory}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseMusic(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository
@@ -59,10 +51,8 @@ class SkillScrollController extends AbstractController
         return $this->doSkillScroll($inventory, $request, $em, $petRepository, $responseService, PetSkillEnum::MUSIC);
     }
 
-    /**
-     * @Route("/natureSkillScroll/{inventory}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/natureSkillScroll/{inventory}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseNature(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository
@@ -71,10 +61,8 @@ class SkillScrollController extends AbstractController
         return $this->doSkillScroll($inventory, $request, $em, $petRepository, $responseService, PetSkillEnum::NATURE);
     }
 
-    /**
-     * @Route("/scienceSkillScroll/{inventory}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/scienceSkillScroll/{inventory}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseScience(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository
@@ -83,10 +71,8 @@ class SkillScrollController extends AbstractController
         return $this->doSkillScroll($inventory, $request, $em, $petRepository, $responseService, PetSkillEnum::SCIENCE);
     }
 
-    /**
-     * @Route("/stealthSkillScroll/{inventory}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/stealthSkillScroll/{inventory}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseStealth(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository
@@ -95,10 +81,8 @@ class SkillScrollController extends AbstractController
         return $this->doSkillScroll($inventory, $request, $em, $petRepository, $responseService, PetSkillEnum::STEALTH);
     }
 
-    /**
-     * @Route("/arcanaSkillScroll/{inventory}", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/arcanaSkillScroll/{inventory}", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseArcana(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         PetRepository $petRepository

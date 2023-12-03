@@ -16,10 +16,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class CosmologerPromiseController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/secretSeashell", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/secretSeashell", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getSecretSeashell(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em
@@ -42,10 +40,8 @@ class CosmologerPromiseController extends AbstractController
         return $responseService->itemActionSuccess("You call up the cosmologist who says an errand boy is on the way. Sure enough, a few minutes later, a young boy arrives and hands you a Secret Seashell.\n\nHe smiles silently, then runs off.", [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/alienTissue", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/alienTissue", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getAlienTissue(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em
@@ -68,10 +64,8 @@ class CosmologerPromiseController extends AbstractController
         return $responseService->itemActionSuccess("You call up the cosmologist who says an errand boy is on the way. Sure enough, a few minutes later, a young boy arrives and hands you some Alien Tissue. (Gross.)\n\nBefore you can offer to let him wash his hands in your kitchen, he runs off.", [ 'itemDeleted' => true ]);
     }
 
-    /**
-     * @Route("/{inventory}/veryStrongbox", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/veryStrongbox", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getVeryStrongbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em

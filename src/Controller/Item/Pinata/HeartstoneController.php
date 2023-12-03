@@ -20,10 +20,8 @@ class HeartstoneController extends AbstractController
 {
     private const STAT_NAME = 'Transformed a Heartstone';
 
-    /**
-     * @Route("/{inventory}/transform", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/transform", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function transform(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, UserStatsService $userStatsRepository

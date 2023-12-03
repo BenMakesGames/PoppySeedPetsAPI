@@ -9,15 +9,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/hattier")
- */
+#[Route("/hattier")]
 class GetAvailableAurasController extends AbstractController
 {
-    /**
-     * @Route("/unlockedStyles", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/unlockedStyles", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getUnlockedAuras(HattierService $hattierService, ResponseService $responseService)
     {
         /** @var User $user */

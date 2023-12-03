@@ -9,15 +9,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/pet")
- */
+#[Route("/pet")]
 class StopHelpingController extends AbstractController
 {
-    /**
-     * @Route("/{pet}/stopHelping", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{pet}/stopHelping", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function stopHelping(Pet $pet, PetAssistantService $petAssistantService, ResponseService $responseService)
     {
         /** @var User $user */

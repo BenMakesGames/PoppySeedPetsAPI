@@ -12,9 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/userActivityLogs")
- */
+#[Route("/userActivityLogs")]
 class UserActivityLogsController extends AbstractController
 {
     /**
@@ -35,10 +33,8 @@ class UserActivityLogsController extends AbstractController
         return $responseService->success($logs, [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::USER_ACTIVITY_LOGS ]);
     }
 
-    /**
-     * @Route("/getAllTags", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/getAllTags", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getAllTags(ResponseService $responseService, EntityManagerInterface $em)
     {
         $tags = $em->getRepository(UserActivityLogTag::class)->findAll();

@@ -19,15 +19,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 // allows player to buy books; inventory grows based on various criteria
 
-/**
- * @Route("/bookstore")
- */
+#[Route("/bookstore")]
 class BuyBook extends AbstractController
 {
-    /**
-     * @Route("/{item}/buy", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{item}/buy", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buyBook(
         Item $item, BookstoreService $bookstoreService, InventoryService $inventoryService, EntityManagerInterface $em,
         ResponseService $responseService, TransactionService $transactionService

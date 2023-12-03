@@ -8,14 +8,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/globalStats")
- */
+#[Route("/globalStats")]
 class GlobalStatsController extends AbstractController
 {
-    /**
-     * @Route("/today", methods={"GET"})
-     */
+    #[Route("/today", methods: ["GET"])]
     public function getToday(EntityManagerInterface $em, ResponseService $responseService)
     {
         return $responseService->success(

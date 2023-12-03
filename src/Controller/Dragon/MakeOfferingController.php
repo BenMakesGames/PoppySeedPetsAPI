@@ -15,15 +15,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-/**
- * @Route("/dragon")
- */
+#[Route("/dragon")]
 class MakeOfferingController extends AbstractController
 {
-    /**
-     * @Route("/giveTreasure", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/giveTreasure", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function giveTreasure(
         ResponseService $responseService, EntityManagerInterface $em,
         Request $request, DragonService $dragonService, NormalizerInterface $normalizer

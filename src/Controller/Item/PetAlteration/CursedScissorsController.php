@@ -19,10 +19,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class CursedScissorsController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/cut", methods={"PATCH"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{inventory}/cut", methods: ["PATCH"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function forgetRelationship(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
     )
