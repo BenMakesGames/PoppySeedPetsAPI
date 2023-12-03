@@ -38,9 +38,9 @@ class DonateController extends AbstractController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
             throw new PSPNotUnlockedException('Museum');
 
-        $inventoryIds = $request->request->get('inventory');
+        $inventoryIds = $request->request->all('inventory');
 
-        if(is_array($inventoryIds) && count($inventoryIds) > 20)
+        if(count($inventoryIds) > 20)
             throw new PSPFormValidationException('You may only donate up to 20 items at a time.');
 
         $inventory = $inventoryRepository->findBy([

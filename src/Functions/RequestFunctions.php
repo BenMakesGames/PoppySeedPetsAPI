@@ -15,9 +15,7 @@ final class RequestFunctions
         if(!$request->request->has($keyName))
             throw new PSPFormValidationException($exceptionMessage);
 
-        $itemIds = $request->request->get($keyName);
-
-        if(!is_array($itemIds)) $itemIds = [ $itemIds ];
+        $itemIds = $request->request->all($keyName);
 
         $itemIds = array_map(fn($i) => (int)$i, $itemIds);
         $itemIds = array_filter($itemIds, fn($i) => $i > 0);

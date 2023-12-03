@@ -73,9 +73,7 @@ class PetAndFeedController extends AbstractController
         if(!$pet->isAtHome())
             throw new PSPInvalidOperationException('Pets that aren\'t home cannot be interacted with.');
 
-        $items = $request->request->get('items');
-
-        if(!\is_array($items)) $items = [ $items ];
+        $items = $request->request->all('items');
 
         $inventory = $inventoryRepository->findBy([
             'owner' => $user,

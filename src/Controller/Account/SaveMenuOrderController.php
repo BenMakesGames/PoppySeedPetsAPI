@@ -26,9 +26,9 @@ class SaveMenuOrderController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        $newOrder = $request->request->get('order');
+        $newOrder = $request->request->all('order');
 
-        if(!is_array($newOrder) || count($newOrder) === 0)
+        if(count($newOrder) === 0)
             throw new PSPFormValidationException('No order info was provided.');
 
         UserMenuFunctions::updateUserMenuSortOrder($em, $user, $newOrder);

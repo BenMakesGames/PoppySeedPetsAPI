@@ -34,8 +34,7 @@ class CookAndCombineController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $inventoryIds = $request->request->get('inventory');
-        if(!\is_array($inventoryIds)) $inventoryIds = [ $inventoryIds ];
+        $inventoryIds = $request->request->all('inventory');
 
         if(count($inventoryIds) > 100)
             throw new PSPFormValidationException('Oh, goodness, please don\'t try to Cook or Combine more than 100 items at a time! (Sorry for the inconvenience...)');

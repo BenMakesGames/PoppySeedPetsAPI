@@ -33,15 +33,7 @@ class SellController extends AbstractController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Market))
             throw new PSPNotUnlockedException('Market');
 
-        $itemIds = $request->request->get('items') ?? [];
-
-        if(!is_array($itemIds))
-        {
-            if(!is_numeric($itemIds))
-                throw new PSPFormValidationException('You must select at least one item!');
-
-            $itemIds = [ $itemIds ];
-        }
+        $itemIds = $request->request->all('items');
 
         if(count($itemIds) === 0)
             throw new PSPFormValidationException('You must select at least one item!');

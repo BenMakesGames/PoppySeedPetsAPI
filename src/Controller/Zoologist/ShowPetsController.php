@@ -36,7 +36,7 @@ class ShowPetsController extends AbstractController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Zoologist))
             throw new PSPNotUnlockedException('Zoologist');
 
-        $petIds = $request->request->get('petIds') ?? [];
+        $petIds = $request->request->all('petIds');
 
         if(count($petIds) === 0)
             throw new PSPFormValidationException('No pets were selected.');

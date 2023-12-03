@@ -85,10 +85,7 @@ class GreenhouseController extends AbstractController
         if($greenhouse === null)
             throw new PSPNotUnlockedException('Greenhouse');
 
-        $plantIds = $request->request->get('order');
-
-        if(!is_array($plantIds))
-            throw new PSPFormValidationException('Must provide a list of plant ids, in the order you wish to save them in.');
+        $plantIds = $request->request->all('order');
 
         $allPlants = $user->getGreenhousePlants();
 

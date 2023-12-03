@@ -50,9 +50,7 @@ class Filterer
         $orderBy = strtolower($params->getAlnum('orderBy'));
         $orderDir = strtolower($params->getAlpha('orderDir'));
 
-        $filters = $params->get('filter') ?? [];
-        if(!is_array($filters))
-            throw new PSPFormValidationException('filter must be an array.');
+        $filters = $params->all('filter');
 
         $grandTotal = $this->getGrandTotal($filterService->createQueryBuilder());
 

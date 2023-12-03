@@ -60,9 +60,9 @@ class GoOnAdventure extends AbstractController
         if($step->getPreviousStep() && !$adventureService->isPreviousStepCompleted($user, $step))
             throw new PSPInvalidOperationException('You must have completed the previous step in the story!');
 
-        $petIds = $request->request->get('pets') ?? [];
+        $petIds = $request->request->all('pets');
 
-        if(!is_array($petIds) || count($petIds) < $step->getMinPets() || count($petIds) > $step->getMaxPets())
+        if(count($petIds) < $step->getMinPets() || count($petIds) > $step->getMaxPets())
         {
             if($step->getMinPets() == $step->getMaxPets())
                 throw new PSPFormValidationException("Exactly {$step->getMinPets()} pets must go.");

@@ -56,7 +56,7 @@ class SessionService
 
         $this->setCurrentSession($sessionId);
 
-        $this->tokenStorage->setToken(new UsernamePasswordToken($user, null, 'main', $user->getRoles()));
+        $this->tokenStorage->setToken(new UsernamePasswordToken($user, 'main', $user->getRoles()));
 
         return $userSession;
     }

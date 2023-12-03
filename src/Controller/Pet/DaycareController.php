@@ -51,7 +51,7 @@ class DaycareController extends AbstractController
         ResponseService $responseService, Request $request, EntityManagerInterface $em
     )
     {
-        $petIds = array_unique($request->request->get('pets') ?? []);
+        $petIds = array_unique($request->request->all('pets'));
 
         if(ArrayFunctions::any($petIds, fn(int $id) => $id <= 0))
             throw new PSPFormValidationException('Invalid pet ID(s) provided.');

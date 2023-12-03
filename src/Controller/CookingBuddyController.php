@@ -50,7 +50,7 @@ class CookingBuddyController extends AbstractController
         if(!in_array($location, self::ALLOWED_LOCATIONS))
             throw new PSPInvalidOperationException('Cooking Buddies are only usable from the house, Basement, or Fireplace Mantle.');
 
-        $filters = $request->query->get('filter') ?? [];
+        $filters = $request->query->all('filter');
 
         if(is_array($filters) && array_key_exists('name', $filters))
         {

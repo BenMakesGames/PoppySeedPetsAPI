@@ -45,8 +45,7 @@ class MoveController extends AbstractController
         if(!in_array($location, $allowedLocations))
             throw new PSPFormValidationException('Invalid location given.');
 
-        $inventoryIds = $request->request->get('inventory');
-        if(!\is_array($inventoryIds)) $inventoryIds = [ $inventoryIds ];
+        $inventoryIds = $request->request->all('inventory');
 
         if(count($inventoryIds) >= 200)
             throw new PSPFormValidationException('Oh, goodness, please don\'t try to move more than 200 items at a time. Sorry.');

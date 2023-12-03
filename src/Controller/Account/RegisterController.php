@@ -36,7 +36,7 @@ class RegisterController extends AbstractController
         IRandom $rng
     )
     {
-        $theme = $request->request->get('theme');
+        $theme = $request->request->all('theme');
         $petName = ProfanityFilterFunctions::filter(trim($request->request->get('petName')));
         $petImage = $request->request->get('petImage');
         $petColorA = $request->request->get('petColorA');

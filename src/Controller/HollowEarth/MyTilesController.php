@@ -29,9 +29,9 @@ class MyTilesController extends AbstractController
         if($player === null)
             throw new PSPNotUnlockedException('Portal');
 
-        $types = $request->query->get('types') ?? [];
+        $types = $request->query->all('types');
 
-        if(!is_array($types) || count($types) === 0)
+        if(count($types) === 0)
             throw new PSPFormValidationException('The types of tiles to look for were not specified.');
 
         $tiles = $inventoryRepository->createQueryBuilder('i')

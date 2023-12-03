@@ -54,10 +54,10 @@ class DragonTongueController extends AbstractController
 
         $dragon = DragonHelpers::getAdultDragon($em, $user);
 
-        $greetings = $request->request->get('greetings');
-        $thanks = $request->request->get('thanks');
+        $greetings = $request->request->all('greetings');
+        $thanks = $request->request->all('thanks');
 
-        if(!is_array($greetings) || !is_array($thanks) || count($greetings) != 2 || count($thanks) != 2)
+        if(count($greetings) != 2 || count($thanks) != 2)
             throw new PSPFormValidationException('You must provide two greetings and two thanks.');
 
         $greeting1 = trim($greetings[0]);
