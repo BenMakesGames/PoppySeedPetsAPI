@@ -6,15 +6,15 @@ use App\Entity\User;
 use App\Functions\PlayerLogHelpers;
 use App\Functions\StringFunctions;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
 class PassphraseResetService
 {
-    private Mailer $mailer;
+    private MailerInterface $mailer;
     private EntityManagerInterface $em;
 
-    public function __construct(Mailer $mailer, EntityManagerInterface $em)
+    public function __construct(MailerInterface $mailer, EntityManagerInterface $em)
     {
         $this->mailer = $mailer;
         $this->em = $em;
