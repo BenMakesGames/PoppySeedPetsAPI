@@ -14,7 +14,7 @@ class DreamingServiceTest extends KernelTestCase
     {
         self::bootKernel();
 
-        $container = self::$container;
+        $container = self::getContainer();
 
         /** @var DreamingService $dreamingService */
         $dreamingService = $container->get(DreamingService::class);

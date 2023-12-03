@@ -21,7 +21,7 @@ class PetSpeciesNormalizer implements ContextAwareNormalizerInterface
     /**
      * @param PetSpecies $object
      */
-    public function normalize($object, string $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null
     {
         $data = $this->normalizer->normalize($object, $format, $context);
 
