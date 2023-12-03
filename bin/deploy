@@ -21,9 +21,9 @@ sudo php bin/console cache:clear --env=prod
 sudo php bin/console doctrine:cache:clear-query
 sudo php bin/console doctrine:cache:clear-result
 
-sudo chown ec2-user:apache -R var/cache
-sudo chmod 777 -R var/cache
-sudo chmod 777 -R var/log
+# if the httpd user ISN'T "apache", changes these lines:
+sudo setfacl -dR -m u:apache:rwX -m u:$(whoami):rwX var
+sudo setfacl -R -m u:apache:rwX -m u:$(whoami):rwX var
 
 chmod +x bin/backup
 chmod +x bin/clear-caches
