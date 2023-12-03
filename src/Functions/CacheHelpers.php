@@ -6,6 +6,6 @@ final class CacheHelpers
 {
     public static function getCacheItemName(string $name): string
     {
-        return str_replace('{}()/\\@', '--', $name);
+        return str_replace([ '\'', '{', '}', '(', ')', '/', '\\', '@' ], '--', $name);
     }
 }
