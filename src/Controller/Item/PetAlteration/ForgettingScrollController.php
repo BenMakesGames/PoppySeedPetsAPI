@@ -143,7 +143,7 @@ class ForgettingScrollController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function forgetSkill(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, UserStatsService $userStatsRepository
+        UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
