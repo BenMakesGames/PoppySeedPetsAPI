@@ -89,10 +89,8 @@ class TalentAndExpertiseController extends AbstractController
         return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
     }
 
-    /**
-     * @Route("/{pet}/pickExpertise", methods={"POST"}, requirements={"pet"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("/{pet}/pickExpertise", requirements: ["pet" => "\d+"], methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function pickExpertise(
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3
     )
