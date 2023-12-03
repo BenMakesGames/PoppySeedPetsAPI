@@ -11,15 +11,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/style")]
 class ShareController extends AbstractController
 {
-    /**
-     * @Route("", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function shareTheme(
         ResponseService $responseService, Request $request, EntityManagerInterface $em
     )

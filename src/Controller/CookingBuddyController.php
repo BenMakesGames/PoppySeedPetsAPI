@@ -21,7 +21,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/cookingBuddy')]
 class CookingBuddyController extends AbstractController
@@ -146,8 +146,8 @@ class CookingBuddyController extends AbstractController
 
     /**
      * @Route("/{cookingBuddy}/prepare/{knownRecipe}/{quantity}", methods={"POST"}, requirements={"quantity"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function prepareRecipeFromMemory(
         Inventory $cookingBuddy, KnownRecipes $knownRecipe, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService, InventoryRepository $inventoryRepository, UserStatsService $userStatsRepository,

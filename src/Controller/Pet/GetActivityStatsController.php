@@ -9,15 +9,15 @@ use App\Service\PetActivityStatsService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/pet")]
 class GetActivityStatsController extends AbstractController
 {
     /**
      * @Route("/{pet}/activityStats", methods={"GET"}, requirements={"pet"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function activityStats(
         Pet $pet, ResponseService $responseService
     )

@@ -6,9 +6,7 @@ use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("")
- */
+#[Route("")]
 class IndexController extends AbstractController
 {
     /**

@@ -11,15 +11,15 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/pet")]
 class SetFertilityController extends AbstractController
 {
     /**
      * @Route("/{pet}/setFertility", methods={"PATCH"}, requirements={"pet"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function setPetFertility(
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
     )

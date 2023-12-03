@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Annotations\DoesNotRequireHouseHours;
 
 #[Route("/account")]
@@ -24,8 +24,8 @@ class SecurityController extends AbstractController
     /**
      * @DoesNotRequireHouseHours()
      * @Route("/updateEmail", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function updateEmail(
         Request $request, ResponseService $responseService, UserPasswordHasherInterface $passwordEncoder,
         EntityManagerInterface $em
@@ -71,8 +71,8 @@ class SecurityController extends AbstractController
     /**
      * @DoesNotRequireHouseHours()
      * @Route("/updatePassphrase", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function updatePassphrase(
         Request $request, ResponseService $responseService, UserPasswordHasherInterface $passwordEncoder,
         EntityManagerInterface $em

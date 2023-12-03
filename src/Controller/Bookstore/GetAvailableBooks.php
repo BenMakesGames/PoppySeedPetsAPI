@@ -8,7 +8,7 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Service\BookstoreService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
 
 // allows player to buy books; inventory grows based on various criteria
@@ -18,8 +18,8 @@ class GetAvailableBooks extends AbstractController
 {
     /**
      * @Route("", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getAvailableBooks(
         BookstoreService $bookstoreService, ResponseService $responseService
     )

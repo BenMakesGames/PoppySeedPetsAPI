@@ -21,15 +21,15 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/marketBid")]
 class CreateBidController extends AbstractController
 {
     /**
      * @Route("", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function createBid(
         Request $request, ResponseService $responseService, TransactionService $transactionService,
         MarketBidRepository $marketBidRepository, InventoryService $inventoryService, EntityManagerInterface $em

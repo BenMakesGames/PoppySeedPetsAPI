@@ -9,16 +9,14 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/userActivityLogs")]
 class UserActivityLogsController extends AbstractController
 {
-    /**
-     * @Route("", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function history(
         Request $request, ResponseService $responseService, UserActivityLogsFilterService $userActivityLogsFilterService
     )

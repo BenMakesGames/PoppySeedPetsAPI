@@ -16,15 +16,15 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/pet")]
 class EquipController extends AbstractController
 {
     /**
      * @Route("/{pet}/equip/{inventory}", methods={"POST"}, requirements={"pet"="\d+", "inventory"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function equipPet(
         Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
@@ -89,8 +89,8 @@ class EquipController extends AbstractController
 
     /**
      * @Route("/{pet}/hat/{inventory}", methods={"POST"}, requirements={"pet"="\d+", "inventory"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function hatPet(
         Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
@@ -158,8 +158,8 @@ class EquipController extends AbstractController
 
     /**
      * @Route("/{pet}/unequip", methods={"POST"}, requirements={"pet"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function unequipPet(
         Pet $pet, ResponseService $responseService, EntityManagerInterface $em
     )
@@ -184,8 +184,8 @@ class EquipController extends AbstractController
 
     /**
      * @Route("/{pet}/unhat", methods={"POST"}, requirements={"pet"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function unhatPet(Pet $pet, ResponseService $responseService, EntityManagerInterface $em)
     {
         /** @var User $user */

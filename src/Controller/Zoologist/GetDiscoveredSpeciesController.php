@@ -11,15 +11,15 @@ use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/zoologist")]
 class GetDiscoveredSpeciesController extends AbstractController
 {
     /**
      * @Route("", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getDiscoveredSpecies(
         UserSpeciesCollectedFilterService $userSpeciesCollectedFilterService, Request $request, ResponseService $responseService
     )

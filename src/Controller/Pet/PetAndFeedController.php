@@ -18,15 +18,15 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/pet")]
 class PetAndFeedController extends AbstractController
 {
     /**
      * @Route("/{pet}/pet", methods={"POST"}, requirements={"pet"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function pet(
         Pet $pet, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
         PetAndPraiseService $petAndPraiseService
@@ -57,8 +57,8 @@ class PetAndFeedController extends AbstractController
 
     /**
      * @Route("/{pet}/feed", methods={"POST"}, requirements={"pet"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function feed(
         Pet $pet, Request $request, InventoryRepository $inventoryRepository, ResponseService $responseService,
         EntityManagerInterface $em, EatingService $eatingService

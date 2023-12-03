@@ -12,7 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Annotations\DoesNotRequireHouseHours;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
 * @Route("/article")
@@ -22,8 +22,8 @@ class UpdateController extends AdminController
     /**
      * @DoesNotRequireHouseHours()
      * @Route("/{article}", methods={"POST"}, requirements={"article"="\d+"})
-     * @IsGranted("ROLE_ADMIN")
      */
+    #[IsGranted("ROLE_ADMIN")]
     public function handle(
         Article $article, ResponseService $responseService, Request $request, EntityManagerInterface $em,
         DesignGoalRepository $designGoalRepository

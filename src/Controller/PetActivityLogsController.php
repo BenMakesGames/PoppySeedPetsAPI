@@ -7,7 +7,7 @@ use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,8 +17,8 @@ class PetActivityLogsController extends AbstractController
 {
     /**
      * @Route("", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function history(
         Request $request, ResponseService $responseService, PetActivityLogsFilterService $petActivityLogsFilterService
     )

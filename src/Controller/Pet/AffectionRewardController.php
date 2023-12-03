@@ -22,15 +22,15 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/pet")]
 class AffectionRewardController extends AbstractController
 {
     /**
      * @Route("/{pet}/availableMerits", methods={"GET"}, requirements={"pet"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getAvailableMerits(Pet $pet, ResponseService $responseService, EntityManagerInterface $em)
     {
         /** @var User $user */
@@ -46,8 +46,8 @@ class AffectionRewardController extends AbstractController
 
     /**
      * @Route("/{pet}/chooseAffectionReward/merit", methods={"POST"}, requirements={"pet"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function chooseAffectionRewardMerit(
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
     )
@@ -107,8 +107,8 @@ class AffectionRewardController extends AbstractController
 
     /**
      * @Route("/{pet}/chooseAffectionReward/skill", methods={"POST"}, requirements={"pet"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function chooseAffectionRewardSkill(
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
     )

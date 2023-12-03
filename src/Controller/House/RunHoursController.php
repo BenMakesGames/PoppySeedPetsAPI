@@ -15,7 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use App\Annotations\DoesNotRequireHouseHours;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/house")]
 class RunHoursController extends AbstractController
@@ -23,8 +23,8 @@ class RunHoursController extends AbstractController
     /**
      * @DoesNotRequireHouseHours()
      * @Route("/runHours", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function runHours(
         ResponseService $responseService, HouseService $houseService, EntityManagerInterface $em, LoggerInterface $logger,
         NormalizerInterface $normalizer

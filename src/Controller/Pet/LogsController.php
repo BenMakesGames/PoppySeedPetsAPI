@@ -14,15 +14,15 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/pet")]
 class LogsController extends AbstractController
 {
     /**
      * @Route("/{pet}/logs/calendar/{year}/{month}", methods={"GET"}, requirements={"pet":"\d+", "year":"\d+", "month":"\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function logCalendar(
         ResponseService $responseService, EntityManagerInterface $em,
 
@@ -85,8 +85,8 @@ class LogsController extends AbstractController
 
     /**
      * @Route("/{pet}/logs", methods={"GET"}, requirements={"pet"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function logs(
         Pet $pet, ResponseService $responseService, PetActivityLogsFilterService $petActivityLogsFilterService,
         Request $request

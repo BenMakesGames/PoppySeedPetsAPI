@@ -8,7 +8,7 @@ use App\Service\ResponseService;
 use Symfony\Component\HttpFoundation\Request;
 use App\Annotations\DoesNotRequireHouseHours;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
 * @Route("/article")
@@ -18,8 +18,8 @@ class SocialMediaController extends AdminController
     /**
      * @DoesNotRequireHouseHours()
      * @Route("/{article}/reddit", methods={"POST"}, requirements={"article"="\d+"})
-     * @IsGranted("ROLE_ADMIN")
      */
+    #[IsGranted("ROLE_ADMIN")]
     public function redditArticle(
         Article $article, ResponseService $responseService, RedditService $redditService, Request $request
     )

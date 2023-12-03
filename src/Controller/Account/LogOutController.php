@@ -6,7 +6,7 @@ use App\Service\SessionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Annotations\DoesNotRequireHouseHours;
 
 #[Route("/account")]
@@ -14,9 +14,9 @@ class LogOutController extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()
-     * @Route("/logOut", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[Route("/logOut", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function logOut(EntityManagerInterface $em, ResponseService $responseService, SessionService $sessionService)
     {
         $sessionService->logOut();

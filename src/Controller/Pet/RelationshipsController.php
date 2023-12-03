@@ -11,7 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 #[Route("/pet")]
@@ -37,8 +37,8 @@ class RelationshipsController extends AbstractController
 
     /**
      * @Route("/{pet}/friends", methods={"GET"}, requirements={"pet"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getPetFriends(
         Pet $pet, ResponseService $responseService, NormalizerInterface $normalizer,
         PetRelationshipRepository $petRelationshipRepository

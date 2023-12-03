@@ -25,7 +25,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/pet")]
 class SelfReflectionController extends AbstractController
@@ -91,8 +91,8 @@ class SelfReflectionController extends AbstractController
 
     /**
      * @Route("/{pet}/selfReflection/changeGuild", methods={"POST"}, requirements={"pet"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function changeGuild(
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
         GuildRepository $guildRepository
@@ -145,8 +145,8 @@ class SelfReflectionController extends AbstractController
 
     /**
      * @Route("/{pet}/selfReflection/reconcile", methods={"POST"}, requirements={"pet"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function reconcileWithAnotherPet(
         Pet $pet, Request $request, ResponseService $responseService, PetRelationshipRepository $petRelationshipRepository,
         EntityManagerInterface $em, IRandom $squirrel3

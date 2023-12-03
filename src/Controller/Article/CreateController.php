@@ -10,7 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Annotations\DoesNotRequireHouseHours;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
 * @Route("/article")
@@ -20,8 +20,8 @@ class CreateController extends AdminController
     /**
      * @DoesNotRequireHouseHours()
      * @Route("", methods={"POST"})
-     * @IsGranted("ROLE_ADMIN")
      */
+    #[IsGranted("ROLE_ADMIN")]
     public function createNew(
         Request $request, ResponseService $responseService, EntityManagerInterface $em,
         DesignGoalRepository $designGoalRepository

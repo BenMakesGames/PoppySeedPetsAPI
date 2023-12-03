@@ -13,15 +13,15 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/pet")]
 class LunchboxController extends AbstractController
 {
     /**
      * @Route("/{pet}/putInLunchbox/{inventory}", methods={"POST"}, requirements={"pet"="\d+", "inventory"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function putFoodInLunchbox(
         Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
@@ -69,8 +69,8 @@ class LunchboxController extends AbstractController
 
     /**
      * @Route("/{pet}/takeOutOfLunchbox/{inventory}", methods={"POST"}, requirements={"pet"="\d+", "inventory"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function takeFoodOutOfLunchbox(
         Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )

@@ -9,15 +9,13 @@ use App\Service\CommentFormatter;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/fieldGuide")]
 class FieldGuideController extends AbstractController
 {
-    /**
-     * @Route("", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route("", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getUnlockedEntries(
         ResponseService $responseService, CommentFormatter $commentFormatter
     )

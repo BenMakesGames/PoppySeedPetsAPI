@@ -21,15 +21,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/pet")]
 class ReleaseController extends AbstractController
 {
     /**
      * @Route("/{pet}/release", methods={"POST"}, requirements={"pet"="\d+"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function releasePet(
         Pet $pet, Request $request, ResponseService $responseService, UserPasswordHasherInterface $passwordEncoder,
         EntityManagerInterface $em, PetRepository $petRepository, IRandom $rng

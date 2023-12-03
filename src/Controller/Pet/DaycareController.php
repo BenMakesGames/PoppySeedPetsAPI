@@ -16,7 +16,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Annotations\DoesNotRequireHouseHours;
 
 #[Route("/pet")]
@@ -44,9 +44,9 @@ class DaycareController extends AbstractController
 
     /**
      * @Route("/daycare/arrange", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @DoesNotRequireHouseHours()
      */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function arrangePets(
         ResponseService $responseService, Request $request, EntityManagerInterface $em
     )
