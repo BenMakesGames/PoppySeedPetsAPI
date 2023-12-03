@@ -59,7 +59,7 @@ class WeatherService
         $weather->clouds = WeatherService::getClouds($hourSince2000);
         $weather->rainfall = WeatherService::getRainfall($hourSince2000);
         $weather->temperature = WeatherService::getTemperature($hourSince2000, $weather->rainfall);
-        $weather->isNight = WeatherService::isNight($hourSince2000 % 24);
+        $weather->isNight = WeatherService::isNight((int)$hourSince2000 % 24);
 
         return $weather;
     }
@@ -74,7 +74,7 @@ class WeatherService
             2 * sin(M_PI * 2 * ($hourOfYear - 1500) / 8760)
         ;
 
-        $hourOfDay = $hourOfYear % 24;
+        $hourOfDay = (int)$hourOfYear % 24;
 
         $temp += self::HOUR_OF_DAY_TEMPERATURE_MODIFIER[$hourOfDay];
 
