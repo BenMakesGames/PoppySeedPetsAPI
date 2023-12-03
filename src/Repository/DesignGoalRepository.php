@@ -32,7 +32,7 @@ class DesignGoalRepository extends ServiceEntityRepository
                 array_filter(   //   among values >= 0
                     array_map(  //     among the string values cast to integers
                         fn($id) => (int)$id,
-                        $params->get($fieldName, [])
+                        $params->all($fieldName)
                     ),
                     fn(int $id) => $id > 0
                 )
