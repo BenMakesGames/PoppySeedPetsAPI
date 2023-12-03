@@ -33,7 +33,7 @@ class PetChangesSummary
     /**
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
-    public string|null $level;
+    public string|null $level = null;
 
     /**
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
@@ -52,7 +52,7 @@ class PetChangesSummary
 
     public function containsLevelUp(): bool
     {
-        return strpos($this->level, '+') !== false;
+        return $this->level !== null && str_contains($this->level, '+');
     }
 
     public static function rate($value): ?string
