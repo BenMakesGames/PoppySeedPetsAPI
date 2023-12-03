@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ArrayFunctions;
@@ -54,7 +55,10 @@ class PlazaController extends AbstractController
 
         $em->flush();
 
-        $responseService->addFlashMessage('Here you go! Your ' . $box->tradeDescription . '!');
+        if($user->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
+            $responseService->addFlashMessage('Here you go: your ' . $box->tradeDescription . '! (I\'ve also donated one to the Museum on your behalf!)');
+        else
+            $responseService->addFlashMessage('Here you go: your ' . $box->tradeDescription . '!');
 
         return $responseService->success(array_map(
             fn(AvailableHolidayBox $box) => $box->tradeDescription,

@@ -43,6 +43,12 @@ final class CalendarFunctions
         return $monthAndDay >= 1220 && $monthAndDay <= 1223;
     }
 
+    public static function isEight(\DateTimeInterface $dt): bool
+    {
+        $monthAndDay = (int)$dt->format('nd');
+        return $monthAndDay >= 1201 && $monthAndDay <= 1208;
+    }
+
     public static function isThanksgivingMonsters(\DateTimeInterface $dt): bool
     {
         $monthAndDay = (int)$dt->format('nd');
@@ -337,6 +343,9 @@ final class CalendarFunctions
 
         if(self::isWinterSolstice($dt))
             $events[] = HolidayEnum::WINTER_SOLSTICE;
+
+        if(self::isEight($dt))
+            $events[] = HolidayEnum::EIGHT;
 
         if(self::isPsyPetsBirthday($dt))
             $events[] = HolidayEnum::PSYPETS_BIRTHDAY;

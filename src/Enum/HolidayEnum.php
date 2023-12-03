@@ -32,6 +32,7 @@ class HolidayEnum
     public const VALENTINES = 'Valentine\'s';
     public const WHITE_DAY = 'White Day';
     public const WINTER_SOLSTICE = 'Winter Solstice';
+    public const EIGHT = '8';
 
     // weird events?
     public const LEONIDS = 'The Leonids Meteor Shower';

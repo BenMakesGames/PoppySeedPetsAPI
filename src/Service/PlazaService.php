@@ -114,6 +114,22 @@ class PlazaService
             }
         }
 
+        if(CalendarFunctions::isEight($this->clock->now))
+        {
+            $got8 = $this->userQuestRepository->findOrCreate($user, 'EIGHT, ' . $year, false);
+
+            if(!$got8->getValue())
+            {
+                $boxes[] = new AvailableHolidayBox(
+                    'an 8',
+                    '8',
+                    '8', 1,
+                    'Received on the ' . $this->clock->now->format('jS') . ' of December, ' . $year . '.',
+                    $got8
+                );
+            }
+        }
+
         if(CalendarFunctions::isBastilleDay($this->clock->now))
         {
             $gotBox = $this->userQuestRepository->findOrCreate($user, 'Bastille Day, ' . $year, false);
