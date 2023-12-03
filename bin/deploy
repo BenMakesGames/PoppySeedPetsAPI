@@ -22,8 +22,8 @@ sudo php bin/console doctrine:cache:clear-query
 sudo php bin/console doctrine:cache:clear-result
 
 sudo chown ec2-user:apache -R var/cache
-sudo chmod 666 -R var/cache
-sudo chmod 666 -R var/log
+sudo chmod 777 -R var/cache
+sudo chmod 777 -R var/log
 
 chmod +x bin/backup
 chmod +x bin/clear-caches
