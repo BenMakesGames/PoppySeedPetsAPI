@@ -1,6 +1,7 @@
 #!/bin/sh
 
 sudo php bin/console cache:clear --env=prod
+sudo php bin/console cache:pool:clear --all
 sudo php bin/console doctrine:cache:clear-query
 sudo php bin/console doctrine:cache:clear-result
 

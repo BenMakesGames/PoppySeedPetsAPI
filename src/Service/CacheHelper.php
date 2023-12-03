@@ -1,6 +1,7 @@
 <?php
 namespace App\Service;
 
+use App\Functions\CacheHelpers;
 use Psr\Cache\CacheItemPoolInterface;
 
 class CacheHelper
@@ -14,7 +15,7 @@ class CacheHelper
 
     public function getOrCompute(string $cacheKey, \DateInterval $ttl, callable $computeMethod)
     {
-        $item = $this->cache->getItem($cacheKey);
+        $item = $this->cache->getItem(CacheHelpers::getCacheItemName($cacheKey));
 
         if($item->isHit())
             return $item->get();

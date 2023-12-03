@@ -10,6 +10,7 @@ composer install --no-dev --optimize-autoloader
 
 # clear all caches
 sudo php bin/console cache:clear --env=prod
+sudo php bin/console cache:pool:clear --all
 sudo php bin/console doctrine:cache:clear-query
 sudo php bin/console doctrine:cache:clear-result
 
@@ -18,6 +19,7 @@ php bin/console doctrine:migrations:migrate --no-interaction
 
 # clear caches again, because sometimes things freak out the first time
 sudo php bin/console cache:clear --env=prod
+sudo php bin/console cache:pool:clear --all
 sudo php bin/console doctrine:cache:clear-query
 sudo php bin/console doctrine:cache:clear-result
 
