@@ -20,7 +20,9 @@ use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PetColorFunctions;
 use App\Functions\StatusEffectHelpers;
 use App\Model\ActivityCallback;
+use App\Model\ActivityCallback8;
 use App\Model\ComputedPetSkills;
+use App\Model\IActivityCallback;
 use App\Model\PetChanges;
 use App\Repository\EnchantmentRepository;
 use App\Service\FieldGuideService;
@@ -35,35 +37,18 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ProgrammingService
 {
-    private ResponseService $responseService;
-    private InventoryService $inventoryService;
-    private PetExperienceService $petExperienceService;
-    private IRandom $squirrel3;
-    private HouseSimService $houseSimService;
-    private HattierService $hattierService;
-    private FieldGuideService $fieldGuideService;
-    private PetFactory $petFactory;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        PetExperienceService $petExperienceService, HouseSimService $houseSimService, HattierService $hattierService,
-        FieldGuideService $fieldGuideService, PetFactory $petFactory, EntityManagerInterface $em
+        private ResponseService $responseService, private InventoryService $inventoryService,
+        private IRandom $squirrel3, private PetExperienceService $petExperienceService,
+        private HouseSimService $houseSimService, private HattierService $hattierService,
+        private FieldGuideService $fieldGuideService, private PetFactory $petFactory,
+        private EntityManagerInterface $em
     )
     {
-        $this->responseService = $responseService;
-        $this->inventoryService = $inventoryService;
-        $this->petExperienceService = $petExperienceService;
-        $this->squirrel3 = $squirrel3;
-        $this->houseSimService = $houseSimService;
-        $this->hattierService = $hattierService;
-        $this->fieldGuideService = $fieldGuideService;
-        $this->petFactory = $petFactory;
-        $this->em = $em;
     }
 
     /**
-     * @return ActivityCallback[]
+     * @return IActivityCallback[]
      */
     public function getCraftingPossibilities(ComputedPetSkills $petWithSkills): array
     {
@@ -72,91 +57,91 @@ class ProgrammingService
         $possibilities = [];
 
         if($this->houseSimService->hasInventory('Tiny Black Hole') && $this->houseSimService->hasInventory('Worms'))
-            $possibilities[] = new ActivityCallback($this, 'createWormhole', 10);
+            $possibilities[] = new ActivityCallback8($this->createWormhole(...), 10);
 
         if($this->houseSimService->hasInventory('Photon'))
-            $possibilities[] = new ActivityCallback($this, 'createPoisson', 10);
+            $possibilities[] = new ActivityCallback8($this->createPoisson(...), 10);
 
         if($this->houseSimService->hasInventory('Macintosh'))
-            $possibilities[] = new ActivityCallback($this, 'hackMacintosh', 10);
+            $possibilities[] = new ActivityCallback8($this->hackMacintosh(...), 10);
 
         if($this->houseSimService->hasInventory('3D Printer') && $this->houseSimService->hasInventory('Plastic'))
         {
             if($this->houseSimService->hasInventory('Glass') && ($this->houseSimService->hasInventory('Silver Bar') || $this->houseSimService->hasInventory('Gold Bar')))
-                $possibilities[] = new ActivityCallback($this, 'createLaserPointer', 10);
+                $possibilities[] = new ActivityCallback8($this->createLaserPointer(...), 10);
 
             if(($this->houseSimService->hasInventory('Silver Bar') || $this->houseSimService->hasInventory('Iron Bar')) && $this->houseSimService->hasInventory('Magic Smoke'))
-                $possibilities[] = new ActivityCallback($this, 'createMetalDetector', 10);
+                $possibilities[] = new ActivityCallback8($this->createMetalDetector(...), 10);
         }
 
         if($this->houseSimService->hasInventory('Metal Detector (Iron)') || $this->houseSimService->hasInventory('Metal Detector (Silver)') || $this->houseSimService->hasInventory('Metal Detector (Gold)'))
         {
             if($this->houseSimService->hasInventory('Gold Bar') && ($this->houseSimService->hasInventory('Fiberglass') || $this->houseSimService->hasInventory('Fiberglass Flute')))
-                $possibilities[] = new ActivityCallback($this, 'createSeashellDetector', 10);
+                $possibilities[] = new ActivityCallback8($this->createSeashellDetector(...), 10);
         }
 
         if($this->houseSimService->hasInventory('Painted Boomerang') && $this->houseSimService->hasInventory('Imaginary Number'))
-            $possibilities[] = new ActivityCallback($this, 'createStrangeAttractor', 10);
+            $possibilities[] = new ActivityCallback8($this->createStrangeAttractor(...), 10);
 
         if($this->houseSimService->hasInventory('Pointer'))
         {
-            $possibilities[] = new ActivityCallback($this, 'createStringFromPointer', 10);
+            $possibilities[] = new ActivityCallback8($this->createStringFromPointer(...), 10);
 
             if($this->houseSimService->hasInventory('Wings') && $this->houseSimService->hasInventory('Quinacridone Magenta Dye'))
-                $possibilities[] = new ActivityCallback($this, 'createDragondrop', 10);
+                $possibilities[] = new ActivityCallback8($this->createDragondrop(...), 10);
 
             if($this->houseSimService->hasInventory('Finite State Machine'))
-                $possibilities[] = new ActivityCallback($this, 'createRegex', 10);
+                $possibilities[] = new ActivityCallback8($this->createRegex(...), 10);
 
             if($this->houseSimService->hasInventory('NUL'))
             {
                 if($this->houseSimService->hasInventory('Plastic Fishing Rod'))
-                    $possibilities[] = new ActivityCallback($this, 'createPhishingRod', 10);
+                    $possibilities[] = new ActivityCallback8($this->createPhishingRod(...), 10);
 
                 if($this->houseSimService->hasInventory('Gold Key'))
-                    $possibilities[] = new ActivityCallback($this, 'createDiffieHKey', 10);
+                    $possibilities[] = new ActivityCallback8($this->createDiffieHKey(...), 10);
             }
         }
 
         if($this->houseSimService->hasInventory('Regex') && $this->houseSimService->hasInventory('Password'))
-            $possibilities[] = new ActivityCallback($this, 'createBruteForce', 10);
+            $possibilities[] = new ActivityCallback8($this->createBruteForce(...), 10);
 
         if($this->houseSimService->hasInventory('Brute Force') && $this->houseSimService->hasInventory('XOR') && $this->houseSimService->hasInventory('Gold Bar'))
-            $possibilities[] = new ActivityCallback($this, 'createL33tH4xx0r', 10);
+            $possibilities[] = new ActivityCallback8($this->createL33tH4xx0r(...), 10);
 
         if($this->houseSimService->hasInventory('Hash Table'))
         {
             if($this->houseSimService->hasInventory('Laser Pointer') && $this->houseSimService->hasInventory('Bass Guitar'))
-                $possibilities[] = new ActivityCallback($this, 'createLaserGuitar', 10);
+                $possibilities[] = new ActivityCallback8($this->createLaserGuitar(...), 10);
 
             if($this->houseSimService->hasInventory('Finite State Machine') && $this->houseSimService->hasInventory('String'))
-                $possibilities[] = new ActivityCallback($this, 'createCompiler', 10);
+                $possibilities[] = new ActivityCallback8($this->createCompiler(...), 10);
 
             if($this->houseSimService->hasInventory('Elvish Magnifying Glass'))
-                $possibilities[] = new ActivityCallback($this, 'createRijndael', 10);
+                $possibilities[] = new ActivityCallback8($this->createRijndael(...), 10);
 
             if($this->houseSimService->hasInventory('Ruler'))
-                $possibilities[] = new ActivityCallback($this, 'createViswanathsConstant', 10);
+                $possibilities[] = new ActivityCallback8($this->createViswanathsConstant(...), 10);
 
             if($this->houseSimService->hasInventory('XOR') && $this->houseSimService->hasInventory('Fiberglass Bow'))
-                $possibilities[] = new ActivityCallback($this, 'createResonatingBow', 10);
+                $possibilities[] = new ActivityCallback8($this->createResonatingBow(...), 10);
 
             if($this->houseSimService->hasInventory('Lightning Sword') && $this->houseSimService->hasInventory('Glass Pendulum'))
-                $possibilities[] = new ActivityCallback($this, 'createRainbowsaber', 10);
+                $possibilities[] = new ActivityCallback8($this->createRainbowsaber(...), 10);
         }
 
         if($this->houseSimService->hasInventory('Lightning in a Bottle'))
         {
             if($this->houseSimService->hasInventory('Iron Sword'))
-                $possibilities[] = new ActivityCallback($this, 'createLightningSword', 10);
+                $possibilities[] = new ActivityCallback8($this->createLightningSword(...), 10);
 
             if($this->houseSimService->hasInventory('Gold Bar'))
             {
                 if($this->houseSimService->hasInventory('Glass Pendulum'))
-                    $possibilities[] = new ActivityCallback($this, 'createLivewire', 10);
+                    $possibilities[] = new ActivityCallback8($this->createLivewire(...), 10);
 
                 if($this->houseSimService->hasInventory('Plastic Boomerang'))
-                    $possibilities[] = new ActivityCallback($this, 'createBuggerang', 10);
+                    $possibilities[] = new ActivityCallback8($this->createBuggerang(...), 10);
             }
 
             if(
@@ -168,33 +153,33 @@ class ProgrammingService
                 )
             )
             {
-                $possibilities[] = new ActivityCallback($this, 'createSentientBeetle', 10);
+                $possibilities[] = new ActivityCallback8($this->createSentientBeetle(...), 10);
             }
 
             if($this->houseSimService->hasInventory('Iron Bar') && $this->houseSimService->hasInventory('Plastic') && $this->houseSimService->hasInventory('Gravitational Waves'))
-                $possibilities[] = new ActivityCallback($this, 'createGravitonGun', 10);
+                $possibilities[] = new ActivityCallback8($this->createGravitonGun(...), 10);
         }
 
         if($this->houseSimService->hasInventory('Magic Smoke'))
         {
             if($this->houseSimService->hasInventory('Laser Pointer') && $this->houseSimService->hasInventory('Toy Alien Gun'))
-                $possibilities[] = new ActivityCallback($this, 'createAlienGun', 10);
+                $possibilities[] = new ActivityCallback8($this->createAlienGun(...), 10);
 
             if($this->houseSimService->hasInventory('Lightning Sword') && $this->houseSimService->hasInventory('Alien Tissue'))
-                $possibilities[] = new ActivityCallback($this, 'createDNA', 10);
+                $possibilities[] = new ActivityCallback8($this->createDNA(...), 10);
         }
 
         if($this->houseSimService->hasInventory('Sylvan Fishing Rod') && $this->houseSimService->hasInventory('Laser Pointer') && $this->houseSimService->hasInventory('Alien Tissue'))
-            $possibilities[] = new ActivityCallback($this, 'createAlienFishingRod', 10);
+            $possibilities[] = new ActivityCallback8($this->createAlienFishingRod(...), 10);
 
         if($this->houseSimService->hasInventory('Gold Triangle') && $this->houseSimService->hasInventory('Seaweed') && $this->houseSimService->hasInventory('Gravitational Waves'))
-            $possibilities[] = new ActivityCallback($this, 'createBermudaTriangle', 10);
+            $possibilities[] = new ActivityCallback8($this->createBermudaTriangle(...), 10);
 
         return $possibilities;
     }
 
     /**
-     * @param ActivityCallback[] $possibilities
+     * @param IActivityCallback[] $possibilities
      */
     public function adventure(ComputedPetSkills $petWithSkills, array $possibilities): PetActivityLog
     {
@@ -203,13 +188,13 @@ class ProgrammingService
 
         $pet = $petWithSkills->getPet();
 
-        /** @var ActivityCallback $method */
+        /** @var IActivityCallback $method */
         $method = $this->squirrel3->rngNextFromArray($possibilities);
 
         $changes = new PetChanges($pet);
 
         /** @var PetActivityLog $activityLog */
-        $activityLog = ($method->callable)($petWithSkills);
+        $activityLog = $method->getCallable()($petWithSkills);
 
         if($activityLog)
         {

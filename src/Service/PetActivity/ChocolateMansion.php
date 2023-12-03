@@ -72,36 +72,19 @@ class ChocolateMansion
 
         $maxRoom = min($roomsAvailableQuest->getValue(), $petFurthestRoom->getValue());
 
-        $activityLog = null;
         $changes = new PetChanges($pet);
 
-        switch($this->rng->rngNextInt(1, $maxRoom))
-        {
-            case 1:
-                $activityLog = $this->explorePatio($petWithSkills, $roomsAvailableQuest);
-                break;
-            case 2:
-                $activityLog = $this->exploreGardens($petWithSkills, $roomsAvailableQuest);
-                break;
-            case 3:
-                $activityLog = $this->exploreFoyer($petWithSkills, $petFurthestRoom);
-                break;
-            case 4:
-                $activityLog = $this->exploreParlor($petWithSkills, $roomsAvailableQuest);
-                break;
-            case 5:
-                $activityLog = $this->exploreMasterBedroom($petWithSkills, $roomsAvailableQuest);
-                break;
-            case 6:
-                $activityLog = $this->exploreStudy($petWithSkills, $roomsAvailableQuest);
-                break;
-            case 7:
-                $activityLog = $this->exploreCellar($petWithSkills);
-                break;
-            case 8:
-                $activityLog = $this->exploreAttic($petWithSkills);
-                break;
-        }
+        $activityLog = match($this->rng->rngNextInt(1, $maxRoom)) {
+            1 => $this->explorePatio($petWithSkills, $roomsAvailableQuest),
+            2 => $this->exploreGardens($petWithSkills, $roomsAvailableQuest),
+            3 => $this->exploreFoyer($petWithSkills, $petFurthestRoom),
+            4 => $this->exploreParlor($petWithSkills, $roomsAvailableQuest),
+            5 => $this->exploreMasterBedroom($petWithSkills, $roomsAvailableQuest),
+            6 => $this->exploreStudy($petWithSkills, $roomsAvailableQuest),
+            7 => $this->exploreCellar($petWithSkills),
+            8 => $this->exploreAttic($petWithSkills),
+            default => throw new \Exception('Invalid room number!'),
+        };
 
         if($activityLog)
         {

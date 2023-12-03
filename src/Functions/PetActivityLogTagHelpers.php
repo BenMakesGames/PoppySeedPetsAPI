@@ -28,7 +28,7 @@ final class PetActivityLogTagHelpers
             ->where('t.title=:title')
             ->setParameter('title', $name)
             ->getQuery()
-            ->enableResultCache(24 * 60 * 60, 'PetActivityLogTagRepository_FindOneByName_' . $name)
+            ->enableResultCache(24 * 60 * 60, CacheHelpers::getCacheItemName('PetActivityLogTagRepository_FindOneByName_' . $name))
             ->getOneOrNullResult();
 
         if(!$tag)

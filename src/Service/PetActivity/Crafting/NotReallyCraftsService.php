@@ -9,7 +9,9 @@ use App\Enum\PetSkillEnum;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ActivityCallback;
+use App\Model\ActivityCallback8;
 use App\Model\ComputedPetSkills;
+use App\Model\IActivityCallback;
 use App\Model\PetChanges;
 use App\Repository\SpiceRepository;
 use App\Service\HouseSimService;
@@ -40,21 +42,21 @@ class NotReallyCraftsService
     }
 
     /**
-     * @param ActivityCallback[] $possibilities
+     * @param IActivityCallback[] $possibilities
      */
     public function adventure(ComputedPetSkills $petWithSkills, array $possibilities): PetActivityLog
     {
         if(count($possibilities) === 0)
             throw new \InvalidArgumentException('possibilities must contain at least one item.');
 
-        /** @var ActivityCallback $method */
+        /** @var IActivityCallback $method */
         $method = $this->rng->rngNextFromArray($possibilities);
 
         $pet = $petWithSkills->getPet();
         $changes = new PetChanges($pet);
 
         /** @var PetActivityLog $activityLog */
-        $activityLog = ($method->callable)($petWithSkills);
+        $activityLog = $method->getCallable()($petWithSkills);
 
         if($activityLog)
         {
@@ -69,7 +71,7 @@ class NotReallyCraftsService
         $possibilities = [];
 
         if($this->houseSimService->hasInventory('Planetary Ring'))
-            $possibilities[] = new ActivityCallback($this, 'siftThroughPlanetaryRing', 10);
+            $possibilities[] = new ActivityCallback8($this->siftThroughPlanetaryRing(...), 10);
 
         return $possibilities;
     }

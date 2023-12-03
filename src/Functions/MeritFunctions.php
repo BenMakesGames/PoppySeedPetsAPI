@@ -44,71 +44,28 @@ class MeritFunctions
             $petAgeInDays = (new \DateTimeImmutable())->diff($pet->getBirthDate())->days >= 14;
 
             // some merits have additional requirements:
-            switch($merit)
-            {
-                case MeritEnum::VOLAGAMY:
-                    $available = $petAgeInDays >= 14;
-                    break;
-
-                case MeritEnum::INTROSPECTIVE:
-                    $available = $pet->getRelationshipCount() >= 3;
-                    break;
+            $available = match($merit) {
+                MeritEnum::VOLAGAMY => $petAgeInDays >= 14,
+                MeritEnum::INTROSPECTIVE => $pet->getRelationshipCount() >= 3,
 
                 // stat-based merits:
-
-                case MeritEnum::MOON_BOUND:
-                    $available = $pet->getSkills()->getStrength() >= 3;
-                    break;
-
-                case MeritEnum::DARKVISION:
-                    $available = $pet->getSkills()->getPerception() >= 3;
-                    break;
-
-                case MeritEnum::EIDETIC_MEMORY:
-                    $available = $pet->getSkills()->getIntelligence() >= 3;
-                    break;
-
-                case MeritEnum::GECKO_FINGERS:
-                    $available = $pet->getSkills()->getDexterity() >= 3;
-                    break;
-
-                case MeritEnum::IRON_STOMACH:
-                    $available = $pet->getSkills()->getStamina() >= 3;
-                    break;
+                MeritEnum::MOON_BOUND => $pet->getSkills()->getStrength() >= 3,
+                MeritEnum::DARKVISION => $pet->getSkills()->getPerception() >= 3,
+                MeritEnum::EIDETIC_MEMORY => $pet->getSkills()->getIntelligence() >= 3,
+                MeritEnum::GECKO_FINGERS => $pet->getSkills()->getDexterity() >= 3,
+                MeritEnum::IRON_STOMACH => $pet->getSkills()->getStamina() >= 3,
 
                 // skill-based merits:
+                MeritEnum::CELESTIAL_CHORUSER => $pet->getSkills()->getMusic() >= 5,
+                MeritEnum::NO_SHADOW_OR_REFLECTION => $pet->getSkills()->getStealth() >= 5,
+                MeritEnum::SPIRIT_COMPANION => $pet->getSkills()->getArcana() >= 5,
+                MeritEnum::GREEN_THUMB => $pet->getSkills()->getNature() >= 5,
+                MeritEnum::SHOCK_RESISTANT => $pet->getSkills()->getScience() >= 5,
+                MeritEnum::WAY_OF_THE_EMPTY_HAND => $pet->getSkills()->getBrawl() >= 5,
+                MeritEnum::ATHENAS_GIFTS => $pet->getSkills()->getCrafts() >= 5,
 
-                case MeritEnum::CELESTIAL_CHORUSER:
-                    $available = $pet->getSkills()->getMusic() >= 5;
-                    break;
-
-                case MeritEnum::NO_SHADOW_OR_REFLECTION:
-                    $available = $pet->getSkills()->getStealth() >= 5;
-                    break;
-
-                case MeritEnum::SPIRIT_COMPANION:
-                    $available = $pet->getSkills()->getArcana() >= 5;
-                    break;
-
-                case MeritEnum::GREEN_THUMB:
-                    $available = $pet->getSkills()->getNature() >= 5;
-                    break;
-
-                case MeritEnum::SHOCK_RESISTANT:
-                    $available = $pet->getSkills()->getScience() >= 5;
-                    break;
-
-                case MeritEnum::WAY_OF_THE_EMPTY_HAND:
-                    $available = $pet->getSkills()->getBrawl() >= 5;
-                    break;
-
-                case MeritEnum::ATHENAS_GIFTS:
-                    $available = $pet->getSkills()->getCrafts() >= 5;
-                    break;
-
-                default:
-                    $available = true;
-            }
+                default => true
+            };
 
             if($available)
                 $availableMerits[] = $merit;

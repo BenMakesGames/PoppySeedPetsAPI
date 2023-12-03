@@ -3,6 +3,7 @@
 namespace App\DoctrineEventListeners;
 
 use App\Entity\Inventory;
+use App\Functions\CacheHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PostLoadEventArgs;
 
@@ -30,7 +31,7 @@ class InventoryLoadListener
         $itemId = $itemProxy->getId();
         $query = $this->entityManager->createQuery('SELECT i FROM App\Entity\Item i WHERE i.id = :id');
         $query->setParameter('id', $itemId);
-        $query->enableResultCache(24 * 60 * 60, 'InventoryLoadListener_GetItemById_' . $itemId);
+        $query->enableResultCache(24 * 60 * 60, CacheHelpers::getCacheItemName('InventoryLoadListener_GetItemById_' . $itemId));
 
         // Execute query and get the result
         $item = $query->getOneOrNullResult();

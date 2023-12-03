@@ -4,6 +4,7 @@ namespace App\DoctrineEventListeners;
 
 use App\Entity\Inventory;
 use App\Entity\Pet;
+use App\Functions\CacheHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PostLoadEventArgs;
 
@@ -31,7 +32,7 @@ class PetLoadListener
         $speciesId = $petSpeciesProxy->getId();
         $query = $this->entityManager->createQuery('SELECT s FROM App\Entity\PetSpecies s WHERE s.id = :id');
         $query->setParameter('id', $speciesId);
-        $query->enableResultCache(24 * 60 * 60, 'PetLoadListener_GetPetSpeciesById_' . $speciesId);
+        $query->enableResultCache(24 * 60 * 60, CacheHelpers::getCacheItemName('PetLoadListener_GetPetSpeciesById_' . $speciesId));
 
         // Execute query and get the result
         $petSpecies = $query->getOneOrNullResult();

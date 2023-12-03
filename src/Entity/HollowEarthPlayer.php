@@ -36,7 +36,7 @@ class HollowEarthPlayer
     /**
      * @ORM\Column(type="json", nullable=true)
      */
-    private $currentAction = null;
+    private array|null $currentAction = null;
 
     /**
      * @ORM\Column(type="integer")
@@ -174,40 +174,38 @@ class HollowEarthPlayer
     {
         if($this->currentAction === null)
             return null;
-        else
+
+        $action = [];
+
+        if(array_key_exists('type', $this->currentAction))
         {
-            $action = [];
+            $action['type'] = $this->currentAction['type'];
 
-            if(array_key_exists('type', $this->currentAction))
+            switch($action['type'])
             {
-                $action['type'] = $this->currentAction['type'];
-
-                switch($action['type'])
-                {
-                    case HollowEarthActionTypeEnum::PAY_ITEM:
-                        $action['item'] = $this->currentAction['item'];
-                        break;
-                    case HollowEarthActionTypeEnum::PAY_MONEY:
-                        $action['amount'] = $this->currentAction['amount'];
-                        break;
-                    case HollowEarthActionTypeEnum::PAY_ITEM_AND_MONEY:
-                        $action['item'] = $this->currentAction['item'];
-                        $action['amount'] = $this->currentAction['amount'];
-                        break;
-                    case HollowEarthActionTypeEnum::CHOOSE_ONE:
-                        $action['buttons'] = $this->currentAction['buttons'];
-                        break;
-                }
+                case HollowEarthActionTypeEnum::PAY_ITEM:
+                    $action['item'] = $this->currentAction['item'];
+                    break;
+                case HollowEarthActionTypeEnum::PAY_MONEY:
+                    $action['amount'] = $this->currentAction['amount'];
+                    break;
+                case HollowEarthActionTypeEnum::PAY_ITEM_AND_MONEY:
+                    $action['item'] = $this->currentAction['item'];
+                    $action['amount'] = $this->currentAction['amount'];
+                    break;
+                case HollowEarthActionTypeEnum::CHOOSE_ONE:
+                    $action['buttons'] = $this->currentAction['buttons'];
+                    break;
             }
-
-            if(array_key_exists('description', $this->currentAction))
-                $action['description'] = $this->currentAction['description'];
-
-            if(array_key_exists('buttonText', $this->currentAction))
-                $action['buttonText'] = $this->currentAction['buttonText'];
-
-            return $action;
         }
+
+        if(array_key_exists('description', $this->currentAction))
+            $action['description'] = $this->currentAction['description'];
+
+        if(array_key_exists('buttonText', $this->currentAction))
+            $action['buttonText'] = $this->currentAction['buttonText'];
+
+        return $action;
     }
 
     public function getCurrentDirection(): string

@@ -20,15 +20,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @Route("/grocer")
- */
+#[Route('/grocer')]
 class GrocerController extends AbstractController
 {
-    /**
-     * @Route("", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route('', methods: ['GET'])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getInventory(
         GrocerService $grocerService, ResponseService $responseService, UserQuestRepository $userQuestRepository
     )
@@ -52,10 +48,8 @@ class GrocerController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/buy", methods={"POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     */
+    #[Route('/buy', methods: ['POST'])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buy(
         Request $request, ResponseService $responseService, GrocerService $grocerService,
         TransactionService $transactionService, InventoryService $inventoryService, EntityManagerInterface $em,

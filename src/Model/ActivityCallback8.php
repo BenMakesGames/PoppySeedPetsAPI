@@ -1,14 +1,14 @@
 <?php
 namespace App\Model;
 
-class ActivityCallback implements IActivityCallback
+class ActivityCallback8 implements IActivityCallback
 {
     /** @var callable */ public $callable;
     public int $weight;
 
-    public function __construct($object, string $method, int $weight)
+    public function __construct(callable $callable, int $weight)
     {
-        $this->callable = [ $object, $method ];
+        $this->callable = $callable;
         $this->weight = $weight;
     }
 

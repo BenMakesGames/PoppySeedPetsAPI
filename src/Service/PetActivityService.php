@@ -63,110 +63,31 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PetActivityService
 {
-    private Clock $clock;
-    private EntityManagerInterface $em;
-    private ResponseService $responseService;
-    private FishingService $fishingService;
-    private HuntingService $huntingService;
-    private GatheringService $gatheringService;
-    private CraftingService $craftingService;
-    private MagicBindingService $magicBindingService;
-    private ProgrammingService $programmingService;
-    private UserStatsService $userStatsRepository;
-    private TreasureMapService $treasureMapService;
-    private GenericAdventureService $genericAdventureService;
-    private Protocol7Service $protocol7Service;
-    private UmbraService $umbraService;
-    private PoopingService $poopingService;
-    private GivingTreeGatheringService $givingTreeGatheringService;
-    private PregnancyService $pregnancyService;
-    private PetExperienceService $petExperienceService;
-    private MagicBeanstalkService $beanStalkService;
-    private GatheringHolidayAdventureService $gatheringHolidayAdventureService;
-    private HeartDimensionService $heartDimensionService;
-    private GuildService $guildService;
-    private InventoryService $inventoryService;
-    private BurntForestService $burntForestService;
-    private DeepSeaService $deepSeaService;
-    private PetSummonedAwayService $petSummonedAwayService;
-    private NotReallyCraftsService $notReallyCraftsService;
-    private LetterService $letterService;
-    private IRandom $squirrel3;
-    private ChocolateMansion $chocolateMansion;
-    private Caerbannog $caerbannog;
-    private CravingService $cravingService;
-    private EatingService $eatingService;
-    private HouseSimService $houseSimService;
-    private SmithingService $smithingService;
-    private PlasticPrinterService $plasticPrinterService;
-    private PhilosophersStoneService $philosophersStoneService;
-    private IcyMoonService $icyMoonService;
-    private KappaService $kappaService;
-    private DreamingAndDaydreamingService $dreamingAndDaydreamingService;
-    private FatedAdventureService $fatedAdventureService;
-
     public function __construct(
-        Clock $clock, EntityManagerInterface $em, ResponseService $responseService,
-        FishingService $fishingService, HeartDimensionService $heartDimensionService, IcyMoonService $icyMoonService,
-        HuntingService $huntingService, GatheringService $gatheringService, CraftingService $craftingService,
-        UserStatsService $userStatsRepository,
-        GenericAdventureService $genericAdventureService, PetSummonedAwayService $petSummonedAwayService,
-        Protocol7Service $protocol7Service, ProgrammingService $programmingService, UmbraService $umbraService,
-        PoopingService $poopingService, GivingTreeGatheringService $givingTreeGatheringService,
-        PregnancyService $pregnancyService, IRandom $squirrel3, ChocolateMansion $chocolateMansion,
-        PetExperienceService $petExperienceService, DreamingAndDaydreamingService $dreamingAndDaydreamingService,
-        MagicBeanstalkService $beanStalkService, GatheringHolidayAdventureService $gatheringHolidayAdventureService,
-        GuildService $guildService, BurntForestService $burntForestService, InventoryService $inventoryService,
-        DeepSeaService $deepSeaService, NotReallyCraftsService $notReallyCraftsService, LetterService $letterService,
-        Caerbannog $caerbannog, TreasureMapService $treasureMapService, EatingService $eatingService,
-        HouseSimService $houseSimService, MagicBindingService $magicBindingService, SmithingService $smithingService,
-        CravingService $cravingService, PlasticPrinterService $plasticPrinterService,
-        PhilosophersStoneService $philosophersStoneService, KappaService $kappaService,
-        FatedAdventureService $fatedAdventureService
+        private Clock $clock, private EntityManagerInterface $em, private ResponseService $responseService,
+        private FishingService $fishingService, private HeartDimensionService $heartDimensionService,
+        private IcyMoonService $icyMoonService, private HuntingService $huntingService,
+        private GatheringService $gatheringService, private CraftingService $craftingService,
+        private UserStatsService $userStatsRepository, private GenericAdventureService $genericAdventureService,
+        private PetSummonedAwayService $petSummonedAwayService, private Protocol7Service $protocol7Service,
+        private ProgrammingService $programmingService, private UmbraService $umbraService,
+        private PoopingService $poopingService, private GivingTreeGatheringService $givingTreeGatheringService,
+        private PregnancyService $pregnancyService, private IRandom $squirrel3,
+        private ChocolateMansion $chocolateMansion, private PetExperienceService $petExperienceService,
+        private DreamingAndDaydreamingService $dreamingAndDaydreamingService,
+        private MagicBeanstalkService $beanStalkService, private EatingService $eatingService,
+        private GatheringHolidayAdventureService $gatheringHolidayAdventureService,
+        private GuildService $guildService, private BurntForestService $burntForestService,
+        private InventoryService $inventoryService, private DeepSeaService $deepSeaService,
+        private NotReallyCraftsService $notReallyCraftsService, private LetterService $letterService,
+        private Caerbannog $caerbannog, private TreasureMapService $treasureMapService,
+        private HouseSimService $houseSimService, private MagicBindingService $magicBindingService,
+        private SmithingService $smithingService, private CravingService $cravingService,
+        private PlasticPrinterService $plasticPrinterService,
+        private PhilosophersStoneService $philosophersStoneService, private KappaService $kappaService,
+        private FatedAdventureService $fatedAdventureService
     )
     {
-        $this->clock = $clock;
-        $this->em = $em;
-        $this->squirrel3 = $squirrel3;
-
-        $this->responseService = $responseService;
-        $this->fishingService = $fishingService;
-        $this->huntingService = $huntingService;
-        $this->gatheringService = $gatheringService;
-        $this->craftingService = $craftingService;
-        $this->userStatsRepository = $userStatsRepository;
-        $this->treasureMapService = $treasureMapService;
-        $this->genericAdventureService = $genericAdventureService;
-        $this->protocol7Service = $protocol7Service;
-        $this->programmingService = $programmingService;
-        $this->umbraService = $umbraService;
-        $this->poopingService = $poopingService;
-        $this->givingTreeGatheringService = $givingTreeGatheringService;
-        $this->pregnancyService = $pregnancyService;
-        $this->petExperienceService = $petExperienceService;
-        $this->dreamingAndDaydreamingService = $dreamingAndDaydreamingService;
-        $this->beanStalkService = $beanStalkService;
-        $this->gatheringHolidayAdventureService = $gatheringHolidayAdventureService;
-        $this->heartDimensionService = $heartDimensionService;
-        $this->guildService = $guildService;
-        $this->burntForestService = $burntForestService;
-        $this->inventoryService = $inventoryService;
-        $this->deepSeaService = $deepSeaService;
-        $this->petSummonedAwayService = $petSummonedAwayService;
-        $this->notReallyCraftsService = $notReallyCraftsService;
-        $this->letterService = $letterService;
-        $this->chocolateMansion = $chocolateMansion;
-        $this->caerbannog = $caerbannog;
-        $this->cravingService = $cravingService;
-        $this->eatingService = $eatingService;
-        $this->houseSimService = $houseSimService;
-        $this->magicBindingService = $magicBindingService;
-        $this->smithingService = $smithingService;
-        $this->plasticPrinterService = $plasticPrinterService;
-        $this->philosophersStoneService = $philosophersStoneService;
-        $this->icyMoonService = $icyMoonService;
-        $this->kappaService = $kappaService;
-        $this->fatedAdventureService = $fatedAdventureService;
     }
 
     public function runHour(Pet $pet)

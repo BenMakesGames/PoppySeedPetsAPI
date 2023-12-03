@@ -16,7 +16,7 @@ final class HollowEarthTileRepository
             ->andWhere('t.id = :id')
             ->setParameter('id', $tileId)
             ->getQuery()
-            ->enableResultCache(24 * 60 * 60, 'HollowEarthTileRepository_FindOneById_' . $tileId)
+            ->enableResultCache(24 * 60 * 60, CacheHelpers::getCacheItemName('HollowEarthTileRepository_FindOneById_' . $tileId))
             ->getOneOrNullResult()
         ;
 
@@ -34,7 +34,7 @@ final class HollowEarthTileRepository
             ->andWhere('t.moveDirection != :zero')
             ->setParameter('zero', HollowEarthMoveDirectionEnum::ZERO)
             ->getQuery()
-            ->enableResultCache(24 * 60 * 60, 'HollowEarthTileRepository_FindAllInBounds')
+            ->enableResultCache(24 * 60 * 60, CacheHelpers::getCacheItemName('HollowEarthTileRepository_FindAllInBounds'))
             ->execute()
         ;
     }

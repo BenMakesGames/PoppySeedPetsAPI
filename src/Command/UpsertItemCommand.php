@@ -48,6 +48,9 @@ class UpsertItemCommand extends PoppySeedPetsCommand
             $this->output->writeln('Updating "' . $item->getName() . '"');
         else
         {
+            if(str_starts_with($name, 'Tile:'))
+                throw new \Exception('Tiles must be created with app:create-hollow-earth-tile.');
+
             $this->output->writeln('Creating "' . $name . '"');
 
             $item = (new Item())

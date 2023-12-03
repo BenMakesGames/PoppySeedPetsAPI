@@ -6,58 +6,49 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class PetChangesSummary
 {
     /**
-     * @var string|null
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
-    public $food;
+    public string|null $food;
 
     /**
-     * @var string|null
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
-    public $safety;
+    public string|null $safety;
 
     /**
-     * @var int
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
-    public $love;
+    public string|null $love;
 
     /**
-     * @var string|null
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
-    public $esteem;
+    public string|null $esteem;
 
     /**
-     * @var string|null
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
-    public $exp;
+    public string|null $exp;
 
     /**
-     * @var string|null
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
-    public $level;
+    public string|null $level;
 
     /**
-     * @var string|null
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
-    public $affection;
+    public string|null $affection;
 
     /**
-     * @var string|null
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
-    public $affectionLevel;
+    public string|null $affectionLevel;
 
     /**
-     * @var string|null
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
-    public $scrollLevel;
+    public string|null $scrollLevel;
 
     public function containsLevelUp(): bool
     {

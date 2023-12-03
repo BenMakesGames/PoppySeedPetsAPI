@@ -19,7 +19,7 @@ final class ItemRepository
             ->where('i.name=:name')
             ->setParameter('name', $itemName)
             ->getQuery()
-            ->enableResultCache(24 * 60 * 60, 'ItemRepository_FindOneByName_' . $itemName)
+            ->enableResultCache(24 * 60 * 60, CacheHelpers::getCacheItemName('ItemRepository_FindOneByName_' . $itemName))
             ->getOneOrNullResult();
 
         if(!$item) throw new PSPNotFoundException('There is no item called ' . $itemName . '.');
@@ -33,7 +33,7 @@ final class ItemRepository
             ->where('i.id=:id')
             ->setParameter('id', $itemId)
             ->getQuery()
-            ->enableResultCache(24 * 60 * 60, 'ItemRepository_FindOneById_' . $itemId)
+            ->enableResultCache(24 * 60 * 60, CacheHelpers::getCacheItemName('ItemRepository_FindOneById_' . $itemId))
             ->getOneOrNullResult();
 
         if(!$item) throw new PSPNotFoundException('There is no item #' . $itemId . '.');
@@ -48,7 +48,7 @@ final class ItemRepository
             ->where('i.name=:name')
             ->setParameter('name', $itemName)
             ->getQuery()
-            ->enableResultCache(24 * 60 * 60, 'ItemRepository_GetIdByName_' . $itemName)
+            ->enableResultCache(24 * 60 * 60, CacheHelpers::getCacheItemName('ItemRepository_GetIdByName_' . $itemName))
             ->getSingleScalarResult();
 
         if(!$itemId)

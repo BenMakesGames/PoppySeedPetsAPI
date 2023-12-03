@@ -21,7 +21,7 @@ final class MeritRepository
             ->where('m.name=:name')
             ->setParameter('name', $name)
             ->getQuery()
-            ->enableResultCache(24 * 60 * 60, 'MeritRepository_FindOneByName_' . $name)
+            ->enableResultCache(24 * 60 * 60, CacheHelpers::getCacheItemName('MeritRepository_FindOneByName_' . $name))
             ->getOneOrNullResult();
 
         if(!$merit) throw new PSPNotFoundException('There is no Merit called ' . $name . '.');

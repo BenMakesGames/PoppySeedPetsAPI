@@ -5,6 +5,7 @@ use App\Entity\Item;
 use App\Entity\ItemTool;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
+use App\Functions\CacheHelpers;
 use App\Functions\StringFunctions;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query;
@@ -261,7 +262,7 @@ class ItemFilterService
     function applyResultCache(Query $qb, string $cacheKey): AbstractQuery
     {
         if($this->useResultCache)
-            return $qb->enableResultCache(24 * 60 * 60, self::class . '_' . $cacheKey);
+            return $qb->enableResultCache(24 * 60 * 60, CacheHelpers::getCacheItemName(self::class . '_' . $cacheKey));
         else
             return $qb;
     }
