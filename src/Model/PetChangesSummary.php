@@ -8,27 +8,27 @@ class PetChangesSummary
     /**
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
-    public string|null $food;
+    public string|null $food = null;
 
     /**
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
-    public string|null $safety;
+    public string|null $safety = null;
 
     /**
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
-    public string|null $love;
+    public string|null $love = null;
 
     /**
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
-    public string|null $esteem;
+    public string|null $esteem = null;
 
     /**
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
-    public string|null $exp;
+    public string|null $exp = null;
 
     /**
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
@@ -38,17 +38,17 @@ class PetChangesSummary
     /**
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
-    public string|null $affection;
+    public string|null $affection = null;
 
     /**
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
-    public string|null $affectionLevel;
+    public string|null $affectionLevel = null;
 
     /**
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
-    public string|null $scrollLevel;
+    public string|null $scrollLevel = null;
 
     public function containsLevelUp(): bool
     {
