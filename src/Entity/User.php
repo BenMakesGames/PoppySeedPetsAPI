@@ -392,19 +392,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeFollowing(UserFollowing $following): self
-    {
-        if ($this->following->contains($following)) {
-            $this->following->removeElement($following);
-            // set the owning side to null (unless already changed)
-            if ($following->getUser() === $this) {
-                $following->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
     /**
      * @return Collection|UserStats[]
      */
@@ -701,18 +688,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeUnlockedAura(UserUnlockedAura $unlockedAura): self
-    {
-        if ($this->unlockedAuras->removeElement($unlockedAura)) {
-            // set the owning side to null (unless already changed)
-            if ($unlockedAura->getUser() === $this) {
-                $unlockedAura->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getMuseumPoints(): int
     {
         return $this->museumPoints;
@@ -790,18 +765,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeUnlockedFeature(UserUnlockedFeature $unlockedFeature): self
-    {
-        if ($this->unlockedFeatures->removeElement($unlockedFeature)) {
-            // set the owning side to null (unless already changed)
-            if ($unlockedFeature->getUser() === $this) {
-                $unlockedFeature->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function hasUnlockedFeature(string $feature): bool
     {
         if(!UnlockableFeatureEnum::isAValue($feature))
@@ -841,18 +804,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if (!$this->badges->contains($badge)) {
             $this->badges[] = $badge;
             $badge->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeBadge(UserBadge $badge): self
-    {
-        if ($this->badges->removeElement($badge)) {
-            // set the owning side to null (unless already changed)
-            if ($badge->getUser() === $this) {
-                $badge->setUser(null);
-            }
         }
 
         return $this;

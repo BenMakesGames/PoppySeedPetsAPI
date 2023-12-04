@@ -972,19 +972,6 @@ class Pet
         return $this;
     }
 
-    public function removePetRelationship(PetRelationship $petRelationship): self
-    {
-        if ($this->petRelationships->contains($petRelationship)) {
-            $this->petRelationships->removeElement($petRelationship);
-            // set the owning side to null (unless already changed)
-            if ($petRelationship->getPet() === $this) {
-                $petRelationship->setPet(null);
-            }
-        }
-
-        return $this;
-    }
-
     #[Groups(['myPet'])]
     public function getHasRelationships(): bool
     {

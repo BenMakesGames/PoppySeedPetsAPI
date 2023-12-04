@@ -514,17 +514,4 @@ class Item
 
         return $this;
     }
-
-    public function removeMarketListing(MarketListing $marketListing): self
-    {
-        if ($this->marketListings->removeElement($marketListing)) {
-            // set the owning side to null (unless already changed)
-            if ($marketListing->getItem() === $this) {
-                $marketListing->setItem(null);
-            }
-        }
-
-        return $this;
-    }
-
 }
