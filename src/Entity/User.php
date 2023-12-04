@@ -744,7 +744,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getDailySeed()
     {
-        return (($this->fate * date('N')) % (date('nd') * 53)) + date('Yj');
+        return (($this->fate * date('N')) % (date('nd') * 53)) + (int)date('Yj');
     }
 
     /**
