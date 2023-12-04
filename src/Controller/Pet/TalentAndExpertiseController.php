@@ -40,9 +40,6 @@ class TalentAndExpertiseController extends AbstractController
 
         $merit = MeritRepository::findOneByName($em, $talent);
 
-        if(!$merit)
-            throw new \Exception('Programmer error! The Merit "' . $talent . '" does not exist in the DB! :(');
-
         $pet->addMerit($merit);
 
         if($talent === MeritEnum::MIND_OVER_MATTER)
@@ -107,9 +104,6 @@ class TalentAndExpertiseController extends AbstractController
             throw new PSPFormValidationException('You gotta\' choose one of the talents!');
 
         $merit = MeritRepository::findOneByName($em, $expertise);
-
-        if(!$merit)
-            throw new \Exception('Programmer error! The Merit "' . $expertise . '" does not exist in the DB! :(');
 
         $pet->addMerit($merit);
 

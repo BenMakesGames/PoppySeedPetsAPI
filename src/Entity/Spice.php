@@ -2,11 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\SpiceRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: SpiceRepository::class)]
+#[ORM\Entity]
 class Spice
 {
     /**

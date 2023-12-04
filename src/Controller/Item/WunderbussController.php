@@ -6,7 +6,6 @@ use App\Entity\MuseumItem;
 use App\Entity\User;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
-use App\Exceptions\PSPNotFoundException;
 use App\Functions\ItemRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\MuseumService;
@@ -59,9 +58,6 @@ class WunderbussController extends AbstractController
             throw new PSPFormValidationException('An item to search for must be selected!');
 
         $itemToFind = ItemRepository::findOneById($em, $searchForId);
-
-        if(!$itemToFind)
-            throw new PSPNotFoundException('The item you selected could not be found... that\'s really weird. Reload and try again??');
 
         $donatedItem = $em->getRepository(MuseumItem::class)->findOneBy([
             'item' => $itemToFind,

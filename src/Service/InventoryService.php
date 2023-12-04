@@ -18,10 +18,10 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\ItemRepository;
+use App\Functions\SpiceRepository;
 use App\Functions\StatusEffectHelpers;
 use App\Model\FoodWithSpice;
 use App\Model\ItemQuantity;
-use App\Repository\SpiceRepository;
 use App\Service\PetActivity\EatingService;
 use Doctrine\ORM\EntityManagerInterface;
 

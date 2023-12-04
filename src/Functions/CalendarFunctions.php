@@ -237,7 +237,7 @@ final class CalendarFunctions
         [$jewishYear, $jewishMonth, $jewishDay] = JewishCalendarFunctions::getJewishDate($dt);
 
         $hanukkahStart = jewishtojd(JewishCalendarFunctions::KISLEV, 25, $jewishYear);
-        $hanukkahNo = (int)($jdCurrent - $hanukkahStart + 1);
+        $hanukkahNo = $jdCurrent - $hanukkahStart + 1;
 
         return $hanukkahNo >= 1 && $hanukkahNo <= 8;
     }

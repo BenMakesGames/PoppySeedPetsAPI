@@ -10,8 +10,8 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\GrammarFunctions;
 use App\Functions\InventoryModifierFunctions;
+use App\Functions\SpiceRepository;
 use App\Repository\InventoryRepository;
-use App\Repository\SpiceRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -22,9 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/hotPot")
- */
+#[Route("/item/hotPot")]
 class HotPotController extends AbstractController
 {
     #[Route("/{inventory}/dip", methods: ["POST"])]

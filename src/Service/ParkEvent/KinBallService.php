@@ -90,9 +90,6 @@ class KinBallService implements ParkEventInterface
             new KinBallTeam($this->squirrel3->rngNextInt(1, 2) === 1 ? 'blue' : 'pink'),
         ];
 
-        $this->totalPetSkill = 0;
-        $this->totalPetAntiSkill = 0;
-
         /** @var KinBallParticipant[] $participants */
         $participants = [];
 

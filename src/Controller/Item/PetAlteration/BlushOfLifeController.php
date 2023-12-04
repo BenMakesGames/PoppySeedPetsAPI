@@ -46,9 +46,6 @@ class BlushOfLifeController extends AbstractController
 
         $merit = MeritRepository::findOneByName($em, MeritEnum::BLUSH_OF_LIFE);
 
-        if(!$merit)
-            throw new \Exception('The ' . MeritEnum::BLUSH_OF_LIFE . ' Merit does not exist! This is a terrible programming error. Someone please tell Ben.');
-
         if($pet->hasMerit(MeritEnum::BLUSH_OF_LIFE))
             throw new PSPFormValidationException($pet->getName() . ' already has the Blush of Life!');
 

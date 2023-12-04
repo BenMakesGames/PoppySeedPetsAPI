@@ -91,9 +91,6 @@ class TradesController extends AbstractController
 
         $item = ItemRepository::findOneByName($em, $trade['item']['name']);
 
-        if(!$item)
-            throw new \Exception('No item called "' . $trade['item']['name'] . '" exists in the database!');
-
         for($i = 0; $i < $quantity; $i++)
             $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' traded for this in the Portal.', $destination);
 

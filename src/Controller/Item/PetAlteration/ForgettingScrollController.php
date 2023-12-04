@@ -86,9 +86,6 @@ class ForgettingScrollController extends AbstractController
         $meritName = $request->request->get('merit', '');
         $merit = MeritRepository::findOneByName($em, $meritName);
 
-        if(!$merit)
-            throw new PSPFormValidationException('You forgot to select a merit!');
-
         if(!$pet->hasMerit($merit->getName()))
             throw new PSPNotFoundException($pet->getName() . ' doesn\'t have that Merit.');
 

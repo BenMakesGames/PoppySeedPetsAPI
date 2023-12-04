@@ -46,9 +46,6 @@ class ExportItemCommand extends PoppySeedPetsCommand
         $name = $this->input->getArgument('item');
         $item = ItemRepository::findOneByName($this->em, $name);
 
-        if(!$item)
-            throw new \Exception('There is no item by that name.');
-
         echo "\n================================================================================\n";
         echo str_repeat(' ', 40 - mb_strlen($item->getName()) / 2) . $item->getName() . "\n";
         echo "================================================================================\n";

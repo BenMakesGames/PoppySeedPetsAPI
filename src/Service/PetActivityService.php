@@ -259,10 +259,8 @@ class PetActivityService
 
         if($this->squirrel3->rngNextInt(1, 4000) === 1)
         {
-            $activityLog = $this->petSummonedAwayService->adventure($petWithSkills);
-
-            if($activityLog)
-                return;
+            $this->petSummonedAwayService->adventure($petWithSkills);
+            return;
         }
 
         $hunger = $this->squirrel3->rngNextInt(0, 4);

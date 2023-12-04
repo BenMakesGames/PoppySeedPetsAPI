@@ -13,9 +13,9 @@ use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
 use App\Functions\DragonHelpers;
 use App\Functions\PlayerLogHelpers;
+use App\Functions\SpiceRepository;
 use App\Repository\DragonRepository;
 use App\Repository\EnchantmentRepository;
-use App\Repository\SpiceRepository;
 use App\Service\PetActivity\TreasureMapService;
 use Doctrine\ORM\EntityManagerInterface;
 

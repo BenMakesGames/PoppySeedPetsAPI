@@ -8,7 +8,7 @@ interface IRandom
     function rngNextFloat(): float;
     function rngNextBool(): bool;
     function rngNextInt(int $min, int $inclusiveMax): int;
-    function rngNextFromArray(array $array);
+    function rngNextFromArray(array $array): mixed;
     function rngNextShuffle(array &$array);
     function rngNextSubsetFromArray(array $array, int $number): array;
 

@@ -5,7 +5,7 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Functions\ArrayFunctions;
-use App\Repository\SpiceRepository;
+use App\Functions\SpiceRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;

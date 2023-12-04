@@ -340,7 +340,7 @@ class JoustingService implements ParkEventInterface
             $describeLanceStrikes = 'their lances each striking the other';
         else if($result->rider1Hit)
             $describeLanceStrikes = $team1->rider->getName() . ' landing the hit';
-        else if($result->rider2Hit)
+        else //if($result->rider2Hit)
             $describeLanceStrikes = $team2->rider->getName() . ' landing the hit';
 
         $description = '';

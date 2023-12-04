@@ -48,9 +48,6 @@ class BehattingScrollController extends AbstractController
 
         $merit = MeritRepository::findOneByName($em, MeritEnum::BEHATTED);
 
-        if(!$merit)
-            throw new \Exception('The ' . MeritEnum::BEHATTED . ' Merit does not exist! This is a terrible programming error. Someone please tell Ben.');
-
         $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
         $em->remove($inventory);

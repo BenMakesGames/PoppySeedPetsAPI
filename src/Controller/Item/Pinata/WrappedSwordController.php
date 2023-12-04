@@ -5,8 +5,8 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Functions\ItemRepository;
+use App\Functions\SpiceRepository;
 use App\Repository\EnchantmentRepository;
-use App\Repository\SpiceRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -15,9 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/wrappedSword")
- */
+#[Route("/item/wrappedSword")]
 class WrappedSwordController extends AbstractController
 {
     #[Route("/{inventory}/unwrap", methods: ["POST"])]

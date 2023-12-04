@@ -347,21 +347,21 @@ class PetGroupService
             return 3;
     }
 
+    private const FriendlyRelationships = [
+        RelationshipEnum::FRIEND,
+        RelationshipEnum::BFF,
+        RelationshipEnum::FWB,
+        RelationshipEnum::MATE
+    ];
+
     /**
      * @return Pet[]
      */
     private static function findFriendsWithFewGroups(Pet $pet): array
     {
-        $friendlyRelationships = [
-            RelationshipEnum::FRIEND,
-            RelationshipEnum::BFF,
-            RelationshipEnum::FWB,
-            RelationshipEnum::MATE
-        ];
-
         $relationshipsWithFewGroups = array_filter(
             $pet->getPetRelationships()->toArray(),
-            function(PetRelationship $r) use($friendlyRelationships, $pet)
+            function(PetRelationship $r) use($pet)
             {
                 $otherSide = $r->getRelationship()->getRelationshipWith($pet);
 
@@ -371,8 +371,8 @@ class PetGroupService
 
                     // as long as both pets WANT a friendly relationship, they'll do this
                     $otherSide &&
-                    in_array($otherSide->getRelationshipGoal(), $friendlyRelationships) &&
-                    in_array($r->getRelationshipGoal(), $friendlyRelationships) &&
+                    in_array($otherSide->getRelationshipGoal(), self::FriendlyRelationships) &&
+                    in_array($r->getRelationshipGoal(), self::FriendlyRelationships) &&
 
                     // the pets involved must not already have too many group commitments
                     $r->getRelationship()->getGroups()->count() < $r->getRelationship()->getMaximumGroups()

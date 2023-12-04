@@ -118,8 +118,6 @@ class DeviceStatsCommand extends Command
             return '500 - 599';
         else if($width < 700)
             return '600 - 699';
-        else if($width < 700)
-            return '600 - 699';
         else if($width < 800)
             return '700 - 799';
         else if($width < 900)

@@ -1226,20 +1226,25 @@ class MagicBindingService
             switch($this->squirrel3->rngNextInt(1, 4))
             {
                 case 1:
-                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make The Dark Knight, but couldn\'t get Batman out of their head! It was so distracting!', 'icons/activity-logs/confused')
+                    $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make The Dark Knight, but couldn\'t get Batman out of their head! It was so distracting!')
+                        ->setIcon('icons/activity-logs/confused')
                         ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                     ;
+                    break;
 
                 case 2:
                     $pet->increaseSafety(-4);
-                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant Vicious, but accidentally cut themselves on the blade! :(', '')
+                    $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant Vicious, but accidentally cut themselves on the blade! :(')
                         ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                     ;
+                    break;
 
                 default: // 3 & 4
-                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant Vicious, but it kept resisting the enchantment! >:(', 'icons/activity-logs/confused')
+                    $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant Vicious, but it kept resisting the enchantment! >:(')
+                        ->setIcon('icons/activity-logs/confused')
                         ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
                     ;
+                    break;
             }
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);

@@ -42,10 +42,11 @@ class PetActivityLogsFilterService
     public function filterDate(QueryBuilder $qb, $value)
     {
         $date = \DateTimeImmutable::createFromFormat('Y-m-d', $value);
-        $date = $date->setTime(0, 0, 0);
 
         if($date === false)
             throw new PSPFormValidationException('"date" must be in yyyy-mm-dd format.');
+
+        $date = $date->setTime(0, 0, 0);
 
         $this->filterer->setPageSize(200);
 

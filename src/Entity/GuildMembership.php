@@ -123,12 +123,12 @@ class GuildMembership
         $title = $this->getTitle();
         $rank = ($this->getLevel() % 10) + 1;
 
-        switch($title)
+        return match ($title)
         {
-            case 0: return $this->getGuild()->getJuniorTitle() . ' ' . $rank;
-            case 1: return $this->getGuild()->getMemberTitle() . ' ' . $rank;
-            case 2: return $this->getGuild()->getSeniorTitle() . ' ' . $rank;
-            default: return $this->getGuild()->getMasterTitle();
-        }
+            0 => $this->getGuild()->getJuniorTitle() . ' ' . $rank,
+            1 => $this->getGuild()->getMemberTitle() . ' ' . $rank,
+            2 => $this->getGuild()->getSeniorTitle() . ' ' . $rank,
+            default => $this->getGuild()->getMasterTitle(),
+        };
     }
 }

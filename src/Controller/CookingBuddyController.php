@@ -52,7 +52,7 @@ class CookingBuddyController extends AbstractController
 
         $filters = $request->query->all('filter');
 
-        if(is_array($filters) && array_key_exists('name', $filters))
+        if(array_key_exists('name', $filters))
         {
             $knownRecipes = $em->getRepository(KnownRecipes::class)->createQueryBuilder('r')
                 ->andWhere('r.user = :userId')

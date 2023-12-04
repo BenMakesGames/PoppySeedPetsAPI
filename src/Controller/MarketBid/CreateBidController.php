@@ -71,9 +71,6 @@ class CreateBidController extends AbstractController
 
         $item = ItemRepository::findOneById($em, $itemId);
 
-        if(!$item)
-            throw new PSPNotFoundException('Could not find that item.');
-
         $quantity = $request->request->getInt('quantity');
 
         if($quantity < 1)

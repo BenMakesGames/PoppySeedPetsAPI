@@ -63,13 +63,10 @@ class PetSummonedAwayService
 
         $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
-        if($activityLog)
-        {
-            $activityLog
-                ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
-                ->setChanges($changes->compare($pet))
-            ;
-        }
+        $activityLog
+            ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+            ->setChanges($changes->compare($pet))
+        ;
 
         return $activityLog;
     }

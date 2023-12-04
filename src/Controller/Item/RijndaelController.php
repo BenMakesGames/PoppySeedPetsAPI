@@ -31,9 +31,6 @@ class RijndaelController extends AbstractController
 
         $itemToFind = ItemRepository::findOneById($em, $searchForId);
 
-        if(!$itemToFind)
-            throw new PSPNotFoundException('The item you selected could not be found... that\'s really weird. Reload and try again??');
-
         $results = $em->createQueryBuilder()
             ->select('u.name', 'u.id', 'count(i.id) AS quantity')
             ->from('App\\Entity\\Inventory', 'i')
