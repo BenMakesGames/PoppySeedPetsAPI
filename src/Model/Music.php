@@ -293,5 +293,11 @@ class Music
 
         // I Am Not a Robot, by Marina and the Diamonds
         'It\'s okay to say you\'ve got a weak spot. You don\'t always have to be. on. top... Better to be haaated... then lo-o-oved for what you\'re not.',
+
+        // No Doubt
+        'The waves keep on crashing on me for some reason... but your love keeps on coming like a thunderbolt...',
+
+        // 6 Underground, by Sneaker Pimps
+        'Overgrooouuund... watch this spaaaace... I\'m opeeen... to fallin\' from gra-ace...',
     ];
 }
