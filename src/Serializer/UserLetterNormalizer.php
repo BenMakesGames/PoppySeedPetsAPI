@@ -36,4 +36,9 @@ class UserLetterNormalizer implements NormalizerInterface
     {
         return $data instanceof UserLetter;
     }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [ UserLetter::class => true ];
+    }
 }

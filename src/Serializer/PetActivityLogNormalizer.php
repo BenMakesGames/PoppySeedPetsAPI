@@ -38,4 +38,13 @@ class PetActivityLogNormalizer implements NormalizerInterface
     {
         return $data instanceof PetActivityLog || $data instanceof UserActivityLog || $data instanceof FlashMessage;
     }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            PetActivityLog::class => true,
+            UserActivityLog::class => true,
+            FlashMessage::class => true
+        ];
+    }
 }

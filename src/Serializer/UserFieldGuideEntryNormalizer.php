@@ -35,4 +35,9 @@ class UserFieldGuideEntryNormalizer implements NormalizerInterface
     {
         return $data instanceof UserFieldGuideEntry;
     }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [ UserFieldGuideEntry::class => true ];
+    }
 }

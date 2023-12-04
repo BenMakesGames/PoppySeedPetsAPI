@@ -37,4 +37,9 @@ class PetSpeciesNormalizer implements NormalizerInterface
     {
         return $data instanceof PetSpecies;
     }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [ PetSpecies::class => true ];
+    }
 }
