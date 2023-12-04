@@ -15,7 +15,7 @@ $schedule->run('php bin/console app:run-park-events')
 
 $schedule->run('php bin/console app:buzz-buzz')
     ->description('Updates beehives.')
-    ->everyHour()
+    ->hourly()
 ;
 
 $schedule->run('php bin/console app:calculate-daily-market-item-averages')
