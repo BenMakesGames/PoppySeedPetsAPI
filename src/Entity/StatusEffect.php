@@ -7,46 +7,31 @@ use App\Enum\StatusEffectEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\StatusEffectRepository")
- * @ORM\Table(indexes={
- *     @ORM\Index(name="time_remaining_idx", columns={"time_remaining"}),
- * })
- */
+#[ORM\Table]
+#[ORM\Index(name: 'time_remaining_idx', columns: ['time_remaining'])]
+#[ORM\Entity(repositoryClass: 'App\Repository\StatusEffectRepository')]
 class StatusEffect
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Pet::class, inversedBy="statusEffects")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Pet::class, inversedBy: 'statusEffects')]
+    #[ORM\JoinColumn(nullable: false)]
     private $pet;
 
-    /**
-     * @ORM\Column(type="string", length=40)
-     * @Groups({"myPet"})
-     */
+    #[ORM\Column(type: 'string', length: 40)]
+    #[Groups(['myPet'])]
     private $status;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $totalDuration = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $timeRemaining = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $counter = 0;
 
     public function getId(): ?int

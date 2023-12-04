@@ -6,37 +6,25 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\PlantYieldRepository")
- */
+#[ORM\Entity(repositoryClass: 'App\Repository\PlantYieldRepository')]
 class PlantYield
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Plant", inversedBy="plantYields")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\Plant', inversedBy: 'plantYields')]
+    #[ORM\JoinColumn(nullable: false)]
     private $plant;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $min;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $max;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\PlantYieldItem", mappedBy="plantYield", orphanRemoval=true)
-     */
+    #[ORM\OneToMany(targetEntity: 'App\Entity\PlantYieldItem', mappedBy: 'plantYield', orphanRemoval: true)]
     private $items;
 
     public function __construct()

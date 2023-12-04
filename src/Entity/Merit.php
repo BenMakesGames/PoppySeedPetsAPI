@@ -5,28 +5,24 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class Merit
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=30, unique=true)
      * @Groups({"availableMerits", "myPet", "meritEncyclopedia", "userPublicProfile", "petPublicProfile", "petGroupDetails", "parkEvent", "petFriend", "hollowEarth", "petActivityLogAndPublicPet", "helperPet"})
      */
+    #[ORM\Column(type: 'string', length: 30, unique: true)]
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
      * @Groups({"availableMerits", "meritEncyclopedia"})
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private $description;
 
     public function getId(): ?int

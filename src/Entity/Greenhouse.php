@@ -6,95 +6,79 @@ use App\Service\Squirrel3;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class Greenhouse
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\OneToOne(targetEntity=User::class, inversedBy="greenhouse", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'greenhouse', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
     private $owner;
 
     /**
-     * @ORM\Column(type="smallint")
      * @Groups({"myGreenhouse"})
      */
+    #[ORM\Column(type: 'smallint')]
     private $maxPlants = 3;
 
     /**
-     * @ORM\Column(type="boolean")
      * @Groups({"myGreenhouse"})
      */
+    #[ORM\Column(type: 'boolean')]
     private $hasBirdBath = false;
 
     /**
-     * @ORM\Column(type="string", length=20, nullable=true)
      * @Groups({"myGreenhouse"})
      */
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private $visitingBird = null;
 
     /**
-     * @ORM\Column(type="smallint")
      * @Groups({"myGreenhouse"})
      */
+    #[ORM\Column(type: 'smallint')]
     private $maxWaterPlants = 0;
 
     /**
-     * @ORM\Column(type="smallint")
      * @Groups({"myGreenhouse"})
      */
+    #[ORM\Column(type: 'smallint')]
     private $maxDarkPlants = 0;
 
     /**
-     * @ORM\Column(type="boolean")
      * @Groups({"myGreenhouse"})
      */
+    #[ORM\Column(type: 'boolean')]
     private $hasComposter = false;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $composterFood = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $composterBonusCountdown = 0;
 
     /**
-     * @ORM\OneToOne(targetEntity=Pet::class, cascade={"persist", "remove"})
      * @Groups({"helperPet"})
      */
+    #[ORM\OneToOne(targetEntity: Pet::class, cascade: ['persist', 'remove'])]
     private $helper;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $butterfliesDismissedOn;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $beesDismissedOn;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $bees2DismissedOn;
 
     /**
-     * @ORM\Column(type="boolean")
      * @Groups({"myGreenhouse"})
      */
+    #[ORM\Column(type: 'boolean')]
     private $hasFishStatue = false;
 
     public function __construct()

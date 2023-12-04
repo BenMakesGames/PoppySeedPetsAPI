@@ -7,149 +7,128 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(indexes={
- *     @ORM\Index(name="fertilizer_idx", columns={"fertilizer"})
- * })
- */
+#[ORM\Table]
+#[ORM\Index(name: 'fertilizer_idx', columns: ['fertilizer'])]
+#[ORM\Entity]
 class Item
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
      * @Groups({"itemEncyclopedia", "myPet", "marketItem", "myInventory", "itemTypeahead", "museum"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=45, unique=true)
      * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "fireplaceMantle", "fireplaceFuel", "myBeehive", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet", "myBids", "myHollowEarthTiles", "myLetters", "zoologistCatalog"})
      */
+    #[ORM\Column(type: 'string', length: 45, unique: true)]
     private $name;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
      * @Groups({"myInventory", "itemEncyclopedia"})
      */
+    #[ORM\Column(type: 'text', nullable: true)]
     private $description;
 
     /**
-     * @ORM\Column(type="string", length=255)
      * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "myBeehive", "petGroupDetails", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet", "myBids", "myHollowEarthTiles", "helperPet"})
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private $image;
 
     /**
-     * @ORM\Column(type="json", nullable=true)
      * @Groups({"myInventory", "itemEncyclopedia"})
      */
+    #[ORM\Column(type: 'json', nullable: true)]
     private $useActions = [];
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\ItemTool")
      * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth", "petGroupDetails", "helperPet"})
      */
+    #[ORM\OneToOne(targetEntity: 'App\Entity\ItemTool')]
     private $tool;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\ItemFood", cascade={"persist", "remove"})
      * @Groups({"myInventory", "itemEncyclopedia"})
      */
+    #[ORM\OneToOne(targetEntity: 'App\Entity\ItemFood', cascade: ['persist', 'remove'])]
     private $food;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $fertilizer = 0;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Plant", inversedBy="item", cascade={"persist", "remove"})
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\Plant', inversedBy: 'item', cascade: ['persist', 'remove'])]
     private $plant;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\MuseumItem", mappedBy="item")
-     */
+    #[ORM\OneToMany(targetEntity: 'App\Entity\MuseumItem', mappedBy: 'item')]
     private $museumDonations;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Inventory::class, mappedBy="item")
-     */
+    #[ORM\OneToMany(targetEntity: Inventory::class, mappedBy: 'item')]
     private $inventory;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\ItemHat", inversedBy="item", cascade={"persist", "remove"})
      * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth", "petGroupDetails", "helperPet"})
      */
+    #[ORM\OneToOne(targetEntity: 'App\Entity\ItemHat', inversedBy: 'item', cascade: ['persist', 'remove'])]
     private $hat;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $fuel = 0;
 
     /**
-     * @ORM\Column(type="smallint")
      * @Groups({"myInventory", "itemEncyclopedia"})
      */
+    #[ORM\Column(type: 'smallint')]
     private $recycleValue = 0;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Enchantment")
      * @Groups({"myInventory", "marketItem", "itemEncyclopedia"})
      */
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\Enchantment')]
     private $enchants;
 
-    /**
-     * @ORM\OneToOne(targetEntity=ItemGrammar::class, mappedBy="item", cascade={"persist", "remove"}, fetch="EAGER")
-     */
+    #[ORM\OneToOne(targetEntity: ItemGrammar::class, mappedBy: 'item', cascade: ['persist', 'remove'], fetch: 'EAGER')]
     private $grammar;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Spice::class)
      * @Groups({"myInventory", "marketItem", "itemEncyclopedia"})
      */
+    #[ORM\ManyToOne(targetEntity: Spice::class)]
     private $spice;
 
     /**
-     * @ORM\OneToOne(targetEntity=ItemTreasure::class, cascade={"persist", "remove"})
      * @Groups({"dragonTreasure"})
      */
+    #[ORM\OneToOne(targetEntity: ItemTreasure::class, cascade: ['persist', 'remove'])]
     private $treasure;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $isBug = false;
 
     /**
-     * @ORM\ManyToOne(targetEntity=HollowEarthTileCard::class)
      * @Groups({"myInventory", "itemEncyclopedia"})
      */
+    #[ORM\ManyToOne(targetEntity: HollowEarthTileCard::class)]
     private $hollowEarthTileCard;
 
     /**
-     * @ORM\ManyToMany(targetEntity=ItemGroup::class, mappedBy="items")
      * @Groups({"itemEncyclopedia"})
      */
+    #[ORM\ManyToMany(targetEntity: ItemGroup::class, mappedBy: 'items')]
     private $itemGroups;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $cannotBeThrownOut = false;
 
     /**
-     * @ORM\Column(type="smallint")
      * @Groups({"myDonatableInventory"})
      */
+    #[ORM\Column(type: 'smallint')]
     private $museumPoints;
 
-    /**
-     * @ORM\OneToMany(targetEntity=MarketListing::class, mappedBy="item")
-     */
+    #[ORM\OneToMany(targetEntity: MarketListing::class, mappedBy: 'item')]
     private $marketListings;
 
     public function __construct()

@@ -5,35 +5,31 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class SurveyQuestion
 {
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      * @Groups({"surveyQuestion", "surveyQuestionAnswer"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\Column(type="text")
      * @Groups({"surveyQuestion"})
      */
+    #[ORM\Column(type: 'text')]
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"surveyQuestion"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $type;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Survey::class, inversedBy="questions")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Survey::class, inversedBy: 'questions')]
+    #[ORM\JoinColumn(nullable: false)]
     private $survey;
 
     public function getId(): ?int

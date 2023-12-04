@@ -9,78 +9,65 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\PetRelationshipRepository")
- * @ORM\Table(indexes={
- *     @ORM\Index(name="commitment_idx", columns={"commitment"}),
- * })
- */
+#[ORM\Table]
+#[ORM\Index(name: 'commitment_idx', columns: ['commitment'])]
+#[ORM\Entity(repositoryClass: 'App\Repository\PetRelationshipRepository')]
 class PetRelationship
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Pet::class, inversedBy="petRelationships")
-     * @ORM\JoinColumn(nullable=false)
      * @var Pet
      */
+    #[ORM\ManyToOne(targetEntity: Pet::class, inversedBy: 'petRelationships')]
+    #[ORM\JoinColumn(nullable: false)]
     private $pet;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Pet::class)
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"petFriend"})
      */
+    #[ORM\ManyToOne(targetEntity: Pet::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $relationship;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $metDescription;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
      * @Groups({"petFriend"})
      */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $metOn;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"petFriend"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $currentRelationship;
 
-    /**
-     * @ORM\Column(type="string", length=40)
-     */
+    #[ORM\Column(type: 'string', length: 40)]
     private $relationshipGoal;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $timeUntilChange;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
      * @Groups({"petFriend"})
      */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $lastMet;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $commitment;
 
     /**
-     * @ORM\Column(type="smallint")
      * @Groups({"petFriend"})
      * @SerializedName("commitment")
      */
+    #[ORM\Column(type: 'smallint')]
     private $rating = 0;
 
     public function __construct()

@@ -6,58 +6,47 @@ use App\Repository\LetterRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass=LetterRepository::class)
- * @ORM\Table(indexes={
- *     @ORM\Index(name="sender_idx", columns={"sender"}),
- * })
- */
+#[ORM\Table]
+#[ORM\Index(name: 'sender_idx', columns: ['sender'])]
+#[ORM\Entity(repositoryClass: LetterRepository::class)]
 class Letter
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"myLetters"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $sender;
 
     /**
-     * @ORM\Column(type="text")
      * @Groups({"myLetters"})
      */
+    #[ORM\Column(type: 'text')]
     private $body;
 
     /**
-     * @ORM\Column(type="string", length=255)
      * @Groups({"myLetters"})
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private $title;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Item::class)
      * @Groups({"myLetters"})
      */
+    #[ORM\ManyToOne(targetEntity: Item::class)]
     private $attachment;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Enchantment::class)
-     */
+    #[ORM\ManyToOne(targetEntity: Enchantment::class)]
     private $bonus;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Spice::class)
-     */
+    #[ORM\ManyToOne(targetEntity: Spice::class)]
     private $spice;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=FieldGuideEntry::class)
-     */
+    #[ORM\ManyToOne(targetEntity: FieldGuideEntry::class)]
     private $fieldGuideEntry;
 
     public function getId(): ?int

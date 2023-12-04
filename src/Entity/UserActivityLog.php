@@ -8,39 +8,31 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass=UserActivityLogRepository::class)
- */
+#[ORM\Entity(repositoryClass: UserActivityLogRepository::class)]
 class UserActivityLog
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $user;
 
     /**
-     * @ORM\Column(type="text")
      * @Groups({"userActivityLogs"})
      */
+    #[ORM\Column(type: 'text')]
     private $entry;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $createdOn;
 
     /**
-     * @ORM\ManyToMany(targetEntity=UserActivityLogTag::class)
      * @Groups({"userActivityLogs"})
      */
+    #[ORM\ManyToMany(targetEntity: UserActivityLogTag::class)]
     private $tags;
 
     public function __construct()

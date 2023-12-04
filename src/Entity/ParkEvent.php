@@ -7,41 +7,39 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class ParkEvent
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
      * @Groups({"parkEvent"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Pet::class)
      * @Groups({"parkEvent"})
      */
+    #[ORM\ManyToMany(targetEntity: Pet::class)]
     private $participants;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"parkEvent"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $type;
 
     /**
-     * @ORM\Column(type="text")
      * @Groups({"parkEvent"})
      */
+    #[ORM\Column(type: 'text')]
     private $results;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
      * @Groups({"parkEvent"})
      */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $date;
 
     public function __construct()

@@ -7,60 +7,48 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class HollowEarthTile
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"hollowEarth"})
      */
+    #[ORM\Column(type: 'integer')]
     private $x;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"hollowEarth"})
      */
+    #[ORM\Column(type: 'integer')]
     private $y;
 
     /**
-     * @ORM\Column(type="string", length=1)
      * @Groups({"hollowEarth"})
      */
+    #[ORM\Column(type: 'string', length: 1)]
     private $moveDirection;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=HollowEarthTileType::class)
-     */
+    #[ORM\ManyToMany(targetEntity: HollowEarthTileType::class)]
     private $types;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=HollowEarthTileCard::class)
-     */
+    #[ORM\ManyToOne(targetEntity: HollowEarthTileCard::class)]
     private $card;
 
     /**
-     * @ORM\Column(type="string", length=20, nullable=true)
      * @Groups({"hollowEarth"})
      */
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private $goodsSide;
 
-    /**
-     * @ORM\Column(type="simple_array", nullable=true)
-     */
+    #[ORM\Column(type: 'simple_array', nullable: true)]
     private $goods = [];
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $isTradingDepot;
 
     public function __construct()

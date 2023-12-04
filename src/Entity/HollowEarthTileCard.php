@@ -6,49 +6,36 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(
- *    uniqueConstraints={
- *        @ORM\UniqueConstraint(name="name_idx", columns={"name"})
- *    }
- * )
- */
+#[ORM\Table]
+#[ORM\UniqueConstraint(name: 'name_idx', columns: ['name'])]
+#[ORM\Entity]
 class HollowEarthTileCard
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"myInventory", "itemEncyclopedia"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $name;
 
-    /**
-     * @ORM\Column(type="json")
-     */
+    #[ORM\Column(type: 'json')]
     private $event = [];
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $requiredAction = 0;
 
     /**
-     * @ORM\ManyToOne(targetEntity=HollowEarthTileType::class)
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"myInventory", "itemEncyclopedia"})
      */
+    #[ORM\ManyToOne(targetEntity: HollowEarthTileType::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $type;
 
-    /**
-     * @ORM\Column(type="string", length=40)
-     */
+    #[ORM\Column(type: 'string', length: 40)]
     private $image;
 
     public function getId(): ?int

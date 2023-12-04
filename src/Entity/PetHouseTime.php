@@ -6,46 +6,31 @@ use App\Functions\NumberFunctions;
 use App\Service\PetExperienceService;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\PetHouseTimeRepository")
- * @ORM\Table(indexes={
- *     @ORM\Index(name="activity_time_idx", columns={"activity_time"}),
- *     @ORM\Index(name="social_energy_idx", columns={"social_energy"}),
- * })
- */
+#[ORM\Table]
+#[ORM\Index(name: 'activity_time_idx', columns: ['activity_time'])]
+#[ORM\Index(name: 'social_energy_idx', columns: ['social_energy'])]
+#[ORM\Entity(repositoryClass: 'App\Repository\PetHouseTimeRepository')]
 class PetHouseTime
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Pet::class, inversedBy="houseTime", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\OneToOne(targetEntity: Pet::class, inversedBy: 'houseTime', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
     private $pet;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $activityTime = 59;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $socialEnergy = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $timeSpent = 0;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $canAttemptSocialHangoutAfter;
 
     public function __construct()

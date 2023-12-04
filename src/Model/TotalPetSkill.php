@@ -5,29 +5,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class TotalPetSkill
 {
-    /**
-     * @Groups({"myPet"})
-     * @var int
-     */
-    public $base = 0;
+    #[Groups(['myPet'])]
+    public int $base = 0;
 
-    /**
-     * @Groups({"myPet"})
-     * @var int
-     */
-    public $merits = 0;
+    #[Groups(['myPet'])]
+    public int $merits = 0;
 
-    /**
-     * @Groups({"myPet"})
-     * @var int
-     */
-    public $tool = 0;
+    #[Groups(['myPet'])]
+    public int $tool = 0;
 
-    /**
-     * @Groups({"myPet"})
-     * @var int
-     */
-    public $statusEffects = 0;
+    #[Groups(['myPet'])]
+    public int $statusEffects = 0;
 
     public function getTotal(): int
     {

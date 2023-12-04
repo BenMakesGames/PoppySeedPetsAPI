@@ -5,14 +5,9 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity
- * @ORM\Table(
- *     uniqueConstraints={
- *         @ORM\UniqueConstraint(name="user_id_name_idx", columns={"user_id", "name"})
- *     }
- * )
- */
+#[ORM\Table]
+#[ORM\UniqueConstraint(name: 'user_id_name_idx', columns: ['user_id', 'name'])]
+#[ORM\Entity]
 class UserStyle
 {
     public const CURRENT = 'Current';
@@ -37,120 +32,120 @@ class UserStyle
     ];
 
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      * @Groups({"myStyle", "publicStyle"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"publicStyle"})
      */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $user;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"myStyle"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"myStyle", "publicStyle"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $backgroundColor;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"myStyle", "publicStyle"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $petInfoBackgroundColor;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"myStyle", "publicStyle"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $speechBubbleBackgroundColor;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"myStyle", "publicStyle"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $textColor;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"myStyle", "publicStyle"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $primaryColor;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"myStyle", "publicStyle"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $textOnPrimaryColor;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"myStyle", "publicStyle"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $tabBarBackgroundColor;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"myStyle", "publicStyle"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $linkAndButtonColor;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"myStyle", "publicStyle"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $buttonTextColor;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"myStyle", "publicStyle"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $dialogLinkColor;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"myStyle", "publicStyle"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $warningColor;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"myStyle", "publicStyle"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $gainColor;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"myStyle", "publicStyle"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $bonusAndSpiceColor;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"myStyle", "publicStyle"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $bonusAndSpiceSelectedColor;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"myStyle", "publicStyle"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $inputBackgroundColor;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"myStyle", "publicStyle"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $inputTextColor;
 
     public function getId(): ?int

@@ -6,35 +6,29 @@ use App\Repository\UserMonthlyStoryAdventureStepCompletedRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass=UserMonthlyStoryAdventureStepCompletedRepository::class)
- */
+#[ORM\Entity(repositoryClass: UserMonthlyStoryAdventureStepCompletedRepository::class)]
 class UserMonthlyStoryAdventureStepCompleted
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity=MonthlyStoryAdventureStep::class)
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({ "starKindredStoryStepComplete" })
      */
+    #[ORM\ManyToOne(targetEntity: MonthlyStoryAdventureStep::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $adventureStep;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
      * @Groups({ "starKindredStoryStepComplete" })
      */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $completedOn;
 
     public function getId(): ?int

@@ -9,8 +9,8 @@ class WeatherData
 {
     /**
      * @var string[]
-     * @Groups({"weather"})
      */
+    #[Groups(['weather'])]
     public $holidays;
 
     public $temperature;
@@ -19,29 +19,23 @@ class WeatherData
 
     /**
      * @var bool
-     * @Groups({"weather"})
      */
+    #[Groups(['weather'])]
     public $isNight;
 
-    /**
-     * @Groups({"weather"})
-     */
+    #[Groups(['weather'])]
     public function getTemperature(): float
     {
         return round($this->temperature, 1);
     }
 
-    /**
-     * @Groups({"weather"})
-     */
+    #[Groups(['weather'])]
     public function getClouds(): float
     {
         return round($this->clouds, 2);
     }
 
-    /**
-     * @Groups({"weather"})
-     */
+    #[Groups(['weather'])]
     public function getRainfall(): float
     {
         return round($this->rainfall, 2);

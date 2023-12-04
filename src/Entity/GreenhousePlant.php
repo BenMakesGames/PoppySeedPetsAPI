@@ -7,63 +7,53 @@ use App\Enum\PollinatorEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class GreenhousePlant
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
      * @Groups({"greenhousePlant"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Plant::class)
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"greenhousePlant"})
      */
+    #[ORM\ManyToOne(targetEntity: Plant::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $plant;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $growth = 0;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $lastInteraction;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="greenhousePlants")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'greenhousePlants')]
+    #[ORM\JoinColumn(nullable: false)]
     private $owner;
 
     /**
-     * @ORM\Column(type="boolean")
      * @Groups({"greenhousePlant"})
      */
+    #[ORM\Column(type: 'boolean')]
     private $isAdult = false;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $previousGrowth = 0;
 
     /**
-     * @ORM\Column(type="smallint")
      * @Groups({"greenhousePlant"})
      */
+    #[ORM\Column(type: 'smallint')]
     private $ordinal;
 
     /**
-     * @ORM\Column(type="string", length=20, nullable=true)
      * @Groups({"greenhousePlant"})
      */
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private $pollinators;
 
     public function __construct()

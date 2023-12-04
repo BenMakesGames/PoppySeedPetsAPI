@@ -5,34 +5,30 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class ItemTreasure
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"dragonTreasure"})
      */
+    #[ORM\Column(type: 'integer')]
     private $silver;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"dragonTreasure"})
      */
+    #[ORM\Column(type: 'integer')]
     private $gold;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"dragonTreasure"})
      */
+    #[ORM\Column(type: 'integer')]
     private $gems;
 
     public function getId(): ?int

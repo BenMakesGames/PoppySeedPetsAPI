@@ -5,64 +5,55 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(
- *     uniqueConstraints={
- *         @ORM\UniqueConstraint(name="user_species_idx", columns={"user_id", "species_id"})
- *     }
- * )
- */
+#[ORM\Table]
+#[ORM\UniqueConstraint(name: 'user_species_idx', columns: ['user_id', 'species_id'])]
+#[ORM\Entity]
 class UserSpeciesCollected
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity=PetSpecies::class)
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"zoologistCatalog"})
      */
+    #[ORM\ManyToOne(targetEntity: PetSpecies::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $species;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
      * @Groups({"zoologistCatalog"})
      */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $discoveredOn;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"zoologistCatalog"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $petName;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"zoologistCatalog"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $colorA;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"zoologistCatalog"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $colorB;
 
     /**
-     * @ORM\Column(type="smallint")
      * @Groups({"zoologistCatalog"})
      */
+    #[ORM\Column(type: 'smallint')]
     private $scale;
 
     public function __construct()

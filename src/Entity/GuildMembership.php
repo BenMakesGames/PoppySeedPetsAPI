@@ -5,49 +5,38 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\GuildMembershipRepository")
- * @ORM\Table(indexes={
- *     @ORM\Index(name="level_idx", columns={"level"}),
- *     @ORM\Index(name="joined_on_idx", columns={"joined_on"}),
- * })
- */
+#[ORM\Table]
+#[ORM\Index(name: 'level_idx', columns: ['level'])]
+#[ORM\Index(name: 'joined_on_idx', columns: ['joined_on'])]
+#[ORM\Entity(repositoryClass: 'App\Repository\GuildMembershipRepository')]
 class GuildMembership
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Pet::class, inversedBy="guildMembership", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\OneToOne(targetEntity: Pet::class, inversedBy: 'guildMembership', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
     private $pet;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Guild")
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"petGuild", "petPublicProfile"})
      */
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\Guild')]
+    #[ORM\JoinColumn(nullable: false)]
     private $guild;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
      * @Groups({"petGuild", "petPublicProfile", "guildMember"})
      */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $joinedOn;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $reputation = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $level = 0;
 
     public function __construct()

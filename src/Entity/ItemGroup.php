@@ -7,37 +7,27 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class ItemGroup
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=40, unique=true)
      * @Groups({"itemEncyclopedia"})
      */
+    #[ORM\Column(type: 'string', length: 40, unique: true)]
     private $name;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Item::class, inversedBy="itemGroups")
-     */
+    #[ORM\ManyToMany(targetEntity: Item::class, inversedBy: 'itemGroups')]
     private $items;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $isCraving = false;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $isGiftShop = false;
 
     public function __construct()

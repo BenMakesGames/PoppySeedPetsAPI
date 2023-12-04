@@ -8,15 +8,12 @@ use App\Functions\InventoryModifierFunctions;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\InventoryRepository")
- * @ORM\Table(indexes={
- *     @ORM\Index(name="modified_on_idx", columns={"modified_on"}),
- *     @ORM\Index(name="sell_price_idx", columns={"sell_price"}),
- *     @ORM\Index(name="location_idx", columns={"location"}),
- *     @ORM\Index(name="full_item_name_idx", columns={"full_item_name"})
- * })
- */
+#[ORM\Table]
+#[ORM\Index(name: 'modified_on_idx', columns: ['modified_on'])]
+#[ORM\Index(name: 'sell_price_idx', columns: ['sell_price'])]
+#[ORM\Index(name: 'location_idx', columns: ['location'])]
+#[ORM\Index(name: 'full_item_name_idx', columns: ['full_item_name'])]
+#[ORM\Entity(repositoryClass: 'App\Repository\InventoryRepository')]
 class Inventory
 {
     public const CONSUMABLE_LOCATIONS = [
@@ -25,108 +22,94 @@ class Inventory
     ];
 
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
      * @Groups({"myPet", "myInventory", "greenhouseFertilizer", "mySeeds", "fireplaceFuel", "dragonTreasure", "myHollowEarthTiles"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Item::class, inversedBy="inventory")
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "marketItem", "greenhouseFertilizer", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "petGroupDetails", "dragonTreasure", "myHollowEarthTiles", "helperPet"})
      */
+    #[ORM\ManyToOne(targetEntity: Item::class, inversedBy: 'inventory')]
+    #[ORM\JoinColumn(nullable: false)]
     private $item;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $owner;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
      * @Groups({"myInventory"})
      */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $createdOn;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
      * @Groups({"myInventory"})
      */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $modifiedOn;
 
     /**
-     * @ORM\Column(type="json")
      * @Groups({"myInventory", "fireplaceMantle"})
      */
+    #[ORM\Column(type: 'json')]
     private $comments = [];
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class)
      * @Groups({"myInventory"})
      */
+    #[ORM\ManyToOne(targetEntity: User::class)]
     private $createdBy;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Pet::class, mappedBy="tool")
-     */
+    #[ORM\OneToOne(targetEntity: Pet::class, mappedBy: 'tool')]
     private $holder;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
      * @Groups({"myInventory", "fireplaceFuel", "myGreenhouse", "myPet", "dragonTreasure", "myHollowEarthTiles"})
      */
+    #[ORM\Column(type: 'integer', nullable: true)]
     private $sellPrice;
 
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private $sellListDate;
 
-    /**
-     * @ORM\Column(type="smallint")
-     */
+    #[ORM\Column(type: 'smallint')]
     private $location = LocationEnum::HOME;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Pet::class, mappedBy="hat")
-     */
+    #[ORM\OneToOne(targetEntity: Pet::class, mappedBy: 'hat')]
     private $wearer;
 
     /**
-     * @ORM\Column(type="boolean")
      * @Groups({"myInventory"})
      */
+    #[ORM\Column(type: 'boolean')]
     private bool $lockedToOwner = false;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\LunchboxItem", mappedBy="inventoryItem", cascade={"remove"})
-     */
+    #[ORM\OneToOne(targetEntity: 'App\Entity\LunchboxItem', mappedBy: 'inventoryItem', cascade: ['remove'])]
     private $lunchboxItem;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Enchantment")
      * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "myPet"})
      */
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\Enchantment')]
     private $enchantment;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Spice::class)
      * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure"})
      */
+    #[ORM\ManyToOne(targetEntity: Spice::class)]
     private $spice;
 
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
+    #[ORM\Column(type: 'string', length: 100)]
     private $fullItemName;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Item::class)
      * @Groups({"myInventory", "myPet", "fireplaceMantle", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "fireplaceFuel", "dragonTreasure"})
      */
+    #[ORM\ManyToOne(targetEntity: Item::class)]
     private $illusion;
 
     public function __construct()

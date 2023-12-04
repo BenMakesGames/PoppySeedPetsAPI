@@ -5,140 +5,133 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(indexes={
- *     @ORM\Index(name="name_sort_idx", columns={"name_sort"}),
- *     @ORM\Index(name="family_idx", columns={"family"}),
- * })
- */
+#[ORM\Table]
+#[ORM\Index(name: 'name_sort_idx', columns: ['name_sort'])]
+#[ORM\Index(name: 'family_idx', columns: ['family'])]
+#[ORM\Entity]
 class PetSpecies
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
      * @Groups({"petEncyclopedia", "zoologistCatalog", "typeahead"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=40, unique=true)
      * @Groups({"myPet", "petEncyclopedia", "petShelterPet", "zoologistCatalog", "typeahead"})
      */
+    #[ORM\Column(type: 'string', length: 40, unique: true)]
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"myPet", "userPublicProfile", "petEncyclopedia", "petPublicProfile", "petShelterPet", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "petActivityLogAndPublicPet", "helperPet", "zoologistCatalog", "typeahead"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $image;
 
     /**
-     * @ORM\Column(type="text")
      * @Groups({"petEncyclopedia"})
      */
+    #[ORM\Column(type: 'text')]
     private $description;
 
     /**
-     * @ORM\Column(type="float")
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
      */
+    #[ORM\Column(type: 'float')]
     private $handX;
 
     /**
-     * @ORM\Column(type="float")
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
      */
+    #[ORM\Column(type: 'float')]
     private $handY;
 
     /**
-     * @ORM\Column(type="float")
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
      */
+    #[ORM\Column(type: 'float')]
     private $handAngle;
 
     /**
-     * @ORM\Column(type="boolean")
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petEncyclopedia", "petFriend", "petGroupDetails", "helperPet"})
      */
+    #[ORM\Column(type: 'boolean')]
     private $flipX;
 
     /**
-     * @ORM\Column(type="boolean")
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
      */
+    #[ORM\Column(type: 'boolean')]
     private $handBehind;
 
     /**
-     * @ORM\Column(type="boolean")
      * @Groups({"myPet", "userPublicProfile", "petEncyclopedia"})
      */
+    #[ORM\Column(type: 'boolean')]
     private $availableFromPetShelter;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petEncyclopedia", "petFriend", "petGroupDetails", "parkEvent", "helperPet"})
      */
+    #[ORM\Column(type: 'integer')]
     private $pregnancyStyle;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petEncyclopedia", "petFriend", "petGroupDetails", "parkEvent", "helperPet"})
      */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $eggImage;
 
     /**
-     * @ORM\Column(type="float")
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
      */
+    #[ORM\Column(type: 'float')]
     private $hatX;
 
     /**
-     * @ORM\Column(type="float")
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
      */
+    #[ORM\Column(type: 'float')]
     private $hatY;
 
     /**
-     * @ORM\Column(type="float")
      * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
      */
+    #[ORM\Column(type: 'float')]
     private $hatAngle;
 
     /**
-     * @ORM\Column(type="boolean")
      * @Groups({"petEncyclopedia"})
      */
+    #[ORM\Column(type: 'boolean')]
     private $availableFromBreeding;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Item::class)
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"zoologistCatalog"})
      */
+    #[ORM\ManyToOne(targetEntity: Item::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $sheds;
 
     /**
-     * @ORM\Column(type="string", length=255)
      * @Groups({"myPet", "petEncyclopedia", "zoologistCatalog"})
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private $family;
 
-    /**
-     * @ORM\Column(type="string", length=40)
-     */
+    #[ORM\Column(type: 'string', length: 40)]
     private $nameSort;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Pet", mappedBy="species")
-     */
+    #[ORM\OneToMany(targetEntity: 'App\Entity\Pet', mappedBy: 'species')]
     private $pets;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
      * @Groups({"petEncyclopedia"})
      */
+    #[ORM\Column(type: 'text', nullable: true)]
     private $physicalDescription;
 
     public function getId(): ?int

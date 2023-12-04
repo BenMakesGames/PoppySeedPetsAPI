@@ -5,47 +5,45 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class Aura
 {
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      * @Groups({"myPet", "myAura"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"myInventory", "itemEncyclopedia", "marketItem"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"myPet", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $image;
 
     /**
-     * @ORM\Column(type="float")
      * @Groups({"myPet", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
      */
+    #[ORM\Column(type: 'float')]
     private $size;
 
     /**
-     * @ORM\Column(type="float")
      * @Groups({"myPet", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
      */
+    #[ORM\Column(type: 'float')]
     private $centerX;
 
     /**
-     * @ORM\Column(type="float")
      * @Groups({"myPet", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
      */
+    #[ORM\Column(type: 'float')]
     private $centerY;
 
     public function getId(): ?int

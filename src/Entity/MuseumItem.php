@@ -5,48 +5,44 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class MuseumItem
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"museum"})
      */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Item::class, inversedBy="museumDonations")
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"museum"})
      */
+    #[ORM\ManyToOne(targetEntity: Item::class, inversedBy: 'museumDonations')]
+    #[ORM\JoinColumn(nullable: false)]
     private $item;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
      * @Groups({"museum"})
      */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $donatedOn;
 
     /**
-     * @ORM\Column(type="json")
      * @Groups({"museum"})
      */
+    #[ORM\Column(type: 'json')]
     private $comments = [];
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class)
      * @Groups({"museum"})
      */
+    #[ORM\ManyToOne(targetEntity: User::class)]
     private $createdBy;
 
     public function __construct()

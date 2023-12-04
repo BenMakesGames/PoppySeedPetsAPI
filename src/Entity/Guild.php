@@ -7,62 +7,52 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\GuildRepository")
- */
+#[ORM\Entity(repositoryClass: 'App\Repository\GuildRepository')]
 class Guild
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
      * @Groups({"guildEncyclopedia", "petGuild", "petPublicProfile"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
      * @Groups({"guildEncyclopedia", "petGuild", "petPublicProfile"})
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"guildEncyclopedia", "petGuild", "petPublicProfile"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $emblem;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Item::class)
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"guildEncyclopedia"})
      */
+    #[ORM\ManyToOne(targetEntity: Item::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $starterTool;
 
     /**
-     * @ORM\Column(type="string", length=255)
      * @Groups({"guildEncyclopedia"})
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private $quote;
 
-    /**
-     * @ORM\Column(type="string", length=20)
-     */
+    #[ORM\Column(type: 'string', length: 20)]
     private $juniorTitle;
 
-    /**
-     * @ORM\Column(type="string", length=20)
-     */
+    #[ORM\Column(type: 'string', length: 20)]
     private $memberTitle;
 
-    /**
-     * @ORM\Column(type="string", length=20)
-     */
+    #[ORM\Column(type: 'string', length: 20)]
     private $seniorTitle;
 
-    /**
-     * @ORM\Column(type="string", length=20)
-     */
+    #[ORM\Column(type: 'string', length: 20)]
     private $masterTitle;
 
     public function getId(): ?int

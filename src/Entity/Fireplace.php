@@ -7,14 +7,11 @@ use App\Functions\GrammarFunctions;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(indexes={
- *     @ORM\Index(name="heat_index", columns={"heat"}),
- *     @ORM\Index(name="alcohol_index", columns={"alcohol"}),
- *     @ORM\Index(name="longest_streak_index", columns={"longest_streak"})
- * })
- */
+#[ORM\Table]
+#[ORM\Index(name: 'heat_index', columns: ['heat'])]
+#[ORM\Index(name: 'alcohol_index', columns: ['alcohol'])]
+#[ORM\Index(name: 'longest_streak_index', columns: ['longest_streak'])]
+#[ORM\Entity]
 class Fireplace
 {
     public const MAX_HEAT = 3 * 24 * 60; // 3 days
@@ -29,81 +26,61 @@ class Fireplace
         'holly'
     ];
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\OneToOne(targetEntity=User::class, inversedBy="fireplace")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'fireplace')]
+    #[ORM\JoinColumn(nullable: false)]
     private $user;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"myFireplace"})
      */
+    #[ORM\Column(type: 'integer')]
     private $longestStreak = 0;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"myFireplace"})
      */
+    #[ORM\Column(type: 'integer')]
     private $currentStreak = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $heat = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $points = 0;
 
     /**
-     * @ORM\Column(type="smallint")
      * @Groups({"myFireplace"})
      */
+    #[ORM\Column(type: 'smallint')]
     private $mantleSize = 12;
 
-    /**
-     * @ORM\Column(type="string", length=20)
-     */
+    #[ORM\Column(type: 'string', length: 20)]
     private $stockingAppearance;
 
-    /**
-     * @ORM\Column(type="string", length=6)
-     */
+    #[ORM\Column(type: 'string', length: 6)]
     private $stockingColorA;
 
-    /**
-     * @ORM\Column(type="string", length=6)
-     */
+    #[ORM\Column(type: 'string', length: 6)]
     private $stockingColorB;
 
     /**
-     * @ORM\OneToOne(targetEntity=Pet::class, cascade={"persist", "remove"})
      * @Groups({"helperPet"})
      */
+    #[ORM\OneToOne(targetEntity: Pet::class, cascade: ['persist', 'remove'])]
     private $helper;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $soot = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $alcohol = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $gnomePoints = 0;
 
     public function getId(): ?int

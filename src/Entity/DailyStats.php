@@ -5,256 +5,172 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class DailyStats
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['globalStats'])]
     private $date;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['globalStats'])]
     private $numberOfPlayers1Day;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['globalStats'])]
     private $numberOfPlayers3Day;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['globalStats'])]
     private $numberOfPlayers7Day;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['globalStats'])]
     private $numberOfPlayers28Day;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['globalStats'])]
     private $numberOfPlayersLifetime;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['globalStats'])]
     private $totalMoneys1Day;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['globalStats'])]
     private $totalMoneys3Day;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['globalStats'])]
     private $totalMoneys7Day;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['globalStats'])]
     private $totalMoneys28Day;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['globalStats'])]
     private $totalMoneysLifetime;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['globalStats'])]
     private $newPlayers1Day;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['globalStats'])]
     private $newPlayers3Day;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['globalStats'])]
     private $newPlayers7Day;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['globalStats'])]
     private $newPlayers28Day;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedTrader1Day;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedTrader3Day;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedTrader7Day;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedTrader28Day;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedTraderLifetime;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedFireplace1Day;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedFireplace3Day;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedFireplace7Day;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedFireplace28Day;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedFireplaceLifetime;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedGreenhouse1Day;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedGreenhouse3Day;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedGreenhouse7Day;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedGreenhouse28Day;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedGreenhouseLifetime;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedBeehive1Day;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedBeehive3Day;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedBeehive7Day;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedBeehive28Day;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedBeehiveLifetime;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedPortal1Day;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedPortal3Day;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedPortal7Day;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedPortal28Day;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"globalStats"})
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(['globalStats'])]
     private ?int $unlockedPortalLifetime;
 
     public function getId(): ?int

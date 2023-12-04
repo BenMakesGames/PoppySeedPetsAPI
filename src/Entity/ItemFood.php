@@ -8,161 +8,104 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\ItemFoodRepository")
- * @ORM\Table(indexes={
- *     @ORM\Index(name="is_candy_idx", columns={"is_candy"})
- * })
- */
+#[ORM\Table]
+#[ORM\Index(name: 'is_candy_idx', columns: ['is_candy'])]
+#[ORM\Entity(repositoryClass: 'App\Repository\ItemFoodRepository')]
 class ItemFood
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $food = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $love = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $junk = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $alcohol = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $caffeine = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $psychedelic = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $earthy = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $fruity = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $tannic = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $spicy = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $creamy = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $meaty = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $planty = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $fishy = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $floral = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $fatty = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $oniony = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $chemically = 0;
 
     /**
-     * @ORM\Column(type="string", length=20, nullable=true)
      * @Groups({"myInventory", "itemEncyclopedia"})
      */
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private $grantedSkill;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
     private $chanceForBonusItem;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $randomFlavor = 0;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $containsTentacles = false;
 
-    /**
-     * @ORM\Column(type="string", length=40, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 40, nullable: true)]
     private $grantedStatusEffect = null;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
     private $grantedStatusEffectDuration = null;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $isCandy;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Spice::class, mappedBy="effects", cascade={"persist", "remove"})
-     */
+    #[ORM\OneToOne(targetEntity: Spice::class, mappedBy: 'effects', cascade: ['persist', 'remove'])]
     private $spice;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Item::class)
-     */
+    #[ORM\ManyToOne(targetEntity: Item::class)]
     private $leftovers;
 
     /**
-     * @ORM\ManyToOne(targetEntity=ItemGroup::class)
      * @var ItemGroup
      */
+    #[ORM\ManyToOne(targetEntity: ItemGroup::class)]
     private $bonusItemGroup;
 
     public function getId(): ?int

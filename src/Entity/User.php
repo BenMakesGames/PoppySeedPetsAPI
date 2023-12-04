@@ -12,228 +12,185 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(indexes={
- *     @ORM\Index(name="name_idx", columns={"name"}),
- *     @ORM\Index(name="last_activity_idx", columns={"last_activity"}),
- * })
- */
+#[ORM\Table]
+#[ORM\Index(name: 'name_idx', columns: ['name'])]
+#[ORM\Index(name: 'last_activity_idx', columns: ['last_activity'])]
+#[ORM\Entity]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     public const MAX_HOUSE_INVENTORY = 100;
     public const MAX_BASEMENT_INVENTORY = 10000;
 
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
      * @Groups({"myAccount", "myInventory", "userPublicProfile", "article", "petPublicProfile", "museum", "parkEvent", "userTypeahead", "publicStyle", "myFollowers"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"myAccount"})
      */
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[Groups(['myAccount'])]
     private $email;
 
-    /**
-     * @ORM\Column(type="json")
-     * @Groups({"myAccount"})
-     */
+    #[ORM\Column(type: 'json')]
+    #[Groups(['myAccount'])]
     private $roles = [];
 
     /**
      * @var string The hashed password
-     * @ORM\Column(type="string")
      */
+    #[ORM\Column(type: 'string')]
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"myAccount", "myInventory", "userPublicProfile", "article", "petPublicProfile", "museum", "parkEvent", "userTypeahead", "publicStyle", "myFollowers"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $name;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
      * @Groups({"userPublicProfile", "myFollowers"})
      */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $lastActivity;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Pet::class, mappedBy="owner", fetch="EXTRA_LAZY")
-     */
+    #[ORM\OneToMany(targetEntity: Pet::class, mappedBy: 'owner', fetch: 'EXTRA_LAZY')]
     private $pets;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
      * @Groups({"userPublicProfile"})
      */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $registeredOn;
 
     /**
-     * @ORM\Column(type="date_immutable")
      * @Groups({"myAccount"})
      */
+    #[ORM\Column(type: 'date_immutable')]
     private $lastAllowanceCollected;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $isLocked = false;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"myAccount"})
      */
+    #[ORM\Column(type: 'integer')]
     private $moneys = 0;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"myAccount"})
      */
+    #[ORM\Column(type: 'integer')]
     private $maxPets = 2;
 
-    /**
-     * @ORM\OneToMany(targetEntity=UserFollowing::class, mappedBy="user", orphanRemoval=true, fetch="EXTRA_LAZY")
-     */
+    #[ORM\OneToMany(targetEntity: UserFollowing::class, mappedBy: 'user', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
     private $following;
 
-    /**
-     * @ORM\OneToMany(targetEntity=UserFollowing::class, mappedBy="following", orphanRemoval=true, fetch="EXTRA_LAZY")
-     */
+    #[ORM\OneToMany(targetEntity: UserFollowing::class, mappedBy: 'following', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
     private $followedBy;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserStats", mappedBy="user", orphanRemoval=true, fetch="EXTRA_LAZY")
-     */
+    #[ORM\OneToMany(targetEntity: 'App\Entity\UserStats', mappedBy: 'user', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
     private $stats;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"myAccount"})
      */
+    #[ORM\Column(type: 'integer')]
     private $defaultSessionLengthInHours = 72;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"myAccount"})
      */
+    #[ORM\Column(type: 'integer')]
     private $maxSellPrice = 10;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\PassphraseResetRequest", mappedBy="user", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
-     */
+    #[ORM\OneToOne(targetEntity: 'App\Entity\PassphraseResetRequest', mappedBy: 'user', cascade: ['persist', 'remove'], fetch: 'EXTRA_LAZY')]
     private $passphraseResetRequest;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\GreenhousePlant", mappedBy="owner", orphanRemoval=true, fetch="EXTRA_LAZY")
-     */
+    #[ORM\OneToMany(targetEntity: 'App\Entity\GreenhousePlant', mappedBy: 'owner', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
     private $greenhousePlants;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\UserSession", mappedBy="user", orphanRemoval=true)
-     */
+    #[ORM\OneToMany(targetEntity: 'App\Entity\UserSession', mappedBy: 'user', orphanRemoval: true)]
     private $userSessions;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\HollowEarthPlayer", mappedBy="user", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
-     */
+    #[ORM\OneToOne(targetEntity: 'App\Entity\HollowEarthPlayer', mappedBy: 'user', cascade: ['persist', 'remove'], fetch: 'EXTRA_LAZY')]
     private $hollowEarthPlayer;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Fireplace", mappedBy="user", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
-     */
+    #[ORM\OneToOne(targetEntity: 'App\Entity\Fireplace', mappedBy: 'user', cascade: ['persist', 'remove'], fetch: 'EXTRA_LAZY')]
     private $fireplace;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Beehive", mappedBy="user", cascade={"persist", "remove"})
-     */
+    #[ORM\OneToOne(targetEntity: 'App\Entity\Beehive', mappedBy: 'user', cascade: ['persist', 'remove'])]
     private $beehive;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Greenhouse", mappedBy="owner", cascade={"persist", "remove"})
-     */
+    #[ORM\OneToOne(targetEntity: 'App\Entity\Greenhouse', mappedBy: 'owner', cascade: ['persist', 'remove'])]
     private $greenhouse;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"myAccount"})
      */
+    #[ORM\Column(type: 'integer')]
     private $recyclePoints = 0;
 
     /**
-     * @ORM\Column(type="smallint")
      * @Groups({"myAccount"})
      */
+    #[ORM\Column(type: 'smallint')]
     private $unreadNews = 0;
 
     /**
-     * @ORM\Column(type="string", length=60, nullable=true)
      * @Groups({"myAccount", "userPublicProfile", "petPublicProfile", "museum", "parkEvent", "publicStyle", "myFollowers"})
      */
+    #[ORM\Column(type: 'string', length: 60, nullable: true)]
     private $icon;
 
     /**
-     * @ORM\Column(type="smallint")
      * @Groups({"myAccount"})
      */
+    #[ORM\Column(type: 'smallint')]
     private $maxMarketBids = 5;
 
-    /**
-     * @ORM\OneToOne(targetEntity=UserMenuOrder::class, mappedBy="user", cascade={"persist", "remove"})
-     */
+    #[ORM\OneToOne(targetEntity: UserMenuOrder::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     private $menuOrder;
 
-    /**
-     * @ORM\OneToMany(targetEntity=UserUnlockedAura::class, mappedBy="user", orphanRemoval=true)
-     */
+    #[ORM\OneToMany(targetEntity: UserUnlockedAura::class, mappedBy: 'user', orphanRemoval: true)]
     private $unlockedAuras;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $museumPoints = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $museumPointsSpent = 0;
 
     /**
-     * @ORM\Column(type="boolean")
      * @Groups({"myAccount"})
      */
+    #[ORM\Column(type: 'boolean')]
     private $canAssignHelpers = false;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $fate;
 
     /**
-     * @ORM\OneToMany(targetEntity=UserUnlockedFeature::class, mappedBy="user", orphanRemoval=true)
      * @Groups({"myAccount"})
      */
+    #[ORM\OneToMany(targetEntity: UserUnlockedFeature::class, mappedBy: 'user', orphanRemoval: true)]
     private $unlockedFeatures;
 
-    /**
-     * @ORM\OneToMany(targetEntity=UserBadge::class, mappedBy="user", orphanRemoval=true)
-     */
+    #[ORM\OneToMany(targetEntity: UserBadge::class, mappedBy: 'user', orphanRemoval: true)]
     private $badges;
 
     /**
-     * @ORM\OneToOne(targetEntity=UserSubscription::class, mappedBy="user", cascade={"persist", "remove"})
      * @Groups({"myAccount"})
      */
+    #[ORM\OneToOne(targetEntity: UserSubscription::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     private $subscription;
 
-    /**
-     * @ORM\OneToMany(targetEntity=UserFieldGuideEntry::class, mappedBy="user", orphanRemoval=true)
-     */
+    #[ORM\OneToMany(targetEntity: UserFieldGuideEntry::class, mappedBy: 'user', orphanRemoval: true)]
     private $fieldGuideEntries;
 
     public function __construct()

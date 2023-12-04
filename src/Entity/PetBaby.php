@@ -8,61 +8,41 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\PetBabyRepository")
- */
+#[ORM\Entity(repositoryClass: 'App\Repository\PetBabyRepository')]
 class PetBaby
 {
     public const PREGNANCY_DURATION = 30240;
     public const PREGNANCY_INTERVAL = self::PREGNANCY_DURATION / 6;
     public const EGG_INCUBATION_TIME = self::PREGNANCY_INTERVAL * 2;
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $growth = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $affection = 0;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\PetSpecies")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\PetSpecies')]
+    #[ORM\JoinColumn(nullable: false)]
     private $species;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Pet::class, mappedBy="pregnancy")
-     */
+    #[ORM\OneToOne(targetEntity: Pet::class, mappedBy: 'pregnancy')]
     private $parent;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Pet::class)
-     */
+    #[ORM\ManyToOne(targetEntity: Pet::class)]
     private $otherParent;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=SpiritCompanion::class)
-     */
+    #[ORM\ManyToOne(targetEntity: SpiritCompanion::class)]
     private $spiritParent;
 
-    /**
-     * @ORM\Column(type="string", length=6)
-     */
+    #[ORM\Column(type: 'string', length: 6)]
     private $colorA;
 
-    /**
-     * @ORM\Column(type="string", length=6)
-     */
+    #[ORM\Column(type: 'string', length: 6)]
     private $colorB;
 
     public function __construct()
@@ -164,9 +144,7 @@ class PetBaby
         return $this;
     }
 
-    /**
-     * @Groups({"myPet"})
-     */
+    #[Groups(['myPet'])]
     public function getPregnancyProgress(): string
     {
         if($this->getParent()->getSpecies()->getPregnancyStyle() === PetPregnancyStyleEnum::EGG)

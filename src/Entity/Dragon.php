@@ -8,9 +8,7 @@ use App\Service\Squirrel3;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass=DragonRepository::class)
- */
+#[ORM\Entity(repositoryClass: DragonRepository::class)]
 class Dragon
 {
     // as a whelp:
@@ -42,108 +40,94 @@ class Dragon
         ],
     ];
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\OneToOne(targetEntity=User::class, cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\OneToOne(targetEntity: User::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
     private $owner;
 
     /**
-     * @ORM\Column(type="string", length=20, nullable=true)
      * @Groups({"myFireplace", "myDragon"})
      */
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private $name;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $food = 0;
 
     /**
-     * @ORM\Column(type="string", length=6, nullable=true)
      * @Groups({"myFireplace", "myDragon"})
      */
+    #[ORM\Column(type: 'string', length: 6, nullable: true)]
     private $colorA;
 
     /**
-     * @ORM\Column(type="string", length=6, nullable=true)
      * @Groups({"myFireplace", "myDragon"})
      */
+    #[ORM\Column(type: 'string', length: 6, nullable: true)]
     private $colorB;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $isAdult = false;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $growth = 0;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"myDragon"})
      */
+    #[ORM\Column(type: 'integer')]
     private $silver = 0;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"myDragon"})
      */
+    #[ORM\Column(type: 'integer')]
     private $gold = 0;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"myDragon"})
      */
+    #[ORM\Column(type: 'integer')]
     private $gems = 0;
 
     /**
-     * @ORM\Column(type="json", nullable=true)
      * @Groups({"myDragon"})
      */
+    #[ORM\Column(type: 'json', nullable: true)]
     private $greetings = [];
 
     /**
-     * @ORM\Column(type="json", nullable=true)
      * @Groups({"myDragon"})
      */
+    #[ORM\Column(type: 'json', nullable: true)]
     private $thanks = [];
 
     /**
-     * @ORM\Column(type="smallint")
      * @Groups({"myDragon"})
      */
+    #[ORM\Column(type: 'smallint')]
     private $appearance;
 
     /**
-     * @ORM\OneToOne(targetEntity=Pet::class, cascade={"persist", "remove"})
      * @Groups({"helperPet"})
      */
+    #[ORM\OneToOne(targetEntity: Pet::class, cascade: ['persist', 'remove'])]
     private $helper;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private $earnings = 0;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private $byproductProgress = 0;
 
     /**
-     * @ORM\OneToOne(targetEntity=DragonHostage::class, mappedBy="dragon")
      * @Groups({"myDragon"})
      */
+    #[ORM\OneToOne(targetEntity: DragonHostage::class, mappedBy: 'dragon')]
     private $hostage;
 
     public function __construct()

@@ -7,54 +7,38 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class Article
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     * @Groups({"article"})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['article'])]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"article"})
-     */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['article'])]
     private $title;
 
-    /**
-     * @ORM\Column(type="text")
-     * @Groups({"article"})
-     */
+    #[ORM\Column(type: 'text')]
+    #[Groups(['article'])]
     private $body;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     * @Groups({"article"})
-     */
+    #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(['article'])]
     private $createdOn;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups({"article"})
-     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['article'])]
     private $author;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=DesignGoal::class, inversedBy="articles")
-     * @Groups({"article"})
-     */
+    #[ORM\ManyToMany(targetEntity: DesignGoal::class, inversedBy: 'articles')]
+    #[Groups(['article'])]
     private $designGoals;
 
-    /**
-     * @ORM\Column(type="string", length=50, nullable=true)
-     * @Groups({"article"})
-     */
+    #[ORM\Column(type: 'string', length: 50, nullable: true)]
+    #[Groups(['article'])]
     private $imageUrl;
 
     public function __construct()

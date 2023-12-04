@@ -5,34 +5,30 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class PetActivityLogTag
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=40, unique=true)
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
+    #[ORM\Column(type: 'string', length: 40, unique: true)]
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $color;
 
     /**
-     * @ORM\Column(type="string", length=12)
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
+    #[ORM\Column(type: 'string', length: 12)]
     private $emoji;
 
     public function getId(): ?int

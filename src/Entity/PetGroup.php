@@ -9,76 +9,69 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(indexes={
- *     @ORM\Index(name="created_on_idx", columns={"created_on"}),
- *     @ORM\Index(name="last_met_on_idx", columns={"last_met_on"}),
- *     @ORM\Index(name="type_idx", columns={"type"}),
- *     @ORM\Index(name="name_idx", columns={"name"}),
- *     @ORM\Index(name="social_energy_idx", columns={"social_energy"}),
- * })
- */
+#[ORM\Table]
+#[ORM\Index(name: 'created_on_idx', columns: ['created_on'])]
+#[ORM\Index(name: 'last_met_on_idx', columns: ['last_met_on'])]
+#[ORM\Index(name: 'type_idx', columns: ['type'])]
+#[ORM\Index(name: 'name_idx', columns: ['name'])]
+#[ORM\Index(name: 'social_energy_idx', columns: ['social_energy'])]
+#[ORM\Entity]
 class PetGroup
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
      * @Groups({"petGroup", "petGroupDetails", "petGroupIndex", "petPublicProfile"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Pet::class, inversedBy="groups")
      * @Groups({"petGroupDetails"})
      */
+    #[ORM\ManyToMany(targetEntity: Pet::class, inversedBy: 'groups')]
     private $members;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"petGroup", "petGroupDetails", "petGroupIndex", "petPublicProfile"})
      */
+    #[ORM\Column(type: 'integer')]
     private $type;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"petGroup"})
      */
+    #[ORM\Column(type: 'integer')]
     private $progress = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $skillRollTotal = 0;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
      * @Groups({"petGroupDetails", "petGroupIndex", "petPublicProfile"})
      */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $createdOn;
 
     /**
-     * @ORM\Column(type="string", length=60)
      * @Groups({"petGroup", "petGroupDetails", "petGroupIndex", "petPublicProfile"})
      */
+    #[ORM\Column(type: 'string', length: 60)]
     private $name;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
      * @Groups({"petGroupDetails", "petGroupIndex"})
      */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $lastMetOn;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"petGroupDetails"})
      */
+    #[ORM\Column(type: 'integer')]
     private $numberOfProducts = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $socialEnergy = 0;
 
     public function __construct()

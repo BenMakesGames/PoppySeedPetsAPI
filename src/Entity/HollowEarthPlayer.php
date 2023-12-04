@@ -8,88 +8,78 @@ use App\Enum\HollowEarthMoveDirectionEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\HollowEarthPlayerRepository")
- */
+#[ORM\Entity(repositoryClass: 'App\Repository\HollowEarthPlayerRepository')]
 class HollowEarthPlayer
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\OneToOne(targetEntity=User::class, inversedBy="hollowEarthPlayer")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'hollowEarthPlayer')]
+    #[ORM\JoinColumn(nullable: false)]
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\HollowEarthTile")
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"hollowEarth"})
      */
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\HollowEarthTile')]
+    #[ORM\JoinColumn(nullable: false)]
     private $currentTile;
 
-    /**
-     * @ORM\Column(type="json", nullable=true)
-     */
+    #[ORM\Column(type: 'json', nullable: true)]
     private array|null $currentAction = null;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"hollowEarth"})
      */
+    #[ORM\Column(type: 'integer')]
     private $movesRemaining = 0;
 
     /**
-     * @ORM\OneToOne(targetEntity=Pet::class)
-     * @ORM\JoinColumn(nullable=true)
      * @Groups({"hollowEarth"})
      */
+    #[ORM\OneToOne(targetEntity: Pet::class)]
+    #[ORM\JoinColumn(nullable: true)]
     private $chosenPet = null;
 
-    /**
-     * @ORM\Column(type="string", length=1)
-     */
+    #[ORM\Column(type: 'string', length: 1)]
     private $currentDirection;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"hollowEarth"})
      */
+    #[ORM\Column(type: 'integer')]
     private $jade = 0;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"hollowEarth"})
      */
+    #[ORM\Column(type: 'integer')]
     private $incense = 0;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"hollowEarth"})
      */
+    #[ORM\Column(type: 'integer')]
     private $salt = 0;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"hollowEarth"})
      */
+    #[ORM\Column(type: 'integer')]
     private $amber = 0;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"hollowEarth"})
      */
+    #[ORM\Column(type: 'integer')]
     private $fruit = 0;
 
     /**
-     * @ORM\Column(type="boolean")
      * @Groups({"hollowEarth"})
      */
+    #[ORM\Column(type: 'boolean')]
     private $showGoods = false;
 
     public function getId(): ?int

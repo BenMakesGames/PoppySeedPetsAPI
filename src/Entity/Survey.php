@@ -7,49 +7,39 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class Survey
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
      * @Groups({"surveySummary"})
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private $title;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $startDate;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
      * @Groups({"surveySummary"})
      */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $endDate;
 
-    /**
-     * @ORM\OneToMany(targetEntity=SurveyQuestion::class, mappedBy="survey", orphanRemoval=true)
-     */
+    #[ORM\OneToMany(targetEntity: SurveyQuestion::class, mappedBy: 'survey', orphanRemoval: true)]
     private $questions;
 
-    /**
-     * @ORM\Column(type="guid", unique=true)
-     */
+    #[ORM\Column(type: 'guid', unique: true)]
     private $guid;
 
     /**
-     * @ORM\Column(type="text")
      * @Groups({"surveySummary"})
      */
+    #[ORM\Column(type: 'text')]
     private $description;
 
     public function __construct()

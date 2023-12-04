@@ -5,51 +5,45 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\ItemHatRepository")
- */
+#[ORM\Entity(repositoryClass: 'App\Repository\ItemHatRepository')]
 class ItemHat
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\Column(type="float")
      * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
      */
+    #[ORM\Column(type: 'float')]
     private $headX = 0;
 
     /**
-     * @ORM\Column(type="float")
      * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
      */
+    #[ORM\Column(type: 'float')]
     private $headY = 0;
 
     /**
-     * @ORM\Column(type="float")
      * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
      */
+    #[ORM\Column(type: 'float')]
     private $headAngle = 0;
 
     /**
-     * @ORM\Column(type="float")
      * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
      */
+    #[ORM\Column(type: 'float')]
     private $headScale = 0;
 
     /**
-     * @ORM\Column(type="boolean")
      * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
      */
+    #[ORM\Column(type: 'boolean')]
     private $headAngleFixed = 0;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Item::class, mappedBy="hat")
-     */
+    #[ORM\OneToOne(targetEntity: Item::class, mappedBy: 'hat')]
     private $item;
 
     public function getId(): ?int

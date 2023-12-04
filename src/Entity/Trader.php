@@ -5,46 +5,40 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\TraderRepository")
- */
+#[ORM\Entity(repositoryClass: 'App\Repository\TraderRepository')]
 class Trader
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\OneToOne(targetEntity=User::class, cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\OneToOne(targetEntity: User::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
     private $user;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"traderOffer"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"traderOffer"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $colorA;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"traderOffer"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $colorB;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"traderOffer"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $colorC;
 
     public function getId(): ?int

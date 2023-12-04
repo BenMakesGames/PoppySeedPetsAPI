@@ -7,58 +7,54 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class MonthlyStoryAdventure
 {
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      * @Groups({ "starKindredStory" })
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
      * @Groups({ "starKindredStory" })
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private $title;
 
     /**
-     * @ORM\Column(type="text")
      * @Groups({ "starKindredStory" })
      */
+    #[ORM\Column(type: 'text')]
     private $summary;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({ "starKindredStory" })
      */
+    #[ORM\Column(type: 'integer')]
     private $releaseNumber;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({ "starKindredStory", "starKindredStoryDetails" })
      */
+    #[ORM\Column(type: 'integer')]
     private $releaseYear;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({ "starKindredStory", "starKindredStoryDetails" })
      */
+    #[ORM\Column(type: 'integer')]
     private $releaseMonth;
 
     /**
-     * @ORM\Column(type="boolean")
      * @Groups({ "starKindredStoryDetails" })
      */
+    #[ORM\Column(type: 'boolean')]
     private $isDark;
 
-    /**
-     * @ORM\OneToMany(targetEntity=MonthlyStoryAdventureStep::class, mappedBy="adventure", orphanRemoval=true)
-     */
+    #[ORM\OneToMany(targetEntity: MonthlyStoryAdventureStep::class, mappedBy: 'adventure', orphanRemoval: true)]
     private $steps;
 
     public function __construct()

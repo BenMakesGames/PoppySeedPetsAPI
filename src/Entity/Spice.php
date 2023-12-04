@@ -6,36 +6,34 @@ use App\Repository\SpiceRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass=SpiceRepository::class)
- */
+#[ORM\Entity(repositoryClass: SpiceRepository::class)]
 class Spice
 {
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      * @Groups({"marketItem", "greenhouseFertilizer", "fireplaceFuel"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity=ItemFood::class, inversedBy="spice", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"myInventory", "marketItem", "itemEncyclopedia"})
      */
+    #[ORM\OneToOne(targetEntity: ItemFood::class, inversedBy: 'spice', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
     private $effects;
 
     /**
-     * @ORM\Column(type="string", length=20)
      * @Groups({"myInventory", "marketItem", "itemEncyclopedia", "myPet", "dragonTreasure", "greenhouseFertilizer", "fireplaceFuel"})
      */
+    #[ORM\Column(type: 'string', length: 20)]
     private $name;
 
     /**
-     * @ORM\Column(type="boolean")
      * @Groups({"myInventory", "marketItem", "itemEncyclopedia", "myPet", "dragonTreasure", "greenhouseFertilizer", "fireplaceFuel"})
      */
+    #[ORM\Column(type: 'boolean')]
     private $isSuffix;
 
     public function getId(): ?int

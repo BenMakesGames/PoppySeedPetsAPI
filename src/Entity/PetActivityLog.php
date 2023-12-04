@@ -9,68 +9,63 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(indexes={
- *     @ORM\Index(name="created_on_idx", columns={"created_on"})
- * })
- */
+#[ORM\Table]
+#[ORM\Index(name: 'created_on_idx', columns: ['created_on'])]
+#[ORM\Entity]
 class PetActivityLog
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Pet::class)
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"petActivityLogAndPublicPet"})
      */
+    #[ORM\ManyToOne(targetEntity: Pet::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $pet;
 
     /**
-     * @ORM\Column(type="text")
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
+    #[ORM\Column(type: 'text')]
     private $entry;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $createdOn;
 
     /**
-     * @ORM\Column(type="object", nullable=true)
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
+    #[ORM\Column(type: 'object', nullable: true)]
     private $changes;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $icon = '';
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
+    #[ORM\Column(type: 'integer')]
     private $interestingness = 0;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Item::class)
      * @Groups({"petActivityLogAndPublicPet"})
      */
+    #[ORM\ManyToOne(targetEntity: Item::class)]
     private $equippedItem;
 
     /**
-     * @ORM\ManyToMany(targetEntity=PetActivityLogTag::class)
      * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
      */
+    #[ORM\ManyToMany(targetEntity: PetActivityLogTag::class)]
     private $tags;
 
     public function __construct()

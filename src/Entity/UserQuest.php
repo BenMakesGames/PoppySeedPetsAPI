@@ -4,47 +4,30 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\UserQuestRepository")
- * @ORM\Table(
- *     uniqueConstraints={
- *         @ORM\UniqueConstraint(name="user_id_name_idx", columns={"user_id", "name"})
- *     }
- * )
- */
+#[ORM\Table]
+#[ORM\UniqueConstraint(name: 'user_id_name_idx', columns: ['user_id', 'name'])]
+#[ORM\Entity(repositoryClass: 'App\Repository\UserQuestRepository')]
 class UserQuest
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $user;
 
-    /**
-     * @ORM\Column(type="string", length=120)
-     */
+    #[ORM\Column(type: 'string', length: 120)]
     private $name;
 
-    /**
-     * @ORM\Column(type="json")
-     */
+    #[ORM\Column(type: 'json')]
     private $value;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $createdOn;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $lastUpdated;
 
     public function __construct()

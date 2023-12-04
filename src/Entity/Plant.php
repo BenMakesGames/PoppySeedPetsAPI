@@ -7,78 +7,54 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\PlantRepository")
- */
+#[ORM\Entity(repositoryClass: 'App\Repository\PlantRepository')]
 class Plant
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=40)
-     */
+    #[ORM\Column(type: 'string', length: 40)]
     private $sproutImage;
 
-    /**
-     * @ORM\Column(type="string", length=40)
-     */
+    #[ORM\Column(type: 'string', length: 40)]
     private $mediumImage;
 
-    /**
-     * @ORM\Column(type="string", length=40)
-     */
+    #[ORM\Column(type: 'string', length: 40)]
     private $adultImage;
 
-    /**
-     * @ORM\Column(type="string", length=40)
-     */
+    #[ORM\Column(type: 'string', length: 40)]
     private $harvestableImage;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Item::class, mappedBy="plant")
-     */
+    #[ORM\OneToOne(targetEntity: Item::class, mappedBy: 'plant')]
     private $item;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $timeToAdult;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $timeToFruit;
 
     /**
-     * @ORM\Column(type="string", length=20)
      * @Groups({"greenhousePlant"})
      */
+    #[ORM\Column(type: 'string', length: 20)]
     private $type = 'earth';
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\PlantYield", mappedBy="plant", orphanRemoval=true)
-     */
+    #[ORM\OneToMany(targetEntity: 'App\Entity\PlantYield', mappedBy: 'plant', orphanRemoval: true)]
     private $plantYields;
 
     /**
-     * @ORM\Column(type="string", length=40, unique=true)
      * @Groups({"greenhousePlant"})
      */
+    #[ORM\Column(type: 'string', length: 40, unique: true)]
     private $name;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=FieldGuideEntry::class)
-     */
+    #[ORM\ManyToOne(targetEntity: FieldGuideEntry::class)]
     private $fieldGuideEntry;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $noPollinators;
 
     public function __construct()

@@ -5,58 +5,52 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class DragonHostage
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Dragon::class, inversedBy="hostage", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\OneToOne(targetEntity: Dragon::class, inversedBy: 'hostage', cascade: ['persist'])]
+    #[ORM\JoinColumn(nullable: false)]
     private $dragon;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"myDragon"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $type;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"myDragon"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"myDragon"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $appearance;
 
     /**
-     * @ORM\Column(type="string", length=255)
      * @Groups({"myDragon"})
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private $dialog;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"myDragon"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $colorA;
 
     /**
-     * @ORM\Column(type="string", length=6)
      * @Groups({"myDragon"})
      */
+    #[ORM\Column(type: 'string', length: 6)]
     private $colorB;
 
     public function getId(): ?int

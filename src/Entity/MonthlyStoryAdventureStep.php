@@ -8,90 +8,76 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass=MonthlyStoryAdventureStepRepository::class)
- */
+#[ORM\Entity(repositoryClass: MonthlyStoryAdventureStepRepository::class)]
 class MonthlyStoryAdventureStep
 {
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      * @Groups({ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" })
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=MonthlyStoryAdventure::class, inversedBy="steps")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: MonthlyStoryAdventure::class, inversedBy: 'steps')]
+    #[ORM\JoinColumn(nullable: false)]
     private $adventure;
 
     /**
-     * @ORM\Column(type="string", length=30)
      * @Groups({ "starKindredStoryStepAvailable" })
      */
+    #[ORM\Column(type: 'string', length: 30)]
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=20)
      * @Groups({ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" })
      */
+    #[ORM\Column(type: 'string', length: 20)]
     private $type;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $step;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(type: 'integer', nullable: true)]
     private $previousStep;
 
     /**
-     * @ORM\Column(type="float")
      * @Groups({ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" })
      */
+    #[ORM\Column(type: 'float')]
     private $x;
 
     /**
-     * @ORM\Column(type="float")
      * @Groups({ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" })
      */
+    #[ORM\Column(type: 'float')]
     private $y;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({ "starKindredStoryStepAvailable" })
      */
+    #[ORM\Column(type: 'integer')]
     private $minPets;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({ "starKindredStoryStepAvailable" })
      */
+    #[ORM\Column(type: 'integer')]
     private $maxPets;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private $narrative;
 
-    /**
-     * @ORM\Column(type="string", length=40, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 40, nullable: true)]
     private $treasure;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Enchantment::class)
-     */
+    #[ORM\ManyToOne(targetEntity: Enchantment::class)]
     private $aura;
 
     /**
-     * @ORM\Column(type="string", length=10, nullable=true)
      * @Groups({ "starKindredStoryStepAvailable" })
      */
+    #[ORM\Column(type: 'string', length: 10, nullable: true)]
     private $pinOverride;
 
     public function __construct()

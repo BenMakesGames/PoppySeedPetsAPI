@@ -5,29 +5,21 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\LunchboxItemRepository")
- */
+#[ORM\Entity(repositoryClass: 'App\Repository\LunchboxItemRepository')]
 class LunchboxItem
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Pet::class, inversedBy="lunchboxItems")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Pet::class, inversedBy: 'lunchboxItems')]
+    #[ORM\JoinColumn(nullable: false)]
     private $pet;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Inventory::class, inversedBy="lunchboxItem")
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups({"myPet"})
-     */
+    #[ORM\OneToOne(targetEntity: Inventory::class, inversedBy: 'lunchboxItem')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['myPet'])]
     private $inventoryItem;
 
     public function getId(): ?int

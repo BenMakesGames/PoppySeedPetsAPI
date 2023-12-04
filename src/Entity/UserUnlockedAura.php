@@ -5,47 +5,40 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(
- *     uniqueConstraints={
- *         @ORM\UniqueConstraint(name="user_id_aura_id_idx", columns={"user_id", "aura_id"})
- *     }
- * )
- */
+#[ORM\Table]
+#[ORM\UniqueConstraint(name: 'user_id_aura_id_idx', columns: ['user_id', 'aura_id'])]
+#[ORM\Entity]
 class UserUnlockedAura
 {
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      * @Groups({"myAura"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="unlockedAuras")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'unlockedAuras')]
+    #[ORM\JoinColumn(nullable: false)]
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Enchantment::class)
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"myAura"})
      */
+    #[ORM\ManyToOne(targetEntity: Enchantment::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $aura;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
      * @Groups({"myAura"})
      */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $unlockedOn;
 
     /**
-     * @ORM\Column(type="string", length=255)
      * @Groups({"myAura"})
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private $comment;
 
     public function __construct()

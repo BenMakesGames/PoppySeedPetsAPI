@@ -8,34 +8,30 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass=DesignGoalRepository::class)
- */
+#[ORM\Entity(repositoryClass: DesignGoalRepository::class)]
 class DesignGoal
 {
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      * @Groups({"designGoal", "article"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"designGoal", "article"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $name;
 
     /**
-     * @ORM\Column(type="text")
      * @Groups({"designGoal"})
      */
+    #[ORM\Column(type: 'text')]
     private $description;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Article::class, mappedBy="designGoals")
-     */
+    #[ORM\ManyToMany(targetEntity: Article::class, mappedBy: 'designGoals')]
     private $articles;
 
     public function __construct()

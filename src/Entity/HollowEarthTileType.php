@@ -5,33 +5,26 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(
- *    uniqueConstraints={
- *        @ORM\UniqueConstraint(name="name_idx", columns={"name"})
- *    }
- * )
- */
+#[ORM\Table]
+#[ORM\UniqueConstraint(name: 'name_idx', columns: ['name'])]
+#[ORM\Entity]
 class HollowEarthTileType
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"myInventory", "itemEncyclopedia"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=10)
      * @Groups({"myInventory", "itemEncyclopedia"})
      */
+    #[ORM\Column(type: 'string', length: 10)]
     private $article;
 
     public function getId(): ?int

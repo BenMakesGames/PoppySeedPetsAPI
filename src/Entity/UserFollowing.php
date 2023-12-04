@@ -5,39 +5,29 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\UserFollowingRepository")
- */
+#[ORM\Entity(repositoryClass: 'App\Repository\UserFollowingRepository')]
 class UserFollowing
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="following")
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"myFollowers"})
      */
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'following')]
+    #[ORM\JoinColumn(nullable: false)]
     private $user;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="followedBy")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'followedBy')]
+    #[ORM\JoinColumn(nullable: false)]
     private $following;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $dateAdded;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $note;
 
     public function __construct()

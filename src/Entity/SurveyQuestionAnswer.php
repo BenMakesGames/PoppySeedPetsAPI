@@ -5,40 +5,32 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class SurveyQuestionAnswer
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=SurveyQuestion::class)
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"surveyQuestionAnswer"})
      */
+    #[ORM\ManyToOne(targetEntity: SurveyQuestion::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $question;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $user;
 
     /**
-     * @ORM\Column(type="text")
      * @Groups({"surveyQuestionAnswer"})
      */
+    #[ORM\Column(type: 'text')]
     private $answer;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $createdOn;
 
     public function __construct()

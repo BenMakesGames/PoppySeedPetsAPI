@@ -5,86 +5,71 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(indexes={
- *     @ORM\Index(name="workers_idx", columns={"workers"}),
- *     @ORM\Index(name="flower_power_idx", columns={"flower_power"})
- * })
- */
+#[ORM\Table]
+#[ORM\Index(name: 'workers_idx', columns: ['workers'])]
+#[ORM\Index(name: 'flower_power_idx', columns: ['flower_power'])]
+#[ORM\Entity]
 class Beehive
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\OneToOne(targetEntity=User::class, inversedBy="beehive", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'beehive', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
     private $user;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"myBeehive"})
      */
+    #[ORM\Column(type: 'integer')]
     private $workers = 250;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"myBeehive"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $queenName;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"myBeehive"})
      */
+    #[ORM\Column(type: 'integer')]
     private $flowerPower = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $royalJellyProgress = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $honeycombProgress = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $miscProgress = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $interactionPower = 48;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Item::class)
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"myBeehive"})
      * @var Item
      */
+    #[ORM\ManyToOne(targetEntity: Item::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $requestedItem;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Item::class)
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"myBeehive"})
      * @var Item
      */
+    #[ORM\ManyToOne(targetEntity: Item::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $alternateRequestedItem;
 
     /**
-     * @ORM\OneToOne(targetEntity=Pet::class, cascade={"persist", "remove"})
      * @Groups({"helperPet"})
      */
+    #[ORM\OneToOne(targetEntity: Pet::class, cascade: ['persist', 'remove'])]
     private $helper;
 
     public function getId(): ?int

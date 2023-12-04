@@ -6,61 +6,48 @@ use App\Repository\MarketListingRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass=MarketListingRepository::class)
- * @ORM\Table(
- *     uniqueConstraints={
- *         @ORM\UniqueConstraint(name="market_listing_unique", columns={"item_id", "non_nullable_enchantment", "non_nullable_spice"})
- *     }
- * )
- */
+#[ORM\Table]
+#[ORM\UniqueConstraint(name: 'market_listing_unique', columns: ['item_id', 'non_nullable_enchantment', 'non_nullable_spice'])]
+#[ORM\Entity(repositoryClass: MarketListingRepository::class)]
 class MarketListing
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Item::class, inversedBy="marketListings")
-     * @ORM\JoinColumn(nullable=false)
      * @Groups("marketItem")
      */
+    #[ORM\ManyToOne(targetEntity: Item::class, inversedBy: 'marketListings')]
+    #[ORM\JoinColumn(nullable: false)]
     private $item;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Enchantment::class)
      * @Groups("marketItem")
      */
+    #[ORM\ManyToOne(targetEntity: Enchantment::class)]
     private $enchantment;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $nonNullableEnchantment = -1;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Spice::class)
      * @Groups("marketItem")
      */
+    #[ORM\ManyToOne(targetEntity: Spice::class)]
     private $spice;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $nonNullableSpice = -1;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
      * @Groups("marketItem")
      */
+    #[ORM\Column(type: 'integer', nullable: true)]
     private $minimumSellPrice;
 
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
+    #[ORM\Column(type: 'string', length: 100)]
     private $fullItemName;
 
     public function getId(): ?int

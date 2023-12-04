@@ -9,9 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class SpiritCompanion
 {
     const NAMES = [
@@ -42,45 +40,41 @@ class SpiritCompanion
     ];
 
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
      * @Groups({"spiritCompanionPublicProfile", "petSpiritAncestor"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"myPet", "spiritCompanionPublicProfile", "petSpiritAncestor"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"myPet", "parkEvent", "hollowEarth", "petPublicProfile", "petGroupDetails", "spiritCompanionPublicProfile", "helperPet", "petSpiritAncestor"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $image;
 
     /**
-     * @ORM\OneToOne(targetEntity=Pet::class, mappedBy="spiritCompanion")
      * @Groups({"spiritCompanionPublicProfile"})
      */
+    #[ORM\OneToOne(targetEntity: Pet::class, mappedBy: 'spiritCompanion')]
     private $pet;
 
     /**
-     * @ORM\Column(type="string", length=40)
      * @Groups({"myPet", "spiritCompanionPublicProfile"})
      */
+    #[ORM\Column(type: 'string', length: 40)]
     private $star;
 
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private $lastHangOut;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Pet::class, mappedBy="spiritDad")
-     */
+    #[ORM\OneToMany(targetEntity: Pet::class, mappedBy: 'spiritDad')]
     private $fatheredPets;
 
     public function __construct()

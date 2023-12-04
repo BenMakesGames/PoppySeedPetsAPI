@@ -6,48 +6,44 @@ use App\Repository\UserLetterRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass=UserLetterRepository::class)
- */
+#[ORM\Entity(repositoryClass: UserLetterRepository::class)]
 class UserLetter
 {
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      * @Groups({"myLetters"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Letter::class)
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"myLetters"})
      */
+    #[ORM\ManyToOne(targetEntity: Letter::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $letter;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
      * @Groups({"myLetters"})
      */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $receivedOn;
 
     /**
-     * @ORM\Column(type="string", length=255)
      * @Groups({"myLetters"})
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private $comment;
 
     /**
-     * @ORM\Column(type="boolean")
      * @Groups({"myLetters"})
      */
+    #[ORM\Column(type: 'boolean')]
     private $isRead = false;
 
     public function __construct()

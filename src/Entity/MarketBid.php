@@ -8,54 +8,50 @@ use App\Repository\MarketBidRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass=MarketBidRepository::class)
- */
+#[ORM\Entity(repositoryClass: MarketBidRepository::class)]
 class MarketBid
 {
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      * @Groups({"myBids"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Item::class)
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"myBids"})
      */
+    #[ORM\ManyToOne(targetEntity: Item::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $item;
 
     /**
-     * @ORM\Column(type="integer")
      * @Groups({"myBids"})
      */
+    #[ORM\Column(type: 'integer')]
     private $bid;
 
     /**
-     * @ORM\Column(type="smallint")
      * @Groups({"myBids"})
      */
+    #[ORM\Column(type: 'smallint')]
     private $quantity;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
      * @Groups({"myBids"})
      */
+    #[ORM\Column(type: 'datetime_immutable')]
     private $createdOn;
 
     /**
-     * @ORM\Column(type="smallint")
      * @Groups({"myBids"})
      */
+    #[ORM\Column(type: 'smallint')]
     private $targetLocation = 0;
 
     public function __construct()

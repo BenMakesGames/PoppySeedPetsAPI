@@ -5,42 +5,40 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\EnchantmentRepository")
- */
+#[ORM\Entity(repositoryClass: 'App\Repository\EnchantmentRepository')]
 class Enchantment
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
      * @Groups({"myInventory", "marketItem", "greenhouseFertilizer"})
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=20, unique=true)
      * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure", "myAura"})
      */
+    #[ORM\Column(type: 'string', length: 20, unique: true)]
     private $name;
 
     /**
-     * @ORM\Column(type="boolean")
      * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure"})
      */
+    #[ORM\Column(type: 'boolean')]
     private $isSuffix;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\ItemTool", inversedBy="enchantment", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
      * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "myPet"})
      */
+    #[ORM\OneToOne(targetEntity: 'App\Entity\ItemTool', inversedBy: 'enchantment', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
     private $effects;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Aura::class)
      * @Groups({"myInventory", "myPet", "itemEncyclopedia", "marketItem", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
      */
+    #[ORM\ManyToOne(targetEntity: Aura::class)]
     private $aura;
 
     public function getId(): ?int
