@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Functions\ArrayFunctions;
 use App\Repository\DragonRepository;
 use App\Service\Squirrel3;
 use Doctrine\ORM\Mapping as ORM;
@@ -76,40 +75,28 @@ class Dragon
     #[ORM\Column(type: 'integer')]
     private $growth = 0;
 
-    /**
-     * @Groups({"myDragon"})
-     */
     #[ORM\Column(type: 'integer')]
+    #[Groups(['myDragon'])]
     private $silver = 0;
 
-    /**
-     * @Groups({"myDragon"})
-     */
     #[ORM\Column(type: 'integer')]
+    #[Groups(['myDragon'])]
     private $gold = 0;
 
-    /**
-     * @Groups({"myDragon"})
-     */
     #[ORM\Column(type: 'integer')]
+    #[Groups(['myDragon'])]
     private $gems = 0;
 
-    /**
-     * @Groups({"myDragon"})
-     */
     #[ORM\Column(type: 'json', nullable: true)]
+    #[Groups(['myDragon'])]
     private $greetings = [];
 
-    /**
-     * @Groups({"myDragon"})
-     */
     #[ORM\Column(type: 'json', nullable: true)]
+    #[Groups(['myDragon'])]
     private $thanks = [];
 
-    /**
-     * @Groups({"myDragon"})
-     */
     #[ORM\Column(type: 'smallint')]
+    #[Groups(['myDragon'])]
     private $appearance;
 
     /**
@@ -124,10 +111,8 @@ class Dragon
     #[ORM\Column(type: 'float')]
     private $byproductProgress = 0;
 
-    /**
-     * @Groups({"myDragon"})
-     */
     #[ORM\OneToOne(targetEntity: DragonHostage::class, mappedBy: 'dragon')]
+    #[Groups(['myDragon'])]
     private $hostage;
 
     public function __construct()

@@ -3,7 +3,6 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Entity\User;
-use App\Exceptions\PSPInvalidOperationException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;

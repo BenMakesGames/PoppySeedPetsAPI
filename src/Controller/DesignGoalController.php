@@ -8,7 +8,6 @@ use App\Repository\DesignGoalRepository;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/designGoal")]
 class DesignGoalController extends AbstractController

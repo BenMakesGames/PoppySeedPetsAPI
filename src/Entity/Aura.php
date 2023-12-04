@@ -8,9 +8,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity]
 class Aura
 {
-    /**
-     * @Groups({"myPet", "myAura"})
-     */
+    #[Groups(['myPet', 'myAura'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]

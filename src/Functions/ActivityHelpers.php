@@ -9,7 +9,7 @@ use App\Model\ComputedPetSkills;
 
 final class ActivityHelpers
 {
-    public static function SourceOfLight(ComputedPetSkills $petWithSkills)
+    public static function SourceOfLight(ComputedPetSkills $petWithSkills): string
     {
         if($petWithSkills->getPet()->hasMerit(MeritEnum::DARKVISION))
             return 'Darkvision';

@@ -3,9 +3,7 @@ namespace App\Controller\Dragon;
 
 use App\Entity\Pet;
 use App\Entity\User;
-use App\Enum\SerializationGroupEnum;
 use App\Functions\DragonHelpers;
-use App\Repository\DragonRepository;
 use App\Service\PetAssistantService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;

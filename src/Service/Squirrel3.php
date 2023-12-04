@@ -33,7 +33,7 @@ class Squirrel3 implements IRandom
         return ($this->rngNext() % ($inclusiveMax - $min + 1)) + $min;
     }
 
-    public function rngNextFromArray(array $array)
+    public function rngNextFromArray(array $array): mixed
     {
         return array_slice($array, $this->rngNextInt(0, count($array) - 1), 1)[0];
     }

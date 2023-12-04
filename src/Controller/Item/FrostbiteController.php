@@ -3,13 +3,11 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Entity\User;
-use App\Enum\LocationEnum;
 use App\Functions\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
