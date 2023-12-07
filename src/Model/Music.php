@@ -101,6 +101,7 @@ class Music
         'I found my miiiiind... on the ground belooowww... I was looking dooowwwn... it was looking baaaaack... I was in the sky, all dressed in black!',
         'Placental, the sister of her brother ma-arsupiaaal... their cousin called Monotreme; dead uncle alotheeerrriaaan...',
         'They revaaamped the airpoorrt completely, now it looks just like a nightcluuub... everyone\'s exciteeed and confuu-uused...',
+        'I heard they have a space program - when they sing you can\'t hear, there\'s no air. Sometiiimes I think I kind of like that and other times I think I\'m already there...',
 
         // Alan Parsons Project, Eye in the Sky
         'I am the eye in the sky... looking at yoo-oou... I can read your mind. I am the maker of rules, dealing with foo-ools... I can cheat you blind.',
@@ -299,5 +300,8 @@ class Music
 
         // 6 Underground, by Sneaker Pimps
         'Overgrooouuund... watch this spaaaace... I\'m opeeen... to fallin\' from gra-ace...',
+
+        // Dumb Ways to Die
+        'Get your toast out... with a fork. Do your ooown electrical work. Teach yourself how to flyyy... eat a two-week-old unrefrigerated pie...',
     ];
 }
