@@ -303,5 +303,8 @@ class Music
 
         // Dumb Ways to Die
         'Get your toast out... with a fork. Do your ooown electrical work. Teach yourself how to flyyy... eat a two-week-old unrefrigerated pie...',
+
+        // Teardrop, by Massive Attack
+        'Love, love is a verb; love is aaa doing word... feeaarless on my... bre-e-eath...',
     ];
 }
