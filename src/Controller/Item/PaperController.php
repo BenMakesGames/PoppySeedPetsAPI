@@ -10,9 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/paper")
- */
+#[Route("/item/paper")]
 class PaperController extends AbstractController
 {
     #[Route("/{inventory}/unfold", methods: ["POST"])]

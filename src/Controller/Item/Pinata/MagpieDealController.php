@@ -13,9 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/magpieDeal")
- */
+#[Route("/item/magpieDeal")]
 class MagpieDealController extends AbstractController
 {
     #[Route("/{inventory}/quint", methods: ["POST"])]

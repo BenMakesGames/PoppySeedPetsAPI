@@ -6,7 +6,7 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ArrayFunctions;
-use App\Repository\EnchantmentRepository;
+use App\Functions\EnchantmentRepository;
 use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\IRandom;

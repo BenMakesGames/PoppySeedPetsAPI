@@ -13,32 +13,18 @@ use Psr\Cache\CacheItemPoolInterface;
 
 class HouseService
 {
-    private PetActivityService $petActivityService;
-    private UserQuestRepository $userQuestRepository;
-    private InventoryService $inventoryService;
-    private CacheItemPoolInterface $cache;
-    private EntityManagerInterface $em;
-    private IRandom $squirrel3;
-    private HouseSimService $houseSimService;
-    private SagaSagaService $sagaSagaService;
-    private PetSocialActivityService $petSocialActivityService;
-
     public function __construct(
-        PetActivityService $petActivityService, CacheItemPoolInterface $cache,
-        EntityManagerInterface $em, UserQuestRepository $userQuestRepository, InventoryService $inventoryService,
-        IRandom $squirrel3, HouseSimService $houseSimService, SagaSagaService $sagaSagaService,
-        PetSocialActivityService $petSocialActivityService
+        private readonly PetActivityService $petActivityService,
+        private readonly CacheItemPoolInterface $cache,
+        private readonly EntityManagerInterface $em,
+        private readonly UserQuestRepository $userQuestRepository,
+        private readonly InventoryService $inventoryService,
+        private readonly IRandom $squirrel3,
+        private readonly HouseSimService $houseSimService,
+        private readonly SagaSagaService $sagaSagaService,
+        private readonly PetSocialActivityService $petSocialActivityService
     )
     {
-        $this->petActivityService = $petActivityService;
-        $this->userQuestRepository = $userQuestRepository;
-        $this->inventoryService = $inventoryService;
-        $this->cache = $cache;
-        $this->em = $em;
-        $this->squirrel3 = $squirrel3;
-        $this->houseSimService = $houseSimService;
-        $this->sagaSagaService = $sagaSagaService;
-        $this->petSocialActivityService = $petSocialActivityService;
     }
 
     public function needsToBeRun(User $user)

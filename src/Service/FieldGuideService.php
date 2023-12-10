@@ -11,13 +11,11 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class FieldGuideService
 {
-    private ResponseService $responseService;
-    private EntityManagerInterface $em;
-
-    public function __construct(ResponseService $responseService, EntityManagerInterface $em)
+    public function __construct(
+        private readonly ResponseService $responseService,
+        private readonly EntityManagerInterface $em
+    )
     {
-        $this->responseService = $responseService;
-        $this->em = $em;
     }
 
     /**

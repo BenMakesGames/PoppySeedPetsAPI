@@ -16,9 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/hyperchromaticPrism")
- */
+#[Route("/item/hyperchromaticPrism")]
 class HyperchromaticPrismController extends AbstractController
 {
     #[Route("/{inventory}", methods: ["POST"])]

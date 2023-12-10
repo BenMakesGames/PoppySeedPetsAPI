@@ -15,19 +15,14 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class AdoptionService
 {
-    private EntityManagerInterface $em;
-    private UserStatsService $userStatsRepository;
     private ChineseCalendarInfo $chineseCalendarInfo;
-    private Clock $clock;
 
     public function __construct(
-        EntityManagerInterface $em, UserStatsService $userStatsRepository, Clock $clock
+        private readonly EntityManagerInterface $em,
+        private readonly UserStatsService $userStatsRepository,
+        private readonly Clock $clock
     )
     {
-        $this->em = $em;
-        $this->userStatsRepository = $userStatsRepository;
-        $this->clock = $clock;
-
         $this->chineseCalendarInfo = CalendarFunctions::getChineseCalendarInfo($this->clock->now);
     }
 

@@ -14,9 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/cursedScissors")
- */
+#[Route("/item/cursedScissors")]
 class CursedScissorsController extends AbstractController
 {
     #[Route("/{inventory}/cut", methods: ["PATCH"])]

@@ -11,9 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/fishKebab")
- */
+#[Route("/item/fishKebab")]
 class FishKebabController extends AbstractController
 {
     #[Route("/{inventory}/takeApart", methods: ["POST"])]

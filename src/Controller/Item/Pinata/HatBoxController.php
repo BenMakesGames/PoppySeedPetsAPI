@@ -14,9 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/box")
- */
+#[Route("/item/box")]
 class HatBoxController extends AbstractController
 {
     #[Route("/hat/{box}/open", methods: ["POST"])]

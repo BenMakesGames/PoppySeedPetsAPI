@@ -10,9 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/protojelly")
- */
+#[Route("/item/protojelly")]
 class GlowingProtojellyController extends AbstractController
 {
     #[Route("/{inventory}/d4", methods: ["POST"])]

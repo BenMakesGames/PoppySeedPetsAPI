@@ -16,9 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/whisperStone")
- */
+#[Route("/item/whisperStone")]
 class WhisperStoneController extends AbstractController
 {
     #[Route("/{inventory}/listen", methods: ["POST"])]

@@ -18,25 +18,15 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class MarketService
 {
-    private EntityManagerInterface $em;
-    private UserStatsService $userStatsRepository;
-    private MarketBidRepository $marketBidRepository;
-    private TransactionService $transactionService;
-    private UserQuestRepository $userQuestRepository;
-    private MarketListingRepository $marketListingRepository;
-
     public function __construct(
-        EntityManagerInterface $em, UserStatsService  $userStatsRepository, MarketBidRepository $marketBidRepository,
-        TransactionService $transactionService, UserQuestRepository $userQuestRepository,
-        MarketListingRepository $marketListingRepository
+        private readonly EntityManagerInterface $em,
+        private readonly UserStatsService $userStatsRepository,
+        private readonly MarketBidRepository $marketBidRepository,
+        private readonly TransactionService $transactionService,
+        private readonly UserQuestRepository $userQuestRepository,
+        private readonly MarketListingRepository $marketListingRepository
     )
     {
-        $this->em = $em;
-        $this->userStatsRepository = $userStatsRepository;
-        $this->marketBidRepository = $marketBidRepository;
-        $this->transactionService = $transactionService;
-        $this->userQuestRepository = $userQuestRepository;
-        $this->marketListingRepository = $marketListingRepository;
     }
 
     public function getItemToRaiseLimit(User $user): ?array

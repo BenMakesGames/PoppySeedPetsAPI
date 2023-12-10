@@ -23,9 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/moth")
- */
+#[Route("/item/moth")]
 class MothController extends AbstractController
 {
     #[Route("/getQuantity/{inventory}", methods: ["GET"])]

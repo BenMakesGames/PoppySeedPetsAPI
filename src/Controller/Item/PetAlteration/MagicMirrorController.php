@@ -16,9 +16,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/magicMirror")
- */
+#[Route("/item/magicMirror")]
 class MagicMirrorController extends AbstractController
 {
     #[Route("/{inventory}", methods: ["POST"])]

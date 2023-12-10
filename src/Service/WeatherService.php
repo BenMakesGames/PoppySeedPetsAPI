@@ -9,8 +9,6 @@ use App\Model\WeatherForecastData;
 
 class WeatherService
 {
-    private $cache;
-
     private const HOUR_OF_DAY_TEMPERATURE_MODIFIER = [
         // 12 am ...
         1, 1, 1, 1, 1, 0,
@@ -20,9 +18,8 @@ class WeatherService
         //       ... 11pm
     ];
 
-    public function __construct(CacheHelper $cache)
+    public function __construct(private readonly CacheHelper $cache)
     {
-        $this->cache = $cache;
     }
 
     public static function getHourSince2000(\DateTimeImmutable $dt): float

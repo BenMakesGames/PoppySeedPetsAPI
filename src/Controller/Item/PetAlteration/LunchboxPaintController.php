@@ -13,9 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/lunchboxPaint")
- */
+#[Route("/item/lunchboxPaint")]
 class LunchboxPaintController extends AbstractController
 {
     #[Route("/{inventory}/paint", methods: ["PATCH"])]

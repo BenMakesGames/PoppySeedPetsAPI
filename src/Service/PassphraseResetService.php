@@ -11,13 +11,11 @@ use Symfony\Component\Mime\Email;
 
 class PassphraseResetService
 {
-    private MailerInterface $mailer;
-    private EntityManagerInterface $em;
-
-    public function __construct(MailerInterface $mailer, EntityManagerInterface $em)
+    public function __construct(
+        private readonly MailerInterface $mailer,
+        private readonly EntityManagerInterface $em
+    )
     {
-        $this->mailer = $mailer;
-        $this->em = $em;
     }
 
     public function requestReset(User $user): bool

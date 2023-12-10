@@ -19,9 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/merchantFish")
- */
+#[Route("/item/merchantFish")]
 class MerchantFishController extends AbstractController
 {
     #[Route("/{inventory}/talk", methods: ["POST"])]

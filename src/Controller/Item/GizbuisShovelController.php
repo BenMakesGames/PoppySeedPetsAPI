@@ -14,9 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/gizubisShovel")
- */
+#[Route("/item/gizubisShovel")]
 class GizbuisShovelController extends AbstractController
 {
     #[Route("/{inventory}/dig", methods: ["POST"])]

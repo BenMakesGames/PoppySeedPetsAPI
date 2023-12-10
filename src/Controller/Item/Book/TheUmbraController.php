@@ -8,9 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/theUmbra")
- */
+#[Route("/item/theUmbra")]
 class TheUmbraController extends AbstractController
 {
     #[Route("/{inventory}/read", methods: ["POST"])]

@@ -22,9 +22,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/summoningScroll")
- */
+#[Route("/item/summoningScroll")]
 class SummoningSomethingFriendlyController extends AbstractController
 {
     #[Route("/{inventory}/friendly", methods: ["POST"])]

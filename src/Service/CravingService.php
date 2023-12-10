@@ -16,17 +16,12 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class CravingService
 {
-    private EntityManagerInterface $em;
-    private IRandom $rng;
-    private PetExperienceService $petExperienceService;
-
     public function __construct(
-        EntityManagerInterface $em, IRandom $squirrel3, PetExperienceService $petExperienceService
+        private readonly EntityManagerInterface $em,
+        private readonly IRandom $rng,
+        private readonly PetExperienceService $petExperienceService
     )
     {
-        $this->em = $em;
-        $this->rng = $squirrel3;
-        $this->petExperienceService = $petExperienceService;
     }
 
     public static function petHasCraving(Pet $pet): bool

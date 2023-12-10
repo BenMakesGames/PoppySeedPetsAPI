@@ -13,9 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/scarfBag")
- */
+#[Route("/item/scarfBag")]
 class ScarfBagController extends AbstractController
 {
     #[Route("/{bag}/open", methods: ["POST"])]

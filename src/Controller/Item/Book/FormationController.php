@@ -8,9 +8,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/item/formation")
- */
+#[Route("/item/formation")]
 class FormationController extends AbstractController
 {
     #[Route("/{inventory}/read", methods: ["POST"])]

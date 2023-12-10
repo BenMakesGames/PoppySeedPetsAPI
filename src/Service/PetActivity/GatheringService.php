@@ -20,6 +20,7 @@ use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\DateFunctions;
+use App\Functions\EnchantmentRepository;
 use App\Functions\ItemRepository;
 use App\Functions\MeritRepository;
 use App\Functions\NumberFunctions;
@@ -27,7 +28,6 @@ use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\SpiceRepository;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
-use App\Repository\EnchantmentRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\Clock;
@@ -44,39 +44,21 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class GatheringService
 {
-    private ResponseService $responseService;
-    private InventoryService $inventoryService;
-    private PetExperienceService $petExperienceService;
-    private TransactionService $transactionService;
-    private IRandom $squirrel3;
-    private FieldGuideService $fieldGuideService;
-    private PetFactory $petFactory;
-    private GatheringDistractionService $gatheringDistractions;
-    private UserQuestRepository $userQuestRepository;
-    private PetRelationshipService $petRelationshipService;
-    private Clock $clock;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService,
-        IRandom $squirrel3, FieldGuideService $fieldGuideService, EntityManagerInterface $em,
-        PetFactory $petFactory, GatheringDistractionService $gatheringDistractions,
-        UserQuestRepository $userQuestRepository, Clock $clock, PetRelationshipService $petRelationshipService
+        private readonly ResponseService $responseService,
+        private readonly InventoryService $inventoryService,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly TransactionService $transactionService,
+        private readonly IRandom $squirrel3,
+        private readonly FieldGuideService $fieldGuideService,
+        private readonly EntityManagerInterface $em,
+        private readonly PetFactory $petFactory,
+        private readonly GatheringDistractionService $gatheringDistractions,
+        private readonly UserQuestRepository $userQuestRepository,
+        private readonly Clock $clock,
+        private readonly PetRelationshipService $petRelationshipService
     )
     {
-        $this->responseService = $responseService;
-        $this->inventoryService = $inventoryService;
-        $this->petExperienceService = $petExperienceService;
-        $this->transactionService = $transactionService;
-        $this->squirrel3 = $squirrel3;
-        $this->fieldGuideService = $fieldGuideService;
-        $this->petFactory = $petFactory;
-        $this->gatheringDistractions = $gatheringDistractions;
-        $this->userQuestRepository = $userQuestRepository;
-        $this->petRelationshipService = $petRelationshipService;
-        $this->clock = $clock;
-        $this->em = $em;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)

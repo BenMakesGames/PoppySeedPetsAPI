@@ -11,9 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/cosmologerPromise")
- */
+#[Route("/item/cosmologerPromise")]
 class CosmologerPromiseController extends AbstractController
 {
     #[Route("/{inventory}/secretSeashell", methods: ["POST"])]

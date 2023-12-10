@@ -4,7 +4,7 @@ namespace App\Controller\Item\Pinata;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
-use App\Repository\EnchantmentRepository;
+use App\Functions\EnchantmentRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -14,9 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/box")
- */
+#[Route("/item/box")]
 class AliceAndBobController extends AbstractController
 {
     #[Route("/alicesSecret/{inventory}/teaTime", methods: ["POST"])]

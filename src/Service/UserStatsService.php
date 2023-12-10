@@ -10,13 +10,11 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class UserStatsService
 {
-    private EntityManagerInterface $em;
-    private InMemoryCache $perRequestCache;
-
-    public function __construct(EntityManagerInterface $em, InMemoryCache $perRequestCache)
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly InMemoryCache $perRequestCache
+    )
     {
-        $this->em = $em;
-        $this->perRequestCache = $perRequestCache;
     }
 
     private static function getCacheKey(User $user, string $statName)

@@ -25,9 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/betaBug")
- */
+#[Route("/item/betaBug")]
 class BetaBugController extends AbstractController
 {
     private const ALLOWED_ITEMS = [

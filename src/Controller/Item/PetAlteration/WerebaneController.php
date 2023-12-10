@@ -15,9 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/werebane")
- */
+#[Route("/item/werebane")]
 class WerebaneController extends AbstractController
 {
     #[Route("/{inventory}", methods: ["POST"])]

@@ -15,9 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/gnomesFavor")
- */
+#[Route("/item/gnomesFavor")]
 class GnomesFavorController extends AbstractController
 {
     private const USER_STAT_NAME = 'Redeemed a Gnome\'s Favor';

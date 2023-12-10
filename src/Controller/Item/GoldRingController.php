@@ -7,10 +7,10 @@ use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\UnlockableFeatureEnum;
+use App\Functions\EnchantmentRepository;
 use App\Functions\ItemRepository;
 use App\Functions\MeritRepository;
 use App\Functions\PetColorFunctions;
-use App\Repository\EnchantmentRepository;
 use App\Repository\PetRepository;
 use App\Service\HattierService;
 use App\Service\InventoryService;
@@ -22,9 +22,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/goldRing")
- */
+#[Route("/item/goldRing")]
 class GoldRingController extends AbstractController
 {
     #[Route("/{inventory}/smash", methods: ["POST"])]

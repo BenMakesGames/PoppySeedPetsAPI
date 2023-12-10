@@ -16,9 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/box")
- */
+#[Route("/item/box")]
 class StrongboxController extends AbstractController
 {
     #[Route("/little-strongbox/{inventory}/open", methods: ["POST"])]

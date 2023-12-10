@@ -18,9 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/yggdrasilBranch")
- */
+#[Route("/item/yggdrasilBranch")]
 class YggdrasilBranch extends AbstractController
 {
     #[Route("/{inventory}", methods: ["POST"])]

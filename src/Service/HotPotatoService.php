@@ -9,13 +9,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class HotPotatoService
 {
-    private EntityManagerInterface $em;
-    private ResponseService $responseService;
-
-    public function __construct(EntityManagerInterface $em, ResponseService $responseService)
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly ResponseService $responseService
+    )
     {
-        $this->em = $em;
-        $this->responseService = $responseService;
     }
 
     public static function countTosses(Inventory $inventory): int

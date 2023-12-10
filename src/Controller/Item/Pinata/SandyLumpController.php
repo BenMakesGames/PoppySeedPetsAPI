@@ -14,9 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/sandyLump")
- */
+#[Route("/item/sandyLump")]
 class SandyLumpController extends AbstractController
 {
     #[Route("/{lump}/clean", methods: ["POST"])]

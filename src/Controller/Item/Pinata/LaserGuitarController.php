@@ -11,9 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/laserGuitar")
- */
+#[Route("/item/laserGuitar")]
 class LaserGuitarController extends AbstractController
 {
     #[Route("/{inventory}/overload", methods: ["POST"])]

@@ -16,9 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/spiritPolymorphPotion")
- */
+#[Route("/item/spiritPolymorphPotion")]
 class SpiritPolymorphPotionController extends AbstractController
 {
     #[Route("/{inventory}/drink", methods: ["PATCH"])]

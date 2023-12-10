@@ -22,9 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/renamingScroll")
- */
+#[Route("/item/renamingScroll")]
 class RenamingController extends AbstractController
 {
     #[Route("/{inventory}/read", methods: ["PATCH"])]

@@ -19,9 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/beeLarva")
- */
+#[Route("/item/beeLarva")]
 class BeeLarvaController extends AbstractController
 {
     #[Route("/{inventory}/hatch", methods: ["POST"])]

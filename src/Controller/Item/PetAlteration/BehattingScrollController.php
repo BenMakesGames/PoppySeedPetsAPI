@@ -20,9 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/behattingScroll")
- */
+#[Route("/item/behattingScroll")]
 class BehattingScrollController extends AbstractController
 {
     #[Route("/{inventory}/read", methods: ["PATCH"])]

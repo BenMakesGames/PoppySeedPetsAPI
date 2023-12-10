@@ -12,9 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/twilightFertilizer")
- */
+#[Route("/item/twilightFertilizer")]
 class TwilightFertilizerController extends AbstractController
 {
     #[Route("/{inventory}", methods: ["POST"])]

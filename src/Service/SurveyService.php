@@ -10,11 +10,8 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class SurveyService
 {
-    private EntityManagerInterface $em;
-
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(private readonly EntityManagerInterface $em)
     {
-        $this->em = $em;
     }
 
     public function getActiveSurvey(string $guid, \DateTimeImmutable $dateTime): ?Survey

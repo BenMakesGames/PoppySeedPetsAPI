@@ -15,9 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/scroll")
- */
+#[Route("/item/scroll")]
 class FarmerController extends AbstractController
 {
     #[Route("/farmers/{inventory}/invoke", methods: ["POST"])]

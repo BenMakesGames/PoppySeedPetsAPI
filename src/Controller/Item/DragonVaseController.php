@@ -13,11 +13,11 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
+use App\Functions\EnchantmentRepository;
 use App\Functions\GrammarFunctions;
 use App\Functions\InventoryModifierFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
-use App\Repository\EnchantmentRepository;
 use App\Repository\PetRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
@@ -31,9 +31,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/dragonVase")
- */
+#[Route("/item/dragonVase")]
 class DragonVaseController extends AbstractController
 {
     #[Route("/{inventory}/smash", methods: ["POST"])]

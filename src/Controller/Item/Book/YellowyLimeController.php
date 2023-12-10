@@ -14,9 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/yellowyLime")
- */
+#[Route("/item/yellowyLime")]
 class YellowyLimeController extends AbstractController
 {
     #[Route("/{inventory}/upload", methods: ["POST"])]

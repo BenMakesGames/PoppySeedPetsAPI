@@ -18,11 +18,6 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class BookstoreService
 {
-    private UserQuestRepository $userQuestRepository;
-    private InventoryService $inventoryService;
-    private EntityManagerInterface $em;
-    private Clock $clock;
-
     const BOOKSTORE_QUEST_NAME = 'Items Given to Bookstore';
 
     const QUEST_STEPS = [
@@ -117,14 +112,12 @@ class BookstoreService
     ];
 
     public function __construct(
-        UserQuestRepository $userQuestRepository, InventoryService $inventoryService, EntityManagerInterface $em,
-        Clock $clock
+        private readonly UserQuestRepository $userQuestRepository,
+        private readonly InventoryService $inventoryService,
+        private readonly EntityManagerInterface $em,
+        private readonly Clock $clock
     )
     {
-        $this->userQuestRepository = $userQuestRepository;
-        $this->inventoryService = $inventoryService;
-        $this->em = $em;
-        $this->clock = $clock;
     }
 
     public static function getBookstoreQuestStep(int $step): ?array
@@ -191,7 +184,11 @@ class BookstoreService
             $gamePrices['Hollow Earth Booster Pack'] = 200;
 
         if(CalendarFunctions::isStockingStuffingSeason($this->clock->now))
+        {
+            $gamePrices['Rock-painting Kit (for Kids)'] = 60; // 1 of each dye + 3 rocks
+            $gamePrices['Sneqos & Ladders'] = 90; // 1 scales, 2 talon, 4 sticks + a six-sided die
             $gamePrices['Tile: Everice Cream'] = 200;
+        }
 
         return $gamePrices;
     }

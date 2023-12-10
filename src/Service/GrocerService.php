@@ -10,15 +10,10 @@ class GrocerService
 {
     public const MAX_CAN_PURCHASE_PER_DAY = 20;
 
-    private CacheHelper $cacheHelper;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        CacheHelper $cacheHelper, EntityManagerInterface $em
+        private readonly CacheHelper $cacheHelper, private readonly EntityManagerInterface $em
     )
     {
-        $this->cacheHelper = $cacheHelper;
-        $this->em = $em;
     }
 
     private const ITEMS = [

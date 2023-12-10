@@ -5,7 +5,7 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Functions\ArrayFunctions;
-use App\Repository\EnchantmentRepository;
+use App\Functions\EnchantmentRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -14,9 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/animalPouch")
- */
+#[Route("/item/animalPouch")]
 class AnimalPouchController extends AbstractController
 {
     #[Route("/magpie/{inventory}/open", methods: ["POST"])]

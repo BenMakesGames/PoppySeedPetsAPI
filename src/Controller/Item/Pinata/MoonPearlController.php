@@ -20,9 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/moonPearl")
- */
+#[Route("/item/moonPearl")]
 class MoonPearlController extends AbstractController
 {
     #[Route("/{inventory}/smash", methods: ["POST"])]

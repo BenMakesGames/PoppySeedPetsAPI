@@ -13,9 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/heartstone")
- */
+#[Route("/item/heartstone")]
 class HeartstoneController extends AbstractController
 {
     private const STAT_NAME = 'Transformed a Heartstone';

@@ -13,9 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/evilBeetle")
- */
+#[Route("/item/evilBeetle")]
 class EvilSentientBeetleController extends AbstractController
 {
     #[Route("/{inventory}/defeat", methods: ["POST"])]

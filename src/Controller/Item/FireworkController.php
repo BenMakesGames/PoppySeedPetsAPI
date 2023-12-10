@@ -4,7 +4,7 @@ namespace App\Controller\Item;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
-use App\Repository\EnchantmentRepository;
+use App\Functions\EnchantmentRepository;
 use App\Repository\UserQuestRepository;
 use App\Service\HattierService;
 use App\Service\ResponseService;
@@ -13,9 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/firework")
- */
+#[Route("/item/firework")]
 class FireworkController extends AbstractController
 {
     #[Route("/{inventory}/light", methods: ["POST"])]

@@ -14,9 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/die")
- */
+#[Route("/item/die")]
 class DieController extends AbstractController
 {
     #[Route("/{inventory}/roll", methods: ["POST"])]

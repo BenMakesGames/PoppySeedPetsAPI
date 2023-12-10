@@ -7,13 +7,10 @@ use Psr\Log\LoggerInterface;
 
 class JsonLogicParserService
 {
-    private LoggerInterface $logger;
-    private UserStatsService $userStatsRepository;
-
-    public function __construct(LoggerInterface $logger, UserStatsService $userStatsRepository)
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly UserStatsService $userStatsRepository)
     {
-        $this->logger = $logger;
-        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function evaluate($expression, User $user)

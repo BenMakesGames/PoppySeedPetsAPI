@@ -10,9 +10,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/featheredHat")
- */
+#[Route("/item/featheredHat")]
 class FeatheredHatController extends AbstractController
 {
     private const TWEAKS = [

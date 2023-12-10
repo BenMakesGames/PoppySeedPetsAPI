@@ -13,9 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/tuningFork")
- */
+#[Route("/item/tuningFork")]
 class TuningForkController extends AbstractController
 {
     #[Route("/{inventory}/listen", methods: ["POST"])]

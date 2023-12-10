@@ -26,9 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/forgettingScroll")
- */
+#[Route("/item/forgettingScroll")]
 class ForgettingScrollController extends AbstractController
 {
     #[Route("/{inventory}/forgettableThings", methods: ["GET"])]

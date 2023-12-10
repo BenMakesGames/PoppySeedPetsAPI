@@ -18,9 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/pocketDimension")
- */
+#[Route("/item/pocketDimension")]
 class PocketDimension extends AbstractController
 {
     #[Route("/{inventory}", methods: ["POST"])]

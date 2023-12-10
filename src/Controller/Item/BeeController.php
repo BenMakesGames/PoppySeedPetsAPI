@@ -10,9 +10,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-/**
- * @Route("/item/bee")
- */
+#[Route("/item/bee")]
 class BeeController extends AbstractController
 {
     #[Route("/{inventory}/giveToBeehive", methods: ["POST"])]

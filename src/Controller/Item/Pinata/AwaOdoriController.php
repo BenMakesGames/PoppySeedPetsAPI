@@ -12,9 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/awaOdori")
- */
+#[Route("/item/awaOdori")]
 class AwaOdoriController extends AbstractController
 {
     #[Route("/{inventory}/open", methods: ["POST"])]

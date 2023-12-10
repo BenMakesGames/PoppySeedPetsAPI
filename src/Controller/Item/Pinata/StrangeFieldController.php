@@ -16,9 +16,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/item/strangeField")
- */
+#[Route("/item/strangeField")]
 class StrangeFieldController extends AbstractController
 {
     #[Route("/{inventory}/collapse", methods: ["POST"])]

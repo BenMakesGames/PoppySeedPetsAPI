@@ -10,15 +10,10 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class FloristService
 {
-    private EntityManagerInterface $em;
-    private Clock $clock;
-
     public function __construct(
-        EntityManagerInterface $em, Clock $clock
+        private readonly EntityManagerInterface $em, private readonly Clock $clock
     )
     {
-        $this->em = $em;
-        $this->clock = $clock;
     }
 
     public function getInventory(User $user): array

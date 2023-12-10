@@ -15,9 +15,6 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PetFactory
 {
-    private EntityManagerInterface $em;
-    private IRandom $squirrel3;
-
     private const SENTINEL_NAMES = [
         'Sentinel',
         'Homunculus',
@@ -37,11 +34,10 @@ class PetFactory
     ];
 
     public function __construct(
-        EntityManagerInterface $em, IRandom $squirrel3
+        private readonly EntityManagerInterface $em,
+        private readonly IRandom $squirrel3
     )
     {
-        $this->em = $em;
-        $this->squirrel3 = $squirrel3;
     }
 
     public function createPet(User $owner, string $name, PetSpecies $species, string $colorA, string $colorB, string $favoriteFlavor, Merit $startingMerit): Pet

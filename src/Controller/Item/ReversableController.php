@@ -11,9 +11,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/reversable")
- */
+#[Route("/item/reversable")]
 class ReversableController extends AbstractController
 {
     private const FLIPS = [

@@ -27,22 +27,14 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class InventoryService
 {
-    private EntityManagerInterface $em;
-    private ResponseService $responseService;
-    private IRandom $squirrel3;
-    private EatingService $eatingService;
-    private HouseSimService $houseSimService;
-
     public function __construct(
-        EntityManagerInterface $em, ResponseService $responseService, IRandom $squirrel3,
-        EatingService $eatingService, HouseSimService $houseSimService
+        private readonly EntityManagerInterface $em,
+        private readonly ResponseService $responseService,
+        private readonly IRandom $squirrel3,
+        private readonly EatingService $eatingService,
+        private readonly HouseSimService $houseSimService
     )
     {
-        $this->responseService = $responseService;
-        $this->em = $em;
-        $this->squirrel3 = $squirrel3;
-        $this->eatingService = $eatingService;
-        $this->houseSimService = $houseSimService;
     }
 
     /**

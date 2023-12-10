@@ -15,13 +15,11 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PetAssistantService
 {
-    private EntityManagerInterface $em;
-    private DragonRepository $dragonRepository;
-
-    public function __construct(EntityManagerInterface $em, DragonRepository $dragonRepository)
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly DragonRepository $dragonRepository
+    )
     {
-        $this->em = $em;
-        $this->dragonRepository = $dragonRepository;
     }
 
     private static function assertOwnership(User $user, Pet $pet)

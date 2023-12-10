@@ -9,33 +9,24 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\CalendarFunctions;
 use App\Functions\DateFunctions;
+use App\Functions\EnchantmentRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Model\ParkEvent\ParkEventParticipant;
 use App\Model\PetChanges;
-use App\Repository\EnchantmentRepository;
 use App\Repository\UserQuestRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ParkService
 {
-    private IRandom $squirrel3;
-    private InventoryService $inventoryService;
-    private UserQuestRepository $userQuestRepository;
-    private EntityManagerInterface $em;
-    private HattierService $hattierService;
-    private Clock $clock;
-
     public function __construct(
-        IRandom $squirrel3, InventoryService $inventoryService, UserQuestRepository $userQuestRepository,
-        EntityManagerInterface $em, HattierService $hattierService, Clock $clock
+        private readonly IRandom $squirrel3,
+        private readonly InventoryService $inventoryService,
+        private readonly UserQuestRepository $userQuestRepository,
+        private readonly EntityManagerInterface $em,
+        private readonly HattierService $hattierService,
+        private readonly Clock $clock
     )
     {
-        $this->squirrel3 = $squirrel3;
-        $this->inventoryService = $inventoryService;
-        $this->userQuestRepository = $userQuestRepository;
-        $this->em = $em;
-        $this->hattierService = $hattierService;
-        $this->clock = $clock;
     }
 
     /**

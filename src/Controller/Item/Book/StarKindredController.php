@@ -13,9 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/starKindred")
- */
+#[Route("/item/starKindred")]
 class StarKindredController extends AbstractController
 {
     #[Route("/{inventory}/read", methods: ["POST"])]

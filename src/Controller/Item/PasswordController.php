@@ -10,9 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/password")
- */
+#[Route("/item/password")]
 class PasswordController extends AbstractController
 {
     #[Route("/{inventory}/erase", methods: ["POST"])]

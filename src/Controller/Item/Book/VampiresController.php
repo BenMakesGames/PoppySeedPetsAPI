@@ -9,9 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/onVampires")
- */
+#[Route("/item/onVampires")]
 class VampiresController extends AbstractController
 {
     #[Route("/{inventory}/read", methods: ["POST"])]

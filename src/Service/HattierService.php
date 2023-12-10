@@ -9,22 +9,18 @@ use App\Entity\UserUnlockedAura;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\EnchantmentRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\UserUnlockedFeatureHelpers;
-use App\Repository\EnchantmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HattierService
 {
-    private EntityManagerInterface $em;
-    private CommentFormatter $commentFormatter;
-
     public function __construct(
-        CommentFormatter $commentFormatter, EntityManagerInterface $em
+        private readonly CommentFormatter $commentFormatter,
+        private readonly EntityManagerInterface $em
     )
     {
-        $this->em = $em;
-        $this->commentFormatter = $commentFormatter;
     }
 
     /**

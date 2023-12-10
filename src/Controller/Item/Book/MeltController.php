@@ -13,9 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/melt")
- */
+#[Route("/item/melt")]
 class MeltController extends AbstractController
 {
     private function getRecipes(): array

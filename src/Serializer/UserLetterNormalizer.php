@@ -8,15 +8,11 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class UserLetterNormalizer implements NormalizerInterface
 {
-    private $normalizer;
-    private $commentFormatter;
-
     public function __construct(
-        ObjectNormalizer $normalizer, CommentFormatter $commentFormatter
+        private readonly ObjectNormalizer $normalizer,
+        private readonly CommentFormatter $commentFormatter
     )
     {
-        $this->normalizer = $normalizer;
-        $this->commentFormatter = $commentFormatter;
     }
 
     /**

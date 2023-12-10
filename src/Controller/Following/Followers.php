@@ -10,9 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Annotations\DoesNotRequireHouseHours;
 
-/**
- * @Route("/following/followers")
- */
+#[Route("/following/followers")]
 class Followers extends AbstractController
 {
     /**

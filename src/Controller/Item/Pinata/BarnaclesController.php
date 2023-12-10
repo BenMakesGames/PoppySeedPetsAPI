@@ -13,9 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/barnacles")
- */
+#[Route("/item/barnacles")]
 class BarnaclesController extends AbstractController
 {
     #[Route("/{inventory}/harvest", methods: ["POST"])]

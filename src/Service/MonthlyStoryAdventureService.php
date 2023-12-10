@@ -18,26 +18,15 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class MonthlyStoryAdventureService
 {
-    private MonthlyStoryAdventureStepRepository $monthlyStoryAdventureStepRepository;
-    private UserMonthlyStoryAdventureStepCompletedRepository $userMonthlyStoryAdventureStepCompletedRepository;
-    private InventoryService $inventoryService;
-    private EntityManagerInterface $em;
-    private IRandom $rng;
-    private HattierService $hattierService;
-
     public function __construct(
-        MonthlyStoryAdventureStepRepository $monthlyStoryAdventureStepRepository,
-        UserMonthlyStoryAdventureStepCompletedRepository $userMonthlyStoryAdventureStepCompletedRepository,
-        InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $squirrel3, HattierService $hattierService
+        private readonly MonthlyStoryAdventureStepRepository $monthlyStoryAdventureStepRepository,
+        private readonly UserMonthlyStoryAdventureStepCompletedRepository $userMonthlyStoryAdventureStepCompletedRepository,
+        private readonly InventoryService $inventoryService,
+        private readonly EntityManagerInterface $em,
+        private readonly IRandom $rng,
+        private readonly HattierService $hattierService
     )
     {
-        $this->monthlyStoryAdventureStepRepository = $monthlyStoryAdventureStepRepository;
-        $this->userMonthlyStoryAdventureStepCompletedRepository = $userMonthlyStoryAdventureStepCompletedRepository;
-        $this->inventoryService = $inventoryService;
-        $this->em = $em;
-        $this->rng = $squirrel3;
-        $this->hattierService = $hattierService;
     }
 
     public function isStepCompleted(User $user, MonthlyStoryAdventureStep $step): bool

@@ -13,9 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/baabble")
- */
+#[Route("/item/baabble")]
 class BaabbleController extends AbstractController
 {
     private const LAME_SHIT = [

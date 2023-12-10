@@ -15,6 +15,7 @@ use App\Enum\RelationshipEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
+use App\Functions\EnchantmentRepository;
 use App\Functions\MeritRepository;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PetColorFunctions;
@@ -23,7 +24,6 @@ use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Model\IActivityCallback;
 use App\Model\PetChanges;
-use App\Repository\EnchantmentRepository;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
 use App\Service\HouseSimService;
@@ -37,11 +37,11 @@ use Doctrine\ORM\EntityManagerInterface;
 class ProgrammingService
 {
     public function __construct(
-        private ResponseService $responseService, private InventoryService $inventoryService,
-        private IRandom $squirrel3, private PetExperienceService $petExperienceService,
-        private HouseSimService $houseSimService, private HattierService $hattierService,
-        private FieldGuideService $fieldGuideService, private PetFactory $petFactory,
-        private EntityManagerInterface $em
+        private readonly ResponseService $responseService, private readonly InventoryService $inventoryService,
+        private readonly IRandom $squirrel3, private readonly PetExperienceService $petExperienceService,
+        private readonly HouseSimService $houseSimService, private readonly HattierService $hattierService,
+        private readonly FieldGuideService $fieldGuideService, private readonly PetFactory $petFactory,
+        private readonly EntityManagerInterface $em
     )
     {
     }

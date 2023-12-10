@@ -9,9 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/metalDetector")
- */
+#[Route("/item/metalDetector")]
 class MetalDetectorController extends AbstractController
 {
     #[Route("/{inventory}/tune/iron", methods: ["POST"])]

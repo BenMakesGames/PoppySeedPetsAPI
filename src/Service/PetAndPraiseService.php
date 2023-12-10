@@ -11,20 +11,13 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PetAndPraiseService
 {
-    private PetExperienceService $petExperienceService;
-    private CravingService $cravingService;
-    private EntityManagerInterface $em;
-    private UserStatsService $userStatsRepository;
-
     public function __construct(
-        PetExperienceService $petExperienceService, CravingService $cravingService, EntityManagerInterface $em,
-        UserStatsService $userStatsRepository
+        private readonly PetExperienceService $petExperienceService,
+        private readonly CravingService $cravingService,
+        private readonly EntityManagerInterface $em,
+        private readonly UserStatsService $userStatsRepository
     )
     {
-        $this->petExperienceService = $petExperienceService;
-        $this->cravingService = $cravingService;
-        $this->em = $em;
-        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function doPet(Pet $pet)

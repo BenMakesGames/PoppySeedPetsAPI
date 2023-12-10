@@ -9,15 +9,10 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class TransactionService
 {
-    private EntityManagerInterface $em;
-    private UserStatsService $userStatsRepository;
-
     public function __construct(
-        EntityManagerInterface $em, UserStatsService $userStatsRepository
+        private readonly EntityManagerInterface $em, private readonly UserStatsService $userStatsRepository
     )
     {
-        $this->em = $em;
-        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function spendMoney(User $user, int $amount, string $description, bool $countTotalMoneysSpentStat = true, array $additionalTags = []): UserActivityLog

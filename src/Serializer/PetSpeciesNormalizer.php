@@ -9,13 +9,11 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class PetSpeciesNormalizer implements NormalizerInterface
 {
-    private $petRepository;
-    private $normalizer;
-
-    public function __construct(PetRepository $petRepository, ObjectNormalizer $normalizer)
+    public function __construct(
+        private readonly PetRepository $petRepository,
+        private readonly ObjectNormalizer $normalizer
+    )
     {
-        $this->petRepository = $petRepository;
-        $this->normalizer = $normalizer;
     }
 
     /**

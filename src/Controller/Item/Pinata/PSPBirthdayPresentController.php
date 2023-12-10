@@ -13,9 +13,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/item/pspBirthdayPresent")
- */
+#[Route("/item/pspBirthdayPresent")]
 class PSPBirthdayPresentController extends AbstractController
 {
     #[Route("/{inventory}/open", methods: ["POST"])]

@@ -13,9 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/recoveredArchive")
- */
+#[Route("/item/recoveredArchive")]
 class RecoveredArchiveController extends AbstractController
 {
     #[Route("/{inventory}/open", methods: ["POST"])]

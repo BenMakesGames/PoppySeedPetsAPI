@@ -24,27 +24,16 @@ class PetExperienceService
 {
     public const SOCIAL_ENERGY_PER_HANG_OUT = 576; // 2.5 hangouts per day (for average pets)
 
-    private IRandom $squirrel3;
-    private InventoryService $inventoryService;
-    private UserStatsService $userStatsRepository;
-    private UserQuestRepository $userQuestRepository;
-    private HattierService $hattierService;
-    private EntityManagerInterface $em;
-    private Clock $clock;
-
     public function __construct(
-        IRandom $squirrel3, InventoryService $inventoryService, UserStatsService $userStatsRepository,
-        UserQuestRepository $userQuestRepository, HattierService $hattierService, EntityManagerInterface $em,
-        Clock $clock
+        private readonly IRandom $squirrel3,
+        private readonly InventoryService $inventoryService,
+        private readonly UserStatsService $userStatsRepository,
+        private readonly UserQuestRepository $userQuestRepository,
+        private readonly HattierService $hattierService,
+        private readonly EntityManagerInterface $em,
+        private readonly Clock $clock
     )
     {
-        $this->squirrel3 = $squirrel3;
-        $this->inventoryService = $inventoryService;
-        $this->userStatsRepository = $userStatsRepository;
-        $this->userQuestRepository = $userQuestRepository;
-        $this->hattierService = $hattierService;
-        $this->em = $em;
-        $this->clock = $clock;
     }
 
     /**

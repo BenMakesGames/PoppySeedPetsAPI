@@ -22,9 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/philosophersStone")
- */
+#[Route("/item/philosophersStone")]
 class PhilosophersStoneController extends AbstractController
 {
     private const PLUSHIES = [

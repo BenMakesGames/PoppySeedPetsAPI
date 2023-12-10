@@ -10,10 +10,10 @@ use App\Enum\StatusEffectEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
+use App\Functions\EnchantmentRepository;
 use App\Functions\ItemRepository;
 use App\Functions\MeritRepository;
 use App\Functions\PetColorFunctions;
-use App\Repository\EnchantmentRepository;
 use App\Service\HattierService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -23,9 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/iridescentHandCannon")
- */
+#[Route("/item/iridescentHandCannon")]
 class IridescentHandCannonController extends AbstractController
 {
     #[Route("/{inventory}/fire", methods: ["PATCH"])]

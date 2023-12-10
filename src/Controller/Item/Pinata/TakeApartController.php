@@ -12,9 +12,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/item/takeApart")
- */
+#[Route("/item/takeApart")]
 class TakeApartController extends AbstractController
 {
     #[Route("/{inventory}", methods: ["POST"])]

@@ -14,9 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/boosterPack")
- */
+#[Route("/item/boosterPack")]
 class BoosterPackController extends AbstractController
 {
     #[Route("/one/{inventory}/open", methods: ["POST"])]

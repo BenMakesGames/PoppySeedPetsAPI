@@ -28,29 +28,17 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class GreenhouseService
 {
-    private InventoryService $inventoryService;
-    private PetFactory $petFactory;
-    private EntityManagerInterface $em;
-    private UserStatsService $userStatsRepository;
-    private IRandom $squirrel3;
-    private UserQuestRepository $userQuestRepository;
-    private NormalizerInterface $normalizer;
-    private Clock $clock;
-
     public function __construct(
-        InventoryService $inventoryService, PetFactory $petFactory, IRandom $squirrel3,
-        EntityManagerInterface $em, UserStatsService $userStatsRepository, UserQuestRepository $userQuestRepository,
-        NormalizerInterface $normalizer, Clock $clock
+        private readonly InventoryService $inventoryService,
+        private readonly PetFactory $petFactory,
+        private readonly IRandom $squirrel3,
+        private readonly EntityManagerInterface $em,
+        private readonly UserStatsService $userStatsRepository,
+        private readonly UserQuestRepository $userQuestRepository,
+        private readonly NormalizerInterface $normalizer,
+        private readonly Clock $clock
     )
     {
-        $this->inventoryService = $inventoryService;
-        $this->petFactory = $petFactory;
-        $this->em = $em;
-        $this->userStatsRepository = $userStatsRepository;
-        $this->squirrel3 = $squirrel3;
-        $this->userQuestRepository = $userQuestRepository;
-        $this->normalizer = $normalizer;
-        $this->clock = $clock;
     }
 
     public function approachBird(Greenhouse $greenhouse): string

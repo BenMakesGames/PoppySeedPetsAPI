@@ -24,23 +24,16 @@ class ResponseService
     /** @var FlashMessage[] */ private array $flashMessages = [];
     private bool $reloadInventory = false;
     private bool $reloadPets = false;
-    private EntityManagerInterface $em;
-    private SerializerInterface $serializer;
-    private Security $security;
-    private NormalizerInterface $normalizer;
     private ?string $sessionId = null;
-    private WeatherService $weatherService;
 
     public function __construct(
-        SerializerInterface $serializer, NormalizerInterface $normalizer, EntityManagerInterface $em, Security $security,
-        WeatherService $weatherService
+        private readonly SerializerInterface $serializer,
+        private readonly NormalizerInterface $normalizer,
+        private readonly EntityManagerInterface $em,
+        private readonly Security $security,
+        private readonly WeatherService $weatherService
     )
     {
-        $this->serializer = $serializer;
-        $this->normalizer = $normalizer;
-        $this->em = $em;
-        $this->security = $security;
-        $this->weatherService = $weatherService;
     }
 
     public function setSessionId(?string $sessionId)

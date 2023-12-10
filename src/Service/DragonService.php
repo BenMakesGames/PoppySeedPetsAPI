@@ -12,10 +12,10 @@ use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
 use App\Functions\DragonHelpers;
+use App\Functions\EnchantmentRepository;
 use App\Functions\PlayerLogHelpers;
 use App\Functions\SpiceRepository;
 use App\Repository\DragonRepository;
-use App\Repository\EnchantmentRepository;
 use App\Service\PetActivity\TreasureMapService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -65,31 +65,17 @@ class DragonService
         [ 'weight' => 2, 'item' => 'Dino Skull' ],
     ];
 
-    private EntityManagerInterface $em;
-    private InventoryService $inventoryService;
-    private UserStatsService $userStatsRepository;
-    private IRandom $rng;
-    private DragonRepository $dragonRepository;
-    private HattierService $hattierService;
-    private ResponseService $responseService;
-    private TransactionService $transactionService;
-    private Clock $clock;
-
     public function __construct(
-        EntityManagerInterface $em, InventoryService $inventoryService, ResponseService $responseService,
-        Clock $clock, UserStatsService $userStatsRepository, IRandom $rng,
-        DragonRepository $dragonRepository, HattierService $hattierService, TransactionService $transactionService
+        private readonly EntityManagerInterface $em,
+        private readonly InventoryService $inventoryService,
+        private readonly ResponseService $responseService,
+        private readonly Clock $clock,
+        private readonly UserStatsService $userStatsRepository,
+        private readonly IRandom $rng,
+        private readonly HattierService $hattierService,
+        private readonly TransactionService $transactionService
     )
     {
-        $this->em = $em;
-        $this->inventoryService = $inventoryService;
-        $this->userStatsRepository = $userStatsRepository;
-        $this->rng = $rng;
-        $this->dragonRepository = $dragonRepository;
-        $this->hattierService = $hattierService;
-        $this->responseService = $responseService;
-        $this->transactionService = $transactionService;
-        $this->clock = $clock;
     }
 
     /**

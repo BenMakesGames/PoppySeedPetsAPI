@@ -27,14 +27,6 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class HollowEarthService
 {
-    private EntityManagerInterface $em;
-    private InventoryService $inventoryService;
-    private PetExperienceService $petExperienceService;
-    private TransactionService $transactionService;
-    private ResponseService $responseService;
-    private UserStatsService $userStatsRepository;
-    private IRandom $rng;
-
     public const LOST_IN_TIME_AND_SPACE_TILE_ID = 53;
 
     public const DICE_ITEMS = [
@@ -49,18 +41,15 @@ class HollowEarthService
     ];
 
     public function __construct(
-        EntityManagerInterface $em, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, ResponseService $responseService,
-        UserStatsService $userStatsRepository, IRandom $rng
+        private readonly EntityManagerInterface $em,
+        private readonly InventoryService $inventoryService,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly TransactionService $transactionService,
+        private readonly ResponseService $responseService,
+        private readonly UserStatsService $userStatsRepository,
+        private readonly IRandom $rng
     )
     {
-        $this->em = $em;
-        $this->inventoryService = $inventoryService;
-        $this->petExperienceService = $petExperienceService;
-        $this->transactionService = $transactionService;
-        $this->responseService = $responseService;
-        $this->userStatsRepository = $userStatsRepository;
-        $this->rng = $rng;
     }
 
     public function unlockHollowEarth(User $user): void

@@ -16,9 +16,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/pandemirrorum")
- */
+#[Route("/item/pandemirrorum")]
 class PandemirrorumController extends AbstractController
 {
     #[Route("/{inventory}", methods: ["POST"])]

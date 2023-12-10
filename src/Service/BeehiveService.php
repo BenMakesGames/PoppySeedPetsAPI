@@ -8,9 +8,6 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class BeehiveService
 {
-    private EntityManagerInterface $em;
-    private IRandom $squirrel3;
-
     public const DESIRED_ITEMS = [
         'Red Clover' => 18,
         'Wheat Flower' => 18,
@@ -41,10 +38,11 @@ class BeehiveService
         'Potato' => 10,
     ];
 
-    public function __construct(EntityManagerInterface $em, IRandom $squirrel3)
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly IRandom $squirrel3
+    )
     {
-        $this->em = $em;
-        $this->squirrel3 = $squirrel3;
     }
 
     public function createBeehive(User $user)

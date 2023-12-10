@@ -11,18 +11,12 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class MuseumService
 {
-    private EntityManagerInterface $em;
-    private UserStatsService $userStatsRepository;
-    private TransactionService $transactionService;
-
     public function __construct(
-        EntityManagerInterface $em, UserStatsService $userStatsRepository,
-        TransactionService $transactionService
+        private readonly EntityManagerInterface $em,
+        private readonly UserStatsService $userStatsRepository,
+        private readonly TransactionService $transactionService
     )
     {
-        $this->em = $em;
-        $this->userStatsRepository = $userStatsRepository;
-        $this->transactionService = $transactionService;
     }
 
     private $donatedItemsThisRequest = [];

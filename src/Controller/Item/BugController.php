@@ -28,9 +28,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/item/bug")
- */
+#[Route("/item/bug")]
 class BugController extends AbstractController
 {
     #[Route("/{inventory}/squish", methods: ["POST"])]

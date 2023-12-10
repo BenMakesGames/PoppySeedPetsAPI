@@ -19,25 +19,15 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class CookingService
 {
-    private InventoryService $inventoryService;
-    private EntityManagerInterface $em;
-    private UserStatsService $userStatsRepository;
-    private InventoryRepository $inventoryRepository;
-    private RecipeAttemptedRepository $recipeAttemptedRepository;
-    private IRandom $squirrel3;
-
     public function __construct(
-        InventoryService $inventoryService, EntityManagerInterface $em,
-        UserStatsService $userStatsRepository, InventoryRepository $inventoryRepository,
-        RecipeAttemptedRepository $recipeAttemptedRepository, IRandom $squirrel3
+        private readonly InventoryService $inventoryService,
+        private readonly EntityManagerInterface $em,
+        private readonly UserStatsService $userStatsRepository,
+        private readonly InventoryRepository $inventoryRepository,
+        private readonly RecipeAttemptedRepository $recipeAttemptedRepository,
+        private readonly IRandom $squirrel3
     )
     {
-        $this->inventoryService = $inventoryService;
-        $this->em = $em;
-        $this->userStatsRepository = $userStatsRepository;
-        $this->inventoryRepository = $inventoryRepository;
-        $this->recipeAttemptedRepository = $recipeAttemptedRepository;
-        $this->squirrel3 = $squirrel3;
     }
 
     /**
