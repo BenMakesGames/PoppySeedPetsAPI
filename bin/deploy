@@ -2,6 +2,9 @@
 git checkout main
 git checkout bin/*
 
+# enable maintenance mode
+export APP_MAINTENANCE=1
+
 git pull
 
 php -r 'opcache_reset();'
@@ -30,3 +33,6 @@ sudo setfacl -R -m u:apache:rwX -m u:$(whoami):rwX var
 chmod +x bin/backup
 chmod +x bin/clear-caches
 chmod +x bin/deploy
+
+# disable maintenance mode
+unset APP_MAINTENANCE

@@ -112,7 +112,7 @@ class ExportItemCommand extends PoppySeedPetsCommand
 
         if(count($groups) > 0)
         {
-            $sql = "-- item groups\nINSERT INTO item_group_item (item_group_id, item_id) VALUES ";
+            $sql = "-- item groups\nINSERT IGNORE INTO item_group_item (item_group_id, item_id) VALUES ";
 
             $valueSqls = array_map(
                 fn(ItemGroup $group) => '(' . $group->getId() . ', ' . $item->getId() . ')',
@@ -151,7 +151,7 @@ class ExportItemCommand extends PoppySeedPetsCommand
 
         $valueSql = implode(',', $encodedValues);
 
-        $sql = "-- $comment\nINSERT INTO $tableName ($columnSql) VALUES ($valueSql);";
+        $sql = "-- $comment\nINSERT IGNORE INTO $tableName ($columnSql) VALUES ($valueSql);";
 
         return $sql;
     }
