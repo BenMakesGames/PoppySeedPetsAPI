@@ -26,24 +26,6 @@ class MarketListingRepository extends ServiceEntityRepository
         parent::__construct($registry, MarketListing::class);
     }
 
-    public function add(MarketListing $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->persist($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-    public function remove(MarketListing $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
     public function upsertLowestPriceForItem(Item $item, ?Enchantment $enchantment, ?Spice $spice, ?int $lowestPrice)
     {
         if($lowestPrice != null && $lowestPrice <= 0)

@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\Letter;
 use App\Entity\User;
 use App\Entity\UserLetter;
 use App\Enum\EnumInvalidValueException;

@@ -6,11 +6,8 @@ use Psr\Cache\CacheItemPoolInterface;
 
 class CacheHelper
 {
-    private CacheItemPoolInterface $cache;
-
-    public function __construct(CacheItemPoolInterface $cache)
+    public function __construct(private readonly CacheItemPoolInterface $cache)
     {
-        $this->cache = $cache;
     }
 
     public function getOrCompute(string $cacheKey, \DateInterval $ttl, callable $computeMethod)

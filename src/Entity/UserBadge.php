@@ -2,13 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\UserBadgeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /** ) */
 #[ORM\Table]
 #[ORM\UniqueConstraint(name: 'user_id_badge_idx', columns: ['user_id', 'badge'])]
-#[ORM\Entity(repositoryClass: UserBadgeRepository::class)]
+#[ORM\Entity]
 class UserBadge
 {
     #[ORM\Id]

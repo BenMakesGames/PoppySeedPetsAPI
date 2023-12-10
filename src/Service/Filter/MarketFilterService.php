@@ -2,12 +2,14 @@
 namespace App\Service\Filter;
 
 use App\Entity\ItemTool;
+use App\Entity\MarketListing;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Functions\StringFunctions;
-use App\Repository\MarketListingRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectRepository;
 
 class MarketFilterService
 {
@@ -20,11 +22,11 @@ class MarketFilterService
      */
     private $user;
 
-    private $repository;
+    private ObjectRepository $repository;
 
-    public function __construct(MarketListingRepository $marketListingRepository)
+    public function __construct(ManagerRegistry $doctrine)
     {
-        $this->repository = $marketListingRepository;
+        $this->repository = $doctrine->getRepository(MarketListing::class, 'readonly');
 
         $this->filterer = new Filterer(
             self::PAGE_SIZE,

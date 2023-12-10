@@ -4,7 +4,6 @@ namespace App\Controller\HollowEarth;
 use App\Entity\HollowEarthPlayerTile;
 use App\Entity\User;
 use App\Exceptions\PSPInvalidOperationException;
-use App\Repository\HollowEarthPlayerTileRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

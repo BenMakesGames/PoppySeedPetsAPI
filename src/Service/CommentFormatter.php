@@ -8,9 +8,6 @@ use Symfony\Component\Security\Core\Security;
 
 class CommentFormatter
 {
-    private EntityManagerInterface $em;
-    private Security $security;
-
     public const ALLOWED_PET_PROPERTIES = [
         'name'
     ];
@@ -19,10 +16,8 @@ class CommentFormatter
         'name', 'Name', 'name\'s', 'Name\'s'
     ];
 
-    public function __construct(EntityManagerInterface $em, Security $security)
+    public function __construct(private readonly EntityManagerInterface $em, private readonly Security $security)
     {
-        $this->em = $em;
-        $this->security = $security;
     }
 
     public function format(string $text): string

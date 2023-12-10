@@ -27,29 +27,17 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class LetterService
 {
-    private InventoryService $inventoryService;
-    private ResponseService $responseService;
-    private PetExperienceService $petExperienceService;
-    private MuseumService $museumService;
-    private LetterRepository $letterRepository;
-    private UserLetterRepository $userLetterRepository;
-    private EntityManagerInterface $em;
-    private IRandom $squirrel3;
-
     public function __construct(
-        InventoryService $inventoryService, ResponseService $responseService,
-        PetExperienceService $petExperienceService, MuseumService $museumService, LetterRepository $letterRepository,
-        UserLetterRepository $userLetterRepository, EntityManagerInterface $em, IRandom $squirrel3
+        private readonly InventoryService $inventoryService,
+        private readonly ResponseService $responseService,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly MuseumService $museumService,
+        private readonly LetterRepository $letterRepository,
+        private readonly UserLetterRepository $userLetterRepository,
+        private readonly EntityManagerInterface $em,
+        private readonly IRandom $rng
     )
     {
-        $this->inventoryService = $inventoryService;
-        $this->responseService = $responseService;
-        $this->petExperienceService = $petExperienceService;
-        $this->museumService = $museumService;
-        $this->letterRepository = $letterRepository;
-        $this->userLetterRepository = $userLetterRepository;
-        $this->em = $em;
-        $this->squirrel3 = $squirrel3;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): ?PetActivityLog
@@ -202,14 +190,14 @@ class LetterService
                     case RelationshipEnum::BROKE_UP:
                         $descriptionForPet = '%pet:' . $courier->getId() . '.name%! :( %pet:' . $courier->getId() . '.name% handed over the letter without saying a word, and left.';
                         $descriptionForCourier = '%pet:' . $pet->getId() . '.name%! :( %pet:' . $pet->getId() . '.name% took the letter without saying a word, and left.';
-                        $pet->increaseEsteem(-$this->squirrel3->rngNextInt(4, 8));
-                        $courier->increaseEsteem(-$this->squirrel3->rngNextInt(4, 8));
+                        $pet->increaseEsteem(-$this->rng->rngNextInt(4, 8));
+                        $courier->increaseEsteem(-$this->rng->rngNextInt(4, 8));
                         break;
                     case RelationshipEnum::DISLIKE:
                         $descriptionForPet = '%pet:' . $courier->getId() . '.name%! :| %pet:' . $courier->getId() . '.name% handed over the letter without saying a word, and left.';
                         $descriptionForCourier = '%pet:' . $pet->getId() . '.name%! :| %pet:' . $pet->getId() . '.name% took the letter without saying a word, and left.';
-                        $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
-                        $courier->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
+                        $pet->increaseSafety(-$this->rng->rngNextInt(2, 4));
+                        $courier->increaseSafety(-$this->rng->rngNextInt(2, 4));
                         break;
                     case RelationshipEnum::FRIENDLY_RIVAL:
                         $descriptionForPet = 'their friendly rival, %pet:' . $courier->getId() . '.name%! %pet:' . $courier->getId() . '.name% triumphantly handed the letter over, laughed, and left.';
@@ -220,14 +208,14 @@ class LetterService
                     case RelationshipEnum::FWB:
                         $descriptionForPet = 'their friend, %pet:' . $courier->getId() . '.name%! %pet:' . $courier->getId() . '.name% handed the letter over, and the two chatted for a while.';
                         $descriptionForCourier = 'their friend, %pet:' . $pet->getId() . '.name%! %pet:' . $courier->getId() . '.name% handed the letter over, and the two chatted for a while.';
-                        $pet->increaseLove($this->squirrel3->rngNextInt(2, 4))->increaseSafety($this->squirrel3->rngNextInt(2, 4));
-                        $courier->increaseLove($this->squirrel3->rngNextInt(2, 4))->increaseSafety($this->squirrel3->rngNextInt(2, 4));
+                        $pet->increaseLove($this->rng->rngNextInt(2, 4))->increaseSafety($this->rng->rngNextInt(2, 4));
+                        $courier->increaseLove($this->rng->rngNextInt(2, 4))->increaseSafety($this->rng->rngNextInt(2, 4));
                         break;
                     case RelationshipEnum::MATE:
                         $descriptionForPet = 'their partner, %pet:' . $courier->getId() . '.name%! %pet:' . $courier->getId() . '.name% handed the letter over, and the two chatted for a while.';
                         $descriptionForCourier = 'their partner, %pet:' . $pet->getId() . '.name%! %pet:' . $courier->getId() . '.name% handed the letter over, and the two chatted for a while.';
-                        $pet->increaseLove($this->squirrel3->rngNextInt(4, 8))->increaseSafety($this->squirrel3->rngNextInt(2, 4));
-                        $courier->increaseLove($this->squirrel3->rngNextInt(4, 8))->increaseSafety($this->squirrel3->rngNextInt(2, 4));
+                        $pet->increaseLove($this->rng->rngNextInt(4, 8))->increaseSafety($this->rng->rngNextInt(2, 4));
+                        $courier->increaseLove($this->rng->rngNextInt(4, 8))->increaseSafety($this->rng->rngNextInt(2, 4));
                         break;
                     default:
                         throw new \Exception("Unknown relationship type \"{$relationship->getCurrentRelationship()}\"");
@@ -247,7 +235,7 @@ class LetterService
             $courierActivity->setChanges($courierChanges->compare($courier));
         }
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
 
         $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a courier delivered them a Letter from ' . $sender . '! The courier was ' . $descriptionForPet, 'icons/activity-logs/letter')
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
@@ -292,7 +280,7 @@ class LetterService
         if($numberEligible === 0)
             return null;
 
-        $petIndex = $this->squirrel3->rngNextInt(0, $numberEligible - 1);
+        $petIndex = $this->rng->rngNextInt(0, $numberEligible - 1);
 
         return $this->em->getRepository(Pet::class)->createQueryBuilder('p')
             ->join('p.owner', 'o')

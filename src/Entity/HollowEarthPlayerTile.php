@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\HollowEarthPlayerTileRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table]
 #[ORM\UniqueConstraint(name: 'player_id_tile_id_idx', columns: ['player_id', 'tile_id'])]
-#[ORM\Entity(repositoryClass: HollowEarthPlayerTileRepository::class)]
+#[ORM\Entity]
 class HollowEarthPlayerTile
 {
     #[ORM\Id]

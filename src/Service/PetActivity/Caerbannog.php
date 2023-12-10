@@ -20,20 +20,13 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class Caerbannog
 {
-    private EntityManagerInterface $em;
-    private IRandom $rng;
-    private InventoryService $inventoryService;
-    private PetExperienceService $petExperienceService;
-
     public function __construct(
-        EntityManagerInterface $em, IRandom $rng, InventoryService $inventoryService,
-        PetExperienceService $petExperienceService
+        private readonly EntityManagerInterface $em,
+        private readonly IRandom $rng,
+        private readonly InventoryService $inventoryService,
+        private readonly PetExperienceService $petExperienceService
     )
     {
-        $this->em = $em;
-        $this->rng = $rng;
-        $this->inventoryService = $inventoryService;
-        $this->petExperienceService = $petExperienceService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog

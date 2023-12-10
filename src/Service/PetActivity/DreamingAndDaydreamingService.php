@@ -14,24 +14,15 @@ use App\Service\PetActivity\Daydreams\PizzaDaydream;
 
 class DreamingAndDaydreamingService
 {
-    private DreamingService $dreamingService;
-    private IceCreamDaydream $iceCreamDaydream;
-    private PizzaDaydream $pizzaDaydream;
-    private FoodFightDaydream $foodFightDaydream;
-    private NoodleDaydream $noodleDaydream;
-    private IRandom $squirrel3;
-
     public function __construct(
-        DreamingService $dreamingService, IceCreamDaydream $iceCreamDaydream, PizzaDaydream $pizzaDaydream,
-        IRandom $squirrel3, FoodFightDaydream $foodFightDaydream, NoodleDaydream $noodleDaydream
+        private readonly DreamingService $dreamingService,
+        private readonly IceCreamDaydream $iceCreamDaydream,
+        private readonly PizzaDaydream $pizzaDaydream,
+        private readonly IRandom $rng,
+        private readonly FoodFightDaydream $foodFightDaydream,
+        private readonly NoodleDaydream $noodleDaydream
     )
     {
-        $this->dreamingService = $dreamingService;
-        $this->iceCreamDaydream = $iceCreamDaydream;
-        $this->pizzaDaydream = $pizzaDaydream;
-        $this->foodFightDaydream = $foodFightDaydream;
-        $this->noodleDaydream = $noodleDaydream;
-        $this->squirrel3 = $squirrel3;
     }
 
     public function maybeDreamOrDaydream(ComputedPetSkills $petWithSkills): bool
@@ -41,7 +32,7 @@ class DreamingAndDaydreamingService
         if($this->maybeDreamDueToStatusEffect($petWithSkills))
             return true;
 
-        if($this->toolOrMeritInducedDream($pet, $this->squirrel3))
+        if($this->toolOrMeritInducedDream($pet, $this->rng))
         {
             $this->dreamingService->dream($pet);
             return true;
@@ -63,7 +54,7 @@ class DreamingAndDaydreamingService
 
     private function maybeDreamDueToStatusEffect(ComputedPetSkills $petWithSkills): bool
     {
-        if(!$this->squirrel3->rngNextBool())
+        if(!$this->rng->rngNextBool())
             return false;
 
         $pet = $petWithSkills->getPet();
