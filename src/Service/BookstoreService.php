@@ -185,7 +185,7 @@ class BookstoreService
 
         if(CalendarFunctions::isStockingStuffingSeason($this->clock->now))
         {
-            $gamePrices['Rock-painting Kit (for Kids)'] = 60; // 1 of each dye + 3 rocks
+            $gamePrices['Rock-painting Kit (for Kids)'] = 65; // 1 of each dye + 3 rocks
             $gamePrices['Sneqos & Ladders'] = 90; // 1 scales, 2 talon, 4 sticks + a six-sided die
             $gamePrices['Tile: Everice Cream'] = 200;
         }
