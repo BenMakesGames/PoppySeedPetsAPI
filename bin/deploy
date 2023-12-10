@@ -3,7 +3,7 @@ git checkout main
 git checkout bin/*
 
 # enable maintenance mode
-export APP_MAINTENANCE=1
+#export APP_MAINTENANCE=1 #except it doesn't work
 
 git pull
 
@@ -35,4 +35,4 @@ chmod +x bin/clear-caches
 chmod +x bin/deploy
 
 # disable maintenance mode
-unset APP_MAINTENANCE
+#unset APP_MAINTENANCE #except it doesn't work
