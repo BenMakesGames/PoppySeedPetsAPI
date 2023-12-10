@@ -323,7 +323,7 @@ class BookstoreService
         return false;
     }
 
-    private function getDialog()
+    private function getDialog(User $user)
     {
         if(CalendarFunctions::isStockingStuffingSeason($this->clock->now))
             return 'We\'ve got some special items in for Stocking Stuffing Season! Let me know if I can get you something.';
