@@ -24,22 +24,14 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class HeartDimensionService
 {
-    private PetExperienceService $petExperienceService;
-    private InventoryService $inventoryService;
-    private IRandom $squirrel3;
-    private EntityManagerInterface $em;
-    private UserStatsService $userStatsRepository;
-
     public function __construct(
-        InventoryService $inventoryService, PetExperienceService $petExperienceService, IRandom $squirrel3,
-        EntityManagerInterface $em, UserStatsService $userStatsRepository
+        private readonly InventoryService $inventoryService,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly IRandom $rng,
+        private readonly EntityManagerInterface $em,
+        private readonly UserStatsService $userStatsRepository
     )
     {
-        $this->inventoryService = $inventoryService;
-        $this->petExperienceService = $petExperienceService;
-        $this->squirrel3 = $squirrel3;
-        $this->em = $em;
-        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function canAdventure(Pet $pet): bool
@@ -52,7 +44,7 @@ class HeartDimensionService
 
     public function noAdventuresRemaining(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
 
         EquipmentFunctions::unequipPet($pet);
 
@@ -99,7 +91,7 @@ class HeartDimensionService
             ->setChanges($changes->compare($pet))
         ;
 
-        if(AdventureMath::petAttractsBug($this->squirrel3, $pet, 10))
+        if(AdventureMath::petAttractsBug($this->rng, $pet, 10))
             $this->inventoryService->petAttractsRandomBug($pet, 'Heart Beetle');
 
         return $activityLog;
@@ -115,7 +107,7 @@ class HeartDimensionService
     {
         $pet = $petWithSkills->getPet();
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         if($pet->getFood() <= 4)
         {
@@ -171,7 +163,7 @@ class HeartDimensionService
     {
         $pet = $petWithSkills->getPet();
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         if($pet->getFood() <= 4)
         {
@@ -224,7 +216,7 @@ class HeartDimensionService
     {
         $pet = $petWithSkills->getPet();
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         if($pet->getFood() <= 4)
         {
@@ -261,13 +253,13 @@ class HeartDimensionService
     {
         $pet = $petWithSkills->getPet();
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         $pet->incrementAffectionAdventures();
 
         StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::INSPIRED, 24 * 60);
 
-        $figure = $this->squirrel3->rngNextFromArray([
+        $figure = $this->rng->rngNextFromArray([
             [ 'the First Vampire', [ '; it was really scary!', ', but it was oddly calming...' ]],
             [ 'Gizubi and Kaera', [ '. They were angry at one another...', '. They looked happy...' ] ],
             [ 'Kundrav and Keresaspa', [ '. They were fighting, and it was really scary!', '. They were fighting, and it was really cool!' ] ],
@@ -277,7 +269,7 @@ class HeartDimensionService
             [ 'a cavern filled with gold and gems', [ ', and something dangerous lurking in the shadows...', '! So much treasure waiting to be found!' ] ],
         ]);
 
-        $goodOrBad = $this->squirrel3->rngNextInt(0, 1);
+        $goodOrBad = $this->rng->rngNextInt(0, 1);
 
         $description = $figure[1][$goodOrBad];
 

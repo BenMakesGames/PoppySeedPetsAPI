@@ -16,25 +16,15 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class CoinSmithingService
 {
-    private PetExperienceService $petExperienceService;
-    private TransactionService $transactionService;
-    private ResponseService $responseService;
-    private IRandom $squirrel3;
-    private HouseSimService $houseSimService;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        PetExperienceService $petExperienceService, IRandom $squirrel3, HouseSimService $houseSimService,
-        TransactionService $transactionService, ResponseService $responseService,
-        EntityManagerInterface $em
+        private readonly PetExperienceService $petExperienceService,
+        private readonly IRandom $rng,
+        private readonly HouseSimService $houseSimService,
+        private readonly TransactionService $transactionService,
+        private readonly ResponseService $responseService,
+        private readonly EntityManagerInterface $em
     )
     {
-        $this->petExperienceService = $petExperienceService;
-        $this->transactionService = $transactionService;
-        $this->responseService = $responseService;
-        $this->squirrel3 = $squirrel3;
-        $this->houseSimService = $houseSimService;
-        $this->em = $em;
     }
 
     public function spillGold(ComputedPetSkills $petWithSkills, Item $triedToMake): PetActivityLog
@@ -42,14 +32,14 @@ class CoinSmithingService
         $pet = $petWithSkills->getPet();
 
         $pet->increaseEsteem(-1);
-        $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 8));
+        $pet->increaseSafety(-$this->rng->rngNextInt(2, 8));
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to forge ' . $triedToMake->getNameWithArticle() . ', but they accidentally burned themselves! :(', 'icons/activity-logs/burn')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
         ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
 
         return $activityLog;
     }
@@ -60,7 +50,7 @@ class CoinSmithingService
 
         $this->houseSimService->getState()->loseItem('Silver Bar', 1);
 
-        $moneys = $this->squirrel3->rngNextInt(10, 20);
+        $moneys = $this->rng->rngNextInt(10, 20);
         $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' made some silver coins after failing to forge ' . $triedToMake->getNameWithArticle() . '.');
         $pet->increaseFood(-1);
 
@@ -69,7 +59,7 @@ class CoinSmithingService
         ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(75, 90), PetActivityStatEnum::SMITH, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(75, 90), PetActivityStatEnum::SMITH, true);
 
         return $activityLog;
     }
@@ -80,7 +70,7 @@ class CoinSmithingService
 
         $this->houseSimService->getState()->loseItem('Gold Bar', 1);
 
-        $moneys = $this->squirrel3->rngNextInt(20, 30);
+        $moneys = $this->rng->rngNextInt(20, 30);
         $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' tried to forge ' . $triedToMake->getNameWithArticle() . ', but couldn\'t get the shape right, so just made gold coins, instead.');
         $pet->increaseFood(-1);
 
@@ -89,7 +79,7 @@ class CoinSmithingService
         ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(75, 90), PetActivityStatEnum::SMITH, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(75, 90), PetActivityStatEnum::SMITH, true);
 
         return $activityLog;
     }

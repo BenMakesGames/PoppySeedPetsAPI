@@ -6,6 +6,7 @@ use App\Enum\DistractionLocationEnum;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Service\FieldGuideService;
@@ -17,22 +18,13 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class GatheringDistractionService
 {
-    private IRandom $rng;
-    private PetExperienceService $petExperienceService;
-    private ResponseService $responseService;
-    private FieldGuideService $fieldGuideService;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        IRandom $squirrel3, PetExperienceService $petExperienceService, ResponseService $responseService,
-        FieldGuideService $fieldGuideService, EntityManagerInterface $em
+        private readonly IRandom $rng,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly FieldGuideService $fieldGuideService,
+        private readonly EntityManagerInterface $em
     )
     {
-        $this->rng = $squirrel3;
-        $this->petExperienceService = $petExperienceService;
-        $this->responseService = $responseService;
-        $this->fieldGuideService = $fieldGuideService;
-        $this->em = $em;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills, string $location, string $whileDoingDescription): PetActivityLog
@@ -51,7 +43,7 @@ class GatheringDistractionService
             $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Île Volcan', '%pet:' . $pet->getId() . '.name% went out ' . $location . '...');
         }
 
-        $activityLog = $this->responseService->createActivityLog($pet, $description, '')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $description)
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
         ;

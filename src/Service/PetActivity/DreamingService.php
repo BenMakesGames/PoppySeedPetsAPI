@@ -20,25 +20,15 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class DreamingService
 {
-    private InventoryService $inventoryService;
-    private ResponseService $responseService;
-    private PetExperienceService $petExperienceService;
-    private IRandom $squirrel3;
-    private DreamRepository $dreamRepository;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        InventoryService $inventoryService, ResponseService $responseService,
-        PetExperienceService $petExperienceService, IRandom $squirrel3,
-        DreamRepository $dreamRepository, EntityManagerInterface $em
+        private readonly InventoryService $inventoryService,
+        private readonly ResponseService $responseService,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly IRandom $rng,
+        private readonly DreamRepository $dreamRepository,
+        private readonly EntityManagerInterface $em
     )
     {
-        $this->inventoryService = $inventoryService;
-        $this->responseService = $responseService;
-        $this->petExperienceService = $petExperienceService;
-        $this->squirrel3 = $squirrel3;
-        $this->dreamRepository = $dreamRepository;
-        $this->em = $em;
     }
 
     private const LOCATIONS = [
@@ -118,7 +108,7 @@ class DreamingService
                 'Feathers', 'Fez', 'Fluff',
                 'Gold Triangle',
                 'Handicrafts Supply Box',
-                $this->squirrel3->rngNextFromArray([ 'Iron Key', 'Iron Key', 'Silver Key', 'Gold Key' ]),
+                $this->rng->rngNextFromArray([ 'Iron Key', 'Iron Key', 'Silver Key', 'Gold Key' ]),
                 'Jar of Fireflies',
                 'Music Note', 'Mysterious Seed',
                 'Paper', 'Paper Bag', 'Password', 'Plastic', 'Plastic Idol',
@@ -129,13 +119,13 @@ class DreamingService
             ]);
         }
 
-        $itemName = $this->squirrel3->rngNextFromArray($possibleItems);
+        $itemName = $this->rng->rngNextFromArray($possibleItems);
         $item = ItemRepository::findOneByName($this->em, $itemName);
 
-        $dream = $this->dreamRepository->findRandom($this->squirrel3);
+        $dream = $this->dreamRepository->findRandom($this->rng);
 
         /** @var PetSpecies $species */
-        $species = $this->squirrel3->rngNextFromArray($this->em->getRepository(PetSpecies::class)->findAll());
+        $species = $this->rng->rngNextFromArray($this->em->getRepository(PetSpecies::class)->findAll());
 
         $replacements = $this->generateReplacementsDictionary($item, $pet, $species);
 
@@ -144,7 +134,7 @@ class DreamingService
 
         $this->inventoryService->receiveItem($itemName, $pet->getOwner(), $pet->getOwner(), $itemDescription, LocationEnum::HOME);
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         return $this->responseService->createActivityLog($pet, $eventDescription, '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
@@ -154,7 +144,7 @@ class DreamingService
 
     public function generateReplacementsDictionary(Item $item, Pet $pet, PetSpecies $species): array
     {
-        $locations = $this->squirrel3->rngNextSubsetFromArray(self::LOCATIONS, 2);
+        $locations = $this->rng->rngNextSubsetFromArray(self::LOCATIONS, 2);
 
         $monsters = [
             [ 'a' => 'a goblin', 'the' => 'the goblin' ],
@@ -164,9 +154,9 @@ class DreamingService
             [ 'a' => 'their own shadow', 'the' => 'their own shadow' ]
         ];
 
-        $petOrMonsterIsPet = $this->squirrel3->rngNextBool();
+        $petOrMonsterIsPet = $this->rng->rngNextBool();
 
-        $this->squirrel3->rngNextShuffle($monsters);
+        $this->rng->rngNextShuffle($monsters);
 
         return [
             '%item%' => $item->getName(),
@@ -177,28 +167,28 @@ class DreamingService
             '%location2%' => $locations[1],
             '%Location1%' => ucfirst($locations[0]),
             '%Location2%' => ucfirst($locations[1]),
-            '%wandering%' => $this->squirrel3->rngNextFromArray(self::WANDERING_WORDS),
+            '%wandering%' => $this->rng->rngNextFromArray(self::WANDERING_WORDS),
             '%species%' => $species->getName(),
             '%a_species%' => GrammarFunctions::indefiniteArticle($species->getName()) . ' ' . $species->getName(),
-            '%adverb%' => $this->squirrel3->rngNextFromArray([ 'hesitantly', 'eagerly', 'grumpily', 'apathetically' ]),
-            '%pet_adjective%' => $this->squirrel3->rngNextFromArray([ 'colorful', 'suspicious-looking', 'strong', 'big', 'small', 'cute', 'dangerous-looking', 'hungry', 'lost', 'cheerful' ]),
-            '%more%' => $this->squirrel3->rngNextFromArray([ 'bigger', 'more colorful', 'smaller', 'more fragrant', 'undulating more', 'paler', 'shinier', 'stickier', 'more fabulous' ]),
-            '%surface%' => $this->squirrel3->rngNextFromArray([
+            '%adverb%' => $this->rng->rngNextFromArray([ 'hesitantly', 'eagerly', 'grumpily', 'apathetically' ]),
+            '%pet_adjective%' => $this->rng->rngNextFromArray([ 'colorful', 'suspicious-looking', 'strong', 'big', 'small', 'cute', 'dangerous-looking', 'hungry', 'lost', 'cheerful' ]),
+            '%more%' => $this->rng->rngNextFromArray([ 'bigger', 'more colorful', 'smaller', 'more fragrant', 'undulating more', 'paler', 'shinier', 'stickier', 'more fabulous' ]),
+            '%surface%' => $this->rng->rngNextFromArray([
                 'a table', 'a moss-covered rock', 'the floor', 'a pile of pillows', 'a sturdy box',
                 'a raw slab of acorn fugu', 'the roof of a skyscraper', 'a wobbly chair', 'a huge beanbag',
                 'a pool table', 'a picnic bench'
             ]),
-            '%planet%' => $this->squirrel3->rngNextFromArray([ 'the Moon', 'Mars', 'Pluto', 'Enceladus', 'Vesta', 'Venus', 'Phobetor' ]),
-            '%a_drink%' => $this->squirrel3->rngNextFromArray([ 'a chai milkshake', 'a mango lassi', 'some tea', 'some fruit punch', 'some coconut cordial', 'some blue milk' ]),
-            '%a_food%' => $this->squirrel3->rngNextFromArray([ 'a cellular peptide cake', 'a piece of naan', 'a slice of za', 'some donburi', 'a lobster', 'some succotash', 'a bowl of chili', 'a plate of tiny snails' ]),
-            '%a_food_or_drink%' => $this->squirrel3->rngNextFromArray([ '%a_food%', '%a_drink%' ]),
+            '%planet%' => $this->rng->rngNextFromArray([ 'the Moon', 'Mars', 'Pluto', 'Enceladus', 'Vesta', 'Venus', 'Phobetor' ]),
+            '%a_drink%' => $this->rng->rngNextFromArray([ 'a chai milkshake', 'a mango lassi', 'some tea', 'some fruit punch', 'some coconut cordial', 'some blue milk' ]),
+            '%a_food%' => $this->rng->rngNextFromArray([ 'a cellular peptide cake', 'a piece of naan', 'a slice of za', 'some donburi', 'a lobster', 'some succotash', 'a bowl of chili', 'a plate of tiny snails' ]),
+            '%a_food_or_drink%' => $this->rng->rngNextFromArray([ '%a_food%', '%a_drink%' ]),
             '%a_monster%' => $monsters[0]['a'],
             '%A_monster%' => ucfirst($monsters[0]['a']),
             '%the_monster%' => $monsters[0]['the'],
             '%a_wandering_monster%' => $monsters[1]['a'],
             '%a_pet_or_monster%' => $petOrMonsterIsPet ? 'a %pet_adjective% %species%' : '%a_monster%',
             '%A_pet_or_monster%' => $petOrMonsterIsPet ? 'A %pet_adjective% %species%' : '%A_monster%',
-            '%plural_stuff%' => $this->squirrel3->rngNextFromArray(self::RANDOM_PLURAL_STUFF),
+            '%plural_stuff%' => $this->rng->rngNextFromArray(self::RANDOM_PLURAL_STUFF),
         ];
     }
 

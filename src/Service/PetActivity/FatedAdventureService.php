@@ -4,11 +4,13 @@ namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
 use App\Entity\StatusEffect;
+use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\EnchantmentRepository;
@@ -23,22 +25,19 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class FatedAdventureService
 {
-    private EntityManagerInterface $em;
-    private PetExperienceService $petExperienceService;
-    private IRandom $rng;
-    private InventoryService $inventoryService;
-
     public function __construct(
-        EntityManagerInterface $em, PetExperienceService $petExperienceService, IRandom $rng,
-        InventoryService $inventoryService
+        private readonly EntityManagerInterface $em,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly IRandom $rng,
+        private readonly InventoryService $inventoryService
     )
     {
-        $this->em = $em;
-        $this->petExperienceService = $petExperienceService;
-        $this->rng = $rng;
-        $this->inventoryService = $inventoryService;
     }
 
+    /**
+     * @throws PSPNotFoundException
+     * @throws EnumInvalidValueException
+     */
     public function maybeResolveFate(ComputedPetSkills $petWithSkills): ?PetActivityLog
     {
         $pet = $petWithSkills->getPet();
@@ -69,15 +68,15 @@ class FatedAdventureService
 
         $changes = new PetChanges($pet);
 
-        switch($fateName)
+        $log = match ($fateName)
         {
-            case StatusEffectEnum::FATED_DELICIOUSNESS: $log = $this->doDeliciousFate($petWithSkills); break;
-            case StatusEffectEnum::FATED_SOAKEDLY: $log = $this->doWateryFate($petWithSkills); break;
-            case StatusEffectEnum::FATED_ELECTRICALLY: $log = $this->doElectricFate($petWithSkills); break;
-            case StatusEffectEnum::FATED_FERALLY: $log = $this->doFurryFate($petWithSkills); break;
-            case StatusEffectEnum::FATED_LUNARLY: $log = $this->doLunarFate($petWithSkills); break;
-            default: throw new \Exception("Unsupported fate! Ben made a terrible mistake!");
-        }
+            StatusEffectEnum::FATED_DELICIOUSNESS => $this->doDeliciousFate($petWithSkills),
+            StatusEffectEnum::FATED_SOAKEDLY => $this->doWateryFate($petWithSkills),
+            StatusEffectEnum::FATED_ELECTRICALLY => $this->doElectricFate($petWithSkills),
+            StatusEffectEnum::FATED_FERALLY => $this->doFurryFate($petWithSkills),
+            StatusEffectEnum::FATED_LUNARLY => $this->doLunarFate($petWithSkills),
+            default => throw new \Exception("Unsupported fate! Ben made a terrible mistake!"),
+        };
 
         $pet->removeStatusEffect($fatedStatusEffect);
 
@@ -89,6 +88,9 @@ class FatedAdventureService
         return $log;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function doDeliciousFate(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
@@ -138,6 +140,10 @@ class FatedAdventureService
         return $log;
     }
 
+    /**
+     * @throws PSPNotFoundException
+     * @throws EnumInvalidValueException
+     */
     private function doWateryFate(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
@@ -200,6 +206,9 @@ class FatedAdventureService
         return $log;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function doElectricFate(ComputedPetSkills $petWithSkills)
     {
         $pet = $petWithSkills->getPet();
@@ -218,6 +227,9 @@ class FatedAdventureService
         return $log;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function doLunarFate(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
@@ -237,6 +249,9 @@ class FatedAdventureService
         return $log;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function doFurryFate(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();

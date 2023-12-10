@@ -37,6 +37,7 @@ class PetExperienceService
 
     /**
      * @param string[] $stats
+     * @throws EnumInvalidValueException
      */
     public function gainExp(Pet $pet, int $exp, array $stats, ?PetActivityLog $activityLog = null): bool
     {
@@ -117,6 +118,9 @@ class PetExperienceService
         return $levelUp;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private static function getPetFocusingStatusEffect(Pet $pet): ?FocusingStatusEffect
     {
         $possibleEffects = [
@@ -193,7 +197,7 @@ class PetExperienceService
      * spendTime should be called AFTER gainExp
      * @throws EnumInvalidValueException
      */
-    public function spendTime(Pet $pet, int $time, string $activityStat, ?bool $success)
+    public function spendTime(Pet $pet, int $time, string $activityStat, ?bool $success): void
     {
         $pet->getHouseTime()->spendActivityTime($time);
         PetActivityStatsService::logStat($this->em, $pet, $activityStat, $success, $time);
@@ -204,7 +208,7 @@ class PetExperienceService
         self::spendTimeOnStatusEffects($pet, $time);
     }
 
-    public static function spendTimeOnStatusEffects(Pet $pet, int $time)
+    public static function spendTimeOnStatusEffects(Pet $pet, int $time): void
     {
         /** @var StatusEffect[] $statusEffects */
         $statusEffects = array_values($pet->getStatusEffects()->toArray());
@@ -234,10 +238,9 @@ class PetExperienceService
     }
 
     /**
-     * @param Pet $pet
-     * @param int $points
+     * @throws EnumInvalidValueException
      */
-    public function gainAffection(Pet $pet, int $points)
+    public function gainAffection(Pet $pet, int $points): void
     {
         if($points === 0 || $pet->hasMerit(MeritEnum::AFFECTIONLESS))
             return;

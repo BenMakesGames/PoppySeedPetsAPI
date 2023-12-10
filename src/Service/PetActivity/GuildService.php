@@ -25,43 +25,32 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class GuildService
 {
-    private GuildRepository $guildRepository;
-    private EntityManagerInterface $em;
-    private ResponseService $responseService;
-    private InventoryService $inventoryService;
-    private PetExperienceService $petExperienceService;
-    private GizubisGardenService $gizubisGardenService;
-    private IRandom $squirrel3;
-
     public function __construct(
-        GuildRepository $guildRepository, EntityManagerInterface $em, ResponseService $responseService,
-        InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        GizubisGardenService $gizubisGardenService, IRandom $squirrel3
+        private readonly GuildRepository $guildRepository,
+        private readonly EntityManagerInterface $em,
+        private readonly ResponseService $responseService,
+        private readonly InventoryService $inventoryService,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly GizubisGardenService $gizubisGardenService,
+        private readonly IRandom $rng
     )
     {
-        $this->guildRepository = $guildRepository;
-        $this->em = $em;
-        $this->responseService = $responseService;
-        $this->inventoryService = $inventoryService;
-        $this->petExperienceService = $petExperienceService;
-        $this->gizubisGardenService = $gizubisGardenService;
-        $this->squirrel3 = $squirrel3;
     }
 
     public function joinGuildProjectE(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
         $activityLog = $this->joinGuild(
             $pet,
             [
-                GuildEnum::TIMES_ARROW => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getPerception() + $pet->getSkills()->getScience() + $this->squirrel3->rngNextInt(0, 10),
-                GuildEnum::TAPESTRIES => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + ($pet->getSkills()->getArcana() + $pet->getSkills()->getCrafts()) / 2 + $this->squirrel3->rngNextInt(0, 10),
-                GuildEnum::INNER_SANCTUM => $pet->getSkills()->getIntelligence() * 2 + $pet->getSkills()->getPerception() + $this->squirrel3->rngNextInt(0, 10),
-                GuildEnum::DWARFCRAFT => $pet->getSkills()->getStrength() + $pet->getSkills()->getStamina() + $pet->getSkills()->getCrafts() + $this->squirrel3->rngNextInt(0, 10),
-                GuildEnum::HIGH_IMPACT => ($pet->getSkills()->getStrength() + $pet->getSkills()->getDexterity() + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getStamina() + $pet->getSkills()->getBrawl() + $pet->getSkills()->getScience()) / 2 + $this->squirrel3->rngNextInt(0, 10),
-                GuildEnum::THE_UNIVERSE_FORGETS => $pet->getSkills()->getPerception() + $pet->getSkills()->getIntelligence() + ((1 - $pet->getExtroverted()) * 2 + 1 + $pet->getSkills()->getArcana()) / 2 + $this->squirrel3->rngNextInt(0, 10),
-                GuildEnum::CORRESPONDENCE => $pet->getSkills()->getStamina() + $pet->getSkills()->getStrength() + ($pet->getSkills()->getArcana() + $pet->getSkills()->getStealth() + $pet->getSkills()->getScience()) / 3 + $this->squirrel3->rngNextInt(0, 10),
+                GuildEnum::TIMES_ARROW => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getPerception() + $pet->getSkills()->getScience() + $this->rng->rngNextInt(0, 10),
+                GuildEnum::TAPESTRIES => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + ($pet->getSkills()->getArcana() + $pet->getSkills()->getCrafts()) / 2 + $this->rng->rngNextInt(0, 10),
+                GuildEnum::INNER_SANCTUM => $pet->getSkills()->getIntelligence() * 2 + $pet->getSkills()->getPerception() + $this->rng->rngNextInt(0, 10),
+                GuildEnum::DWARFCRAFT => $pet->getSkills()->getStrength() + $pet->getSkills()->getStamina() + $pet->getSkills()->getCrafts() + $this->rng->rngNextInt(0, 10),
+                GuildEnum::HIGH_IMPACT => ($pet->getSkills()->getStrength() + $pet->getSkills()->getDexterity() + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getStamina() + $pet->getSkills()->getBrawl() + $pet->getSkills()->getScience()) / 2 + $this->rng->rngNextInt(0, 10),
+                GuildEnum::THE_UNIVERSE_FORGETS => $pet->getSkills()->getPerception() + $pet->getSkills()->getIntelligence() + ((1 - $pet->getExtroverted()) * 2 + 1 + $pet->getSkills()->getArcana()) / 2 + $this->rng->rngNextInt(0, 10),
+                GuildEnum::CORRESPONDENCE => $pet->getSkills()->getStamina() + $pet->getSkills()->getStrength() + ($pet->getSkills()->getArcana() + $pet->getSkills()->getStealth() + $pet->getSkills()->getScience()) / 3 + $this->rng->rngNextInt(0, 10),
             ],
             $pet->getName() . ' accessed Project-E, and stumbled upon The Hall of Nine - a meeting place for members of nine major Guilds.'
         );
@@ -74,17 +63,17 @@ class GuildService
     public function joinGuildUmbra(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
         $activityLog = $this->joinGuild(
             $pet,
             [
-                GuildEnum::LIGHT_AND_SHADOW => $pet->getSkills()->getPerception() + $pet->getSkills()->getArcana() + $pet->getSkills()->getIntelligence() + $this->squirrel3->rngNextInt(0, 10),
-                GuildEnum::TAPESTRIES => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + ($pet->getSkills()->getArcana() + $pet->getSkills()->getCrafts()) / 2 + $this->squirrel3->rngNextInt(0, 10),
-                GuildEnum::INNER_SANCTUM => $pet->getSkills()->getIntelligence() * 2 + $pet->getSkills()->getPerception() + $this->squirrel3->rngNextInt(0, 10),
-                GuildEnum::GIZUBIS_GARDEN => ($pet->getExtroverted() + $petWithSkills->getSexDrive()->getTotal()) * 3 + $pet->getSkills()->getNature() / 2 + $this->squirrel3->rngNextInt(0, 10),
-                GuildEnum::THE_UNIVERSE_FORGETS => $pet->getSkills()->getPerception() + $pet->getSkills()->getIntelligence() + ((1 - $pet->getExtroverted()) * 2 + 1 + $pet->getSkills()->getArcana()) / 2 + $this->squirrel3->rngNextInt(0, 10),
-                GuildEnum::CORRESPONDENCE => $pet->getSkills()->getStamina() + $pet->getSkills()->getStrength() + ($pet->getSkills()->getArcana() + $pet->getSkills()->getStealth() + $pet->getSkills()->getScience()) / 3 + $this->squirrel3->rngNextInt(0, 10),
+                GuildEnum::LIGHT_AND_SHADOW => $pet->getSkills()->getPerception() + $pet->getSkills()->getArcana() + $pet->getSkills()->getIntelligence() + $this->rng->rngNextInt(0, 10),
+                GuildEnum::TAPESTRIES => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + ($pet->getSkills()->getArcana() + $pet->getSkills()->getCrafts()) / 2 + $this->rng->rngNextInt(0, 10),
+                GuildEnum::INNER_SANCTUM => $pet->getSkills()->getIntelligence() * 2 + $pet->getSkills()->getPerception() + $this->rng->rngNextInt(0, 10),
+                GuildEnum::GIZUBIS_GARDEN => ($pet->getExtroverted() + $petWithSkills->getSexDrive()->getTotal()) * 3 + $pet->getSkills()->getNature() / 2 + $this->rng->rngNextInt(0, 10),
+                GuildEnum::THE_UNIVERSE_FORGETS => $pet->getSkills()->getPerception() + $pet->getSkills()->getIntelligence() + ((1 - $pet->getExtroverted()) * 2 + 1 + $pet->getSkills()->getArcana()) / 2 + $this->rng->rngNextInt(0, 10),
+                GuildEnum::CORRESPONDENCE => $pet->getSkills()->getStamina() + $pet->getSkills()->getStrength() + ($pet->getSkills()->getArcana() + $pet->getSkills()->getStealth() + $pet->getSkills()->getScience()) / 3 + $this->rng->rngNextInt(0, 10),
             ],
             $pet->getName() . ' visited the Library of Fire, and stumbled upon a meeting between members from the nine major Guilds.'
         );
@@ -180,7 +169,7 @@ class GuildService
 
         $member->increaseReputation();
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $this->responseService->createActivityLog($pet, $message, '');
     }
@@ -189,8 +178,8 @@ class GuildService
     {
         $member = $pet->getGuildMembership();
 
-        $message = $this->squirrel3->rngNextFromArray([
-            '%pet:' . $pet->getId() . '.name% ' . $this->squirrel3->rngNextFromArray([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
+        $message = $this->rng->rngNextFromArray([
+            '%pet:' . $pet->getId() . '.name% ' . $this->rng->rngNextFromArray([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
             '%pet:' . $pet->getId() . '.name% practiced using one of ' . $member->getGuild()->getName() . '\'s Timescrawlers. (Supervised, of course!)',
             '%pet:' . $pet->getId() . '.name% shadowed a ' . $member->getGuild()->getName() . ' senior for a little bit, to watch them work.'
         ]);
@@ -200,7 +189,7 @@ class GuildService
         $activityLog = $this->responseService->createActivityLog($pet, $message, '');
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $activityLog;
     }
@@ -209,8 +198,8 @@ class GuildService
     {
         $member = $pet->getGuildMembership();
 
-        $message = $this->squirrel3->rngNextFromArray([
-            $pet->getName() . ' ' . $this->squirrel3->rngNextFromArray([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
+        $message = $this->rng->rngNextFromArray([
+            $pet->getName() . ' ' . $this->rng->rngNextFromArray([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
             $pet->getName() . ' practiced peering into the Umbra without having to actually go there.',
             $pet->getName() . ' shadowed a ' . $member->getGuild()->getName() . ' senior for a little bit, to watch them work.'
         ]);
@@ -220,7 +209,7 @@ class GuildService
         $activityLog = $this->responseService->createActivityLog($pet, $message, '');
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $activityLog;
     }
@@ -229,8 +218,8 @@ class GuildService
     {
         $member = $pet->getGuildMembership();
 
-        $message = $this->squirrel3->rngNextFromArray([
-            $pet->getName() . ' ' . $this->squirrel3->rngNextFromArray([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
+        $message = $this->rng->rngNextFromArray([
+            $pet->getName() . ' ' . $this->rng->rngNextFromArray([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
             $pet->getName() . ' practiced peering into the Umbra without having to actually go there.',
             $pet->getName() . ' watched a ' . $member->getGuild()->getName() . ' senior sew a tear in the fabric of reality...'
         ]);
@@ -240,7 +229,7 @@ class GuildService
         $activityLog = $this->responseService->createActivityLog($pet, $message, '');
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $activityLog;
     }
@@ -249,7 +238,7 @@ class GuildService
     {
         $member = $pet->getGuildMembership();
 
-        if($this->squirrel3->rngNextInt(1, 3) === 1)
+        if($this->rng->rngNextInt(1, 3) === 1)
         {
             $guildNameArticle = GrammarFunctions::indefiniteArticle($member->getGuild()->getName());
             $message = '%pet:' . $pet->getId() . '.name% joined ' . $guildNameArticle . ' ' . $member->getGuild()->getName() . ' session of group meditation.';
@@ -269,7 +258,7 @@ class GuildService
 
             if(count($availableEffects) > 0)
             {
-                $effectToGive = $this->squirrel3->rngNextFromArray($availableEffects);
+                $effectToGive = $this->rng->rngNextFromArray($availableEffects);
 
                 if(array_key_exists('removeIt', $effectToGive))
                 {
@@ -285,19 +274,19 @@ class GuildService
         }
         else
         {
-            $message = $this->squirrel3->rngNextFromArray([
-                '%pet:' . $pet->getId() . '.name% ' . $this->squirrel3->rngNextFromArray([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
+            $message = $this->rng->rngNextFromArray([
+                '%pet:' . $pet->getId() . '.name% ' . $this->rng->rngNextFromArray([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
                 '%pet:' . $pet->getId() . '.name% had a minor philosophical debate with a senior ' . $member->getGuild()->getName() . ' member.'
             ]);
         }
 
         $member->increaseReputation();
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         $activityLog = $this->responseService->createActivityLog($pet, $message, '');
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::getRandomValue($this->squirrel3) ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::getRandomValue($this->rng) ], $activityLog);
 
         return $activityLog;
     }
@@ -306,7 +295,7 @@ class GuildService
     {
         $member = $pet->getGuildMembership();
 
-        $message = $this->squirrel3->rngNextFromArray([
+        $message = $this->rng->rngNextFromArray([
             $pet->getName() . ' picked up some Liquid-hot Magma for one of their ' . $member->getGuild()->getName() . ' seniors.',
             $pet->getName() . ' delivered Lightning in a Bottle to one of their ' . $member->getGuild()->getName() . ' seniors.',
             $pet->getName() . ' shadowed a ' . $member->getGuild()->getName() . ' senior for a little bit, to watch them work.'
@@ -317,7 +306,7 @@ class GuildService
         $activityLog = $this->responseService->createActivityLog($pet, $message, '');
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $activityLog;
     }
@@ -330,7 +319,7 @@ class GuildService
         if($member->getTitle() >= 3)
             return null;
 
-        $message = $this->squirrel3->rngNextFromArray([
+        $message = $this->rng->rngNextFromArray([
             $pet->getName() . ' delivered Lightning in a Bottle to one of their ' . $member->getGuild()->getName() . ' seniors.',
             $pet->getName() . ' shadowed a ' . $member->getGuild()->getName() . ' senior for a little bit, to watch them work.',
             $pet->getName() . ' participated in a ' . $member->getGuild()->getName() . ' obstacle course competition.',
@@ -341,7 +330,7 @@ class GuildService
         $activityLog = $this->responseService->createActivityLog($pet, $message, '');
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $activityLog;
     }
@@ -350,8 +339,8 @@ class GuildService
     {
         $member = $pet->getGuildMembership();
 
-        $message = $this->squirrel3->rngNextFromArray([
-            $pet->getName() . ' ' . $this->squirrel3->rngNextFromArray([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
+        $message = $this->rng->rngNextFromArray([
+            $pet->getName() . ' ' . $this->rng->rngNextFromArray([ 'picked up a book from', 'returned a book to' ]).  ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
             $pet->getName() . ' practiced peering into the Umbra without having to actually go there.',
             $pet->getName() . ' went with a senior member of ' . $member->getGuild()->getName() . ' through unfamiliar regions of the Umbra, looking for any unusual changes.'
         ]);
@@ -361,7 +350,7 @@ class GuildService
         $activityLog = $this->responseService->createActivityLog($pet, $message, '');
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $activityLog;
     }
@@ -371,11 +360,11 @@ class GuildService
         $member = $pet->getGuildMembership();
 
         // there are delivery messages that Correspondence members can do, during normal pet activities
-        if($this->squirrel3->rngNextInt(0, 2) < $member->getTitle())
+        if($this->rng->rngNextInt(0, 2) < $member->getTitle())
             return null;
 
-        $message = $this->squirrel3->rngNextFromArray([
-            $pet->getName() . ' ' . $this->squirrel3->rngNextFromArray([ 'picked up a book from', 'returned a book to' ]) . ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
+        $message = $this->rng->rngNextFromArray([
+            $pet->getName() . ' ' . $this->rng->rngNextFromArray([ 'picked up a book from', 'returned a book to' ]) . ' the Library of Fire for one of their ' . $member->getGuild()->getName() . ' seniors.',
             $pet->getName() . ' participated in a ' . $member->getGuild()->getName() . ' race.',
             $pet->getName() . ' followed a senior member of ' . $member->getGuild()->getName() . ' through unfamiliar regions of Project-E, to deliver a message.'
         ]);
@@ -385,7 +374,7 @@ class GuildService
         $activityLog = $this->responseService->createActivityLog($pet, $message, '');
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $activityLog;
     }

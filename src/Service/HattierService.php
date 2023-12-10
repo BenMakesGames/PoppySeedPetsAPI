@@ -6,8 +6,10 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Entity\UserUnlockedAura;
+use App\Enum\EnumInvalidValueException;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\UnlockableFeatureEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\EnchantmentRepository;
 use App\Functions\PetActivityLogFactory;
@@ -23,10 +25,7 @@ class HattierService
     {
     }
 
-    /**
-     * @param string|Enchantment $enchantment
-     */
-    public function userHasUnlocked(User $user, $enchantment): bool
+    public function userHasUnlocked(User $user, string|Enchantment $enchantment): bool
     {
         if(is_string($enchantment))
             $enchantment = EnchantmentRepository::findOneByName($this->em, $enchantment);
@@ -83,7 +82,7 @@ class HattierService
         );
     }
 
-    private $userAurasPerRequestCache = [];
+    private array $userAurasPerRequestCache = [];
 
     public function playerUnlockAura(User $user, Enchantment $enchantment, string $comment)
     {
@@ -133,6 +132,9 @@ class HattierService
         return $this->userAurasPerRequestCache[$cacheKey];
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function petUnlockAura(User $user, Enchantment $enchantment, string $comment, PetActivityLog $activityLog, ?string $customActivityUnlockMessage = null): UserUnlockedAura
     {
         $alreadyUnlocked = $this->auraAlreadyUnlocked($user, $enchantment);
@@ -169,7 +171,7 @@ class HattierService
         return $unlockedAura;
     }
 
-    private function unlockStartingAuras(User $user)
+    private function unlockStartingAuras(User $user): void
     {
         $startingAuras = $this->em->getRepository(Enchantment::class)->findBy([
             'name' => [
@@ -200,10 +202,11 @@ class HattierService
     }
 
     /**
-     * @param string|Enchantment $enchantmentName
+     * @throws PSPNotFoundException
+     * @throws EnumInvalidValueException
      */
     public function petMaybeUnlockAura(
-        Pet $pet, $enchantment, string $logIfHatGetsEnchanted, string $logIfHatDoesNotGetEnchanted,
+        Pet $pet, string|Enchantment $enchantment, string $logIfHatGetsEnchanted, string $logIfHatDoesNotGetEnchanted,
         string $auraUnlockMessage
     ): ?PetActivityLog
     {
@@ -215,7 +218,7 @@ class HattierService
 
         if($pet->getHat() && !$pet->getHat()->getEnchantment())
         {
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $logIfHatGetsEnchanted, '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $logIfHatGetsEnchanted)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
             ;
 
@@ -223,7 +226,7 @@ class HattierService
         }
         else
         {
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $logIfHatDoesNotGetEnchanted, '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $logIfHatDoesNotGetEnchanted)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
             ;
         }
@@ -233,12 +236,15 @@ class HattierService
         return $activityLog;
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     public function unlockAuraDuringPetActivity(
         Pet $pet, PetActivityLog $activityLog, Enchantment $enchantment,
         string $addedToHatDescription,
         string $notAddedToHatDescription,
         string $auraUnlockMessage
-    )
+    ): void
     {
         if($pet->getHat() && !$pet->getHat()->getEnchantment())
         {

@@ -14,20 +14,13 @@ use Doctrine\ORM\EntityManagerInterface;
 // yep. this game has a class called "PoopingService". you're welcome.
 class PoopingService
 {
-    private InventoryService $inventoryService;
-    private ResponseService $responseService;
-    private IRandom $squirrel3;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        InventoryService $inventoryService, ResponseService $responseService, IRandom $squirrel3,
-        EntityManagerInterface $em
+        private readonly InventoryService $inventoryService,
+        private readonly ResponseService $responseService,
+        private readonly IRandom $rng,
+        private readonly EntityManagerInterface $em
     )
     {
-        $this->inventoryService = $inventoryService;
-        $this->responseService = $responseService;
-        $this->squirrel3 = $squirrel3;
-        $this->em = $em;
     }
 
     public function shed(Pet $pet)
@@ -47,9 +40,9 @@ class PoopingService
             ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
         ;
 
-        if($this->squirrel3->rngNextInt(1, 20) === 1)
+        if($this->rng->rngNextInt(1, 20) === 1)
         {
-            $this->inventoryService->petCollectsItem('Dark Matter', $pet, $pet->getName() . ' ' . $this->squirrel3->rngNextFromArray([
+            $this->inventoryService->petCollectsItem('Dark Matter', $pet, $pet->getName() . ' ' . $this->rng->rngNextFromArray([
                 'pooped this. Yay?',
                 'pooped this. Neat?',
                 'pooped this. Yep.',

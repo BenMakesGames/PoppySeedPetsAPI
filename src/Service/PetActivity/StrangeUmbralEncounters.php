@@ -3,10 +3,12 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Enum\EnumInvalidValueException;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
 use App\Functions\EnchantmentRepository;
 use App\Functions\PetActivityLogFactory;
@@ -22,44 +24,38 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class StrangeUmbralEncounters
 {
-
-    private PetExperienceService $petExperienceService;
-    private InventoryService $inventoryService;
-    private EntityManagerInterface $em;
-    private IRandom $squirrel3;
-    private FieldGuideService $fieldGuideService;
-
     public function __construct(
-        PetExperienceService $petExperienceService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $squirrel3, FieldGuideService $fieldGuideService
+        private readonly PetExperienceService $petExperienceService,
+        private readonly InventoryService $inventoryService,
+        private readonly EntityManagerInterface $em,
+        private readonly IRandom $rng,
+        private readonly FieldGuideService $fieldGuideService
     )
     {
-        $this->petExperienceService = $petExperienceService;
-        $this->inventoryService = $inventoryService;
-        $this->em = $em;
-        $this->squirrel3 = $squirrel3;
-        $this->fieldGuideService = $fieldGuideService;
     }
 
+    /**
+     * @throws PSPNotFoundException
+     * @throws EnumInvalidValueException
+     */
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 
         $maxEncoutner = $pet->getLevel() >= 10 ? 3 : 2;
 
-        switch($this->squirrel3->rngNextInt(1, $maxEncoutner))
+        return match ($this->rng->rngNextInt(1, $maxEncoutner))
         {
-            case 1:
-                return $this->encounterWildlife($pet);
-            case 2:
-                return $this->encounterCosmicGoat($pet);
-            case 3:
-                return $this->encounterAgares($pet);
-        }
-
-        throw new \Exception('Ben messed up strange umbral encounters. That\'s bad, but he\'s been emailed, and should fix it soon. Sorry :|');
+            1 => $this->encounterWildlife($pet),
+            2 => $this->encounterCosmicGoat($pet),
+            3 => $this->encounterAgares($pet),
+            default => throw new \Exception('Ben messed up strange umbral encounters. That\'s bad, but he\'s been emailed, and should fix it soon. Sorry :|'),
+        };
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function encounterWildlife(Pet $pet): PetActivityLog
     {
         $encounter = $this->getRandomWildlifeEncounter($pet);
@@ -75,14 +71,14 @@ class StrangeUmbralEncounters
         ;
 
         $this->petExperienceService->gainExp($pet, 1, $encounter['skills'], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
         return $activityLog;
     }
 
     private function getRandomWildlifeEncounter(Pet $pet): array
     {
-        return $this->squirrel3->rngNextFromArray([
+        return $this->rng->rngNextFromArray([
             [
                 'description' => 'saw a family of deer spirits running across the umbral sands. ' . ActivityHelpers::PetName($pet) . ' watched for a while before returning home.',
                 'skills' => [ PetSkillEnum::ARCANA ]
@@ -111,9 +107,14 @@ class StrangeUmbralEncounters
     }
 
     // Agares is a spirit-duke. now you know.
+
+    /**
+     * @throws PSPNotFoundException
+     * @throws EnumInvalidValueException
+     */
     private function encounterAgares(Pet $pet): PetActivityLog
     {
-        $fate = $this->squirrel3->rngNextFromArray([
+        $fate = $this->rng->rngNextFromArray([
             StatusEffectEnum::FATED_DELICIOUSNESS,
             StatusEffectEnum::FATED_SOAKEDLY,
             StatusEffectEnum::FATED_ELECTRICALLY,
@@ -146,11 +147,15 @@ class StrangeUmbralEncounters
         StatusEffectHelpers::applyStatusEffect($this->em, $pet, $fate, 1);
 
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
         return $activityLog;
     }
 
+    /**
+     * @throws PSPNotFoundException
+     * @throws EnumInvalidValueException
+     */
     private function encounterCosmicGoat(Pet $pet): PetActivityLog
     {
         $discoveryMessage = 'While exploring the Umbra, some white rain started to fall. ' . '%pet:' . $pet->getId() . '.name% looked up, and saw the Cosmic Goat flying overhead, milk flowing from its udder.';
@@ -161,7 +166,7 @@ class StrangeUmbralEncounters
         ;
 
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
         $cosmic = SpiceRepository::findOneByName($this->em, 'Cosmic');
 

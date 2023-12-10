@@ -2,6 +2,7 @@
 namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
+use App\Enum\EnumInvalidValueException;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ItemRepository;
@@ -14,22 +15,14 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class GizubisGardenService
 {
-    private PetExperienceService $petExperienceService;
-    private ResponseService $responseService;
-    private InventoryService $inventoryService;
-    private EntityManagerInterface $em;
-    private IRandom $squirrel3;
-
     public function __construct(
-        PetExperienceService $petExperienceService, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $squirrel3
+        private readonly PetExperienceService $petExperienceService,
+        private readonly ResponseService $responseService,
+        private readonly InventoryService $inventoryService,
+        private readonly EntityManagerInterface $em,
+        private readonly IRandom $rng
     )
     {
-        $this->petExperienceService = $petExperienceService;
-        $this->responseService = $responseService;
-        $this->inventoryService = $inventoryService;
-        $this->em = $em;
-        $this->squirrel3 = $squirrel3;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -39,15 +32,13 @@ class GizubisGardenService
         if($member->getTitle() === 0)
             return $this->doRandomSeedlingAdventure($petWithSkills);
 
-        switch($this->squirrel3->rngNextInt(1, 3))
+        return match ($this->rng->rngNextInt(1, 3))
         {
-            case 1: return $this->doRandomSeedlingAdventure($petWithSkills);
-            case 2: return $this->doWaterTreeOfLife($petWithSkills);
-            case 3: return $this->doCook($petWithSkills);
-
-            default:
-                throw new \Exception('Ben failed to code a Gizubi\'s Garden activity! Agk!');
-        }
+            1 => $this->doRandomSeedlingAdventure($petWithSkills),
+            2 => $this->doWaterTreeOfLife($petWithSkills),
+            3 => $this->doCook($petWithSkills),
+            default => throw new \Exception('Ben failed to code a Gizubi\'s Garden activity! Agk!'),
+        };
     }
 
     private function doRandomSeedlingadventure(ComputedPetSkills $petWithSkills)
@@ -55,7 +46,7 @@ class GizubisGardenService
         $pet = $petWithSkills->getPet();
         $member = $pet->getGuildMembership();
 
-        switch($this->squirrel3->rngNextInt(1, 3))
+        switch($this->rng->rngNextInt(1, 3))
         {
             case 1:
                 $message = '%pet:' . $pet->getId() . '.name% helped one of their seniors tend to ' . $member->getGuild()->getName() . ' gardens.';
@@ -78,7 +69,7 @@ class GizubisGardenService
         $activityLog = $this->responseService->createActivityLog($pet, $message, '');
 
         $this->petExperienceService->gainExp($pet, 1, [ $skill ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $activityLog;
     }
@@ -86,21 +77,21 @@ class GizubisGardenService
     private function doWaterTreeOfLife(ComputedPetSkills $petWithSkills)
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getNature()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getPerception()->getTotal());
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getNature()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getPerception()->getTotal());
 
         if($roll === 1)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to water the Tree of Life for Gizubi\'s Garden, but tripped and spilled the sacred water!', '');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::GATHER, false);
-            $pet->increaseEsteem(-$this->squirrel3->rngNextInt(2, 4));
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::GATHER, false);
+            $pet->increaseEsteem(-$this->rng->rngNextInt(2, 4));
 
             return $activityLog;
         }
         else if($roll >= 13)
         {
-            $loot = ItemRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray([
+            $loot = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
                 'Red', 'Crooked Stick', 'Apricot', 'Orange', 'Naner', 'Pamplemousse', 'Avocado'
             ]));
 
@@ -109,7 +100,7 @@ class GizubisGardenService
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while watering the Tree of Life for Gizubi\'s Garden.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
 
             return $activityLog;
         }
@@ -118,20 +109,23 @@ class GizubisGardenService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% watered the Tree of Life for Gizubi\'s Garden.', '');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::GATHER, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::GATHER, false);
 
             return $activityLog;
         }
     }
 
+    /**
+     * @throws EnumInvalidValueException
+     */
     private function doCook(ComputedPetSkills $petWithSkills)
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
 
-        if($this->squirrel3->rngNextInt(1, 2) === 1)
+        if($this->rng->rngNextInt(1, 2) === 1)
         {
-            $loot = $this->squirrel3->rngNextFromArray([
+            $loot = $this->rng->rngNextFromArray([
                 'Brownie', 'Laufabrauð', 'Orange Fish', 'Potato-mushroom Stuffed Onion',
                 'Pumpkin Bread', 'Smashed Potatoes', 'Super-simple Spaghet', 'Tomato Soup'
             ]);
@@ -142,7 +136,7 @@ class GizubisGardenService
         }
         else
         {
-            $loot = $this->squirrel3->rngNextFromArray([
+            $loot = $this->rng->rngNextFromArray([
                 'Blackberry Wine',
                 'Blueberry Wine',
                 'Red Wine',
@@ -160,8 +154,8 @@ class GizubisGardenService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to help ' . $cook . ' for a feast for Gizubi\'s Garden, but ' . $howRuined . ' the ' . $loot . '! :(', '');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
-            $pet->increaseEsteem(-$this->squirrel3->rngNextInt(2, 4));
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $pet->increaseEsteem(-$this->rng->rngNextInt(2, 4));
 
             return $activityLog;
         }
@@ -169,9 +163,9 @@ class GizubisGardenService
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% helped ' . $cook . ' for a feast for Gizubi\'s Garden. They made ' . $loot . '; everyone liked it, and there was enough left over that ' . $pet->getName() . ' got to take some home!', '');
 
-            $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
+            $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, false);
 
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' made this while ' . $cooking . ' for a feast for Gizubi\'s Garden!', $activityLog);
 
@@ -181,9 +175,9 @@ class GizubisGardenService
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% helped ' . $cook . ' for a feast for Gizubi\'s Garden. They made ' . $loot . '; everyone liked it!', '');
 
-            $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
+            $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
 
             return $activityLog;
         }

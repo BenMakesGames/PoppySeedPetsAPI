@@ -17,17 +17,12 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class GivingTreeGatheringService
 {
-    private PetExperienceService $petExperienceService;
-    private EntityManagerInterface $em;
-    private IRandom $squirrel3;
-
     public function __construct(
-        EntityManagerInterface $em, PetExperienceService $petExperienceService, IRandom $squirrel3
+        private readonly EntityManagerInterface $em,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly IRandom $rng
     )
     {
-        $this->petExperienceService = $petExperienceService;
-        $this->em = $em;
-        $this->squirrel3 = $squirrel3;
     }
 
     public function gatherFromGivingTree(Pet $pet): ?PetActivityLog
@@ -43,7 +38,7 @@ class GivingTreeGatheringService
         if($items < 100)
             return null;
 
-        $givingTreeItems = $this->squirrel3->rngNextInt(5, 8);
+        $givingTreeItems = $this->rng->rngNextInt(5, 8);
 
         $this->em->getConnection()->executeQuery(
             '
@@ -62,7 +57,7 @@ class GivingTreeGatheringService
 
         if($pet->isInGuild(GuildEnum::GIZUBIS_GARDEN, 1))
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(20, 30), PetActivityStatEnum::OTHER, null);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(20, 30), PetActivityStatEnum::OTHER, null);
 
             $pet->getGuildMembership()->increaseReputation();
 
@@ -74,7 +69,7 @@ class GivingTreeGatheringService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(10, 20), PetActivityStatEnum::OTHER, null);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(10, 20), PetActivityStatEnum::OTHER, null);
 
             return PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited The Giving Tree, and picked up several items that other players had discarded.')
                 ->setIcon('icons/activity-logs/giving-tree')

@@ -20,25 +20,15 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class GreenhouseAdventureService
 {
-    private ResponseService $responseService;
-    private InventoryService $inventoryService;
-    private IRandom $squirrel3;
-    private PetExperienceService $petExperienceService;
-    private HattierService $hattierService;
-    private EntityManagerInterface $em;
-
     function __construct(
-        ResponseService $responseService, InventoryService $inventoryService,
-        IRandom $squirrel3, PetExperienceService $petExperienceService,
-        HattierService $hattierService, EntityManagerInterface $em
+        private readonly ResponseService $responseService,
+        private readonly InventoryService $inventoryService,
+        private readonly IRandom $rng,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly HattierService $hattierService,
+        private readonly EntityManagerInterface $em
     )
     {
-        $this->responseService = $responseService;
-        $this->inventoryService = $inventoryService;
-        $this->squirrel3 = $squirrel3;
-        $this->petExperienceService = $petExperienceService;
-        $this->hattierService = $hattierService;
-        $this->em = $em;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills, GreenhousePlant $plant): PetActivityLog
@@ -48,7 +38,7 @@ class GreenhouseAdventureService
         $skill = 10 + $petWithSkills->getNature()->getTotal() + $petWithSkills->getDexterity()->getTotal();
         $skill = NumberFunctions::clamp($skill, 10, 15);
 
-        $roll = $this->squirrel3->rngNextInt(1, $skill);
+        $roll = $this->rng->rngNextInt(1, $skill);
 
         $changes = new PetChanges($pet);
 
