@@ -323,6 +323,14 @@ class BookstoreService
         return false;
     }
 
+    private function getDialog()
+    {
+        if(CalendarFunctions::isStockingStuffingSeason($this->clock->now))
+            return 'We\'ve got some special items in for Stocking Stuffing Season! Let me know if I can get you something.';
+        else
+            return 'What can I get you?';
+    }
+
     public function getResponseData(User $user)
     {
         if($this->renamingScrollAvailable($user))
@@ -334,6 +342,7 @@ class BookstoreService
             $quest = null;
 
         return [
+            'dialog' => $this->getDialog($user),
             'books' => $this->getBooks($user),
             'games' => $this->getGames($user),
             'cafe' => $this->getCafe($user),
