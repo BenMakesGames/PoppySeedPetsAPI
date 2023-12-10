@@ -7,8 +7,7 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ItemRepository;
 use App\Functions\JewishCalendarFunctions;
 use App\Functions\PlayerLogHelpers;
-use App\Repository\UserActivityLogRepository;
-use App\Repository\UserQuestRepository;
+use App\Functions\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -16,7 +15,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 #[Route("/fireplace")]
 class LookInStockingController extends AbstractController
@@ -25,7 +23,7 @@ class LookInStockingController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function lookInStocking(
         InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
-        UserQuestRepository $userQuestRepository, IRandom $squirrel3
+        IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -36,7 +34,7 @@ class LookInStockingController extends AbstractController
         if($monthAndDay < 1201)
             throw new PSPInvalidOperationException('It\'s not December!');
 
-        $gotStockingPresent = $userQuestRepository->findOrCreate($user, 'Got a Stocking Present', null);
+        $gotStockingPresent = UserQuestRepository::findOrCreate($em, $user, 'Got a Stocking Present', null);
 
         if($gotStockingPresent->getValue() === $now->format('Y-m-d'))
             throw new PSPInvalidOperationException('There\'s nothing else in the stocking. Maybe tomorrow?');

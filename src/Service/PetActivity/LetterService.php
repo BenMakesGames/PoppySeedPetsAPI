@@ -12,12 +12,12 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\UserQuestRepository;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\LetterRepository;
 use App\Repository\UserLetterRepository;
-use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\MuseumService;
@@ -27,7 +27,6 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class LetterService
 {
-    private UserQuestRepository $userQuestRepository;
     private InventoryService $inventoryService;
     private ResponseService $responseService;
     private PetExperienceService $petExperienceService;
@@ -38,12 +37,11 @@ class LetterService
     private IRandom $squirrel3;
 
     public function __construct(
-        UserQuestRepository $userQuestRepository, InventoryService $inventoryService, ResponseService $responseService,
+        InventoryService $inventoryService, ResponseService $responseService,
         PetExperienceService $petExperienceService, MuseumService $museumService, LetterRepository $letterRepository,
         UserLetterRepository $userLetterRepository, EntityManagerInterface $em, IRandom $squirrel3
     )
     {
-        $this->userQuestRepository = $userQuestRepository;
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
@@ -80,10 +78,11 @@ class LetterService
         if($accountAgeInYears === 0)
             return null;
 
-        $anniversaryLettersDelivered = $this->userQuestRepository->findOneBy([
-            'user' => $owner->getId(),
-            'name' => 'Anniversary Letters Delivered'
-        ]);
+        $anniversaryLettersDelivered = UserQuestRepository::find(
+            $this->em,
+            $owner,
+            'Anniversary Letters Delivered'
+        );
 
         $lettersDelivered = $anniversaryLettersDelivered ? $anniversaryLettersDelivered->getValue() : 0;
 
@@ -105,18 +104,20 @@ class LetterService
     {
         $owner = $petWithSkills->getPet()->getOwner();
 
-        $canReceiveLettersFromFairies = $this->userQuestRepository->findOneBy([
-            'user' => $owner->getId(),
-            'name' => 'Can Receive Letters from Fairies',
-        ]);
+        $canReceiveLettersFromFairies = UserQuestRepository::find(
+            $this->em,
+            $owner,
+            'Can Receive Letters from Fairies'
+        );
 
         if(!$canReceiveLettersFromFairies)
             return null;
 
-        $hyssopLettersDelivered = $this->userQuestRepository->findOneBy([
-            'user' => $owner->getId(),
-            'name' => 'Hyssop Letters Delivered'
-        ]);
+        $hyssopLettersDelivered = UserQuestRepository::find(
+            $this->em,
+            $owner,
+            'Hyssop Letters Delivered'
+        );
 
         if($hyssopLettersDelivered && $hyssopLettersDelivered->getValue() >= $canReceiveLettersFromFairies->getValue())
             return null;
@@ -144,10 +145,11 @@ class LetterService
     {
         $owner = $petWithSkills->getPet()->getOwner();
 
-        $sharuminyinkaQuestStep = $this->userQuestRepository->findOneBy([
-            'user' => $owner->getId(),
-            'name' => 'Sharuminyinka\'s Despair - Step',
-        ]);
+        $sharuminyinkaQuestStep = UserQuestRepository::find(
+            $this->em,
+            $owner,
+            'Sharuminyinka\'s Despair - Step'
+        );
 
         if($sharuminyinkaQuestStep && $sharuminyinkaQuestStep->getValue() === 40)
         {
@@ -170,7 +172,7 @@ class LetterService
         $owner = $pet->getOwner();
         $deliveryIntervalAgo = (new \DateTimeImmutable())->modify('-' . $minDaysBetweenDelivery . ' days');
 
-        $lettersDelivered = $this->userQuestRepository->findOrCreate($owner, $sender . ' Letters Delivered', 0);
+        $lettersDelivered = UserQuestRepository::findOrCreate($this->em, $owner, $sender . ' Letters Delivered', 0);
 
         // for letters beyond the first, we must wait at least $minDaysBetweenDelivery to deliver another message:
         if($lettersDelivered->getValue() > 0 && $lettersDelivered->getLastUpdated() >= $deliveryIntervalAgo)

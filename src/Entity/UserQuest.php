@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table]
 #[ORM\UniqueConstraint(name: 'user_id_name_idx', columns: ['user_id', 'name'])]
-#[ORM\Entity(repositoryClass: 'App\Repository\UserQuestRepository')]
+#[ORM\Entity]
 class UserQuest
 {
     #[ORM\Id]

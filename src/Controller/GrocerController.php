@@ -8,7 +8,7 @@ use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Functions\ItemRepository;
-use App\Repository\UserQuestRepository;
+use App\Functions\UserQuestRepository;
 use App\Service\GrocerService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -26,15 +26,15 @@ class GrocerController extends AbstractController
     #[Route('', methods: ['GET'])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getInventory(
-        GrocerService $grocerService, ResponseService $responseService, UserQuestRepository $userQuestRepository
+        GrocerService $grocerService, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
         $user = $this->getUser();
         $now = new \DateTimeImmutable();
 
-        $grocerItemsQuantity = $userQuestRepository->findOrCreate($user, 'Grocer Items Purchased Quantity', 0);
-        $grocerItemsDay = $userQuestRepository->findOrCreate($user, 'Grocer Items Purchased Date', $now->format('Y-m-d'));
+        $grocerItemsQuantity = UserQuestRepository::findOrCreate($em, $user, 'Grocer Items Purchased Quantity', 0);
+        $grocerItemsDay = UserQuestRepository::findOrCreate($em, $user, 'Grocer Items Purchased Date', $now->format('Y-m-d'));
 
         if($now->format('Y-m-d') === $grocerItemsDay->getValue())
             $maxCanPurchase = GrocerService::MAX_CAN_PURCHASE_PER_DAY - $grocerItemsQuantity->getValue();
@@ -52,8 +52,8 @@ class GrocerController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buy(
         Request $request, ResponseService $responseService, GrocerService $grocerService,
-        TransactionService $transactionService, InventoryService $inventoryService, EntityManagerInterface $em,
-        UserStatsService $userStatsRepository, UserQuestRepository $userQuestRepository
+        TransactionService $transactionService, EntityManagerInterface $em,
+        UserStatsService $userStatsRepository
     )
     {
         $buyTo = $request->request->getInt('location');
@@ -96,8 +96,8 @@ class GrocerController extends AbstractController
         $user = $this->getUser();
         $now = new \DateTimeImmutable();
 
-        $grocerItemsQuantity = $userQuestRepository->findOrCreate($user, 'Grocer Items Purchased Quantity', 0);
-        $grocerItemsDay = $userQuestRepository->findOrCreate($user, 'Grocer Items Purchased Date', $now->format('Y-m-d'));
+        $grocerItemsQuantity = UserQuestRepository::findOrCreate($em, $user, 'Grocer Items Purchased Quantity', 0);
+        $grocerItemsDay = UserQuestRepository::findOrCreate($em, $user, 'Grocer Items Purchased Date', $now->format('Y-m-d'));
 
         if($now->format('Y-m-d') === $grocerItemsDay->getValue())
             $maxCanPurchase = GrocerService::MAX_CAN_PURCHASE_PER_DAY - $grocerItemsQuantity->getValue();

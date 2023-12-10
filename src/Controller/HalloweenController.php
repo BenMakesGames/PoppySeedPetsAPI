@@ -13,8 +13,8 @@ use App\Functions\GrammarFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PlayerLogHelpers;
+use App\Functions\UserQuestRepository;
 use App\Model\FoodWithSpice;
-use App\Repository\UserQuestRepository;
 use App\Service\Clock;
 use App\Service\FieldGuideService;
 use App\Service\Holidays\HalloweenService;
@@ -54,7 +54,7 @@ class HalloweenController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getTrickOrTreater(
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
-        NormalizerInterface $normalizer, Clock $clock, UserQuestRepository $userQuestRepository
+        NormalizerInterface $normalizer, Clock $clock
     )
     {
         /** @var User $user */
@@ -70,7 +70,7 @@ class HalloweenController extends AbstractController
             return $responseService->success([
                 'trickOrTreater' => null,
                 'nextTrickOrTreater' => $nextTrickOrTreater->getValue(),
-                'totalCandyGiven' => $userQuestRepository->findOrCreate($user, 'Trick-or-Treaters Treated', 0)->getValue()
+                'totalCandyGiven' => UserQuestRepository::findOrCreate($em, $user, 'Trick-or-Treaters Treated', 0)->getValue()
             ]);
         }
 
@@ -85,7 +85,7 @@ class HalloweenController extends AbstractController
             'trickOrTreater' => $normalizer->normalize($trickOrTreater, null, [ 'groups' => [ SerializationGroupEnum::PET_PUBLIC_PROFILE ] ]),
             'nextTrickOrTreater' => $nextTrickOrTreater->getValue(),
             'candy' => $normalizer->normalize($halloweenService->getCandy($user), null, [ 'groups' => [ SerializationGroupEnum::MY_INVENTORY ] ]),
-            'totalCandyGiven' => $userQuestRepository->findOrCreate($user, 'Trick-or-Treaters Treated', 0)->getValue()
+            'totalCandyGiven' => UserQuestRepository::findOrCreate($em, $user, 'Trick-or-Treaters Treated', 0)->getValue()
         ]);
     }
 

@@ -10,9 +10,9 @@ use App\Enum\PetSkillEnum;
 use App\Functions\AdventureMath;
 use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\UserQuestRepository;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
-use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -24,19 +24,17 @@ class GatheringHolidayAdventureService
     private InventoryService $inventoryService;
     private ResponseService $responseService;
     private PetExperienceService $petExperienceService;
-    private UserQuestRepository $userQuestRepository;
     private IRandom $squirrel3;
     private EntityManagerInterface $em;
 
     public function __construct(
         InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        UserQuestRepository $userQuestRepository, IRandom $squirrel3, EntityManagerInterface $em
+        IRandom $squirrel3, EntityManagerInterface $em
     )
     {
         $this->inventoryService = $inventoryService;
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
-        $this->userQuestRepository = $userQuestRepository;
         $this->squirrel3 = $squirrel3;
         $this->em = $em;
     }
@@ -239,7 +237,7 @@ class GatheringHolidayAdventureService
 
         $difficulty = 10 + $level * 3;
 
-        $gotBehattingScrollThisEaster = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Easter ' . date('Y') . ' Behatting Scroll', false);
+        $gotBehattingScrollThisEaster = UserQuestRepository::findOrCreate($this->em, $pet->getOwner(), 'Easter ' . date('Y') . ' Behatting Scroll', false);
 
         if($gotBehattingScrollThisEaster->getValue() === false && $level >= 2)
         {

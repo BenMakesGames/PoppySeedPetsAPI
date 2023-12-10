@@ -11,9 +11,9 @@ use App\Functions\CalendarFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\EnchantmentRepository;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\UserQuestRepository;
 use App\Model\ParkEvent\ParkEventParticipant;
 use App\Model\PetChanges;
-use App\Repository\UserQuestRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ParkService
@@ -21,7 +21,6 @@ class ParkService
     public function __construct(
         private readonly IRandom $squirrel3,
         private readonly InventoryService $inventoryService,
-        private readonly UserQuestRepository $userQuestRepository,
         private readonly EntityManagerInterface $em,
         private readonly HattierService $hattierService,
         private readonly Clock $clock
@@ -107,7 +106,7 @@ class ParkService
                 $userId = $pet->getOwner()->getId();
 
                 if(!array_key_exists($userId, $birthdayPresentsByUser))
-                    $birthdayPresentsByUser[$userId] = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'PSP Birthday Present ' . date('Y-m-d'), 0);
+                    $birthdayPresentsByUser[$userId] = UserQuestRepository::findOrCreate($this->em, $pet->getOwner(), 'PSP Birthday Present ' . date('Y-m-d'), 0);
 
                 if($birthdayPresentsByUser[$userId]->getValue() < 2)
                 {

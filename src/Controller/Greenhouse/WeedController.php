@@ -13,8 +13,8 @@ use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PlayerLogHelpers;
+use App\Functions\UserQuestRepository;
 use App\Model\PetChanges;
-use App\Repository\UserQuestRepository;
 use App\Service\Clock;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -33,8 +33,8 @@ class WeedController extends AbstractController
     #[Route("/weed", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function weedPlants(
-        ResponseService $responseService, UserQuestRepository $userQuestRepository, EntityManagerInterface $em,
-        InventoryService $inventoryService, IRandom $squirrel3, Clock $clock
+        ResponseService $responseService, EntityManagerInterface $em, InventoryService $inventoryService,
+        IRandom $squirrel3, Clock $clock
     ): JsonResponse
     {
         /** @var User $user */
@@ -45,7 +45,7 @@ class WeedController extends AbstractController
         if(!$greenhouse)
             throw new PSPNotFoundException('You don\'t have a Greenhouse plot.');
 
-        $weeds = $userQuestRepository->findOrCreate($user, 'Greenhouse Weeds', (new \DateTimeImmutable())->modify('-1 minutes')->format('Y-m-d H:i:s'));
+        $weeds = UserQuestRepository::findOrCreate($em, $user, 'Greenhouse Weeds', (new \DateTimeImmutable())->modify('-1 minutes')->format('Y-m-d H:i:s'));
 
         $weedTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $weeds->getValue());
 

@@ -6,7 +6,7 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
-use App\Repository\UserQuestRepository;
+use App\Functions\UserQuestRepository;
 use App\Service\PetActivity\SagaSagaService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\CacheItemPoolInterface;
@@ -17,7 +17,6 @@ class HouseService
         private readonly PetActivityService $petActivityService,
         private readonly CacheItemPoolInterface $cache,
         private readonly EntityManagerInterface $em,
-        private readonly UserQuestRepository $userQuestRepository,
         private readonly InventoryService $inventoryService,
         private readonly IRandom $squirrel3,
         private readonly HouseSimService $houseSimService,
@@ -63,7 +62,7 @@ class HouseService
 
         if($user->getRegisteredOn() < (new \DateTimeImmutable())->modify('-8 hours'))
         {
-            $fruitBasket = $this->userQuestRepository->findOrCreate($user, 'Received Fruit Basket', false);
+            $fruitBasket = UserQuestRepository::findOrCreate($this->em, $user, 'Received Fruit Basket', false);
 
             if($fruitBasket->getValue() === false)
             {

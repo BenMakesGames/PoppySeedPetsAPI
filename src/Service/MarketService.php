@@ -11,9 +11,9 @@ use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\InventoryModifierFunctions;
+use App\Functions\UserQuestRepository;
 use App\Repository\MarketBidRepository;
 use App\Repository\MarketListingRepository;
-use App\Repository\UserQuestRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class MarketService
@@ -23,7 +23,6 @@ class MarketService
         private readonly UserStatsService $userStatsRepository,
         private readonly MarketBidRepository $marketBidRepository,
         private readonly TransactionService $transactionService,
-        private readonly UserQuestRepository $userQuestRepository,
         private readonly MarketListingRepository $marketListingRepository
     )
     {
@@ -147,7 +146,7 @@ class MarketService
     {
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::Market) && $user->hasUnlockedFeature(UnlockableFeatureEnum::Museum) && $user->getMaxSellPrice() >= 100)
         {
-            $receivedWingedKey = $this->userQuestRepository->findOrCreate($user, 'Received Winged Key', false);
+            $receivedWingedKey = UserQuestRepository::findOrCreate($this->em, $user, 'Received Winged Key', false);
 
             if(!$receivedWingedKey->getValue())
                 return true;

@@ -10,7 +10,7 @@ use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
-use App\Repository\UserQuestRepository;
+use App\Functions\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,7 +25,7 @@ class GuessFavoriteFlavorController extends AbstractController
     #[Route("/{pet}/guessFavoriteFlavor", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function guessFavoriteFlavor(
-        Pet $pet, Request $request, ResponseService $responseService, UserQuestRepository $userQuestRepository,
+        Pet $pet, Request $request, ResponseService $responseService,
         InventoryService $inventoryService, EntityManagerInterface $em
     )
     {
@@ -46,7 +46,7 @@ class GuessFavoriteFlavorController extends AbstractController
         if(!FlavorEnum::isAValue($guess))
             throw new PSPFormValidationException('Please pick a flavor.');
 
-        $flavorGuesses = $userQuestRepository->findOrCreate($user, 'Flavor Guesses for Pet #' . $pet->getId(), 0);
+        $flavorGuesses = UserQuestRepository::findOrCreate($em, $user, 'Flavor Guesses for Pet #' . $pet->getId(), 0);
 
         if($flavorGuesses->getValue() > 0 && $flavorGuesses->getLastUpdated()->format('Y-m-d') === date('Y-m-d'))
             throw new PSPInvalidOperationException('You already guessed today. Try again tomorrow.');

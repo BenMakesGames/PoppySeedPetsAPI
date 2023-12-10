@@ -14,9 +14,9 @@ use App\Functions\ArrayFunctions;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\SpiceRepository;
+use App\Functions\UserQuestRepository;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
-use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -283,7 +283,7 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openBakers(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository
+        UserStatsService $userStatsRepository, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -297,7 +297,7 @@ class BoxController extends AbstractController
         $location = $inventory->getLocation();
         $spice = $inventory->getSpice();
 
-        $freeBasicRecipes = $userQuestRepository->findOrCreate($user, 'Got free Basic Recipes', false);
+        $freeBasicRecipes = UserQuestRepository::findOrCreate($em, $user, 'Got free Basic Recipes', false);
         if(!$freeBasicRecipes->getValue())
         {
             $newInventory[] = $inventoryService->receiveItem('Cooking 101', $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
@@ -330,7 +330,7 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openFruitsNVeggies(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository
+        UserStatsService $userStatsRepository, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -345,7 +345,7 @@ class BoxController extends AbstractController
         $location = $inventory->getLocation();
         $spice = $inventory->getSpice();
 
-        $freeBasicRecipes = $userQuestRepository->findOrCreate($user, 'Got free Basic Recipes', false);
+        $freeBasicRecipes = UserQuestRepository::findOrCreate($em, $user, 'Got free Basic Recipes', false);
         if(!$freeBasicRecipes->getValue())
         {
             $newInventory[] = $inventoryService->receiveItem('Cooking 101', $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
@@ -607,7 +607,7 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function listenToJukebox(
         Inventory $inventory, ResponseService $responseService, PetExperienceService $petExperienceService,
-        EntityManagerInterface $em, UserQuestRepository $userQuestRepository
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -616,7 +616,7 @@ class BoxController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/jukebox/#/listen');
 
         $today = (new \DateTimeImmutable())->format('Y-m-d');
-        $listenedToJukebox = $userQuestRepository->findOrCreate($user, 'Listened to Jukebox', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
+        $listenedToJukebox = UserQuestRepository::findOrCreate($em, $user, 'Listened to Jukebox', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
 
         if($today === $listenedToJukebox->getValue())
             return $responseService->itemActionSuccess('You already listened to the Jukebox today. Everyone knows that Jukeboxes can only be listened to once per day.');

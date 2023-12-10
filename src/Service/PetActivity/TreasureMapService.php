@@ -23,10 +23,10 @@ use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
+use App\Functions\UserQuestRepository;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
-use App\Repository\UserQuestRepository;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -40,21 +40,18 @@ class TreasureMapService
     private UserStatsService $userStatsRepository;
     private EntityManagerInterface $em;
     private PetExperienceService $petExperienceService;
-    private UserQuestRepository $userQuestRepository;
     private IRandom $squirrel3;
     private HouseSimService $houseSimService;
 
     public function __construct(
         InventoryService $inventoryService, UserStatsService $userStatsRepository, EntityManagerInterface $em,
-        PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository, IRandom $squirrel3,
-        HouseSimService $houseSimService
+        PetExperienceService $petExperienceService, IRandom $squirrel3, HouseSimService $houseSimService
     )
     {
         $this->inventoryService = $inventoryService;
         $this->userStatsRepository = $userStatsRepository;
         $this->em = $em;
         $this->petExperienceService = $petExperienceService;
-        $this->userQuestRepository = $userQuestRepository;
         $this->squirrel3 = $squirrel3;
         $this->houseSimService = $houseSimService;
     }
@@ -435,7 +432,7 @@ class TreasureMapService
             {
                 if($fluffTradedStat->getValue() >= $tradeCount)
                 {
-                    $traded = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Fluffmonger Trade #' . $tradeCount, false);
+                    $traded = UserQuestRepository::findOrCreate($this->em, $pet->getOwner(), 'Fluffmonger Trade #' . $tradeCount, false);
                     if(!$traded->getValue())
                     {
                         $traded->setValue(true);

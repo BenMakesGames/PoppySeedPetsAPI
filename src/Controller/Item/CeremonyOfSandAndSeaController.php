@@ -7,7 +7,7 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ItemRepository;
-use App\Repository\UserQuestRepository;
+use App\Functions\UserQuestRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,8 +20,7 @@ class CeremonyOfSandAndSeaController extends AbstractController
     #[Route("/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function useItem(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        UserQuestRepository $userQuestRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -32,7 +31,7 @@ class CeremonyOfSandAndSeaController extends AbstractController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse))
             throw new PSPNotUnlockedException('Greenhouse');
 
-        $expandedGreenhouseWithShovel = $userQuestRepository->findOrCreate($user, 'Expanded Greenhouse with Ceremony of Sand and Sea', false);
+        $expandedGreenhouseWithShovel = UserQuestRepository::findOrCreate($em, $user, 'Expanded Greenhouse with Ceremony of Sand and Sea', false);
 
         if($expandedGreenhouseWithShovel->getValue())
             throw new PSPInvalidOperationException('The sea has already been summoned to your Greenhouse!');

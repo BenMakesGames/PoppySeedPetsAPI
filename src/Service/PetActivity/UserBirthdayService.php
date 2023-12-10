@@ -6,25 +6,22 @@ use App\Enum\LocationEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\UserQuestRepository;
 use App\Model\ComputedPetSkills;
-use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\MuseumService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class UserBirthdayService
 {
-    private UserQuestRepository $userQuestRepository;
     private InventoryService $inventoryService;
     private MuseumService $museumService;
     private EntityManagerInterface $em;
 
     public function __construct(
-        UserQuestRepository $userQuestRepository, InventoryService $inventoryService,
-        MuseumService $museumService, EntityManagerInterface $em
+        InventoryService $inventoryService, MuseumService $museumService, EntityManagerInterface $em
     )
     {
-        $this->userQuestRepository = $userQuestRepository;
         $this->inventoryService = $inventoryService;
         $this->museumService = $museumService;
         $this->em = $em;
@@ -36,7 +33,7 @@ class UserBirthdayService
         $user = $petWithSkills->getPet()->getOwner();
         $registeredOn = $user->getRegisteredOn();
 
-        $birthdayPresentsReceived = $this->userQuestRepository->findOrCreate($user, 'Birthday Presents Received', 0);
+        $birthdayPresentsReceived = UserQuestRepository::findOrCreate($this->em, $user, 'Birthday Presents Received', 0);
 
         $years = 2 + $birthdayPresentsReceived->getValue();
 

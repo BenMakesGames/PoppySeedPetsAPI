@@ -13,26 +13,17 @@ use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\ItemRepository;
+use App\Functions\UserQuestRepository;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\ItemQuantity;
 use App\Model\StoryStep;
 use App\Model\StoryStepChoice;
 use App\Repository\InventoryRepository;
-use App\Repository\UserQuestRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class StoryService
 {
-    private EntityManagerInterface $em;
-    private UserQuestRepository $userQuestRepository;
-    private InventoryService $inventoryService;
-    private InventoryRepository $inventoryRepository;
-    private JsonLogicParserService $jsonLogicParserService;
-    private UserStatsService $userStatsRepository;
-    private ResponseService $responseService;
-    private MuseumService $museumService;
-
     private User $user;
     private UserQuest $step;
     private Story $story;
@@ -42,20 +33,15 @@ class StoryService
     private Inventory $callingInventory;
 
     public function __construct(
-        EntityManagerInterface $em, UserQuestRepository $userQuestRepository,
-        InventoryService $inventoryService, JsonLogicParserService $jsonLogicParserService,
-        UserStatsService $userStatsRepository, InventoryRepository $inventoryRepository,
-        ResponseService $responseService, MuseumService $museumService
+        private readonly EntityManagerInterface $em,
+        private readonly InventoryService $inventoryService,
+        private readonly JsonLogicParserService $jsonLogicParserService,
+        private readonly UserStatsService $userStatsRepository,
+        private readonly InventoryRepository $inventoryRepository,
+        private readonly ResponseService $responseService,
+        private readonly MuseumService $museumService
     )
     {
-        $this->em = $em;
-        $this->userQuestRepository = $userQuestRepository;
-        $this->inventoryService = $inventoryService;
-        $this->jsonLogicParserService = $jsonLogicParserService;
-        $this->userStatsRepository = $userStatsRepository;
-        $this->inventoryRepository = $inventoryRepository;
-        $this->responseService = $responseService;
-        $this->museumService = $museumService;
     }
 
     /**
@@ -70,7 +56,7 @@ class StoryService
 
         $this->callingInventory = $callingInventory;
         $this->user = $user;
-        $this->step = $this->userQuestRepository->findOrCreate($user, $this->story->getQuestValue(), $this->story->getFirstSection()->getId());
+        $this->step = UserQuestRepository::findOrCreate($this->em, $user, $this->story->getQuestValue(), $this->story->getFirstSection()->getId());
 
         $this->setCurrentSection();
 
@@ -274,7 +260,7 @@ class StoryService
                 break;
 
             case StoryActionTypeEnum::SET_QUEST_VALUE:
-                $this->userQuestRepository->findOrCreate($this->user, $action['quest'], $action['value'])
+                UserQuestRepository::findOrCreate($this->em, $this->user, $action['quest'], $action['value'])
                     ->setValue($action['value'])
                 ;
                 break;

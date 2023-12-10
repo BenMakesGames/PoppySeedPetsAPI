@@ -14,9 +14,9 @@ use App\Functions\AdventureMath;
 use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\UserQuestRepository;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
-use App\Repository\UserQuestRepository;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -32,7 +32,6 @@ class FishingService
     private InventoryService $inventoryService;
     private PetExperienceService $petExperienceService;
     private TransactionService $transactionService;
-    private UserQuestRepository $userQuestRepository;
     private IRandom $squirrel3;
     private FieldGuideService $fieldGuideService;
     private GatheringDistractionService $gatheringDistractions;
@@ -40,7 +39,7 @@ class FishingService
 
     public function __construct(
         ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, UserQuestRepository $userQuestRepository, IRandom $squirrel3,
+        TransactionService $transactionService, IRandom $squirrel3,
         FieldGuideService $fieldGuideService, GatheringDistractionService $gatheringDistractions,
         EntityManagerInterface $em
     )
@@ -49,7 +48,6 @@ class FishingService
         $this->inventoryService = $inventoryService;
         $this->petExperienceService = $petExperienceService;
         $this->transactionService = $transactionService;
-        $this->userQuestRepository = $userQuestRepository;
         $this->squirrel3 = $squirrel3;
         $this->fieldGuideService = $fieldGuideService;
         $this->gatheringDistractions = $gatheringDistractions;
@@ -68,7 +66,7 @@ class FishingService
         $activityLog = null;
         $changes = new PetChanges($pet);
 
-        $fishedAMerchantFish = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Fished a Merchant Fish', false);
+        $fishedAMerchantFish = UserQuestRepository::findOrCreate($this->em, $pet->getOwner(), 'Fished a Merchant Fish', false);
 
         if(!$fishedAMerchantFish->getValue() || $this->squirrel3->rngNextInt(1, 100) === 1)
         {

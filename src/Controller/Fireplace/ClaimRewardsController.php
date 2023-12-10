@@ -10,7 +10,7 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\PlayerLogHelpers;
-use App\Repository\UserQuestRepository;
+use App\Functions\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -26,7 +26,7 @@ class ClaimRewardsController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function claimRewards(
         InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
-        UserQuestRepository $userQuestRepository, IRandom $squirrel3
+        IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -74,7 +74,7 @@ class ClaimRewardsController extends AbstractController
                 $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Oh! Hello!)', LocationEnum::HOME);
 
                 // triggers Hyssop letter #3
-                $oldValue = $userQuestRepository->findOrCreate($user, 'Can Receive Letters from Fairies', 0);
+                $oldValue = UserQuestRepository::findOrCreate($em, $user, 'Can Receive Letters from Fairies', 0);
                 if($oldValue->getValue() === 2)
                     $oldValue->setValue(3);
             }

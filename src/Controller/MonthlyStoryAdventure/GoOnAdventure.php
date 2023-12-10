@@ -10,8 +10,8 @@ use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Exceptions\PSPPetNotFoundException;
+use App\Functions\UserQuestRepository;
 use App\Repository\PetRepository;
-use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\MonthlyStoryAdventureService;
 use App\Service\ResponseService;
@@ -32,9 +32,7 @@ class GoOnAdventure extends AbstractController
         MonthlyStoryAdventureService $adventureService,
         PetRepository $petRepository,
         EntityManagerInterface $em,
-        ResponseService $responseService,
-        InventoryService $inventoryService,
-        UserQuestRepository $userQuestRepository
+        ResponseService $responseService
     )
     {
         /** @var User $user */
@@ -44,7 +42,7 @@ class GoOnAdventure extends AbstractController
             throw new PSPNotUnlockedException('★Kindred');
 
         $today = (new \DateTimeImmutable())->format('Y-m-d');
-        $playedStarKindred = $userQuestRepository->findOrCreate($user, 'Played ★Kindred', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
+        $playedStarKindred = UserQuestRepository::findOrCreate($em, $user, 'Played ★Kindred', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
 
         if($today === $playedStarKindred->getValue())
             throw new PSPInvalidOperationException('There\'s only time for one ★Kindred adventure per day. THEM\'S JUST THE RULES.');

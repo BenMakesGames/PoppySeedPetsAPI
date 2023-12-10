@@ -26,10 +26,10 @@ use App\Functions\MeritRepository;
 use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\SpiceRepository;
+use App\Functions\UserQuestRepository;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\PetRepository;
-use App\Repository\UserQuestRepository;
 use App\Service\Clock;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
@@ -54,7 +54,6 @@ class GatheringService
         private readonly EntityManagerInterface $em,
         private readonly PetFactory $petFactory,
         private readonly GatheringDistractionService $gatheringDistractions,
-        private readonly UserQuestRepository $userQuestRepository,
         private readonly Clock $clock,
         private readonly PetRelationshipService $petRelationshipService
     )
@@ -150,7 +149,7 @@ class GatheringService
     private function foundAbandonedQuarry(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $pobosFound = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Pobos Found', 0);
+        $pobosFound = UserQuestRepository::findOrCreate($this->em, $pet->getOwner(), 'Pobos Found', 0);
         $poboChance = 150 + (int)(200 * log10($pobosFound->getValue() + 1));
 
         if($this->squirrel3->rngNextInt(1, 2000) < $petWithSkills->getPerception()->getTotal())

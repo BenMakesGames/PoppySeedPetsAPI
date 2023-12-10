@@ -3,7 +3,7 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Entity\User;
-use App\Repository\UserQuestRepository;
+use App\Functions\UserQuestRepository;
 use App\Service\HotPotatoService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -20,7 +20,7 @@ class FlowerbombController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function toss(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
-        InventoryService $inventoryService, UserQuestRepository $userQuestRepository, HotPotatoService $hotPotatoService
+        InventoryService $inventoryService, HotPotatoService $hotPotatoService
     )
     {
         /** @var User $user */
@@ -28,7 +28,7 @@ class FlowerbombController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'flowerbomb/#/toss');
 
-        $lastFlowerBombWasNarcissistic = $userQuestRepository->findOrCreate($user, 'Last Flowerbomb was Narcissus', true);
+        $lastFlowerBombWasNarcissistic = UserQuestRepository::findOrCreate($em, $user, 'Last Flowerbomb was Narcissus', true);
         $numberOfTosses = HotPotatoService::countTosses($inventory);
         $isNarcissusBomb = $numberOfTosses === 0;
 

@@ -3,8 +3,8 @@ namespace App\Controller\PetShelter;
 
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
+use App\Functions\UserQuestRepository;
 use App\Repository\PetRepository;
-use App\Repository\UserQuestRepository;
 use App\Service\AdoptionService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,15 +18,14 @@ class GetController extends AbstractController
     #[Route("", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getAvailablePets(
-        AdoptionService $adoptionService, ResponseService $responseService, EntityManagerInterface $em,
-        UserQuestRepository $userQuestRepository
+        AdoptionService $adoptionService, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');
         /** @var User $user */
         $user = $this->getUser();
         $costToAdopt = $adoptionService->getAdoptionFee($user);
-        $lastAdopted = $userQuestRepository->findOneBy([ 'user' => $user, 'name' => 'Last Adopted a Pet' ]);
+        $lastAdopted = UserQuestRepository::find($em, $user, 'Last Adopted a Pet');
 
         if($lastAdopted && $lastAdopted->getValue() === $now)
         {

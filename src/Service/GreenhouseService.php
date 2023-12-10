@@ -19,10 +19,10 @@ use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\MeritRepository;
 use App\Functions\SpiceRepository;
+use App\Functions\UserQuestRepository;
 use App\Model\MeritInfo;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
-use App\Repository\UserQuestRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -34,7 +34,6 @@ class GreenhouseService
         private readonly IRandom $squirrel3,
         private readonly EntityManagerInterface $em,
         private readonly UserStatsService $userStatsRepository,
-        private readonly UserQuestRepository $userQuestRepository,
         private readonly NormalizerInterface $normalizer,
         private readonly Clock $clock
     )
@@ -204,7 +203,7 @@ class GreenhouseService
 
     public function getWeedText(User $user): ?string
     {
-        $weeds = $this->userQuestRepository->findOrCreate($user, 'Greenhouse Weeds', $this->clock->now->modify('-1 minutes')->format('Y-m-d H:i:s'));
+        $weeds = UserQuestRepository::findOrCreate($this->em, $user, 'Greenhouse Weeds', $this->clock->now->modify('-1 minutes')->format('Y-m-d H:i:s'));
 
         $weedTime = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $weeds->getValue());
 

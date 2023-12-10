@@ -3,23 +3,20 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Functions\CalendarFunctions;
+use App\Functions\UserQuestRepository;
 use App\Model\AvailableHolidayBox;
 use App\Model\ChineseCalendarInfo;
-use App\Repository\UserQuestRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 class PlazaService
 {
     private ChineseCalendarInfo $chineseCalendarInfo;
-    private UserQuestRepository $userQuestRepository;
-    private Clock $clock;
 
     public function __construct(
-        UserQuestRepository $userQuestRepository, Clock $clock
+        private readonly Clock $clock,
+        private readonly EntityManagerInterface $em
     )
     {
-        $this->userQuestRepository = $userQuestRepository;
-        $this->clock = $clock;
-
         $this->chineseCalendarInfo = CalendarFunctions::getChineseCalendarInfo($clock->now);
     }
 
@@ -37,7 +34,7 @@ class PlazaService
 
         if($this->chineseCalendarInfo->month === 1 && $this->chineseCalendarInfo->day <= 6)
         {
-            $gotBox = $this->userQuestRepository->findOrCreate($user, 'Chinese New Year, ' . $this->chineseCalendarInfo->year, false);
+            $gotBox = UserQuestRepository::findOrCreate($this->em, $user, 'Chinese New Year, ' . $this->chineseCalendarInfo->year, false);
 
             if(!$gotBox->getValue())
             {
@@ -53,7 +50,7 @@ class PlazaService
 
         if(CalendarFunctions::isEarthDay($this->clock->now))
         {
-            $gotEarthDaySeed = $this->userQuestRepository->findOrCreate($user, 'Earth Day, ' . $year, false);
+            $gotEarthDaySeed = UserQuestRepository::findOrCreate($this->em, $user, 'Earth Day, ' . $year, false);
 
             if(!$gotEarthDaySeed->getValue())
             {
@@ -69,7 +66,7 @@ class PlazaService
 
         if(CalendarFunctions::isSummerSolstice($this->clock->now))
         {
-            $gotGoodieBagsThisYear = $this->userQuestRepository->findOrCreate($user, 'Summer Solstice, ' . $year, false);
+            $gotGoodieBagsThisYear = UserQuestRepository::findOrCreate($this->em, $user, 'Summer Solstice, ' . $year, false);
 
             if(!$gotGoodieBagsThisYear->getValue())
             {
@@ -84,7 +81,7 @@ class PlazaService
         }
         else if(CalendarFunctions::isWinterSolstice($this->clock->now))
         {
-            $gotGoodieBagsThisYear = $this->userQuestRepository->findOrCreate($user, 'Winter Solstice, ' . $year, false);
+            $gotGoodieBagsThisYear = UserQuestRepository::findOrCreate($this->em, $user, 'Winter Solstice, ' . $year, false);
 
             if(!$gotGoodieBagsThisYear->getValue())
             {
@@ -100,7 +97,7 @@ class PlazaService
 
         if(CalendarFunctions::isJuly4th($this->clock->now))
         {
-            $gotBox = $this->userQuestRepository->findOrCreate($user, '4th of July, ' . $year, false);
+            $gotBox = UserQuestRepository::findOrCreate($this->em, $user, '4th of July, ' . $year, false);
 
             if(!$gotBox->getValue())
             {
@@ -116,7 +113,7 @@ class PlazaService
 
         if(CalendarFunctions::isEight($this->clock->now))
         {
-            $got8 = $this->userQuestRepository->findOrCreate($user, 'EIGHT, ' . $year, false);
+            $got8 = UserQuestRepository::findOrCreate($this->em, $user, 'EIGHT, ' . $year, false);
 
             if(!$got8->getValue())
             {
@@ -132,7 +129,7 @@ class PlazaService
 
         if(CalendarFunctions::isBastilleDay($this->clock->now))
         {
-            $gotBox = $this->userQuestRepository->findOrCreate($user, 'Bastille Day, ' . $year, false);
+            $gotBox = UserQuestRepository::findOrCreate($this->em, $user, 'Bastille Day, ' . $year, false);
 
             if(!$gotBox->getValue())
             {
@@ -148,7 +145,7 @@ class PlazaService
 
         if(CalendarFunctions::isCincoDeMayo($this->clock->now))
         {
-            $gotBox = $this->userQuestRepository->findOrCreate($user, 'Cinco de Mayo, ' . $year, false);
+            $gotBox = UserQuestRepository::findOrCreate($this->em, $user, 'Cinco de Mayo, ' . $year, false);
 
             if(!$gotBox->getValue())
             {
@@ -166,7 +163,7 @@ class PlazaService
         {
             $newYearYear = $month === 12 ? ($year + 1) : $year;
 
-            $gotBox = $this->userQuestRepository->findOrCreate($user, 'New Year, ' . $newYearYear, false);
+            $gotBox = UserQuestRepository::findOrCreate($this->em, $user, 'New Year, ' . $newYearYear, false);
 
             if(!$gotBox->getValue())
             {
@@ -182,7 +179,7 @@ class PlazaService
 
         if(CalendarFunctions::isAwaOdori($this->clock->now))
         {
-            $gotBox = $this->userQuestRepository->findOrCreate($user, 'Awa Odori, ' . $year, false);
+            $gotBox = UserQuestRepository::findOrCreate($this->em, $user, 'Awa Odori, ' . $year, false);
 
             if(!$gotBox->getValue())
             {

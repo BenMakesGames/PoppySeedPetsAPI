@@ -15,9 +15,9 @@ use App\Enum\UserStatEnum;
 use App\Functions\MeritRepository;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PetColorFunctions;
+use App\Functions\UserQuestRepository;
 use App\Model\PetShelterPet;
 use App\Repository\PetRepository;
-use App\Repository\UserQuestRepository;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\PetFactory;
@@ -30,21 +30,18 @@ class PregnancyService
     private EntityManagerInterface $em;
     private ResponseService $responseService;
     private PetExperienceService $petExperienceService;
-    private UserQuestRepository $userQuestRepository;
     private UserStatsService $userStatsRepository;
     private PetFactory $petFactory;
     private IRandom $squirrel3;
 
     public function __construct(
         EntityManagerInterface $em, ResponseService $responseService, PetExperienceService $petExperienceService,
-        UserQuestRepository $userQuestRepository, UserStatsService $userStatsRepository,
-        PetFactory $petFactory, IRandom $squirrel3
+        UserStatsService $userStatsRepository, PetFactory $petFactory, IRandom $squirrel3
     )
     {
         $this->em = $em;
         $this->responseService = $responseService;
         $this->petExperienceService = $petExperienceService;
-        $this->userQuestRepository = $userQuestRepository;
         $this->userStatsRepository = $userStatsRepository;
         $this->petFactory = $petFactory;
         $this->squirrel3 = $squirrel3;
@@ -225,7 +222,7 @@ class PregnancyService
             'a smiling', 'an intense-looking', 'a plump',
         ]);
 
-        $increasedPetLimitWithPetBirth = $this->userQuestRepository->findOrCreate($user, 'Increased Pet Limit with Pet Birth', false);
+        $increasedPetLimitWithPetBirth = UserQuestRepository::findOrCreate($this->em, $user, 'Increased Pet Limit with Pet Birth', false);
 
         if(!$increasedPetLimitWithPetBirth->getValue())
         {

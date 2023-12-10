@@ -7,14 +7,14 @@ use App\Entity\User;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ItemRepository;
-use App\Repository\UserQuestRepository;
+use App\Functions\UserQuestRepository;
 use App\Service\MuseumService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/item")]
 class WunderbussController extends AbstractController
@@ -22,7 +22,7 @@ class WunderbussController extends AbstractController
     #[Route("/wunderbuss/{inventory}/usedWish", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function usedWish(
-        Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -30,7 +30,7 @@ class WunderbussController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'wunderbuss');
 
-        $usedAWunderbuss = $userQuestRepository->findOrCreate($user, 'Used a Wunderbuss', false);
+        $usedAWunderbuss = UserQuestRepository::findOrCreate($em, $user, 'Used a Wunderbuss', false);
 
         return $responseService->success($usedAWunderbuss->getValue());
     }
@@ -39,7 +39,7 @@ class WunderbussController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function search(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        UserQuestRepository $userQuestRepository, MuseumService $museumService
+        MuseumService $museumService
     )
     {
         /** @var User $user */
@@ -47,7 +47,7 @@ class WunderbussController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'wunderbuss');
 
-        $usedAWunderbuss = $userQuestRepository->findOrCreate($user, 'Used a Wunderbuss', false);
+        $usedAWunderbuss = UserQuestRepository::findOrCreate($em, $user, 'Used a Wunderbuss', false);
 
         if($usedAWunderbuss->getValue())
             throw new PSPInvalidOperationException('You\'ve already wished for something from the Wunderbuss. (You only get one wish, unfortunately...)');

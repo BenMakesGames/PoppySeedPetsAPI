@@ -23,11 +23,12 @@ use App\Functions\DateFunctions;
 use App\Functions\InventoryModifierFunctions;
 use App\Functions\ItemRepository;
 use App\Functions\NumberFunctions;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
+use App\Functions\UserQuestRepository;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
-use App\Repository\UserQuestRepository;
 use App\Service\Clock;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
@@ -41,39 +42,20 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class HuntingService
 {
-    private ResponseService $responseService;
-    private InventoryService $inventoryService;
-    private UserStatsService $userStatsRepository;
-    private UserQuestRepository $userQuestRepository;
-    private PetExperienceService $petExperienceService;
-    private TransactionService $transactionService;
-    private WerecreatureEncounterService $werecreatureEncounterService;
-    private IRandom $squirrel3;
-    private GatheringDistractionService $gatheringDistractions;
-    private EntityManagerInterface $em;
-    private FieldGuideService $fieldGuideService;
-    private Clock $clock;
-
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService, UserStatsService $userStatsRepository,
-        UserQuestRepository $userQuestRepository, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, IRandom $squirrel3, Clock $clock, EntityManagerInterface $em,
-        WerecreatureEncounterService $werecreatureEncounterService, GatheringDistractionService $gatheringDistractions,
-        FieldGuideService $fieldGuideService
+        private readonly ResponseService $responseService,
+        private readonly InventoryService $inventoryService,
+        private readonly UserStatsService $userStatsRepository,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly TransactionService $transactionService,
+        private readonly IRandom $squirrel3,
+        private readonly Clock $clock,
+        private readonly EntityManagerInterface $em,
+        private readonly WerecreatureEncounterService $werecreatureEncounterService,
+        private readonly GatheringDistractionService $gatheringDistractions,
+        private readonly FieldGuideService $fieldGuideService
     )
     {
-        $this->responseService = $responseService;
-        $this->inventoryService = $inventoryService;
-        $this->userStatsRepository = $userStatsRepository;
-        $this->userQuestRepository = $userQuestRepository;
-        $this->petExperienceService = $petExperienceService;
-        $this->transactionService = $transactionService;
-        $this->squirrel3 = $squirrel3;
-        $this->werecreatureEncounterService = $werecreatureEncounterService;
-        $this->gatheringDistractions = $gatheringDistractions;
-        $this->em = $em;
-        $this->fieldGuideService = $fieldGuideService;
-        $this->clock = $clock;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -206,7 +188,7 @@ class HuntingService
             return false;
 
         // if you already rescued a second, then you can't rescue a second again :P
-        $rescuedASecond = $this->userQuestRepository->findOrCreate($user, 'Rescued Second House Fairy', false);
+        $rescuedASecond = UserQuestRepository::findOrCreate($this->em, $user, 'Rescued Second House Fairy', false);
 
         if($rescuedASecond->getValue())
             return false;
@@ -216,11 +198,11 @@ class HuntingService
 
     private function rescueHouseFairy(Pet $pet): PetActivityLog
     {
-        $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Rescued Second House Fairy', false)
+        UserQuestRepository::findOrCreate($this->em, $pet->getOwner(), 'Rescued Second House Fairy', false)
             ->setValue(true)
         ;
 
-        $activityLog = $this->responseService->createActivityLog($pet, 'While ' . '%pet:' . $pet->getId() . '.name% was out hunting, they spotted a Raccoon and Thieving Magpie fighting over a fairy! %pet:' . $pet->getId() . '.name% jumped in and chased the two creatures off before tending to the fairy\'s wounds.', '')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While ' . '%pet:' . $pet->getId() . '.name% was out hunting, they spotted a Raccoon and Thieving Magpie fighting over a fairy! %pet:' . $pet->getId() . '.name% jumped in and chased the two creatures off before tending to the fairy\'s wounds.')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Hunting', 'Fighting', 'Fae-kind' ]))
         ;
         $inventory = $this->inventoryService->petCollectsItem('House Fairy', $pet, 'Rescued from a Raccoon and Thieving Magpie.', $activityLog);

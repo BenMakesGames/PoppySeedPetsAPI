@@ -1,7 +1,6 @@
 <?php
 namespace App\Service;
 
-use App\Entity\Item;
 use App\Entity\User;
 use App\Entity\UserStats;
 use App\Enum\LocationEnum;
@@ -13,7 +12,7 @@ use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\CalendarFunctions;
 use App\Functions\ItemRepository;
-use App\Repository\UserQuestRepository;
+use App\Functions\UserQuestRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class BookstoreService
@@ -112,7 +111,6 @@ class BookstoreService
     ];
 
     public function __construct(
-        private readonly UserQuestRepository $userQuestRepository,
         private readonly InventoryService $inventoryService,
         private readonly EntityManagerInterface $em,
         private readonly Clock $clock
@@ -135,7 +133,7 @@ class BookstoreService
 
         $item = ItemRepository::findOneByName($this->em, $itemToGive);
 
-        $bookstoreQuestStep = $this->userQuestRepository->findOrCreate($user, self::BOOKSTORE_QUEST_NAME, 0);
+        $bookstoreQuestStep = UserQuestRepository::findOrCreate($this->em, $user, self::BOOKSTORE_QUEST_NAME, 0);
 
         $questStep = BookstoreService::getBookstoreQuestStep($bookstoreQuestStep->getValue());
 
@@ -303,7 +301,7 @@ class BookstoreService
     public function getRenamingScrollCost(User $user)
     {
         // 800 -> 250
-        $bookstoreQuestStep = $this->userQuestRepository->findOrCreate($user, self::BOOKSTORE_QUEST_NAME, 0);
+        $bookstoreQuestStep = UserQuestRepository::findOrCreate($this->em, $user, self::BOOKSTORE_QUEST_NAME, 0);
 
         return max(250, 800 - $bookstoreQuestStep->getValue() * 25);
     }
@@ -335,7 +333,7 @@ class BookstoreService
     {
         if($this->renamingScrollAvailable($user))
         {
-            $bookstoreQuestStep = $this->userQuestRepository->findOrCreate($user, BookstoreService::BOOKSTORE_QUEST_NAME, 0);
+            $bookstoreQuestStep = UserQuestRepository::findOrCreate($this->em, $user, BookstoreService::BOOKSTORE_QUEST_NAME, 0);
             $quest = BookstoreService::getBookstoreQuestStep($bookstoreQuestStep->getValue());
         }
         else

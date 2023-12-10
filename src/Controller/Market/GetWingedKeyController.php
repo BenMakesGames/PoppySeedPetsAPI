@@ -3,7 +3,7 @@ namespace App\Controller\Market;
 
 use App\Entity\User;
 use App\Enum\LocationEnum;
-use App\Repository\UserQuestRepository;
+use App\Functions\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\MarketService;
 use App\Service\MuseumService;
@@ -21,8 +21,7 @@ class GetWingedKeyController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getWingedKey(
         ResponseService $responseService, MarketService $marketService, MuseumService $museumService,
-        InventoryService $inventoryService, UserQuestRepository $userQuestRepository,
-        EntityManagerInterface $em
+        InventoryService $inventoryService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -31,7 +30,7 @@ class GetWingedKeyController extends AbstractController
         if(!$marketService->canOfferWingedKey($user))
             throw new AccessDeniedHttpException();
 
-        $userQuestRepository->findOrCreate($user, 'Received Winged Key', false)
+        UserQuestRepository::findOrCreate($em, $user, 'Received Winged Key', false)
             ->setValue(true)
         ;
 

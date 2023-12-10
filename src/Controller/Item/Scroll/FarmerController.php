@@ -6,7 +6,7 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
-use App\Repository\UserQuestRepository;
+use App\Functions\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
@@ -22,7 +22,7 @@ class FarmerController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function invokeFarmerScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, UserQuestRepository $userQuestRepository
+        UserStatsService $userStatsRepository, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -37,7 +37,7 @@ class FarmerController extends AbstractController
 
         if($user->getGreenhouse())
         {
-            $expandedGreenhouseWithFarmerScroll = $userQuestRepository->findOrCreate($user, 'Expanded Greenhouse with Farmer Scroll', false);
+            $expandedGreenhouseWithFarmerScroll = UserQuestRepository::findOrCreate($em, $user, 'Expanded Greenhouse with Farmer Scroll', false);
 
             if(!$expandedGreenhouseWithFarmerScroll->getValue())
             {

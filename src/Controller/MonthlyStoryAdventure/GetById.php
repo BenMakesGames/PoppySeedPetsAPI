@@ -7,10 +7,11 @@ use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
+use App\Functions\UserQuestRepository;
 use App\Repository\MonthlyStoryAdventureStepRepository;
 use App\Repository\UserMonthlyStoryAdventureStepCompletedRepository;
-use App\Repository\UserQuestRepository;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -24,9 +25,8 @@ class GetById extends AbstractController
         MonthlyStoryAdventure $story,
         MonthlyStoryAdventureStepRepository $monthlyStoryAdventureStepRepository,
         UserMonthlyStoryAdventureStepCompletedRepository $userMonthlyStoryAdventureStepCompletedRepository,
-        ResponseService $responseService, UserQuestRepository $userQuestRepository
+        ResponseService $responseService, EntityManagerInterface $em
     )
-
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -36,7 +36,7 @@ class GetById extends AbstractController
 
         $complete = $userMonthlyStoryAdventureStepCompletedRepository->findComplete($user, $story);
         $available = $monthlyStoryAdventureStepRepository->findAvailable($story, $complete);
-        $playedStarKindred = $userQuestRepository->findOrCreate($user, 'Played ★Kindred', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
+        $playedStarKindred = UserQuestRepository::findOrCreate($em, $user, 'Played ★Kindred', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
 
         $canNextPlayOn = \DateTimeImmutable::createFromFormat('Y-m-d', $playedStarKindred->getValue())->add(\DateInterval::createFromDateString('1 day'));
 

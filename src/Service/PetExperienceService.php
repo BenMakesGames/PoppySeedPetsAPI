@@ -16,8 +16,8 @@ use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\UserQuestRepository;
 use App\Functions\UserUnlockedFeatureHelpers;
-use App\Repository\UserQuestRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetExperienceService
@@ -28,7 +28,6 @@ class PetExperienceService
         private readonly IRandom $squirrel3,
         private readonly InventoryService $inventoryService,
         private readonly UserStatsService $userStatsRepository,
-        private readonly UserQuestRepository $userQuestRepository,
         private readonly HattierService $hattierService,
         private readonly EntityManagerInterface $em,
         private readonly Clock $clock
@@ -266,7 +265,7 @@ class PetExperienceService
 
     private function maybeGivePlayerTwuWuv(Pet $pet): bool
     {
-        $alreadyReceived = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Valentines ' . date('Y-m-d'), false);
+        $alreadyReceived = UserQuestRepository::findOrCreate($this->em, $pet->getOwner(), 'Valentines ' . date('Y-m-d'), false);
 
         if($alreadyReceived->getValue())
             return false;

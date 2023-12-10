@@ -15,10 +15,10 @@ use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
+use App\Functions\UserQuestRepository;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\PetQuestRepository;
-use App\Repository\UserQuestRepository;
 use App\Service\Clock;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
@@ -34,29 +34,16 @@ class ChocolateMansion
     private const QUEST_VALUE_ALL_EXCEPT_CELLAR_AND_ATTIC = 6;
     private const QUEST_VALUE_FULL_ACCESS = 8;
 
-    private UserQuestRepository $userQuestRepository;
-    private InventoryService $inventoryService;
-    private PetExperienceService $petExperienceService;
-    private PetQuestRepository $petQuestRepository;
-    private EntityManagerInterface $em;
-    private IRandom $rng;
-    private FieldGuideService $fieldGuideService;
-    private Clock $clock;
-
     public function __construct(
-        UserQuestRepository $userQuestRepository, IRandom $squirrel3, InventoryService $inventoryService,
-        PetExperienceService $petExperienceService, PetQuestRepository $petQuestRepository, EntityManagerInterface $em,
-        FieldGuideService $fieldGuideService, Clock $clock
+        private readonly IRandom $rng,
+        private readonly InventoryService $inventoryService,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly PetQuestRepository $petQuestRepository,
+        private readonly EntityManagerInterface $em,
+        private readonly FieldGuideService $fieldGuideService,
+        private readonly Clock $clock
     )
     {
-        $this->userQuestRepository = $userQuestRepository;
-        $this->rng = $squirrel3;
-        $this->inventoryService = $inventoryService;
-        $this->petExperienceService = $petExperienceService;
-        $this->petQuestRepository = $petQuestRepository;
-        $this->em = $em;
-        $this->fieldGuideService = $fieldGuideService;
-        $this->clock = $clock;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -66,7 +53,7 @@ class ChocolateMansion
         $this->em->remove($pet->getTool());
         $pet->setTool(null);
 
-        $roomsAvailableQuest = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Chocolate Mansion Rooms', self::QUEST_VALUE_PATIO_ONLY);
+        $roomsAvailableQuest = UserQuestRepository::findOrCreate($this->em, $pet->getOwner(), 'Chocolate Mansion Rooms', self::QUEST_VALUE_PATIO_ONLY);
 
         $petFurthestRoom = $this->petQuestRepository->findOrCreate($pet, 'Chocolate Mansion Furthest Room', self::QUEST_VALUE_UP_TO_FOYER);
 

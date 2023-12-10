@@ -5,7 +5,7 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPNotEnoughCurrencyException;
-use App\Repository\UserQuestRepository;
+use App\Functions\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -22,7 +22,7 @@ class TelephoneController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function pizza(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        UserQuestRepository $userQuestRepository, TransactionService $transactionService, IRandom $rng,
+        TransactionService $transactionService, IRandom $rng,
         InventoryService $inventoryService
     )
     {
@@ -33,7 +33,7 @@ class TelephoneController extends AbstractController
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $today = (new \DateTimeImmutable())->format('Y-m-d');
-        $orderedDeliveryFood = $userQuestRepository->findOrCreate($user, 'Ordered Delivery Food', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
+        $orderedDeliveryFood = UserQuestRepository::findOrCreate($em, $user, 'Ordered Delivery Food', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
 
         if($today === $orderedDeliveryFood->getValue())
             return $responseService->itemActionSuccess('You can only order delivery food once per day. (More than that is just irresponsible!)');

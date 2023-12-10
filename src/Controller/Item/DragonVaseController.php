@@ -17,9 +17,9 @@ use App\Functions\EnchantmentRepository;
 use App\Functions\GrammarFunctions;
 use App\Functions\InventoryModifierFunctions;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\UserQuestRepository;
 use App\Model\PetChanges;
 use App\Repository\PetRepository;
-use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -111,7 +111,7 @@ class DragonVaseController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
-        UserQuestRepository $userQuestRepository, Request $request, UserStatsService $userStatsRepository
+        Request $request, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -137,7 +137,7 @@ class DragonVaseController extends AbstractController
             throw new PSPInvalidOperationException('That item is not a tool! Dipping it into the vase would accomplish NOTHING.');
 
         $today = (new \DateTimeImmutable())->format('Y-m-d');
-        $usedDragonVase = $userQuestRepository->findOrCreate($user, 'Used Dragon Vase', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
+        $usedDragonVase = UserQuestRepository::findOrCreate($em, $user, 'Used Dragon Vase', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
 
         if($today === $usedDragonVase->getValue())
             throw new PSPInvalidOperationException('You already dipped something into a Dragon Vase today. You\'ll just have to wait for tomorrow!');

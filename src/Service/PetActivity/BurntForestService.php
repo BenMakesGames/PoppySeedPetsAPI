@@ -14,9 +14,9 @@ use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
+use App\Functions\UserQuestRepository;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
-use App\Repository\UserQuestRepository;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
 use App\Service\InventoryService;
@@ -26,27 +26,15 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class BurntForestService
 {
-    private PetExperienceService $petExperienceService;
-    private InventoryService $inventoryService;
-    private UserQuestRepository $userQuestRepository;
-    private IRandom $squirrel3;
-    private HattierService $hattierService;
-    private EntityManagerInterface $em;
-    private FieldGuideService $fieldGuideService;
-
     public function __construct(
-        PetExperienceService $petExperienceService, InventoryService $inventoryService,
-        UserQuestRepository $userQuestRepository, IRandom $squirrel3, HattierService $hattierService,
-        EntityManagerInterface $em, FieldGuideService $fieldGuideService
+        private readonly PetExperienceService $petExperienceService,
+        private readonly InventoryService $inventoryService,
+        private readonly IRandom $squirrel3,
+        private readonly HattierService $hattierService,
+        private readonly EntityManagerInterface $em,
+        private readonly FieldGuideService $fieldGuideService
     )
     {
-        $this->petExperienceService = $petExperienceService;
-        $this->inventoryService = $inventoryService;
-        $this->userQuestRepository = $userQuestRepository;
-        $this->squirrel3 = $squirrel3;
-        $this->hattierService = $hattierService;
-        $this->em = $em;
-        $this->fieldGuideService = $fieldGuideService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -179,7 +167,7 @@ class BurntForestService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
             // triggers Hyssop letter #1
-            $oldValue = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Can Receive Letters from Fairies', 0);
+            $oldValue = UserQuestRepository::findOrCreate($this->em, $pet->getOwner(), 'Can Receive Letters from Fairies', 0);
             if($oldValue->getValue() === 0)
                 $oldValue->setValue(1);
         }
@@ -316,7 +304,7 @@ class BurntForestService
                 }
 
                 // triggers Hyssop letter #2
-                $oldValue = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Can Receive Letters from Fairies', 0);
+                $oldValue = UserQuestRepository::findOrCreate($this->em, $pet->getOwner(), 'Can Receive Letters from Fairies', 0);
                 if($oldValue->getValue() === 1)
                     $oldValue->setValue(2);
             }

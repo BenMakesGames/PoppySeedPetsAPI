@@ -10,8 +10,8 @@ use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
 use App\Functions\MeritRepository;
 use App\Functions\PetColorFunctions;
+use App\Functions\UserQuestRepository;
 use App\Repository\PetRepository;
-use App\Repository\UserQuestRepository;
 use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
@@ -107,7 +107,7 @@ class EggController extends AbstractController
     #[Route("/weird-blue/{inventory}/hatch", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function hatchWeirdBlueEgg(
-        Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
+        Inventory $inventory, ResponseService $responseService,
         EntityManagerInterface $em, PetFactory $petFactory, IRandom $squirrel3
     )
     {
@@ -126,8 +126,8 @@ class EggController extends AbstractController
         if($location !== LocationEnum::HOME)
             return $responseService->itemActionSuccess('You can\'t hatch it here! Take it to your house, quick!');
 
-        $increasedPetLimitWithEgg = $userQuestRepository->findOrCreate($user, 'Increased Pet Limit with Weird, Blue Egg', false);
-        $increasedPetLimitWithMetalBox = $userQuestRepository->findOrCreate($user, 'Increased Pet Limit with Metal Box', false);
+        $increasedPetLimitWithEgg = UserQuestRepository::findOrCreate($em, $user, 'Increased Pet Limit with Weird, Blue Egg', false);
+        $increasedPetLimitWithMetalBox = UserQuestRepository::findOrCreate($em, $user, 'Increased Pet Limit with Metal Box', false);
 
         $message = "Whoa! A weird creature popped out! It kind of looks like a monkey, but without arms. Also: a glowing tail. (Also: I feel like monkeys don't hatch from eggs?)";
 
@@ -186,7 +186,7 @@ class EggController extends AbstractController
     #[Route("/metalBox/{inventory}/open", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openMetalBox(
-        Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
+        Inventory $inventory, ResponseService $responseService,
         EntityManagerInterface $em, PetFactory $petFactory, IRandom $squirrel3
     )
     {
@@ -205,8 +205,8 @@ class EggController extends AbstractController
         if($location !== LocationEnum::HOME)
             return $responseService->itemActionSuccess('You can\'t open it here! Take it to your house, quick!');
 
-        $increasedPetLimitWithEgg = $userQuestRepository->findOrCreate($user, 'Increased Pet Limit with Weird, Blue Egg', false);
-        $increasedPetLimitWithMetalBox = $userQuestRepository->findOrCreate($user, 'Increased Pet Limit with Metal Box', false);
+        $increasedPetLimitWithEgg = UserQuestRepository::findOrCreate($em, $user, 'Increased Pet Limit with Weird, Blue Egg', false);
+        $increasedPetLimitWithMetalBox = UserQuestRepository::findOrCreate($em, $user, 'Increased Pet Limit with Metal Box', false);
 
         $message = "Whoa! A weird creature popped out! It's some kinda' robot! But without arms?";
 

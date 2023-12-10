@@ -11,9 +11,9 @@ use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Functions\ArrayFunctions;
 use App\Functions\MeritRepository;
 use App\Functions\ProfanityFilterFunctions;
+use App\Functions\UserQuestRepository;
 use App\Model\PetShelterPet;
 use App\Repository\PetRepository;
-use App\Repository\UserQuestRepository;
 use App\Service\AdoptionService;
 use App\Service\IRandom;
 use App\Service\PetFactory;
@@ -33,7 +33,7 @@ class AdoptController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function adoptPet(
         int $id, AdoptionService $adoptionService, Request $request, ResponseService $responseService,
-        EntityManagerInterface $em, UserStatsService $userStatsRepository, UserQuestRepository $userQuestRepository,
+        EntityManagerInterface $em, UserStatsService $userStatsRepository,
         TransactionService $transactionService, IRandom $rng, PetFactory $petFactory
     )
     {
@@ -41,7 +41,7 @@ class AdoptController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         $costToAdopt = $adoptionService->getAdoptionFee($user);
-        $lastAdopted = $userQuestRepository->findOneBy([ 'user' => $user, 'name' => 'Last Adopted a Pet' ]);
+        $lastAdopted = UserQuestRepository::find($em, $user, 'Last Adopted a Pet');
 
         if($lastAdopted && $lastAdopted->getValue() === $now)
             throw new PSPInvalidOperationException('You cannot adopt another pet today.');
@@ -90,7 +90,7 @@ class AdoptController extends AbstractController
 
         $now = (new \DateTimeImmutable())->format('Y-m-d');
 
-        $userQuestRepository->findOrCreate($user, 'Last Adopted a Pet', $now)
+        UserQuestRepository::findOrCreate($em, $user, 'Last Adopted a Pet', $now)
             ->setValue($now)
         ;
 

@@ -12,10 +12,10 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetColorFunctions;
+use App\Functions\UserQuestRepository;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Repository\InventoryRepository;
 use App\Repository\PetRepository;
-use App\Repository\UserQuestRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
@@ -61,8 +61,7 @@ class HouseFairyController extends AbstractController
     #[Route("/{inventory}/hello", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function sayHello(
-        Inventory $inventory, ResponseService $responseService, UserQuestRepository $userQuestRepository,
-        EntityManagerInterface $em
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -70,7 +69,7 @@ class HouseFairyController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'fairy/#/hello');
 
-        $saidHello = $userQuestRepository->findOrCreate($user, 'Said Hello to House Fairy', false);
+        $saidHello = UserQuestRepository::findOrCreate($em, $user, 'Said Hello to House Fairy', false);
 
         if(!$saidHello->getValue())
         {

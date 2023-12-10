@@ -11,8 +11,8 @@ use App\Exceptions\PSPNotFoundException;
 use App\Functions\GrammarFunctions;
 use App\Functions\InventoryModifierFunctions;
 use App\Functions\SpiceRepository;
+use App\Functions\UserQuestRepository;
 use App\Repository\InventoryRepository;
-use App\Repository\UserQuestRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
@@ -29,8 +29,7 @@ class HotPotController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
-        UserQuestRepository $userQuestRepository, Request $request, InventoryRepository $inventoryRepository,
-        UserStatsService $userStatsRepository
+        Request $request, InventoryRepository $inventoryRepository, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -56,7 +55,7 @@ class HotPotController extends AbstractController
             throw new PSPInvalidOperationException('That item is not a food! Dipping it into the Hot Pot would accomplish NOTHING.');
 
         $today = (new \DateTimeImmutable())->format('Y-m-d');
-        $usedHotPot = $userQuestRepository->findOrCreate($user, 'Used Hot Pot', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
+        $usedHotPot = UserQuestRepository::findOrCreate($em, $user, 'Used Hot Pot', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
 
         if($today === $usedHotPot->getValue())
             throw new PSPInvalidOperationException('You already dipped something into a Hot Pot today. You\'ll just have to wait for tomorrow!');

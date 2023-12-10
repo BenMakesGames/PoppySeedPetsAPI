@@ -17,10 +17,10 @@ use App\Functions\MeritRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\SpiceRepository;
+use App\Functions\UserQuestRepository;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
-use App\Repository\UserQuestRepository;
 use App\Service\DragonHostageService;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
@@ -33,35 +33,18 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class GenericAdventureService
 {
-    private InventoryService $inventoryService;
-    private PetExperienceService $petExperienceService;
-    private UserQuestRepository $userQuestRepository;
-    private TransactionService $transactionService;
-    private IRandom $rng;
-    private HattierService $hattierService;
-    private UserBirthdayService $userBirthdayService;
-    private DragonHostageService $dragonHostageService;
-    private EntityManagerInterface $em;
-    private FieldGuideService $fieldGuideService;
-
     public function __construct(
-        InventoryService $inventoryService,
-        PetExperienceService $petExperienceService, UserQuestRepository $userQuestRepository,
-        TransactionService $transactionService, IRandom $rng, HattierService $hattierService,
-        UserBirthdayService $userBirthdayService, DragonHostageService $dragonHostageService,
-        EntityManagerInterface $em, FieldGuideService $fieldGuideService
+        private readonly InventoryService $inventoryService,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly TransactionService $transactionService,
+        private readonly IRandom $rng,
+        private readonly HattierService $hattierService,
+        private readonly UserBirthdayService $userBirthdayService,
+        private readonly DragonHostageService $dragonHostageService,
+        private readonly EntityManagerInterface $em,
+        private readonly FieldGuideService $fieldGuideService
     )
     {
-        $this->inventoryService = $inventoryService;
-        $this->userQuestRepository = $userQuestRepository;
-        $this->petExperienceService = $petExperienceService;
-        $this->transactionService = $transactionService;
-        $this->rng = $rng;
-        $this->hattierService = $hattierService;
-        $this->userBirthdayService = $userBirthdayService;
-        $this->dragonHostageService = $dragonHostageService;
-        $this->em = $em;
-        $this->fieldGuideService = $fieldGuideService;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -111,7 +94,7 @@ class GenericAdventureService
         if($birthdayEvent)
             return $birthdayEvent;
 
-        $rescuedAFairy = $this->userQuestRepository->findOrCreate($pet->getOwner(), 'Rescued a House Fairy from a Raccoon', null);
+        $rescuedAFairy = UserQuestRepository::findOrCreate($this->em, $pet->getOwner(), 'Rescued a House Fairy from a Raccoon', null);
         if(!$rescuedAFairy->getValue())
         {
             $rescuedAFairy->setValue((new \DateTimeImmutable())->format('Y-m-d H:i:s'));

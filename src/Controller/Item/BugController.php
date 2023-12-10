@@ -14,8 +14,8 @@ use App\Exceptions\PSPNotFoundException;
 use App\Functions\ColorFunctions;
 use App\Functions\ItemRepository;
 use App\Functions\MeritRepository;
+use App\Functions\UserQuestRepository;
 use App\Repository\PetRepository;
-use App\Repository\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetFactory;
@@ -35,7 +35,7 @@ class BugController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function squishBug(
         Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
-        EntityManagerInterface $em, UserQuestRepository $userQuestRepository
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -43,7 +43,7 @@ class BugController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'bug/#/squish');
 
-        $promised = $userQuestRepository->findOrCreate($user, 'Promised to Not Squish Bugs', 0);
+        $promised = UserQuestRepository::findOrCreate($em, $user, 'Promised to Not Squish Bugs', 0);
 
         if($promised->getValue())
             return $responseService->itemActionSuccess('You\'ve promised not to squish any more bugs...');

@@ -9,8 +9,8 @@ use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
+use App\Functions\UserQuestRepository;
 use App\Repository\TraderRepository;
-use App\Repository\UserQuestRepository;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -64,8 +64,7 @@ class TraderController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function makeExchange(
         string $id, TraderService $traderService, ResponseService $responseService, EntityManagerInterface $em,
-        UserQuestRepository $userQuestRepository, InventoryService $inventoryService, Request $request,
-        FieldGuideService $fieldGuideService
+        InventoryService $inventoryService, Request $request, FieldGuideService $fieldGuideService
     )
     {
         /** @var User $user */
@@ -99,7 +98,7 @@ class TraderController extends AbstractController
         // october
         if((int)$now->format('n') === 10)
         {
-            $quest = $userQuestRepository->findOrCreate($user, 'Get October ' . $now->format('Y') . ' Behatting Scroll', false);
+            $quest = UserQuestRepository::findOrCreate($em, $user, 'Get October ' . $now->format('Y') . ' Behatting Scroll', false);
             if($quest->getValue() === false)
             {
                 $quest->setValue(true);

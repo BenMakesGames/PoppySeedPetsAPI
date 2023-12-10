@@ -5,7 +5,7 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\EnchantmentRepository;
-use App\Repository\UserQuestRepository;
+use App\Functions\UserQuestRepository;
 use App\Service\HattierService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,7 +20,7 @@ class FireworkController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        HattierService $hattierService, UserQuestRepository $userQuestRepository
+        HattierService $hattierService
     )
     {
         /** @var User $user */
@@ -43,7 +43,7 @@ class FireworkController extends AbstractController
         if($hattierService->userHasUnlocked($user, $aura))
             return $responseService->itemActionSuccess('You\'ve already unlocked the "' . $aura->getAura()->getName() . '" hat styling.');
 
-        $unlockedAnyFirework = $userQuestRepository->findOrCreate($user, 'Unlocked Any Firework Styling', false);
+        $unlockedAnyFirework = UserQuestRepository::findOrCreate($em, $user, 'Unlocked Any Firework Styling', false);
 
         if(!$unlockedAnyFirework->getValue())
         {

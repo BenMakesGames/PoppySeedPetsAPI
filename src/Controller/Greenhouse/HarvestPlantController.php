@@ -18,7 +18,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\EnchantmentRepository;
 use App\Functions\GrammarFunctions;
-use App\Repository\UserQuestRepository;
+use App\Functions\UserQuestRepository;
 use App\Service\FieldGuideService;
 use App\Service\GreenhouseService;
 use App\Service\HattierService;
@@ -43,7 +43,7 @@ class HarvestPlantController extends AbstractController
     public function harvestPlant(
         GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService, UserStatsService $userStatsRepository,
-        UserQuestRepository $userQuestRepository, GreenhouseAdventureService $greenhouseAdventureService,
+        GreenhouseAdventureService $greenhouseAdventureService,
         GreenhouseService $greenhouseService, IRandom $squirrel3, FieldGuideService $fieldGuideService,
         HattierService $hattierService, TransactionService $transactionService,
         NoetalaAdventureService $noetalaAdventureService
@@ -68,7 +68,7 @@ class HarvestPlantController extends AbstractController
         {
             if($plant->getPlant()->getName() === 'Magic Beanstalk')
             {
-                $expandedGreenhouseWithMagicBeanstalk = $userQuestRepository->findOrCreate($user, 'Expanded Greenhouse with Magic Bean-stalk', false);
+                $expandedGreenhouseWithMagicBeanstalk = UserQuestRepository::findOrCreate($em, $user, 'Expanded Greenhouse with Magic Bean-stalk', false);
 
                 if(!$expandedGreenhouseWithMagicBeanstalk->getValue())
                 {

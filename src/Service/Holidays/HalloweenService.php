@@ -6,37 +6,29 @@ use App\Entity\Pet;
 use App\Entity\User;
 use App\Entity\UserQuest;
 use App\Enum\LocationEnum;
-use App\Repository\UserQuestRepository;
+use App\Functions\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HalloweenService
 {
-    private UserQuestRepository $userQuestRepository;
-    private InventoryService $inventoryService;
-    private EntityManagerInterface $em;
-    private IRandom $rng;
-
     public function __construct(
-        UserQuestRepository $userQuestRepository, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng
+        private readonly InventoryService $inventoryService,
+        private readonly EntityManagerInterface $em,
+        private readonly IRandom $rng
     )
     {
-        $this->userQuestRepository = $userQuestRepository;
-        $this->inventoryService = $inventoryService;
-        $this->em = $em;
-        $this->rng = $rng;
     }
 
     public function getNextTrickOrTreater(User $user): UserQuest
     {
-        return $this->userQuestRepository->findOrCreate($user, 'Next Trick-or-Treater', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d H:i:s'));
+        return UserQuestRepository::findOrCreate($this->em, $user, 'Next Trick-or-Treater', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d H:i:s'));
     }
 
     public function getTrickOrTreater(User $user): ?Pet
     {
-        $trickOrTreater = $this->userQuestRepository->findOrCreate($user, 'Trick-or-Treater', 0);
+        $trickOrTreater = UserQuestRepository::findOrCreate($this->em, $user, 'Trick-or-Treater', 0);
 
         $pet = $trickOrTreater->getValue() === 0 ? null : $this->em->getRepository(Pet::class)->find($trickOrTreater->getValue());
 
@@ -90,18 +82,18 @@ class HalloweenService
 
     public function resetTrickOrTreater(User $user)
     {
-        $this->userQuestRepository->findOrCreate($user, 'Trick-or-Treater', 0)
+        UserQuestRepository::findOrCreate($this->em, $user, 'Trick-or-Treater', 0)
             ->setValue(0)
         ;
 
-        $this->userQuestRepository->findOrCreate($user, 'Next Trick-or-Treater', '')
+        UserQuestRepository::findOrCreate($this->em, $user, 'Next Trick-or-Treater', '')
             ->setValue((new \DateTimeImmutable())->modify('+15 minutes')->format('Y-m-d H:i:s'))
         ;
     }
 
     public function countCandyGiven(User $user, Pet $trickOrTreater, bool $toGivingTree): ?Inventory
     {
-        $treated = $this->userQuestRepository->findOrCreate($user, 'Trick-or-Treaters Treated', 0);
+        $treated = UserQuestRepository::findOrCreate($this->em, $user, 'Trick-or-Treaters Treated', 0);
 
         $treated->setValue($treated->getValue() + 1);
 
