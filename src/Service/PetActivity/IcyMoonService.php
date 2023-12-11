@@ -22,7 +22,6 @@ use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
-use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class IcyMoonService
