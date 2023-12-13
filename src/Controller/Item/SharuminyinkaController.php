@@ -30,7 +30,7 @@ class SharuminyinkaController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'sharuminyinka/#/createHope');
 
-        $houseInventoryQuantities = $inventoryRepository->getInventoryQuantities($user, LocationEnum::HOME, 'name');
+        $location = $inventory->getLocation();
 
         $exchange = TraderOffer::createTradeOffer(
             [
@@ -44,16 +44,16 @@ class SharuminyinkaController extends AbstractController
             ],
             '',
             $user,
-            $houseInventoryQuantities
+            []
         );
 
-        if(!$traderService->userCanMakeExchange($user, $exchange))
+        if(!$traderService->userCanMakeExchange($user, $exchange, $location))
         {
             return $responseService->itemActionSuccess('You need a Poker, Spider, Feathers, and Quintessence to do this.');
         }
         else
         {
-            $traderService->makeExchange($user, $exchange, 1, $user->getName() . ' made this, using ' . $inventory->getItem()->getName() . '.');
+            $traderService->makeExchange($user, $exchange, $location, 1, $user->getName() . ' made this, using ' . $inventory->getItem()->getName() . '.');
 
             $em->flush();
 
@@ -72,6 +72,8 @@ class SharuminyinkaController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'sharuminyinka/#/createMemory');
 
+        $location = $inventory->getLocation();
+
         $exchange = TraderOffer::createTradeOffer(
             [
                 TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Crazy-hot Torch'), 1),
@@ -87,13 +89,13 @@ class SharuminyinkaController extends AbstractController
             []
         );
 
-        if(!$traderService->userCanMakeExchange($user, $exchange))
+        if(!$traderService->userCanMakeExchange($user, $exchange, $location))
         {
             return $responseService->itemActionSuccess('You need a Crazy-hot Torch, Blackonite, String, and Quintessence to do this.');
         }
         else
         {
-            $traderService->makeExchange($user, $exchange, 1, $user->getName() . ' made this, using ' . $inventory->getItem()->getName() . '.');
+            $traderService->makeExchange($user, $exchange, $location, 1, $user->getName() . ' made this, using ' . $inventory->getItem()->getName() . '.');
 
             $em->flush();
 

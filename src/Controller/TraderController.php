@@ -86,10 +86,10 @@ class TraderController extends AbstractController
         if(!$exchange)
             throw new PSPNotFoundException('There is no such exchange available.');
 
-        if(!$traderService->userCanMakeExchange($user, $exchange))
+        if(!$traderService->userCanMakeExchange($user, $exchange, LocationEnum::HOME))
             throw new PSPNotFoundException('The items you need to make this exchange could not be found in your house.');
 
-        $traderService->makeExchange($user, $exchange, $quantity);
+        $traderService->makeExchange($user, $exchange, LocationEnum::HOME, $quantity);
 
         $message = null;
 

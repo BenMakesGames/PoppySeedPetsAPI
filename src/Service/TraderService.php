@@ -1297,14 +1297,14 @@ class TraderService
         ];
     }
 
-    public function userCanMakeExchange(User $user, TraderOffer $exchange): bool
+    public function userCanMakeExchange(User $user, TraderOffer $exchange, int $location): bool
     {
         foreach($exchange->cost as $cost)
         {
             switch($cost->type)
             {
                 case CostOrYieldTypeEnum::ITEM:
-                    $quantity = InventoryService::countInventory($this->em, $user->getId(), $cost->item->getId(), LocationEnum::HOME);
+                    $quantity = InventoryService::countInventory($this->em, $user->getId(), $cost->item->getId(), $location);
 
                     if($quantity < $cost->quantity)
                         return false;
@@ -1334,14 +1334,14 @@ class TraderService
     /**
      * CAREFUL: Also used by some items, to perform transmutations.
      */
-    public function makeExchange(User $user, TraderOffer $exchange, int $quantity, string $itemDescription = 'Received by trading with the Trader.')
+    public function makeExchange(User $user, TraderOffer $exchange, int $location, int $quantity, string $itemDescription = 'Received by trading with the Trader.')
     {
         foreach($exchange->cost as $cost)
         {
             switch($cost->type)
             {
                 case CostOrYieldTypeEnum::ITEM:
-                    $itemQuantity = $this->inventoryService->loseItem($user, $cost->item->getId(), LocationEnum::HOME, $cost->quantity * $quantity);
+                    $itemQuantity = $this->inventoryService->loseItem($user, $cost->item->getId(), $location, $cost->quantity * $quantity);
 
                     if($itemQuantity < $cost->quantity * $quantity)
                         throw new PSPNotFoundException('You do not have the items needed to make this exchange. (Expected ' . ($cost->quantity * $quantity) . ' items; only found ' . $itemQuantity . '.)');
@@ -1378,7 +1378,7 @@ class TraderService
             {
                 case CostOrYieldTypeEnum::ITEM:
                     for($i = 0; $i < $yield->quantity * $quantity; $i++)
-                        $this->inventoryService->receiveItem($yield->item, $user, null, $itemDescription, LocationEnum::HOME, $exchange->lockedToAccount);
+                        $this->inventoryService->receiveItem($yield->item, $user, null, $itemDescription, $location, $exchange->lockedToAccount);
 
                     break;
 

@@ -44,7 +44,7 @@ class TraderOffer
     public $lockedToAccount;
 
     public static function createTradeOffer(
-        array $cost, array $yield, string $comment, User $user, array $houseInventoryQuantitiesByName, bool $lockedToAccount = false
+        array $cost, array $yield, string $comment, User $user, array $inventoryQuantitiesByNameAtLocation, bool $lockedToAccount = false
     ): TraderOffer
     {
         $trade = new TraderOffer();
@@ -53,7 +53,7 @@ class TraderOffer
         $trade->cost = $cost;
         $trade->yield = $yield;
         $trade->comment = $comment;
-        $trade->canMakeExchange = TraderOffer::getMaxExchanges($cost, $user, $houseInventoryQuantitiesByName);
+        $trade->canMakeExchange = TraderOffer::getMaxExchanges($cost, $user, $inventoryQuantitiesByNameAtLocation);
         $trade->lockedToAccount = $lockedToAccount;
 
         return $trade;
