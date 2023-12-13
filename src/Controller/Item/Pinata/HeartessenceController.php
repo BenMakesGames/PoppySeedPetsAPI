@@ -85,6 +85,6 @@ class HeartessenceController extends AbstractController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('The Heartessence twists, and folds itself into a Hot Box!', [ 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('The Heartessence twists, and folds itself into a Hat Box!', [ 'itemDeleted' => true ]);
     }
 }
