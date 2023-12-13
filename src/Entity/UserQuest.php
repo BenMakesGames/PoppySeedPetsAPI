@@ -30,6 +30,10 @@ class UserQuest
     #[ORM\Column(type: 'datetime_immutable')]
     private $lastUpdated;
 
+    #[ORM\Version]
+    #[ORM\Column(type: 'integer')]
+    private int $version;
+
     public function __construct()
     {
         $this->createdOn = new \DateTimeImmutable();

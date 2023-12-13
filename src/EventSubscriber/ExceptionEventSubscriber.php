@@ -14,6 +14,7 @@ use App\Exceptions\PSPTooManyRequests;
 use App\Functions\StringFunctions;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityNotFoundException;
+use Doctrine\ORM\OptimisticLockException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,6 +28,8 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
     private LoggerInterface $logger;
     private ResponseService $responseService;
     private KernelInterface $kernel;
+
+    private const GenericErrorMessage = 'Hrm: something\'s gone awry. Reload and try again; if the problem persists, let Ben know, so he can fix it!';
 
     public function __construct(ResponseService $responseService, KernelInterface $kernel, LoggerInterface $logger)
     {
@@ -72,7 +75,7 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
                     break;
 
                 default:
-                    $message = 'Hrm: something\'s gone awry. Reload and try again; if the problem persists, let Ben know, so he can fix it!';
+                    $message = self::GenericErrorMessage;
             }
 
             $event->setResponse($this->responseService->error($e->getStatusCode(), [ $message ]));
@@ -109,6 +112,10 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
             // out for (ex: accessing the Fireplace before they unlocked it). SO: we return an
             // unauthorized, instead >_>
             $event->setResponse($this->responseService->error(Response::HTTP_UNAUTHORIZED, [ $e->getMessage() ]));
+        }
+        else if($e instanceof OptimisticLockException)
+        {
+            $event->setResponse($this->responseService->error(420, [ self::GenericErrorMessage ]));
         }
         else if($this->kernel->getEnvironment() !== 'dev')
         {
