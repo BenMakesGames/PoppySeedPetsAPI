@@ -311,33 +311,6 @@ class Item
     }
 
     /**
-     * @Groups({"greenhouseFertilizer"})
-     */
-    public function getFertilizerRating(): int
-    {
-        if($this->fertilizer >= 200)
-            return 10;
-        else if($this->fertilizer >= 100)
-            return 9;
-        else if($this->fertilizer >= 50)
-            return 8;
-        else if($this->fertilizer >= 40)
-            return 7;
-        else if($this->fertilizer >= 30)
-            return 6;
-        else if($this->fertilizer >= 20)
-            return 5;
-        else if($this->fertilizer >= 14)
-            return 4;
-        else if($this->fertilizer >= 8)
-            return 3;
-        else if($this->fertilizer >= 4)
-            return 2;
-        else
-            return 1;
-    }
-
-    /**
      * @Groups({"myInventory", "itemEncyclopedia"})
      */
     public function getIsFertilizer(): bool

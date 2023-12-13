@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Inventory;
 use App\Entity\Item;
-use App\Entity\ItemGroup;
 use App\Entity\User;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;

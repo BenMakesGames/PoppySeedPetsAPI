@@ -541,6 +541,50 @@ class Inventory
         return $this;
     }
 
+    public function getTotalFertilizerValue()
+    {
+        $value = $this->getItem()->getFertilizer();
+
+        if($this->getSpice() && $this->getSpice()->getEffects())
+        {
+            $value += $this->getSpice()->getEffects()->getFood();
+            $value += $this->getSpice()->getEffects()->getLove();
+        }
+
+        return $value;
+    }
+
+    /**
+     * @Groups({"greenhouseFertilizer"})
+     */
+    public function getFertilizerRating(): int
+    {
+        $totalFertilizerValue = $this->getTotalFertilizerValue();
+
+        if($totalFertilizerValue >= 200)
+            return 10;
+        else if($totalFertilizerValue >= 100)
+            return 9;
+        else if($totalFertilizerValue >= 50)
+            return 8;
+        else if($totalFertilizerValue >= 40)
+            return 7;
+        else if($totalFertilizerValue >= 30)
+            return 6;
+        else if($totalFertilizerValue >= 20)
+            return 5;
+        else if($totalFertilizerValue >= 14)
+            return 4;
+        else if($totalFertilizerValue >= 8)
+            return 3;
+        else if($totalFertilizerValue >= 4)
+            return 2;
+        else if($totalFertilizerValue > 0)
+            return 1;
+        else
+            return 0;
+    }
+
     public function getFullItemName(): ?string
     {
         return $this->fullItemName;

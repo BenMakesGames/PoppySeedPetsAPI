@@ -91,11 +91,14 @@ class GreenhousePlant
         return $this;
     }
 
-    public function increaseGrowth(int $growth): self
+    public function fertilize(Inventory $inventory): self
     {
+        if($inventory->getTotalFertilizerValue() <= 0)
+            return $this;
+
         $this->previousGrowth = $this->growth;
 
-        $this->growth += $growth;
+        $this->growth += $inventory->getTotalFertilizerValue();
 
         if(!$this->getIsAdult())
         {

@@ -59,11 +59,11 @@ class FeedComposterController extends AbstractController
         $items = InventoryRepository::findFertilizers($em, $user, $itemIds);
 
         $items = array_filter($items, function(Inventory $i)  {
-            return !in_array($i->getItem()->getName(), self::FORBIDDEN_COMPOST);
+            return !in_array($i->getItem()->getName(), self::FORBIDDEN_COMPOST) && $i->getTotalFertilizerValue() > 0;
         });
 
         if(count($items) < count($itemIds))
-            throw new PSPNotFoundException('Some of the compost items selected could not be found. That shouldn\'t happen. Reload and try again, maybe?');
+            throw new PSPNotFoundException('Some of the compost items selected could not be found, or are not fertilizers! That shouldn\'t happen. Reload and try again, maybe?');
 
         $totalFertilizer = $user->getGreenhouse()->getComposterFood();
 
@@ -71,7 +71,7 @@ class FeedComposterController extends AbstractController
 
         foreach($items as $item)
         {
-            $totalFertilizer += $item->getItem()->getFertilizer();
+            $totalFertilizer += $item->getTotalFertilizerValue();
             $tossedItemNames[] = $item->getFullItemName();
         }
 

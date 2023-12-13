@@ -50,10 +50,10 @@ class FertilizePlantController extends AbstractController
             'location' => Inventory::CONSUMABLE_LOCATIONS,
         ]);
 
-        if(!$fertilizer || $fertilizer->getItem()->getFertilizer() === 0)
+        if(!$fertilizer || $fertilizer->getTotalFertilizerValue() <= 0)
             throw new PSPFormValidationException('A fertilizer must be selected.');
 
-        $plant->increaseGrowth($fertilizer->getItem()->getFertilizer());
+        $plant->fertilize($fertilizer);
 
         $userStatsRepository->incrementStat($user, UserStatEnum::FERTILIZED_PLANT);
 
