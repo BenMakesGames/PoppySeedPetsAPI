@@ -14,15 +14,18 @@ class UserQuestRepository
     {
         $cacheKey = $user->getId() . '-' . $name;
 
-        if(!array_key_exists($cacheKey, self::$userQuestPerRequestCache))
-        {
-            self::$userQuestPerRequestCache[$cacheKey] = $em->getRepository(UserQuest::class)->findOneBy([
-                'user' => $user,
-                'name' => $name,
-            ]);
-        }
+        if(array_key_exists($cacheKey, self::$userQuestPerRequestCache))
+            return self::$userQuestPerRequestCache[$cacheKey];
 
-        return self::$userQuestPerRequestCache[$cacheKey];
+        $value = $em->getRepository(UserQuest::class)->findOneBy([
+            'user' => $user,
+            'name' => $name,
+        ]);
+
+        if($value)
+            self::$userQuestPerRequestCache[$cacheKey] = $value;
+
+        return $value;
     }
 
     public static function findOrCreate(EntityManagerInterface $em, User $user, string $name, $default): UserQuest
