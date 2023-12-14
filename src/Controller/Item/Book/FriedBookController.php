@@ -43,7 +43,7 @@ class FriedBookController extends AbstractController
             'Fried Tomato (with Oil)',
             'Hash Brown (with Oil)',
             'Hash Brown (with Butter)',
-            'HotWings',
+            'Hot Wings',
             'Laufabrauð',
             'Onion Rings',
 
