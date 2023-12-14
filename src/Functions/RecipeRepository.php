@@ -285,6 +285,7 @@ final class RecipeRepository
         [ 'name' => 'Honeydont Ice Cream Sammy', 'ingredients' => '191:1,319:1', 'makes' => '809:2' ],
         [ 'name' => 'Honeydont Ice Cream', 'ingredients' => '12:1,13:1,14:1,132:1', 'makes' => '319:3' ],
         [ 'name' => 'Horchata', 'ingredients' => '12:1,13:1,17:1', 'makes' => '1272:2' ],
+        [ 'name' => 'Hot Wings', 'ingredients' => '65:1,195:1,248:1,462:1', 'makes' => '1352:1' ],
         [ 'name' => 'Hunting Spear', 'ingredients' => '207:1,1129:1', 'makes' => '152:1' ],
         [ 'name' => 'Instant Ramen', 'ingredients' => '538:1', 'makes' => '539:1' ],
         [ 'name' => 'Jellyfish Juice, and Pectin', 'ingredients' => '677:1', 'makes' => '121:3,683:1' ],

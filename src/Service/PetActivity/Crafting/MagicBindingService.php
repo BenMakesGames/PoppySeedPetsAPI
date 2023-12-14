@@ -90,6 +90,9 @@ class MagicBindingService
 
             if($this->houseSimService->hasInventory('Rapier') && $this->houseSimService->hasInventory('White Feathers'))
                 $possibilities[] = new ActivityCallback($this->createWhiteEpee(...), 8);
+
+            if($this->houseSimService->hasInventory('Rainbow'))
+                $possibilities[] = new ActivityCallback($this->createRainbowWings(...), 8);
         }
 
         if($this->houseSimService->hasInventory('Ruby Feather'))
@@ -1527,6 +1530,51 @@ class MagicBindingService
             ;
             $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' created this!', $activityLog);
             $this->petExperienceService->gainExp($pet, 5, [ PetSkillEnum::ARCANA ], $activityLog);
+            return $activityLog;
+        }
+    }
+
+    public function createRainbowWings(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+
+        if($umbraCheck === 1)
+        {
+            $pet->increaseEsteem(-4);
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind a Rainbow to some Wings, but lost sight of the Rainbow for a second, and was unable to find it again :(')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+
+            return $activityLog;
+        }
+        else if($umbraCheck < 26)
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind a Rainbow to some Wings, but ended up wasting all their time making sure the Wings didn\'t fly off, while making sure the Rainbow didn\'t fade from view.')
+                ->setIcon('icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+
+            return $activityLog;
+        }
+        else
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->houseSimService->getState()->loseItem('Rainbow', 1);
+            $this->houseSimService->getState()->loseItem('Wings', 1);
+            $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created Rainbow Wings!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 30)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
+            ;
+            $this->inventoryService->petCollectsItem('Rainbow Wings', $pet, $pet->getName() . ' created this!', $activityLog);
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::ARCANA ], $activityLog);
             return $activityLog;
         }
     }
