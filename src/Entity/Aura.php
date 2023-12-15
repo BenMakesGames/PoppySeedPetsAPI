@@ -14,33 +14,23 @@ class Aura
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia", "marketItem"})
-     */
+    #[Groups(["myInventory", "itemEncyclopedia", "marketItem"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $name;
 
-    /**
-     * @Groups({"myPet", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
-     */
+    #[Groups(["myPet", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $image;
 
-    /**
-     * @Groups({"myPet", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
-     */
+    #[Groups(["myPet", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"])]
     #[ORM\Column(type: 'float')]
     private $size;
 
-    /**
-     * @Groups({"myPet", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
-     */
+    #[Groups(["myPet", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"])]
     #[ORM\Column(type: 'float')]
     private $centerX;
 
-    /**
-     * @Groups({"myPet", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
-     */
+    #[Groups(["myPet", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"])]
     #[ORM\Column(type: 'float')]
     private $centerY;
 

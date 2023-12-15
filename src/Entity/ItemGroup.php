@@ -15,9 +15,7 @@ class ItemGroup
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"itemEncyclopedia"})
-     */
+    #[Groups(["itemEncyclopedia"])]
     #[ORM\Column(type: 'string', length: 40, unique: true)]
     private $name;
 

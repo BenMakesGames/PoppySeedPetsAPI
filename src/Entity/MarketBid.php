@@ -11,9 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: MarketBidRepository::class)]
 class MarketBid
 {
-    /**
-     * @Groups({"myBids"})
-     */
+    #[Groups(["myBids"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -23,34 +21,24 @@ class MarketBid
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
-    /**
-     * @Groups({"myBids"})
-     */
+    #[Groups(["myBids"])]
     #[ORM\ManyToOne(targetEntity: Item::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $item;
 
-    /**
-     * @Groups({"myBids"})
-     */
+    #[Groups(["myBids"])]
     #[ORM\Column(type: 'integer')]
     private $bid;
 
-    /**
-     * @Groups({"myBids"})
-     */
+    #[Groups(["myBids"])]
     #[ORM\Column(type: 'smallint')]
     private $quantity;
 
-    /**
-     * @Groups({"myBids"})
-     */
+    #[Groups(["myBids"])]
     #[ORM\Column(type: 'datetime_immutable')]
     private $createdOn;
 
-    /**
-     * @Groups({"myBids"})
-     */
+    #[Groups(["myBids"])]
     #[ORM\Column(type: 'smallint')]
     private $targetLocation = 0;
 

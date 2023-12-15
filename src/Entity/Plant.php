@@ -36,18 +36,14 @@ class Plant
     #[ORM\Column(type: 'integer')]
     private $timeToFruit;
 
-    /**
-     * @Groups({"greenhousePlant"})
-     */
+    #[Groups(["greenhousePlant"])]
     #[ORM\Column(type: 'string', length: 20)]
     private $type = 'earth';
 
     #[ORM\OneToMany(targetEntity: 'App\Entity\PlantYield', mappedBy: 'plant', orphanRemoval: true)]
     private $plantYields;
 
-    /**
-     * @Groups({"greenhousePlant"})
-     */
+    #[Groups(["greenhousePlant"])]
     #[ORM\Column(type: 'string', length: 40, unique: true)]
     private $name;
 

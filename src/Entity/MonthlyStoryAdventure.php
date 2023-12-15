@@ -10,47 +10,33 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity]
 class MonthlyStoryAdventure
 {
-    /**
-     * @Groups({ "starKindredStory" })
-     */
+    #[Groups([ "starKindredStory" ])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({ "starKindredStory" })
-     */
+    #[Groups([ "starKindredStory" ])]
     #[ORM\Column(type: 'string', length: 255)]
     private $title;
 
-    /**
-     * @Groups({ "starKindredStory" })
-     */
+    #[Groups([ "starKindredStory" ])]
     #[ORM\Column(type: 'text')]
     private $summary;
 
-    /**
-     * @Groups({ "starKindredStory" })
-     */
+    #[Groups([ "starKindredStory" ])]
     #[ORM\Column(type: 'integer')]
     private $releaseNumber;
 
-    /**
-     * @Groups({ "starKindredStory", "starKindredStoryDetails" })
-     */
+    #[Groups([ "starKindredStory", "starKindredStoryDetails" ])]
     #[ORM\Column(type: 'integer')]
     private $releaseYear;
 
-    /**
-     * @Groups({ "starKindredStory", "starKindredStoryDetails" })
-     */
+    #[Groups([ "starKindredStory", "starKindredStoryDetails" ])]
     #[ORM\Column(type: 'integer')]
     private $releaseMonth;
 
-    /**
-     * @Groups({ "starKindredStoryDetails" })
-     */
+    #[Groups([ "starKindredStoryDetails" ])]
     #[ORM\Column(type: 'boolean')]
     private $isDark;
 

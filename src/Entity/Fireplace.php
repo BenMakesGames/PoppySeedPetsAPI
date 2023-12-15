@@ -35,15 +35,11 @@ class Fireplace
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
-    /**
-     * @Groups({"myFireplace"})
-     */
+    #[Groups(["myFireplace"])]
     #[ORM\Column(type: 'integer')]
     private $longestStreak = 0;
 
-    /**
-     * @Groups({"myFireplace"})
-     */
+    #[Groups(["myFireplace"])]
     #[ORM\Column(type: 'integer')]
     private $currentStreak = 0;
 
@@ -53,9 +49,7 @@ class Fireplace
     #[ORM\Column(type: 'integer')]
     private $points = 0;
 
-    /**
-     * @Groups({"myFireplace"})
-     */
+    #[Groups(["myFireplace"])]
     #[ORM\Column(type: 'smallint')]
     private $mantleSize = 12;
 
@@ -68,9 +62,7 @@ class Fireplace
     #[ORM\Column(type: 'string', length: 6)]
     private $stockingColorB;
 
-    /**
-     * @Groups({"helperPet"})
-     */
+    #[Groups(["helperPet"])]
     #[ORM\OneToOne(targetEntity: Pet::class, cascade: ['persist', 'remove'])]
     private $helper;
 
@@ -129,9 +121,7 @@ class Fireplace
         return $this;
     }
 
-    /**
-     * @Groups({"myFireplace"})
-     */
+    #[Groups(["myFireplace"])]
     public function getHeatDescription(): ?string
     {
         if($this->getHeat() <= 0)
@@ -215,17 +205,13 @@ class Fireplace
         return $this;
     }
 
-    /**
-     * @Groups({"myFireplace"})
-     */
+    #[Groups(["myFireplace"])]
     public function getHasReward(): bool
     {
         return $this->points > 8 * 60;
     }
 
-    /**
-     * @Groups({"myFireplace"})
-     */
+    #[Groups(["myFireplace"])]
     public function getStocking()
     {
         return [

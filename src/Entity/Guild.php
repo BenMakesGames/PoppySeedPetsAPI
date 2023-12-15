@@ -10,36 +10,26 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: 'App\Repository\GuildRepository')]
 class Guild
 {
-    /**
-     * @Groups({"guildEncyclopedia", "petGuild", "petPublicProfile"})
-     */
+    #[Groups(["guildEncyclopedia", "petGuild", "petPublicProfile"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"guildEncyclopedia", "petGuild", "petPublicProfile"})
-     */
+    #[Groups(["guildEncyclopedia", "petGuild", "petPublicProfile"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    /**
-     * @Groups({"guildEncyclopedia", "petGuild", "petPublicProfile"})
-     */
+    #[Groups(["guildEncyclopedia", "petGuild", "petPublicProfile"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $emblem;
 
-    /**
-     * @Groups({"guildEncyclopedia"})
-     */
+    #[Groups(["guildEncyclopedia"])]
     #[ORM\ManyToOne(targetEntity: Item::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $starterTool;
 
-    /**
-     * @Groups({"guildEncyclopedia"})
-     */
+    #[Groups(["guildEncyclopedia"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $quote;
 

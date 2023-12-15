@@ -19,52 +19,36 @@ class PetActivityLog
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"petActivityLogAndPublicPet"})
-     */
+    #[Groups(["petActivityLogAndPublicPet"])]
     #[ORM\ManyToOne(targetEntity: Pet::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $pet;
 
-    /**
-     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
-     */
+    #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'text')]
     private $entry;
 
-    /**
-     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
-     */
+    #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'datetime_immutable')]
     private $createdOn;
 
-    /**
-     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
-     */
+    #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'object', nullable: true)]
     private $changes;
 
-    /**
-     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
-     */
+    #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $icon = '';
 
-    /**
-     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
-     */
+    #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'integer')]
     private $interestingness = 0;
 
-    /**
-     * @Groups({"petActivityLogAndPublicPet"})
-     */
+    #[Groups(["petActivityLogAndPublicPet"])]
     #[ORM\ManyToOne(targetEntity: Item::class)]
     private $equippedItem;
 
-    /**
-     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
-     */
+    #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\ManyToMany(targetEntity: PetActivityLogTag::class)]
     private $tags;
 
@@ -163,9 +147,7 @@ class PetActivityLog
         return $this;
     }
 
-    /**
-     * @Groups({"petActivityLogs"})
-     */
+    #[Groups(["petActivityLogs"])]
     public function getIsPetActivity(): bool
     {
         return $this->pet !== null;

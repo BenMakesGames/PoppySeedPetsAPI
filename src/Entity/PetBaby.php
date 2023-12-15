@@ -178,9 +178,7 @@ class PetBaby
         return $messages[$interval];
     }
 
-    /**
-     * @Groups({"myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "petShelterPet", "petFriend"})
-     */
+    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "petShelterPet", "petFriend"])]
     public function getEggColor(): ?string
     {
         // we only see the color expressed in an egg

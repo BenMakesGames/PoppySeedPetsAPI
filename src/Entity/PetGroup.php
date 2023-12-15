@@ -18,56 +18,40 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity]
 class PetGroup
 {
-    /**
-     * @Groups({"petGroup", "petGroupDetails", "petGroupIndex", "petPublicProfile"})
-     */
+    #[Groups(["petGroup", "petGroupDetails", "petGroupIndex", "petPublicProfile"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"petGroupDetails"})
-     */
+    #[Groups(["petGroupDetails"])]
     #[ORM\ManyToMany(targetEntity: Pet::class, inversedBy: 'groups')]
     private $members;
 
-    /**
-     * @Groups({"petGroup", "petGroupDetails", "petGroupIndex", "petPublicProfile"})
-     */
+    #[Groups(["petGroup", "petGroupDetails", "petGroupIndex", "petPublicProfile"])]
     #[ORM\Column(type: 'integer')]
     private $type;
 
-    /**
-     * @Groups({"petGroup"})
-     */
+    #[Groups(["petGroup"])]
     #[ORM\Column(type: 'integer')]
     private $progress = 0;
 
     #[ORM\Column(type: 'integer')]
     private $skillRollTotal = 0;
 
-    /**
-     * @Groups({"petGroupDetails", "petGroupIndex", "petPublicProfile"})
-     */
+    #[Groups(["petGroupDetails", "petGroupIndex", "petPublicProfile"])]
     #[ORM\Column(type: 'datetime_immutable')]
     private $createdOn;
 
-    /**
-     * @Groups({"petGroup", "petGroupDetails", "petGroupIndex", "petPublicProfile"})
-     */
+    #[Groups(["petGroup", "petGroupDetails", "petGroupIndex", "petPublicProfile"])]
     #[ORM\Column(type: 'string', length: 60)]
     private $name;
 
-    /**
-     * @Groups({"petGroupDetails", "petGroupIndex"})
-     */
+    #[Groups(["petGroupDetails", "petGroupIndex"])]
     #[ORM\Column(type: 'datetime_immutable')]
     private $lastMetOn;
 
-    /**
-     * @Groups({"petGroupDetails"})
-     */
+    #[Groups(["petGroupDetails"])]
     #[ORM\Column(type: 'integer')]
     private $numberOfProducts = 0;
 
@@ -215,9 +199,7 @@ class PetGroup
         }
     }
 
-    /**
-     * @Groups({"petPublicProfile"})
-     */
+    #[Groups(["petPublicProfile"])]
     public function getMemberCount(): int
     {
         return $this->members->count();
@@ -247,9 +229,7 @@ class PetGroup
         return $this;
     }
 
-    /**
-     * @Groups({"petGroup", "petGroupDetails"})
-     */
+    #[Groups(["petGroup", "petGroupDetails"])]
     public function getMakesStuff(): bool
     {
         return $this->type === PetGroupTypeEnum::BAND || $this->type === PetGroupTypeEnum::ASTRONOMY;

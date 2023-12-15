@@ -10,17 +10,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity]
 class GreenhousePlant
 {
-    /**
-     * @Groups({"greenhousePlant"})
-     */
+    #[Groups(["greenhousePlant"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"greenhousePlant"})
-     */
+    #[Groups(["greenhousePlant"])]
     #[ORM\ManyToOne(targetEntity: Plant::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $plant;
@@ -35,24 +31,18 @@ class GreenhousePlant
     #[ORM\JoinColumn(nullable: false)]
     private $owner;
 
-    /**
-     * @Groups({"greenhousePlant"})
-     */
+    #[Groups(["greenhousePlant"])]
     #[ORM\Column(type: 'boolean')]
     private $isAdult = false;
 
     #[ORM\Column(type: 'integer')]
     private $previousGrowth = 0;
 
-    /**
-     * @Groups({"greenhousePlant"})
-     */
+    #[Groups(["greenhousePlant"])]
     #[ORM\Column(type: 'smallint')]
     private $ordinal;
 
-    /**
-     * @Groups({"greenhousePlant"})
-     */
+    #[Groups(["greenhousePlant"])]
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private $pollinators;
 
@@ -118,9 +108,7 @@ class GreenhousePlant
         return $this;
     }
 
-    /**
-     * @Groups({"greenhousePlant"})
-     */
+    #[Groups(["greenhousePlant"])]
     public function getCanNextInteract(): \DateTimeImmutable
     {
         return $this->getLastInteraction()->modify('+12 hours');
@@ -162,9 +150,7 @@ class GreenhousePlant
         return $this;
     }
 
-    /**
-     * @Groups({"greenhousePlant"})
-     */
+    #[Groups(["greenhousePlant"])]
     public function getProgress(): float
     {
         if($this->isAdult)
@@ -173,9 +159,7 @@ class GreenhousePlant
             return round($this->growth / $this->getPlant()->getTimeToAdult(), 2);
     }
 
-    /**
-     * @Groups({"greenhousePlant"})
-     */
+    #[Groups(["greenhousePlant"])]
     public function getPreviousProgress(): float
     {
         if($this->isAdult)
@@ -184,9 +168,7 @@ class GreenhousePlant
             return round($this->previousGrowth / $this->getPlant()->getTimeToAdult(), 1);
     }
 
-    /**
-     * @Groups({"greenhousePlant"})
-     */
+    #[Groups(["greenhousePlant"])]
     public function getImage()
     {
         if($this->isAdult)

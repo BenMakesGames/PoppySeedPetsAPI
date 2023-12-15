@@ -20,21 +20,15 @@ class Beehive
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
-    /**
-     * @Groups({"myBeehive"})
-     */
+    #[Groups(["myBeehive"])]
     #[ORM\Column(type: 'integer')]
     private $workers = 250;
 
-    /**
-     * @Groups({"myBeehive"})
-     */
+    #[Groups(["myBeehive"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $queenName;
 
-    /**
-     * @Groups({"myBeehive"})
-     */
+    #[Groups(["myBeehive"])]
     #[ORM\Column(type: 'integer')]
     private $flowerPower = 0;
 
@@ -66,9 +60,7 @@ class Beehive
     #[ORM\JoinColumn(nullable: false)]
     private $alternateRequestedItem;
 
-    /**
-     * @Groups({"helperPet"})
-     */
+    #[Groups(["helperPet"])]
     #[ORM\OneToOne(targetEntity: Pet::class, cascade: ['persist', 'remove'])]
     private $helper;
 
@@ -185,25 +177,19 @@ class Beehive
         return $this;
     }
 
-    /**
-     * @Groups({"myBeehive"})
-     */
+    #[Groups(["myBeehive"])]
     public function getRoyalJellyPercent(): float
     {
         return min(1, round($this->royalJellyProgress / 2000, 2));
     }
 
-    /**
-     * @Groups({"myBeehive"})
-     */
+    #[Groups(["myBeehive"])]
     public function getHoneycombPercent(): float
     {
         return min(1, round($this->honeycombProgress / 2000, 2));
     }
 
-    /**
-     * @Groups({"myBeehive"})
-     */
+    #[Groups(["myBeehive"])]
     public function getMiscPercent(): float
     {
         return min(1, round($this->miscProgress / 2000, 2));

@@ -26,9 +26,7 @@ class PetRelationship
     #[ORM\JoinColumn(nullable: false)]
     private $pet;
 
-    /**
-     * @Groups({"petFriend"})
-     */
+    #[Groups(["petFriend"])]
     #[ORM\ManyToOne(targetEntity: Pet::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $relationship;
@@ -36,15 +34,11 @@ class PetRelationship
     #[ORM\Column(type: 'string', length: 255)]
     private $metDescription;
 
-    /**
-     * @Groups({"petFriend"})
-     */
+    #[Groups(["petFriend"])]
     #[ORM\Column(type: 'datetime_immutable')]
     private $metOn;
 
-    /**
-     * @Groups({"petFriend"})
-     */
+    #[Groups(["petFriend"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $currentRelationship;
 
@@ -54,9 +48,7 @@ class PetRelationship
     #[ORM\Column(type: 'integer')]
     private $timeUntilChange;
 
-    /**
-     * @Groups({"petFriend"})
-     */
+    #[Groups(["petFriend"])]
     #[ORM\Column(type: 'datetime_immutable')]
     private $lastMet;
 
@@ -82,9 +74,7 @@ class PetRelationship
         return $this->id;
     }
 
-    /**
-     * @Groups({"petFriend"})
-     */
+    #[Groups(["petFriend"])]
     public function getRelationshipWanted(): ?string
     {
         if($this->pet->hasMerit(MeritEnum::INTROSPECTIVE))

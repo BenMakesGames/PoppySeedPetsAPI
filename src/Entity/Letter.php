@@ -16,27 +16,19 @@ class Letter
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"myLetters"})
-     */
+    #[Groups(["myLetters"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $sender;
 
-    /**
-     * @Groups({"myLetters"})
-     */
+    #[Groups(["myLetters"])]
     #[ORM\Column(type: 'text')]
     private $body;
 
-    /**
-     * @Groups({"myLetters"})
-     */
+    #[Groups(["myLetters"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $title;
 
-    /**
-     * @Groups({"myLetters"})
-     */
+    #[Groups(["myLetters"])]
     #[ORM\ManyToOne(targetEntity: Item::class)]
     private $attachment;
 

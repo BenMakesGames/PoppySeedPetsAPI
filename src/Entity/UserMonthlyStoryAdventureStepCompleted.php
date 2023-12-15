@@ -18,16 +18,12 @@ class UserMonthlyStoryAdventureStepCompleted
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
-    /**
-     * @Groups({ "starKindredStoryStepComplete" })
-     */
+    #[Groups([ "starKindredStoryStepComplete" ])]
     #[ORM\ManyToOne(targetEntity: MonthlyStoryAdventureStep::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $adventureStep;
 
-    /**
-     * @Groups({ "starKindredStoryStepComplete" })
-     */
+    #[Groups([ "starKindredStoryStepComplete" ])]
     #[ORM\Column(type: 'datetime_immutable')]
     private $completedOn;
 

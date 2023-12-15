@@ -12,47 +12,33 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity]
 class Item
 {
-    /**
-     * @Groups({"itemEncyclopedia", "myPet", "marketItem", "myInventory", "itemTypeahead", "museum"})
-     */
+    #[Groups(["itemEncyclopedia", "myPet", "marketItem", "myInventory", "itemTypeahead", "museum"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "fireplaceMantle", "fireplaceFuel", "myBeehive", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet", "myBids", "myHollowEarthTiles", "myLetters", "zoologistCatalog"})
-     */
+    #[Groups(["myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "fireplaceMantle", "fireplaceFuel", "myBeehive", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet", "myBids", "myHollowEarthTiles", "myLetters", "zoologistCatalog"])]
     #[ORM\Column(type: 'string', length: 45, unique: true)]
     private $name;
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia"})
-     */
+    #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\Column(type: 'text', nullable: true)]
     private $description;
 
-    /**
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "myBeehive", "petGroupDetails", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet", "myBids", "myHollowEarthTiles", "helperPet"})
-     */
+    #[Groups(["myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "myBeehive", "petGroupDetails", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet", "myBids", "myHollowEarthTiles", "helperPet"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $image;
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia"})
-     */
+    #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\Column(type: 'json', nullable: true)]
     private $useActions = [];
 
-    /**
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth", "petGroupDetails", "helperPet"})
-     */
+    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth", "petGroupDetails", "helperPet"])]
     #[ORM\OneToOne(targetEntity: 'App\Entity\ItemTool')]
     private $tool;
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia"})
-     */
+    #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\OneToOne(targetEntity: 'App\Entity\ItemFood', cascade: ['persist', 'remove'])]
     private $food;
 
@@ -68,63 +54,47 @@ class Item
     #[ORM\OneToMany(targetEntity: Inventory::class, mappedBy: 'item')]
     private $inventory;
 
-    /**
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth", "petGroupDetails", "helperPet"})
-     */
+    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth", "petGroupDetails", "helperPet"])]
     #[ORM\OneToOne(targetEntity: 'App\Entity\ItemHat', inversedBy: 'item', cascade: ['persist', 'remove'])]
     private $hat;
 
     #[ORM\Column(type: 'integer')]
     private $fuel = 0;
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia"})
-     */
+    #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\Column(type: 'smallint')]
     private $recycleValue = 0;
 
-    /**
-     * @Groups({"myInventory", "marketItem", "itemEncyclopedia"})
-     */
+    #[Groups(["myInventory", "marketItem", "itemEncyclopedia"])]
     #[ORM\ManyToOne(targetEntity: 'App\Entity\Enchantment')]
     private $enchants;
 
     #[ORM\OneToOne(targetEntity: ItemGrammar::class, mappedBy: 'item', cascade: ['persist', 'remove'], fetch: 'EAGER')]
     private $grammar;
 
-    /**
-     * @Groups({"myInventory", "marketItem", "itemEncyclopedia"})
-     */
+    #[Groups(["myInventory", "marketItem", "itemEncyclopedia"])]
     #[ORM\ManyToOne(targetEntity: Spice::class)]
     private $spice;
 
-    /**
-     * @Groups({"dragonTreasure"})
-     */
+    #[Groups(["dragonTreasure"])]
     #[ORM\OneToOne(targetEntity: ItemTreasure::class, cascade: ['persist', 'remove'])]
     private $treasure;
 
     #[ORM\Column(type: 'boolean')]
     private $isBug = false;
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia"})
-     */
+    #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\ManyToOne(targetEntity: HollowEarthTileCard::class)]
     private $hollowEarthTileCard;
 
-    /**
-     * @Groups({"itemEncyclopedia"})
-     */
+    #[Groups(["itemEncyclopedia"])]
     #[ORM\ManyToMany(targetEntity: ItemGroup::class, mappedBy: 'items')]
     private $itemGroups;
 
     #[ORM\Column(type: 'boolean')]
     private $cannotBeThrownOut = false;
 
-    /**
-     * @Groups({"myDonatableInventory"})
-     */
+    #[Groups(["myDonatableInventory"])]
     #[ORM\Column(type: 'smallint')]
     private $museumPoints;
 
@@ -154,9 +124,7 @@ class Item
         return $this;
     }
 
-    /**
-     * @Groups({"myBeehive", "itemEncyclopedia", "myLetters"})
-     */
+    #[Groups(["myBeehive", "itemEncyclopedia", "myLetters"])]
     public function getNameWithArticle(): string
     {
         if($this->getGrammar() && $this->getGrammar()->getArticle())
@@ -286,33 +254,25 @@ class Item
         return $this;
     }
 
-    /**
-     * @Groups({"fireplaceFuel"})
-     */
+    #[Groups(["fireplaceFuel"])]
     public function getFuelRating(): int
     {
         return (int)(($this->fuel / 1440) * 10);
     }
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia"})
-     */
+    #[Groups(["myInventory", "itemEncyclopedia"])]
     public function getGreenhouseType(): ?string
     {
         return $this->getPlant() === null ? null : $this->getPlant()->getType();
     }
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia"})
-     */
+    #[Groups(["myInventory", "itemEncyclopedia"])]
     public function getIsFlammable(): bool
     {
         return $this->getFuel() > 0;
     }
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia"})
-     */
+    #[Groups(["myInventory", "itemEncyclopedia"])]
     public function getIsFertilizer(): bool
     {
         return $this->getFertilizer() > 0;

@@ -11,23 +11,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: DesignGoalRepository::class)]
 class DesignGoal
 {
-    /**
-     * @Groups({"designGoal", "article"})
-     */
+    #[Groups(["designGoal", "article"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"designGoal", "article"})
-     */
+    #[Groups(["designGoal", "article"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $name;
 
-    /**
-     * @Groups({"designGoal"})
-     */
+    #[Groups(["designGoal"])]
     #[ORM\Column(type: 'text')]
     private $description;
 

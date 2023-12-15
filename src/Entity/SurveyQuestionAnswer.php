@@ -13,9 +13,7 @@ class SurveyQuestionAnswer
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"surveyQuestionAnswer"})
-     */
+    #[Groups(["surveyQuestionAnswer"])]
     #[ORM\ManyToOne(targetEntity: SurveyQuestion::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $question;
@@ -24,9 +22,7 @@ class SurveyQuestionAnswer
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
-    /**
-     * @Groups({"surveyQuestionAnswer"})
-     */
+    #[Groups(["surveyQuestionAnswer"])]
     #[ORM\Column(type: 'text')]
     private $answer;
 

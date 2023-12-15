@@ -13,9 +13,7 @@ class UserFollowing
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"myFollowers"})
-     */
+    #[Groups(["myFollowers"])]
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'following')]
     #[ORM\JoinColumn(nullable: false)]
     private $user;

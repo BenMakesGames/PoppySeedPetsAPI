@@ -11,9 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: MonthlyStoryAdventureStepRepository::class)]
 class MonthlyStoryAdventureStep
 {
-    /**
-     * @Groups({ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" })
-     */
+    #[Groups([ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" ])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -23,15 +21,11 @@ class MonthlyStoryAdventureStep
     #[ORM\JoinColumn(nullable: false)]
     private $adventure;
 
-    /**
-     * @Groups({ "starKindredStoryStepAvailable" })
-     */
+    #[Groups([ "starKindredStoryStepAvailable" ])]
     #[ORM\Column(type: 'string', length: 30)]
     private $title;
 
-    /**
-     * @Groups({ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" })
-     */
+    #[Groups([ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" ])]
     #[ORM\Column(type: 'string', length: 20)]
     private $type;
 
@@ -41,27 +35,19 @@ class MonthlyStoryAdventureStep
     #[ORM\Column(type: 'integer', nullable: true)]
     private $previousStep;
 
-    /**
-     * @Groups({ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" })
-     */
+    #[Groups([ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" ])]
     #[ORM\Column(type: 'float')]
     private $x;
 
-    /**
-     * @Groups({ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" })
-     */
+    #[Groups([ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" ])]
     #[ORM\Column(type: 'float')]
     private $y;
 
-    /**
-     * @Groups({ "starKindredStoryStepAvailable" })
-     */
+    #[Groups([ "starKindredStoryStepAvailable" ])]
     #[ORM\Column(type: 'integer')]
     private $minPets;
 
-    /**
-     * @Groups({ "starKindredStoryStepAvailable" })
-     */
+    #[Groups([ "starKindredStoryStepAvailable" ])]
     #[ORM\Column(type: 'integer')]
     private $maxPets;
 
@@ -74,9 +60,7 @@ class MonthlyStoryAdventureStep
     #[ORM\ManyToOne(targetEntity: Enchantment::class)]
     private $aura;
 
-    /**
-     * @Groups({ "starKindredStoryStepAvailable" })
-     */
+    #[Groups([ "starKindredStoryStepAvailable" ])]
     #[ORM\Column(type: 'string', length: 10, nullable: true)]
     private $pinOverride;
 

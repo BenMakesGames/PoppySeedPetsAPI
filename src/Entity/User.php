@@ -21,9 +21,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public const MAX_HOUSE_INVENTORY = 100;
     public const MAX_BASEMENT_INVENTORY = 10000;
 
-    /**
-     * @Groups({"myAccount", "myInventory", "userPublicProfile", "article", "petPublicProfile", "museum", "parkEvent", "userTypeahead", "publicStyle", "myFollowers"})
-     */
+    #[Groups(["myAccount", "myInventory", "userPublicProfile", "article", "petPublicProfile", "museum", "parkEvent", "userTypeahead", "publicStyle", "myFollowers"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -46,45 +44,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private $password;
 
-    /**
-     * @Groups({"myAccount", "myInventory", "userPublicProfile", "article", "petPublicProfile", "museum", "parkEvent", "userTypeahead", "publicStyle", "myFollowers"})
-     */
+    #[Groups(["myAccount", "myInventory", "userPublicProfile", "article", "petPublicProfile", "museum", "parkEvent", "userTypeahead", "publicStyle", "myFollowers"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $name;
 
-    /**
-     * @Groups({"userPublicProfile", "myFollowers"})
-     */
+    #[Groups(["userPublicProfile", "myFollowers"])]
     #[ORM\Column(type: 'datetime_immutable')]
     private $lastActivity;
 
     #[ORM\OneToMany(targetEntity: Pet::class, mappedBy: 'owner', fetch: 'EXTRA_LAZY')]
     private $pets;
 
-    /**
-     * @Groups({"userPublicProfile"})
-     */
+    #[Groups(["userPublicProfile"])]
     #[ORM\Column(type: 'datetime_immutable')]
     private $registeredOn;
 
-    /**
-     * @Groups({"myAccount"})
-     */
+    #[Groups(["myAccount"])]
     #[ORM\Column(type: 'date_immutable')]
     private $lastAllowanceCollected;
 
     #[ORM\Column(type: 'boolean')]
     private $isLocked = false;
 
-    /**
-     * @Groups({"myAccount"})
-     */
+    #[Groups(["myAccount"])]
     #[ORM\Column(type: 'integer')]
     private $moneys = 0;
 
-    /**
-     * @Groups({"myAccount"})
-     */
+    #[Groups(["myAccount"])]
     #[ORM\Column(type: 'integer')]
     private $maxPets = 2;
 
@@ -97,15 +83,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: 'App\Entity\UserStats', mappedBy: 'user', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
     private $stats;
 
-    /**
-     * @Groups({"myAccount"})
-     */
+    #[Groups(["myAccount"])]
     #[ORM\Column(type: 'integer')]
     private $defaultSessionLengthInHours = 72;
 
-    /**
-     * @Groups({"myAccount"})
-     */
+    #[Groups(["myAccount"])]
     #[ORM\Column(type: 'integer')]
     private $maxSellPrice = 10;
 
@@ -130,27 +112,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(targetEntity: 'App\Entity\Greenhouse', mappedBy: 'owner', cascade: ['persist', 'remove'])]
     private $greenhouse;
 
-    /**
-     * @Groups({"myAccount"})
-     */
+    #[Groups(["myAccount"])]
     #[ORM\Column(type: 'integer')]
     private $recyclePoints = 0;
 
-    /**
-     * @Groups({"myAccount"})
-     */
+    #[Groups(["myAccount"])]
     #[ORM\Column(type: 'smallint')]
     private $unreadNews = 0;
 
-    /**
-     * @Groups({"myAccount", "userPublicProfile", "petPublicProfile", "museum", "parkEvent", "publicStyle", "myFollowers"})
-     */
+    #[Groups(["myAccount", "userPublicProfile", "petPublicProfile", "museum", "parkEvent", "publicStyle", "myFollowers"])]
     #[ORM\Column(type: 'string', length: 60, nullable: true)]
     private $icon;
 
-    /**
-     * @Groups({"myAccount"})
-     */
+    #[Groups(["myAccount"])]
     #[ORM\Column(type: 'smallint')]
     private $maxMarketBids = 5;
 
@@ -166,27 +140,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'integer')]
     private $museumPointsSpent = 0;
 
-    /**
-     * @Groups({"myAccount"})
-     */
+    #[Groups(["myAccount"])]
     #[ORM\Column(type: 'boolean')]
     private $canAssignHelpers = false;
 
     #[ORM\Column(type: 'integer')]
     private $fate;
 
-    /**
-     * @Groups({"myAccount"})
-     */
+    #[Groups(["myAccount"])]
     #[ORM\OneToMany(targetEntity: UserUnlockedFeature::class, mappedBy: 'user', orphanRemoval: true)]
     private $unlockedFeatures;
 
     #[ORM\OneToMany(targetEntity: UserBadge::class, mappedBy: 'user', orphanRemoval: true)]
     private $badges;
 
-    /**
-     * @Groups({"myAccount"})
-     */
+    #[Groups(["myAccount"])]
     #[ORM\OneToOne(targetEntity: UserSubscription::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     private $subscription;
 
@@ -498,9 +466,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @Groups({"myAccount"})
-     */
+    #[Groups(["myAccount"])]
     public function getMaxPlants(): int
     {
         return $this->getGreenhouse() ? $this->getGreenhouse()->getMaxPlants() : 0;

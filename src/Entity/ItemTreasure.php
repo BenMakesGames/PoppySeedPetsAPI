@@ -13,21 +13,15 @@ class ItemTreasure
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"dragonTreasure"})
-     */
+    #[Groups(["dragonTreasure"])]
     #[ORM\Column(type: 'integer')]
     private $silver;
 
-    /**
-     * @Groups({"dragonTreasure"})
-     */
+    #[Groups(["dragonTreasure"])]
     #[ORM\Column(type: 'integer')]
     private $gold;
 
-    /**
-     * @Groups({"dragonTreasure"})
-     */
+    #[Groups(["dragonTreasure"])]
     #[ORM\Column(type: 'integer')]
     private $gems;
 

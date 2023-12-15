@@ -10,9 +10,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity]
 class UserUnlockedAura
 {
-    /**
-     * @Groups({"myAura"})
-     */
+    #[Groups(["myAura"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -22,22 +20,16 @@ class UserUnlockedAura
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
-    /**
-     * @Groups({"myAura"})
-     */
+    #[Groups(["myAura"])]
     #[ORM\ManyToOne(targetEntity: Enchantment::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $aura;
 
-    /**
-     * @Groups({"myAura"})
-     */
+    #[Groups(["myAura"])]
     #[ORM\Column(type: 'datetime_immutable')]
     private $unlockedOn;
 
-    /**
-     * @Groups({"myAura"})
-     */
+    #[Groups(["myAura"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $comment;
 

@@ -13,33 +13,23 @@ class ItemHat
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
-     */
+    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"])]
     #[ORM\Column(type: 'float')]
     private $headX = 0;
 
-    /**
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
-     */
+    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"])]
     #[ORM\Column(type: 'float')]
     private $headY = 0;
 
-    /**
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
-     */
+    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"])]
     #[ORM\Column(type: 'float')]
     private $headAngle = 0;
 
-    /**
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
-     */
+    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"])]
     #[ORM\Column(type: 'float')]
     private $headScale = 0;
 
-    /**
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
-     */
+    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"])]
     #[ORM\Column(type: 'boolean')]
     private $headAngleFixed = 0;
 

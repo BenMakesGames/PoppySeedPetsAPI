@@ -10,35 +10,25 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class ParkEvent
 {
-    /**
-     * @Groups({"parkEvent"})
-     */
+    #[Groups(["parkEvent"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"parkEvent"})
-     */
+    #[Groups(["parkEvent"])]
     #[ORM\ManyToMany(targetEntity: Pet::class)]
     private $participants;
 
-    /**
-     * @Groups({"parkEvent"})
-     */
+    #[Groups(["parkEvent"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $type;
 
-    /**
-     * @Groups({"parkEvent"})
-     */
+    #[Groups(["parkEvent"])]
     #[ORM\Column(type: 'text')]
     private $results;
 
-    /**
-     * @Groups({"parkEvent"})
-     */
+    #[Groups(["parkEvent"])]
     #[ORM\Column(type: 'datetime_immutable')]
     private $date;
 

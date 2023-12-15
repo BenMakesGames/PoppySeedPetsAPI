@@ -9,9 +9,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: UserLetterRepository::class)]
 class UserLetter
 {
-    /**
-     * @Groups({"myLetters"})
-     */
+    #[Groups(["myLetters"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -21,28 +19,20 @@ class UserLetter
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
-    /**
-     * @Groups({"myLetters"})
-     */
+    #[Groups(["myLetters"])]
     #[ORM\ManyToOne(targetEntity: Letter::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $letter;
 
-    /**
-     * @Groups({"myLetters"})
-     */
+    #[Groups(["myLetters"])]
     #[ORM\Column(type: 'datetime_immutable')]
     private $receivedOn;
 
-    /**
-     * @Groups({"myLetters"})
-     */
+    #[Groups(["myLetters"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $comment;
 
-    /**
-     * @Groups({"myLetters"})
-     */
+    #[Groups(["myLetters"])]
     #[ORM\Column(type: 'boolean')]
     private $isRead = false;
 

@@ -8,36 +8,26 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity]
 class Enchantment
 {
-    /**
-     * @Groups({"myInventory", "marketItem", "greenhouseFertilizer"})
-     */
+    #[Groups(["myInventory", "marketItem", "greenhouseFertilizer"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure", "myAura"})
-     */
+    #[Groups(["myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure", "myAura"])]
     #[ORM\Column(type: 'string', length: 20, unique: true)]
     private $name;
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure"})
-     */
+    #[Groups(["myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure"])]
     #[ORM\Column(type: 'boolean')]
     private $isSuffix;
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "myPet"})
-     */
+    #[Groups(["myInventory", "itemEncyclopedia", "marketItem", "myPet"])]
     #[ORM\OneToOne(targetEntity: 'App\Entity\ItemTool', inversedBy: 'enchantment', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private $effects;
 
-    /**
-     * @Groups({"myInventory", "myPet", "itemEncyclopedia", "marketItem", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
-     */
+    #[Groups(["myInventory", "myPet", "itemEncyclopedia", "marketItem", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"])]
     #[ORM\ManyToOne(targetEntity: Aura::class)]
     private $aura;
 

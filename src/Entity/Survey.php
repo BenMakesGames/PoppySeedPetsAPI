@@ -15,18 +15,14 @@ class Survey
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"surveySummary"})
-     */
+    #[Groups(["surveySummary"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $title;
 
     #[ORM\Column(type: 'datetime_immutable')]
     private $startDate;
 
-    /**
-     * @Groups({"surveySummary"})
-     */
+    #[Groups(["surveySummary"])]
     #[ORM\Column(type: 'datetime_immutable')]
     private $endDate;
 
@@ -36,9 +32,7 @@ class Survey
     #[ORM\Column(type: 'guid', unique: true)]
     private $guid;
 
-    /**
-     * @Groups({"surveySummary"})
-     */
+    #[Groups(["surveySummary"])]
     #[ORM\Column(type: 'text')]
     private $description;
 

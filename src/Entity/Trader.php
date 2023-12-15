@@ -17,27 +17,19 @@ class Trader
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
-    /**
-     * @Groups({"traderOffer"})
-     */
+    #[Groups(["traderOffer"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $name;
 
-    /**
-     * @Groups({"traderOffer"})
-     */
+    #[Groups(["traderOffer"])]
     #[ORM\Column(type: 'string', length: 6)]
     private $colorA;
 
-    /**
-     * @Groups({"traderOffer"})
-     */
+    #[Groups(["traderOffer"])]
     #[ORM\Column(type: 'string', length: 6)]
     private $colorB;
 
-    /**
-     * @Groups({"traderOffer"})
-     */
+    #[Groups(["traderOffer"])]
     #[ORM\Column(type: 'string', length: 6)]
     private $colorC;
 

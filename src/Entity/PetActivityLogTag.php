@@ -13,21 +13,15 @@ class PetActivityLogTag
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
-     */
+    #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'string', length: 40, unique: true)]
     private $title;
 
-    /**
-     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
-     */
+    #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'string', length: 6)]
     private $color;
 
-    /**
-     * @Groups({"petActivityLogs", "petActivityLogAndPublicPet"})
-     */
+    #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'string', length: 12)]
     private $emoji;
 

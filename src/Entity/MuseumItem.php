@@ -13,35 +13,25 @@ class MuseumItem
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"museum"})
-     */
+    #[Groups(["museum"])]
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
-    /**
-     * @Groups({"museum"})
-     */
+    #[Groups(["museum"])]
     #[ORM\ManyToOne(targetEntity: Item::class, inversedBy: 'museumDonations')]
     #[ORM\JoinColumn(nullable: false)]
     private $item;
 
-    /**
-     * @Groups({"museum"})
-     */
+    #[Groups(["museum"])]
     #[ORM\Column(type: 'datetime_immutable')]
     private $donatedOn;
 
-    /**
-     * @Groups({"museum"})
-     */
+    #[Groups(["museum"])]
     #[ORM\Column(type: 'json')]
     private $comments = [];
 
-    /**
-     * @Groups({"museum"})
-     */
+    #[Groups(["museum"])]
     #[ORM\ManyToOne(targetEntity: User::class)]
     private $createdBy;
 

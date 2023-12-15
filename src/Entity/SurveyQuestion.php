@@ -8,23 +8,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity]
 class SurveyQuestion
 {
-    /**
-     * @Groups({"surveyQuestion", "surveyQuestionAnswer"})
-     */
+    #[Groups(["surveyQuestion", "surveyQuestionAnswer"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"surveyQuestion"})
-     */
+    #[Groups(["surveyQuestion"])]
     #[ORM\Column(type: 'text')]
     private $title;
 
-    /**
-     * @Groups({"surveyQuestion"})
-     */
+    #[Groups(["surveyQuestion"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $type;
 

@@ -16,9 +16,7 @@ class HollowEarthTileCard
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia"})
-     */
+    #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $name;
 
@@ -28,9 +26,7 @@ class HollowEarthTileCard
     #[ORM\Column(type: 'integer')]
     private $requiredAction = 0;
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia"})
-     */
+    #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\ManyToOne(targetEntity: HollowEarthTileType::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $type;

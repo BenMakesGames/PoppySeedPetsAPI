@@ -18,39 +18,27 @@ class Greenhouse
     #[ORM\JoinColumn(nullable: false)]
     private $owner;
 
-    /**
-     * @Groups({"myGreenhouse"})
-     */
+    #[Groups(["myGreenhouse"])]
     #[ORM\Column(type: 'smallint')]
     private $maxPlants = 3;
 
-    /**
-     * @Groups({"myGreenhouse"})
-     */
+    #[Groups(["myGreenhouse"])]
     #[ORM\Column(type: 'boolean')]
     private $hasBirdBath = false;
 
-    /**
-     * @Groups({"myGreenhouse"})
-     */
+    #[Groups(["myGreenhouse"])]
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private $visitingBird = null;
 
-    /**
-     * @Groups({"myGreenhouse"})
-     */
+    #[Groups(["myGreenhouse"])]
     #[ORM\Column(type: 'smallint')]
     private $maxWaterPlants = 0;
 
-    /**
-     * @Groups({"myGreenhouse"})
-     */
+    #[Groups(["myGreenhouse"])]
     #[ORM\Column(type: 'smallint')]
     private $maxDarkPlants = 0;
 
-    /**
-     * @Groups({"myGreenhouse"})
-     */
+    #[Groups(["myGreenhouse"])]
     #[ORM\Column(type: 'boolean')]
     private $hasComposter = false;
 
@@ -60,9 +48,7 @@ class Greenhouse
     #[ORM\Column(type: 'integer')]
     private $composterBonusCountdown = 0;
 
-    /**
-     * @Groups({"helperPet"})
-     */
+    #[Groups(["helperPet"])]
     #[ORM\OneToOne(targetEntity: Pet::class, cascade: ['persist', 'remove'])]
     private $helper;
 
@@ -75,9 +61,7 @@ class Greenhouse
     #[ORM\Column(type: 'datetime_immutable')]
     private $bees2DismissedOn;
 
-    /**
-     * @Groups({"myGreenhouse"})
-     */
+    #[Groups(["myGreenhouse"])]
     #[ORM\Column(type: 'boolean')]
     private $hasFishStatue = false;
 

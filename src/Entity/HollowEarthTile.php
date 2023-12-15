@@ -15,21 +15,15 @@ class HollowEarthTile
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"hollowEarth"})
-     */
+    #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'integer')]
     private $x;
 
-    /**
-     * @Groups({"hollowEarth"})
-     */
+    #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'integer')]
     private $y;
 
-    /**
-     * @Groups({"hollowEarth"})
-     */
+    #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'string', length: 1)]
     private $moveDirection;
 
@@ -39,9 +33,7 @@ class HollowEarthTile
     #[ORM\ManyToOne(targetEntity: HollowEarthTileCard::class)]
     private $card;
 
-    /**
-     * @Groups({"hollowEarth"})
-     */
+    #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private $goodsSide;
 

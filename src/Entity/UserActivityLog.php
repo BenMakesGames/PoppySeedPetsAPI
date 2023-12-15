@@ -19,18 +19,14 @@ class UserActivityLog
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
-    /**
-     * @Groups({"userActivityLogs"})
-     */
+    #[Groups(["userActivityLogs"])]
     #[ORM\Column(type: 'text')]
     private $entry;
 
     #[ORM\Column(type: 'datetime_immutable')]
     private $createdOn;
 
-    /**
-     * @Groups({"userActivityLogs"})
-     */
+    #[Groups(["userActivityLogs"])]
     #[ORM\ManyToMany(targetEntity: UserActivityLogTag::class)]
     private $tags;
 

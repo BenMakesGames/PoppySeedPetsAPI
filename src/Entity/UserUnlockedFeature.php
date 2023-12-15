@@ -21,15 +21,11 @@ class UserUnlockedFeature
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
-    /**
-     * @Groups({"myAccount"})
-     */
+    #[Groups(["myAccount"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $feature;
 
-    /**
-     * @Groups({"myAccount"})
-     */
+    #[Groups(["myAccount"])]
     #[ORM\Column(type: 'datetime_immutable')]
     private $unlockedOn;
 

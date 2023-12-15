@@ -21,9 +21,7 @@ class UserSubscription
     #[ORM\Column(type: 'integer')]
     private $patreonUserId;
 
-    /**
-     * @Groups({"myAccount"})
-     */
+    #[Groups(["myAccount"])]
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
     private $tier;
 

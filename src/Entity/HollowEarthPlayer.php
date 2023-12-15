@@ -20,9 +20,7 @@ class HollowEarthPlayer
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
-    /**
-     * @Groups({"hollowEarth"})
-     */
+    #[Groups(["hollowEarth"])]
     #[ORM\ManyToOne(targetEntity: 'App\Entity\HollowEarthTile')]
     #[ORM\JoinColumn(nullable: false)]
     private $currentTile;
@@ -30,15 +28,11 @@ class HollowEarthPlayer
     #[ORM\Column(type: 'json', nullable: true)]
     private array|null $currentAction = null;
 
-    /**
-     * @Groups({"hollowEarth"})
-     */
+    #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'integer')]
     private $movesRemaining = 0;
 
-    /**
-     * @Groups({"hollowEarth"})
-     */
+    #[Groups(["hollowEarth"])]
     #[ORM\OneToOne(targetEntity: Pet::class)]
     #[ORM\JoinColumn(nullable: true)]
     private $chosenPet = null;
@@ -46,39 +40,27 @@ class HollowEarthPlayer
     #[ORM\Column(type: 'string', length: 1)]
     private $currentDirection;
 
-    /**
-     * @Groups({"hollowEarth"})
-     */
+    #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'integer')]
     private $jade = 0;
 
-    /**
-     * @Groups({"hollowEarth"})
-     */
+    #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'integer')]
     private $incense = 0;
 
-    /**
-     * @Groups({"hollowEarth"})
-     */
+    #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'integer')]
     private $salt = 0;
 
-    /**
-     * @Groups({"hollowEarth"})
-     */
+    #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'integer')]
     private $amber = 0;
 
-    /**
-     * @Groups({"hollowEarth"})
-     */
+    #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'integer')]
     private $fruit = 0;
 
-    /**
-     * @Groups({"hollowEarth"})
-     */
+    #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'boolean')]
     private $showGoods = false;
 
@@ -157,9 +139,7 @@ class HollowEarthPlayer
         return $this;
     }
 
-    /**
-     * @Groups({"hollowEarth"})
-     */
+    #[Groups(["hollowEarth"])]
     public function getAction()
     {
         if($this->currentAction === null)

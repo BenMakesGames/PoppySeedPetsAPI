@@ -72,9 +72,7 @@ class ItemFood
     #[ORM\Column(type: 'integer')]
     private $chemically = 0;
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia"})
-     */
+    #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private $grantedSkill;
 
@@ -359,9 +357,7 @@ class ItemFood
         return $multiplied;
     }
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia", "marketItem"})
-     */
+    #[Groups(["myInventory", "itemEncyclopedia", "marketItem"])]
     public function getModifiers(): array
     {
         $modifiers = [];
@@ -470,9 +466,7 @@ class ItemFood
         return $this;
     }
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia"})
-     */
+    #[Groups(["myInventory", "itemEncyclopedia"])]
     public function getBringsLuck(): ?string
     {
         return $this->bonusItemGroup ? $this->bonusItemGroup->getName() : null;
@@ -502,9 +496,7 @@ class ItemFood
         return $this;
     }
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia"})
-     */
+    #[Groups(["myInventory", "itemEncyclopedia"])]
     public function getGrantedStatusEffect(): ?string
     {
         return $this->grantedStatusEffect;

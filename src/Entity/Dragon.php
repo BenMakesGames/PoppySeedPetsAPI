@@ -48,24 +48,18 @@ class Dragon
     #[ORM\JoinColumn(nullable: false)]
     private $owner;
 
-    /**
-     * @Groups({"myFireplace", "myDragon"})
-     */
+    #[Groups(["myFireplace", "myDragon"])]
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private $name;
 
     #[ORM\Column(type: 'integer')]
     private $food = 0;
 
-    /**
-     * @Groups({"myFireplace", "myDragon"})
-     */
+    #[Groups(["myFireplace", "myDragon"])]
     #[ORM\Column(type: 'string', length: 6, nullable: true)]
     private $colorA;
 
-    /**
-     * @Groups({"myFireplace", "myDragon"})
-     */
+    #[Groups(["myFireplace", "myDragon"])]
     #[ORM\Column(type: 'string', length: 6, nullable: true)]
     private $colorB;
 
@@ -99,9 +93,7 @@ class Dragon
     #[Groups(['myDragon'])]
     private $appearance;
 
-    /**
-     * @Groups({"helperPet"})
-     */
+    #[Groups(["helperPet"])]
     #[ORM\OneToOne(targetEntity: Pet::class, cascade: ['persist', 'remove'])]
     private $helper;
 
@@ -212,9 +204,7 @@ class Dragon
         return $this->growth;
     }
 
-    /**
-     * @Groups({"myFireplace"})
-     */
+    #[Groups(["myFireplace"])]
     public function getGrowthPercent(): float
     {
         return $this->growth / self::FOOD_REQUIRED_TO_GROW;

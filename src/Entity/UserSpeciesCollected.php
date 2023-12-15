@@ -19,40 +19,28 @@ class UserSpeciesCollected
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
-    /**
-     * @Groups({"zoologistCatalog"})
-     */
+    #[Groups(["zoologistCatalog"])]
     #[ORM\ManyToOne(targetEntity: PetSpecies::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $species;
 
-    /**
-     * @Groups({"zoologistCatalog"})
-     */
+    #[Groups(["zoologistCatalog"])]
     #[ORM\Column(type: 'datetime_immutable')]
     private $discoveredOn;
 
-    /**
-     * @Groups({"zoologistCatalog"})
-     */
+    #[Groups(["zoologistCatalog"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $petName;
 
-    /**
-     * @Groups({"zoologistCatalog"})
-     */
+    #[Groups(["zoologistCatalog"])]
     #[ORM\Column(type: 'string', length: 6)]
     private $colorA;
 
-    /**
-     * @Groups({"zoologistCatalog"})
-     */
+    #[Groups(["zoologistCatalog"])]
     #[ORM\Column(type: 'string', length: 6)]
     private $colorB;
 
-    /**
-     * @Groups({"zoologistCatalog"})
-     */
+    #[Groups(["zoologistCatalog"])]
     #[ORM\Column(type: 'smallint')]
     private $scale;
 

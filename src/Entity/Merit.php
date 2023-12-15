@@ -13,15 +13,11 @@ class Merit
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"availableMerits", "myPet", 'houseSitterPet', "meritEncyclopedia", "userPublicProfile", "petPublicProfile", "petGroupDetails", "parkEvent", "petFriend", "hollowEarth", "petActivityLogAndPublicPet", "helperPet"})
-     */
+    #[Groups(["availableMerits", "myPet", 'houseSitterPet', "meritEncyclopedia", "userPublicProfile", "petPublicProfile", "petGroupDetails", "parkEvent", "petFriend", "hollowEarth", "petActivityLogAndPublicPet", "helperPet"])]
     #[ORM\Column(type: 'string', length: 30, unique: true)]
     private $name;
 
-    /**
-     * @Groups({"availableMerits", "meritEncyclopedia"})
-     */
+    #[Groups(["availableMerits", "meritEncyclopedia"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $description;
 

@@ -239,29 +239,19 @@ class ResponseService
 
 class FlashMessage
 {
-    /**
-     * @Groups({"petActivityLogs"})
-     */
+    #[Groups(["petActivityLogs"])]
     public int $id;
 
-    /**
-     * @Groups({"petActivityLogs"})
-     */
+    #[Groups(["petActivityLogs"])]
     public string $entry;
 
-    /**
-     * @Groups({"petActivityLogs"})
-     */
+    #[Groups(["petActivityLogs"])]
     public string $icon;
 
-    /**
-     * @Groups({"petActivityLogs"})
-     */
+    #[Groups(["petActivityLogs"])]
     public ?PetChangesSummary $changes;
 
-    /**
-     * @Groups({"petActivityLogs"})
-     */
+    #[Groups(["petActivityLogs"])]
     public int $interestingness;
 
     public function __construct(int $id, string $entry, string $icon, ?PetChangesSummary $changes, int $interestingness)

@@ -39,35 +39,25 @@ class SpiritCompanion
         'rsuusd-bat', 'sea-monster', 'wtf'
     ];
 
-    /**
-     * @Groups({"spiritCompanionPublicProfile", "petSpiritAncestor"})
-     */
+    #[Groups(["spiritCompanionPublicProfile", "petSpiritAncestor"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"myPet", 'houseSitterPet', "spiritCompanionPublicProfile", "petSpiritAncestor"})
-     */
+    #[Groups(["myPet", 'houseSitterPet', "spiritCompanionPublicProfile", "petSpiritAncestor"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $name;
 
-    /**
-     * @Groups({"myPet", 'houseSitterPet', "parkEvent", "hollowEarth", "petPublicProfile", "petGroupDetails", "spiritCompanionPublicProfile", "helperPet", "petSpiritAncestor"})
-     */
+    #[Groups(["myPet", 'houseSitterPet', "parkEvent", "hollowEarth", "petPublicProfile", "petGroupDetails", "spiritCompanionPublicProfile", "helperPet", "petSpiritAncestor"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $image;
 
-    /**
-     * @Groups({"spiritCompanionPublicProfile"})
-     */
+    #[Groups(["spiritCompanionPublicProfile"])]
     #[ORM\OneToOne(targetEntity: Pet::class, mappedBy: 'spiritCompanion')]
     private $pet;
 
-    /**
-     * @Groups({"myPet", 'houseSitterPet', "spiritCompanionPublicProfile"})
-     */
+    #[Groups(["myPet", 'houseSitterPet', "spiritCompanionPublicProfile"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $star;
 

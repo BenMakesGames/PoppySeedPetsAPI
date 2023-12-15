@@ -15,15 +15,11 @@ class HollowEarthTileType
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia"})
-     */
+    #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $name;
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia"})
-     */
+    #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\Column(type: 'string', length: 10)]
     private $article;
 

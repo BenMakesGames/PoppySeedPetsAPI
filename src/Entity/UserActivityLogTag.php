@@ -13,21 +13,15 @@ class UserActivityLogTag
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"userActivityLogs"})
-     */
+    #[Groups(["userActivityLogs"])]
     #[ORM\Column(type: 'string', length: 40, unique: true)]
     private $title;
 
-    /**
-     * @Groups({"userActivityLogs"})
-     */
+    #[Groups(["userActivityLogs"])]
     #[ORM\Column(type: 'string', length: 6)]
     private $color;
 
-    /**
-     * @Groups({"userActivityLogs"})
-     */
+    #[Groups(["userActivityLogs"])]
     #[ORM\Column(type: 'string', length: 12)]
     private $emoji;
 

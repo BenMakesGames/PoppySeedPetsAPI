@@ -17,39 +17,27 @@ class DragonHostage
     #[ORM\JoinColumn(nullable: false)]
     private $dragon;
 
-    /**
-     * @Groups({"myDragon"})
-     */
+    #[Groups(["myDragon"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $type;
 
-    /**
-     * @Groups({"myDragon"})
-     */
+    #[Groups(["myDragon"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $name;
 
-    /**
-     * @Groups({"myDragon"})
-     */
+    #[Groups(["myDragon"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $appearance;
 
-    /**
-     * @Groups({"myDragon"})
-     */
+    #[Groups(["myDragon"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $dialog;
 
-    /**
-     * @Groups({"myDragon"})
-     */
+    #[Groups(["myDragon"])]
     #[ORM\Column(type: 'string', length: 6)]
     private $colorA;
 
-    /**
-     * @Groups({"myDragon"})
-     */
+    #[Groups(["myDragon"])]
     #[ORM\Column(type: 'string', length: 6)]
     private $colorB;
 

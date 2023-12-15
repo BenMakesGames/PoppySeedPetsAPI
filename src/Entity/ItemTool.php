@@ -48,21 +48,15 @@ class ItemTool
     #[ORM\Column(type: 'integer')]
     private $science = 0;
 
-    /**
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
-     */
+    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"])]
     #[ORM\Column(type: 'float')]
     private $gripX = 0.5;
 
-    /**
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
-     */
+    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"])]
     #[ORM\Column(type: 'float')]
     private $gripY = 0.5;
 
-    /**
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
-     */
+    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"])]
     #[ORM\Column(type: 'integer')]
     private $gripAngle = 0;
 
@@ -73,9 +67,7 @@ class ItemTool
     #[ORM\Column(type: 'boolean')]
     private $gripAngleFixed = false;
 
-    /**
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
-     */
+    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"])]
     #[ORM\Column(type: 'float')]
     private $gripScale = 1;
 
@@ -88,9 +80,7 @@ class ItemTool
     #[ORM\Column(type: 'boolean')]
     private $protectionFromHeat = false;
 
-    /**
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
-     */
+    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"])]
     #[ORM\Column(type: 'boolean')]
     private $alwaysInFront = false;
 
@@ -323,9 +313,7 @@ class ItemTool
         return $this;
     }
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "myPet"})
-     */
+    #[Groups(["myInventory", "itemEncyclopedia", "marketItem", "myPet"])]
     public function getModifiers(): array
     {
         $modifiers = [];
