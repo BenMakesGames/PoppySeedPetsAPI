@@ -144,7 +144,7 @@ class PetBaby
         return $this;
     }
 
-    #[Groups(['myPet'])]
+    #[Groups(['myPet', 'houseSitterPet'])]
     public function getPregnancyProgress(): string
     {
         if($this->getParent()->getSpecies()->getPregnancyStyle() === PetPregnancyStyleEnum::EGG)
@@ -179,7 +179,7 @@ class PetBaby
     }
 
     /**
-     * @Groups({"myPet", "userPublicProfile", "petPublicProfile", "petShelterPet", "petFriend"})
+     * @Groups({"myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "petShelterPet", "petFriend"})
      */
     public function getEggColor(): ?string
     {

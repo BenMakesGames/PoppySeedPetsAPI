@@ -22,7 +22,7 @@ class Inventory
     ];
 
     /**
-     * @Groups({"myPet", "myInventory", "greenhouseFertilizer", "mySeeds", "fireplaceFuel", "dragonTreasure", "myHollowEarthTiles"})
+     * @Groups({"myPet", 'houseSitterPet', "myInventory", "greenhouseFertilizer", "mySeeds", "fireplaceFuel", "dragonTreasure", "myHollowEarthTiles"})
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -30,7 +30,7 @@ class Inventory
     private $id;
 
     /**
-     * @Groups({"myPet", "myInventory", "userPublicProfile", "petPublicProfile", "marketItem", "greenhouseFertilizer", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "petGroupDetails", "dragonTreasure", "myHollowEarthTiles", "helperPet"})
+     * @Groups({"myPet", 'houseSitterPet', "myInventory", "userPublicProfile", "petPublicProfile", "marketItem", "greenhouseFertilizer", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "petGroupDetails", "dragonTreasure", "myHollowEarthTiles", "helperPet"})
      */
     #[ORM\ManyToOne(targetEntity: Item::class, inversedBy: 'inventory')]
     #[ORM\JoinColumn(nullable: false)]
@@ -68,7 +68,7 @@ class Inventory
     private $holder;
 
     /**
-     * @Groups({"myInventory", "fireplaceFuel", "myGreenhouse", "myPet", "dragonTreasure", "myHollowEarthTiles"})
+     * @Groups({"myInventory", "fireplaceFuel", "myGreenhouse", "myPet", 'houseSitterPet', "dragonTreasure", "myHollowEarthTiles"})
      */
     #[ORM\Column(type: 'integer', nullable: true)]
     private $sellPrice;
@@ -92,13 +92,13 @@ class Inventory
     private $lunchboxItem;
 
     /**
-     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "myPet"})
+     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", 'houseSitterPet', "fireplaceMantle", "dragonTreasure", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
      */
     #[ORM\ManyToOne(targetEntity: 'App\Entity\Enchantment')]
     private $enchantment;
 
     /**
-     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure"})
+     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", 'houseSitterPet', "fireplaceMantle", "dragonTreasure"})
      */
     #[ORM\ManyToOne(targetEntity: Spice::class)]
     private $spice;
@@ -107,7 +107,7 @@ class Inventory
     private $fullItemName;
 
     /**
-     * @Groups({"myInventory", "myPet", "fireplaceMantle", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "fireplaceFuel", "dragonTreasure"})
+     * @Groups({"myInventory", "myPet", 'houseSitterPet', "fireplaceMantle", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "fireplaceFuel", "dragonTreasure"})
      */
     #[ORM\ManyToOne(targetEntity: Item::class)]
     private $illusion;

@@ -48,13 +48,13 @@ class SpiritCompanion
     private $id;
 
     /**
-     * @Groups({"myPet", "spiritCompanionPublicProfile", "petSpiritAncestor"})
+     * @Groups({"myPet", 'houseSitterPet', "spiritCompanionPublicProfile", "petSpiritAncestor"})
      */
     #[ORM\Column(type: 'string', length: 40)]
     private $name;
 
     /**
-     * @Groups({"myPet", "parkEvent", "hollowEarth", "petPublicProfile", "petGroupDetails", "spiritCompanionPublicProfile", "helperPet", "petSpiritAncestor"})
+     * @Groups({"myPet", 'houseSitterPet', "parkEvent", "hollowEarth", "petPublicProfile", "petGroupDetails", "spiritCompanionPublicProfile", "helperPet", "petSpiritAncestor"})
      */
     #[ORM\Column(type: 'string', length: 40)]
     private $image;
@@ -66,7 +66,7 @@ class SpiritCompanion
     private $pet;
 
     /**
-     * @Groups({"myPet", "spiritCompanionPublicProfile"})
+     * @Groups({"myPet", 'houseSitterPet', "spiritCompanionPublicProfile"})
      */
     #[ORM\Column(type: 'string', length: 40)]
     private $star;

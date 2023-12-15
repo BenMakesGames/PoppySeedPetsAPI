@@ -193,6 +193,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: UserFieldGuideEntry::class, mappedBy: 'user', orphanRemoval: true)]
     private $fieldGuideEntries;
 
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?HouseSitter $houseSitter = null;
+
     public function __construct()
     {
         $this->pets = new ArrayCollection();
@@ -837,5 +840,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getFieldGuideEntries(): Collection
     {
         return $this->fieldGuideEntries;
+    }
+
+    public function getHouseSitter(): ?HouseSitter
+    {
+        return $this->houseSitter;
+    }
+
+    public function setHouseSitter(HouseSitter $houseSitter): static
+    {
+        // set the owning side of the relation if necessary
+        if ($houseSitter->getUser() !== $this) {
+            $houseSitter->setUser($this);
+        }
+
+        $this->houseSitter = $houseSitter;
+
+        return $this;
     }
 }
