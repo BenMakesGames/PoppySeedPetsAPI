@@ -21,56 +21,42 @@ class Inventory
         LocationEnum::BASEMENT
     ];
 
-    /**
-     * @Groups({"myPet", 'houseSitterPet', "myInventory", "greenhouseFertilizer", "mySeeds", "fireplaceFuel", "dragonTreasure", "myHollowEarthTiles"})
-     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(["myPet", 'houseSitterPet', "myInventory", "greenhouseFertilizer", "mySeeds", "fireplaceFuel", "dragonTreasure", "myHollowEarthTiles"])]
     private $id;
 
-    /**
-     * @Groups({"myPet", 'houseSitterPet', "myInventory", "userPublicProfile", "petPublicProfile", "marketItem", "greenhouseFertilizer", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "petGroupDetails", "dragonTreasure", "myHollowEarthTiles", "helperPet"})
-     */
     #[ORM\ManyToOne(targetEntity: Item::class, inversedBy: 'inventory')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["myPet", 'houseSitterPet', "myInventory", "userPublicProfile", "petPublicProfile", "marketItem", "greenhouseFertilizer", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "petGroupDetails", "dragonTreasure", "myHollowEarthTiles", "helperPet"])]
     private $item;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $owner;
 
-    /**
-     * @Groups({"myInventory"})
-     */
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(["myInventory"])]
     private $createdOn;
 
-    /**
-     * @Groups({"myInventory"})
-     */
     #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(["myInventory"])]
     private $modifiedOn;
 
-    /**
-     * @Groups({"myInventory", "fireplaceMantle"})
-     */
     #[ORM\Column(type: 'json')]
+    #[Groups(["myInventory", "fireplaceMantle"])]
     private $comments = [];
 
-    /**
-     * @Groups({"myInventory"})
-     */
     #[ORM\ManyToOne(targetEntity: User::class)]
+    #[Groups(["myInventory"])]
     private $createdBy;
 
     #[ORM\OneToOne(targetEntity: Pet::class, mappedBy: 'tool')]
     private $holder;
 
-    /**
-     * @Groups({"myInventory", "fireplaceFuel", "myGreenhouse", "myPet", 'houseSitterPet', "dragonTreasure", "myHollowEarthTiles"})
-     */
     #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(["myInventory", "fireplaceFuel", "myGreenhouse", "myPet", 'houseSitterPet', "dragonTreasure", "myHollowEarthTiles"])]
     private $sellPrice;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
@@ -82,34 +68,26 @@ class Inventory
     #[ORM\OneToOne(targetEntity: Pet::class, mappedBy: 'hat')]
     private $wearer;
 
-    /**
-     * @Groups({"myInventory"})
-     */
     #[ORM\Column(type: 'boolean')]
+    #[Groups(["myInventory"])]
     private bool $lockedToOwner = false;
 
     #[ORM\OneToOne(targetEntity: 'App\Entity\LunchboxItem', mappedBy: 'inventoryItem', cascade: ['remove'])]
     private $lunchboxItem;
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", 'houseSitterPet', "fireplaceMantle", "dragonTreasure", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"})
-     */
     #[ORM\ManyToOne(targetEntity: 'App\Entity\Enchantment')]
+    #[Groups(["myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", 'houseSitterPet', "fireplaceMantle", "dragonTreasure", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"])]
     private $enchantment;
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", 'houseSitterPet', "fireplaceMantle", "dragonTreasure"})
-     */
     #[ORM\ManyToOne(targetEntity: Spice::class)]
+    #[Groups(["myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", 'houseSitterPet', "fireplaceMantle", "dragonTreasure"])]
     private $spice;
 
     #[ORM\Column(type: 'string', length: 100)]
     private $fullItemName;
 
-    /**
-     * @Groups({"myInventory", "myPet", 'houseSitterPet', "fireplaceMantle", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "fireplaceFuel", "dragonTreasure"})
-     */
     #[ORM\ManyToOne(targetEntity: Item::class)]
+    #[Groups(["myInventory", "myPet", 'houseSitterPet', "fireplaceMantle", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "fireplaceFuel", "dragonTreasure"])]
     private $illusion;
 
     public function __construct()
@@ -554,9 +532,7 @@ class Inventory
         return $value;
     }
 
-    /**
-     * @Groups({"greenhouseFertilizer"})
-     */
+    #[Groups(["greenhouseFertilizer"])]
     public function getFertilizerRating(): int
     {
         $totalFertilizerValue = $this->getTotalFertilizerValue();

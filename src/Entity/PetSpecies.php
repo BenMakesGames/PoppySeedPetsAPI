@@ -11,114 +11,78 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity]
 class PetSpecies
 {
-    /**
-     * @Groups({"petEncyclopedia", "zoologistCatalog", "typeahead"})
-     */
+    #[Groups(["petEncyclopedia", "zoologistCatalog", "typeahead"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups({"myPet", 'houseSitterPet', "petEncyclopedia", "petShelterPet", "zoologistCatalog", "typeahead"})
-     */
+    #[Groups(["myPet", 'houseSitterPet', "petEncyclopedia", "petShelterPet", "zoologistCatalog", "typeahead"])]
     #[ORM\Column(type: 'string', length: 40, unique: true)]
     private $name;
 
-    /**
-     * @Groups({"myPet", 'houseSitterPet', "userPublicProfile", "petEncyclopedia", "petPublicProfile", "petShelterPet", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "petActivityLogAndPublicPet", "helperPet", "zoologistCatalog", "typeahead"})
-     */
+    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petEncyclopedia", "petPublicProfile", "petShelterPet", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "petActivityLogAndPublicPet", "helperPet", "zoologistCatalog", "typeahead"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $image;
 
-    /**
-     * @Groups({"petEncyclopedia"})
-     */
+    #[Groups(["petEncyclopedia"])]
     #[ORM\Column(type: 'text')]
     private $description;
 
-    /**
-     * @Groups({"myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
-     */
+    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"])]
     #[ORM\Column(type: 'float')]
     private $handX;
 
-    /**
-     * @Groups({"myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
-     */
+    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"])]
     #[ORM\Column(type: 'float')]
     private $handY;
 
-    /**
-     * @Groups({"myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
-     */
+    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"])]
     #[ORM\Column(type: 'float')]
     private $handAngle;
 
-    /**
-     * @Groups({"myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petEncyclopedia", "petFriend", "petGroupDetails", "helperPet"})
-     */
+    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petEncyclopedia", "petFriend", "petGroupDetails", "helperPet"])]
     #[ORM\Column(type: 'boolean')]
     private $flipX;
 
-    /**
-     * @Groups({"myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
-     */
+    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"])]
     #[ORM\Column(type: 'boolean')]
     private $handBehind;
 
-    /**
-     * @Groups({"myPet", 'houseSitterPet', "userPublicProfile", "petEncyclopedia"})
-     */
+    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petEncyclopedia"])]
     #[ORM\Column(type: 'boolean')]
     private $availableFromPetShelter;
 
-    /**
-     * @Groups({"myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "petEncyclopedia", "petFriend", "petGroupDetails", "parkEvent", "helperPet"})
-     */
+    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "petEncyclopedia", "petFriend", "petGroupDetails", "parkEvent", "helperPet"])]
     #[ORM\Column(type: 'integer')]
     private $pregnancyStyle;
 
-    /**
-     * @Groups({"myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "petEncyclopedia", "petFriend", "petGroupDetails", "parkEvent", "helperPet"})
-     */
+    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "petEncyclopedia", "petFriend", "petGroupDetails", "parkEvent", "helperPet"])]
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $eggImage;
 
-    /**
-     * @Groups({"myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
-     */
+    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"])]
     #[ORM\Column(type: 'float')]
     private $hatX;
 
-    /**
-     * @Groups({"myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
-     */
+    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"])]
     #[ORM\Column(type: 'float')]
     private $hatY;
 
-    /**
-     * @Groups({"myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"})
-     */
+    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"])]
     #[ORM\Column(type: 'float')]
     private $hatAngle;
 
-    /**
-     * @Groups({"petEncyclopedia"})
-     */
+    #[Groups(["petEncyclopedia"])]
     #[ORM\Column(type: 'boolean')]
     private $availableFromBreeding;
 
-    /**
-     * @Groups({"zoologistCatalog"})
-     */
+    #[Groups(["zoologistCatalog"])]
     #[ORM\ManyToOne(targetEntity: Item::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $sheds;
 
-    /**
-     * @Groups({"myPet", 'houseSitterPet', "petEncyclopedia", "zoologistCatalog"})
-     */
+    #[Groups(["myPet", 'houseSitterPet', "petEncyclopedia", "zoologistCatalog"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $family;
 
@@ -128,9 +92,7 @@ class PetSpecies
     #[ORM\OneToMany(targetEntity: 'App\Entity\Pet', mappedBy: 'species')]
     private $pets;
 
-    /**
-     * @Groups({"petEncyclopedia"})
-     */
+    #[Groups(["petEncyclopedia"])]
     #[ORM\Column(type: 'text', nullable: true)]
     private $physicalDescription;
 
@@ -319,9 +281,7 @@ class PetSpecies
         return $this;
     }
 
-    /**
-     * @Groups({"petEncyclopedia"})
-     */
+    #[Groups(["petEncyclopedia"])]
     public function getAvailableAtSignup(): bool
     {
         return $this->getId() <= 16 || $this->getId() === 96 || $this->getId() === 100;
