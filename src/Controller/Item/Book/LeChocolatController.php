@@ -9,6 +9,7 @@ use App\Model\ItemQuantity;
 use App\Service\CookingService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -42,7 +43,7 @@ class LeChocolatController extends AbstractController
     #[Route("/{inventory}/read", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'leChocolat/#/read');
@@ -60,7 +61,7 @@ class LeChocolatController extends AbstractController
 
         foreach($recipes as $recipe)
         {
-            $ingredients = $inventoryService->deserializeItemList($recipe['ingredients']);
+            $ingredients = InventoryService::deserializeItemList($em, $recipe['ingredients']);
 
             usort($ingredients, fn($a, $b) => $a->item->getName() <=> $b->item->getName());
 

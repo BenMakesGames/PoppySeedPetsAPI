@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller;
+namespace App\Controller\Plaza;
 
 use App\Entity\User;
 use App\Enum\LocationEnum;
@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/plaza")]
-class PlazaController extends AbstractController
+class CollectHolidayBoxController extends AbstractController
 {
     #[Route("/collectHolidayBox", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]

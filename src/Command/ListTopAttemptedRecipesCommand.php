@@ -5,19 +5,20 @@ namespace App\Command;
 use App\Functions\ArrayFunctions;
 use App\Repository\RecipeAttemptedRepository;
 use App\Service\InventoryService;
+use Doctrine\ORM\EntityManagerInterface;
 
 class ListTopAttemptedRecipesCommand extends PoppySeedPetsCommand
 {
     private RecipeAttemptedRepository $recipeAttemptedRepository;
-    private InventoryService $inventoryService;
+    private EntityManagerInterface $em;
 
     public function __construct(
         RecipeAttemptedRepository $recipeAttemptedRepository,
-        InventoryService $inventoryService
+        EntityManagerInterface $em
     )
     {
         $this->recipeAttemptedRepository = $recipeAttemptedRepository;
-        $this->inventoryService = $inventoryService;
+        $this->em = $em;
 
         parent::__construct();
     }
@@ -46,7 +47,7 @@ class ListTopAttemptedRecipesCommand extends PoppySeedPetsCommand
 
         foreach($topRecipes as $recipe)
         {
-            $recipeItems = $this->inventoryService->deserializeItemList($recipe['recipe']);
+            $recipeItems = InventoryService::deserializeItemList($this->em, $recipe['recipe']);
 
             $itemStrings = array_map(fn($item) => $item->quantity . 'x ' . $item->item->getName(), $recipeItems);
 

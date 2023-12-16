@@ -35,7 +35,7 @@ class CookingBuddyController extends AbstractController
     #[Route("/{cookingBuddy}", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getKnownRecipes(
-        Inventory $cookingBuddy, InventoryService $inventoryService, EntityManagerInterface $em,
+        Inventory $cookingBuddy, EntityManagerInterface $em,
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository
     )
     {
@@ -94,8 +94,8 @@ class CookingBuddyController extends AbstractController
                 throw new \Exception('Recipe not found: ' . $knownRecipe->getRecipe() . '.');
 
             $recipe = $knownRecipeRecipes[$knownRecipe->getRecipe()];
-            $ingredients = $inventoryService->deserializeItemList($recipe['ingredients']);
-            $makes = $inventoryService->deserializeItemList($recipe['makes']);
+            $ingredients = InventoryService::deserializeItemList($em, $recipe['ingredients']);
+            $makes = InventoryService::deserializeItemList($em, $recipe['makes']);
             $hasAllIngredients = true;
 
             $ingredients = array_map(function(ItemQuantity $itemQuantity) use($quantities, &$hasAllIngredients) {
@@ -150,7 +150,7 @@ class CookingBuddyController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function prepareRecipeFromMemory(
         Inventory $cookingBuddy, KnownRecipes $knownRecipe, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, InventoryRepository $inventoryRepository, UserStatsService $userStatsRepository,
+        InventoryRepository $inventoryRepository, UserStatsService $userStatsRepository,
         CookingService $cookingService, Request $request, int $quantity = 1
     )
     {
@@ -166,7 +166,7 @@ class CookingBuddyController extends AbstractController
         $recipeName = $knownRecipe->getRecipe();
         $recipe = RecipeRepository::findOneByName($recipeName);
 
-        $ingredients = $inventoryService->deserializeItemList($recipe['ingredients']);
+        $ingredients = InventoryService::deserializeItemList($em, $recipe['ingredients']);
 
         $location = $request->request->getInt('location', $cookingBuddy->getLocation());
 

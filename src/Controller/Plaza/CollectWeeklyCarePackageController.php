@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller\Account;
+namespace App\Controller\Plaza;
 
 use App\Entity\User;
 use App\Enum\LocationEnum;
@@ -16,9 +16,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Annotations\DoesNotRequireHouseHours;
 
-#[Route("/account")]
+#[Route("/plaza")]
 class CollectWeeklyCarePackageController extends AbstractController
 {
     #[Route("/collectWeeklyCarePackage", methods: ["POST"])]

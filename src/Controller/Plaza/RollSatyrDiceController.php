@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller;
+namespace App\Controller\Plaza;
 
 use App\Entity\User;
 use App\Enum\LocationEnum;
@@ -14,12 +14,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route("/recycling")]
-class RecyclingController extends AbstractController
+#[Route("/plaza")]
+class RollSatyrDiceController extends AbstractController
 {
-    #[Route("/gamble", methods: ["POST"])]
+    #[Route("/rollSatyrDice", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function gamble(
+    public function rollEm(
         ResponseService $responseService, EntityManagerInterface $em, InventoryService $inventoryService,
         Request $request, IRandom $squirrel3, TransactionService $transactionService
     )

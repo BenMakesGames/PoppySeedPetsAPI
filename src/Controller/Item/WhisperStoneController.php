@@ -23,7 +23,7 @@ class WhisperStoneController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
-        InventoryService $inventoryService, UserStatsService $userStatsRepository
+        UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -47,7 +47,7 @@ class WhisperStoneController extends AbstractController
                         return $q->item->getName();
                     else
                         return $q->quantity . '× ' . $q->item->getName();
-                }, $inventoryService->deserializeItemList($recipe['ingredients']))
+                }, InventoryService::deserializeItemList($em, $recipe['ingredients']))
             );
         }
 

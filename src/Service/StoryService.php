@@ -116,7 +116,7 @@ class StoryService
     {
         if(array_key_exists('requiredInventory', $choice))
         {
-            $requiredInventory = $this->inventoryService->deserializeItemList($choice['requiredInventory']);
+            $requiredInventory = InventoryService::deserializeItemList($this->em, $choice['requiredInventory']);
 
             foreach($requiredInventory as $quantity)
                 $this->inventoryService->loseItem($this->user, $quantity->item->getId(), [ LocationEnum::HOME, LocationEnum::BASEMENT ], $quantity->quantity);
@@ -176,7 +176,7 @@ class StoryService
     {
         if(array_key_exists('requiredInventory', $choice))
         {
-            $requiredInventory = $this->inventoryService->deserializeItemList($choice['requiredInventory']);
+            $requiredInventory = InventoryService::deserializeItemList($this->em, $choice['requiredInventory']);
             $userInventory = $this->getUserInventory();
 
             if(!InventoryService::hasRequiredItems($requiredInventory, $userInventory))

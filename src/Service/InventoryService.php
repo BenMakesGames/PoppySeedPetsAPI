@@ -15,6 +15,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\ItemRepository;
@@ -24,6 +25,8 @@ use App\Model\FoodWithSpice;
 use App\Model\ItemQuantity;
 use App\Service\PetActivity\EatingService;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 
 class InventoryService
 {
@@ -39,6 +42,8 @@ class InventoryService
 
     /**
      * @throws EnumInvalidValueException
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
     public static function countInventory(EntityManagerInterface $em, int $userId, int $itemId, int $location): int
     {
@@ -61,6 +66,8 @@ class InventoryService
 
     /**
      * @throws EnumInvalidValueException
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
     public static function countTotalInventory(EntityManagerInterface $em, User $user, int $location): int
     {
@@ -96,8 +103,9 @@ class InventoryService
 
     /**
      * @return ItemQuantity[]
+     * @throws PSPNotFoundException
      */
-    public function deserializeItemList(string $list)
+    public static function deserializeItemList(EntityManagerInterface $em, string $list): array
     {
         if($list === '') return [];
 
@@ -109,7 +117,7 @@ class InventoryService
             [$itemId, $quantity] = \explode(':', $item);
             $itemQuantity = new ItemQuantity();
 
-            $itemQuantity->item = ItemRepository::findOneById($this->em, $itemId);
+            $itemQuantity->item = ItemRepository::findOneById($em, $itemId);
             $itemQuantity->quantity = (int)$quantity;
 
             $quantities[] = $itemQuantity;
@@ -138,9 +146,9 @@ class InventoryService
     /**
      * @param ItemQuantity|ItemQuantity[] $quantities
      * @return Inventory[]
-     * @throws EnumInvalidValueException
+     * @throws EnumInvalidValueException|PSPNotFoundException
      */
-    public function giveInventoryQuantities($quantities, User $owner, User $creator, string $comment, int $location, bool $lockedToOwner = false): array
+    public function giveInventoryQuantities(ItemQuantity|array $quantities, User $owner, User $creator, string $comment, int $location, bool $lockedToOwner = false): array
     {
         if(!is_array($quantities)) $quantities = [ $quantities ];
 
@@ -157,6 +165,10 @@ class InventoryService
         return $inventory;
     }
 
+    /**
+     * @throws PSPNotFoundException
+     * @throws EnumInvalidValueException
+     */
     public function petCollectsEnhancedItem($item, ?Enchantment $bonus, ?Spice $spice, Pet $pet, string $comment, ?PetActivityLog $activityLog): ?Inventory
     {
         $item = $this->getItemWithChanceForLuckyTransformation($item);
@@ -448,10 +460,7 @@ class InventoryService
         return $i;
     }
 
-    /**
-     * @param Item|string $item
-     */
-    public function petCollectsItem($item, Pet $pet, string $comment, ?PetActivityLog $activityLog): ?Inventory
+    public function petCollectsItem(Item|string $item, Pet $pet, string $comment, ?PetActivityLog $activityLog): ?Inventory
     {
         return $this->petCollectsEnhancedItem($item, null, null, $pet, $comment, $activityLog);
     }
@@ -516,10 +525,9 @@ class InventoryService
     }
 
     /**
-     * @param string|Item $item
-     * @return Item
+     * @throws PSPNotFoundException
      */
-    private function getItemWithChanceForLuckyTransformation($item): Item
+    private function getItemWithChanceForLuckyTransformation(string|Item $item): Item
     {
         $itemIsString = is_string($item);
 
@@ -545,10 +553,10 @@ class InventoryService
     }
 
     /**
-     * @param Item|string $item
      * @throws EnumInvalidValueException
+     * @throws PSPNotFoundException
      */
-    public function receiveItem($item, User $owner, ?User $creator, string $comment, int $location, bool $lockedToOwner = false): Inventory
+    public function receiveItem(Item|string $item, User $owner, ?User $creator, string $comment, int $location, bool $lockedToOwner = false): Inventory
     {
         $item = $this->getItemWithChanceForLuckyTransformation($item);
 
@@ -574,7 +582,7 @@ class InventoryService
     /**
      * @param int|int[] $location
      */
-    public function loseItem(User $owner, int $itemId, $location, int $quantity = 1): int
+    public function loseItem(User $owner, int $itemId, int|array $location, int $quantity = 1): int
     {
         $inventory = $this->em->getRepository(Inventory::class)->findBy(
             [

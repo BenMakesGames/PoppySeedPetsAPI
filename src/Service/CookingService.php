@@ -173,7 +173,7 @@ class CookingService
 
         $locationOfFirstItem = $inventory[0]->getLocation();
 
-        $makes = $this->inventoryService->deserializeItemList($recipe['makes']);
+        $makes = InventoryService::deserializeItemList($this->em, $recipe['makes']);
 
         foreach($makes as $m)
             $m->quantity *= $multiple;
