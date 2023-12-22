@@ -597,6 +597,7 @@ final class RecipeRepository
         [ 'name' => 'Sweet Tea with Mammal Extract (C)', 'ingredients' => '12:1,13:1,21:1', 'makes' => '211:3' ],
         [ 'name' => 'Sweet Tea with Mammal Extract (D)', 'ingredients' => '12:1,210:1', 'makes' => '211:2' ],
         [ 'name' => 'Sweet Tea with Mammal Extract', 'ingredients' => '13:1,47:1', 'makes' => '211:2' ],
+        [ 'name' => 'Takoyaki', 'ingredients' => '7:1,14:1,16:1,42:1,43:1,253:1,324:1,1118:1', 'makes' => '1356:2' ],
         [ 'name' => 'Tall Glass of Yellownade', 'ingredients' => '12:1,94:1', 'makes' => '346:1' ],
         [ 'name' => 'Tamago Sushi', 'ingredients' => '14:1,17:1', 'makes' => '1203:1' ],
         [ 'name' => 'Tapsilog', 'ingredients' => '7:1,17:1,33:1,195:1,303:1', 'makes' => '753:2' ],

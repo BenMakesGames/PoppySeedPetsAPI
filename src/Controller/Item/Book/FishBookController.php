@@ -48,6 +48,7 @@ class FishBookController extends AbstractController
             'Soy-ginger Fish',
             'Stargazy Pie',
             'Simple Sushi',
+            'Takoyaki',
             'Zongzi',
         ]);
 
@@ -90,6 +91,7 @@ class FishBookController extends AbstractController
 * Soy-ginger Fish
 * Stargazy Pie
 * Sushi
+* Takoyaki
 * Zongzi
 
 ## Crafts
@@ -260,6 +262,15 @@ This pie is said to have saved a town from a devil, because when the devil saw t
 1. Place a bed of sushi rice on the seaweed (Rice, Sugar, Vinegar)
 1. Place pieces of Fish on the sushi rice, in a line about 1-2 inches away from one edge 
 1. Roll!
+
+#### Takoyaki
+
+1. Make a tasty batter of Egg, Dashi, Wheat Flour, and Soy Sauce
+2. Mash together Tentacles, Onion, and Ginger into balls
+3. Cover balls in batter, and cook
+4. Put on a stick. For fun.
+   * This step is not optional.
+     * You are _required_ to have fun.
 
 #### Zongzi
 
