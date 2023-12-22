@@ -35,9 +35,6 @@ class JoustingService implements ParkEventInterface
     /** @var JoustingParticipant[] */
     private $individualParticipants;
 
-    private $wins = [];
-    private $defeatedBy = [];
-
     private $results = '';
 
     private int $round = 0;
