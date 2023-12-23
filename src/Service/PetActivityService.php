@@ -298,8 +298,8 @@ class PetActivityService
                 $aFood = new FoodWithSpice($a->getInventoryItem()->getItem(), $a->getInventoryItem()->getSpice());
                 $bFood = new FoodWithSpice($b->getInventoryItem()->getItem(), $b->getInventoryItem()->getSpice());
 
-                $aValue = $this->eatingService->getFavoriteFlavorStrength($pet, $aFood) + $aFood->love;
-                $bValue = $this->eatingService->getFavoriteFlavorStrength($pet, $bFood) + $bFood->love;
+                $aValue = EatingService::getFavoriteFlavorStrength($pet, $aFood) + $aFood->love;
+                $bValue = EatingService::getFavoriteFlavorStrength($pet, $bFood) + $bFood->love;
 
                 if($aValue === $bValue)
                     return $bFood->food <=> $aFood->food;

@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Entity\Pet;
+use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\PetActivityLogFactory;
@@ -20,7 +21,7 @@ class PetAndPraiseService
     {
     }
 
-    public function doPet(Pet $pet)
+    public function doPet(User $petter, Pet $pet)
     {
         if(!$pet->isAtHome())
             throw new PSPInvalidOperationException('Pets that aren\'t home cannot be interacted with.');
@@ -28,7 +29,7 @@ class PetAndPraiseService
         $now = new \DateTimeImmutable();
 
         if($pet->getLastInteracted() >= $now->modify('-4 hours'))
-            throw new PSPInvalidOperationException('You\'ve already interacted with this pet recently.');
+            throw new PSPInvalidOperationException('This pet was already pet recently.');
 
         $changes = new PetChanges($pet);
 
@@ -61,13 +62,13 @@ class PetAndPraiseService
 
         $this->cravingService->maybeAddCraving($pet);
 
-        PetActivityLogFactory::createUnreadLog($this->em, $pet, '%user:' . $pet->getOwner()->getId() . '.Name% pet ' . '%pet:' . $pet->getId() . '.name%.')
+        PetActivityLogFactory::createUnreadLog($this->em, $pet, '%user:' . $petter->getId() . '.Name% pet ' . '%pet:' . $pet->getId() . '.name%.')
             ->setIcon('ui/affection')
             ->setChanges($changes->compare($pet))
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Petting' ]))
         ;
 
-        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::PETTED_A_PET);
+        $this->userStatsRepository->incrementStat($petter, UserStatEnum::PETTED_A_PET);
     }
 
 }

@@ -1667,9 +1667,12 @@ class Pet
         return $this->location === PetLocationEnum::HOME;
     }
 
-    public function getAffectionExpressions(): ?string
+    public function getRandomAffectionExpression(IRandom $rng): ?string
     {
-        return $this->affectionExpressions;
+        if($this->hasMerit(MeritEnum::AFFECTIONLESS))
+            return null;
+
+        return \mb_substr($this->affectionExpressions, $rng->rngNextInt(0, \mb_strlen($this->affectionExpressions) - 1), 1);
     }
 
     public function setAffectionExpressions(string $affectionExpressions): self

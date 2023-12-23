@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Pet;
 
+use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\LocationEnum;
@@ -32,27 +33,25 @@ class PetAndFeedController extends AbstractController
         PetAndPraiseService $petAndPraiseService
     )
     {
-        if($pet->getOwner()->getId() !== $this->getUser()->getId())
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if($pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
 
         if(!$pet->isAtHome())
             throw new PSPInvalidOperationException('Pets that aren\'t home cannot be interacted with.');
 
-        $petAndPraiseService->doPet($pet);
+        $petAndPraiseService->doPet($user, $pet);
 
         $em->flush();
 
-        if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
-        {
-            return $responseService->success([ 'pet' => $pet ], [ SerializationGroupEnum::MY_PET ]);
-        }
-        else
-        {
-            $emojis = $pet->getAffectionExpressions();
-            $emoji = \mb_substr($emojis, $rng->rngNextInt(0, \mb_strlen($emojis) - 1), 1);
+        $emoji = $pet->getRandomAffectionExpression($rng);
 
+        if($emoji)
+            return $responseService->success([ 'pet' => $pet ], [ SerializationGroupEnum::MY_PET ]);
+        else
             return $responseService->success([ 'pet' => $pet, 'emoji' => $emoji ], [ SerializationGroupEnum::MY_PET ]);
-        }
     }
 
     /**
@@ -60,8 +59,8 @@ class PetAndFeedController extends AbstractController
      */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function feed(
-        Pet $pet, Request $request, InventoryRepository $inventoryRepository, ResponseService $responseService,
-        EntityManagerInterface $em, EatingService $eatingService
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        EatingService $eatingService
     )
     {
         /** @var User $user */
@@ -75,7 +74,7 @@ class PetAndFeedController extends AbstractController
 
         $items = $request->request->all('items');
 
-        $inventory = $inventoryRepository->findBy([
+        $inventory = $em->getRepository(Inventory::class)->findBy([
             'owner' => $user,
             'id' => $items,
             'location' => LocationEnum::HOME,
@@ -84,7 +83,7 @@ class PetAndFeedController extends AbstractController
         if(count($items) !== count($inventory))
             throw new PSPNotFoundException('At least one of the items selected doesn\'t seem to exist?? (Reload and try again...)');
 
-        $eatingService->doFeed($pet, $inventory);
+        $eatingService->doFeed($user, $pet, $inventory);
 
         $em->flush();
 

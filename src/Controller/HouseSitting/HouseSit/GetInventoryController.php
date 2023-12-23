@@ -22,6 +22,6 @@ class GetInventoryController extends AbstractController
 
         HouseSittingHelpers::canHouseSitOrThrow($db, $user, $houseSitForId);
 
-        // ...
+        // TODO
     }
 }

@@ -93,8 +93,7 @@ class HalloweenController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function giveCandy(
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
-        Request $request, Clock $clock, IRandom $squirrel3, EatingService $eatingService,
-        FieldGuideService $fieldGuideService
+        Request $request, Clock $clock, IRandom $squirrel3, FieldGuideService $fieldGuideService
     )
     {
         /** @var User $user */
@@ -163,7 +162,7 @@ class HalloweenController extends AbstractController
 
             $logMessage = $trickOrTreater->getName() . ' went trick-or-treating at ' . $user->getName() . '\'s house, and received ' . $candy->getItem()->getNameWithArticle() . '!';
 
-            $favoriteFlavorStrength = $eatingService->getFavoriteFlavorStrength($trickOrTreater, new FoodWithSpice($candy->getItem(), null));
+            $favoriteFlavorStrength = EatingService::getFavoriteFlavorStrength($trickOrTreater, new FoodWithSpice($candy->getItem(), null));
 
             if($favoriteFlavorStrength > 0)
                 $logMessage .= ' (' . $squirrel3->rngNextFromArray([ 'Just what they wanted!', 'Ah! The good stuff!', 'One of their favorites!' ]) . ')';

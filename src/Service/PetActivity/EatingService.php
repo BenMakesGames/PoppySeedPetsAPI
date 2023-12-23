@@ -6,6 +6,7 @@ use App\Entity\Item;
 use App\Entity\ItemGroup;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\User;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
@@ -17,6 +18,7 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\ItemRepository;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
 use App\Model\FoodWithSpice;
@@ -76,7 +78,7 @@ class EatingService
 
         $randomFlavor = $food->randomFlavor > 0 ? FlavorEnum::getRandomValue($this->squirrel3) : null;
 
-        $esteemGain = $this->getFavoriteFlavorStrength($pet, $food, $randomFlavor) + $food->love;
+        $esteemGain = self::getFavoriteFlavorStrength($pet, $food, $randomFlavor) + $food->love;
 
         $pet->increaseEsteem($esteemGain);
 
@@ -93,7 +95,7 @@ class EatingService
         return true;
     }
 
-    public function getFavoriteFlavorStrength(Pet $pet, FoodWithSpice $food, string $randomFlavor = null): int
+    public static function getFavoriteFlavorStrength(Pet $pet, FoodWithSpice $food, string $randomFlavor = null): int
     {
         if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
             return 0;
@@ -228,11 +230,9 @@ class EatingService
     }
 
     /**
-     * @param Pet $pet
      * @param Inventory[] $inventory
-     * @return PetActivityLog
      */
-    public function doFeed(Pet $pet, array $inventory): PetActivityLog
+    public function doFeed(User $feeder, Pet $pet, array $inventory): PetActivityLog
     {
         if(!$pet->isAtHome())
             throw new PSPInvalidOperationException('Pets that aren\'t home cannot be interacted with.');
@@ -276,7 +276,7 @@ class EatingService
 
             $randomFlavor = $food->randomFlavor > 0 ? FlavorEnum::getRandomValue($this->squirrel3) : null;
 
-            $favoriteFlavorStrength = $this->getFavoriteFlavorStrength($pet, $food, $randomFlavor);
+            $favoriteFlavorStrength = self::getFavoriteFlavorStrength($pet, $food, $randomFlavor);
 
             $loveAndEsteemGain = $favoriteFlavorStrength + $food->love;
 
@@ -326,14 +326,14 @@ class EatingService
             if($pet->getPregnancy())
                 $pet->getPregnancy()->increaseAffection($gain);
 
-            $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::FOOD_HOURS_FED_TO_PETS, $foodGained);
+            $this->userStatsRepository->incrementStat($feeder, UserStatEnum::FOOD_HOURS_FED_TO_PETS, $foodGained);
 
             $this->cravingService->maybeAddCraving($pet);
         }
 
         if(count($foodsEaten) > 0)
         {
-            $message = '%user:' . $pet->getOwner()->getId() . '.Name% fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '.';
+            $message = '%user:' . $feeder->getId() . '.Name% fed ' . $pet->getName() . ' ' . ArrayFunctions::list_nice($foodsEaten) . '.';
             $icon = 'icons/activity-logs/mangia';
 
             if(count($favorites) > 0)
@@ -368,7 +368,9 @@ class EatingService
                 }
             }
 
-            return $this->responseService->createActivityLog($pet, $message, $icon, $petChanges->compare($pet))
+            return PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
+                ->setIcon($icon)
+                ->setChanges($petChanges->compare($pet))
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating' ]))
             ;
         }
@@ -376,13 +378,13 @@ class EatingService
         {
             if(count($tooPoisonous) > 0)
             {
-                return $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but ' . $this->squirrel3->rngNextFromArray($tooPoisonous) . ' really isn\'t appealing right now.', '')
+                return PetActivityLogFactory::createUnreadLog($this->em, $pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but ' . $this->squirrel3->rngNextFromArray($tooPoisonous) . ' really isn\'t appealing right now.')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating' ]))
                 ;
             }
             else
             {
-                return $this->responseService->createActivityLog($pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but they\'re too full to eat anymore.', '')
+                return PetActivityLogFactory::createUnreadLog($this->em, $pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but they\'re too full to eat anymore.')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating' ]))
                 ;
             }

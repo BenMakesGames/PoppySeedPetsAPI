@@ -102,7 +102,7 @@ class CookingService
      * @param Inventory[] $inventory
      * @throws EnumInvalidValueException
      */
-    public function prepareRecipe(User $user, array $inventory, bool $teachCookingBuddies): ?PrepareRecipeResults
+    public function prepareRecipe(User $preparer, User $inventoryOwner, array $inventory, bool $teachCookingBuddies): ?PrepareRecipeResults
     {
         $quantities = CookingService::buildQuantitiesFromInventory($inventory);
 
@@ -119,7 +119,7 @@ class CookingService
 
             if($smallestQuantity === 1)
             {
-                $this->logBadRecipeAttempt($user, $inventory);
+                $this->logBadRecipeAttempt($preparer, $inventory);
                 return null;
             }
 
@@ -152,7 +152,7 @@ class CookingService
 
             if(!$foundAny)
             {
-                $this->logBadRecipeAttempt($user, $inventory);
+                $this->logBadRecipeAttempt($preparer, $inventory);
                 return null;
             }
         }
@@ -178,7 +178,7 @@ class CookingService
         foreach($makes as $m)
             $m->quantity *= $multiple;
 
-        $newInventory = $this->inventoryService->giveInventoryQuantities($makes, $user, $user, $user->getName() . ' prepared this.', $locationOfFirstItem, $allLockedToOwner);
+        $newInventory = $this->inventoryService->giveInventoryQuantities($makes, $inventoryOwner, $inventoryOwner, $inventoryOwner->getName() . ' prepared this.', $locationOfFirstItem, $allLockedToOwner);
 
         if(count($spices) > 0)
         {
@@ -208,11 +208,11 @@ class CookingService
             }
         }
 
-        $this->userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING, $multiple);
+        $this->userStatsRepository->incrementStat($preparer, UserStatEnum::COOKED_SOMETHING, $multiple);
 
-        if($teachCookingBuddies && $this->hasACookingBuddy($user))
+        if($teachCookingBuddies && $this->hasACookingBuddy($inventoryOwner))
         {
-            $this->learnRecipe($user, $recipe['name']);
+            $this->learnRecipe($inventoryOwner, $recipe['name']);
         }
 
         $results = new PrepareRecipeResults();
