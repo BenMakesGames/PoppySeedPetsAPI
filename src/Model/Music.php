@@ -306,5 +306,8 @@ class Music
 
         // Teardrop, by Massive Attack
         'Love, love is a verb; love is aaa doing word... feeaarless on my... bre-e-eath...',
+
+        // Starships, by Nicki Minaj
+        'Starships... were meant to flyyy-y-y... hands up, and touch the skyyy-y-y... let\'s do this one more tiii-i-ime... can\'t stop--',
     ];
 }
