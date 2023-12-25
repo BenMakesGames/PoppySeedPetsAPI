@@ -49,7 +49,7 @@ class BuyController extends AbstractController
         if(Inventory::calculateBuyPrice($price) > $user->getMoneys())
             throw new PSPNotEnoughCurrencyException(Inventory::calculateBuyPrice($price) . '~~m~~', $user->getMoneys() . '~~m~~');
 
-        $itemsAtHome = $inventoryRepository->countItemsInLocation($user, LocationEnum::HOME);
+        $itemsAtHome = InventoryRepository::countItemsInLocation($em, $user, LocationEnum::HOME);
         $placeItemsIn = LocationEnum::HOME;
 
         if($itemsAtHome >= User::MAX_HOUSE_INVENTORY)
@@ -57,7 +57,7 @@ class BuyController extends AbstractController
             if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
                 throw new PSPInvalidOperationException('Your house has ' . $itemsAtHome . ' items; you\'ll need to make some space, first!');
 
-            $itemsInBasement = $inventoryRepository->countItemsInLocation($user, LocationEnum::BASEMENT);
+            $itemsInBasement = InventoryRepository::countItemsInLocation($em, $user, LocationEnum::BASEMENT);
 
             $dang = $squirrel3->rngNextFromArray([
                 'Dang!',

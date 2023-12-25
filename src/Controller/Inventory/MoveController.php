@@ -65,7 +65,7 @@ class MoveController extends AbstractController
         if(count($inventory) !== count($inventoryIds))
             throw new PSPNotFoundException('Some of the items could not be found??');
 
-        $itemsInTargetLocation = $inventoryRepository->countItemsInLocation($user, $location);
+        $itemsInTargetLocation = InventoryRepository::countItemsInLocation($em, $user, $location);
 
         if($location === LocationEnum::HOME)
         {

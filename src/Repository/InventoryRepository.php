@@ -124,12 +124,12 @@ class InventoryRepository extends ServiceEntityRepository
     /**
      * @throws EnumInvalidValueException
      */
-    public function countItemsInLocation(User $user, int $location): int
+    public static function countItemsInLocation(EntityManagerInterface $em, User $user, int $location): int
     {
         if(!LocationEnum::isAValue($location))
             throw new EnumInvalidValueException(LocationEnum::class, $location);
 
-        return (int)$this->createQueryBuilder('i')
+        return (int)$em->getRepository(Inventory::class)->createQueryBuilder('i')
             ->select('COUNT(i.id)')
             ->andWhere('i.owner=:user')
             ->andWhere('i.location=:location')

@@ -8,6 +8,7 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotUnlockedException;
+use App\Repository\InventoryRepository;
 use App\Service\BookstoreService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -46,6 +47,11 @@ class BuyBook extends AbstractController
 
         if($user->getMoneys() < $allPrices[$item->getName()])
             throw new PSPNotEnoughCurrencyException($allPrices[$item->getName()] . '~~m~~', $user->getMoneys() . '~~m~~');
+
+        $itemsAtHome = InventoryRepository::countItemsInLocation($em, $user, LocationEnum::HOME);
+
+        if($itemsAtHome >= User::MAX_HOUSE_INVENTORY)
+            throw new PSPFormValidationException('Your house is already overflowing with items! (The usual max is ' . User::MAX_HOUSE_INVENTORY . ' items - you\'ve got ' . $itemsAtHome . '!)');
 
         $cost = $allPrices[$item->getName()];
         $transactionService->spendMoney($user, $cost, 'You bought ' . $item->getName() . ' from the Bookstore.');

@@ -26,13 +26,11 @@ class GetController extends AbstractController
     {
         $inventoryRepository = $doctrine->getRepository(Inventory::class, 'readonly');
 
-        $inventory = $inventoryRepository->findBy(
-            [
-                'owner' => $this->getUser(),
-                'location' => LocationEnum::HOME
-            ],
-            [ 'modifiedOn' => 'DESC' ]
-        );
+        $inventory = $inventoryRepository->findBy([
+            'owner' => $this->getUser(),
+            'location' => LocationEnum::HOME
+        ]);
+
         return $responseService->success($inventory, [ SerializationGroupEnum::MY_INVENTORY ]);
     }
 
