@@ -128,6 +128,10 @@ class ForgettingScrollController extends AbstractController
                 $pet->setSpiritCompanion(null);
             }
         }
+        else if($merit->getName() === MeritEnum::VOLAGAMY)
+        {
+            $pet->setIsFertile(false);
+        }
 
         $em->flush();
 

@@ -258,7 +258,7 @@ class PetSocialActivityService
     {
         $companion = $pet->getSpiritCompanion();
 
-        if($pet->getPregnancy() || !$pet->getIsFertile())
+        if($pet->getPregnancy() || !$pet->getIsFertile() || !$pet->hasMerit(MeritEnum::VOLAGAMY))
             return false;
 
         if($companion->getStar() === SpiritCompanionStarEnum::SAGITTARIUS)
