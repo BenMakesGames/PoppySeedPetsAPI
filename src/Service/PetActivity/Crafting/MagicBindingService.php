@@ -134,8 +134,14 @@ class MagicBindingService
         if($this->houseSimService->hasInventory('Wand of Ice') && $this->houseSimService->hasInventory('Mint'))
             $possibilities[] = new ActivityCallback($this->createCoolMintScepter(...), 10);
 
-        if($this->houseSimService->hasInventory('Crystal Ball') && $this->houseSimService->hasInventory('Meteorite') && $this->houseSimService->hasInventory('Quinacridone Magenta Dye'))
-            $possibilities[] = new ActivityCallback($this->createNoetalasEye(...), 10);
+        if($this->houseSimService->hasInventory('Crystal Ball'))
+        {
+            if($this->houseSimService->hasInventory('Meteorite') && $this->houseSimService->hasInventory('Quinacridone Magenta Dye'))
+                $possibilities[] = new ActivityCallback($this->createNoetalasEye(...), 10);
+
+            if($this->houseSimService->hasInventory('Tachyon') && $this->houseSimService->hasInventory('Gold Bar'))
+                $possibilities[] = new ActivityCallback($this->createMagicCrystalBall(...), 10);
+        }
 
         if($this->houseSimService->hasInventory('Quintessence'))
         {
@@ -2031,6 +2037,40 @@ class MagicBindingService
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA, PetSkillEnum::SCIENCE ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+        }
+
+        return $activityLog;
+    }
+
+    public function createMagicCrystalBall(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + max($petWithSkills->getArcana()->getTotal(), $petWithSkills->getScience()->getTotal()) + $petWithSkills->getMagicBindingBonus()->getTotal());
+
+        if($roll >= 20)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->houseSimService->getState()->loseItem('Crystal Ball', 1);
+            $this->houseSimService->getState()->loseItem('Tachyon', 1);
+            $this->houseSimService->getState()->loseItem('Gold Bar', 1);
+            $pet->increaseEsteem(4);
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% trapped a Tachyon in a Crystal Ball!')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
+            ;
+            $this->inventoryService->petCollectsItem('Magic Crystal Ball', $pet, $pet->getName() . ' bound this.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::ARCANA, PetSkillEnum::SCIENCE ], $activityLog);
+        }
+        else
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to trap a Tachyon in a Crystal Ball, but they\'re just so dang tiny and fast!')
+                ->setIcon('icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA, PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
         }
 
         return $activityLog;

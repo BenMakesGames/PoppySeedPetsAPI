@@ -46,13 +46,14 @@ class AdoptionService
         return $fee;
     }
 
-    public static function getNumberOfPets(Clock $clock): int
+    public static function getNumberOfPets(\DateTimeImmutable $dt): int
     {
-        $year = (int)$clock->now->format('Y');
+        $year = (int)$dt->format('Y');
+        $monthAndDay = (int)$dt->format('nd');
 
-        $bonus = (RandomFunctions::squirrel3Noise($year, $clock->getMonthAndDay()) & 31) === 1 ? 10 : 0;
+        $bonus = (RandomFunctions::squirrel3Noise($year, $monthAndDay) & 31) === 1 ? 10 : 0;
 
-        $extra = RandomFunctions::squirrel3Noise($year - 100, $clock->getMonthAndDay()) % 5;
+        $extra = RandomFunctions::squirrel3Noise($year - 100, $monthAndDay) % 5;
 
         return 4 + $extra + $bonus;
     }
@@ -63,7 +64,7 @@ class AdoptionService
 
         $squirrel3 = new Squirrel3($user->getDailySeed());
 
-        $numPets = $this->getNumberOfPets($this->clock);
+        $numPets = self::getNumberOfPets($this->clock->now);
         $numSeasonalPets = $this->numberOfSeasonalPets($numPets, $squirrel3);
         $petsAdopted = $this->getPetsAdopted($user);
 
@@ -215,6 +216,19 @@ class AdoptionService
         }
 
         return [ $pets, $dialog ];
+    }
+
+    public static function isRarePetDay(\DateTimeImmutable $dt)
+    {
+        $numPets = self::getNumberOfPets($dt);
+
+        for($i = 0; $i < $numPets; $i++)
+        {
+            if(RandomFunctions::squirrel3Noise($i + 100, $dt->format('YNmd')) % 200 === 1)
+                return true;
+        }
+
+        return false;
     }
 
     public function numberOfSeasonalPets(int $totalPets, IRandom $squirrel3): int

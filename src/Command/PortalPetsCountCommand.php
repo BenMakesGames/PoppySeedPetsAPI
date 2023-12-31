@@ -33,7 +33,7 @@ class PortalPetsCountCommand extends Command
 
         for($i = 0; $i < 365; $i++)
         {
-            $number = AdoptionService::getNumberOfPets($clock);
+            $number = AdoptionService::getNumberOfPets($clock->now);
 
             $min = min($min, $number);
             $max = max($max, $number);
