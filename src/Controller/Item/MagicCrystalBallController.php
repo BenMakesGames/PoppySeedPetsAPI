@@ -51,7 +51,7 @@ class MagicCrystalBallController extends AbstractController
 
         $fate = $rng->rngNextFromArray([
             [
-                'statusEffect ' => StatusEffectEnum::FATED_DELICIOUSNESS,
+                'statusEffect' => StatusEffectEnum::FATED_DELICIOUSNESS,
                 'description' => 'a secret chamber containing a wealth of exotic foods and other treasures',
             ],
             [
