@@ -204,6 +204,36 @@ class ProgrammingService
         return $activityLog;
     }
 
+    /**
+     * @throws \App\Enum\EnumInvalidValueException
+     */
+    private function doGravityMishapAdventure(Pet $pet, string $attemptedCraft): PetActivityLog
+    {
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
+        $pet->increaseSafety(-$this->rng->rngNextInt(4, 8));
+        $this->houseSimService->getState()->loseItem('Gravitational Waves', 1);
+
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started to make a ' . $attemptedCraft . ', but the Gravitational Waves got out of control! The gravity inside the house was temporarily rotated 90 degrees, and rocks and other debris came crashing through the windows!!')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics', 'Smithing' ]))
+            ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+        ;
+
+        $randomNatureItem = $this->rng->rngNextFromArray([
+            'Really Big Leaf',
+            'Crooked Stick', 'Crooked Stick',
+            'Coconut',
+        ]);
+
+        $this->inventoryService->petCollectsItem($randomNatureItem, $pet, 'This came crashing through the window when ' . $pet->getName() . ' accidentally rotated gravity around the house while handling some Gravitational Waves!', $activityLog);
+        $this->inventoryService->petCollectsItem('Glass', $pet, 'This is the remains of one of your windows from when ' . $pet->getName() . ' accidentally rotated gravity around the house while handling some Gravitational Waves!', $activityLog);
+        $this->inventoryService->petCollectsItem('Rock', $pet, 'This came crashing through the window when ' . $pet->getName() . ' accidentally rotated gravity around the house while handling some Gravitational Waves!', $activityLog);
+        $this->inventoryService->petCollectsItem('Rock', $pet, 'This came crashing through the window when ' . $pet->getName() . ' accidentally rotated gravity around the house while handling some Gravitational Waves!', $activityLog);
+
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+
+        return $activityLog;
+    }
+
     public function getDescriptionOfRummageLocation(): string
     {
         return $this->rng->rngNextFromArray([
@@ -1472,6 +1502,10 @@ class ProgrammingService
     private function createBermudaTriangle(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
+
+        if($this->rng->rngNextInt(1, 200) == 1)
+            return $this->doGravityMishapAdventure($pet, 'Bermuda Triangle');
+
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         if($roll === 1)
@@ -1599,6 +1633,10 @@ class ProgrammingService
     private function createGravitonGun(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
+
+        if($this->rng->rngNextInt(1, 200) == 1)
+            return $this->doGravityMishapAdventure($pet, 'Graviton Gun');
+
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll === 1)
