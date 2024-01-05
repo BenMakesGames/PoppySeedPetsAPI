@@ -128,7 +128,6 @@ class Inventory
         {
             $this
                 ->setLocation(LocationEnum::HOME)
-                ->setModifiedOn()
                 ->getWearer()->setHat(null)
             ;
         }
@@ -137,10 +136,11 @@ class Inventory
         {
             $this
                 ->setLocation(LocationEnum::HOME)
-                ->setModifiedOn()
                 ->getHolder()->setTool(null)
             ;
         }
+
+        $this->setModifiedOn();
 
         return $this;
     }

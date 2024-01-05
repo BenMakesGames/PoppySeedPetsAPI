@@ -32,7 +32,7 @@ class CreateBidController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function createBid(
         Request $request, ResponseService $responseService, TransactionService $transactionService,
-        MarketBidRepository $marketBidRepository, InventoryService $inventoryService, EntityManagerInterface $em
+        MarketBidRepository $marketBidRepository, EntityManagerInterface $em
     )
     {
         /** @var User $user */

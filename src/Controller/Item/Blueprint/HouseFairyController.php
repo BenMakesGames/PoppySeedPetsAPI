@@ -11,6 +11,7 @@ use App\Enum\PetLocationEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\ItemRepository;
 use App\Functions\PetColorFunctions;
 use App\Functions\UserQuestRepository;
 use App\Functions\UserUnlockedFeatureHelpers;
@@ -53,7 +54,7 @@ class HouseFairyController extends AbstractController
         'Zanna', 'Zoe',
     ];
 
-    private function fairyName(Inventory $i)
+    private static function fairyName(Inventory $i)
     {
         return self::FAIRY_NAMES[$i->getId() % count(self::FAIRY_NAMES)];
     }
@@ -193,5 +194,49 @@ class HouseFairyController extends AbstractController
         return $responseService->itemActionSuccess(
             '"I mean, it\'s kind of like a currency in the Umbra. And a food," ' . $this->fairyName($inventory) . ' explains. "All magical creatures want it. Need it. If you\'re looking to get some, honestly, trading with a magical creature is one of the most reliable ways. Or you could beat up a ghost, werewolf, vampire, or some other awful creature like that."'
         );
+    }
+
+    #[Route("/{inventory}/makeFairyFloss", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    public function makeFairyFloss(
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        InventoryRepository $inventoryRepository, IRandom $squirrel3
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'fairy/#/makeFairyFloss');
+
+        $sugarItem = ItemRepository::findOneByName($em, 'Sugar');
+
+        $sugarToTransform = $inventoryRepository->findOneBy([
+            'item' => $sugarItem,
+            'owner' => $user->getId(),
+            'location' => $inventory->getLocation()
+        ]);
+
+        if(!$sugarToTransform)
+        {
+            return $responseService->itemActionSuccess(
+                '"If you bring me some Sugar, I\'d be happy to spin it into some Fairy Floss for you! It\'s kind of fun to do! Gets me all... dizzy!"'
+            );
+        }
+
+        $fairyFloss = $squirrel3->rngNextFromArray([ 'Pink Fairy Floss', 'Blue Fairy Floss' ]);
+
+        $message = '"Thanks! Give me a second here!"' . "\n\n" . $this->fairyName($inventory) . ' proceeds to spin around, stretching the sugar out, then wrapping it around a bit of Paper that... seems to have come from nowhere???' . "\n\nAfter doing this, they fall over, holding the newly-spun candy aloft.\n\n" . '"Whoo! And here you go! Some ' . $fairyFloss . '!"';
+
+        $fairyFlossItem = ItemRepository::findOneByName($em, $fairyFloss);
+
+        $sugarToTransform
+            ->changeItem($fairyFlossItem)
+            ->addComment($this->fairyName($inventory) . ' spun a bit of Sugar into this ' . $fairyFloss . '!');
+
+        $em->flush();
+
+        $responseService->setReloadInventory();
+
+        return $responseService->itemActionSuccess($message);
     }
 }
