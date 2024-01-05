@@ -10,15 +10,11 @@ final class Version20240104210000 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'fairy floss!';
+        return 'fairy floss! (1 of 2)';
     }
 
     public function up(Schema $schema): void
     {
-        $this->addSql(<<<EOSQL
-        UPDATE `item` SET `use_actions` = '[[\"Say Hello\",\"fairy/#/hello\"],[\"Build a Fireplace\",\"fairy/#/buildFireplace\"],[\"Ask about Quintessence\",\"fairy/#/quintessence\"],[\"Make Fairy Floss\",\"fairy/#/makeFairyFloss\"]]' WHERE `item`.`id` = 333; 
-        EOSQL);
-
         $this->addSql(<<<EOSQL
         -- tool effect
         INSERT IGNORE INTO item_tool (`id`, `stealth`, `nature`, `brawl`, `arcana`, `crafts`, `grip_x`, `grip_y`, `grip_angle`, `grip_scale`, `fishing`, `gathering`, `music`, `smithing`, `science`, `grip_angle_fixed`, `focus_skill`, `provides_light`, `protection_from_heat`, `always_in_front`, `is_ranged`, `when_gather_id`, `when_gather_also_gather_id`, `climbing`, `leads_to_adventure`, `prevents_bugs`, `attracts_bugs`, `can_be_nibbled`, `increases_pooping`, `dreamcatcher`, `is_grayscaling`, `social_energy_modifier`, `sex_drive`, `when_gather_prevent_gather`, `adventure_description`, `when_gather_apply_status_effect`, `when_gather_apply_status_effect_duration`) VALUES (455,0,0,0,0,0,0.29,0.815,-34,0.59,0,0,0,0,0,0,NULL,0,0,0,0,12,1358,0,0,0,0,1,0,0,0,0,0,1,NULL,NULL,NULL);
@@ -47,8 +43,6 @@ final class Version20240104210000 extends AbstractMigration
         -- grammar
         INSERT IGNORE INTO item_grammar (`id`, `item_id`, `article`) VALUES (1469,1359,"some");
         EOSQL);
-
-        $this->addSql('UPDATE `pet_species` SET `sheds_id` = 1358 WHERE `pet_species`.`id` = 3;');
     }
 
     public function down(Schema $schema): void
