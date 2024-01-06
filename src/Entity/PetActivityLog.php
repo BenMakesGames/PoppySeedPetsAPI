@@ -37,7 +37,7 @@ class PetActivityLog
     private $changes;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
-    #[ORM\Column(type: 'string', length: 40)]
+    #[ORM\Column(type: 'string', length: 100)]
     private $icon = '';
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]

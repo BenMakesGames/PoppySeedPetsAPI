@@ -20,6 +20,16 @@ class CommentFormatter
     {
     }
 
+    public function getUserIds(string $text): array
+    {
+        preg_match_all('/%user:([0-9]+)\\.[A-Za-z\']+%/', $text, $matches);
+
+        $matches = $matches[1];
+        $matches = array_unique($matches);
+
+        return $matches;
+    }
+
     public function format(string $text): string
     {
         preg_match_all('/%((pet|user):[0-9]+\\.[A-Za-z\']+)%/', $text, $matches);

@@ -34,6 +34,9 @@ class HollowEarthTileCard
     #[ORM\Column(type: 'string', length: 40)]
     private $image;
 
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $author = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -95,6 +98,18 @@ class HollowEarthTileCard
     public function setImage(string $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?string
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?string $author): static
+    {
+        $this->author = $author;
 
         return $this;
     }

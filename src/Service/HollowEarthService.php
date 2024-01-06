@@ -47,7 +47,8 @@ class HollowEarthService
         private readonly TransactionService $transactionService,
         private readonly ResponseService $responseService,
         private readonly UserStatsService $userStatsRepository,
-        private readonly IRandom $rng
+        private readonly IRandom $rng,
+        private readonly CommentFormatter $commentFormatter
     )
     {
     }
@@ -127,10 +128,24 @@ class HollowEarthService
                 'goodsSide' => $tile->getGoodsSide(),
                 'selectedGoods' => $playerTile ? $playerTile->getGoods() : null,
                 'isTradingDepot' => $tile->getIsTradingDepot(),
+                'author' => $this->getCardAuthor($card)
             ];
         }
 
         return $data;
+    }
+
+    private function getCardAuthor(?HollowEarthTileCard $card)
+    {
+        if(!$card?->getAuthor())
+            return null;
+
+        $authorIds = $this->commentFormatter->getUserIds($card->getAuthor());
+
+        return [
+            'name' => $this->commentFormatter->format($card->getAuthor()),
+            'id' => count($authorIds) > 0 ? $authorIds[0] : null,
+        ];
     }
 
     public function getDice(User $user): array
