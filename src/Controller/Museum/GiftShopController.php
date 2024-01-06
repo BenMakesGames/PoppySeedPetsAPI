@@ -3,6 +3,7 @@ namespace App\Controller\Museum;
 
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotFoundException;
@@ -77,6 +78,9 @@ class GiftShopController extends AbstractController
 
         if($itemsInBuyersHome >= User::MAX_HOUSE_INVENTORY)
         {
+            if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
+                throw new PSPInvalidOperationException('There\'s not enough space in your house!');
+
             $itemsInBuyersBasement = InventoryService::countTotalInventory($em, $user, LocationEnum::BASEMENT);
 
             if($itemsInBuyersBasement < User::MAX_BASEMENT_INVENTORY)
