@@ -147,21 +147,22 @@ class PlayController extends AbstractController
 
             $em->remove($itemToPay);
 
-            if(array_key_exists('ifPaid', $action))
+            if(!array_key_exists('ifPaid', $action))
+                throw new \Exception('No paid action defined for this challenge.');
+
+            $hollowEarthService->doImmediateEvent($player, $action['ifPaid']);
+            $player->setCurrentAction($action['ifPaid']);
+        }
+        else
+        {
+            if(array_key_exists('ifNotPaid', $action))
             {
-                $hollowEarthService->doImmediateEvent($player, $action['ifPaid']);
-                $player->setCurrentAction($action['ifPaid']);
+                $hollowEarthService->doImmediateEvent($player, $action['ifNotPaid']);
+                $player->setCurrentAction($action['ifNotPaid']);
             }
             else
                 $player->setCurrentAction(null);
         }
-        else if(array_key_exists('ifNotPaid', $action))
-        {
-            $hollowEarthService->doImmediateEvent($player, $action['ifNotPaid']);
-            $player->setCurrentAction($action['ifNotPaid']);
-        }
-        else
-            $player->setCurrentAction(null);
     }
 
     private function continueActingPayItemAndMoney(
@@ -188,21 +189,22 @@ class PlayController extends AbstractController
 
             $transactionService->spendMoney($player->getUser(), $action['amount'], 'Spent while exploring the Hollow Earth.');
 
-            if(array_key_exists('ifPaid', $action))
+            if(!array_key_exists('ifPaid', $action))
+                throw new \Exception('No paid action defined for this challenge.');
+
+            $hollowEarthService->doImmediateEvent($player, $action['ifPaid']);
+            $player->setCurrentAction($action['ifPaid']);
+        }
+        else
+        {
+            if(array_key_exists('ifNotPaid', $action))
             {
-                $hollowEarthService->doImmediateEvent($player, $action['ifPaid']);
-                $player->setCurrentAction($action['ifPaid']);
+                $hollowEarthService->doImmediateEvent($player, $action['ifNotPaid']);
+                $player->setCurrentAction($action['ifNotPaid']);
             }
             else
                 $player->setCurrentAction(null);
         }
-        else if(array_key_exists('ifNotPaid', $action))
-        {
-            $hollowEarthService->doImmediateEvent($player, $action['ifNotPaid']);
-            $player->setCurrentAction($action['ifNotPaid']);
-        }
-        else
-            $player->setCurrentAction(null);
     }
 
     private function continueActingPayMoney(
@@ -222,21 +224,22 @@ class PlayController extends AbstractController
 
             $transactionService->spendMoney($player->getUser(), $action['amount'], 'Spent while exploring the Hollow Earth.');
 
-            if(array_key_exists('ifPaid', $action))
+            if(!array_key_exists('ifPaid', $action))
+                throw new \Exception('No paid action defined for this challenge.');
+
+            $hollowEarthService->doImmediateEvent($player, $action['ifPaid']);
+            $player->setCurrentAction($action['ifPaid']);
+        }
+        else
+        {
+            if(array_key_exists('ifNotPaid', $action))
             {
-                $hollowEarthService->doImmediateEvent($player, $action['ifPaid']);
-                $player->setCurrentAction($action['ifPaid']);
+                $hollowEarthService->doImmediateEvent($player, $action['ifNotPaid']);
+                $player->setCurrentAction($action['ifNotPaid']);
             }
             else
                 $player->setCurrentAction(null);
         }
-        else if(array_key_exists('ifNotPaid', $action))
-        {
-            $hollowEarthService->doImmediateEvent($player, $action['ifNotPaid']);
-            $player->setCurrentAction($action['ifNotPaid']);
-        }
-        else
-            $player->setCurrentAction(null);
     }
 
     private function continueActingPetChallenge(
@@ -253,13 +256,11 @@ class PlayController extends AbstractController
 
         if($squirrel3->rngNextInt(1, $score) >= $action['requiredRoll'])
         {
-            if(array_key_exists('ifSuccess', $action))
-            {
-                $hollowEarthService->doImmediateEvent($player, $action['ifSuccess']);
-                $player->setCurrentAction($action['ifSuccess']);
-            }
-            else
-                $player->setCurrentAction(null);
+            if(!array_key_exists('ifSuccess', $action))
+                throw new \Exception('No success action defined for this challenge.');
+
+            $hollowEarthService->doImmediateEvent($player, $action['ifSuccess']);
+            $player->setCurrentAction($action['ifSuccess']);
         }
         else
         {
