@@ -527,7 +527,7 @@ class PetActivityService
 
         if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 9 : 6) && CalendarFunctions::isChineseNewYear($this->clock->now))
         {
-            $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::CHINESE_NEW_YEAR);
+            $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::LUNAR_NEW_YEAR);
             return;
         }
 

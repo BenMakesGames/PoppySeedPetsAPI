@@ -225,7 +225,7 @@ class BoxController extends AbstractController
                 $possibleItems[] = $squirrel3->rngNextFromArray([
                     '4th of July Box',
                     'New Year Box',
-                    'Chinese New Year Box',
+                    'Lunar New Year Box',
                     'Bastille Day Box',
                     'Cinco de Mayo Box',
                     'Awa Odori Box',
@@ -935,9 +935,9 @@ class BoxController extends AbstractController
         return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 
-    #[Route("/chineseNewYear/{inventory}/open", methods: ["POST"])]
+    #[Route("/lunarNewYear/{inventory}/open", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function openChineseNewYearBox(
+    public function openLunarNewYearBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
     )
@@ -945,7 +945,7 @@ class BoxController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'box/chineseNewYear/#/open');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'box/lunarNewYear/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';

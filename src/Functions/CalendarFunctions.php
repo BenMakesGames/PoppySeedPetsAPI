@@ -390,7 +390,7 @@ final class CalendarFunctions
             $events[] = HolidayEnum::JELEPHANT_DAY;
 
         if(self::isChineseNewYear($dt))
-            $events[] = HolidayEnum::CHINESE_NEW_YEAR;
+            $events[] = HolidayEnum::LUNAR_NEW_YEAR;
 
         if(self::isHoli($dt))
             $events[] = HolidayEnum::HOLI;

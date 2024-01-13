@@ -9,7 +9,7 @@ class HolidayEnum
     public const AWA_ODORI = 'Awa Odori';
     public const BASTILLE_DAY = 'Bastille Day';
     public const BLACK_FRIDAY = 'Black Friday';
-    public const CHINESE_NEW_YEAR = 'Chinese New Year';
+    public const LUNAR_NEW_YEAR = 'Lunar New Year';
     public const CINCO_DE_MAYO = 'Cinco de Mayo';
     public const CYBER_MONDAY = 'Cyber Monday';
     public const EARTH_DAY = 'Earth Day';

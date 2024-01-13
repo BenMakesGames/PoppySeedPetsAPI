@@ -34,15 +34,15 @@ class PlazaService
 
         if($this->chineseCalendarInfo->month === 1 && $this->chineseCalendarInfo->day <= 6)
         {
-            $gotBox = UserQuestRepository::findOrCreate($this->em, $user, 'Chinese New Year, ' . $this->chineseCalendarInfo->year, false);
+            $gotBox = UserQuestRepository::findOrCreate($this->em, $user, 'Lunar New Year, ' . $this->chineseCalendarInfo->year, false);
 
             if(!$gotBox->getValue())
             {
                 $boxes[] = new AvailableHolidayBox(
-                    'a Chinese New Year Box',
-                    'Chinese New Year Box',
-                    'Chinese New Year Box', 1,
-                    'Received for the ' . $this->chineseCalendarInfo->year . ' Chinese New Year.',
+                    'a Lunar New Year Box',
+                    'Lunar New Year Box',
+                    'Lunar New Year Box', 1,
+                    'Received for the ' . $this->chineseCalendarInfo->year . ' Lunar New Year.',
                     $gotBox
                 );
             }
