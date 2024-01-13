@@ -4,6 +4,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Greenhouse;
 use App\Entity\Pet;
+use App\Entity\User;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
@@ -68,7 +69,7 @@ class PetCleaningSelfService
     {
         $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
 
-        $greenhouse = $this->findRandomGreenhouseForCleaningIn();
+        $greenhouse = $this->findRandomGreenhouseForCleaningIn($pet->getOwner());
 
         if(!$greenhouse)
         {
@@ -76,7 +77,7 @@ class PetCleaningSelfService
             return;
         }
 
-        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' cleaned the ' . $itemOnBody . ' off their body in %user:' . $greenhouse->getOwner()->getId() . '.name%\'s bird bath.');
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' cleaned the ' . $itemOnBody . ' off their body in ' . ActivityHelpers::UserNamePossessive($greenhouse->getOwner()) . ' bird bath.');
 
         $this->inventoryService->receiveItem($itemOnBody, $greenhouse->getOwner(), null, $pet->getName() . ' used your birdbath to clean this off of themselves.', LocationEnum::BIRD_BATH);
         $this->inventoryService->receiveItem($pet->getSpecies()->getSheds(), $greenhouse->getOwner(), null, $pet->getName() . ' used your birdbath to clean themselves off, and incidentally left this behind...', LocationEnum::BIRD_BATH);
@@ -93,7 +94,7 @@ class PetCleaningSelfService
         );
     }
 
-    private function findRandomGreenhouseForCleaningIn(): ?Greenhouse
+    private function findRandomGreenhouseForCleaningIn(User $exceptUser): ?Greenhouse
     {
         $qb = $this->em->getRepository(Greenhouse::class)->createQueryBuilder('g');
 
@@ -104,7 +105,9 @@ class PetCleaningSelfService
             ->andWhere('g.hasBirdBath=1')
             ->andWhere('g.visitingBird IS NULL')
             ->andWhere('o.lastActivity >= :threeDaysAgo')
-            ->setParameter('threeDaysAgo', $threeDaysAgo);
+            ->andWhere('o.id != :userId')
+            ->setParameter('threeDaysAgo', $threeDaysAgo)
+            ->setParameter('userId', $exceptUser->getId());
 
         $count = $qb->select('COUNT(g)')->getQuery()->getSingleScalarResult();
 
