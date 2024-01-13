@@ -202,7 +202,6 @@ class EquipController extends AbstractController
 
         $pet->getHat()
             ->setLocation(LocationEnum::HOME)
-            ->setModifiedOn()
         ;
 
         $pet->setHat(null);

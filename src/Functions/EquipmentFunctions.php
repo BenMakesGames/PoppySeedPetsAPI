@@ -13,7 +13,6 @@ class EquipmentFunctions
 
         $pet->getTool()
             ->setLocation(LocationEnum::HOME)
-            ->setModifiedOn()
         ;
         $pet->setTool(null);
     }
@@ -25,7 +24,6 @@ class EquipmentFunctions
 
         $pet->getHat()
             ->setLocation(LocationEnum::HOME)
-            ->setModifiedOn()
         ;
         $pet->setHat(null);
     }

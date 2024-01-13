@@ -10,5 +10,5 @@ final class LocationEnum
     const MANTLE = 2;
     const WARDROBE = 3;
     const LUNCHBOX = 4;
-    const BIRDBATH = 5;
+    const BIRD_BATH = 5;
 }

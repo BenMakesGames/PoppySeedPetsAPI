@@ -78,8 +78,8 @@ class PetCleaningSelfService
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' cleaned the ' . $itemOnBody . ' off their body in %user:' . $greenhouse->getOwner()->getId() . '.name%\'s bird bath.');
 
-        $this->inventoryService->receiveItem($itemOnBody, $greenhouse->getOwner(), null, $pet->getName() . ' used your birdbath to clean this off of themselves.', LocationEnum::BIRDBATH);
-        $this->inventoryService->receiveItem($pet->getSpecies()->getSheds(), $greenhouse->getOwner(), null, $pet->getName() . ' used your birdbath to clean themselves off, and incidentally left this behind...', LocationEnum::BIRDBATH);
+        $this->inventoryService->receiveItem($itemOnBody, $greenhouse->getOwner(), null, $pet->getName() . ' used your birdbath to clean this off of themselves.', LocationEnum::BIRD_BATH);
+        $this->inventoryService->receiveItem($pet->getSpecies()->getSheds(), $greenhouse->getOwner(), null, $pet->getName() . ' used your birdbath to clean themselves off, and incidentally left this behind...', LocationEnum::BIRD_BATH);
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
 

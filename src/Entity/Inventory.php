@@ -262,6 +262,8 @@ class Inventory
 
         $this->location = $location;
 
+        $this->setModifiedOn();
+
         return $this;
     }
 

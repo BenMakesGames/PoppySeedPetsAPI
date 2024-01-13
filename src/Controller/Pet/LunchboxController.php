@@ -89,7 +89,6 @@ class LunchboxController extends AbstractController
 
         $inventory
             ->setLocation(LocationEnum::HOME)
-            ->setModifiedOn()
         ;
 
         $em->remove($inventory->getLunchboxItem());
