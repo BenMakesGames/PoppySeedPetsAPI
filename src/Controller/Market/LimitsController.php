@@ -6,7 +6,7 @@ use App\Enum\LocationEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ItemRepository;
-use App\Functions\PlayerLogHelpers;
+use App\Functions\PlayerLogFactory;
 use App\Service\InventoryService;
 use App\Service\MarketService;
 use App\Service\ResponseService;
@@ -56,7 +56,7 @@ class LimitsController extends AbstractController
 
         $user->setMaxSellPrice($user->getMaxSellPrice() + 10);
 
-        PlayerLogHelpers::create(
+        PlayerLogFactory::create(
             $em,
             $user,
             'You gave ' . $itemRequired['itemName'] . ' to Argentelle to increase your maximum Market sell price to ' . $user->getMaxSellPrice() . '.',

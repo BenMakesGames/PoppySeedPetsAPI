@@ -52,6 +52,7 @@ use App\Service\PetActivity\IcyMoonService;
 use App\Service\PetActivity\KappaService;
 use App\Service\PetActivity\LetterService;
 use App\Service\PetActivity\MagicBeanstalkService;
+use App\Service\PetActivity\PetCleaningSelfService;
 use App\Service\PetActivity\PetSummonedAwayService;
 use App\Service\PetActivity\PhilosophersStoneService;
 use App\Service\PetActivity\PoopingService;
@@ -82,7 +83,7 @@ class PetActivityService
         private readonly PoopingService $poopingService,
         private readonly GivingTreeGatheringService $givingTreeGatheringService,
         private readonly PregnancyService $pregnancyService,
-        private readonly IRandom $squirrel3,
+        private readonly IRandom $rng,
         private readonly ChocolateMansion $chocolateMansion,
         private readonly PetExperienceService $petExperienceService,
         private readonly DreamingAndDaydreamingService $dreamingAndDaydreamingService,
@@ -104,7 +105,8 @@ class PetActivityService
         private readonly PlasticPrinterService $plasticPrinterService,
         private readonly PhilosophersStoneService $philosophersStoneService,
         private readonly KappaService $kappaService,
-        private readonly FatedAdventureService $fatedAdventureService
+        private readonly FatedAdventureService $fatedAdventureService,
+        private readonly PetCleaningSelfService $petCleaningSelfService
     )
     {
     }
@@ -121,7 +123,7 @@ class PetActivityService
 
         $this->responseService->setReloadPets();
 
-        if($pet->getTool() && $pet->getTool()->canBeNibbled() && $this->squirrel3->rngNextInt(1, 10) === 1)
+        if($pet->getTool() && $pet->getTool()->canBeNibbled() && $this->rng->rngNextInt(1, 10) === 1)
         {
             $changes = new PetChangesSummary();
             $changes->food = '+';
@@ -147,7 +149,7 @@ class PetActivityService
 
             if($pet->hasMerit(MeritEnum::IRON_STOMACH))
             {
-                if($this->squirrel3->rngNextInt(1, 2) === 1)
+                if($this->rng->rngNextInt(1, 2) === 1)
                     $pet->increasePoison(1);
             }
             else
@@ -160,12 +162,12 @@ class PetActivityService
 
             if($pet->hasMerit(MeritEnum::IRON_STOMACH))
             {
-                if($this->squirrel3->rngNextInt(1, 4) === 1)
+                if($this->rng->rngNextInt(1, 4) === 1)
                     $pet->increasePoison(1);
             }
             else
             {
-                if($this->squirrel3->rngNextInt(1, 2) === 1)
+                if($this->rng->rngNextInt(1, 2) === 1)
                     $pet->increasePoison(1);
             }
         }
@@ -182,23 +184,23 @@ class PetActivityService
 
         $safetyRestingPoint = $pet->hasMerit(MeritEnum::NOTHING_TO_FEAR) ? 8 : 0;
 
-        if($pet->getSafety() > $safetyRestingPoint && $this->squirrel3->rngNextInt(1, 2) === 1)
+        if($pet->getSafety() > $safetyRestingPoint && $this->rng->rngNextInt(1, 2) === 1)
             $pet->increaseSafety(-1);
         else if($pet->getSafety() < $safetyRestingPoint)
             $pet->increaseSafety(1);
 
         $loveRestingPoint = $pet->hasMerit(MeritEnum::EVERLASTING_LOVE) ? 8 : 0;
 
-        if($pet->getLove() > $loveRestingPoint && $this->squirrel3->rngNextInt(1, 2) === 1)
+        if($pet->getLove() > $loveRestingPoint && $this->rng->rngNextInt(1, 2) === 1)
             $pet->increaseLove(-1);
-        else if($pet->getLove() < $loveRestingPoint && $this->squirrel3->rngNextInt(1, 2) === 1)
+        else if($pet->getLove() < $loveRestingPoint && $this->rng->rngNextInt(1, 2) === 1)
             $pet->increaseLove(1);
 
         $esteemRestingPoint = $pet->hasMerit(MeritEnum::NEVER_EMBARRASSED) ? 8 : 0;
 
         if($pet->getEsteem() > $esteemRestingPoint)
             $pet->increaseEsteem(-1);
-        else if($pet->getEsteem() < $esteemRestingPoint && $this->squirrel3->rngNextInt(1, 2) === 1)
+        else if($pet->getEsteem() < $esteemRestingPoint && $this->rng->rngNextInt(1, 2) === 1)
             $pet->increaseEsteem(1);
 
         $this->cravingService->maybeRemoveCraving($pet);
@@ -208,9 +210,9 @@ class PetActivityService
         if($pregnancy)
         {
             if($pet->getFood() < 0) $pregnancy->increaseAffection(-1);
-            if($pet->getSafety() < 0 && $this->squirrel3->rngNextInt(1, 2) === 1) $pregnancy->increaseAffection(-1);
-            if($pet->getLove() < 0 && $this->squirrel3->rngNextInt(1, 3) === 1) $pregnancy->increaseAffection(-1);
-            if($pet->getEsteem() < 0 && $this->squirrel3->rngNextInt(1, 4) === 1) $pregnancy->increaseAffection(-1);
+            if($pet->getSafety() < 0 && $this->rng->rngNextInt(1, 2) === 1) $pregnancy->increaseAffection(-1);
+            if($pet->getLove() < 0 && $this->rng->rngNextInt(1, 3) === 1) $pregnancy->increaseAffection(-1);
+            if($pet->getEsteem() < 0 && $this->rng->rngNextInt(1, 4) === 1) $pregnancy->increaseAffection(-1);
 
             if($pregnancy->getGrowth() >= PetBaby::PREGNANCY_DURATION)
             {
@@ -221,23 +223,23 @@ class PetActivityService
 
         if($pet->getPoison() > 0)
         {
-            if($this->squirrel3->rngNextInt(6, 24) < $pet->getPoison())
+            if($this->rng->rngNextInt(6, 24) < $pet->getPoison())
             {
                 $changes = new PetChanges($pet);
 
                 $safetyVom = ceil($pet->getPoison() / 4);
 
-                $pet->increasePoison(-$this->squirrel3->rngNextInt( ceil($pet->getPoison() / 4), ceil($pet->getPoison() * 3 / 4)));
-                if($pet->getAlcohol() > 0) $pet->increaseAlcohol(-$this->squirrel3->rngNextInt(1, ceil($pet->getAlcohol() / 2)));
-                if($pet->getPsychedelic() > 0) $pet->increasePsychedelic(-$this->squirrel3->rngNextInt(1, ceil($pet->getPsychedelic() / 2)));
-                if($pet->getCaffeine() > 0) $pet->increaseFood(-$this->squirrel3->rngNextInt(1, ceil($pet->getCaffeine() / 2)));
-                if($pet->getJunk() > 0) $pet->increaseJunk(-$this->squirrel3->rngNextInt(1, ceil($pet->getJunk() / 2)));
-                if($pet->getFood() > 0) $pet->increaseFood(-$this->squirrel3->rngNextInt(1, ceil($pet->getFood() / 2)));
+                $pet->increasePoison(-$this->rng->rngNextInt( ceil($pet->getPoison() / 4), ceil($pet->getPoison() * 3 / 4)));
+                if($pet->getAlcohol() > 0) $pet->increaseAlcohol(-$this->rng->rngNextInt(1, ceil($pet->getAlcohol() / 2)));
+                if($pet->getPsychedelic() > 0) $pet->increasePsychedelic(-$this->rng->rngNextInt(1, ceil($pet->getPsychedelic() / 2)));
+                if($pet->getCaffeine() > 0) $pet->increaseFood(-$this->rng->rngNextInt(1, ceil($pet->getCaffeine() / 2)));
+                if($pet->getJunk() > 0) $pet->increaseJunk(-$this->rng->rngNextInt(1, ceil($pet->getJunk() / 2)));
+                if($pet->getFood() > 0) $pet->increaseFood(-$this->rng->rngNextInt(1, ceil($pet->getFood() / 2)));
 
-                $pet->increaseSafety(-$this->squirrel3->rngNextInt(1, $safetyVom));
-                $pet->increaseEsteem(-$this->squirrel3->rngNextInt(1, $safetyVom));
+                $pet->increaseSafety(-$this->rng->rngNextInt(1, $safetyVom));
+                $pet->increaseEsteem(-$this->rng->rngNextInt(1, $safetyVom));
 
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
 
                 PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% threw up :(')
                     ->setChanges($changes->compare($pet));
@@ -251,38 +253,38 @@ class PetActivityService
             $this->poopingService->poopDarkMatter($pet);
         }
 
-        if($pet->hasMerit(MeritEnum::SHEDS) && $this->squirrel3->rngNextInt(1, 180) === 1)
+        if($pet->hasMerit(MeritEnum::SHEDS) && $this->rng->rngNextInt(1, 180) === 1)
         {
             $this->poopingService->shed($pet);
         }
 
         if($pet->hasMerit(MeritEnum::HYPERCHROMATIC))
         {
-            if($this->squirrel3->rngNextInt(1, 250) === 1)
+            if($this->rng->rngNextInt(1, 250) === 1)
             {
                 $pet
-                    ->setColorA(ColorFunctions::RGB2Hex($this->squirrel3->rngNextInt(0, 255), $this->squirrel3->rngNextInt(0, 255), $this->squirrel3->rngNextInt(0, 255)))
-                    ->setColorB(ColorFunctions::RGB2Hex($this->squirrel3->rngNextInt(0, 255), $this->squirrel3->rngNextInt(0, 255), $this->squirrel3->rngNextInt(0, 255)))
+                    ->setColorA(ColorFunctions::RGB2Hex($this->rng->rngNextInt(0, 255), $this->rng->rngNextInt(0, 255), $this->rng->rngNextInt(0, 255)))
+                    ->setColorB(ColorFunctions::RGB2Hex($this->rng->rngNextInt(0, 255), $this->rng->rngNextInt(0, 255), $this->rng->rngNextInt(0, 255)))
                 ;
             }
             else
             {
                 $pet
-                    ->setColorA($this->squirrel3->rngNextTweakedColor($pet->getColorA(), 4))
-                    ->setColorB($this->squirrel3->rngNextTweakedColor($pet->getColorB(), 4))
+                    ->setColorA($this->rng->rngNextTweakedColor($pet->getColorA(), 4))
+                    ->setColorB($this->rng->rngNextTweakedColor($pet->getColorB(), 4))
                 ;
             }
         }
 
         $petWithSkills = $pet->getComputedSkills();
 
-        if($this->squirrel3->rngNextInt(1, 4000) === 1)
+        if($this->rng->rngNextInt(1, 4000) === 1)
         {
             $this->petSummonedAwayService->adventure($petWithSkills);
             return;
         }
 
-        $hunger = $this->squirrel3->rngNextInt(0, 4);
+        $hunger = $this->rng->rngNextInt(0, 4);
 
         if($pet->getFood() + $pet->getJunk() < $hunger && count($pet->getLunchboxItems()) > 0)
         {
@@ -359,12 +361,12 @@ class PetActivityService
 
         if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
         {
-            if($this->squirrel3->rngNextInt(1, 10) === 1)
+            if($this->rng->rngNextInt(1, 10) === 1)
                 $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::WEREFORM));
         }
         else if(
             $pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_WERECREATURE) &&
-            $this->squirrel3->rngNextInt(1, max(20, 50 + $pet->getFood() + $pet->getSafety() * 2 + $pet->getLove() + $pet->getEsteem())) === 1 &&
+            $this->rng->rngNextInt(1, max(20, 50 + $pet->getFood() + $pet->getSafety() * 2 + $pet->getLove() + $pet->getEsteem())) === 1 &&
             !$pet->hasStatusEffect(StatusEffectEnum::WEREFORM)
         )
         {
@@ -373,17 +375,17 @@ class PetActivityService
 
         if($pet->hasStatusEffect(StatusEffectEnum::OIL_COVERED))
         {
-            if($this->cleanUpStatusEffect($pet, StatusEffectEnum::OIL_COVERED, 'Oil'))
+            if($this->petCleaningSelfService->cleanUpStatusEffect($pet, StatusEffectEnum::OIL_COVERED, 'Oil'))
                 return;
         }
 
         if($pet->hasStatusEffect(StatusEffectEnum::BUBBLEGUMD))
         {
-            if($this->cleanUpStatusEffect($pet, StatusEffectEnum::BUBBLEGUMD, 'Bubblegum'))
+            if($this->petCleaningSelfService->cleanUpStatusEffect($pet, StatusEffectEnum::BUBBLEGUMD, 'Bubblegum'))
                 return;
         }
 
-        if($pet->hasStatusEffect(StatusEffectEnum::GOBBLE_GOBBLE) && $this->squirrel3->rngNextInt(1, 2) === 1)
+        if($pet->hasStatusEffect(StatusEffectEnum::GOBBLE_GOBBLE) && $this->rng->rngNextInt(1, 2) === 1)
         {
             $changes = new PetChanges($pet);
             $activityLog = $this->huntingService->huntedTurkeyDragon($petWithSkills);
@@ -391,7 +393,7 @@ class PetActivityService
             return;
         }
 
-        if($pet->hasStatusEffect(StatusEffectEnum::LAPINE_WHISPERS) && $this->squirrel3->rngNextInt(1, 2) === 1)
+        if($pet->hasStatusEffect(StatusEffectEnum::LAPINE_WHISPERS) && $this->rng->rngNextInt(1, 2) === 1)
         {
             $changes = new PetChanges($pet);
             $activityLog = $this->umbraService->speakToBunnySpirit($pet);
@@ -418,7 +420,7 @@ class PetActivityService
         $plasticPrinterPossibilities = $this->plasticPrinterService->getCraftingPossibilities($petWithSkills);
         $notCraftingPossibilities = $this->notReallyCraftsService->getCraftingPossibilities($petWithSkills);
 
-        $houseTooFull = $this->squirrel3->rngNextInt(1, 10) > User::MAX_HOUSE_INVENTORY - $itemsInHouse;
+        $houseTooFull = $this->rng->rngNextInt(1, 10) > User::MAX_HOUSE_INVENTORY - $itemsInHouse;
 
         if($houseTooFull)
         {
@@ -433,7 +435,7 @@ class PetActivityService
                 === 0
             )
             {
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
                 PetActivityLogFactory::createUnreadLog($this->em, $pet, $description . ' %pet:' . $pet->getId() . '.name% wanted to make something, but couldn\'t find any materials to work with.')
                     ->setIcon('icons/activity-logs/house-too-full')
@@ -451,7 +453,7 @@ class PetActivityService
                 if(count($plasticPrinterPossibilities) > 0) $possibilities[] = [ $this->craftingService, $plasticPrinterPossibilities ];
                 if(count($notCraftingPossibilities) > 0) $possibilities[] = [ $this->notReallyCraftsService, $notCraftingPossibilities ];
 
-                $do = $this->squirrel3->rngNextFromArray($possibilities);
+                $do = $this->rng->rngNextFromArray($possibilities);
 
                 /** @var PetActivityLog $activityLog */
                 $activityLog = $do[0]->adventure($petWithSkills, $do[1]);
@@ -467,7 +469,7 @@ class PetActivityService
         if($this->fatedAdventureService->maybeResolveFate($petWithSkills))
             return;
 
-        if($this->squirrel3->rngNextInt(1, $hasEventPersonality ? 48 : 50) === 1)
+        if($this->rng->rngNextInt(1, $hasEventPersonality ? 48 : 50) === 1)
         {
             if($this->letterService->adventure($petWithSkills))
                 return;
@@ -476,7 +478,7 @@ class PetActivityService
             return;
         }
 
-        if($this->squirrel3->rngNextInt(1, 40) === 1)
+        if($this->rng->rngNextInt(1, 40) === 1)
         {
             if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
             {
@@ -506,32 +508,32 @@ class PetActivityService
                 return;
         }
 
-        if($this->squirrel3->rngNextInt(1, $hasEventPersonality ? 48 : 50) === 1)
+        if($this->rng->rngNextInt(1, $hasEventPersonality ? 48 : 50) === 1)
         {
             $activityLog = $this->givingTreeGatheringService->gatherFromGivingTree($pet);
             if($activityLog)
                 return;
         }
 
-        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 24 : 16) && CalendarFunctions::isSaintPatricksDay($this->clock->now))
+        if($this->rng->rngNextInt(1, 100) <= ($hasEventPersonality ? 24 : 16) && CalendarFunctions::isSaintPatricksDay($this->clock->now))
         {
             $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::SAINT_PATRICKS);
             return;
         }
 
-        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 30 : 25) && CalendarFunctions::isEaster($this->clock->now))
+        if($this->rng->rngNextInt(1, 100) <= ($hasEventPersonality ? 30 : 25) && CalendarFunctions::isEaster($this->clock->now))
         {
             $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::EASTER);
             return;
         }
 
-        if($this->squirrel3->rngNextInt(1, 100) <= ($hasEventPersonality ? 9 : 6) && CalendarFunctions::isChineseNewYear($this->clock->now))
+        if($this->rng->rngNextInt(1, 100) <= ($hasEventPersonality ? 9 : 6) && CalendarFunctions::isChineseNewYear($this->clock->now))
         {
             $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::LUNAR_NEW_YEAR);
             return;
         }
 
-        if($pet->getGuildMembership() && $this->squirrel3->rngNextInt(1, 35) === 1)
+        if($pet->getGuildMembership() && $this->rng->rngNextInt(1, 35) === 1)
         {
             if($this->guildService->doGuildActivity($petWithSkills))
                 return;
@@ -620,7 +622,7 @@ class PetActivityService
 
             case 'Silver Keyblade':
             case 'Gold Keyblade':
-                if($pet->getFood() > 0 && $this->squirrel3->rngNextInt(1, 10) === 1)
+                if($pet->getFood() > 0 && $this->rng->rngNextInt(1, 10) === 1)
                 {
                     $this->treasureMapService->doKeybladeTower($petWithSkills);
                     return true;
@@ -634,7 +636,7 @@ class PetActivityService
             case 'Peacock Plushy':
             case 'Phoenix Plushy':
             case '"Roy" Plushy':
-                if($this->squirrel3->rngNextInt(1, 6) === 1 || $this->userStatsRepository->getStatValue($pet->getOwner(), UserStatEnum::TRADED_WITH_THE_FLUFFMONGER) === 0)
+                if($this->rng->rngNextInt(1, 6) === 1 || $this->userStatsRepository->getStatValue($pet->getOwner(), UserStatEnum::TRADED_WITH_THE_FLUFFMONGER) === 0)
                 {
                     $this->treasureMapService->doFluffmongerTrade($pet);
                     return true;
@@ -647,7 +649,7 @@ class PetActivityService
                 return true;
 
             case 'Heartstone':
-                if($this->squirrel3->rngNextInt(1, 3) === 1)
+                if($this->rng->rngNextInt(1, 3) === 1)
                 {
                     if($this->heartDimensionService->canAdventure($pet))
                         $this->heartDimensionService->adventure($petWithSkills);
@@ -660,7 +662,7 @@ class PetActivityService
                 break;
 
             case 'Saucepan':
-                if($this->squirrel3->rngNextInt(1, 10) === 1)
+                if($this->rng->rngNextInt(1, 10) === 1)
                 {
                     $this->treasureMapService->doCookSomething($pet);
                     return true;
@@ -673,7 +675,7 @@ class PetActivityService
                 return true;
 
             case 'Aubergine Commander':
-                if($this->squirrel3->rngNextInt(1, 100) === 1)
+                if($this->rng->rngNextInt(1, 100) === 1)
                 {
                     $this->treasureMapService->doEggplantCurse($pet);
                     return true;
@@ -697,7 +699,7 @@ class PetActivityService
                 return true;
 
             case 'Fimbulvetr':
-                if($this->squirrel3->rngNextInt(1, 20) == 1)
+                if($this->rng->rngNextInt(1, 20) == 1)
                 {
                     $this->philosophersStoneService->seekMetatronsFire($petWithSkills);
                     return true;
@@ -705,7 +707,7 @@ class PetActivityService
                 break;
 
             case 'Ceremony of Fire':
-                if($this->squirrel3->rngNextInt(1, 20) == 1)
+                if($this->rng->rngNextInt(1, 20) == 1)
                 {
                     $this->philosophersStoneService->seekVesicaHydrargyrum($petWithSkills);
                     return true;
@@ -713,7 +715,7 @@ class PetActivityService
                 break;
 
             case 'Snickerblade':
-                if($this->squirrel3->rngNextInt(1, 20) == 1)
+                if($this->rng->rngNextInt(1, 20) == 1)
                 {
                     $this->philosophersStoneService->seekEarthsEgg($petWithSkills);
                     return true;
@@ -738,7 +740,7 @@ class PetActivityService
             switch($pet->getTool()->getEnchantment()->getName())
             {
                 case 'Searing':
-                    if($this->squirrel3->rngNextInt(1, 20) == 1)
+                    if($this->rng->rngNextInt(1, 20) == 1)
                     {
                         if($this->philosophersStoneService->seekMerkabaOfAir($petWithSkills))
                             return true;
@@ -752,7 +754,7 @@ class PetActivityService
 
     private function doNothing(Pet $pet)
     {
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
         PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% hung around the house.');
     }
 
@@ -760,7 +762,7 @@ class PetActivityService
     {
         $totalDesire = array_sum($petDesires);
 
-        $pick = $this->squirrel3->rngNextInt(0, $totalDesire - 1);
+        $pick = $this->rng->rngNextInt(0, $totalDesire - 1);
 
         foreach($petDesires as $action=>$desire)
         {
@@ -785,9 +787,9 @@ class PetActivityService
         if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::FISHING))
             $desire += 4;
         else
-            $desire += $this->squirrel3->rngNextInt(1, 4);
+            $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
+        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateIcyMoonDesire(ComputedPetSkills $petWithSkills): int
@@ -806,9 +808,9 @@ class PetActivityService
         if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::ICY_MOON))
             $desire += 4;
         else
-            $desire += $this->squirrel3->rngNextInt(1, 4);
+            $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(0, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100) * 3 / 4));
+        return max(0, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100) * 3 / 4));
     }
 
     public function generateSubmarineDesire(ComputedPetSkills $petWithSkills): int
@@ -827,9 +829,9 @@ class PetActivityService
         if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::SUBMARINE))
             $desire += 4;
         else
-            $desire += $this->squirrel3->rngNextInt(1, 4);
+            $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
+        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateMonsterHuntingDesire(ComputedPetSkills $petWithSkills): int
@@ -844,9 +846,9 @@ class PetActivityService
         if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::HUNTING))
             $desire += 4;
         else
-            $desire += $this->squirrel3->rngNextInt(1, 4);
+            $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
+        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateCraftingDesire(ComputedPetSkills $petWithSkills): int
@@ -865,9 +867,9 @@ class PetActivityService
         if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CRAFTING_MUNDANE))
             $desire += 4;
         else
-            $desire += $this->squirrel3->rngNextInt(1, 4);
+            $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
+        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateMagicBindingDesire(ComputedPetSkills $petWithSkills): int
@@ -886,9 +888,9 @@ class PetActivityService
         if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CRAFTING_MAGIC))
             $desire += 4;
         else
-            $desire += $this->squirrel3->rngNextInt(1, 4);
+            $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
+        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateSmithingDesire(ComputedPetSkills $petWithSkills): int
@@ -907,9 +909,9 @@ class PetActivityService
         if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CRAFTING_SMITHING))
             $desire += 4;
         else
-            $desire += $this->squirrel3->rngNextInt(1, 4);
+            $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
+        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateExploreUmbraDesire(ComputedPetSkills $petWithSkills): int
@@ -923,7 +925,7 @@ class PetActivityService
         if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::UMBRA))
             $desire += 4;
         else
-            $desire += $this->squirrel3->rngNextInt(1, 4);
+            $desire += $this->rng->rngNextInt(1, 4);
 
         if(
             $pet->hasMerit(MeritEnum::NATURAL_CHANNEL) ||
@@ -963,9 +965,9 @@ class PetActivityService
         if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::GATHERING))
             $desire += 4;
         else
-            $desire += $this->squirrel3->rngNextInt(1, 4);
+            $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
+        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateClimbingBeanstalkDesire(ComputedPetSkills $petWithSkills): int
@@ -980,9 +982,9 @@ class PetActivityService
         if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::BEANSTALK))
             $desire += 4;
         else
-            $desire += $this->squirrel3->rngNextInt(1, 4);
+            $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
+        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateHackingDesire(ComputedPetSkills $petWithSkills): int
@@ -1001,9 +1003,9 @@ class PetActivityService
         if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::PROTOCOL_7))
             $desire += 4;
         else
-            $desire += $this->squirrel3->rngNextInt(1, 4);
+            $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
+        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateProgrammingDesire(ComputedPetSkills $petWithSkills): int
@@ -1022,9 +1024,9 @@ class PetActivityService
         if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CRAFTING_SCIENCE))
             $desire += 4;
         else
-            $desire += $this->squirrel3->rngNextInt(1, 4);
+            $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
+        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     public function generatePlasticPrintingDesire(ComputedPetSkills $petWithSkills): int
@@ -1043,17 +1045,17 @@ class PetActivityService
         if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::CRAFTING_PLASTIC))
             $desire += 4;
         else
-            $desire += $this->squirrel3->rngNextInt(1, 4);
+            $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->squirrel3->rngNextInt(-10, 10) / 100)));
+        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     private function poop(Pet $pet): bool
     {
-        if($pet->hasMerit(MeritEnum::BLACK_HOLE_TUM) && $this->squirrel3->rngNextInt(1, 180) === 1)
+        if($pet->hasMerit(MeritEnum::BLACK_HOLE_TUM) && $this->rng->rngNextInt(1, 180) === 1)
             return true;
 
-        if($pet->getTool() && $pet->getTool()->increasesPooping() && $this->squirrel3->rngNextInt(1, 180) === 1)
+        if($pet->getTool() && $pet->getTool()->increasesPooping() && $this->rng->rngNextInt(1, 180) === 1)
             return true;
 
         return false;
@@ -1064,7 +1066,7 @@ class PetActivityService
         if(!$pet->hasMerit(MeritEnum::FAIRY_GODMOTHER))
             return false;
 
-        if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE) && $this->squirrel3->rngNextInt(1, 20) === 1)
+        if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE) && $this->rng->rngNextInt(1, 20) === 1)
         {
             $changes = new PetChanges($pet);
 
@@ -1087,10 +1089,10 @@ class PetActivityService
             return true;
         }
 
-        if($this->squirrel3->rngNextInt(1, 650) !== 1)
+        if($this->rng->rngNextInt(1, 650) !== 1)
             return false;
 
-        $randomChat = $this->squirrel3->rngNextFromArray([
+        $randomChat = $this->rng->rngNextFromArray([
             'In the face of darkness, remember that your light shines brightest',
             'Embrace your uniqueness, for it is the key to unlocking your dreams',
             'Believe in yourself, my dear, for magic lies within your heart',
@@ -1105,7 +1107,7 @@ class PetActivityService
             'Your dreams are your soul\'s whispers, guiding you to your true destiny; listen to them attentively',
         ]);
 
-        $randomGoody = $this->squirrel3->rngNextFromArray([
+        $randomGoody = $this->rng->rngNextFromArray([
             'Quintessence', 'Berry Cobbler', 'Tile: Mushroom Hunting',
             'Book of Flowers', 'Witch-hazel', 'Blackberry Wine',
             'Piece of Cetgueli\'s Map', 'World\'s Best Sugar Cookie', 'Champignon',
@@ -1123,7 +1125,7 @@ class PetActivityService
             'Tile: Lovely Haberdashers', 'Treat of Crispy Rice',
         ]);
 
-        $soNice = $this->squirrel3->rngNextFromArray([
+        $soNice = $this->rng->rngNextFromArray([
             'Gosh dang, she\'s so nice!',
             'How\'d she got so friggin\' sweet!',
             'She\'s just the best!',
@@ -1154,10 +1156,10 @@ class PetActivityService
         if(!$pet->hasMerit(MeritEnum::ATHENAS_GIFTS))
             return false;
 
-        if($this->squirrel3->rngNextInt(1, 300) !== 1)
+        if($this->rng->rngNextInt(1, 300) !== 1)
             return false;
 
-        $randomExclamation = $this->squirrel3->rngNextFromArray([
+        $randomExclamation = $this->rng->rngNextFromArray([
             'Neat-o!', 'Rad!', 'Dope!', 'Sweet!', 'Hot diggity!', 'Epic!', 'Let\'s go!',
         ]);
 
@@ -1169,55 +1171,5 @@ class PetActivityService
         $this->petExperienceService->spendTime($pet, 30, PetActivityStatEnum::OTHER, null);
 
         return true;
-    }
-
-    private function cleanUpStatusEffect(Pet $pet, string $statusEffect, string $itemOnBody): bool
-    {
-        $changes = new PetChanges($pet);
-
-        $pet->removeStatusEffect($pet->getStatusEffect($statusEffect));
-        $weather = WeatherService::getWeather(new \DateTimeImmutable(), $pet);
-
-        if($pet->hasMerit(MeritEnum::GOURMAND))
-        {
-            $pet
-                ->increaseFood($this->squirrel3->rngNextInt(3, 6))
-                ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
-            ;
-
-            $this->petExperienceService->spendTime($pet, 5, PetActivityStatEnum::OTHER, null);
-
-            PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:'. $pet->getId() . '.name% eats the ' . $itemOnBody . ' off their body in no time flat! (Ah~! A true Gourmand!)')
-                ->setChanges($changes->compare($pet))
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating', 'Gourmand' ]))
-            ;
-            return false;
-        }
-        else if($weather->getRainfall() > 0)
-        {
-            $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:'. $pet->getId() . '.name% spends some time cleaning the ' . $itemOnBody . ' off their body. The rain made it go much faster!');
-
-            $this->inventoryService->petCollectsItem($itemOnBody, $pet, $pet->getName() . ' cleaned this off their body with the help of the rain...', $activityLog);
-
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
-
-            $activityLog->setChanges($changes->compare($pet));
-
-            return true;
-        }
-        else
-        {
-            $pet->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:'. $pet->getId() . '.name% spends some time cleaning the ' . $itemOnBody . ' off their body...');
-
-            $this->inventoryService->petCollectsItem($itemOnBody, $pet, $pet->getName() . ' cleaned this off their body...', $activityLog);
-
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
-
-            $activityLog->setChanges($changes->compare($pet));
-
-            return true;
-        }
     }
 }

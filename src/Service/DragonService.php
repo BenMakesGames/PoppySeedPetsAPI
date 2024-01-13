@@ -13,7 +13,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
 use App\Functions\DragonHelpers;
 use App\Functions\EnchantmentRepository;
-use App\Functions\PlayerLogHelpers;
+use App\Functions\PlayerLogFactory;
 use App\Functions\SpiceRepository;
 use App\Repository\DragonRepository;
 use App\Service\PetActivity\TreasureMapService;
@@ -288,7 +288,7 @@ class DragonService
         else
             $message .= '.';
 
-        PlayerLogHelpers::create(
+        PlayerLogFactory::create(
             $this->em,
             $user,
             'You gave your dragon ' . ArrayFunctions::list_nice($offeringItemNames) . '. ' . $message,

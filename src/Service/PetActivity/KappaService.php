@@ -10,7 +10,7 @@ use App\Enum\UserStatEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
 use App\Functions\PetActivityLogTagHelpers;
-use App\Functions\PlayerLogHelpers;
+use App\Functions\PlayerLogFactory;
 use App\Functions\UserFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -125,7 +125,7 @@ class KappaService
 
             $this->userStatsRepository->incrementStat($owner, UserStatEnum::PETTED_A_PET, 1);
 
-            PlayerLogHelpers::create($this->em, $owner, ActivityHelpers::PetName($pet) . ' returned your Shirikodama! (Some Kappa must have stolen it!) You thank ' . ActivityHelpers::PetName($pet) . ' with pets and pats before swallowing the Shirikodama.', [
+            PlayerLogFactory::create($this->em, $owner, ActivityHelpers::PetName($pet) . ' returned your Shirikodama! (Some Kappa must have stolen it!) You thank ' . ActivityHelpers::PetName($pet) . ' with pets and pats before swallowing the Shirikodama.', [
                 'Shirikodama',
             ]);
 
@@ -151,7 +151,7 @@ class KappaService
 
             $this->userStatsRepository->incrementStat($owner, UserStatEnum::PETTED_A_PET, 1);
 
-            PlayerLogHelpers::create($this->em, $owner, ActivityHelpers::PetName($pet) . ' returned your Shirikodama! (Some Kappa must have stolen it!) You thank ' . ActivityHelpers::PetName($pet) . ' with pets and pats before swallowing the Shirikodama.', [
+            PlayerLogFactory::create($this->em, $owner, ActivityHelpers::PetName($pet) . ' returned your Shirikodama! (Some Kappa must have stolen it!) You thank ' . ActivityHelpers::PetName($pet) . ' with pets and pats before swallowing the Shirikodama.', [
                 'Shirikodama',
             ]);
 

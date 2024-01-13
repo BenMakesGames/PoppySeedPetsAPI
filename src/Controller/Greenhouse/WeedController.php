@@ -12,7 +12,7 @@ use App\Functions\CalendarFunctions;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
-use App\Functions\PlayerLogHelpers;
+use App\Functions\PlayerLogFactory;
 use App\Functions\UserQuestRepository;
 use App\Model\PetChanges;
 use App\Service\Clock;
@@ -171,7 +171,7 @@ class WeedController extends AbstractController
 
         $message .= ' ' . $squirrel3->rngNextFromArray([ 'Noice!', 'Yoink!', '👍', '👌', 'Neat-o!', 'Okey dokey!' ]);
 
-        PlayerLogHelpers::create($em, $user, $message, [ 'Greenhouse' ]);
+        PlayerLogFactory::create($em, $user, $message, [ 'Greenhouse' ]);
 
         $em->flush();
 

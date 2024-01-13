@@ -10,7 +10,7 @@ use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\GrammarFunctions;
-use App\Functions\PlayerLogHelpers;
+use App\Functions\PlayerLogFactory;
 use App\Repository\InventoryRepository;
 use App\Service\GreenhouseService;
 use App\Service\ResponseService;
@@ -59,7 +59,7 @@ class FertilizePlantController extends AbstractController
 
         $plantNameArticle = GrammarFunctions::indefiniteArticle($plant->getPlant()->getName());
 
-        PlayerLogHelpers::create(
+        PlayerLogFactory::create(
             $em,
             $user,
             "You fertilized $plantNameArticle {$plant->getPlant()->getName()} plant with {$fertilizer->getFullItemName()}.",

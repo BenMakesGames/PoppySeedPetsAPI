@@ -18,6 +18,7 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\MeritRepository;
+use App\Functions\PlayerLogFactory;
 use App\Functions\SpiceRepository;
 use App\Functions\UserQuestRepository;
 use App\Model\MeritInfo;
@@ -58,6 +59,7 @@ class GreenhouseService
 
                 $this->inventoryService->receiveItem($scroll, $user, $user, 'Left behind by a huge owl that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
                 $message = 'As you approach the owl, it tilts its head at you. You freeze, and stare at each other for a few seconds before the owl flies off, dropping some kind of scroll as it goes!';
+                $activityLogMessage = 'You approached an owl in your birdbath! It flew off, leaving behind a ' . $scroll . '!';
                 break;
 
             case BirdBathBirdEnum::RAVEN:
@@ -70,12 +72,14 @@ class GreenhouseService
                 ]);
                 $extraInventory = $this->inventoryService->receiveItem($extraItem, $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
                 $message = 'As you approach the raven, it turns to face you. You freeze, and stare at each other for a few seconds before the raven flies off in a flurry of Black Feathers! Also, it apparently left ' . $extraInventory->getItem()->getNameWithArticle() . ' behind? \'Kay...';
+                $activityLogMessage = 'You approached a raven in your birdbath! It flew off, leaving behind some Black Feathers, and ' . $extraInventory->getItem()->getNameWithArticle() . '!';
                 break;
 
             case BirdBathBirdEnum::TOUCAN:
                 $this->inventoryService->receiveItem('Cereal Box', $user, $user, 'Left behind by a huge toucan that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
                 $this->inventoryService->receiveItem('Scroll of Fruit', $user, $user, 'Left behind by a huge toucan that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
                 $message = 'As you approach the toucan, it turns to face you. You freeze, and stare at each other for a few seconds before the toucan flies off, leaving behind a Cereal Box, and a Scroll of Fruit! (Presumably as part of a complete breakfast!)';
+                $activityLogMessage = 'You approached a toucan in your birdbath! It flew off, leaving behind a Cereal Box, and a Scroll of Fruit! (Presumably as part of a complete breakfast!)';
                 break;
 
             default:
@@ -85,6 +89,8 @@ class GreenhouseService
         $greenhouse->setVisitingBird(null);
 
         $this->userStatsRepository->incrementStat($user, UserStatEnum::LARGE_BIRDS_APPROACHED);
+
+        PlayerLogFactory::create($this->em, $user, $activityLogMessage, [ 'Greenhouse', 'Birdbath' ]);
 
         return $message;
     }

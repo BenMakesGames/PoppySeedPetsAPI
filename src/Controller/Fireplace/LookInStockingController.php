@@ -6,7 +6,7 @@ use App\Enum\LocationEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ItemRepository;
 use App\Functions\JewishCalendarFunctions;
-use App\Functions\PlayerLogHelpers;
+use App\Functions\PlayerLogFactory;
 use App\Functions\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -108,7 +108,7 @@ class LookInStockingController extends AbstractController
 
         $gotStockingPresent->setValue($now->format('Y-m-d'));
 
-        PlayerLogHelpers::create($em, $user, 'You pulled ' . $itemObject->getNameWithArticle() . ' from your stocking!', [ 'Fireplace', 'Special Event', 'Stocking Stuffing Season' ]);
+        PlayerLogFactory::create($em, $user, 'You pulled ' . $itemObject->getNameWithArticle() . ' from your stocking!', [ 'Fireplace', 'Special Event', 'Stocking Stuffing Season' ]);
 
         $em->flush();
 

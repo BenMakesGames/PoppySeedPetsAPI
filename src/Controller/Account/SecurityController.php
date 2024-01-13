@@ -6,7 +6,7 @@ use App\Entity\User;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
-use App\Functions\PlayerLogHelpers;
+use App\Functions\PlayerLogFactory;
 use App\Service\PassphraseResetService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -56,7 +56,7 @@ class SecurityController extends AbstractController
 
         $user->setEmail($newEmail);
 
-        PlayerLogHelpers::create(
+        PlayerLogFactory::create(
             $em,
             $user,
             'You changed your e-mail address, from `' . $oldEmail . '` to `' . $newEmail .'`.',
@@ -91,7 +91,7 @@ class SecurityController extends AbstractController
 
         $user->setPassword($passwordEncoder->hashPassword($user, $newPassphrase));
 
-        PlayerLogHelpers::create(
+        PlayerLogFactory::create(
             $em,
             $user,
             'You changed your passphrase.',
@@ -155,7 +155,7 @@ class SecurityController extends AbstractController
 
         $em->remove($resetRequest);
 
-        PlayerLogHelpers::create(
+        PlayerLogFactory::create(
             $em,
             $user,
             'You reset your passphrase.',

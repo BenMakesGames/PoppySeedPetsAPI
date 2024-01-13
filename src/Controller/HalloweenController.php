@@ -12,7 +12,7 @@ use App\Functions\CalendarFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
-use App\Functions\PlayerLogHelpers;
+use App\Functions\PlayerLogFactory;
 use App\Functions\UserQuestRepository;
 use App\Model\FoodWithSpice;
 use App\Service\Clock;
@@ -173,7 +173,7 @@ class HalloweenController extends AbstractController
                 ->addTags(PetActivityLogTagHelpers::findByNames($em, [ 'Special Event', 'Halloween' ]))
             ;
 
-            PlayerLogHelpers::create(
+            PlayerLogFactory::create(
                 $em,
                 $user,
                 'You gave ' . $candy->getFullItemName() . ' to ' . GrammarFunctions::indefiniteArticle($trickOrTreater->getSpecies()->getName()) . ' ' . $trickOrTreater->getSpecies()->getName() . ' dressed as ' . $trickOrTreater->getCostume() . '!',

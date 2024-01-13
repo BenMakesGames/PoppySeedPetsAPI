@@ -5,7 +5,7 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\DragonHelpers;
-use App\Functions\PlayerLogHelpers;
+use App\Functions\PlayerLogFactory;
 use App\Service\DragonHostageService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -44,7 +44,7 @@ class DismissHostageController extends AbstractController
 
         $inventoryService->receiveItem($loot->item, $dragon->getOwner(), $dragon->getOwner(), $loot->comment, LocationEnum::HOME, false);
 
-        PlayerLogHelpers::create(
+        PlayerLogFactory::create(
             $em,
             $user,
             'You ushered a "hostage" out of your Dragon Den. ' . $loot->flashMessage,

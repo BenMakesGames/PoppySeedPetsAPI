@@ -6,7 +6,7 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PollinatorEnum;
 use App\Exceptions\PSPNotFoundException;
-use App\Functions\PlayerLogHelpers;
+use App\Functions\PlayerLogFactory;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -61,7 +61,7 @@ class PullUpPlantController extends AbstractController
                 $inventoryService->receiveItem('Fluff', $user, $user, 'Dropped by a startled goat.', LocationEnum::HOME);
         }
 
-        PlayerLogHelpers::create($em, $user, $logMessage, [ 'Greenhouse' ]);
+        PlayerLogFactory::create($em, $user, $logMessage, [ 'Greenhouse' ]);
 
         $pollinators = $plant->getPollinators();
 

@@ -11,7 +11,7 @@ use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Functions\ItemRepository;
-use App\Functions\PlayerLogHelpers;
+use App\Functions\PlayerLogFactory;
 use App\Functions\RequestFunctions;
 use App\Functions\SpiceRepository;
 use App\Repository\InventoryRepository;
@@ -178,7 +178,7 @@ class FeedComposterController extends AbstractController
 
         if(count($tossedItemNames) > 5)
         {
-            PlayerLogHelpers::create(
+            PlayerLogFactory::create(
                 $em,
                 $user,
                 'You chucked ' . count($tossedItemNames) . ' into the Composter, and got' . $gotDescription,
@@ -188,7 +188,7 @@ class FeedComposterController extends AbstractController
         else
         {
             $objectOrObjects = count($tossedItemNames) == 1 ? 'object' : 'objects';
-            PlayerLogHelpers::create(
+            PlayerLogFactory::create(
                 $em,
                 $user,
                 'You chucked ' . ArrayFunctions::list_nice($tossedItemNames) . ' into the Composter, and got' . $gotDescription,

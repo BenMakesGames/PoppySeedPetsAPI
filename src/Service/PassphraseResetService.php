@@ -3,7 +3,7 @@ namespace App\Service;
 
 use App\Entity\PassphraseResetRequest;
 use App\Entity\User;
-use App\Functions\PlayerLogHelpers;
+use App\Functions\PlayerLogFactory;
 use App\Functions\StringFunctions;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Mailer\MailerInterface;
@@ -22,7 +22,7 @@ class PassphraseResetService
     {
         $now = new \DateTimeImmutable();
 
-        PlayerLogHelpers::create(
+        PlayerLogFactory::create(
             $this->em,
             $user,
             'A passphrase reset request was made for `' . $user->getEmail() . '`.',

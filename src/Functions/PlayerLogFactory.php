@@ -7,7 +7,7 @@ use App\Entity\UserActivityLog;
 use App\Entity\UserActivityLogTag;
 use Doctrine\ORM\EntityManagerInterface;
 
-final class PlayerLogHelpers
+final class PlayerLogFactory
 {
     /**
      * @param string[] $tagNames

@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Service\Squirrel3;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity]
+#[ORM\Index(name: 'has_unoccupied_bird_bath_idx', columns: ['has_bird_bath', 'visiting_bird'])]
 class Greenhouse
 {
     #[ORM\Id]

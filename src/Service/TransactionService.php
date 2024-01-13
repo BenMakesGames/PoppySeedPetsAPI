@@ -4,7 +4,7 @@ namespace App\Service;
 use App\Entity\User;
 use App\Entity\UserActivityLog;
 use App\Enum\UserStatEnum;
-use App\Functions\PlayerLogHelpers;
+use App\Functions\PlayerLogFactory;
 use Doctrine\ORM\EntityManagerInterface;
 
 class TransactionService
@@ -30,7 +30,7 @@ class TransactionService
 
         $tags = array_merge($additionalTags, [ 'Moneys' ]);
 
-        return PlayerLogHelpers::create($this->em, $user, $description . ' (-' . $amount . '~~m~~)', $tags);
+        return PlayerLogFactory::create($this->em, $user, $description . ' (-' . $amount . '~~m~~)', $tags);
     }
 
     public function getMoney(User $user, int $amount, string $description, array $additionalTags = []): UserActivityLog
@@ -42,7 +42,7 @@ class TransactionService
 
         $tags = array_merge($additionalTags, [ 'Moneys' ]);
 
-        return PlayerLogHelpers::create($this->em, $user, $description . ' (+' . $amount . '~~m~~)', $tags);
+        return PlayerLogFactory::create($this->em, $user, $description . ' (+' . $amount . '~~m~~)', $tags);
     }
 
     public function spendRecyclingPoints(User $user, int $amount, string $description, array $additionalTags = [])
@@ -57,7 +57,7 @@ class TransactionService
 
         $tags = array_merge($additionalTags, [ 'Recycling' ]);
 
-        return PlayerLogHelpers::create($this->em, $user, $description . ' (-' . $amount . ' Recycling Point' . ($amount == 1 ? '' : 's') . ')', $tags);
+        return PlayerLogFactory::create($this->em, $user, $description . ' (-' . $amount . ' Recycling Point' . ($amount == 1 ? '' : 's') . ')', $tags);
     }
 
     public function getRecyclingPoints(User $user, int $amount, string $description, array $additionalTags = [])
@@ -70,7 +70,7 @@ class TransactionService
 
         $tags = array_merge($additionalTags, [ 'Recycling' ]);
 
-        return PlayerLogHelpers::create($this->em, $user, $description . ' (+' . $amount . ' Recycling Point' . ($amount == 1 ? '' : 's') . ')', $tags);
+        return PlayerLogFactory::create($this->em, $user, $description . ' (+' . $amount . ' Recycling Point' . ($amount == 1 ? '' : 's') . ')', $tags);
     }
 
     public function spendMuseumFavor(User $user, int $amount, string $description, array $additionalTags = [])
@@ -85,7 +85,7 @@ class TransactionService
 
         $tags = array_merge($additionalTags, [ 'Museum' ]);
 
-        return PlayerLogHelpers::create($this->em, $user, $description . ' (-' . $amount . ' Museum Favor)', $tags);
+        return PlayerLogFactory::create($this->em, $user, $description . ' (-' . $amount . ' Museum Favor)', $tags);
     }
 
     public function getMuseumFavor(User $user, int $amount, string $description, array $additionalTags = [])
@@ -97,6 +97,6 @@ class TransactionService
 
         $tags = array_merge($additionalTags, [ 'Museum' ]);
 
-        return PlayerLogHelpers::create($this->em, $user, $description . ' (+' . $amount . ' Museum Favor)', $tags);
+        return PlayerLogFactory::create($this->em, $user, $description . ' (+' . $amount . ' Museum Favor)', $tags);
     }
 }

@@ -9,7 +9,7 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
-use App\Functions\PlayerLogHelpers;
+use App\Functions\PlayerLogFactory;
 use App\Functions\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -103,7 +103,7 @@ class ClaimRewardsController extends AbstractController
 
         $responseService->addFlashMessage($message);
 
-        PlayerLogHelpers::create($em, $user, $message, [ 'Fireplace' ]);
+        PlayerLogFactory::create($em, $user, $message, [ 'Fireplace' ]);
 
         if($numItems > 0 && $fireplace->getGnomePoints() >= 24)
         {
@@ -119,7 +119,7 @@ class ClaimRewardsController extends AbstractController
 
             $responseService->addFlashMessage($gnomishMessage . ' (You received a Gnome\'s Favor!)');
 
-            PlayerLogHelpers::create($em, $user, $gnomishMessage . ' (You received a Gnome\'s Favor!)', [ 'Fireplace' ]);
+            PlayerLogFactory::create($em, $user, $gnomishMessage . ' (You received a Gnome\'s Favor!)', [ 'Fireplace' ]);
         }
 
         $em->flush();

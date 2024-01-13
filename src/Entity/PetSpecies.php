@@ -287,16 +287,9 @@ class PetSpecies
         return $this->getId() <= 16 || $this->getId() === 96 || $this->getId() === 100;
     }
 
-    public function getSheds(): ?Item
+    public function getSheds(): Item
     {
         return $this->sheds;
-    }
-
-    public function setSheds(?Item $sheds): self
-    {
-        $this->sheds = $sheds;
-
-        return $this;
     }
 
     public function getFamily(): ?string

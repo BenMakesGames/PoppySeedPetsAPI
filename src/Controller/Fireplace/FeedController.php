@@ -10,7 +10,7 @@ use App\Enum\UserStatEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
-use App\Functions\PlayerLogHelpers;
+use App\Functions\PlayerLogFactory;
 use App\Functions\RequestFunctions;
 use App\Repository\InventoryRepository;
 use App\Service\InventoryService;
@@ -76,7 +76,7 @@ class FeedController extends AbstractController
                 ? 'You burned ' . $fuelUsed[0] . ' for fuel in the Fireplace.'
                 : 'You burned the following items for fuel in the Fireplace: ' . ArrayFunctions::list_nice($fuelUsed) . '.';
 
-            PlayerLogHelpers::create($em, $user, $entry, [ 'Fireplace' ]);
+            PlayerLogFactory::create($em, $user, $entry, [ 'Fireplace' ]);
 
             $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_THROWN_INTO_THE_FIREPLACE, count($fuelUsed));
         }

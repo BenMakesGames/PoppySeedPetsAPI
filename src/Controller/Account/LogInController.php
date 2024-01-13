@@ -4,7 +4,7 @@ namespace App\Controller\Account;
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
-use App\Functions\PlayerLogHelpers;
+use App\Functions\PlayerLogFactory;
 use App\Functions\UserStyleFunctions;
 use App\Service\ResponseService;
 use App\Service\SessionService;
@@ -60,7 +60,7 @@ class LogInController extends AbstractController
             $user->setUnreadNews(0);
         }
 
-        PlayerLogHelpers::create(
+        PlayerLogFactory::create(
             $em,
             $user,
             'You logged in from `' . $request->getClientIp() . '`.',
