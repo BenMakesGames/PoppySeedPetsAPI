@@ -69,7 +69,7 @@ class AdoptionService
         $petsAdopted = $this->getPetsAdopted($user);
 
         if($petsAdopted == 0)
-            $dialog = "Hello! Here to adopt a new friend? Your first pet is 50% off!\n\n If";
+            $dialog = "Hello! Here to adopt a new friend? Your first pet is 50% off!\n\nIf ";
         else
         {
             $dialog = $numPets > 10
