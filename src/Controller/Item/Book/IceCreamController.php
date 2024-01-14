@@ -29,13 +29,13 @@ class IceCreamController extends AbstractController
             'Chocolate Ice Cream',
             'Honeydont Ice Cream',
             'Naner Ice Cream',
-            'Blackberry Ice Cream',
+            'Blueberry Ice Cream',
 
             'Blackberry Ice Cream Sammy',
             'Chocolate Ice Cream Sammy',
             'Honeydont Ice Cream Sammy',
             'Naner Ice Cream Sammies',
-            'Blackberry Ice Cream Sammy',
+            'Blueberry Ice Cream Sammy',
         ]);
 
         return $responseService->itemActionSuccess($message);
