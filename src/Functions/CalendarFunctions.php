@@ -20,7 +20,7 @@ final class CalendarFunctions
             return false;
 
         $monthAndYear = $dt->format('F Y');
-        $firstSaturdayOfNovember = (int)(new \DateTimeImmutable('first Saturday of ' . $monthAndYear))->format('md');
+        $firstSaturdayOfNovember = (int)(new \DateTimeImmutable('first Saturday of ' . $monthAndYear))->format('nd');
 
         return $monthAndDay === $firstSaturdayOfNovember;
     }
@@ -61,8 +61,8 @@ final class CalendarFunctions
         $fourthThursdayOfNovember = new \DateTimeImmutable('fourth Thursday of ' . $monthAndYear);
 
         return
-            $monthAndDay >= (int)$fourthThursdayOfNovember->format('md') - 14 &&
-            $monthAndDay <= (int)$fourthThursdayOfNovember->format('md')
+            $monthAndDay >= (int)$fourthThursdayOfNovember->format('nd') - 14 &&
+            $monthAndDay <= (int)$fourthThursdayOfNovember->format('nd')
         ;
     }
 
@@ -78,7 +78,7 @@ final class CalendarFunctions
         $fourthThursdayOfNovember = new \DateTimeImmutable('fourth Thursday of ' . $monthAndYear);
 
         // within 1 day of thanksgiving
-        return abs((int)$fourthThursdayOfNovember->format('md') - $monthAndDay) <= 1;
+        return abs((int)$fourthThursdayOfNovember->format('nd') - $monthAndDay) <= 1;
     }
 
     public static function isBlackFriday(\DateTimeInterface $dt): bool
@@ -92,7 +92,7 @@ final class CalendarFunctions
         $monthAndYear = $dt->format('F Y');
         $blackFriday = (new \DateTimeImmutable('fourth Thursday of ' . $monthAndYear))->modify('+1 day');
 
-        return (int)$blackFriday->format('md') === $monthAndDay;
+        return (int)$blackFriday->format('nd') === $monthAndDay;
     }
 
     public static function isCyberMonday(\DateTimeInterface $dt): bool
@@ -105,7 +105,7 @@ final class CalendarFunctions
         $monthAndYear = $dt->format('F Y');
         $cyberMonday = (new \DateTimeImmutable('fourth Thursday of ' . $monthAndYear))->modify('+4 day');
 
-        return (int)$cyberMonday->format('md') === $monthAndDay;
+        return (int)$cyberMonday->format('nd') === $monthAndDay;
     }
 
     public static function isHalloweenCrafting(\DateTimeInterface $dt): bool
