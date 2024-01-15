@@ -35,7 +35,8 @@ class InventoryService
         private readonly ResponseService $responseService,
         private readonly IRandom $squirrel3,
         private readonly EatingService $eatingService,
-        private readonly HouseSimService $houseSimService
+        private readonly HouseSimService $houseSimService,
+        private readonly Clock $clock
     )
     {
     }
@@ -184,12 +185,24 @@ class InventoryService
         {
             if($item->getName() === 'Gold Bar' || $item->getName() === 'Gold Ore')
             {
-                $activityLog
-                    ->setEntry($activityLog->getEntry() . ' The ' . $item->getName() . ' was transformed into Wheat by their curse!')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ;
+                if(DateFunctions::getFullMoonName($this->clock->now) === 'Corn')
+                {
+                    $activityLog
+                        ->setEntry($activityLog->getEntry() . ' The ' . $item->getName() . ' was transformed into... Corn??? (That\'s not how the curse is supposed to work!)')
+                        ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                    ;
 
-                $item = ItemRepository::findOneByName($this->em, 'Wheat');
+                    $item = ItemRepository::findOneByName($this->em, 'Corn');
+                }
+                else
+                {
+                    $activityLog
+                        ->setEntry($activityLog->getEntry() . ' The ' . $item->getName() . ' was transformed into Wheat by their curse!')
+                        ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                    ;
+
+                    $item = ItemRepository::findOneByName($this->em, 'Wheat');
+                }
             }
             else if($item->getName() === 'Wheat' || $item->getName() === 'Wheat Flower')
             {
@@ -454,7 +467,7 @@ class InventoryService
         if($i->getSpice() && $this->squirrel3->rngNextBool())
             return $i;
 
-        if($i->getItem()->getName() === 'Worms' && DateFunctions::getFullMoonName(new \DateTimeImmutable()) === 'Worm')
+        if($i->getItem()->getName() === 'Worms' && DateFunctions::getFullMoonName($this->clock->now) === 'Worm')
             return $i->setSpice(SpiceRepository::findOneByName($this->em, 'with Butts'));
 
         return $i;

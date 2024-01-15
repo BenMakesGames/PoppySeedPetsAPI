@@ -380,12 +380,14 @@ class HuntingService
     {
         $pet = $petWithSkills->getPet();
 
+        $wheatOrCorn = DateFunctions::getFullMoonName($this->clock->now) === 'Corn' ? 'Corn' : 'Wheat Flour';
+
         $possibleLoot = [
-            'Wheat Flour', 'Oil', 'Butter', 'Yeast', 'Sugar'
+            $wheatOrCorn, 'Oil', 'Butter', 'Yeast', 'Sugar'
         ];
 
         $possibleLootSansOil = [
-            'Wheat Flour', 'Butter', 'Yeast', 'Sugar'
+            $wheatOrCorn, 'Butter', 'Yeast', 'Sugar'
         ];
 
         $stealth = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal());
@@ -483,7 +485,7 @@ class HuntingService
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% attacked a rampaging Dough Golem, but it released a cloud of defensive flour, and escaped. ' . $pet->getName() . ' picked up some of the flour, and brought it home.', '')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting' ]))
                 ;
-                $this->inventoryService->petCollectsItem('Wheat Flour', $pet, $pet->getName() . ' got this from a fleeing Dough Golem.', $activityLog);
+                $this->inventoryService->petCollectsItem($wheatOrCorn, $pet, $pet->getName() . ' got this from a fleeing Dough Golem.', $activityLog);
             }
             else
             {
@@ -587,13 +589,15 @@ class HuntingService
         $brawlRoll = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal());
         $stealthSkill = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal());
 
+        $wheatOrCorn = DateFunctions::getFullMoonName($this->clock->now) === 'Corn' ? 'Corn' : 'Wheat';
+
         $pet->increaseFood(-1);
 
         if($stealthSkill >= 10)
         {
             $pet->increaseEsteem(1);
 
-            $itemName = $this->squirrel3->rngNextFromArray([ 'Wheat', 'Rice' ]);
+            $itemName = $this->squirrel3->rngNextFromArray([ $wheatOrCorn, 'Rice' ]);
             $bodyPart = $this->squirrel3->rngNextFromArray([ 'left', 'right' ]) . ' ' . $this->squirrel3->rngNextFromArray([ 'leg', 'arm' ]);
 
             $moneys = $this->squirrel3->rngNextInt(1, $this->squirrel3->rngNextInt(2, $this->squirrel3->rngNextInt(3, 5)));
@@ -614,23 +618,23 @@ class HuntingService
             {
                 if($foundPinecone)
                 {
-                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% beat up a Scarecrow, then took some of the Wheat it was defending. Hm-what? A Pinecone also fell out of the Scarecrow!', '')
+                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% beat up a Scarecrow, then took some of the ' . $wheatOrCorn . ' it was defending. Hm-what? A Pinecone also fell out of the Scarecrow!', '')
                         ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting', 'Gathering', 'Special Event' ]))
                     ;
                 }
                 else
                 {
-                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% beat up a Scarecrow, then took some of the Wheat it was defending.', '')
+                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% beat up a Scarecrow, then took some of the ' . $wheatOrCorn . ' it was defending.', '')
                         ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting', 'Gathering' ]))
                     ;
                 }
 
-                $this->inventoryService->petCollectsItem('Wheat', $pet, $pet->getName() . ' took this from a Wheat Farm, after beating up its Scarecrow.', $activityLog);
+                $this->inventoryService->petCollectsItem($wheatOrCorn, $pet, $pet->getName() . ' took this from a ' . $wheatOrCorn . ' Farm, after beating up its Scarecrow.', $activityLog);
 
                 if($this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal()) >= 10)
                 {
-                    if($this->squirrel3->rngNextInt(1, 2) === 1)
-                        $this->inventoryService->petCollectsItem('Wheat', $pet, $pet->getName() . ' took this from a Wheat Farm, after beating up its Scarecrow.', $activityLog);
+                    if($this->squirrel3->rngNextBool() || $wheatOrCorn === 'Corn')
+                        $this->inventoryService->petCollectsItem($wheatOrCorn, $pet, $pet->getName() . ' took this from a ' . $wheatOrCorn . ' Farm, after beating up its Scarecrow.', $activityLog);
                     else
                         $this->inventoryService->petCollectsItem('Wheat Flower', $pet, $pet->getName() . ' took this from a Wheat Farm, after beating up its Scarecrow.', $activityLog);
 

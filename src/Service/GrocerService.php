@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Functions\CalendarFunctions;
+use App\Functions\DateFunctions;
 use App\Functions\ItemRepository;
 use App\Functions\RandomFunctions;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,23 +16,6 @@ class GrocerService
     )
     {
     }
-
-    private const ITEMS = [
-        [ 'Baking Soda', 2 ],
-        [ 'Coconut', 10 ],
-        [ 'Creamy Milk', 4 ],
-        [ 'Egg', 4 ],
-        [ 'Fish', 10 ],
-        [ 'Naner', 6 ],
-        [ 'Onion', 4 ],
-        [ 'Orange', 6 ],
-        [ 'Red', 6 ],
-        [ 'Rice', 4 ],
-        [ 'Sugar', 4 ],
-        [ 'Tofu', 8 ],
-        [ 'Vinegar', 5 ],
-        [ 'Wheat Flour', 4 ],
-    ];
 
     // cost = fertilizer value + 2 + CEIL(chance_for_bonus_item / 50)
     private const HOT_BAR_ITEMS = [
@@ -64,6 +48,34 @@ class GrocerService
         [ 'Yaki Onigiri', 11 ],
     ];
 
+    private static function getItems(bool $isCornMoon): array
+    {
+        return [
+            [ 'Baking Soda', 2 ],
+            [ 'Coconut', 10 ],
+            [ 'Creamy Milk', 4 ],
+            [ 'Egg', 4 ],
+            [ 'Fish', 10 ],
+            [ 'Naner', 6 ],
+            [ 'Onion', 4 ],
+            [ 'Orange', 6 ],
+            [ 'Red', 6 ],
+            [ 'Rice', 4 ],
+            [ 'Sugar', 4 ],
+            [ 'Tofu', 8 ],
+            [ 'Vinegar', 5 ],
+            self::getWheatFlourOrCorn($isCornMoon),
+        ];
+    }
+
+    private static function getWheatFlourOrCorn(bool $isCornMoon): array
+    {
+        if($isCornMoon)
+            return [ 'Corn', 5 ];
+
+        return [ 'Wheat Flour', 4 ];
+    }
+
     public function getInventory()
     {
         $today = new \DateTimeImmutable();
@@ -94,7 +106,9 @@ class GrocerService
 
         $inventory[] = $this->createInventoryData(self::HOT_BAR_ITEMS[$hotBarIndex], true);
 
-        foreach(self::ITEMS as $item)
+        $items = self::getItems(DateFunctions::getFullMoonName($now) === 'Corn');
+
+        foreach($items as $item)
             $inventory[] = $this->createInventoryData($item, false);
 
         return $inventory;

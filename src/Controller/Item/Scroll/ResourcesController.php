@@ -6,6 +6,8 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\DateFunctions;
+use App\Service\Clock;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -69,8 +71,8 @@ class ResourcesController extends AbstractController
     #[Route("/resources/{inventory}/invokeFood", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function readResourcesScrollForFood(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
-        ResponseService $responseService, UserStatsService $userStatsRepository
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
+        ResponseService $responseService, UserStatsService $userStatsRepository, Clock $clock
     )
     {
         /** @var User $user */
@@ -83,9 +85,11 @@ class ResourcesController extends AbstractController
             'Scroll of Resources' => 3
         ][$inventory->getItem()->getName()];
 
+        $wheatOrCorn = DateFunctions::getFullMoonName($clock->now) === 'Corn' ? 'Corn' : 'Wheat';
+
         $possibleItems = [
             'Smallish Pumpkin', 'Tomato', 'Ginger', 'Hot Potato', 'Toad Legs', 'Spicy Peps', 'Naner', 'Sweet Beet',
-            'Seaweed', 'Apricot', 'Corn', 'Mango', 'Pamplemousse', 'Carrot', 'Celery', 'Red', 'Beans', 'Wheat',
+            'Seaweed', 'Apricot', 'Corn', 'Mango', 'Pamplemousse', 'Carrot', 'Celery', 'Red', 'Beans', $wheatOrCorn,
             'Rice', 'Creamy Milk', 'Orange', 'Fish', 'Onion', 'Chanterelle', 'Pineapple', 'Ponzu'
         ];
 
@@ -100,7 +104,7 @@ class ResourcesController extends AbstractController
 
         for($i = 0; $i < $numberOfItems; $i++)
         {
-            $item = $squirrel3->rngNextFromArray($possibleItems);
+            $item = $rng->rngNextFromArray($possibleItems);
             $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
             $listOfItems[] = $item;
         }

@@ -8,11 +8,13 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
+use App\Functions\DateFunctions;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Service\Clock;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -24,7 +26,8 @@ class Caerbannog
         private readonly EntityManagerInterface $em,
         private readonly IRandom $rng,
         private readonly InventoryService $inventoryService,
-        private readonly PetExperienceService $petExperienceService
+        private readonly PetExperienceService $petExperienceService,
+        private readonly Clock $clock
     )
     {
     }
@@ -57,7 +60,9 @@ class Caerbannog
     {
         $pet = $petWithSkills->getPet();
 
-        $possibleLoot = [ 'Carrot', 'Crooked Stick', 'Wheat', 'Wheat', 'Dandelion', 'Coriander Flower', 'Mint', 'Fluff' ];
+        $wheatOrCorn = DateFunctions::getFullMoonName($this->clock->now) === 'Corn' ? 'Corn' : 'Wheat';
+
+        $possibleLoot = [ 'Carrot', 'Crooked Stick', $wheatOrCorn, $wheatOrCorn, 'Dandelion', 'Coriander Flower', 'Mint', 'Fluff' ];
 
         $petName = ActivityHelpers::PetName($pet);
 

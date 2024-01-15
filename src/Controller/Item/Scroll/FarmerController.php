@@ -6,7 +6,9 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\DateFunctions;
 use App\Functions\UserQuestRepository;
+use App\Service\Clock;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
@@ -22,7 +24,7 @@ class FarmerController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function invokeFarmerScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, Clock $clock
     )
     {
         /** @var User $user */
@@ -30,6 +32,8 @@ class FarmerController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'scroll/farmers/#/invoke');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
+
+        $wheatOrCorn = DateFunctions::getFullMoonName($clock->now) === 'Corn' ? 'Corn' : 'Wheat';
 
         $em->remove($inventory);
 
@@ -52,7 +56,7 @@ class FarmerController extends AbstractController
         }
 
         $items = [
-            'Straw Hat', 'Wheat', 'Scythe', 'Creamy Milk', 'Egg', 'Grandparoot', 'Crooked Stick', 'Potato'
+            'Straw Hat', $wheatOrCorn, 'Scythe', 'Creamy Milk', 'Egg', 'Grandparoot', 'Crooked Stick', 'Potato'
         ];
 
         $newInventory = [];

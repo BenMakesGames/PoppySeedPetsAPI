@@ -9,11 +9,13 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
+use App\Functions\DateFunctions;
 use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Service\Clock;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -21,20 +23,14 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class MagicBeanstalkService
 {
-    private PetExperienceService $petExperienceService;
-    private InventoryService $inventoryService;
-    private IRandom $squirrel3;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        InventoryService $inventoryService, PetExperienceService $petExperienceService, IRandom $squirrel3,
-        EntityManagerInterface $em
+        private readonly InventoryService $inventoryService,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly IRandom $squirrel3,
+        private readonly EntityManagerInterface $em,
+        private readonly Clock $clock
     )
     {
-        $this->inventoryService = $inventoryService;
-        $this->petExperienceService = $petExperienceService;
-        $this->squirrel3 = $squirrel3;
-        $this->em = $em;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -478,8 +474,10 @@ class MagicBeanstalkService
 
         if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) >= 20)
         {
+            $wheatFlourOrCorn = DateFunctions::getFullMoonName($this->clock->now) === 'Corn' ? 'Corn' : 'Wheat Flour';
+
             $possibleLoot = [
-                'Wheat Flour', 'Gold Bar', 'Linens and Things', 'Pamplemousse', 'Cheese', 'Fig', 'Puddin\' Rec\'pes',
+                $wheatFlourOrCorn, 'Gold Bar', 'Linens and Things', 'Pamplemousse', 'Cheese', 'Fig', 'Puddin\' Rec\'pes',
             ];
 
             $loot = [

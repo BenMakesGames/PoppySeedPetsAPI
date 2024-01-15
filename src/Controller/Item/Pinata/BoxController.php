@@ -11,12 +11,14 @@ use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
+use App\Functions\DateFunctions;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\SpiceRepository;
 use App\Functions\UserQuestRepository;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
+use App\Service\Clock;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -254,7 +256,7 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openCerealBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, Clock $clock
     )
     {
         /** @var User $user */
@@ -269,12 +271,14 @@ class BoxController extends AbstractController
 
         $message = $user->getName() . ' got this from a Cereal Box.';
 
+        $wheatOrCorn = DateFunctions::getFullMoonName($clock->now) === 'Corn' ? 'Corn' : 'Wheat';
+
         $newInventory[] = $inventoryService->receiveItem('Corn', $user, $user, $message, $location, $inventory->getLockedToOwner());
-        $newInventory[] = $inventoryService->receiveItem('Wheat', $user, $user, $message, $location, $inventory->getLockedToOwner());
+        $newInventory[] = $inventoryService->receiveItem($wheatOrCorn, $user, $user, $message, $location, $inventory->getLockedToOwner());
         $newInventory[] = $inventoryService->receiveItem('Rice', $user, $user, $message, $location, $inventory->getLockedToOwner());
 
         for($i = 0; $i < 7; $i++)
-            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Corn', 'Wheat', 'Rice' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Corn', $wheatOrCorn, 'Rice' ]), $user, $user, $message, $location, $inventory->getLockedToOwner());
 
         return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
@@ -283,7 +287,7 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openBakers(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, Clock $clock
     )
     {
         /** @var User $user */
@@ -291,6 +295,9 @@ class BoxController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/bakers/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
+
+        $wheatOrCorn = DateFunctions::getFullMoonName($clock->now) === 'Corn' ? 'Corn' : 'Wheat';
+        $wheatFlourOrCorn = DateFunctions::getFullMoonName($clock->now) === 'Corn' ? 'Corn' : 'Wheat Flour';
 
         $newInventory = [];
 
@@ -304,10 +311,10 @@ class BoxController extends AbstractController
             $freeBasicRecipes->setValue(true);
         }
 
-        $newInventory[] = $inventoryService->receiveItem('Wheat', $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location, $inventory->getLockedToOwner());
+        $newInventory[] = $inventoryService->receiveItem($wheatOrCorn, $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location, $inventory->getLockedToOwner());
 
         for($i = 0; $i < 4; $i++)
-            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Egg', 'Wheat Flour', 'Sugar', 'Creamy Milk' ]), $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location, $inventory->getLockedToOwner());
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Egg', $wheatFlourOrCorn, 'Sugar', 'Creamy Milk' ]), $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location, $inventory->getLockedToOwner());
 
         for($i = 0; $i < 4; $i++)
             $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Corn Syrup', 'Yeast', 'Cocoa Beans', 'Baking Soda', 'Cream of Tartar' ]), $user, $user, $user->getName() . ' got this from a weekly Care Package.', $location, $inventory->getLockedToOwner());
@@ -376,7 +383,7 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openNatureBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, Clock $clock
     )
     {
         /** @var User $user */
@@ -384,6 +391,8 @@ class BoxController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/nature/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
+
+        $wheatOrCorn = DateFunctions::getFullMoonName($clock->now) === 'Corn' ? 'Corn' : 'Wheat';
 
         /** @var Inventory[] $newInventory */
         $newInventory = [];
@@ -395,7 +404,7 @@ class BoxController extends AbstractController
         shuffle($quantities);
 
         for($i = 0; $i < $quantities[0]; $i++)
-            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Crooked Stick', 'Tea Leaves', 'Grandparoot', 'Wheat', 'Rice', 'Ginger', 'Spicy Peps', 'Red Clover' ]), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
+            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Crooked Stick', 'Tea Leaves', 'Grandparoot', $wheatOrCorn, 'Rice', 'Ginger', 'Spicy Peps', 'Red Clover' ]), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
 
         for($i = 0; $i < $quantities[1]; $i++)
             $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Orange', 'Red', 'Blackberries', 'Blueberries', 'Cacao Fruit', 'Avocado' ]), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
@@ -727,7 +736,7 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openPaperBag(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, Clock $clock
     )
     {
         /** @var User $user */
@@ -735,13 +744,15 @@ class BoxController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/paperBag/#/open');
 
+        $wheatFlourOrCorn = DateFunctions::getFullMoonName($clock->now) === 'Corn' ? 'Corn' : 'Wheat Flour';
+
         $item = ItemRepository::findOneByName($em, $squirrel3->rngNextFromArray([
             'Apricot', 'Baking Soda', 'Beans', 'Blackberry Lassi', 'Blueberries', 'Butter', 'Canned Food', 'Celery',
             'Cockroach', 'Corn', 'Cream of Tartar', 'Creamy Milk', 'Egg', 'Fish', 'Fluff', 'Glowing Four-sided Die',
             'Grandparoot', 'Honeydont', 'Hot Dog', 'Iron Ore', 'Kombucha', 'Melon Bun', 'Mint', 'Mixed Nuts', 'Naner',
             'Oil', 'Onion', 'Orange', 'Pamplemousse', 'Plain Yogurt', 'Quintessence', 'Red', 'Red Clover', 'Rice',
             'Seaweed', 'Secret Seashell', 'Silica Grounds', 'Smallish Pumpkin', 'Sugar', 'Toad Legs', 'Tomato',
-            'Wheat Flour', 'World\'s Best Sugar Cookie', 'Yeast', 'Yellowy Lime', 'Ponzu'
+            $wheatFlourOrCorn, 'World\'s Best Sugar Cookie', 'Yeast', 'Yellowy Lime', 'Ponzu'
         ]));
 
         $openedStat = $userStatsRepository->incrementStat($user, 'Opened ' . $inventory->getItem()->getNameWithArticle());

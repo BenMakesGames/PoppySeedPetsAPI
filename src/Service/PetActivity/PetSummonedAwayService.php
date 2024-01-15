@@ -5,10 +5,12 @@ use App\Entity\PetActivityLog;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\DateFunctions;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Service\Clock;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -17,22 +19,15 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PetSummonedAwayService
 {
-    private ResponseService $responseService;
-    private InventoryService $inventoryService;
-    private PetExperienceService $petExperienceService;
-    private IRandom $squirrel3;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        PetExperienceService $petExperienceService, EntityManagerInterface $em
+        private readonly ResponseService $responseService,
+        private readonly InventoryService $inventoryService,
+        private readonly IRandom $rng,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly EntityManagerInterface $em,
+        private readonly Clock $clock
     )
     {
-        $this->responseService = $responseService;
-        $this->inventoryService = $inventoryService;
-        $this->petExperienceService = $petExperienceService;
-        $this->squirrel3 = $squirrel3;
-        $this->em = $em;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -43,9 +38,9 @@ class PetSummonedAwayService
         $activityLog = null;
         $changes = new PetChanges($pet);
 
-        $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
+        $pet->increaseSafety(-$this->rng->rngNextInt(2, 4));
 
-        switch($this->squirrel3->rngNextInt(1, 4))
+        switch($this->rng->rngNextInt(1, 4))
         {
             case 1:
                 $activityLog = $this->doSummonedToFight($petWithSkills);
@@ -61,7 +56,7 @@ class PetSummonedAwayService
                 break;
         }
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
@@ -77,22 +72,22 @@ class PetSummonedAwayService
 
         $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned! The wizard that summoned them made them fight a monster they\'d never seen before';
 
-        if($this->squirrel3->rngNextInt(1, 3) === 1)
-            $message .= '; a creature with ' . ($this->squirrel3->rngNextInt(1, 4) << 1) . ' eyes, and a very wrong number of limbs! ';
+        if($this->rng->rngNextInt(1, 3) === 1)
+            $message .= '; a creature with ' . ($this->rng->rngNextInt(1, 4) << 1) . ' eyes, and a very wrong number of limbs! ';
         else
             $message .= '! ';
 
-        if($this->squirrel3->rngNextInt(1, 2) === 1)
+        if($this->rng->rngNextInt(1, 2) === 1)
         {
             $message .= $pet->getName() . ' lost the fight, and was returned home!';
-            $pet->increaseSafety(-$this->squirrel3->rngNextInt(2, 4));
+            $pet->increaseSafety(-$this->rng->rngNextInt(2, 4));
         }
         else
         {
             $message .= $pet->getName() . ' defeated the creature, and was returned home!';
             $pet
-                ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
-                ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
+                ->increaseSafety($this->rng->rngNextInt(2, 4))
+                ->increaseEsteem($this->rng->rngNextInt(2, 4))
             ;
         }
 
@@ -102,7 +97,7 @@ class PetSummonedAwayService
 
         $this->petExperienceService->gainExp(
             $pet,
-            $this->squirrel3->rngNextInt(1, 3),
+            $this->rng->rngNextInt(1, 3),
             [ PetSkillEnum::BRAWL, PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ],
             $activityLog
         );
@@ -114,17 +109,17 @@ class PetSummonedAwayService
     {
         $pet = $petWithSkills->getPet();
 
-        switch($this->squirrel3->rngNextInt(1, 3))
+        switch($this->rng->rngNextInt(1, 3))
         {
             case 1:
                 $activity = 'help clean a mansion the day before a fancy ball';
-                $loot = $this->squirrel3->rngNextFromArray([ 'Fluff', 'Cobweb' ]);
+                $loot = $this->rng->rngNextFromArray([ 'Fluff', 'Cobweb' ]);
                 $skill = null;
                 $tags = [ 'Gathering' ];
                 break;
             case 2:
                 $activity = 'serve food to guests at a fancy party in a mansion';
-                $loot = $this->squirrel3->rngNextFromArray([
+                $loot = $this->rng->rngNextFromArray([
                     'Tomato "Sushi"', 'Sweet Roll', 'Slice of Red Pie',
                     'Potato-mushroom Stuffed Onion', 'Meringue', 'Minestrone',
                     'Mixed Nut Brittle', 'Largish Bowl of Smallish Pumpkin Soup',
@@ -137,7 +132,7 @@ class PetSummonedAwayService
             case 3:
                 $activity = 'play in a band at a fancy party in a mansion';
                 $skill = PetSkillEnum::MUSIC;
-                $loot = $this->squirrel3->rngNextFromArray([
+                $loot = $this->rng->rngNextFromArray([
                     'Fungal Clarinet', 'Decorated Flute',
                     'Gold Triangle', 'Melodica'
                 ]);
@@ -157,7 +152,7 @@ class PetSummonedAwayService
         $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' was summoned by a wizard to ' . $activity . '; they returned home with this!', $activityLog);
 
         if($skill !== null)
-            $this->petExperienceService->gainExp($pet, $this->squirrel3->rngNextInt(1, 2), [ $skill ], $activityLog);
+            $this->petExperienceService->gainExp($pet, $this->rng->rngNextInt(1, 2), [ $skill ], $activityLog);
 
         return $activityLog;
 
@@ -167,7 +162,7 @@ class PetSummonedAwayService
     {
         $pet = $petWithSkills->getPet();
 
-        switch($this->squirrel3->rngNextInt(1, 7))
+        switch($this->rng->rngNextInt(1, 7))
         {
             case 1:
                 $activity = 'hold a weird-looking mirror while a laser was focused on it';
@@ -214,7 +209,7 @@ class PetSummonedAwayService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags))
         ;
 
-        $this->petExperienceService->gainExp($pet, $this->squirrel3->rngNextInt(1, 2), [ $skill ], $activityLog);
+        $this->petExperienceService->gainExp($pet, $this->rng->rngNextInt(1, 2), [ $skill ], $activityLog);
 
         return $activityLog;
     }
@@ -227,13 +222,14 @@ class PetSummonedAwayService
         $description = null;
         $loot = null;
 
-        switch($this->squirrel3->rngNextInt(1, 2))
+        switch($this->rng->rngNextInt(1, 2))
         {
             case 1:
+                $wheatOrCorn = DateFunctions::getFullMoonName($this->clock->now) === 'Corn' ? 'Corn' : 'Wheat';
                 $location = 'a farm';
                 $description = 'work a farm';
                 $descriptioning = 'working a farm';
-                $loot = $this->squirrel3->rngNextFromArray([ 'Rice', 'Wheat', 'Egg', 'Creamy Milk' ]);
+                $loot = $this->rng->rngNextFromArray([ 'Rice', $wheatOrCorn, 'Egg', 'Creamy Milk' ]);
                 $tags = [ 'Gathering' ];
                 break;
 
@@ -257,7 +253,7 @@ class PetSummonedAwayService
 
     private function getMiningDescriptionAndLoot(): array
     {
-        $r = $this->squirrel3->rngNextInt(1, 10);
+        $r = $this->rng->rngNextInt(1, 10);
 
         if($r <= 5)
         {

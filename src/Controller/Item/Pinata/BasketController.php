@@ -5,6 +5,8 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Functions\ArrayFunctions;
+use App\Functions\DateFunctions;
+use App\Service\Clock;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -91,7 +93,7 @@ class BasketController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openFlowerBasket(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $squirrel3, Clock $clock
     )
     {
         /** @var User $user */
@@ -103,7 +105,9 @@ class BasketController extends AbstractController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $weirdItem = $squirrel3->rngNextFromArray([ 'Wheat Flour', 'Flour Tortilla' ]);
+        $isCornMoon = DateFunctions::getFullMoonName($clock->now) === 'Corn';
+
+        $weirdItem = $isCornMoon ? null : $squirrel3->rngNextFromArray([ 'Wheat Flour', 'Flour Tortilla' ]);
 
         $possibleFlowers = [
             'Rice Flower',
@@ -120,7 +124,7 @@ class BasketController extends AbstractController
 
         for($i = 0; $i < 4; $i++)
         {
-            if($squirrel3->rngNextInt(1, 8) === 1)
+            if($weirdItem && $squirrel3->rngNextInt(1, 8) === 1)
             {
                 $itemName = $weirdItem;
                 $weird++;

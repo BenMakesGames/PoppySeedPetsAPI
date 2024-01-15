@@ -10,6 +10,7 @@ use App\Enum\LocationEnum;
 use App\Enum\StoryAdventureTypeEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\DateFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\MonthlyStoryAdventure\AdventureResult;
 use App\Repository\MonthlyStoryAdventureStepRepository;
@@ -24,7 +25,8 @@ class MonthlyStoryAdventureService
         private readonly InventoryService $inventoryService,
         private readonly EntityManagerInterface $em,
         private readonly IRandom $rng,
-        private readonly HattierService $hattierService
+        private readonly HattierService $hattierService,
+        private readonly Clock $clock
     )
     {
     }
@@ -264,6 +266,8 @@ class MonthlyStoryAdventureService
     {
         $roll = $this->rng->rngNextInt(1, 20);
 
+        $wheatOrCorn = DateFunctions::getFullMoonName($this->clock->now) === 'Corn' ? 'Corn' : 'Wheat';
+
         $loot = $this->getAdventureLoot(
             $step,
             $pets,
@@ -271,7 +275,7 @@ class MonthlyStoryAdventureService
             $roll,
             'Nature Box',
             [
-                'Wheat', 'Rice', 'Orange', 'Naner', 'Red', 'Fluff', 'Crooked Stick', 'Coconut',
+                $wheatOrCorn, 'Rice', 'Orange', 'Naner', 'Red', 'Fluff', 'Crooked Stick', 'Coconut',
                 'Blackberries', 'Blueberries', 'Sweet Beet'
             ],
         );
