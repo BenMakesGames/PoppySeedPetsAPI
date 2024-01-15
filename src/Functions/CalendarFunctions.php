@@ -74,8 +74,8 @@ final class CalendarFunctions
         if($monthAndDay < 1122 || $monthAndDay >= 1200)
             return false;
 
-        $monthAndYear = $dt->format('F Y');
-        $fourthThursdayOfNovember = new \DateTimeImmutable('fourth Thursday of ' . $monthAndYear);
+        $year = $dt->format('Y');
+        $fourthThursdayOfNovember = new \DateTimeImmutable('fourth Thursday of November ' . $year);
 
         // within 1 day of thanksgiving
         return abs((int)$fourthThursdayOfNovember->format('nd') - $monthAndDay) <= 1;
@@ -89,8 +89,8 @@ final class CalendarFunctions
         if($monthAndDay < 1122 || $monthAndDay >= 1200)
             return false;
 
-        $monthAndYear = $dt->format('F Y');
-        $blackFriday = (new \DateTimeImmutable('fourth Thursday of ' . $monthAndYear))->modify('+1 day');
+        $year = $dt->format('Y');
+        $blackFriday = (new \DateTimeImmutable('fourth Thursday of November ' . $year))->modify('+1 day');
 
         return (int)$blackFriday->format('nd') === $monthAndDay;
     }
@@ -102,8 +102,8 @@ final class CalendarFunctions
         if($monthAndDay < 1125 || $monthAndDay >= 1203)
             return false;
 
-        $monthAndYear = $dt->format('F Y');
-        $cyberMonday = (new \DateTimeImmutable('fourth Thursday of ' . $monthAndYear))->modify('+4 day');
+        $year = $dt->format('Y');
+        $cyberMonday = (new \DateTimeImmutable('fourth Thursday of November ' . $year))->modify('+4 days');
 
         return (int)$cyberMonday->format('nd') === $monthAndDay;
     }
