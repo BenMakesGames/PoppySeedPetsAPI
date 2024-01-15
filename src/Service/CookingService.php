@@ -262,7 +262,7 @@ class CookingService
         if(!$this->hasACookingBuddy($user))
             return 'You need a Cooking Buddy to do this.';
 
-        $recipeNames = array_unique($recipeNames);
+        $recipeNames = array_unique($recipeNames); // prevent duplicates, in case you (Ben) made a mistake somewhere else
 
         $countLearnedRecipes = ArrayFunctions::sum($recipeNames, function($recipeName) use($user) {
             return $this->learnRecipe($user, $recipeName) ? 1 : 0;
