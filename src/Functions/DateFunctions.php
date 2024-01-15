@@ -149,6 +149,11 @@ final class DateFunctions
         return (\DateTimeImmutable::createFromFormat('Y n j', $year . ' ' . $month . ' ' . $day))->setTime(0, 0, 0);
     }
 
+    public static function isCornMoon(\DateTimeImmutable $dt): bool
+    {
+        return DateFunctions::getFullMoonName($dt) === 'Corn';
+    }
+
     public static function getFullMoonName(\DateTimeImmutable $dt): ?string
     {
         $phase = self::moonPhase($dt);

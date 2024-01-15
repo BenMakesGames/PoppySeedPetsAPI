@@ -266,7 +266,7 @@ class MonthlyStoryAdventureService
     {
         $roll = $this->rng->rngNextInt(1, 20);
 
-        $wheatOrCorn = DateFunctions::getFullMoonName($this->clock->now) === 'Corn' ? 'Corn' : 'Wheat';
+        $wheatOrCorn = DateFunctions::isCornMoon($this->clock->now) ? 'Corn' : 'Wheat';
 
         $loot = $this->getAdventureLoot(
             $step,

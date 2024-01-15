@@ -106,7 +106,7 @@ class GrocerService
 
         $inventory[] = $this->createInventoryData(self::HOT_BAR_ITEMS[$hotBarIndex], true);
 
-        $items = self::getItems(DateFunctions::getFullMoonName($now) === 'Corn');
+        $items = self::getItems(DateFunctions::isCornMoon($now));
 
         foreach($items as $item)
             $inventory[] = $this->createInventoryData($item, false);

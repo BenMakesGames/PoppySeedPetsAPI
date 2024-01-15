@@ -85,7 +85,7 @@ class ResourcesController extends AbstractController
             'Scroll of Resources' => 3
         ][$inventory->getItem()->getName()];
 
-        $wheatOrCorn = DateFunctions::getFullMoonName($clock->now) === 'Corn' ? 'Corn' : 'Wheat';
+        $wheatOrCorn = DateFunctions::isCornMoon($clock->now) ? 'Corn' : 'Wheat';
 
         $possibleItems = [
             'Smallish Pumpkin', 'Tomato', 'Ginger', 'Hot Potato', 'Toad Legs', 'Spicy Peps', 'Naner', 'Sweet Beet',

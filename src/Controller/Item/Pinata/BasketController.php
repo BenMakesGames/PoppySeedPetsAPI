@@ -105,9 +105,7 @@ class BasketController extends AbstractController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $isCornMoon = DateFunctions::getFullMoonName($clock->now) === 'Corn';
-
-        $weirdItem = $isCornMoon ? null : $squirrel3->rngNextFromArray([ 'Wheat Flour', 'Flour Tortilla' ]);
+        $weirdItem = DateFunctions::isCornMoon($clock->now) ? null : $squirrel3->rngNextFromArray([ 'Wheat Flour', 'Flour Tortilla' ]);
 
         $possibleFlowers = [
             'Rice Flower',

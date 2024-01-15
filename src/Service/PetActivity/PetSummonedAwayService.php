@@ -225,7 +225,7 @@ class PetSummonedAwayService
         switch($this->rng->rngNextInt(1, 2))
         {
             case 1:
-                $wheatOrCorn = DateFunctions::getFullMoonName($this->clock->now) === 'Corn' ? 'Corn' : 'Wheat';
+                $wheatOrCorn = DateFunctions::isCornMoon($this->clock->now) ? 'Corn' : 'Wheat';
                 $location = 'a farm';
                 $description = 'work a farm';
                 $descriptioning = 'working a farm';

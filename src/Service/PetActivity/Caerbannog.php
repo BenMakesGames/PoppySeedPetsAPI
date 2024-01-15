@@ -60,7 +60,7 @@ class Caerbannog
     {
         $pet = $petWithSkills->getPet();
 
-        $wheatOrCorn = DateFunctions::getFullMoonName($this->clock->now) === 'Corn' ? 'Corn' : 'Wheat';
+        $wheatOrCorn = DateFunctions::isCornMoon($this->clock->now) ? 'Corn' : 'Wheat';
 
         $possibleLoot = [ 'Carrot', 'Crooked Stick', $wheatOrCorn, $wheatOrCorn, 'Dandelion', 'Coriander Flower', 'Mint', 'Fluff' ];
 

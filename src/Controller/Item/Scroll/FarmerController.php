@@ -33,7 +33,7 @@ class FarmerController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'scroll/farmers/#/invoke');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $wheatOrCorn = DateFunctions::getFullMoonName($clock->now) === 'Corn' ? 'Corn' : 'Wheat';
+        $wheatOrCorn = DateFunctions::isCornMoon($clock->now) ? 'Corn' : 'Wheat';
 
         $em->remove($inventory);
 

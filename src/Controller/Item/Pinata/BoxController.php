@@ -271,7 +271,7 @@ class BoxController extends AbstractController
 
         $message = $user->getName() . ' got this from a Cereal Box.';
 
-        $wheatOrCorn = DateFunctions::getFullMoonName($clock->now) === 'Corn' ? 'Corn' : 'Wheat';
+        $wheatOrCorn = DateFunctions::isCornMoon($clock->now) ? 'Corn' : 'Wheat';
 
         $newInventory[] = $inventoryService->receiveItem('Corn', $user, $user, $message, $location, $inventory->getLockedToOwner());
         $newInventory[] = $inventoryService->receiveItem($wheatOrCorn, $user, $user, $message, $location, $inventory->getLockedToOwner());
@@ -296,8 +296,8 @@ class BoxController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/bakers/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $wheatOrCorn = DateFunctions::getFullMoonName($clock->now) === 'Corn' ? 'Corn' : 'Wheat';
-        $wheatFlourOrCorn = DateFunctions::getFullMoonName($clock->now) === 'Corn' ? 'Corn' : 'Wheat Flour';
+        $wheatOrCorn = DateFunctions::isCornMoon($clock->now) ? 'Corn' : 'Wheat';
+        $wheatFlourOrCorn = DateFunctions::isCornMoon($clock->now) ? 'Corn' : 'Wheat Flour';
 
         $newInventory = [];
 
@@ -392,7 +392,7 @@ class BoxController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/nature/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $wheatOrCorn = DateFunctions::getFullMoonName($clock->now) === 'Corn' ? 'Corn' : 'Wheat';
+        $wheatOrCorn = DateFunctions::isCornMoon($clock->now) ? 'Corn' : 'Wheat';
 
         /** @var Inventory[] $newInventory */
         $newInventory = [];
@@ -744,7 +744,7 @@ class BoxController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/paperBag/#/open');
 
-        $wheatFlourOrCorn = DateFunctions::getFullMoonName($clock->now) === 'Corn' ? 'Corn' : 'Wheat Flour';
+        $wheatFlourOrCorn = DateFunctions::isCornMoon($clock->now) ? 'Corn' : 'Wheat Flour';
 
         $item = ItemRepository::findOneByName($em, $squirrel3->rngNextFromArray([
             'Apricot', 'Baking Soda', 'Beans', 'Blackberry Lassi', 'Blueberries', 'Butter', 'Canned Food', 'Celery',
