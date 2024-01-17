@@ -30,7 +30,7 @@ class PlayController extends AbstractController
     public function continueActing(
         HollowEarthService $hollowEarthService, ResponseService $responseService, EntityManagerInterface $em,
         Request $request, InventoryRepository $inventoryRepository, TransactionService $transactionService,
-        IRandom $squirrel3
+        IRandom $rng
     )
     {
         /** @var User $user */
@@ -80,7 +80,7 @@ class PlayController extends AbstractController
                     break;
 
                 case HollowEarthActionTypeEnum::PET_CHALLENGE:
-                    $this->continueActingPetChallenge($action, $player, $request->request, $hollowEarthService, $squirrel3);
+                    $this->continueActingPetChallenge($action, $player, $request->request, $hollowEarthService, $rng);
                     break;
 
                 case HollowEarthActionTypeEnum::CHOOSE_ONE:
@@ -244,7 +244,7 @@ class PlayController extends AbstractController
 
     private function continueActingPetChallenge(
         array $action, HollowEarthPlayer $player, ParameterBag $params, HollowEarthService $hollowEarthService,
-        IRandom $squirrel3
+        IRandom $rng
     )
     {
         // old tiles refer to the "umbra" skill, but that is no longer a skill; it was renamed to arcana, so:
@@ -254,10 +254,10 @@ class PlayController extends AbstractController
         foreach($stats as $stat)
             $score += $player->getChosenPet()->getComputedSkills()->{'get' . $stat }()->getTotal();
 
-        if($squirrel3->rngNextInt(1, $score) >= $action['requiredRoll'])
+        if($rng->rngNextInt(1, $score) >= $action['requiredRoll'])
         {
             if(!array_key_exists('ifSuccess', $action))
-                throw new \Exception('No success action defined for this challenge.');
+                throw new \Exception("No success action defined for this challenge. Current tile card name: {$player->getCurrentTile()->getCard()?->getName()}");
 
             $hollowEarthService->doImmediateEvent($player, $action['ifSuccess']);
             $player->setCurrentAction($action['ifSuccess']);
