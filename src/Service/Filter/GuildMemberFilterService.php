@@ -2,6 +2,7 @@
 namespace App\Service\Filter;
 
 use App\Repository\PetRepository;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
@@ -11,7 +12,7 @@ class GuildMemberFilterService
 
     public const PAGE_SIZE = 12;
 
-    private $repository;
+    private readonly EntityRepository $repository;
 
     public function __construct(PetRepository $petRepository)
     {

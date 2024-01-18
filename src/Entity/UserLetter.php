@@ -2,11 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\UserLetterRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: UserLetterRepository::class)]
+#[ORM\Entity]
 class UserLetter
 {
     #[Groups(["myLetters"])]

@@ -2,9 +2,9 @@
 namespace App\Controller\Following;
 
 use App\Entity\User;
+use App\Entity\UserFollowing;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
-use App\Repository\UserFollowingRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,13 +22,12 @@ class UpdateNote extends AbstractController
      */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function handle(
-        User $following, Request $request, ResponseService $responseService, EntityManagerInterface $em,
-        UserFollowingRepository $userFollowingRepository
+        User $following, Request $request, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         $user = $this->getUser();
 
-        $followingRecord = $userFollowingRepository->findOneBy([
+        $followingRecord = $em->getRepository(UserFollowing::class)->findOneBy([
             'user' => $user,
             'following' => $following,
         ]);

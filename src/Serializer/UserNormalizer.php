@@ -2,29 +2,34 @@
 namespace App\Serializer;
 
 use App\Entity\User;
+use App\Entity\UserFollowing;
+use App\Entity\UserLetter;
 use App\Enum\SerializationGroupEnum;
-use App\Repository\UserFollowingRepository;
-use App\Repository\UserLetterRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class UserNormalizer implements NormalizerInterface
 {
-    private UserFollowingRepository $userFollowingRepository;
-    private UserLetterRepository $userLetterRepository;
-    private ObjectNormalizer $normalizer;
-    private Security $security;
-
     public function __construct(
-        UserLetterRepository $userLetterRepository, ObjectNormalizer $normalizer, Security $security,
-        UserFollowingRepository $userFollowingRepository
+        private readonly ObjectNormalizer $normalizer,
+        private readonly Security $security,
+        private readonly EntityManagerInterface $em
     )
     {
-        $this->userFollowingRepository = $userFollowingRepository;
-        $this->userLetterRepository = $userLetterRepository;
-        $this->normalizer = $normalizer;
-        $this->security = $security;
+    }
+
+    private static function getUnreadUserLetterCount(EntityManagerInterface $em, User $user)
+    {
+        return (int)$em->getRepository(UserLetter::class)->createQueryBuilder('ul')
+            ->select('COUNT(ul.id)')
+            ->andWhere('ul.user=:userId')
+            ->andWhere('ul.isRead=0')
+            ->setParameter('userId', $user->getId())
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
     }
 
     /**
@@ -36,12 +41,12 @@ class UserNormalizer implements NormalizerInterface
 
         if(in_array(SerializationGroupEnum::MY_ACCOUNT, $context['groups']))
         {
-            $data['unreadLetters'] = $this->userLetterRepository->getNumberUnread($object);
+            $data['unreadLetters'] = self::getUnreadUserLetterCount($this->em, $object);
         }
 
         if(in_array(SerializationGroupEnum::USER_PUBLIC_PROFILE, $context['groups']))
         {
-            $friend = $this->userFollowingRepository->findOneBy([
+            $friend = $this->em->getRepository(UserFollowing::class)->findOneBy([
                 'user' => $this->security->getUser(),
                 'following' => $object
             ]);

@@ -6,6 +6,7 @@ use App\Exceptions\PSPFormValidationException;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectRepository;
 
 class PetActivityLogsFilterService
 {
@@ -13,7 +14,7 @@ class PetActivityLogsFilterService
 
     public const PAGE_SIZE = 20;
 
-    private $repository;
+    private readonly ObjectRepository $repository;
 
     public function __construct(ManagerRegistry $doctrine)
     {

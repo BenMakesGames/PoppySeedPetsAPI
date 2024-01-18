@@ -4,6 +4,7 @@ namespace App\Service\Filter;
 use App\Entity\User;
 use App\Entity\UserStyle;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
@@ -18,7 +19,7 @@ class UserStyleFilter
      */
     private $user;
 
-    private $repository;
+    private readonly EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $em)
     {

@@ -1,7 +1,9 @@
 <?php
 namespace App\Service\Filter;
 
-use App\Repository\UserLetterRepository;
+use App\Entity\UserLetter;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
@@ -11,11 +13,11 @@ class UserLetterFilterService
 
     public const PAGE_SIZE = 20;
 
-    private $repository;
+    private readonly EntityRepository $repository;
 
-    public function __construct(UserLetterRepository $userLetterRepository)
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->repository = $userLetterRepository;
+        $this->repository = $em->getRepository(UserLetter::class);
 
         $this->filterer = new Filterer(
             self::PAGE_SIZE,

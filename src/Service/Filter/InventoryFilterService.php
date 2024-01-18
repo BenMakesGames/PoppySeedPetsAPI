@@ -9,6 +9,7 @@ use App\Functions\StringFunctions;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectRepository;
 
 class InventoryFilterService
 {
@@ -16,7 +17,7 @@ class InventoryFilterService
 
     public const PAGE_SIZE = 100;
 
-    private $repository;
+    private readonly ObjectRepository $repository;
     private $user;
 
     public function __construct(ManagerRegistry $doctrine)

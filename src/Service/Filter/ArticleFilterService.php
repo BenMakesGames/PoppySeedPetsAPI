@@ -3,6 +3,7 @@ namespace App\Service\Filter;
 
 use App\Entity\Article;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
@@ -12,7 +13,7 @@ class ArticleFilterService
 
     public const PAGE_SIZE = 10;
 
-    private $repository;
+    private readonly EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $em)
     {

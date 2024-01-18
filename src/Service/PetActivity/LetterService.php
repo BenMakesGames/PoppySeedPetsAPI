@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Entity\UserLetter;
+use App\Enum\EnumInvalidValueException;
 use App\Enum\LetterSenderEnum;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -17,7 +18,6 @@ use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\LetterRepository;
-use App\Repository\UserLetterRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\MuseumService;
@@ -33,7 +33,6 @@ class LetterService
         private readonly PetExperienceService $petExperienceService,
         private readonly MuseumService $museumService,
         private readonly LetterRepository $letterRepository,
-        private readonly UserLetterRepository $userLetterRepository,
         private readonly EntityManagerInterface $em,
         private readonly IRandom $rng
     )
@@ -300,9 +299,26 @@ class LetterService
         ;
     }
 
+    private static function getNumberOfLettersFromSender(EntityManagerInterface $em, User $user, string $sender)
+    {
+        if(!LetterSenderEnum::isAValue($sender))
+            throw new EnumInvalidValueException(LetterSenderEnum::class, $sender);
+
+        return (int)$em->getRepository(UserLetter::class)->createQueryBuilder('ul')
+            ->select('COUNT(ul.id)')
+            ->leftJoin('ul.letter', 'l')
+            ->andWhere('ul.user = :userId')
+            ->andWhere('l.sender = :sender')
+            ->setParameter('userId', $user->getId())
+            ->setParameter('sender', $sender)
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+    }
+
     private function giveNextLetter(User $user, string $sender, string $comment): UserLetter
     {
-        $existingLetters = $this->userLetterRepository->getNumberOfLettersFromSender($user, $sender);
+        $existingLetters = self::getNumberOfLettersFromSender($this->em, $user, $sender);
 
         $nextLetter = $this->letterRepository->findBySenderIndex($sender, $existingLetters);
 

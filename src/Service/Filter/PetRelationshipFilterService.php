@@ -1,9 +1,11 @@
 <?php
 namespace App\Service\Filter;
 
-use App\Repository\PetRelationshipRepository;
+use App\Entity\PetRelationship;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectRepository;
 
 class PetRelationshipFilterService
 {
@@ -11,11 +13,11 @@ class PetRelationshipFilterService
 
     public const PAGE_SIZE = 20;
 
-    private $repository;
+    private readonly ObjectRepository $repository;
 
-    public function __construct(PetRelationshipRepository $petRelationshipRepository)
+    public function __construct(ManagerRegistry $doctrine)
     {
-        $this->repository = $petRelationshipRepository;
+        $this->repository = $doctrine->getRepository(PetRelationship::class, 'readonly');
 
         $this->filterer = new Filterer(
             self::PAGE_SIZE,

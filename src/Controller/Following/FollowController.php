@@ -7,7 +7,6 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\UserUnlockedFeatureHelpers;
-use App\Repository\UserFollowingRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,7 +24,7 @@ class FollowController extends AbstractController
      */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function add(
-        Request $request, UserFollowingRepository $userFollowingRepository, ResponseService $responseService,
+        Request $request, ResponseService $responseService,
         EntityManagerInterface $em
     )
     {
@@ -42,7 +41,7 @@ class FollowController extends AbstractController
         if(!$following)
             throw new PSPNotFoundException('Could not find a person with that number.');
 
-        $alreadyFollowing = $userFollowingRepository->findOneBy([
+        $alreadyFollowing = $em->getRepository(UserFollowing::class)->findOneBy([
             'user' => $user,
             'following' => $following
         ]);

@@ -12,6 +12,7 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectRepository;
 
 class ItemFilterService
 {
@@ -19,7 +20,7 @@ class ItemFilterService
 
     public const PAGE_SIZE = 20;
 
-    private $repository;
+    private readonly ObjectRepository $repository;
     private $user;
     private $useResultCache;
 
