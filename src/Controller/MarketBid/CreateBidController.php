@@ -2,6 +2,7 @@
 namespace App\Controller\MarketBid;
 
 use App\Entity\Inventory;
+use App\Entity\InventoryForSale;
 use App\Entity\MarketBid;
 use App\Entity\User;
 use App\Enum\LocationEnum;
@@ -83,11 +84,12 @@ class CreateBidController extends AbstractController
 
         $bid = $request->request->getInt('bid');
 
-        $availableToBuy = (int)$em->getRepository(Inventory::class)->createQueryBuilder('i')
+        $availableToBuy = (int)$em->getRepository(InventoryForSale::class)->createQueryBuilder('i')
             ->select('COUNT(i.id)')
-            ->andWhere('i.owner!=:user')
+            ->join('i.inventory', 'inventory')
+            ->andWhere('inventory.owner!=:user')
             ->andWhere('i.sellPrice<=:price')
-            ->andWhere('i.item=:item')
+            ->andWhere('inventory.item=:item')
             ->setParameter('user', $user->getId())
             ->setParameter('price', $bid / 1.02)
             ->setParameter('item', $itemId)

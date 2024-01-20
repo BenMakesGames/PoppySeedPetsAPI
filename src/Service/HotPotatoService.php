@@ -39,11 +39,8 @@ class HotPotatoService
             return $this->responseService->itemActionSuccess('Hm... there\'s no one to toss it to! (I guess no one\'s been playing Poppy Seed Pets...)');
 
         $inventory
-            ->setOwner($target)
-            ->addComment($owner->getName() . ' tossed this to ' . $target->getName() . '!')
+            ->changeOwner($target, $owner->getName() . ' tossed this to ' . $target->getName() . '!', $this->em)
             ->setLocation(LocationEnum::HOME)
-            ->setModifiedOn()
-            ->setSellPrice(null)
         ;
 
         $this->em->flush();

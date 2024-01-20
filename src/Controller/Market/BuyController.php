@@ -2,6 +2,7 @@
 namespace App\Controller\Market;
 
 use App\Entity\Inventory;
+use App\Entity\InventoryForSale;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
@@ -46,8 +47,8 @@ class BuyController extends AbstractController
         if($itemId === 0 || $price === 0)
             throw new PSPFormValidationException('Item and price are both required.');
 
-        if(Inventory::calculateBuyPrice($price) > $user->getMoneys())
-            throw new PSPNotEnoughCurrencyException(Inventory::calculateBuyPrice($price) . '~~m~~', $user->getMoneys() . '~~m~~');
+        if(InventoryForSale::calculateBuyPrice($price) > $user->getMoneys())
+            throw new PSPNotEnoughCurrencyException(InventoryForSale::calculateBuyPrice($price) . '~~m~~', $user->getMoneys() . '~~m~~');
 
         $itemsAtHome = InventoryRepository::countItemsInLocation($em, $user, LocationEnum::HOME);
         $placeItemsIn = LocationEnum::HOME;
@@ -72,9 +73,10 @@ class BuyController extends AbstractController
             $placeItemsIn = LocationEnum::BASEMENT;
         }
 
-        $qb = $inventoryRepository->createQueryBuilder('i')
+        $qb = $em->getRepository(InventoryForSale::class)->createQueryBuilder('i')
+            ->join('i.inventory', 'inventory')
             ->andWhere('i.sellPrice<=:price')
-            ->andWhere('i.item=:item')
+            ->andWhere('inventory.item=:item')
             ->addOrderBy('i.sellPrice', 'ASC')
             ->addOrderBy('i.sellListDate', 'ASC')
             ->setParameter('price', $price)
@@ -84,32 +86,32 @@ class BuyController extends AbstractController
         if($bonusId)
         {
             $qb = $qb
-                ->andWhere('i.enchantment=:bonusId')
+                ->andWhere('inventory.enchantment=:bonusId')
                 ->setParameter('bonusId', $bonusId)
             ;
         }
         else
         {
-            $qb = $qb->andWhere('i.enchantment IS NULL');
+            $qb = $qb->andWhere('inventory.enchantment IS NULL');
         }
 
         if($spiceId)
         {
             $qb = $qb
-                ->andWhere('i.spice=:spiceId')
+                ->andWhere('inventory.spice=:spiceId')
                 ->setParameter('spiceId', $spiceId)
             ;
         }
         else
         {
-            $qb = $qb->andWhere('i.spice IS NULL');
+            $qb = $qb->andWhere('inventory.spice IS NULL');
         }
 
-        /** @var Inventory[] $forSale */
+        /** @var InventoryForSale[] $forSale */
         $forSale = $qb->getQuery()->getResult();
 
-        $forSale = array_filter($forSale, function(Inventory $inventory) use($cache) {
-            $item = $cache->getItem('Trading Inventory #' . $inventory->getId());
+        $forSale = array_filter($forSale, function(InventoryForSale $forSale) use($cache) {
+            $item = $cache->getItem('Trading Inventory #' . $forSale->getInventory()->getId());
 
             return !$item->isHit();
         });
@@ -122,48 +124,55 @@ class BuyController extends AbstractController
             throw new PSPNotFoundException('An item for that price could not be found on the market. Someone may have bought it up just before you did! Sorry :| Reload the page to get the latest prices available!');
         }
 
-        /** @var Inventory $itemToBuy */
-        $itemToBuy = ArrayFunctions::min($forSale, fn(Inventory $inventory) => $inventory->getSellPrice());
+        /** @var InventoryForSale $itemToBuy */
+        $itemToBuy = ArrayFunctions::min($forSale, fn(InventoryForSale $inventory) => $inventory->getSellPrice());
 
-        $item = $cache->getItem('Trading Inventory #' . $itemToBuy->getId());
+        $inventory = $itemToBuy->getInventory();
+
+        $item = $cache->getItem('Trading Inventory #' . $inventory->getId());
         $item->set(true)->expiresAfter(\DateInterval::createFromDateString('1 minute'));
         $cache->save($item);
 
         try
         {
-            if($itemToBuy->getOwner() === $user)
+            if($inventory->getOwner() === $user)
             {
-                $itemToBuy->setSellPrice(null);
-
-                if($itemToBuy->getLocation() === LocationEnum::BASEMENT)
-                    $responseService->addFlashMessage('The ' . $itemToBuy->getItem()->getName() . ' is one of yours! It has been removed from the Market, and can be found in your Basement!');
+                if($inventory->getLocation() === LocationEnum::BASEMENT)
+                    $responseService->addFlashMessage('The ' . $inventory->getItem()->getName() . ' is one of yours! It has been removed from the Market, and can be found in your Basement!');
                 else
-                    $responseService->addFlashMessage('The ' . $itemToBuy->getItem()->getName() . ' is one of yours! It has been removed from the Market, and can be found in your Home!');
+                    $responseService->addFlashMessage('The ' . $inventory->getItem()->getName() . ' is one of yours! It has been removed from the Market, and can be found in your Home!');
             }
             else
             {
-                $transactionService->getMoney($itemToBuy->getOwner(), $itemToBuy->getSellPrice(), 'Sold ' . InventoryModifierFunctions::getNameWithModifiers($itemToBuy) . ' in the Market.', [ 'Market' ]);
+                $transactionService->getMoney($inventory->getOwner(), $itemToBuy->getSellPrice(), 'Sold ' . InventoryModifierFunctions::getNameWithModifiers($inventory) . ' in the Market.', [ 'Market' ]);
 
-                $transactionService->spendMoney($user, $itemToBuy->getBuyPrice(), 'Bought ' . InventoryModifierFunctions::getNameWithModifiers($itemToBuy) . ' in the Market.', true, [ 'Market' ]);
+                $transactionService->spendMoney($user, $itemToBuy->getBuyPrice(), 'Bought ' . InventoryModifierFunctions::getNameWithModifiers($inventory) . ' in the Market.', true, [ 'Market' ]);
 
-                $marketService->logExchange($itemToBuy, $itemToBuy->getBuyPrice());
+                $marketService->logExchange($inventory, $itemToBuy->getBuyPrice());
 
-                $marketService->transferItemToPlayer($itemToBuy, $user, $placeItemsIn, $itemToBuy->getSellPrice());
+                $marketService->transferItemToPlayer($inventory, $user, $placeItemsIn, $itemToBuy->getSellPrice(), $user->getName() . ' bought this from ' . $inventory->getOwner()->getName() . ' at the Market.');
 
                 if($placeItemsIn === LocationEnum::BASEMENT)
-                    $responseService->addFlashMessage('The ' . $itemToBuy->getItem()->getName() . ' is yours; you\'ll find it in your Basement! (Your Home is a bit full...)');
+                    $responseService->addFlashMessage('The ' . $inventory->getItem()->getName() . ' is yours; you\'ll find it in your Basement! (Your Home is a bit full...)');
                 else
-                    $responseService->addFlashMessage('The ' . $itemToBuy->getItem()->getName() . ' is yours!');
+                    $responseService->addFlashMessage('The ' . $inventory->getItem()->getName() . ' is yours!');
             }
+
+            $em->remove($itemToBuy);
 
             $em->flush();
         }
         finally
         {
-            $cache->deleteItem('Trading Inventory #' . $itemToBuy->getId());
+            $cache->deleteItem('Trading Inventory #' . $inventory->getId());
         }
 
-        $marketService->updateLowestPriceForInventory($itemToBuy);
+        $marketService->updateLowestPriceForItem(
+            $inventory->getItem(),
+            $inventory->getEnchantment(),
+            $inventory->getSpice()
+        );
+
         $em->flush();
 
         return $responseService->success($itemToBuy, [ SerializationGroupEnum::MY_INVENTORY ]);

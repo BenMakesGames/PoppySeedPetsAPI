@@ -5,12 +5,12 @@ namespace App\Entity;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
 use App\Functions\InventoryModifierFunctions;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Table]
 #[ORM\Index(name: 'modified_on_idx', columns: ['modified_on'])]
-#[ORM\Index(name: 'sell_price_idx', columns: ['sell_price'])]
 #[ORM\Index(name: 'location_idx', columns: ['location'])]
 #[ORM\Index(name: 'full_item_name_idx', columns: ['full_item_name'])]
 #[ORM\Entity(repositoryClass: 'App\Repository\InventoryRepository')]
@@ -55,13 +55,6 @@ class Inventory
     #[ORM\OneToOne(targetEntity: Pet::class, mappedBy: 'tool')]
     private $holder;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    #[Groups(["myInventory", "fireplaceFuel", "myGreenhouse", "myPet", 'houseSitterPet', "dragonTreasure", "myHollowEarthTiles"])]
-    private $sellPrice;
-
-    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private $sellListDate;
-
     #[ORM\Column(type: 'smallint')]
     private $location = LocationEnum::HOME;
 
@@ -89,6 +82,10 @@ class Inventory
     #[ORM\ManyToOne(targetEntity: Item::class)]
     #[Groups(["myInventory", "myPet", 'houseSitterPet', "fireplaceMantle", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "fireplaceFuel", "dragonTreasure"])]
     private $illusion;
+
+    #[ORM\OneToOne(mappedBy: 'inventory', cascade: ['persist', 'remove'])]
+    #[Groups(["myInventory", "fireplaceFuel", "myGreenhouse", "myPet", 'houseSitterPet', "dragonTreasure", "myHollowEarthTiles"])]
+    private ?InventoryForSale $forSale = null;
 
     public function __construct()
     {
@@ -150,8 +147,40 @@ class Inventory
         return $this->owner;
     }
 
+    public function changeOwner(User $owner, string $comment, EntityManagerInterface $em): self
+    {
+        if(!$owner)
+            throw new \Exception("Cannot change item owner; item has no owner.");
+
+        $this->addComment($comment);
+
+        $this->owner = $owner;
+
+        $this->setModifiedOn();
+
+        if($this->getForSale())
+        {
+            $em->remove($this->getForSale());
+            $this->forSale = null;
+        }
+
+        if($this->getLunchboxItem())
+        {
+            $em->remove($this->getLunchboxItem());
+            $this->lunchboxItem = null;
+        }
+
+        if($this->getHolder()) $this->getHolder()->setTool(null);
+        if($this->getWearer()) $this->getWearer()->setHat(null);
+
+        return $this;
+    }
+
     public function setOwner(User $owner): self
     {
+        if($this->owner)
+            throw new \Exception("Cannot set item owner; item already has an owner.");
+
         $this->owner = $owner;
 
         return $this;
@@ -214,40 +243,6 @@ class Inventory
         }
 
         return $this;
-    }
-
-    public function getSellPrice(): ?int
-    {
-        return $this->sellPrice;
-    }
-
-    public function setSellPrice(?int $sellPrice): self
-    {
-        if($sellPrice === null)
-            $this->sellListDate = null;
-        else if($sellPrice !== $this->sellPrice)
-            $this->sellListDate = new \DateTimeImmutable();
-
-        $this->sellPrice = $sellPrice;
-
-        return $this;
-    }
-
-    public function getBuyPrice(): ?int
-    {
-        if($this->sellPrice === null || $this->sellPrice <= 0) return null;
-
-        return self::calculateBuyPrice($this->sellPrice);
-    }
-
-    public function getSellListDate(): ?\DateTimeImmutable
-    {
-        return $this->sellListDate;
-    }
-
-    public static function calculateBuyPrice(int $sellPrice): int
-    {
-        return ceil($sellPrice * 1.02);
     }
 
     public function getLocation(): int
@@ -576,6 +571,23 @@ class Inventory
     public function setIllusion(?Item $illusion): self
     {
         $this->illusion = $illusion;
+
+        return $this;
+    }
+
+    public function getForSale(): ?InventoryForSale
+    {
+        return $this->forSale;
+    }
+
+    public function setForSale(InventoryForSale $forSale): static
+    {
+        // set the owning side of the relation if necessary
+        if ($forSale->getInventory() !== $this) {
+            $forSale->setInventory($this);
+        }
+
+        $this->forSale = $forSale;
 
         return $this;
     }

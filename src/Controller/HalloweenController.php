@@ -144,21 +144,11 @@ class HalloweenController extends AbstractController
         {
             $givingTree = $em->getRepository(User::class)->findOneBy([ 'email' => 'giving-tree@poppyseedpets.com' ]);
 
-            $candy
-                ->setOwner($givingTree)
-                ->setSellPrice(null)
-                ->addComment($user->getName() . ' gave this to the Giving Tree during Halloween!')
-                ->setModifiedOn()
-            ;
+            $candy->changeOwner($givingTree, $user->getName() . ' gave this to the Giving Tree during Halloween!', $em);
         }
         else
         {
-            $candy
-                ->setOwner($trickOrTreater->getOwner())
-                ->setSellPrice(null)
-                ->addComment($trickOrTreater->getName() . ' received this trick-or-treating at ' . $user->getName() . '\'s house!')
-                ->setModifiedOn()
-            ;
+            $candy->changeOwner($trickOrTreater->getOwner(), $trickOrTreater->getName() . ' received this trick-or-treating at ' . $user->getName() . '\'s house!', $em);
 
             $logMessage = $trickOrTreater->getName() . ' went trick-or-treating at ' . $user->getName() . '\'s house, and received ' . $candy->getItem()->getNameWithArticle() . '!';
 

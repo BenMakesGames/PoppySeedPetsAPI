@@ -330,7 +330,6 @@ class Pet
         foreach($this->getLunchboxItems() as $lunchboxItem)
         {
             $lunchboxItem->getInventoryItem()
-                ->setSellPrice(null)
                 ->setOwner($owner)
             ;
         }

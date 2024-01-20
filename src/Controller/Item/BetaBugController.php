@@ -159,8 +159,7 @@ class BetaBugController extends AbstractController
 
         if($startingHatItem)
         {
-            $inventory = new Inventory();
-            $inventory
+            $inventory = (new Inventory())
                 ->setOwner($user)
                 ->setCreatedBy($user)
                 ->setLocation(LocationEnum::WARDROBE)

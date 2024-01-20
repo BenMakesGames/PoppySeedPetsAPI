@@ -67,7 +67,10 @@ class SellController extends AbstractController
         if($price <= 0)
         {
             foreach($inventory as $i)
-                $i->setSellPrice(null);
+            {
+                if($i->getForSale())
+                    $em->remove($i->getForSale());
+            }
 
             $em->flush();
 

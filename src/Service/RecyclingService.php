@@ -89,14 +89,9 @@ class RecyclingService
             if(self::recycledItemShouldGoToGivingTree($this->squirrel3, $givingTreeHoliday, $i))
             {
                 $i
-                    ->setOwner($givingTree)
+                    ->changeOwner($givingTree, $user->getName() . ' recycled this item, and it found its way to The Giving Tree!', $this->em)
                     ->setLocation(LocationEnum::HOME)
-                    ->setSellPrice(null)
-                    ->addComment($user->getName() . ' recycled this item, and it found its way to The Giving Tree!')
                 ;
-
-                if($i->getHolder()) $i->getHolder()->setTool(null);
-                if($i->getWearer()) $i->getWearer()->setHat(null);
             }
             else
                 $this->em->remove($i);

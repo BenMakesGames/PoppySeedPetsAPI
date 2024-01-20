@@ -50,10 +50,10 @@ class LunchboxController extends AbstractController
         if($inventory->getLunchboxItem())
             throw new PSPInvalidOperationException('That item is in ' . $inventory->getLunchboxItem()->getPet()->getName() . '\'s lunchbox!');
 
-        $inventory
-            ->setLocation(LocationEnum::LUNCHBOX)
-            ->setSellPrice(null)
-        ;
+        $inventory->setLocation(LocationEnum::LUNCHBOX);
+
+        if($inventory->getForSale())
+            $em->remove($inventory->getForSale());
 
         $lunchboxItem = (new LunchboxItem())
             ->setPet($pet)

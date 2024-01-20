@@ -77,10 +77,10 @@ class EquipController extends AbstractController
         $pet->setTool($inventory);
 
         // move it to the wardrobe
-        $inventory
-            ->setLocation(LocationEnum::WARDROBE)
-            ->setSellPrice(null)
-        ;
+        $inventory->setLocation(LocationEnum::WARDROBE);
+
+        if($inventory->getForSale())
+            $em->remove($inventory->getForSale());
 
         $em->flush();
 
@@ -146,10 +146,10 @@ class EquipController extends AbstractController
         $pet->setHat($inventory);
 
         // move it to the wardrobe
-        $inventory
-            ->setLocation(LocationEnum::WARDROBE)
-            ->setSellPrice(null)
-        ;
+        $inventory->setLocation(LocationEnum::WARDROBE);
+
+        if($inventory->getForSale())
+            $em->remove($inventory->getForSale());
 
         $em->flush();
 

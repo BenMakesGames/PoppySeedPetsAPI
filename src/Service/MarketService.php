@@ -4,6 +4,7 @@ namespace App\Service;
 use App\Entity\DailyMarketInventoryTransaction;
 use App\Entity\Enchantment;
 use App\Entity\Inventory;
+use App\Entity\InventoryForSale;
 use App\Entity\Item;
 use App\Entity\Spice;
 use App\Entity\User;
@@ -51,15 +52,6 @@ class MarketService
         return null;
     }
 
-    public function updateLowestPriceForInventory(Inventory $inventory)
-    {
-        $this->updateLowestPriceForItem(
-            $inventory->getItem(),
-            $inventory->getEnchantment(),
-            $inventory->getSpice()
-        );
-    }
-
     public function updateLowestPriceForItem(Item $item, ?Enchantment $enchantment, ?Spice $spice)
     {
         $lowestPrice = $this->computeLowestPriceForItem($item, $enchantment, $spice);
@@ -71,32 +63,31 @@ class MarketService
     {
         $qb = $this->em->createQueryBuilder()
             ->select('MIN(i.sellPrice)')
-            ->from(Inventory::class, 'i')
-            ->andWhere('i.item = :item')
+            ->from(InventoryForSale::class, 'i')
+            ->join('i.inventory', 'inventory')
+            ->andWhere('inventory.item = :item')
             ->setParameter('item', $item)
-            ->andWhere('i.sellPrice IS NOT NULL')
-            ->andWhere('i.sellPrice > 0')
         ;
 
         if($enchantment)
         {
             $qb = $qb
-                ->andWhere('i.enchantment = :enchantment')
+                ->andWhere('inventory.enchantment = :enchantment')
                 ->setParameter('enchantment', $enchantment)
             ;
         }
         else
-            $qb->andWhere('i.enchantment IS NULL');
+            $qb->andWhere('inventory.enchantment IS NULL');
 
         if($spice)
         {
             $qb = $qb
-                ->andWhere('i.spice = :spice')
+                ->andWhere('inventory.spice = :spice')
                 ->setParameter('spice', $spice)
             ;
         }
         else
-            $qb->andWhere('i.spice IS NULL');
+            $qb->andWhere('inventory.spice IS NULL');
 
         $minPrice = (int)$qb->getQuery()->getSingleScalarResult();
 
@@ -119,27 +110,16 @@ class MarketService
         return $log;
     }
 
-    public function transferItemToPlayer(Inventory $item, User $newOwner, int $location, int $sellPrice)
+    public function transferItemToPlayer(Inventory $item, User $newOwner, int $location, int $sellPrice, string $newItemComment)
     {
         $this->userStatsRepository->incrementStat($item->getOwner(), UserStatEnum::TOTAL_MONEYS_EARNED_IN_MARKET, $sellPrice);
         $this->userStatsRepository->incrementStat($item->getOwner(), UserStatEnum::ITEMS_SOLD_IN_MARKET, 1);
         $this->userStatsRepository->incrementStat($newOwner, UserStatEnum::ITEMS_BOUGHT_IN_MARKET, 1);
 
         $item
-            ->setOwner($newOwner)
-            ->setSellPrice(null)
+            ->changeOwner($newOwner, $newItemComment, $this->em)
             ->setLocation($location)
-            ->setModifiedOn()
         ;
-
-        if($item->getLunchboxItem())
-            $this->em->remove($item->getLunchboxItem());
-
-        if($item->getHolder())
-            $item->getHolder()->setTool(null);
-
-        if($item->getWearer())
-            $item->getWearer()->setHat(null);
     }
 
     public function canOfferWingedKey(User $user)
@@ -163,11 +143,14 @@ class MarketService
         if($price <= 0)
             throw new \InvalidArgumentException('Price must be greater than 0.');
 
-        $highestBid = $this->marketBidRepository->findHighestBidForItem($inventory, Inventory::calculateBuyPrice($price));
+        $highestBid = $this->marketBidRepository->findHighestBidForItem($inventory, InventoryForSale::calculateBuyPrice($price));
 
         if(!$highestBid)
         {
-            $inventory->setSellPrice($price);
+            $forSale = (new InventoryForSale())
+                ->setSellPrice($price);
+
+            $inventory->setForSale($forSale);
             return false;
         }
 
@@ -199,7 +182,7 @@ class MarketService
             }
         }
 
-        $this->transferItemToPlayer($inventory, $highestBid->getUser(), $targetLocation, $price);
+        $this->transferItemToPlayer($inventory, $highestBid->getUser(), $targetLocation, $price, $inventory->getOwner()->getName() . ' sold this to ' . $highestBid->getUser()->getName() . ' in the Market.');
 
         if($highestBid->getQuantity() > 1)
             $highestBid->setQuantity($highestBid->getQuantity() - 1);
