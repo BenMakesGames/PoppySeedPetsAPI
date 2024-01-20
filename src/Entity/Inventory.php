@@ -84,7 +84,6 @@ class Inventory
     private $illusion;
 
     #[ORM\OneToOne(mappedBy: 'inventory', cascade: ['persist', 'remove'])]
-    #[Groups(["myInventory", "fireplaceFuel", "myGreenhouse", "myPet", 'houseSitterPet', "dragonTreasure", "myHollowEarthTiles"])]
     private ?InventoryForSale $forSale = null;
 
     #[ORM\Version]
@@ -594,5 +593,11 @@ class Inventory
         $this->forSale = $forSale;
 
         return $this;
+    }
+
+    #[Groups(["myInventory", "fireplaceFuel", "myGreenhouse", "myPet", 'houseSitterPet', "dragonTreasure", "myHollowEarthTiles"])]
+    public function getSellPrice()
+    {
+        return $this->getForSale()?->getSellPrice();
     }
 }
