@@ -439,6 +439,7 @@ final class RecipeRepository
         [ 'name' => 'Naner Dog', 'ingredients' => '4:1,112:1', 'makes' => '806:1' ],
         [ 'name' => 'Naner Ice Cream Sammies', 'ingredients' => '318:1,549:1', 'makes' => '810:2' ],
         [ 'name' => 'Naner Ice Cream', 'ingredients' => '4:1,12:1,13:1,14:1', 'makes' => '318:2' ],
+        [ 'name' => 'Naner Ketchup', 'ingredients' => '4:1,12:1,146:1', 'makes' => '1369:3' ],
         [ 'name' => 'Naner Pancakes', 'ingredients' => '4:1,12:1,13:1,14:1,16:1,48:1,65:1', 'makes' => '219:2' ],
         [ 'name' => 'Naner PB&J', 'ingredients' => '112:1,182:1,512:1', 'makes' => '525:2' ],
         [ 'name' => 'Naner Preserves', 'ingredients' => '4:1,12:1,121:1', 'makes' => '182:2' ],
