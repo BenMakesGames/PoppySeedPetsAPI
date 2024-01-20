@@ -19,6 +19,8 @@ final class Version20240114191300 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
+        // HEY, LISTEN: this way of deleting duplicates is really inefficient.
+        // 'delete duplicate museum donations' contains a better way.
         $this->addSql('
             DELETE t1 FROM known_recipes t1
             JOIN known_recipes t2 
