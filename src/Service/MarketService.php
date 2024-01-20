@@ -147,10 +147,18 @@ class MarketService
 
         if(!$highestBid)
         {
-            $forSale = (new InventoryForSale())
-                ->setSellPrice($price);
+            if($inventory->getForSale())
+            {
+                $inventory->getForSale()->setSellPrice($price);
+            }
+            else
+            {
+                $forSale = (new InventoryForSale())
+                    ->setSellPrice($price);
 
-            $inventory->setForSale($forSale);
+                $inventory->setForSale($forSale);
+            }
+
             return false;
         }
 
