@@ -108,7 +108,7 @@ class BuyController extends AbstractController
         }
 
         /** @var InventoryForSale[] $forSale */
-        $forSale = $qb->getQuery()->getResult();
+        $forSale = $qb->setMaxResults(50)->getQuery()->getResult();
 
         $forSale = array_filter($forSale, function(InventoryForSale $forSale) use($cache) {
             $item = $cache->getItem('Trading Inventory #' . $forSale->getInventory()->getId());
