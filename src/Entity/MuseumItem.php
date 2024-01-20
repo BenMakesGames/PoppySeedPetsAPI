@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity]
+#[ORM\UniqueConstraint(name: 'user_id_item_id_idx', columns: ['user_id', 'item_id'])]
 class MuseumItem
 {
     #[ORM\Id]

@@ -19,7 +19,6 @@ final class Version20240114191300 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('
             DELETE t1 FROM known_recipes t1
             JOIN known_recipes t2 
