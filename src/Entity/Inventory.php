@@ -87,6 +87,10 @@ class Inventory
     #[Groups(["myInventory", "fireplaceFuel", "myGreenhouse", "myPet", 'houseSitterPet', "dragonTreasure", "myHollowEarthTiles"])]
     private ?InventoryForSale $forSale = null;
 
+    #[ORM\Version]
+    #[ORM\Column(type: 'integer')]
+    private int $version;
+
     public function __construct()
     {
         $this->createdOn = new \DateTimeImmutable();
