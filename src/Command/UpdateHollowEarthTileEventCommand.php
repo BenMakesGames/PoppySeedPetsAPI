@@ -22,7 +22,7 @@ class UpdateHollowEarthTileEventCommand extends PoppySeedPetsCommand
         $this->em = $em;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:update-hollow-earth-tile-event')

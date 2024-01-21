@@ -11,7 +11,7 @@ class TestProfanityFilterCommand extends PoppySeedPetsCommand
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:test-profanity-filter')

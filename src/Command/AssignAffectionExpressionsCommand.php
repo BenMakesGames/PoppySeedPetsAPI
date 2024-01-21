@@ -21,7 +21,7 @@ class AssignAffectionExpressionsCommand extends PoppySeedPetsCommand
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:assign-affection-expressions')

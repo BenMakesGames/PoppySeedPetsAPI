@@ -18,7 +18,7 @@ class ExportSpeciesForToolCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:export-species-for-tool')

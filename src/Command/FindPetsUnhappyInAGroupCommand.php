@@ -21,7 +21,7 @@ class FindPetsUnhappyInAGroupCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:find-pets-unhappy-in-a-group')

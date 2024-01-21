@@ -20,7 +20,7 @@ class CreateHollowEarthTileCommand extends PoppySeedPetsCommand
         $this->em = $em;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:create-hollow-earth-tile')

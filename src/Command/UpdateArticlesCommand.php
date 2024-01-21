@@ -16,7 +16,7 @@ class UpdateArticlesCommand extends PoppySeedPetsCommand
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:update-articles')

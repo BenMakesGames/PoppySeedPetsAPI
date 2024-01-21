@@ -5,7 +5,7 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class TestChineseCalendar extends PoppySeedPetsCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:test-chinese-calendar')

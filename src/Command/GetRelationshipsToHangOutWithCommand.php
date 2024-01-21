@@ -24,7 +24,7 @@ class GetRelationshipsToHangOutWithCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:get-relationships-to-hang-out-with')

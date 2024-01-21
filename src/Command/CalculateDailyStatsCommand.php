@@ -21,7 +21,7 @@ class CalculateDailyStatsCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('app:calculate-daily-stats')
