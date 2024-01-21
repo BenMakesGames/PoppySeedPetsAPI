@@ -115,14 +115,14 @@ class ExportItemCommand extends PoppySeedPetsCommand
                 $groups->toArray()
             );
 
-            $sql .= join(', ', $valueSqls) . ' ON DUPLICATE KEY UPDATE `id` = `id`;';
+            $sql .= join(', ', $valueSqls) . ';';
 
             $statements[] = $sql;
         }
 
         echo "\n" . implode("\n\n", $statements);
 
-        if($item->getTool()->getWhenGather()?->getId() == $item->getId() || $item->getTool()->getWhenGatherAlsoGather()?->getId() == $item->getId())
+        if($item->getTool()?->getWhenGather()?->getId() == $item->getId() || $item->getTool()?->getWhenGatherAlsoGather()?->getId() == $item->getId())
         {
             echo "\n\n********************************************************************************\nWARNING: There is a circular reference in the tool effect. You will need to manually fix the SQL to handle this.\n********************************************************************************";
         }
@@ -152,7 +152,7 @@ class ExportItemCommand extends PoppySeedPetsCommand
 
         $valueSql = implode(',', $encodedValues);
 
-        $sql = "-- $comment\nINSERT IGNORE INTO $tableName ($columnSql) VALUES ($valueSql) ON DUPLICATE KEY UPDATE `id` = `id`;";
+        $sql = "-- $comment\nINSERT INTO $tableName ($columnSql) VALUES ($valueSql) ON DUPLICATE KEY UPDATE `id` = `id`;";
 
         return $sql;
     }

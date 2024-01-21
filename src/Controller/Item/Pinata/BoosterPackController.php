@@ -17,24 +17,33 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/item/boosterPack")]
 class BoosterPackController extends AbstractController
 {
-    #[Route("/one/{inventory}/open", methods: ["POST"])]
+    private const SET_ITEM_GROUP_NAMES = [
+        'one' => 'Hollow Earth Booster Pack',
+        'two' => 'Community Booster Pack',
+    ];
+
+    #[Route("/{set}/{inventory}/open", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openBoosterPackOne(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        string $set, Inventory $inventory,
+
+        ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
         $user = $this->getUser();
 
-        ItemControllerHelpers::validateInventory($user, $inventory, 'boosterPack/one/#/open');
+        ItemControllerHelpers::validateInventory($user, $inventory, 'boosterPack/' . $set . '/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $location = $inventory->getLocation();
 
-        $commons = $em->getRepository(ItemGroup::class)->findOneBy([ 'name' => 'Hollow Earth Booster Pack: Common' ]);
-        $uncommons = $em->getRepository(ItemGroup::class)->findOneBy([ 'name' => 'Hollow Earth Booster Pack: Uncommon' ]);
-        $rares = $em->getRepository(ItemGroup::class)->findOneBy([ 'name' => 'Hollow Earth Booster Pack: Rare' ]);
+        $itemGroupNameBase = self::SET_ITEM_GROUP_NAMES[$set];
+
+        $commons = $em->getRepository(ItemGroup::class)->findOneBy([ 'name' => $itemGroupNameBase . ': Common' ]);
+        $uncommons = $em->getRepository(ItemGroup::class)->findOneBy([ 'name' => $itemGroupNameBase . ': Uncommon' ]);
+        $rares = $em->getRepository(ItemGroup::class)->findOneBy([ 'name' => $itemGroupNameBase . ': Rare' ]);
 
         $tiles = [
             InventoryService::getRandomItemFromItemGroup($rng, $commons),

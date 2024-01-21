@@ -1040,7 +1040,7 @@ class BoxController extends AbstractController
             'Key Ring',
             'Major Scroll of Riches',
             'Blackonite',
-            'Hollow Earth Booster Pack',
+            'Hollow Earth Booster Pack: Beginnings',
             'Magic Hourglass',
         ];
 

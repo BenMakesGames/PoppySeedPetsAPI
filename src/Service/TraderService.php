@@ -524,7 +524,15 @@ class TraderService
         return [
             TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createRecyclingPoints(100) ],
-                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Hollow Earth Booster Pack'), 1) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Hollow Earth Booster Pack: Beginnings'), 1) ],
+                'Have fun!',
+                $user,
+                $quantities
+            ),
+
+            TraderOffer::createTradeOffer(
+                [ TraderOfferCostOrYield::createRecyclingPoints(100) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Hollow Earth Booster Pack: Community Pack'), 1) ],
                 'Have fun!',
                 $user,
                 $quantities

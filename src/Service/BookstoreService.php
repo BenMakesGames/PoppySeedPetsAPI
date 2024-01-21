@@ -179,7 +179,10 @@ class BookstoreService
         ];
 
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::HollowEarth))
-            $gamePrices['Hollow Earth Booster Pack'] = 200;
+        {
+            $gamePrices['Hollow Earth Booster Pack: Beginnings'] = 200;
+            $gamePrices['Hollow Earth Booster Pack: Community Pack'] = 200;
+        }
 
         if(CalendarFunctions::isStockingStuffingSeason($this->clock->now))
         {
