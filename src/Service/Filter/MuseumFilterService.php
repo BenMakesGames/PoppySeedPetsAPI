@@ -22,7 +22,7 @@ class MuseumFilterService
         $this->filterer = new Filterer(
             self::PAGE_SIZE,
             [
-                'donatedon' => [ 'm.donatedOn' => 'desc' ], // first one is the default
+                'donatedon' => [ 'm.donatedOn' => 'desc', 'item.name' => 'asc' ], // first one is the default
                 'itemname' => [ 'item.name' => 'asc' ],
             ],
             [
