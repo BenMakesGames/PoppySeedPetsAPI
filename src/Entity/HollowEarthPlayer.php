@@ -64,6 +64,10 @@ class HollowEarthPlayer
     #[ORM\Column(type: 'boolean')]
     private $showGoods = false;
 
+    #[ORM\Version]
+    #[ORM\Column(type: 'integer')]
+    private int $version;
+
     public function getId(): ?int
     {
         return $this->id;

@@ -46,6 +46,10 @@ class GreenhousePlant
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private $pollinators;
 
+    #[ORM\Version]
+    #[ORM\Column(type: 'integer')]
+    private int $version;
+
     public function __construct()
     {
         $this->lastInteraction = (new \DateTimeImmutable())->modify('-1 day');

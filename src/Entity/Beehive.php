@@ -64,6 +64,10 @@ class Beehive
     #[ORM\OneToOne(targetEntity: Pet::class, cascade: ['persist', 'remove'])]
     private $helper;
 
+    #[ORM\Version]
+    #[ORM\Column(type: 'integer')]
+    private int $version;
+
     public function getId(): ?int
     {
         return $this->id;

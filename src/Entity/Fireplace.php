@@ -75,6 +75,10 @@ class Fireplace
     #[ORM\Column(type: 'integer')]
     private $gnomePoints = 0;
 
+    #[ORM\Version]
+    #[ORM\Column(type: 'integer')]
+    private int $version;
+
     public function getId(): ?int
     {
         return $this->id;

@@ -107,6 +107,10 @@ class Dragon
     #[Groups(['myDragon'])]
     private $hostage;
 
+    #[ORM\Version]
+    #[ORM\Column(type: 'integer')]
+    private int $version;
+
     public function __construct()
     {
         $squirrel3 = new Squirrel3();
