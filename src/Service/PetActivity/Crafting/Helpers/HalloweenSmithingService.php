@@ -17,22 +17,14 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class HalloweenSmithingService
 {
-    private PetExperienceService $petExperienceService;
-    private InventoryService $inventoryService;
-    private IRandom $squirrel3;
-    private HouseSimService $houseSimService;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        PetExperienceService $petExperienceService, InventoryService $inventoryService, IRandom $squirrel3,
-        HouseSimService $houseSimService, EntityManagerInterface $em
+        private readonly PetExperienceService $petExperienceService,
+        private readonly InventoryService $inventoryService,
+        private readonly IRandom $squirrel3,
+        private readonly HouseSimService $houseSimService,
+        private readonly EntityManagerInterface $em
     )
     {
-        $this->petExperienceService = $petExperienceService;
-        $this->inventoryService = $inventoryService;
-        $this->squirrel3 = $squirrel3;
-        $this->houseSimService = $houseSimService;
-        $this->em = $em;
     }
 
     public function createPumpkinBucket(ComputedPetSkills $petWithSkills): PetActivityLog

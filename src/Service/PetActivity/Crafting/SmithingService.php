@@ -28,42 +28,22 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class SmithingService
 {
-    private InventoryService $inventoryService;
-    private PetExperienceService $petExperienceService;
-    private GoldSmithingService $goldSmithingService;
-    private IronSmithingService $ironSmithingService;
-    private MeteoriteSmithingService $meteoriteSmithingService;
-    private HalloweenSmithingService $halloweenSmithingService;
-    private SilverSmithingService $silverSmithingService;
-    private TwuWuvCraftingService $twuWuvCraftingService;
-    private IRandom $squirrel3;
-    private HouseSimService $houseSimService;
-    private Clock $clock;
-    private EntityManagerInterface $em;
-    private TransactionService $transactionService;
-
     public function __construct(
-        InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        GoldSmithingService $goldSmithingService, SilverSmithingService $silverSmithingService, IRandom $squirrel3,
-        IronSmithingService $ironSmithingService, MeteoriteSmithingService $meteoriteSmithingService,
-        HalloweenSmithingService $halloweenSmithingService, Clock $clock, EntityManagerInterface $em,
-        TwuWuvCraftingService $twuWuvCraftingService, HouseSimService $houseSimService,
-        TransactionService $transactionService
+        private readonly InventoryService $inventoryService,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly GoldSmithingService $goldSmithingService,
+        private readonly SilverSmithingService $silverSmithingService,
+        private readonly IRandom $squirrel3,
+        private readonly IronSmithingService $ironSmithingService,
+        private readonly MeteoriteSmithingService $meteoriteSmithingService,
+        private readonly HalloweenSmithingService $halloweenSmithingService,
+        private readonly Clock $clock,
+        private readonly EntityManagerInterface $em,
+        private readonly TwuWuvCraftingService $twuWuvCraftingService,
+        private readonly HouseSimService $houseSimService,
+        private readonly TransactionService $transactionService
     )
     {
-        $this->inventoryService = $inventoryService;
-        $this->petExperienceService = $petExperienceService;
-        $this->goldSmithingService = $goldSmithingService;
-        $this->ironSmithingService = $ironSmithingService;
-        $this->meteoriteSmithingService = $meteoriteSmithingService;
-        $this->halloweenSmithingService = $halloweenSmithingService;
-        $this->silverSmithingService = $silverSmithingService;
-        $this->twuWuvCraftingService = $twuWuvCraftingService;
-        $this->squirrel3 = $squirrel3;
-        $this->houseSimService = $houseSimService;
-        $this->transactionService = $transactionService;
-        $this->em = $em;
-        $this->clock = $clock;
     }
 
     public function getCraftingPossibilities(ComputedPetSkills $petWithSkills): array

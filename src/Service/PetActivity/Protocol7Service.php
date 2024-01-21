@@ -9,6 +9,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\AdventureMath;
 use App\Functions\ItemRepository;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -22,29 +23,17 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class Protocol7Service
 {
-    private ResponseService $responseService;
-    private PetExperienceService $petExperienceService;
-    private InventoryService $inventoryService;
-    private TransactionService $transactionService;
-    private GuildService $guildService;
-    private EntityManagerInterface $em;
-    private IRandom $squirrel3;
-    private PetQuestRepository $petQuestRepository;
-
     public function __construct(
-        ResponseService $responseService, InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, GuildService $guildService, EntityManagerInterface $em,
-        IRandom $squirrel3, PetQuestRepository $petQuestRepository
+        private readonly ResponseService $responseService,
+        private readonly InventoryService $inventoryService,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly TransactionService $transactionService,
+        private readonly GuildService $guildService,
+        private readonly EntityManagerInterface $em,
+        private readonly IRandom $rng,
+        private readonly PetQuestRepository $petQuestRepository
     )
     {
-        $this->responseService = $responseService;
-        $this->inventoryService = $inventoryService;
-        $this->petExperienceService = $petExperienceService;
-        $this->transactionService = $transactionService;
-        $this->guildService = $guildService;
-        $this->em = $em;
-        $this->squirrel3 = $squirrel3;
-        $this->petQuestRepository = $petQuestRepository;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)
@@ -55,7 +44,7 @@ class Protocol7Service
         // protocol 7 is weird; we do a modulo here.
         // we don't do "distraction" encounters for protocol 7; instead, we rely on the modulo, which has the
         // effect of making lower-ranked encounters more common than higher ones for higher-level pets.
-        $roll = $this->squirrel3->rngNextInt(0, max(1, $maxSkill)) % 20;
+        $roll = $this->rng->rngNextInt(0, max(1, $maxSkill)) % 20;
 
         $activityLog = null;
         $changes = new PetChanges($pet);
@@ -65,7 +54,7 @@ class Protocol7Service
             case 0:
             case 1:
             case 2:
-                if(!$pet->getGuildMembership() && $this->squirrel3->rngNextInt(1, 5) === 1 && !$pet->hasMerit(MeritEnum::AFFECTIONLESS))
+                if(!$pet->getGuildMembership() && $this->rng->rngNextInt(1, 5) === 1 && !$pet->hasMerit(MeritEnum::AFFECTIONLESS))
                     $activityLog = $this->guildService->joinGuildProjectE($pet);
                 else
                     $activityLog = $this->foundNothing($petWithSkills, $roll);
@@ -73,7 +62,7 @@ class Protocol7Service
             case 3:
             case 4:
             case 5:
-                if($pet->hasMerit(MeritEnum::BEHATTED) && $this->squirrel3->rngNextInt(1, 40) < $petWithSkills->getScience()->getTotal())
+                if($pet->hasMerit(MeritEnum::BEHATTED) && $this->rng->rngNextInt(1, 40) < $petWithSkills->getScience()->getTotal())
                     $activityLog = $this->encounterAnnabellastasia($petWithSkills);
                 else
                     $activityLog = $this->encounterGarbageCollector($petWithSkills);
@@ -118,7 +107,7 @@ class Protocol7Service
             $activityLog->setChanges($changes->compare($pet));
         }
 
-        if(AdventureMath::petAttractsBug($this->squirrel3, $pet, 75))
+        if(AdventureMath::petAttractsBug($this->rng, $pet, 75))
             $this->inventoryService->petAttractsRandomBug($pet, 'Beta Bug');
     }
 
@@ -133,13 +122,13 @@ class Protocol7Service
 
         $exp = ceil($roll / 10);
 
-        if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY) || $this->squirrel3->rngNextInt(1, 3) === 1)
+        if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY) || $this->rng->rngNextInt(1, 3) === 1)
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Project-E, but got distracted playing a minigame!', 'icons/activity-logs/confused');
         else
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Project-E, but got lost.', 'icons/activity-logs/confused');
 
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::SCIENCE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
         $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]));
 
@@ -150,13 +139,13 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
 
         if($roll >= 15)
         {
             $pet->getGuildMembership()->increaseReputation();
 
-            $loot = $this->squirrel3->rngNextFromArray([
+            $loot = $this->rng->rngNextFromArray([
                 'Pointer',
                 'NUL',
                 'Music Note',
@@ -165,7 +154,7 @@ class Protocol7Service
 
             $item = ItemRepository::findOneByName($this->em, $loot);
 
-            [$locationAndAction, $actioning] = $this->squirrel3->rngNextFromArray([
+            [$locationAndAction, $actioning] = $this->rng->rngNextFromArray([
                 [ 'an abandoned forum, and started rooting around old posts', 'rooting around in an abandoned forum' ],
                 [ 'an old BBS still somehow online, and started digging through its logs', 'digging through the logs of an old BBS' ],
                 [ 'a forgotten internet journal, and started combing through old posts and replies', 'digging through posts of a forgotten internet journal' ],
@@ -180,7 +169,7 @@ class Protocol7Service
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' found this while ' . $actioning . ' in Project-E.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
         }
         else
         {
@@ -189,7 +178,7 @@ class Protocol7Service
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
         }
 
         return $activityLog;
@@ -199,7 +188,7 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->squirrel3->rngNextInt(1, 30 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $roll = $this->rng->rngNextInt(1, 30 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
 
         if($roll < 10)
         {
@@ -208,7 +197,7 @@ class Protocol7Service
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
             return $activityLog;
         }
@@ -216,37 +205,37 @@ class Protocol7Service
         if($roll < 20)
         {
             $exp = 1;
-            $loot = $this->squirrel3->rngNextFromArray([ 'NUL', 'Pointer' ]);
+            $loot = $this->rng->rngNextFromArray([ 'NUL', 'Pointer' ]);
             $exclaim = '...';
         }
         else if($roll < 30)
         {
             $exp = 1;
-            $loot = $this->squirrel3->rngNextFromArray([ 'String', 'Green Dye', 'Green Dye', 'Imaginary Number' ]);
+            $loot = $this->rng->rngNextFromArray([ 'String', 'Green Dye', 'Green Dye', 'Imaginary Number' ]);
             $exclaim = '.';
         }
         else if($roll < 40)
         {
             $exp = 2;
-            $loot = $this->squirrel3->rngNextFromArray([ 'Iron Ore', 'Silver Ore', 'Gold Ore', 'XOR' ]);
+            $loot = $this->rng->rngNextFromArray([ 'Iron Ore', 'Silver Ore', 'Gold Ore', 'XOR' ]);
             $exclaim = '. Okay.';
         }
         else if($roll < 50)
         {
             $exp = 2;
-            $loot = $this->squirrel3->rngNextFromArray([ 'Liquid-hot Magma', 'Cryptocurrency Wallet', 'Magic Smoke' ]);
+            $loot = $this->rng->rngNextFromArray([ 'Liquid-hot Magma', 'Cryptocurrency Wallet', 'Magic Smoke' ]);
             $exclaim = '!';
         }
         else if($roll < 60)
         {
             $exp = 3;
-            $loot = $this->squirrel3->rngNextFromArray([ 'Fiberglass', 'Blackonite', 'Piece of Cetgueli\'s Map' ]);
+            $loot = $this->rng->rngNextFromArray([ 'Fiberglass', 'Blackonite', 'Piece of Cetgueli\'s Map' ]);
             $exclaim = '! Neat!';
         }
         else
         {
             $exp = 4;
-            $loot = $this->squirrel3->rngNextFromArray([ 'Firestone', 'Gold Ring' ]);
+            $loot = $this->rng->rngNextFromArray([ 'Firestone', 'Gold Ring' ]);
             $exclaim = '! Whoa!';
         }
 
@@ -257,7 +246,7 @@ class Protocol7Service
         $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while digging at a Dwarfcraft excavation site.', $activityLog);
 
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::SCIENCE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(40, 55) + $exp * 5, PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(40, 55) + $exp * 5, PetActivityStatEnum::PROTOCOL_7, true);
 
         return $activityLog;
     }
@@ -269,7 +258,7 @@ class Protocol7Service
         $effectiveScience = max(2, $petWithSkills->getScience()->getTotal());
         $minMons = min($effectiveScience, $petWithSkills->getIntelligence()->getTotal());
 
-        $moneys = $this->squirrel3->rngNextInt(1, $effectiveScience);
+        $moneys = $this->rng->rngNextInt(1, $effectiveScience);
 
         if($moneys < $minMons)
             $moneys = $minMons;
@@ -278,7 +267,7 @@ class Protocol7Service
 
         $pet->getGuildMembership()->increaseReputation();
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Project-E. Correspondence had some message-delivery jobs, so %pet:' . $pet->getId() . '.name% picked a couple up, earning ' . $moneys . '~~m~~ for their trouble.', '')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Guild', 'Moneys' ]))
@@ -295,14 +284,14 @@ class Protocol7Service
         if($petQuest->getValue() > $now->format('Y-m-d'))
             return $this->encounterGarbageCollector($petWithSkills);
 
-        $petQuest->setValue($now->modify('+' . $this->squirrel3->rngNextInt(20, 40) . ' days')->format('Y-m-d'));
+        $petQuest->setValue($now->modify('+' . $this->rng->rngNextInt(20, 40) . ' days')->format('Y-m-d'));
 
         $activityLog = $this->responseService->createActivityLog($pet, 'In Project-E, ' . '%pet:' . $pet->getId() . '.name% ran into a girl named Annabellastasia, who handed %pet:' . $pet->getId() . '.name% a Black Bow.', 'items/hat/bow-black')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
         ;
         $this->inventoryService->petCollectsItem('Black Bow', $pet, $pet->getName() . ' received this from a girl named Annabellastasia in Project-E.', $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
         return $activityLog;
     }
 
@@ -312,13 +301,13 @@ class Protocol7Service
 
         if($pet->isInGuild(GuildEnum::TIMES_ARROW))
         {
-            $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getScience()->getTotal());
+            $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getScience()->getTotal());
 
             if($pet->hasMerit(MeritEnum::SOOTHING_VOICE))
                 $roll += 2;
         }
         else
-            $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+            $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         $success = $roll >= 10;
 
@@ -330,7 +319,7 @@ class Protocol7Service
             {
                 $pet->getGuildMembership()->increaseReputation();
 
-                if($pet->hasMerit(MeritEnum::SOOTHING_VOICE) && $this->squirrel3->rngNextInt(1, 3) === 1)
+                if($pet->hasMerit(MeritEnum::SOOTHING_VOICE) && $this->rng->rngNextInt(1, 3) === 1)
                     $logMessage = '%pet:' . $pet->getId() . '.name% met with a Garbage Collector in Project-E. Happy to help a member of Time\'s Arrow - especially one with such a Soothing Voice! - it handed over a Pointer.';
                 else
                     $logMessage = '%pet:' . $pet->getId() . '.name% met with a Garbage Collector in Project-E. Happy to help a member of Time\'s Arrow, it handed over a Pointer.';
@@ -351,7 +340,7 @@ class Protocol7Service
             }
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
         }
         else
         {
@@ -369,7 +358,7 @@ class Protocol7Service
             }
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
         }
 
         return $activityLog;
@@ -379,9 +368,9 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
-        $monster = $this->squirrel3->rngNextFromArray([
+        $monster = $this->rng->rngNextFromArray([
             [
                 'name' => 'a Trojan Horse',
                 'loot' => [ 'Plastic' ]
@@ -397,7 +386,7 @@ class Protocol7Service
         ]);
 
         $baddie = $monster['name'];
-        $loot = $this->squirrel3->rngNextFromArray($monster['loot']);
+        $loot = $this->rng->rngNextFromArray($monster['loot']);
         $success = $roll >= 12;
 
         if($success)
@@ -417,7 +406,7 @@ class Protocol7Service
         }
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::PROTOCOL_7, $success);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::PROTOCOL_7, $success);
 
         return $activityLog;
     }
@@ -426,9 +415,9 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
-        $monster = $this->squirrel3->rngNextFromArray([
+        $monster = $this->rng->rngNextFromArray([
             [
                 'name' => 'a Keylogger',
                 'loot' => [ 'Hash Table', 'Password' ]
@@ -444,10 +433,10 @@ class Protocol7Service
         ]);
 
         $baddie = $monster['name'];
-        $loot = $this->squirrel3->rngNextFromArray($monster['loot']);
+        $loot = $this->rng->rngNextFromArray($monster['loot']);
         $success = $roll >= 15;
 
-        if($this->squirrel3->rngNextInt(1, 200) == 1)
+        if($this->rng->rngNextInt(1, 200) == 1)
         {
             $pet->increaseSafety(2);
             $pet->increaseEsteem(8);
@@ -458,7 +447,7 @@ class Protocol7Service
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
             $this->inventoryService->petCollectsItem('Pynʞ', $pet, $pet->getName() . ' defeated ' . $baddie . ', and got _this!_', $activityLog);
         }
-        else if($pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 200) == 1)
+        else if($pet->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 200) == 1)
         {
             $pet->increaseSafety(2);
             $pet->increaseEsteem(8);
@@ -489,7 +478,7 @@ class Protocol7Service
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
         }
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::PROTOCOL_7, $success);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::PROTOCOL_7, $success);
 
         return $activityLog;
     }
@@ -498,7 +487,7 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $video = $this->squirrel3->rngNextFromArray([
+        $video = $this->rng->rngNextFromArray([
             [
                 'subject' => 'about fractals',
                 'loot' => [ 'Imaginary Number' ],
@@ -509,11 +498,11 @@ class Protocol7Service
             ]
         ]);
 
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         if($roll >= 16)
         {
-            $lootItem = ItemRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray($video['loot']));
+            $lootItem = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray($video['loot']));
 
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% watched a video ' . $video['subject'] . ' in Project-E, and got ' . $lootItem->getNameWithArticle() . ' out of it.', '')
@@ -523,7 +512,7 @@ class Protocol7Service
             $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' got this by watching a video ' . $video['subject'] . ' in Project-E.' , $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
         }
         else
         {
@@ -532,7 +521,7 @@ class Protocol7Service
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
         }
 
         return $activityLog;
@@ -542,9 +531,9 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
-        $monster = $this->squirrel3->rngNextFromArray([
+        $monster = $this->rng->rngNextFromArray([
             [
                 'name' => 'a Slow Loris',
                 'loot' => [ 'String', 'NUL' ]
@@ -556,10 +545,10 @@ class Protocol7Service
         ]);
 
         $baddie = $monster['name'];
-        $loot = $this->squirrel3->rngNextFromArray($monster['loot']);
+        $loot = $this->rng->rngNextFromArray($monster['loot']);
         $success = $roll >= 17;
 
-        if($this->squirrel3->rngNextInt(1, 200) == 1)
+        if($this->rng->rngNextInt(1, 200) == 1)
         {
             $pet->increaseSafety(2);
             $pet->increaseEsteem(8);
@@ -570,7 +559,7 @@ class Protocol7Service
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
             $this->inventoryService->petCollectsItem('Pynʞ', $pet, $pet->getName() . ' defeated ' . $baddie . ', and got _this!_', $activityLog);
         }
-        else if($pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 200) == 1)
+        else if($pet->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 200) == 1)
         {
             $pet->increaseSafety(2);
             $pet->increaseEsteem(8);
@@ -601,7 +590,7 @@ class Protocol7Service
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
         }
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::PROTOCOL_7, $success);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::PROTOCOL_7, $success);
 
         return $activityLog;
     }
@@ -610,30 +599,31 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $check = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+        $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
         if($check < 15)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name%\'s line was suddenly shorted while they were exploring Project-E!', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name%\'s line was suddenly shorted while they were exploring Project-E!')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Physics' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
         }
-        else if($this->squirrel3->rngNextInt(1, max(10, 50 - $pet->getSkills()->getIntelligence())) === 1)
+        else if($this->rng->rngNextInt(1, max(10, 50 - $pet->getSkills()->getIntelligence())) === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name%\'s line was suddenly shorted while they were exploring Project-E. %pet:' . $pet->getId() . '.name% managed to capture some Lightning in a Bottle before being forcefully disconnected!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name%\'s line was suddenly shorted while they were exploring Project-E. %pet:' . $pet->getId() . '.name% managed to capture some Lightning in a Bottle before being forcefully disconnected!')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Physics' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Lightning in a Bottle', $pet, $pet->getName() . ' captured this on a shorted line of Project-E!', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::PROTOCOL_7, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::PROTOCOL_7, true);
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name%\'s line was suddenly shorted while they were exploring Project-E. %pet:' . $pet->getId() . '.name% managed to grab a couple Pointers before being forcefully disconnected.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name%\'s line was suddenly shorted while they were exploring Project-E. %pet:' . $pet->getId() . '.name% managed to grab a couple Pointers before being forcefully disconnected.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Physics' ]))
             ;
 
@@ -641,10 +631,10 @@ class Protocol7Service
             $this->inventoryService->petCollectsItem('Pointer', $pet, $pet->getName() . ' captured this on a shorted line of Project-E!', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
         }
 
-        if($this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
+        if($this->rng->rngNextInt(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
         {
             if($petWithSkills->getHasProtectionFromElectricity()->getTotal() > 0)
             {
@@ -655,7 +645,7 @@ class Protocol7Service
             else
             {
                 $pet->increaseFood(-1);
-                $pet->increaseSafety(-$this->squirrel3->rngNextInt(3, 6));
+                $pet->increaseSafety(-$this->rng->rngNextInt(3, 6));
 
                 $activityLog->setEntry($activityLog->getEntry() . ' %pet:' . $pet->getId() . '.name% was unprotected from the sudden burst of energy, and received a minor shock.');
             }
@@ -668,7 +658,7 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $check = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + min($petWithSkills->getScience()->getTotal(), $petWithSkills->getStealth()->getTotal()) + $petWithSkills->getClimbingBonus()->getTotal());
+        $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + min($petWithSkills->getScience()->getTotal(), $petWithSkills->getStealth()->getTotal()) + $petWithSkills->getClimbingBonus()->getTotal());
 
         if($petWithSkills->getClimbingBonus()->getTotal() > 0)
         {
@@ -681,38 +671,39 @@ class Protocol7Service
             $snuck = 'snuck';
         }
 
-        if($this->squirrel3->rngNextInt(1, 100) === 1)
+        if($this->rng->rngNextInt(1, 100) === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% ' . $snuck . ' into a Walled Garden, but ran into a Pirate doing the same! ' . $pet->getName() . ' defeated the Pirate, stole its Jolliest Roger, and ran off before the Walled Garden\'s security system detected them! Yarr!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% ' . $snuck . ' into a Walled Garden, but ran into a Pirate doing the same! ' . $pet->getName() . ' defeated the Pirate, stole its Jolliest Roger, and ran off before the Walled Garden\'s security system detected them! Yarr!')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Fighting', 'Stealth' ]))
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ;
 
-            $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
+            $pet->increaseEsteem($this->rng->rngNextInt(4, 8));
 
             $this->inventoryService->petCollectsItem('Jolliest Roger', $pet, $pet->getName() . ' fought off a Pirate in a Walled Garden within Project-E, and took this from it!', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE, PetSkillEnum::STEALTH, PetSkillEnum::BRAWL ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
         }
         else if($check < 15)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried ' . $toSneak . ' into a Walled Garden within Project-E, but was kicked out.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried ' . $toSneak . ' into a Walled Garden within Project-E, but was kicked out.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Stealth' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::STEALTH ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% ' . $snuck . ' into a Walled Garden within Project-E, and plucked a Macintosh that was growing there.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% ' . $snuck . ' into a Walled Garden within Project-E, and plucked a Macintosh that was growing there.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Stealth' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Macintosh', $pet, $pet->getName() . ' found this growing in a Walled Garden within Project-E!', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::STEALTH ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
         }
 
         return $activityLog;
@@ -724,52 +715,53 @@ class Protocol7Service
 
         if($pet->isInGuild(GuildEnum::TAPESTRIES))
         {
-            $check = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + max($petWithSkills->getArcana()->getTotal(), $petWithSkills->getScience()->getTotal()));
+            $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + max($petWithSkills->getArcana()->getTotal(), $petWithSkills->getScience()->getTotal()));
         }
         else
         {
-            $check = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal());
+            $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal());
         }
 
-        $lucky = $pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 100) === 1;
+        $lucky = $pet->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 100) === 1;
 
         if($check < 20)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a corrupt sector, but wasn\'t able to recover any data.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a corrupt sector, but wasn\'t able to recover any data.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
         }
         else if($lucky)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a corrupt sector, and managed to recover a Lo-res Crown from it! Lucky~!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a corrupt sector, and managed to recover a Lo-res Crown from it! Lucky~!')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Lucky~!' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Lo-res Crown', $pet, $pet->getName() . ' recovered this from a corrupt sector of Project-E! Lucky~!', $activityLog);
 
-            $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
+            $pet->increaseEsteem($this->rng->rngNextInt(4, 8));
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ], $activityLog);
         }
-        else if($this->squirrel3->rngNextInt(1, 100) === 1)
+        else if($this->rng->rngNextInt(1, 100) === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a corrupt sector, and managed to recover a Lo-res Crown from it!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a corrupt sector, and managed to recover a Lo-res Crown from it!')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
             ;
 
             $this->inventoryService->petCollectsItem('Lo-res Crown', $pet, $pet->getName() . ' recovered this from a corrupt sector of Project-E!', $activityLog);
 
-            $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
+            $pet->increaseEsteem($this->rng->rngNextInt(4, 8));
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ], $activityLog);
         }
         else
         {
-            $loot = $this->squirrel3->rngNextFromArray([
+            $loot = $this->rng->rngNextFromArray([
                 'Password',
                 'Cryptocurrency Wallet',
                 'Egg Book Audiobook',
@@ -778,16 +770,16 @@ class Protocol7Service
 
             $lucky = false;
 
-            if($this->squirrel3->rngNextInt(1, 100) === 1)
+            if($this->rng->rngNextInt(1, 100) === 1)
                 $otherLoot = 'Recovered Archive';
-            else if($this->squirrel3->rngNextInt(1, 100) === 1 && $pet->hasMerit(MeritEnum::LUCKY))
+            else if($this->rng->rngNextInt(1, 100) === 1 && $pet->hasMerit(MeritEnum::LUCKY))
             {
                 $otherLoot = 'Recovered Archive';
                 $lucky = true;
             }
             else
             {
-                $otherLoot = $this->squirrel3->rngNextFromArray([
+                $otherLoot = $this->rng->rngNextFromArray([
                     'Hash Table',
                     'Finite State Machine',
                     'Browser Cookie'
@@ -797,14 +789,15 @@ class Protocol7Service
             if($pet->isInGuild(GuildEnum::TAPESTRIES))
             {
                 $pet->getGuildMembership()->increaseReputation();
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a corrupt sector in Project-E, but was able to repair it as they would repair the fabric of reality, and recover a ' . $otherLoot . ', and ' . $loot . ' from it!', 'guilds/tapestries')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a corrupt sector in Project-E, but was able to repair it as they would repair the fabric of reality, and recover a ' . $otherLoot . ', and ' . $loot . ' from it!')
+                    ->setIcon('guilds/tapestries')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Guild', 'The Umbra' ]))
                 ;
                 $itemComment = $pet->getName() . ' recovered this by repairing a corrupt sector of Project-E!';
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a corrupt sector, and managed to recover a ' . $otherLoot . ', and ' . $loot . ' from it!', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a corrupt sector, and managed to recover a ' . $otherLoot . ', and ' . $loot . ' from it!')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
                 ;
                 $itemComment = $pet->getName() . ' recovered this from a corrupt sector of Project-E!';
@@ -821,7 +814,7 @@ class Protocol7Service
             $this->inventoryService->petCollectsItem($loot, $pet, $itemComment, $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
         }
 
         return $activityLog;

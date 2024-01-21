@@ -8,11 +8,10 @@ use Doctrine\ORM\QueryBuilder;
 
 abstract class TypeaheadService
 {
-    private EntityRepository $repository;
-
-    public function __construct(EntityRepository $repository)
+    public function __construct(
+        private readonly EntityRepository $repository
+    )
     {
-        $this->repository = $repository;
     }
 
     abstract public function addQueryBuilderConditions(QueryBuilder $qb): QueryBuilder;

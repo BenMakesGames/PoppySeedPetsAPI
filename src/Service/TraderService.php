@@ -87,27 +87,16 @@ class TraderService
         'Ruby', 'Rubis',
     ];
 
-    private InventoryService $inventoryService;
-    private TransactionService $transactionService;
-    private IRandom $rng;
-    private InventoryRepository $inventoryRepository;
-    private Clock $clock;
-    private EntityManagerInterface $em;
-    private CacheHelper $cache;
-
     public function __construct(
-        InventoryService $inventoryService, TransactionService $transactionService, IRandom $squirrel3,
-        InventoryRepository $inventoryRepository, Clock $clock,
-        EntityManagerInterface $em, CacheHelper $cache
+        private readonly InventoryService $inventoryService,
+        private readonly TransactionService $transactionService,
+        private readonly IRandom $rng,
+        private readonly InventoryRepository $inventoryRepository,
+        private readonly Clock $clock,
+        private readonly EntityManagerInterface $em,
+        private readonly CacheHelper $cache
     )
     {
-        $this->inventoryService = $inventoryService;
-        $this->transactionService = $transactionService;
-        $this->rng = $squirrel3;
-        $this->inventoryRepository = $inventoryRepository;
-        $this->clock = $clock;
-        $this->em = $em;
-        $this->cache = $cache;
     }
 
     /**

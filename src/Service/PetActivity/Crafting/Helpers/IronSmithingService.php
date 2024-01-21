@@ -18,26 +18,16 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class IronSmithingService
 {
-    private PetExperienceService $petExperienceService;
-    private InventoryService $inventoryService;
-    private ResponseService $responseService;
-    private IRandom $rng;
-    private HouseSimService $houseSimService;
-    private EntityManagerInterface $em;
-    private Clock $clock;
-
     public function __construct(
-        PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
-        IRandom $rng, HouseSimService $houseSimService, EntityManagerInterface $em, Clock $clock
+        private readonly PetExperienceService $petExperienceService,
+        private readonly InventoryService $inventoryService,
+        private readonly ResponseService $responseService,
+        private readonly IRandom $rng,
+        private readonly HouseSimService $houseSimService,
+        private readonly EntityManagerInterface $em,
+        private readonly Clock $clock
     )
     {
-        $this->petExperienceService = $petExperienceService;
-        $this->inventoryService = $inventoryService;
-        $this->responseService = $responseService;
-        $this->rng = $rng;
-        $this->houseSimService = $houseSimService;
-        $this->em = $em;
-        $this->clock = $clock;
     }
 
     public function createMeatSeekingClaymore(ComputedPetSkills $petWithSkills): PetActivityLog

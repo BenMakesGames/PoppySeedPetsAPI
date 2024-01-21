@@ -18,22 +18,14 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class WerecreatureEncounterService
 {
-    private PetExperienceService $petExperienceService;
-    private IRandom $squirrel3;
-    private ResponseService $responseService;
-    private InventoryService $inventoryService;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        PetExperienceService $petExperienceService, IRandom $squirrel3,
-        ResponseService $responseService, InventoryService $inventoryService, EntityManagerInterface $em
+        private readonly PetExperienceService $petExperienceService,
+        private readonly IRandom $squirrel3,
+        private readonly ResponseService $responseService,
+        private readonly InventoryService $inventoryService,
+        private readonly EntityManagerInterface $em
     )
     {
-        $this->petExperienceService = $petExperienceService;
-        $this->squirrel3 = $squirrel3;
-        $this->responseService = $responseService;
-        $this->inventoryService = $inventoryService;
-        $this->em = $em;
     }
 
     public function encounterWerecreature(ComputedPetSkills $petWithSkills, string $doingWhat, array $tags): PetActivityLog

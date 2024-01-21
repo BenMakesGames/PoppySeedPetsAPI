@@ -21,26 +21,16 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class EventLanternService
 {
-    private InventoryService $inventoryService;
-    private ResponseService $responseService;
-    private PetExperienceService $petExperienceService;
-    private EntityManagerInterface $em;
-    private IRandom $squirrel3;
-    private HouseSimService $houseSimService;
-    private Clock $clock;
-
     public function __construct(
-        InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        EntityManagerInterface $em, IRandom $squirrel3, Clock $clock, HouseSimService $houseSimService
+        private readonly InventoryService $inventoryService,
+        private readonly ResponseService $responseService,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly EntityManagerInterface $em,
+        private readonly IRandom $rng,
+        private readonly Clock $clock,
+        private readonly HouseSimService $houseSimService
     )
     {
-        $this->inventoryService = $inventoryService;
-        $this->responseService = $responseService;
-        $this->petExperienceService = $petExperienceService;
-        $this->em = $em;
-        $this->squirrel3 = $squirrel3;
-        $this->houseSimService = $houseSimService;
-        $this->clock = $clock;
     }
 
     /**
@@ -100,7 +90,7 @@ class EventLanternService
     private function createLantern(ComputedPetSkills $petWithSkills, string $lanternName, string $activityTag): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
         if($roll < 15)
         {
@@ -109,14 +99,14 @@ class EventLanternService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
 
         }
         else // success!
         {
             $this->houseSimService->getState()->loseItem('Crooked Fishing Rod', 1);
             $this->houseSimService->getState()->loseItem('Paper', 1);
-            $this->houseSimService->getState()->loseOneOf($this->squirrel3, [ 'Jar of Fireflies', 'Candle' ]);
+            $this->houseSimService->getState()->loseOneOf($this->rng, [ 'Jar of Fireflies', 'Candle' ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a ' . $lanternName . ' out of a Crooked Fishing Rod!', '')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting', 'Special Event', $activityTag ]))
@@ -125,7 +115,7 @@ class EventLanternService
             $this->inventoryService->petCollectsItem($lanternName, $pet, $pet->getName() . ' created this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
         }
 
         return $activityLog;

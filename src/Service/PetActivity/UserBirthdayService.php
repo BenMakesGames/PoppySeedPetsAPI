@@ -14,17 +14,12 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class UserBirthdayService
 {
-    private InventoryService $inventoryService;
-    private MuseumService $museumService;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        InventoryService $inventoryService, MuseumService $museumService, EntityManagerInterface $em
+        private readonly InventoryService $inventoryService,
+        private readonly MuseumService $museumService,
+        private readonly EntityManagerInterface $em
     )
     {
-        $this->inventoryService = $inventoryService;
-        $this->museumService = $museumService;
-        $this->em = $em;
     }
 
     public function doBirthday(ComputedPetSkills $petWithSkills): ?PetActivityLog

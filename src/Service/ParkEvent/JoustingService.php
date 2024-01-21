@@ -39,29 +39,17 @@ class JoustingService implements ParkEventInterface
 
     private int $round = 0;
 
-    private PetExperienceService $petExperienceService;
-    private EntityManagerInterface $em;
-    private PetRelationshipService $petRelationshipService;
-    private TransactionService $transactionService;
-    private InventoryService $inventoryService;
-    private IRandom $squirrel3;
-    private ParkService $parkService;
-    private UserStatsService $userStatsRepository;
-
     public function __construct(
-        PetExperienceService $petExperienceService, EntityManagerInterface $em, PetRelationshipService $petRelationshipService,
-        TransactionService $transactionService, InventoryService $inventoryService, IRandom $squirrel3,
-        ParkService $parkService, UserStatsService $userStatsRepository
+        private readonly PetExperienceService $petExperienceService,
+        private readonly EntityManagerInterface $em,
+        private readonly PetRelationshipService $petRelationshipService,
+        private readonly TransactionService $transactionService,
+        private readonly InventoryService $inventoryService,
+        private readonly IRandom $squirrel3,
+        private readonly ParkService $parkService,
+        private readonly UserStatsService $userStatsRepository
     )
     {
-        $this->petExperienceService = $petExperienceService;
-        $this->em = $em;
-        $this->petRelationshipService = $petRelationshipService;
-        $this->transactionService = $transactionService;
-        $this->inventoryService = $inventoryService;
-        $this->squirrel3 = $squirrel3;
-        $this->parkService = $parkService;
-        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function isGoodNumberOfPets(int $petCount): bool

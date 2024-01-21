@@ -36,38 +36,21 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class UmbraService
 {
-    private InventoryService $inventoryService;
-    private PetExperienceService $petExperienceService;
-    private TransactionService $transactionService;
-    private StrangeUmbralEncounters $strangeUmbralEncounters;
-    private DragonRepository $dragonRepository;
-    private IRandom $squirrel3;
-    private HattierService $hattierService;
-    private FieldGuideService $fieldGuideService;
-    private EntityManagerInterface $em;
-    private LeonidsService $leonidsService;
-    private GuildService $guildService;
-    private Clock $clock;
-
     public function __construct(
-        InventoryService $inventoryService, PetExperienceService $petExperienceService,
-        TransactionService $transactionService, GuildService $guildService, StrangeUmbralEncounters $strangeUmbralEncounters,
-        FieldGuideService $fieldGuideService, DragonRepository $dragonRepository, IRandom $squirrel3,
-        HattierService $hattierService, EntityManagerInterface $em, LeonidsService $leonidsService, Clock $clock
+        private readonly InventoryService $inventoryService,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly TransactionService $transactionService,
+        private readonly GuildService $guildService,
+        private readonly StrangeUmbralEncounters $strangeUmbralEncounters,
+        private readonly FieldGuideService $fieldGuideService,
+        private readonly DragonRepository $dragonRepository,
+        private readonly IRandom $squirrel3,
+        private readonly HattierService $hattierService,
+        private readonly EntityManagerInterface $em,
+        private readonly LeonidsService $leonidsService,
+        private readonly Clock $clock
     )
     {
-        $this->inventoryService = $inventoryService;
-        $this->petExperienceService = $petExperienceService;
-        $this->transactionService = $transactionService;
-        $this->guildService = $guildService;
-        $this->strangeUmbralEncounters = $strangeUmbralEncounters;
-        $this->dragonRepository = $dragonRepository;
-        $this->squirrel3 = $squirrel3;
-        $this->hattierService = $hattierService;
-        $this->fieldGuideService = $fieldGuideService;
-        $this->em = $em;
-        $this->leonidsService = $leonidsService;
-        $this->clock = $clock;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills)

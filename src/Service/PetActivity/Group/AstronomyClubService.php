@@ -27,27 +27,16 @@ class AstronomyClubService
 {
     public const ACTIVITY_ICON = 'groups/astronomy';
 
-    private PetExperienceService $petExperienceService;
-    private EntityManagerInterface $em;
-    private InventoryService $inventoryService;
-    private PetRelationshipService $petRelationshipService;
-    private IRandom $squirrel3;
-    private HattierService $hattierService;
-    private Clock $clock;
-
     public function __construct(
-        PetExperienceService $petExperienceService, EntityManagerInterface $em, InventoryService $inventoryService,
-        PetRelationshipService $petRelationshipService, IRandom $squirrel3, HattierService $hattierService,
-        Clock $clock
+        private readonly PetExperienceService $petExperienceService,
+        private readonly EntityManagerInterface $em,
+        private readonly InventoryService $inventoryService,
+        private readonly PetRelationshipService $petRelationshipService,
+        private readonly IRandom $rng,
+        private readonly HattierService $hattierService,
+        private readonly Clock $clock
     )
     {
-        $this->petExperienceService = $petExperienceService;
-        $this->em = $em;
-        $this->inventoryService = $inventoryService;
-        $this->petRelationshipService = $petRelationshipService;
-        $this->squirrel3 = $squirrel3;
-        $this->hattierService = $hattierService;
-        $this->clock = $clock;
     }
 
     private const DICTIONARY = [
@@ -93,7 +82,7 @@ class AstronomyClubService
 
     public function generateGroupName(): string
     {
-        return GroupNameGenerator::generateName($this->squirrel3, self::GROUP_NAME_PATTERNS, self::DICTIONARY, 60);
+        return GroupNameGenerator::generateName($this->rng, self::GROUP_NAME_PATTERNS, self::DICTIONARY, 60);
     }
 
     public function meet(PetGroup $group)
@@ -103,7 +92,7 @@ class AstronomyClubService
         $groupSize = count($group->getMembers());
 
         $skill = 0;
-        $progress = $this->squirrel3->rngNextInt(20, 35 + $groupSize * 2);
+        $progress = $this->rng->rngNextInt(20, 35 + $groupSize * 2);
         /** @var PetChanges[] $petChanges */ $petChanges = [];
 
         foreach($group->getMembers() as $pet)
@@ -111,7 +100,7 @@ class AstronomyClubService
             $petWithSkills = $pet->getComputedSkills();
             $petChanges[$pet->getId()] = new PetChanges($pet);
 
-            $roll = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getScience()->getTotal());
+            $roll = $this->rng->rngNextInt(1, 10 + $petWithSkills->getScience()->getTotal());
 
             $expGainPerPet[$pet->getId()] = max(1, floor($roll / 5));
 
@@ -129,7 +118,7 @@ class AstronomyClubService
 
             foreach($group->getMembers() as $member)
             {
-                $member->increaseEsteem($this->squirrel3->rngNextInt(3, 6));
+                $member->increaseEsteem($this->rng->rngNextInt(3, 6));
 
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $this->formatMessage($messageTemplate, $member, $group, ''))
                     ->setIcon(self::ACTIVITY_ICON)
@@ -147,7 +136,7 @@ class AstronomyClubService
         {
             // we're expecting a very-maximum of 30 * 5 = 150. this will be exceptionally unlikely, however
             $max = min(self::MAX_SKILL_ROLL, $group->getSkillRollTotal());
-            $reward = $this->squirrel3->rngNextInt(0, $max);
+            $reward = $this->rng->rngNextInt(0, $max);
 
             $group
                 ->clearProgress()
@@ -161,12 +150,12 @@ class AstronomyClubService
                 $item = 'Silica Grounds';
                 $description = 'a cloud of space dust';
 
-                if($this->squirrel3->rngNextInt(1, 20) === 1)
+                if($this->rng->rngNextInt(1, 20) === 1)
                     $description .= '-- I mean, Silica Grounds';
             }
             else if($reward < 20) // 10%
             {
-                $item = $this->squirrel3->rngNextFromArray([ 'Pointer', 'NUL' ]);
+                $item = $this->rng->rngNextFromArray([ 'Pointer', 'NUL' ]);
                 $description = 'some old radio transmissions from Earth';
             }
             else if($reward < 25) // 5%
@@ -216,7 +205,7 @@ class AstronomyClubService
 
             foreach($group->getMembers() as $member)
             {
-                $member->increaseEsteem($this->squirrel3->rngNextInt(3, 6));
+                $member->increaseEsteem($this->rng->rngNextInt(3, 6));
 
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $this->formatMessage($messageTemplate, $member, $group, $description))
                     ->setIcon(self::ACTIVITY_ICON)
@@ -238,10 +227,10 @@ class AstronomyClubService
         {
             foreach($group->getMembers() as $member)
             {
-                if($this->squirrel3->rngNextInt(1, 3) === 1)
-                    $member->increaseLove($this->squirrel3->rngNextInt(2, 4));
+                if($this->rng->rngNextInt(1, 3) === 1)
+                    $member->increaseLove($this->rng->rngNextInt(2, 4));
                 else
-                    $member->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
+                    $member->increaseEsteem($this->rng->rngNextInt(2, 4));
 
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member,  $member->getName() . ' explored the cosmos with ' . $group->getName() . '.')
                     ->setIcon(self::ACTIVITY_ICON)

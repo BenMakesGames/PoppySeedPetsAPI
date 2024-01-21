@@ -12,24 +12,15 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class RecyclingService
 {
-    private EntityManagerInterface $em;
-    private UserStatsService $userStatsRepository;
-    private IRandom $squirrel3;
-    private ResponseService $responseService;
-    private TransactionService $transactionService;
-    private Clock $clock;
-
     public function __construct(
-        EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $squirrel3,
-        ResponseService $responseService, TransactionService $transactionService, Clock $clock
+        private readonly EntityManagerInterface $em,
+        private readonly UserStatsService $userStatsRepository,
+        private readonly IRandom $rng,
+        private readonly ResponseService $responseService,
+        private readonly TransactionService $transactionService,
+        private readonly Clock $clock
     )
     {
-        $this->em = $em;
-        $this->userStatsRepository = $userStatsRepository;
-        $this->squirrel3 = $squirrel3;
-        $this->responseService = $responseService;
-        $this->transactionService = $transactionService;
-        $this->clock = $clock;
     }
 
     private static function recycledItemShouldGoToGivingTree(IRandom $rng, bool $givingTreeHoliday, Inventory $i): bool
@@ -86,7 +77,7 @@ class RecyclingService
                 continue;
             }
 
-            if(self::recycledItemShouldGoToGivingTree($this->squirrel3, $givingTreeHoliday, $i))
+            if(self::recycledItemShouldGoToGivingTree($this->rng, $givingTreeHoliday, $i))
             {
                 $i
                     ->changeOwner($givingTree, $user->getName() . ' recycled this item, and it found its way to The Giving Tree!', $this->em)

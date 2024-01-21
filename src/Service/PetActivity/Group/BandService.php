@@ -21,24 +21,15 @@ class BandService
 {
     public const ACTIVITY_ICON = 'groups/band';
 
-    private EntityManagerInterface $em;
-    private PetRelationshipService $petRelationshipService;
-    private InventoryService $inventoryService;
-    private PetExperienceService $petExperienceService;
-    private TransactionService $transactionService;
-    private IRandom $squirrel3;
-
     public function __construct(
-        EntityManagerInterface $em, PetRelationshipService $petRelationshipService, InventoryService $inventoryService,
-        PetExperienceService $petExperienceService, TransactionService $transactionService, IRandom $squirrel3
+        private readonly EntityManagerInterface $em,
+        private readonly PetRelationshipService $petRelationshipService,
+        private readonly InventoryService $inventoryService,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly TransactionService $transactionService,
+        private readonly IRandom $squirrel3
     )
     {
-        $this->em = $em;
-        $this->petRelationshipService = $petRelationshipService;
-        $this->inventoryService = $inventoryService;
-        $this->petExperienceService = $petExperienceService;
-        $this->transactionService = $transactionService;
-        $this->squirrel3 = $squirrel3;
     }
 
     private const ADJECTIVE_LIST = [

@@ -20,12 +20,8 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class ExportItemCommand extends PoppySeedPetsCommand
 {
-    private EntityManagerInterface $em;
-
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(private readonly EntityManagerInterface $em)
     {
-        $this->em = $em;
-
         parent::__construct();
     }
 

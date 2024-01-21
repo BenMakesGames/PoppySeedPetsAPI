@@ -16,24 +16,15 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class MeteoriteSmithingService
 {
-    private PetExperienceService $petExperienceService;
-    private InventoryService $inventoryService;
-    private ResponseService $responseService;
-    private IRandom $squirrel3;
-    private HouseSimService $houseSimService;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
-        HouseSimService $houseSimService, IRandom $squirrel3, EntityManagerInterface $em
+        private readonly PetExperienceService $petExperienceService,
+        private readonly InventoryService $inventoryService,
+        private readonly ResponseService $responseService,
+        private readonly HouseSimService $houseSimService,
+        private readonly IRandom $squirrel3,
+        private readonly EntityManagerInterface $em
     )
     {
-        $this->petExperienceService = $petExperienceService;
-        $this->inventoryService = $inventoryService;
-        $this->responseService = $responseService;
-        $this->squirrel3 = $squirrel3;
-        $this->houseSimService = $houseSimService;
-        $this->em = $em;
     }
 
     public function createIlumetsa(ComputedPetSkills $petWithSkills): PetActivityLog

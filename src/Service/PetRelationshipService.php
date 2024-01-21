@@ -30,24 +30,15 @@ class PetRelationshipService
         RelationshipEnum::MATE => 5,
     ];
 
-    private EntityManagerInterface $em;
-    private PregnancyService $pregnancyService;
-    private FriendlyRivalsService $friendlyRivalsService;
-    private LoveService $loveService;
-    private RelationshipChangeService $relationshipChangeService;
-    private IRandom $squirrel3;
-
     public function __construct(
-        EntityManagerInterface $em, PregnancyService $pregnancyService, FriendlyRivalsService $friendlyRivalsService,
-        LoveService $loveService, RelationshipChangeService $relationshipChangeService, IRandom $squirrel3
+        private readonly EntityManagerInterface $em,
+        private readonly PregnancyService $pregnancyService,
+        private readonly FriendlyRivalsService $friendlyRivalsService,
+        private readonly LoveService $loveService,
+        private readonly RelationshipChangeService $relationshipChangeService,
+        private readonly IRandom $squirrel3
     )
     {
-        $this->em = $em;
-        $this->pregnancyService = $pregnancyService;
-        $this->friendlyRivalsService = $friendlyRivalsService;
-        $this->loveService = $loveService;
-        $this->relationshipChangeService = $relationshipChangeService;
-        $this->squirrel3 = $squirrel3;
     }
 
     public static function min(string $relationship1, string $relationship2): string

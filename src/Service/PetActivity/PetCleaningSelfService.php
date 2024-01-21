@@ -24,10 +24,10 @@ use Doctrine\ORM\EntityManagerInterface;
 class PetCleaningSelfService
 {
     public function __construct(
-        private PetExperienceService $petExperienceService,
-        private InventoryService $inventoryService,
-        private EntityManagerInterface $em,
-        private IRandom $rng
+        private readonly PetExperienceService $petExperienceService,
+        private readonly InventoryService $inventoryService,
+        private readonly EntityManagerInterface $em,
+        private readonly IRandom $rng
     )
     {
     }

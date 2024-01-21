@@ -23,24 +23,15 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class KappaService
 {
-    private IRandom $rng;
-    private PetExperienceService $petExperienceService;
-    private ResponseService $responseService;
-    private InventoryService $inventoryService;
-    private EntityManagerInterface $em;
-    private UserStatsService $userStatsRepository;
-
     public function __construct(
-        IRandom $rng, PetExperienceService $petExperienceService, ResponseService $responseService,
-        InventoryService $inventoryService, EntityManagerInterface $em, UserStatsService $userStatsRepository
+        private readonly IRandom $rng,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly ResponseService $responseService,
+        private readonly InventoryService $inventoryService,
+        private readonly EntityManagerInterface $em,
+        private readonly UserStatsService $userStatsRepository
     )
     {
-        $this->rng = $rng;
-        $this->petExperienceService = $petExperienceService;
-        $this->responseService = $responseService;
-        $this->inventoryService = $inventoryService;
-        $this->em = $em;
-        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function doHuntKappa(ComputedPetSkills $petWithSkills): PetActivityLog

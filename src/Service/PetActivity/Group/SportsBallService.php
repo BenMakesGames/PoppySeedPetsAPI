@@ -21,22 +21,14 @@ class SportsBallService
 {
     public const ACTIVITY_ICON = 'groups/sportsball';
 
-    private PetExperienceService $petExperienceService;
-    private EntityManagerInterface $em;
-    private InventoryService $inventoryService;
-    private PetRelationshipService $petRelationshipService;
-    private IRandom $squirrel3;
-
     public function __construct(
-        PetExperienceService $petExperienceService, EntityManagerInterface $em, InventoryService $inventoryService,
-        PetRelationshipService $petRelationshipService, IRandom $squirrel3
+        private readonly PetExperienceService $petExperienceService,
+        private readonly EntityManagerInterface $em,
+        private readonly InventoryService $inventoryService,
+        private readonly PetRelationshipService $petRelationshipService,
+        private readonly IRandom $rng
     )
     {
-        $this->petExperienceService = $petExperienceService;
-        $this->em = $em;
-        $this->inventoryService = $inventoryService;
-        $this->petRelationshipService = $petRelationshipService;
-        $this->squirrel3 = $squirrel3;
     }
 
     private const DICTIONARY = [
@@ -68,7 +60,7 @@ class SportsBallService
 
     public function generateGroupName(): string
     {
-        return GroupNameGenerator::generateName($this->squirrel3, self::GROUP_NAME_PATTERNS, self::DICTIONARY, 60);
+        return GroupNameGenerator::generateName($this->rng, self::GROUP_NAME_PATTERNS, self::DICTIONARY, 60);
     }
 
     private function rollSkill(Pet $pet): int
@@ -84,7 +76,7 @@ class SportsBallService
         if($pet->hasMerit(MeritEnum::LUCKY))
             $total += 3;
 
-        return $this->squirrel3->rngNextInt(1, 25 + $total);
+        return $this->rng->rngNextInt(1, 25 + $total);
     }
 
     public function meet(PetGroup $group)
@@ -109,7 +101,7 @@ class SportsBallService
             {
                 $messageTemplate .= ' They were the star performer!';
 
-                $member->increaseEsteem($this->squirrel3->rngNextInt(4, 7));
+                $member->increaseEsteem($this->rng->rngNextInt(4, 7));
             }
             else if($member->getId() === $lowestPerformer)
             {
@@ -118,11 +110,11 @@ class SportsBallService
                 else
                 {
                     $messageTemplate .= ' They didn\'t do very well, but it was still fun.';
-                    $member->increaseEsteem($this->squirrel3->rngNextInt(2, 5));
+                    $member->increaseEsteem($this->rng->rngNextInt(2, 5));
                 }
             }
             else
-                $member->increaseEsteem($this->squirrel3->rngNextInt(3, 6));
+                $member->increaseEsteem($this->rng->rngNextInt(3, 6));
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $this->formatMessage($messageTemplate, $member, $group))
                 ->setIcon(self::ACTIVITY_ICON)
@@ -136,9 +128,9 @@ class SportsBallService
                 PetSkillEnum::STEALTH,
             ], $activityLog);
 
-            if($this->squirrel3->rngNextInt(1, 10) === 1 && $member->getId() !== $lowestPerformer)
+            if($this->rng->rngNextInt(1, 10) === 1 && $member->getId() !== $lowestPerformer)
             {
-                $loot = ItemRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray(self::POSSIBLE_LOOT));
+                $loot = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray(self::POSSIBLE_LOOT));
                 $activityLog->setEntry($activityLog->getEntry() . ' ' . $member->getName() . ' accidentally brought ' . $loot->getNameWithArticle() . ' home after the game. (Oops! (Oh well.))');
                 $this->inventoryService->petCollectsItem($loot, $member, $this->formatMessage($message, $member, $group), $activityLog);
             }

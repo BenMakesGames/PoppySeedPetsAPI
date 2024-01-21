@@ -26,32 +26,18 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PetSocialActivityService
 {
-    private EntityManagerInterface $em;
-    private PetRelationshipService $petRelationshipService;
-    private PetGroupService $petGroupService;
-    private PetExperienceService $petExperienceService;
-    private PetRelationshipRepository $petRelationshipRepository;
-    private IRandom $squirrel3;
-    private HoliService $holiService;
-    private AwaOdoriService $awaOdoriService;
-    private PregnancyService $pregnancyService;
-
     public function __construct(
-        EntityManagerInterface $em, PetRelationshipService $petRelationshipService, IRandom $squirrel3,
-        PetGroupService $petGroupService, PetExperienceService $petExperienceService, HoliService $holiService,
-        PetRelationshipRepository $petRelationshipRepository, PregnancyService $pregnancyService,
-        AwaOdoriService $awaOdoriService
+        private readonly EntityManagerInterface $em,
+        private readonly PetRelationshipService $petRelationshipService,
+        private readonly IRandom $rng,
+        private readonly PetGroupService $petGroupService,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly HoliService $holiService,
+        private readonly PetRelationshipRepository $petRelationshipRepository,
+        private readonly PregnancyService $pregnancyService,
+        private readonly AwaOdoriService $awaOdoriService
     )
     {
-        $this->em = $em;
-        $this->squirrel3 = $squirrel3;
-        $this->petRelationshipService = $petRelationshipService;
-        $this->petGroupService = $petGroupService;
-        $this->petExperienceService = $petExperienceService;
-        $this->petRelationshipRepository = $petRelationshipRepository;
-        $this->holiService = $holiService;
-        $this->pregnancyService = $pregnancyService;
-        $this->awaOdoriService = $awaOdoriService;
     }
 
     public function runSocialTime(Pet $pet): bool
@@ -119,7 +105,7 @@ class PetSocialActivityService
                     break;
 
                 case SocialTimeWantEnum::GROUP:
-                    $this->petGroupService->doGroupActivity($this->squirrel3->rngNextFromArray($availableGroups->toArray()));
+                    $this->petGroupService->doGroupActivity($this->rng->rngNextFromArray($availableGroups->toArray()));
                     return true;
 
                 case SocialTimeWantEnum::CREATE_GROUP:
@@ -164,7 +150,7 @@ class PetSocialActivityService
             return false;
 
         // maybe hang out with a spirit companion, if you have one
-        if($spiritCompanionAvailable && (count($relationships) === 0 || $this->squirrel3->rngNextInt(1, count($relationships) + 1) === 1))
+        if($spiritCompanionAvailable && (count($relationships) === 0 || $this->rng->rngNextInt(1, count($relationships) + 1) === 1))
         {
             $this->hangOutWithSpiritCompanion($pet);
             return true;
@@ -180,7 +166,7 @@ class PetSocialActivityService
 
         $friendRelationship = $friendRelationshipsByFriendId[$friend->getId()];
 
-        $skipped = $this->squirrel3->rngNextInt(0, 5);
+        $skipped = $this->rng->rngNextInt(0, 5);
 
         foreach($relationships as $r)
         {
@@ -245,7 +231,7 @@ class PetSocialActivityService
 
             $chanceToHangOut = $friendRelationshipsByFriendId[$r->getRelationship()->getId()]->getCommitment() * 1000 / $r->getCommitment();
 
-            return $this->squirrel3->rngNextInt(0, 999) < $chanceToHangOut;
+            return $this->rng->rngNextInt(0, 999) < $chanceToHangOut;
         });
 
         if(count($relationships) === 0)
@@ -283,13 +269,13 @@ class PetSocialActivityService
 
         $adjectives = [ 'bizarre', 'impressive', 'surprisingly-graphic', 'whirlwind' ];
 
-        if($this->squirrel3->rngNextInt(1, 3) !== 1 || ($pet->getSafety() > 0 && $pet->getLove() > 0 && $pet->getEsteem() > 0))
+        if($this->rng->rngNextInt(1, 3) !== 1 || ($pet->getSafety() > 0 && $pet->getLove() > 0 && $pet->getEsteem() > 0))
         {
             switch($companion->getStar())
             {
                 case SpiritCompanionStarEnum::ALTAIR:
                     // the flying/fighting eagle
-                    if($this->squirrel3->rngNextInt(1, 3) === 1)
+                    if($this->rng->rngNextInt(1, 3) === 1)
                     {
                         $teachingStat = PetSkillEnum::BRAWL;
                         $message = '%pet:' . $pet->getId() . '.name% practiced hunting with ' . $companion->getName() . '!';
@@ -303,14 +289,14 @@ class PetSocialActivityService
 
                 case SpiritCompanionStarEnum::CASSIOPEIA:
                     // sneaky snake
-                    if($this->squirrel3->rngNextInt(1, 3) === 1)
+                    if($this->rng->rngNextInt(1, 3) === 1)
                     {
                         $teachingStat = PetSkillEnum::STEALTH;
                         $message = $companion->getName() . ' showed %pet:' . $pet->getId() . '.name% how to take advantage of their surroundings to hide their presence.';
                     }
                     else
                     {
-                        if($this->squirrel3->rngNextInt(1, 4) === 1)
+                        if($this->rng->rngNextInt(1, 4) === 1)
                             $message = '%pet:' . $pet->getId() . '.name% listened to ' . $companion->getName() . ' for a little while. They had many, strange secrets to tell, but none really seemed that useful.';
                         else
                             $message = '%pet:' . $pet->getId() . '.name% listened to ' . $companion->getName() . ' for a little while.';
@@ -319,20 +305,20 @@ class PetSocialActivityService
 
                 case SpiritCompanionStarEnum::CEPHEUS:
                     // a king
-                    if($this->squirrel3->rngNextInt(1, 3) === 1)
+                    if($this->rng->rngNextInt(1, 3) === 1)
                     {
                         $teachingStat = PetSkillEnum::ARCANA;
                         $message = '%pet:' . $pet->getId() . '.name% listened to ' . $companion->getName() . '\'s stories about the various lands of the near and far Umbra...';
                     }
                     else
                     {
-                        $adjective = $this->squirrel3->rngNextFromArray($adjectives);
+                        $adjective = $this->rng->rngNextFromArray($adjectives);
                         $message = $companion->getName() . ' told ' . GrammarFunctions::indefiniteArticle($adjective) . ' ' . $adjective . ' story they made just for %pet:' . $pet->getId() . '.name%!';
                     }
                     break;
 
                 case SpiritCompanionStarEnum::GEMINI:
-                    $message = '%pet:' . $pet->getId() . '.name% played ' . $this->squirrel3->rngNextFromArray([
+                    $message = '%pet:' . $pet->getId() . '.name% played ' . $this->rng->rngNextFromArray([
                         'hide-and-go-seek tag',
                         'hacky sack',
                         'soccer',
@@ -348,11 +334,11 @@ class PetSocialActivityService
 
                 case SpiritCompanionStarEnum::SAGITTARIUS:
                     // satyr-adjacent
-                    if($this->squirrel3->rngNextInt(1, 3) === 1)
+                    if($this->rng->rngNextInt(1, 3) === 1)
                     {
                         // teaches music
                         $teachingStat = PetSkillEnum::MUSIC;
-                        $message = '%pet:' . $pet->getId() . '.name% ' . $this->squirrel3->rngNextFromArray([ 'played music', 'danced', 'sang' ]) . ' with ' . $companion->getName() . '!';
+                        $message = '%pet:' . $pet->getId() . '.name% ' . $this->rng->rngNextFromArray([ 'played music', 'danced', 'sang' ]) . ' with ' . $companion->getName() . '!';
                     }
                     else
                     {
@@ -368,21 +354,21 @@ class PetSocialActivityService
             if($teachingStat)
             {
                 $pet
-                    ->increaseSafety($this->squirrel3->rngNextInt(1, 2))
-                    ->increaseLove($this->squirrel3->rngNextInt(1, 2))
-                    ->increaseEsteem($this->squirrel3->rngNextInt(1, 2))
+                    ->increaseSafety($this->rng->rngNextInt(1, 2))
+                    ->increaseLove($this->rng->rngNextInt(1, 2))
+                    ->increaseEsteem($this->rng->rngNextInt(1, 2))
                 ;
             }
             else
             {
                 $pet
-                    ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
-                    ->increaseLove($this->squirrel3->rngNextInt(2, 4))
-                    ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
+                    ->increaseSafety($this->rng->rngNextInt(2, 4))
+                    ->increaseLove($this->rng->rngNextInt(2, 4))
+                    ->increaseEsteem($this->rng->rngNextInt(2, 4))
                 ;
             }
 
-            if(self::getPregnancyViaSpiritCompanion($pet, $this->squirrel3))
+            if(self::getPregnancyViaSpiritCompanion($pet, $this->rng))
             {
                 $this->pregnancyService->getPregnantViaSpiritCompanion($pet);
                 $activityTags[] = 'Pregnancy';
@@ -398,36 +384,36 @@ class PetSocialActivityService
                 case SpiritCompanionStarEnum::ALTAIR:
                 case SpiritCompanionStarEnum::CEPHEUS:
                     $pet
-                        ->increaseSafety($this->squirrel3->rngNextInt(6, 10))
-                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseSafety($this->rng->rngNextInt(6, 10))
+                        ->increaseLove($this->rng->rngNextInt(2, 4))
                     ;
-                    $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' told a ' . $this->squirrel3->rngNextFromArray($adjectives) . ' story about victory in combat, and swore to protect %pet:' . $pet->getId() . '.name%!';
+                    $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' told a ' . $this->rng->rngNextFromArray($adjectives) . ' story about victory in combat, and swore to protect %pet:' . $pet->getId() . '.name%!';
                     break;
                 case SpiritCompanionStarEnum::CASSIOPEIA:
                     $pet
-                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseSafety($this->rng->rngNextInt(2, 4))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' whispered odd prophecies, then stared at %pet:' . $pet->getId() . '.name% expectantly. (It\'s the thought that counts...)';
                     break;
                 case SpiritCompanionStarEnum::GEMINI:
                     $pet
-                        ->increaseSafety($this->squirrel3->rngNextInt(4, 8))
-                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
-                        ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseSafety($this->rng->rngNextInt(4, 8))
+                        ->increaseLove($this->rng->rngNextInt(2, 4))
+                        ->increaseEsteem($this->rng->rngNextInt(2, 4))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' smiled, and split into multiple copies of itself, each defending %pet:' . $pet->getId() . '.name% from another angle. They all turned to %pet:' . $pet->getId() . '.name% and gave a sincere thumbs up before recombining.';
                     break;
                 case SpiritCompanionStarEnum::SAGITTARIUS:
                     $pet
-                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
-                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseSafety($this->rng->rngNextInt(2, 4))
+                        ->increaseLove($this->rng->rngNextInt(2, 4))
                     ;
-                    $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' tried to distract %pet:' . $pet->getId() . '.name% with ' . $this->squirrel3->rngNextFromArray($adjectives) . ' stories about lavish parties. It kind of worked...';
+                    $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' tried to distract %pet:' . $pet->getId() . '.name% with ' . $this->rng->rngNextFromArray($adjectives) . ' stories about lavish parties. It kind of worked...';
                     break;
                 case SpiritCompanionStarEnum::HYDRA:
                     $pet
-                        ->increaseSafety($this->squirrel3->rngNextInt(4, 8))
-                        ->increaseLove($this->squirrel3->rngNextInt(4, 8))
+                        ->increaseSafety($this->rng->rngNextInt(4, 8))
+                        ->increaseLove($this->rng->rngNextInt(4, 8))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. Sensing %pet:' . $pet->getId() . '.name%\'s unease, ' . $companion->getName() . ' looked around for potential threats, and roared menacingly.';
                     break;
@@ -442,37 +428,37 @@ class PetSocialActivityService
                 case SpiritCompanionStarEnum::ALTAIR:
                 case SpiritCompanionStarEnum::CEPHEUS:
                     $pet
-                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
-                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseSafety($this->rng->rngNextInt(2, 4))
+                        ->increaseLove($this->rng->rngNextInt(2, 4))
                     ;
-                    $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' rambled some ' . $this->squirrel3->rngNextFromArray($adjectives) . ' story about victory in combat... (It\'s the thought that counts...)';
+                    $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' rambled some ' . $this->rng->rngNextFromArray($adjectives) . ' story about victory in combat... (It\'s the thought that counts...)';
                     break;
                 case SpiritCompanionStarEnum::CASSIOPEIA:
                     $pet
-                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
-                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseSafety($this->rng->rngNextInt(2, 4))
+                        ->increaseLove($this->rng->rngNextInt(2, 4))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' whispered odd prophecies, then stared at %pet:' . $pet->getId() . '.name% expectantly. (It\'s the thought that counts...)';
                     break;
                 case SpiritCompanionStarEnum::GEMINI:
                     $pet
-                        ->increaseSafety($this->squirrel3->rngNextInt(4, 8))
-                        ->increaseLove($this->squirrel3->rngNextInt(4, 8))
+                        ->increaseSafety($this->rng->rngNextInt(4, 8))
+                        ->increaseLove($this->rng->rngNextInt(4, 8))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' smiled, and split into multiple copies of itself, and they all played games together!';
                     break;
                 case SpiritCompanionStarEnum::SAGITTARIUS:
                     $pet
-                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
-                        ->increaseLove($this->squirrel3->rngNextInt(4, 8))
-                        ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseSafety($this->rng->rngNextInt(2, 4))
+                        ->increaseLove($this->rng->rngNextInt(4, 8))
+                        ->increaseEsteem($this->rng->rngNextInt(2, 4))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. The two hosted a party for themselves; %pet:' . $pet->getId() . '.name% had a lot of fun.';
                     break;
                 case SpiritCompanionStarEnum::HYDRA:
                     $pet
-                        ->increaseSafety($this->squirrel3->rngNextInt(4, 8))
-                        ->increaseLove($this->squirrel3->rngNextInt(4, 8))
+                        ->increaseSafety($this->rng->rngNextInt(4, 8))
+                        ->increaseLove($this->rng->rngNextInt(4, 8))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. Sensing %pet:' . $pet->getId() . '.name%\'s unease, ' . $companion->getName() . ' settled into %pet:' . $pet->getId() . '.name%\'s lap.';
                     break;
@@ -487,37 +473,37 @@ class PetSocialActivityService
                 case SpiritCompanionStarEnum::ALTAIR:
                 case SpiritCompanionStarEnum::CEPHEUS:
                     $pet
-                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
-                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
-                        ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseSafety($this->rng->rngNextInt(2, 4))
+                        ->increaseLove($this->rng->rngNextInt(2, 4))
+                        ->increaseEsteem($this->rng->rngNextInt(2, 4))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' listened patiently; in the end, %pet:' . $pet->getId() . '.name% felt a little better.';
                     break;
                 case SpiritCompanionStarEnum::CASSIOPEIA:
                     $pet
-                        ->increaseEsteem($this->squirrel3->rngNextInt(4, 8))
+                        ->increaseEsteem($this->rng->rngNextInt(4, 8))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' whispered odd prophecies, then stared at %pet:' . $pet->getId() . '.name% expectantly. Somehow, that actually helped!';
                     break;
                 case SpiritCompanionStarEnum::GEMINI:
                     $pet
-                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseLove($this->rng->rngNextInt(2, 4))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' tried to entertain %pet:' . $pet->getId() . '.name% by splitting into copies and dancing around, but it didn\'t really help...';
                     break;
                 case SpiritCompanionStarEnum::SAGITTARIUS:
                     $pet
-                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
-                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
-                        ->increaseEsteem($this->squirrel3->rngNextInt(4, 8))
+                        ->increaseSafety($this->rng->rngNextInt(2, 4))
+                        ->increaseLove($this->rng->rngNextInt(2, 4))
+                        ->increaseEsteem($this->rng->rngNextInt(4, 8))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' empathized completely, having been in similar situations themselves. It was really nice to hear!';
                     break;
                 case SpiritCompanionStarEnum::HYDRA:
                     $pet
-                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
-                        ->increaseLove($this->squirrel3->rngNextInt(2, 4))
-                        ->increaseEsteem($this->squirrel3->rngNextInt(4, 8))
+                        ->increaseSafety($this->rng->rngNextInt(2, 4))
+                        ->increaseLove($this->rng->rngNextInt(2, 4))
+                        ->increaseEsteem($this->rng->rngNextInt(4, 8))
                     ;
                     $message = $pet->getName() . ' was feeling down, so talked to ' . $companion->getName() . '. Sensing %pet:' . $pet->getId() . '.name%\'s unease, ' . $companion->getName() . ' settled into %pet:' . $pet->getId() . '.name%\'s lap.';
                     break;

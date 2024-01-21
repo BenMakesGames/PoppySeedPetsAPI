@@ -34,27 +34,16 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class EatingService
 {
-    private IRandom $squirrel3;
-    private CravingService $cravingService;
-    private InventoryService $inventoryService;
-    private ResponseService $responseService;
-    private EntityManagerInterface $em;
-    private PetExperienceService $petExperienceService;
-    private UserStatsService $userStatsRepository;
-
     public function __construct(
-        IRandom $squirrel3, CravingService $cravingService,
-        InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
-        PetExperienceService $petExperienceService, UserStatsService $userStatsRepository
+        private readonly IRandom $rng,
+        private readonly CravingService $cravingService,
+        private readonly InventoryService $inventoryService,
+        private readonly ResponseService $responseService,
+        private readonly EntityManagerInterface $em,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly UserStatsService $userStatsRepository
     )
     {
-        $this->squirrel3 = $squirrel3;
-        $this->cravingService = $cravingService;
-        $this->inventoryService = $inventoryService;
-        $this->responseService = $responseService;
-        $this->em = $em;
-        $this->petExperienceService = $petExperienceService;
-        $this->userStatsRepository = $userStatsRepository;
     }
 
     /**
@@ -76,7 +65,7 @@ class EatingService
         if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
             throw new EnumInvalidValueException(FlavorEnum::class, $pet->getFavoriteFlavor());
 
-        $randomFlavor = $food->randomFlavor > 0 ? FlavorEnum::getRandomValue($this->squirrel3) : null;
+        $randomFlavor = $food->randomFlavor > 0 ? FlavorEnum::getRandomValue($this->rng) : null;
 
         $esteemGain = self::getFavoriteFlavorStrength($pet, $food, $randomFlavor) + $food->love;
 
@@ -165,8 +154,8 @@ class EatingService
 
         foreach($food->bonusItems as $bonusItem)
         {
-            if($this->squirrel3->rngNextInt(1, 1000) <= $bonusItem->chance)
-                $bonusItems[] = InventoryService::getRandomItemFromItemGroup($this->squirrel3, $bonusItem->itemGroup);
+            if($this->rng->rngNextInt(1, 1000) <= $bonusItem->chance)
+                $bonusItems[] = InventoryService::getRandomItemFromItemGroup($this->rng, $bonusItem->itemGroup);
         }
 
         if(count($bonusItems) > 0)
@@ -180,7 +169,7 @@ class EatingService
             else
                 $exclamations[] = 'Where\'d those come from??';
 
-            $naniNani = $this->squirrel3->rngNextFromArray($exclamations);
+            $naniNani = $this->rng->rngNextFromArray($exclamations);
 
             $activityLogText = 'While eating the ' . $food->name . ', ' . $pet->getName() . ' spotted ' . ArrayFunctions::list_nice($bonusItemNamesWithArticles) . '! (' . $naniNani . ')';
 
@@ -192,7 +181,7 @@ class EatingService
             {
                 $comment =
                     'While eating ' . $food->name . ', ' . $pet->getName() . ' happened to spot this! ' .
-                    $this->squirrel3->rngNextFromArray([
+                    $this->rng->rngNextFromArray([
                         '', '... Sure!', '... Why not?', 'As you do!', 'A happy coincidence!', 'Weird!',
                         'Inexplicable, but not unwelcome!', '(Where was it up until this point, I wonder??)',
                         'These things happen. Apparently.', '👍', 'Wild!', 'How\'s _that_ work?',
@@ -208,7 +197,7 @@ class EatingService
             ;
         }
 
-        if($pet->hasMerit(MeritEnum::BURPS_MOTHS) && $this->squirrel3->rngNextInt(1, 200) < $food->food + $food->junk)
+        if($pet->hasMerit(MeritEnum::BURPS_MOTHS) && $this->rng->rngNextInt(1, 200) < $food->food + $food->junk)
         {
             $inventory = (new Inventory())
                 ->setItem(ItemRepository::findOneByName($this->em, 'Moth'))
@@ -240,7 +229,7 @@ class EatingService
         if(ArrayFunctions::any($inventory, fn(Inventory $i) => $i->getItem()->getFood() === null))
             throw new PSPInvalidOperationException('One or more of the selected items is not edible! (Yuck!)');
 
-        $this->squirrel3->rngNextShuffle($inventory);
+        $this->rng->rngNextShuffle($inventory);
 
         $isThirsty = $pet->hasStatusEffect(StatusEffectEnum::THIRSTY);
         $isJaune = $pet->hasStatusEffect(StatusEffectEnum::JAUNE);
@@ -274,7 +263,7 @@ class EatingService
             if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
                 throw new EnumInvalidValueException(FlavorEnum::class, $pet->getFavoriteFlavor());
 
-            $randomFlavor = $food->randomFlavor > 0 ? FlavorEnum::getRandomValue($this->squirrel3) : null;
+            $randomFlavor = $food->randomFlavor > 0 ? FlavorEnum::getRandomValue($this->rng) : null;
 
             $favoriteFlavorStrength = self::getFavoriteFlavorStrength($pet, $food, $randomFlavor);
 
@@ -317,7 +306,7 @@ class EatingService
             $remainder = $foodGained % 8;
             $gain = $foodGained >> 3; // ">> 3" === "/ 8"
 
-            if ($remainder > 0 && $this->squirrel3->rngNextInt(1, 8) <= $remainder)
+            if ($remainder > 0 && $this->rng->rngNextInt(1, 8) <= $remainder)
                 $gain++;
 
             $pet->increaseSafety($gain);
@@ -339,7 +328,7 @@ class EatingService
             if(count($favorites) > 0)
             {
                 $icon = 'ui/affection';
-                $message .= ' ' . $pet->getName() . ' really liked the ' . $this->squirrel3->rngNextFromArray($favorites)->name . '!';
+                $message .= ' ' . $pet->getName() . ' really liked the ' . $this->rng->rngNextFromArray($favorites)->name . '!';
             }
 
             if($isThirsty && $gotAColdDrink)
@@ -356,14 +345,14 @@ class EatingService
 
             if($ateAFortuneCookie)
             {
-                $message .= ' "' . $this->squirrel3->rngNextFromArray(FortuneCookie::MESSAGES) . '"';
-                if($this->squirrel3->rngNextInt(1, 20) === 1 && $pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse))
+                $message .= ' "' . $this->rng->rngNextFromArray(FortuneCookie::MESSAGES) . '"';
+                if($this->rng->rngNextInt(1, 20) === 1 && $pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse))
                 {
                     $message .= ' ... in bed!';
 
                     if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
                         $message .= ' (' . $pet->getName() . ' seems completely unamused by this joke.)';
-                    else if($this->squirrel3->rngNextInt(1, 5) === 1)
+                    else if($this->rng->rngNextInt(1, 5) === 1)
                         $message .= ' XD';
                 }
             }
@@ -378,7 +367,7 @@ class EatingService
         {
             if(count($tooPoisonous) > 0)
             {
-                return PetActivityLogFactory::createUnreadLog($this->em, $pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but ' . $this->squirrel3->rngNextFromArray($tooPoisonous) . ' really isn\'t appealing right now.')
+                return PetActivityLogFactory::createUnreadLog($this->em, $pet, '%user:' . $pet->getOwner()->getId() . '.Name% tried to feed ' . '%pet:' . $pet->getId() . '.name%, but ' . $this->rng->rngNextFromArray($tooPoisonous) . ' really isn\'t appealing right now.')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating' ]))
                 ;
             }
@@ -397,7 +386,7 @@ class EatingService
 
         $this->petExperienceService->gainAffection($pet, 2);
 
-        $statusEffect = $this->squirrel3->rngNextFromArray([
+        $statusEffect = $this->rng->rngNextFromArray([
             StatusEffectEnum::INSPIRED,
             StatusEffectEnum::ONEIRIC,
             StatusEffectEnum::VIVACIOUS,

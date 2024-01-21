@@ -19,23 +19,14 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class SagaSagaService
 {
-    private IRandom $rng;
-    private InventoryService $inventoryService;
-    private EntityManagerInterface $em;
-    private ResponseService $responseService;
-    private UserStatsService $userStatsRepository;
-
     public function __construct(
-        IRandom $rng, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService,
-        UserStatsService $userStatsRepository
+        private readonly IRandom $rng,
+        private readonly InventoryService $inventoryService,
+        private readonly EntityManagerInterface $em,
+        private readonly ResponseService $responseService,
+        private readonly UserStatsService $userStatsRepository
     )
     {
-        $this->rng = $rng;
-        $this->inventoryService = $inventoryService;
-        $this->em = $em;
-        $this->responseService = $responseService;
-        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function petCompletedSagaSaga(Pet $pet): bool

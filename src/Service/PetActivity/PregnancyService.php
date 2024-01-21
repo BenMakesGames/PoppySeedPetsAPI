@@ -27,24 +27,15 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PregnancyService
 {
-    private EntityManagerInterface $em;
-    private ResponseService $responseService;
-    private PetExperienceService $petExperienceService;
-    private UserStatsService $userStatsRepository;
-    private PetFactory $petFactory;
-    private IRandom $squirrel3;
-
     public function __construct(
-        EntityManagerInterface $em, ResponseService $responseService, PetExperienceService $petExperienceService,
-        UserStatsService $userStatsRepository, PetFactory $petFactory, IRandom $squirrel3
+        private readonly EntityManagerInterface $em,
+        private readonly ResponseService $responseService,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly UserStatsService $userStatsRepository,
+        private readonly PetFactory $petFactory,
+        private readonly IRandom $squirrel3
     )
     {
-        $this->em = $em;
-        $this->responseService = $responseService;
-        $this->petExperienceService = $petExperienceService;
-        $this->userStatsRepository = $userStatsRepository;
-        $this->petFactory = $petFactory;
-        $this->squirrel3 = $squirrel3;
     }
 
     public function getPregnant(Pet $pet1, Pet $pet2)

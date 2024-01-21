@@ -21,22 +21,14 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class NotReallyCraftsService
 {
-    private InventoryService $inventoryService;
-    private PetExperienceService $petExperienceService;
-    private EntityManagerInterface $em;
-    private IRandom $rng;
-    private HouseSimService $houseSimService;
-
     public function __construct(
-        InventoryService $inventoryService, IRandom $rng, PetExperienceService $petExperienceService,
-        EntityManagerInterface $em, HouseSimService $houseSimService
+        private readonly InventoryService $inventoryService,
+        private readonly IRandom $rng,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly EntityManagerInterface $em,
+        private readonly HouseSimService $houseSimService
     )
     {
-        $this->inventoryService = $inventoryService;
-        $this->petExperienceService = $petExperienceService;
-        $this->em = $em;
-        $this->rng = $rng;
-        $this->houseSimService = $houseSimService;
     }
 
     /**

@@ -29,31 +29,18 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class MagicBindingService
 {
-    private InventoryService $inventoryService;
-    private ResponseService $responseService;
-    private PetExperienceService $petExperienceService;
-    private IRandom $squirrel3;
-    private CoinSmithingService $coinSmithingService;
-    private HouseSimService $houseSimService;
-    private HattierService $hattierService;
-    private EntityManagerInterface $em;
-    private Clock $clock;
-
     public function __construct(
-        InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        IRandom $squirrel3, CoinSmithingService $coinSmithingService,
-        HouseSimService $houseSimService, HattierService $hattierService, EntityManagerInterface $em, Clock $clock
+        private readonly InventoryService $inventoryService,
+        private readonly ResponseService $responseService,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly IRandom $squirrel3,
+        private readonly CoinSmithingService $coinSmithingService,
+        private readonly HouseSimService $houseSimService,
+        private readonly HattierService $hattierService,
+        private readonly EntityManagerInterface $em,
+        private readonly Clock $clock
     )
     {
-        $this->inventoryService = $inventoryService;
-        $this->responseService = $responseService;
-        $this->petExperienceService = $petExperienceService;
-        $this->squirrel3 = $squirrel3;
-        $this->coinSmithingService = $coinSmithingService;
-        $this->houseSimService = $houseSimService;
-        $this->hattierService = $hattierService;
-        $this->em = $em;
-        $this->clock = $clock;
     }
 
     /**

@@ -21,22 +21,14 @@ class GamingGroupService
 {
     public const ACTIVITY_ICON = 'groups/gaming';
 
-    private PetExperienceService $petExperienceService;
-    private EntityManagerInterface $em;
-    private InventoryService $inventoryService;
-    private PetRelationshipService $petRelationshipService;
-    private IRandom $squirrel3;
-
     public function __construct(
-        PetExperienceService $petExperienceService, EntityManagerInterface $em, InventoryService $inventoryService,
-        PetRelationshipService $petRelationshipService, IRandom $squirrel3
+        private readonly PetExperienceService $petExperienceService,
+        private readonly EntityManagerInterface $em,
+        private readonly InventoryService $inventoryService,
+        private readonly PetRelationshipService $petRelationshipService,
+        private readonly IRandom $squirrel3
     )
     {
-        $this->petExperienceService = $petExperienceService;
-        $this->em = $em;
-        $this->inventoryService = $inventoryService;
-        $this->petRelationshipService = $petRelationshipService;
-        $this->squirrel3 = $squirrel3;
     }
 
     private const DICTIONARY = [

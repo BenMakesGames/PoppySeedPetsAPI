@@ -21,22 +21,14 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class LeonidsService
 {
-    private IRandom $rng;
-    private ResponseService $responseService;
-    private InventoryService $inventoryService;
-    private PetExperienceService $petExperienceService;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        IRandom $rng, ResponseService $responseService, InventoryService $inventoryService,
-        PetExperienceService $petExperienceService, EntityManagerInterface $em
+        private readonly IRandom $rng,
+        private readonly ResponseService $responseService,
+        private readonly InventoryService $inventoryService,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly EntityManagerInterface $em
     )
     {
-        $this->rng = $rng;
-        $this->responseService = $responseService;
-        $this->inventoryService = $inventoryService;
-        $this->petExperienceService = $petExperienceService;
-        $this->em = $em;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog

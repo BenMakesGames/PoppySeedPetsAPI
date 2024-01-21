@@ -30,27 +30,16 @@ class PetGroupService
         PetGroupTypeEnum::SPORTSBALL => 'sportsball team',
     ];
 
-    private EntityManagerInterface $em;
-    private PetExperienceService $petExperienceService;
-    private BandService $bandService;
-    private AstronomyClubService $astronomyClubService;
-    private IRandom $squirrel3;
-    private GamingGroupService $gamingGroupService;
-    private SportsBallService $sportsBallService;
-
     public function __construct(
-        EntityManagerInterface $em, PetExperienceService $petExperienceService, BandService $bandService,
-        AstronomyClubService $astronomyClubService, IRandom $squirrel3, GamingGroupService $gamingGroupService,
-        SportsBallService $sportsBallService
+        private readonly EntityManagerInterface $em,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly BandService $bandService,
+        private readonly AstronomyClubService $astronomyClubService,
+        private readonly IRandom $squirrel3,
+        private readonly GamingGroupService $gamingGroupService,
+        private readonly SportsBallService $sportsBallService
     )
     {
-        $this->em = $em;
-        $this->petExperienceService = $petExperienceService;
-        $this->bandService = $bandService;
-        $this->astronomyClubService = $astronomyClubService;
-        $this->squirrel3 = $squirrel3;
-        $this->gamingGroupService = $gamingGroupService;
-        $this->sportsBallService = $sportsBallService;
     }
 
     public function doGroupActivity(PetGroup $group)

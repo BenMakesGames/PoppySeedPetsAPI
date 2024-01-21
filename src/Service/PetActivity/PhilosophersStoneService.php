@@ -23,22 +23,14 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PhilosophersStoneService
 {
-    private IRandom $rng;
-    private PetQuestRepository $petQuestRepository;
-    private InventoryService $inventoryService;
-    private PetExperienceService $petExperienceService;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        IRandom $rng, PetQuestRepository $petQuestRepository, InventoryService $inventoryService,
-        EntityManagerInterface $em, PetExperienceService $petExperienceService
+        private readonly IRandom $rng,
+        private readonly PetQuestRepository $petQuestRepository,
+        private readonly InventoryService $inventoryService,
+        private readonly EntityManagerInterface $em,
+        private readonly PetExperienceService $petExperienceService
     )
     {
-        $this->rng = $rng;
-        $this->petQuestRepository = $petQuestRepository;
-        $this->inventoryService = $inventoryService;
-        $this->petExperienceService = $petExperienceService;
-        $this->em = $em;
     }
 
     public function seekMetatronsFire(ComputedPetSkills $petWithSkills): PetActivityLog

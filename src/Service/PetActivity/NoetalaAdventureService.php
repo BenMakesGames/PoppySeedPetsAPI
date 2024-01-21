@@ -20,22 +20,14 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class NoetalaAdventureService
 {
-    private EntityManagerInterface $em;
-    private ResponseService $responseService;
-    private InventoryService $inventoryService;
-    private IRandom $rng;
-    private UserStatsService $userStatsRepository;
-
     public function __construct(
-        EntityManagerInterface $em, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository
+        private readonly EntityManagerInterface $em,
+        private readonly ResponseService $responseService,
+        private readonly InventoryService $inventoryService,
+        private readonly IRandom $rng,
+        private readonly UserStatsService $userStatsRepository
     )
     {
-        $this->em = $em;
-        $this->responseService = $responseService;
-        $this->inventoryService = $inventoryService;
-        $this->rng = $rng;
-        $this->userStatsRepository = $userStatsRepository;
     }
 
     public function fightNoetalasWing(User $user): bool

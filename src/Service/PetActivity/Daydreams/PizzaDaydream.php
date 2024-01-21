@@ -25,22 +25,14 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PizzaDaydream
 {
-    private IRandom $rng;
-    private EntityManagerInterface $em;
-    private InventoryService $inventoryService;
-    private PetExperienceService $petExperienceService;
-    private TransactionService $transactionService;
-
     public function __construct(
-        IRandom $rng, EntityManagerInterface $em, InventoryService $inventoryService,
-        PetExperienceService $petExperienceService, TransactionService $transactionService
+        private readonly IRandom $rng,
+        private readonly EntityManagerInterface $em,
+        private readonly InventoryService $inventoryService,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly TransactionService $transactionService
     )
     {
-        $this->rng = $rng;
-        $this->em = $em;
-        $this->inventoryService = $inventoryService;
-        $this->petExperienceService = $petExperienceService;
-        $this->transactionService = $transactionService;
     }
 
     public function doAdventure(ComputedPetSkills $petWithSkills): PetActivityLog

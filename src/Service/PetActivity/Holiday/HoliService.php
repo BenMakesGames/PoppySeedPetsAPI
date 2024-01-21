@@ -21,20 +21,13 @@ class HoliService
 {
     public const HOLI_ACTIVITY_LOG_ICON = 'ui/holidays/holi';
 
-    private PetRelationshipRepository $petRelationshipRepository;
-    private PetQuestRepository $petQuestRepository;
-    private EntityManagerInterface $em;
-    private PetExperienceService $petExperienceService;
-
     public function __construct(
-        PetRelationshipRepository $petRelationshipRepository, PetQuestRepository $petQuestRepository,
-        EntityManagerInterface $em, PetExperienceService $petExperienceService
+        private readonly PetRelationshipRepository $petRelationshipRepository,
+        private readonly PetQuestRepository $petQuestRepository,
+        private readonly EntityManagerInterface $em,
+        private readonly PetExperienceService $petExperienceService
     )
     {
-        $this->petRelationshipRepository = $petRelationshipRepository;
-        $this->petQuestRepository = $petQuestRepository;
-        $this->em = $em;
-        $this->petExperienceService = $petExperienceService;
     }
 
     public function adventure(Pet $pet): ?PetActivityLog

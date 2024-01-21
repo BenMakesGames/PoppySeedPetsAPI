@@ -21,24 +21,15 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PlasticPrinterService
 {
-    private InventoryService $inventoryService;
-    private ResponseService $responseService;
-    private PetExperienceService $petExperienceService;
-    private IRandom $squirrel3;
-    private HouseSimService $houseSimService;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        InventoryService $inventoryService, ResponseService $responseService, PetExperienceService $petExperienceService,
-        IRandom $squirrel3, HouseSimService $houseSimService, EntityManagerInterface $em
+        private readonly InventoryService $inventoryService,
+        private readonly ResponseService $responseService,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly IRandom $squirrel3,
+        private readonly HouseSimService $houseSimService,
+        private readonly EntityManagerInterface $em
     )
     {
-        $this->inventoryService = $inventoryService;
-        $this->responseService = $responseService;
-        $this->petExperienceService = $petExperienceService;
-        $this->squirrel3 = $squirrel3;
-        $this->houseSimService = $houseSimService;
-        $this->em = $em;
     }
 
     /**
