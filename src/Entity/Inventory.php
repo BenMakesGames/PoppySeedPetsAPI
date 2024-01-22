@@ -189,6 +189,13 @@ class Inventory
         return $this;
     }
 
+    public function forceSetOwner(User $owner): self
+    {
+        $this->owner = $owner;
+
+        return $this;
+    }
+
     public function getCreatedOn(): \DateTimeImmutable
     {
         return $this->createdOn;
