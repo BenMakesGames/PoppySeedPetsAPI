@@ -2,6 +2,7 @@
 namespace App\Controller\HollowEarth;
 
 use App\Entity\HollowEarthPlayer;
+use App\Entity\HollowEarthPlayerTile;
 use App\Entity\User;
 use App\Enum\HollowEarthActionTypeEnum;
 use App\Enum\SerializationGroupEnum;
@@ -80,7 +81,7 @@ class PlayController extends AbstractController
                     break;
 
                 case HollowEarthActionTypeEnum::PET_CHALLENGE:
-                    $this->continueActingPetChallenge($action, $player, $request->request, $hollowEarthService, $rng);
+                    $this->continueActingPetChallenge($action, $player, $request->request, $hollowEarthService, $rng, $em);
                     break;
 
                 case HollowEarthActionTypeEnum::CHOOSE_ONE:
@@ -244,9 +245,19 @@ class PlayController extends AbstractController
 
     private function continueActingPetChallenge(
         array $action, HollowEarthPlayer $player, ParameterBag $params, HollowEarthService $hollowEarthService,
-        IRandom $rng
+        IRandom $rng, EntityManagerInterface $em
     )
     {
+        if(!array_key_exists('ifSuccess', $action))
+        {
+            /** @var HollowEarthPlayerTile $currentTile */
+            $currentTile = $em->getRepository(HollowEarthPlayerTile::class)->findOneBy([
+                'player' => $player,
+                'tile' => $player->getCurrentTile(),
+            ]);
+            throw new \Exception("No success action defined for this challenge. Current tile card name: {$currentTile->getCard()->getName()}");
+        }
+
         // old tiles refer to the "umbra" skill, but that is no longer a skill; it was renamed to arcana, so:
         $stats = array_map(fn($stat) => $stat === 'umbra' ? 'arcana' : $stat, $action['stats']);
         $score = $action['baseRoll'];
@@ -256,9 +267,6 @@ class PlayController extends AbstractController
 
         if($rng->rngNextInt(1, $score) >= $action['requiredRoll'])
         {
-            if(!array_key_exists('ifSuccess', $action))
-                throw new \Exception("No success action defined for this challenge. Current tile card name: {$player->getCurrentTile()->getCard()?->getName()}");
-
             $hollowEarthService->doImmediateEvent($player, $action['ifSuccess']);
             $player->setCurrentAction($action['ifSuccess']);
         }
