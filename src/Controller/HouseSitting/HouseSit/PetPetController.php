@@ -46,8 +46,8 @@ class PetPetController extends AbstractController
         $emoji = $pet->getRandomAffectionExpression($rng);
 
         if($emoji)
-            return $responseService->success([ 'pet' => $pet ], [ SerializationGroupEnum::HOUSE_SITTER_PET ]);
-        else
             return $responseService->success([ 'pet' => $pet, 'emoji' => $emoji ], [ SerializationGroupEnum::HOUSE_SITTER_PET ]);
+        else
+            return $responseService->success([ 'pet' => $pet ], [ SerializationGroupEnum::HOUSE_SITTER_PET ]);
     }
 }
