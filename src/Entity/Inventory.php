@@ -83,7 +83,7 @@ class Inventory
     #[Groups(["myInventory", "myPet", 'houseSitterPet', "fireplaceMantle", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "fireplaceFuel", "dragonTreasure"])]
     private $illusion;
 
-    #[ORM\OneToOne(mappedBy: 'inventory')]
+    #[ORM\OneToOne(mappedBy: 'inventory', cascade: ['remove'])]
     private ?InventoryForSale $forSale = null;
 
     #[ORM\Version]
