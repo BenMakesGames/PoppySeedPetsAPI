@@ -43,6 +43,7 @@ final class StatusEffectEnum
     public const HEAT_RESISTANT = 'Heat-resistant';
     public const JAUNE = 'Jaune';
     public const SPICED = 'Spiced';
+    public const X_RAYD = 'X-ray\'d';
 
     public const FATED_DELICIOUSNESS = 'Fated (Deliciously)';
     public const FATED_SOAKEDLY = 'Fated (Soakedly)';

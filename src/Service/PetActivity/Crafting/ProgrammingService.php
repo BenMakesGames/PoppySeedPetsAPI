@@ -254,18 +254,35 @@ class ProgrammingService
             $this->houseSimService->getState()->loseItem('Photon', 1);
             $pet->increasePoison(2);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to measure a Photon to confirm the Poisson Distribution, but a miscalculation produced a distribution of poison, instead! x_x', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to measure a Photon to confirm the Poisson Distribution, but a miscalculation produced a distribution of poison, instead! x_x')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Physics' ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
+        else if($roll > 22)
+        {
+            $this->houseSimService->getState()->loseItem('Photon', 1);
+
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% measured a Photon, confirming the Poisson Distribution... and accidentally creating an X-ray in the process!')
+                ->setIcon('items/space/x-ray')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Physics' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, true);
+
+            $this->inventoryService->petCollectsItem('Fish', $pet, $pet->getName() . ' measured a Photon, confirming the _Poisson_ Distribution!', $activityLog);
+            $this->inventoryService->petCollectsItem('X-ray', $pet, $pet->getName() . ' measured a Photon, confirming the Poisson Distribution, and accidentally creating this X-ray in the process!', $activityLog);
+        }
         else if($roll > 12)
         {
             $this->houseSimService->getState()->loseItem('Photon', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% measured a Photon, confirming the Poisson Distribution!', 'items/space/photon')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% measured a Photon, confirming the Poisson Distribution!')
+                ->setIcon('items/space/photon')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Physics' ]))
             ;
@@ -277,7 +294,8 @@ class ProgrammingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to measure a Photon, but it kept zipping away before they could do so! >:(', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to measure a Photon, but it kept zipping away before they could do so! >:(')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Physics' ]))
             ;
 

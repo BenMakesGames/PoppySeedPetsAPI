@@ -372,6 +372,11 @@ class Pet
         return $this->food;
     }
 
+    public function getMinFood()
+    {
+        return -16;
+    }
+
     public function increaseFood(int $amount, ?int $max = null): self
     {
         if($amount === 0) return $this;
@@ -379,7 +384,7 @@ class Pet
 
         $this->food = NumberFunctions::clamp(
             $this->food + $amount,
-            -16,                                            // minimum
+            $this->getMinFood(),                                    // minimum
             $max ?? $this->getStomachSize() - max(0, $this->junk)   // maximum
         );
 
@@ -632,10 +637,65 @@ class Pet
 
     public function getFullnessPercent(): float
     {
-        return ($this->getFood() + $this->getJunk()) / $this->getStomachSize();
+        if($this->getFood() + $this->getJunk() >= 0)
+            return ($this->getFood() + $this->getJunk()) / $this->getStomachSize();
+        else
+            return ($this->getFood() + $this->getJunk()) / -$this->getMinFood();
+    }
+
+    public function getSafetyPercent(): float
+    {
+        if($this->getSafety() >= 0)
+            return $this->getSafety() / $this->getMaxSafety();
+        else
+            return $this->getSafety() / -$this->getMinSafety();
+    }
+
+    public function getLovePercent(): float
+    {
+        if($this->getLove() >= 0)
+            return $this->getLove() / $this->getMaxLove();
+        else
+            return $this->getLove() / -$this->getMinLove();
+    }
+
+    public function getEsteemPercent(): float
+    {
+        if($this->getEsteem() >= 0)
+            return $this->getEsteem() / $this->getMaxEsteem();
+        else
+            return $this->getEsteem() / -$this->getMinEsteem();
     }
 
     #[Groups(['myPet', 'houseSitterPet'])]
+    public function getNeeds()
+    {
+        $needs = [
+            'food' => [
+                'description' => $this->getFull(),
+            ],
+            'safety' => [
+                'description' => $this->getSafe(),
+            ],
+            'love' => [
+                'description' => $this->getLoved(),
+            ],
+            'esteem' => [
+                'description' => $this->getEsteemed(),
+            ],
+        ];
+
+        if($this->hasStatusEffect(StatusEffectEnum::X_RAYD))
+        {
+            $needs['food']['percent'] = round($this->getFullnessPercent(), 2);
+            $needs['safety']['percent'] = round($this->getSafetyPercent(), 2);
+            $needs['love']['percent'] = round($this->getLovePercent(), 2);
+            $needs['esteem']['percent'] = round($this->getEsteemPercent(), 2);
+        }
+
+        return $needs;
+    }
+
     public function getFull(): string
     {
         $fullness = $this->getFullnessPercent();
@@ -663,7 +723,6 @@ class Pet
             return 'starving';
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
     public function getSafe(): string
     {
         if($this->getSafety() >= 16)
@@ -678,7 +737,6 @@ class Pet
             return 'terrified';
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
     public function getLoved(): string
     {
         if($this->getLove() >= 16)
@@ -693,7 +751,6 @@ class Pet
             return 'hated';
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
     public function getEsteemed(): string
     {
         if($this->getEsteem() >= 16)
