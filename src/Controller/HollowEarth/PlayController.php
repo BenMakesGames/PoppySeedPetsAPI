@@ -255,7 +255,13 @@ class PlayController extends AbstractController
                 'player' => $player,
                 'tile' => $player->getCurrentTile(),
             ]);
-            throw new \Exception("No success action defined for this challenge. Current tile card name: {$currentTile->getCard()->getName()}");
+
+            if(!$currentTile)
+                throw new \Exception("No success action defined for this challenge... and the player has no current tile?!");
+            else if(!$currentTile->getCard())
+                throw new \Exception("No success action defined for this challenge... and the player's tile has no card?!");
+            else
+                throw new \Exception("No success action defined for this challenge. Current tile card name: {$currentTile->getCard()->getName()}");
         }
 
         // old tiles refer to the "umbra" skill, but that is no longer a skill; it was renamed to arcana, so:
