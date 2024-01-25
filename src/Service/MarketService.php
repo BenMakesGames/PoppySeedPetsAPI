@@ -157,6 +157,8 @@ class MarketService
                     ->setSellPrice($price);
 
                 $inventory->setForSale($forSale);
+
+                $this->em->persist($forSale);
             }
 
             return false;

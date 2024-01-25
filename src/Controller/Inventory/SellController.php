@@ -63,54 +63,62 @@ class SellController extends AbstractController
         if(count($inventory) !== count($itemIds))
             throw new PSPNotFoundException('One or more of the selected items do not exist! Maybe reload and try again??');
 
+        $inventoryToUpdateMinimumPriceFor = [];
+
         // if you're UNlisting items... EASY: do that:
         if($price <= 0)
         {
             foreach($inventory as $i)
             {
                 if($i->getForSale())
-                    $em->remove($i->getForSale());
-            }
-
-            $em->flush();
-
-            return $responseService->success();
-        }
-
-        $anySoldToBidder = false;
-
-        $inventoryToUpdateMinimumPriceFor = [];
-
-        foreach($inventory as $i)
-        {
-            $soldToBidder = $marketService->sell($i, $price);
-
-            if($soldToBidder)
-            {
-                $anySoldToBidder = true;
-                $em->flush();
-            }
-            else
-            {
-                $key =
-                    $i->getItem()->getId() . ',' .
-                    ($i->getEnchantment() ? $i->getEnchantment()->getId() : 'null') . ','.
-                    ($i->getSpice() ? $i->getSpice()->getId() : 'null')
-                ;
-
-                if(!array_key_exists($key, $inventoryToUpdateMinimumPriceFor))
                 {
-                    $inventoryToUpdateMinimumPriceFor[$key] = [
-                        'item' => $i->getItem(),
-                        'enchantment' => $i->getEnchantment(),
-                        'spice' => $i->getSpice()
-                    ];
+                    $em->remove($i->getForSale());
+                    $i->setForSale(null);
+
+                    $key = self::getInventoryKey($i);
+
+                    if(!array_key_exists($key, $inventoryToUpdateMinimumPriceFor))
+                    {
+                        $inventoryToUpdateMinimumPriceFor[$key] = [
+                            'item' => $i->getItem(),
+                            'enchantment' => $i->getEnchantment(),
+                            'spice' => $i->getSpice()
+                        ];
+                    }
                 }
             }
         }
+        else
+        {
+            $anySoldToBidder = false;
 
-        if($anySoldToBidder)
-            $responseService->setReloadInventory();
+            foreach($inventory as $i)
+            {
+                $soldToBidder = $marketService->sell($i, $price);
+
+                if($soldToBidder)
+                {
+                    $anySoldToBidder = true;
+                    $em->flush();
+                }
+                else
+                {
+                    $key = self::getInventoryKey($i);
+
+                    if(!array_key_exists($key, $inventoryToUpdateMinimumPriceFor))
+                    {
+                        $inventoryToUpdateMinimumPriceFor[$key] = [
+                            'item' => $i->getItem(),
+                            'enchantment' => $i->getEnchantment(),
+                            'spice' => $i->getSpice()
+                        ];
+                    }
+                }
+            }
+
+            if($anySoldToBidder)
+                $responseService->setReloadInventory();
+        }
 
         $em->flush();
 
@@ -120,5 +128,14 @@ class SellController extends AbstractController
         $em->flush();
 
         return $responseService->success();
+    }
+
+    private static function getInventoryKey(Inventory $inventory): string
+    {
+        return
+            $inventory->getItem()->getId() . ',' .
+            ($inventory->getEnchantment() ? $inventory->getEnchantment()->getId() : 'null') . ','.
+            ($inventory->getSpice() ? $inventory->getSpice()->getId() : 'null')
+        ;
     }
 }

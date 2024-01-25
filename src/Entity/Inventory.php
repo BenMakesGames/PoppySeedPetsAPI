@@ -83,7 +83,7 @@ class Inventory
     #[Groups(["myInventory", "myPet", 'houseSitterPet', "fireplaceMantle", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "fireplaceFuel", "dragonTreasure"])]
     private $illusion;
 
-    #[ORM\OneToOne(mappedBy: 'inventory', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'inventory')]
     private ?InventoryForSale $forSale = null;
 
     #[ORM\Version]
@@ -590,10 +590,10 @@ class Inventory
         return $this->forSale;
     }
 
-    public function setForSale(InventoryForSale $forSale): static
+    public function setForSale(?InventoryForSale $forSale): static
     {
         // set the owning side of the relation if necessary
-        if ($forSale->getInventory() !== $this) {
+        if ($forSale && $forSale->getInventory() !== $this) {
             $forSale->setInventory($this);
         }
 
