@@ -488,8 +488,8 @@ class MagicBeanstalkService
             if($this->squirrel3->rngNextInt(1, 1000) <= $petWithSkills->getPerception()->getTotal() && $pet->hasMerit(MeritEnum::BEHATTED))
                 $loot[] = 'White Bow';
 
-            if($this->squirrel3->rngNextInt(1, 40 - $petWithSkills->getPerception()->getTotal()) === 1)
-                $loot[] = 'Very Strongbox';
+            if($this->squirrel3->rngNextInt(1, max(5, 30 - $petWithSkills->getPerception()->getTotal() * 3)) === 1)
+                $loot[] = 'Marshmallows';
 
             if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal()) >= 20)
                 $loot[] = $this->squirrel3->rngNextFromArray($possibleLoot);

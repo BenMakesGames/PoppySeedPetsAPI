@@ -115,9 +115,10 @@ class CraftingService
                 $possibilities[] = new ActivityCallback($this->stickCraftingService->createSunflowerStick(...), 10);
 
             if($this->houseSimService->hasInventory('Glue') || $this->houseSimService->hasInventory('String'))
-            {
                 $possibilities[] = new ActivityCallback($this->stickCraftingService->createWoodenSword(...), 10);
-            }
+
+            if($this->houseSimService->hasInventory('Marshmallows'))
+                $possibilities[] = new ActivityCallback($this->stickCraftingService->createSkeweredMarshmallow(...), 10);
 
             if($this->houseSimService->hasInventory('String'))
             {

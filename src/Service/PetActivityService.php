@@ -675,7 +675,7 @@ class PetActivityService
                 return true;
 
             case 'Aubergine Commander':
-                if($this->rng->rngNextInt(1, 100) === 1)
+                if($this->rng->rngNextInt(1, 80) === 1)
                 {
                     $this->treasureMapService->doEggplantCurse($pet);
                     return true;
@@ -733,6 +733,14 @@ class PetActivityService
             case 'Shirikodama':
                 $this->kappaService->doReturnShirikodama($petWithSkills);
                 return true;
+
+            case 'Skewered Marshmallow':
+                if($this->rng->rngNextInt(1, 10) == 1)
+                {
+                    $this->treasureMapService->doToastSkeweredMarshmallow($pet);
+                    return true;
+                }
+                break;
         }
 
         if($pet->getTool()->getEnchantment())

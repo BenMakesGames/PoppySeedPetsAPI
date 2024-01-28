@@ -62,6 +62,9 @@ class SmithingService
         if($this->houseSimService->hasInventory('Charcoal'))
             $possibilities[] = new ActivityCallback($this->createCoke(...), $weight);
 
+        if($this->houseSimService->hasInventory('Toasted Marshmallow') && $this->houseSimService->hasInventory('Blackonite'))
+            $possibilities[] = new ActivityCallback($this->createBlackenedMarshmallow(...), $weight);
+
         if($this->houseSimService->hasInventory('Iron Ore'))
         {
             if($this->houseSimService->hasInventory('Moon Pearl') && $this->houseSimService->hasInventory('Gravitational Waves'))
@@ -1322,6 +1325,38 @@ class SmithingService
         else
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make a dragon-themed staff, but almost burned themselves on the Firestone...')
+                ->setIcon('icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::SMITH, false);
+        }
+
+        return $activityLog;
+    }
+
+    public function createBlackenedMarshmallow(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($roll >= 20)
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::SMITH, true);
+            $this->houseSimService->getState()->loseItem('Toasted Marshmallow', 1);
+            $this->houseSimService->getState()->loseItem('Blackonite', 1);
+
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% smithed a sword out of Blackonite, and imbued it with the power of a Toasted Marshmallow!')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]));
+
+            $this->inventoryService->petCollectsItem('Blackened Marshmallow', $pet, $pet->getName() . ' refined this from Charcoal.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ], $activityLog);
+        }
+        else
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to smith a sword out of Blackonite, but couldn\'t get the shape right...')
                 ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
             ;

@@ -9,7 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class ValidateHollowEarthAdventuresTest extends KernelTestCase
 {
-    public function testItemNamesAreValid()
+    public function testHollowEarthAdventuresAreValid()
     {
         self::bootKernel();
 
@@ -25,6 +25,7 @@ class ValidateHollowEarthAdventuresTest extends KernelTestCase
             $event = $adventure->getEvent();
 
             self::validateItemNamesAreLegit($em, $adventure->getName(), $event);
+            self::validatePetChallengesAreLegit($em, $adventure->getName(), $event);
         }
     }
 
@@ -51,5 +52,22 @@ class ValidateHollowEarthAdventuresTest extends KernelTestCase
             if(!$item)
                 self::fail("Adventure \"{$adventureName}\" references item \"{$itemName}\" which does not exist.");
         }
+    }
+
+    private static function validatePetChallengesAreLegit(EntityManagerInterface $em, string $adventureName, array $event)
+    {
+        foreach($event as $key => $value)
+        {
+            if($key === 'petChallenge')
+                self::validatePetChallenge($em, $adventureName, $value);
+            else if(is_array($value))
+                self::validatePetChallengesAreLegit($em, $adventureName, $value);
+        }
+    }
+
+    private static function validatePetChallenge(EntityManagerInterface $em, string $adventureName, array $petChallenge)
+    {
+        if(!array_key_exists('ifSuccess', $petChallenge))
+            self::fail("Adventure \"{$adventureName}\" has a pet challenge without an \"ifSuccess\" key.");
     }
 }

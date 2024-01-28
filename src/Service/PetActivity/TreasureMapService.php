@@ -27,6 +27,7 @@ use App\Functions\UserQuestRepository;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
+use App\Service\FieldGuideService;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -42,7 +43,8 @@ class TreasureMapService
         private readonly EntityManagerInterface $em,
         private readonly PetExperienceService $petExperienceService,
         private readonly IRandom $rng,
-        private readonly HouseSimService $houseSimService
+        private readonly HouseSimService $houseSimService,
+        private readonly FieldGuideService $fieldGuideService
     )
     {
     }
@@ -521,5 +523,32 @@ class TreasureMapService
         }
 
         throw new \Exception('Ben forgot to code Fluffmonger foods for the flavor "' . $flavor . '"!');
+    }
+
+    public function doToastSkeweredMarshmallow(Pet $pet)
+    {
+        $changes = new PetChanges($pet);
+
+        if($pet->getTool()->getItem()->getName() !== 'Skewered Marshmallow')
+            throw new \Exception('Cannot toast a Skewered Marshmallow without a Skewered Marshmallow!');
+
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% went to the foot of the island\'s volcano, and toasted their Skewered Marshmallow - it\'s now a Toasted Marshmallow!')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
+        ;
+
+        $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Île Volcan', '%pet:' . $pet->getId() . '.name% went out to the island\'s volcano to toast a Skewered Marshmallow...');
+
+        $pet
+            ->getTool()
+            ->changeItem(ItemRepository::findOneByName($this->em, 'Toasted Marshmallow'))
+            ->addComment($pet->getName() . ' toasted this at the foot of the island\'s volcano!');
+
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
+
+        $activityLog->setChanges($changes->compare($pet));
+
+        if(AdventureMath::petAttractsBug($this->rng, $pet, 20))
+            $this->inventoryService->petAttractsRandomBug($pet);
     }
 }

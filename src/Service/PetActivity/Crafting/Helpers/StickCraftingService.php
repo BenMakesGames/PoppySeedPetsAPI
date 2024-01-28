@@ -6,6 +6,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ItemRepository;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Service\Clock;
@@ -57,6 +58,40 @@ class StickCraftingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+        }
+
+        return $activityLog;
+    }
+
+    public function createSkeweredMarshmallow(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + max($petWithSkills->getCrafts()->getTotal(), $petWithSkills->getNature()->getTotal()));
+
+        if($roll >= 10)
+        {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->houseSimService->getState()->loseItem('Marshmallows', 1);
+            $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
+            $pet->increaseEsteem(2);
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% skewered a Marshmallow!')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
+            ;
+
+            $exp = $this->maybeSpotAStickBug($petWithSkills, $activityLog) ? 3 : 2;
+
+            $this->inventoryService->petCollectsItem('Skewered Marshmallow', $pet, $pet->getName() . ' "crafted" this.', $activityLog);
+            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::CRAFTS ], $activityLog);
+        }
+        else
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% was going to skewer a Marshmallow, but then almost ate it, instead, but then stopped themselves, and then just abandoned the whole project...')
+                ->setIcon('icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Crafting' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
         }
 
