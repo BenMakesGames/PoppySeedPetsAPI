@@ -25,6 +25,7 @@ final class MeritEnum
     public const ATHENAS_GIFTS = 'Athena\'s Gifts'; // sometimes get a Handicrafts Supply Box
     public const IRON_STOMACH = 'Iron Stomach'; // receives half as much poison from poisonous foods
     public const CELESTIAL_CHORUSER = 'Celestial Choruser';
+    public const CACHING = 'Caching';
 
     // obtained through items
     public const BEHATTED = 'Behatted';

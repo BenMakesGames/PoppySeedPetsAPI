@@ -45,15 +45,17 @@ class ForgettingScrollController extends AbstractController
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
 
-        if($pet->getLevel() < 10)
-            throw new PSPInvalidOperationException('Only pets of level 10 or greater may use this scroll.');
-
         $unlearnableSkills = array_values(array_filter(PetSkillEnum::getValues(), fn(string $skill) =>
             $pet->getSkills()->getStat($skill) > 0
         ));
 
+        $unlearnableMerits = MeritFunctions::getUnlearnableMerits($pet);
+
+        if(count($unlearnableSkills) === 0 && count($unlearnableMerits) === 0)
+            throw new PSPInvalidOperationException('There are no skills or merits that ' . $pet->getName() . ' can forget!');
+
         $data = [
-            'merits' => MeritFunctions::getUnlearnableMerits($pet),
+            'merits' => $unlearnableMerits,
             'skills' => $unlearnableSkills,
         ];
 
@@ -77,9 +79,6 @@ class ForgettingScrollController extends AbstractController
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
-
-        if($pet->getLevel() < 10)
-            throw new PSPInvalidOperationException('Only pets of level 10 or greater may use this scroll.');
 
         $meritName = $request->request->get('merit', '');
         $merit = MeritRepository::findOneByName($em, $meritName);
@@ -155,9 +154,6 @@ class ForgettingScrollController extends AbstractController
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
-
-        if($pet->getLevel() < 10)
-            throw new PSPInvalidOperationException('Only pets of level 10 or greater may use this scroll.');
 
         $skill = $request->request->get('skill', '');
 

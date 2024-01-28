@@ -44,6 +44,7 @@ final class StatusEffectEnum
     public const JAUNE = 'Jaune';
     public const SPICED = 'Spiced';
     public const X_RAYD = 'X-ray\'d';
+    public const CACHE_EMPTY = 'Cache-empty';
 
     public const FATED_DELICIOUSNESS = 'Fated (Deliciously)';
     public const FATED_SOAKEDLY = 'Fated (Soakedly)';

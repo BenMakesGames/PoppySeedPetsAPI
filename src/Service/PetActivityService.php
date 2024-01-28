@@ -23,11 +23,13 @@ use App\Functions\InventoryModifierFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
+use App\Functions\UserQuestRepository;
 use App\Model\ComputedPetSkills;
 use App\Model\FoodWithSpice;
 use App\Model\PetChanges;
 use App\Model\PetChangesSummary;
 use App\Service\PetActivity\BurntForestService;
+use App\Service\PetActivity\CachingMeritAdventureService;
 use App\Service\PetActivity\Caerbannog;
 use App\Service\PetActivity\ChocolateMansion;
 use App\Service\PetActivity\Crafting\MagicBindingService;
@@ -106,7 +108,8 @@ class PetActivityService
         private readonly PhilosophersStoneService $philosophersStoneService,
         private readonly KappaService $kappaService,
         private readonly FatedAdventureService $fatedAdventureService,
-        private readonly PetCleaningSelfService $petCleaningSelfService
+        private readonly PetCleaningSelfService $petCleaningSelfService,
+        private readonly CachingMeritAdventureService $cachingMeritAdventureService
     )
     {
     }
@@ -373,6 +376,12 @@ class PetActivityService
             StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::WEREFORM, 1);
         }
 
+        if($pet->hasMerit(MeritEnum::CACHING) && $pet->getFullnessPercent() < -0.25)
+        {
+            if($this->cachingMeritAdventureService->doAdventure($petWithSkills))
+                return;
+        }
+
         if($pet->hasStatusEffect(StatusEffectEnum::OIL_COVERED))
         {
             if($this->petCleaningSelfService->cleanUpStatusEffect($pet, StatusEffectEnum::OIL_COVERED, 'Oil'))
@@ -478,29 +487,8 @@ class PetActivityService
             return;
         }
 
-        if($this->rng->rngNextInt(1, 40) === 1)
-        {
-            if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
-            {
-                $this->genericAdventureService->discoverFeature($pet, UnlockableFeatureEnum::Museum, 'Museum');
-                return;
-            }
-            else if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Bookstore))
-            {
-                $this->genericAdventureService->discoverFeature($pet, UnlockableFeatureEnum::Bookstore, 'Bookstore');
-                return;
-            }
-            else if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Market))
-            {
-                $this->genericAdventureService->discoverFeature($pet, UnlockableFeatureEnum::Market, 'Market');
-                return;
-            }
-            else if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Zoologist))
-            {
-                $this->genericAdventureService->discoverFeature($pet, UnlockableFeatureEnum::Zoologist, 'Zoologist');
-                return;
-            }
-        }
+        if($this->discoverNewFeature($pet))
+            return;
 
         if($pet->getTool())
         {
@@ -1179,5 +1167,40 @@ class PetActivityService
         $this->petExperienceService->spendTime($pet, 30, PetActivityStatEnum::OTHER, null);
 
         return true;
+    }
+
+    private function discoverNewFeature(Pet $pet): ?PetActivityLog
+    {
+        $hasUnlockedMuseum = $pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Museum);
+        $hasUnlockedBookstore = $pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Bookstore);
+        $hasUnlockedMarket = $pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Market);
+        $hasUnlockedZoologist = $pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Zoologist);
+
+        if($hasUnlockedMuseum && $hasUnlockedBookstore && $hasUnlockedMarket && $hasUnlockedZoologist)
+            return null;
+
+        $progress = UserQuestRepository::findOrCreate($this->em, $pet->getOwner(), 'Feature Discovery Counter', 0);
+
+        if($progress->getValue() < 40)
+        {
+            $progress->setValue($progress->getValue() + $this->rng->rngNextInt(1, 4));
+            return null;
+        }
+
+        $progress->setValue(0);
+
+        if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
+            return $this->genericAdventureService->discoverFeature($pet, UnlockableFeatureEnum::Museum, 'Museum');
+
+        if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Market))
+            return $this->genericAdventureService->discoverFeature($pet, UnlockableFeatureEnum::Market, 'Market');
+
+        if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Bookstore))
+            return $this->genericAdventureService->discoverFeature($pet, UnlockableFeatureEnum::Bookstore, 'Bookstore');
+
+        if(!$pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Zoologist))
+            return $this->genericAdventureService->discoverFeature($pet, UnlockableFeatureEnum::Zoologist, 'Zoologist');
+
+        return null;
     }
 }

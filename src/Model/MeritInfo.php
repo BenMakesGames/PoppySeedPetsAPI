@@ -54,6 +54,7 @@ final class MeritInfo
         MeritEnum::NATURAL_CHANNEL,
         MeritEnum::PROTOCOL_7,
         MeritEnum::SOOTHING_VOICE,
+        MeritEnum::CACHING,
 
         MeritEnum::INTROSPECTIVE, // relationship count >= 3
         MeritEnum::VOLAGAMY, // age >= 14 days
