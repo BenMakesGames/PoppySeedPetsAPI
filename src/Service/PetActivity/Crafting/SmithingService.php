@@ -1350,7 +1350,7 @@ class SmithingService
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% smithed a sword out of Blackonite, and imbued it with the power of a Toasted Marshmallow!')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]));
 
-            $this->inventoryService->petCollectsItem('Blackened Marshmallow', $pet, $pet->getName() . ' refined this from Charcoal.', $activityLog);
+            $this->inventoryService->petCollectsItem('Blackened Marshmallow', $pet, $pet->getName() . ' smithed this from Blackonite, and imbued it with the power of a Toasted Marshmallow!', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ], $activityLog);
         }
