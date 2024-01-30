@@ -28,7 +28,7 @@ class ChangePetController extends AbstractController
         $player = $user->getHollowEarthPlayer();
 
         if($player === null)
-            throw new PSPNotUnlockedException('Portal');
+            throw new PSPNotUnlockedException('Hollow Earth');
 
         if($pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();

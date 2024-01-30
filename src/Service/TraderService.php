@@ -167,9 +167,9 @@ class TraderService
                     $title = 'Plushies';
                     $trades = $this->getPlushyOffers($user, $quantities);
                     break;
-                case TradeGroupEnum::GAMING:
-                    $title = 'Portal';
-                    $trades = $this->getGamingOffers($user, $quantities);
+                case TradeGroupEnum::HOLLOW_EARTH:
+                    $title = 'Hollow Earth';
+                    $trades = $this->getHollowEarthOffers($user, $quantities);
                     break;
                 case TradeGroupEnum::BLEACH:
                     $title = 'Bleach';
@@ -519,7 +519,7 @@ class TraderService
         ];
     }
 
-    private function getGamingOffers(User $user, array $quantities): array
+    private function getHollowEarthOffers(User $user, array $quantities): array
     {
         return [
             TraderOffer::createTradeOffer(

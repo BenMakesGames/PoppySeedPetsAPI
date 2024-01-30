@@ -73,7 +73,7 @@ class AdoptionService
         else
         {
             $dialog = $numPets > 10
-                ? "Oh, goodness! A bunch of pets appeared from the Portal today! It just seems to happen now and again; we're still not sure why...\n\n Anyway, if "
+                ? "Oh, goodness! A bunch of pets appeared from the Hollow Earth today! It just seems to happen now and again; we're still not sure why...\n\n Anyway, if "
                 : "Hello! Here to adopt a new friend?\n\nIf "
             ;
         }

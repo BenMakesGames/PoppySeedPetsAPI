@@ -26,7 +26,7 @@ class RemoveTileCardController extends AbstractController
         $player = $user->getHollowEarthPlayer();
 
         if($player === null)
-            throw new PSPNotUnlockedException('Portal');
+            throw new PSPNotUnlockedException('Hollow Earth');
 
         if($player->getCurrentAction())
             throw new PSPInvalidOperationException('You can\'t change the map while you\'re moving!');

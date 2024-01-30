@@ -27,7 +27,7 @@ class MyTilesController extends AbstractController
         $player = $user->getHollowEarthPlayer();
 
         if($player === null)
-            throw new PSPNotUnlockedException('Portal');
+            throw new PSPNotUnlockedException('Hollow Earth');
 
         $types = $request->query->all('types');
 

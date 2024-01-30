@@ -27,7 +27,7 @@ class GetController extends AbstractController
         $user = $this->getUser();
 
         if($user->getHollowEarthPlayer() === null)
-            throw new PSPNotUnlockedException('Portal');
+            throw new PSPNotUnlockedException('Hollow Earth');
 
         $fieldGuideService->maybeUnlock($user, 'The Hollow Earth', 'You discovered an entrance to the Hollow Earth in your very own home!');
 

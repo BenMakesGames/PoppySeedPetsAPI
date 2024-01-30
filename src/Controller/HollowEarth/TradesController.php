@@ -92,7 +92,7 @@ class TradesController extends AbstractController
         $item = ItemRepository::findOneByName($em, $trade['item']['name']);
 
         for($i = 0; $i < $quantity; $i++)
-            $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' traded for this in the Portal.', $destination);
+            $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' traded for this in the Hollow Earth.', $destination);
 
         if(array_key_exists('jade', $trade['cost'])) $player->increaseJade(-$trade['cost']['jade'] * $quantity);
         if(array_key_exists('incense', $trade['cost'])) $player->increaseIncense(-$trade['cost']['incense'] * $quantity);

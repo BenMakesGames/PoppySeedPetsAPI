@@ -39,7 +39,7 @@ class PlayController extends AbstractController
         $player = $user->getHollowEarthPlayer();
 
         if($player === null)
-            throw new PSPNotUnlockedException('Portal');
+            throw new PSPNotUnlockedException('Hollow Earth');
 
         if($player->getChosenPet() === null)
             throw new PSPInvalidOperationException('You must choose a pet to lead the group.');

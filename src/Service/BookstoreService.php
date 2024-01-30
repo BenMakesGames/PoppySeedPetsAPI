@@ -34,7 +34,7 @@ class BookstoreService
         ],
         [
             'askingFor' => [ 'Upside-down Shiny Pail' ],
-            'dialog' => 'Next on my list is an Upside-down Shiny Pail. You can find the right side-up kind in the Portal. (If you haven\'t unlocked the Portal, try rolling some dice!)',
+            'dialog' => 'Next on my list is an Upside-down Shiny Pail. You can find the right side-up kind in the Hollow Earth. (If you haven\'t unlocked the Hollow Earth, try rolling some dice!)',
         ],
         [
             'askingFor' => [ 'Single', 'Musical Scales' ],
@@ -70,7 +70,7 @@ class BookstoreService
         ],
         [
             'askingFor' => [ 'Box of Ores' ],
-            'dialog' => 'I\'m looking for a Box of Ores. It\'s another object that can be found in the Portal.',
+            'dialog' => 'I\'m looking for a Box of Ores. It\'s another object that can be found in the Hollow Earth.',
         ],
         [
             'askingFor' => [ 'Planetary Ring' ],
