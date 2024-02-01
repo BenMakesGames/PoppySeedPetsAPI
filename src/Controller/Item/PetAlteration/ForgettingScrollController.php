@@ -131,6 +131,10 @@ class ForgettingScrollController extends AbstractController
         {
             $pet->setIsFertile(false);
         }
+        else if($merit->getName() === MeritEnum::AFFECTIONLESS)
+        {
+            $pet->getHouseTime()->setSocialEnergy(0);
+        }
 
         $em->flush();
 

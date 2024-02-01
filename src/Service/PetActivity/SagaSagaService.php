@@ -29,7 +29,7 @@ class SagaSagaService
     {
     }
 
-    public function petCompletedSagaSaga(Pet $pet): bool
+    public function petCompletesSagaSaga(Pet $pet): bool
     {
         if(!$pet->hasMerit(MeritEnum::SAGA_SAGA))
             return false;

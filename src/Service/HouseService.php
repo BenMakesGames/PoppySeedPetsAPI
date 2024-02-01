@@ -142,9 +142,13 @@ class HouseService
                 $this->houseSimService->setPetHasRunSocialTime($pet);
             }
 
-            if($pet->hasMerit(MeritEnum::SAGA_SAGA) && $this->sagaSagaService->petCompletedSagaSaga($pet))
-                break;
-            else if($this->petCanStillProcess($pet, $hungOut))
+            if($pet->hasMerit(MeritEnum::SAGA_SAGA))
+            {
+                if($this->sagaSagaService->petCompletesSagaSaga($pet))
+                    break;
+            }
+
+            if($this->petCanStillProcess($pet, $hungOut))
                 $petsRemaining[] = $pet;
         }
 
