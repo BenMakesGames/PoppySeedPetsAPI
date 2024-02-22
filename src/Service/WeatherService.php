@@ -45,16 +45,15 @@ class WeatherService
         if($pet)
             $dt = $dt->modify('-' . max(0, $pet->getHouseTime()->getActivityTime()) . ' minutes');
 
-        if($dt->format('nd') === '229')
-            return WeatherService::getLeapDayWeather($dt);
-
         $weather = new WeatherData();
 
         $hourSince2000 = WeatherService::getHourSince2000($dt);
 
+        $isLeapDay = CalendarFunctions::isLeapDay($dt);
+
         $weather->holidays = $getHolidays ? CalendarFunctions::getEventData($dt) : [];
-        $weather->clouds = WeatherService::getClouds($hourSince2000);
-        $weather->rainfall = WeatherService::getRainfall($hourSince2000);
+        $weather->clouds = $isLeapDay ? 1 : WeatherService::getClouds($hourSince2000);
+        $weather->rainfall = $isLeapDay ? 1.5 : WeatherService::getRainfall($hourSince2000);
         $weather->temperature = WeatherService::getTemperature($hourSince2000, $weather->rainfall);
         $weather->isNight = WeatherService::isNight((int)$hourSince2000 % 24);
 
@@ -148,18 +147,6 @@ class WeatherService
     public static function isNight(int $hourOfDay): bool
     {
         return ($hourOfDay < 6 || $hourOfDay >= 18);
-    }
-
-    private static function getLeapDayWeather(\DateTimeImmutable $dt): WeatherData
-    {
-        $seed = 1618; // first four digits of the golden ratio
-
-        $weather = new WeatherData();
-        $weather->rainfall = 0;
-        $weather->temperature = 18 + (RandomFunctions::squirrel3Noise((int)$dt->format('Y'), $seed) % 5);
-        $weather->isNight = WeatherService::isNight($dt->format('G'));
-
-        return $weather;
     }
 
     /**

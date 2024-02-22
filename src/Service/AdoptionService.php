@@ -197,7 +197,7 @@ class AdoptionService
                     ][$i % 4]
                 ]);
                 $pet->label = '*ribbit*';
-                $dialog = "Uh... your guess is as good as mine...\n\nIf ";
+                $dialog = "Uh... your guess is as good as mine...\n\nAnd this rain feels unnatural, too, don't you think?\n\nWell... anyway, if ";
             }
             else if(RandomFunctions::squirrel3Noise($i + 100, $this->clock->now->format('YNmd')) % 200 === 1)
             {
