@@ -1,26 +1,33 @@
 <?php
 namespace App\Controller\PetShelter;
 
+use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
+use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Functions\ArrayFunctions;
+use App\Functions\CalendarFunctions;
+use App\Functions\ItemRepository;
 use App\Functions\MeritRepository;
 use App\Functions\ProfanityFilterFunctions;
 use App\Functions\UserQuestRepository;
 use App\Model\PetShelterPet;
 use App\Repository\PetRepository;
 use App\Service\AdoptionService;
+use App\Service\Clock;
+use App\Service\HattierService;
 use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Location;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,8 +40,9 @@ class AdoptController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function adoptPet(
         int $id, AdoptionService $adoptionService, Request $request, ResponseService $responseService,
-        EntityManagerInterface $em, UserStatsService $userStatsRepository,
-        TransactionService $transactionService, IRandom $rng, PetFactory $petFactory
+        EntityManagerInterface $em, UserStatsService $userStatsRepository, Clock $clock,
+        TransactionService $transactionService, IRandom $rng, PetFactory $petFactory,
+        HattierService $hattierService
     )
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');
@@ -83,6 +91,28 @@ class AdoptController extends AbstractController
 
         if($numberOfPetsAtHome >= $user->getMaxPets())
             $newPet->setLocation(PetLocationEnum::DAYCARE);
+
+        if(CalendarFunctions::isLeapDay($clock->now))
+        {
+            $newPet->addMerit(MeritRepository::findOneByName($em, 'Behatted'));
+
+            $hat = (new Inventory())
+                ->setItem(ItemRepository::findOneByName($em, 'Mermaid Egg'))
+                ->addComment($newPet->getName() . ' came from the Hollow Earth wearing this...')
+                ->setOwner($user);
+
+            $em->persist($hat);
+
+            $newPet->setHat($hat);
+
+            $hattierService->petMaybeUnlockAura(
+                $newPet,
+                'Leap Day\'s',
+                $newPet->getName() . ' came from the Hollow Earth with a strange egg on their head...',
+                $newPet->getName() . ' came from the Hollow Earth with a strange egg on their head...',
+                $newPet->getName() . ' came from the Hollow Earth with an egg on their head that bore this style!'
+            );
+        }
 
         $transactionService->spendMoney($user, $costToAdopt, 'Adopted a new pet.');
 

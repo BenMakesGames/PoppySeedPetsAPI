@@ -186,6 +186,19 @@ class AdoptionService
                 $pet->label = 'noom!';
                 $dialog = "Agh! This happens every year at about this time! Noombats everywhere! I don't know if it's Noombat breeding season, or what, but please adopt one of these things! If you insist, though, and ";
             }
+            else if(CalendarFunctions::isLeapDay($this->clock->now))
+            {
+                $pet->species = $this->em->getRepository(PetSpecies::class)->findOneBy([
+                    'name' => [
+                        'Bear Frog',
+                        'False Frog',
+                        'Gelp',
+                        'False Frog',
+                    ][$i % 4]
+                ]);
+                $pet->label = '*ribbit*';
+                $dialog = "Uh... your guess is as good as mine...\n\nIf ";
+            }
             else if(RandomFunctions::squirrel3Noise($i + 100, $this->clock->now->format('YNmd')) % 200 === 1)
             {
                 $pet->species = $squirrel3->rngNextFromArray(

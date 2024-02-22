@@ -292,6 +292,11 @@ final class CalendarFunctions
         return abs($monthAndDay - $leonidPeakDay) <= 1;
     }
 
+    public static function isLeapDay(\DateTimeInterface $dt): bool
+    {
+        return $dt->format('md') === '0229';
+    }
+
     public static function isChineseNewYear(\DateTimeInterface $dt): bool
     {
         $chineseCalendarInfo = self::getChineseCalendarInfo($dt);
@@ -397,6 +402,9 @@ final class CalendarFunctions
 
         if(self::isLeonidPeakOrAdjacent($dt))
             $events[] = HolidayEnum::LEONIDS;
+
+        if(self::isLeapDay($dt))
+            $events[] = HolidayEnum::LEAP_DAY;
 
         return $events;
     }
