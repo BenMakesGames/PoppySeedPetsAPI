@@ -98,6 +98,7 @@ class AdoptController extends AbstractController
 
             $hat = (new Inventory())
                 ->setItem(ItemRepository::findOneByName($em, 'Mermaid Egg'))
+                ->setLocation(LocationEnum::WARDROBE)
                 ->addComment($newPet->getName() . ' came from the Hollow Earth wearing this...')
                 ->setOwner($user);
 
