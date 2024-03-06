@@ -93,6 +93,8 @@ class AdoptionService
 
         $allSpecies = $this->em->getRepository(PetSpecies::class)->findBy([ 'availableFromPetShelter' => true ]);
 
+        $rarePetIndicies = self::getRarePetIndicies($this->clock->now);
+
         for($i = 0; $i < $numPets; $i++)
         {
             if($i < $numSeasonalPets)
@@ -199,7 +201,7 @@ class AdoptionService
                 $pet->label = '*ribbit*';
                 $dialog = "Uh... your guess is as good as mine...\n\nAnd this rain feels unnatural, too, don't you think?\n\nWell... anyway, if ";
             }
-            else if(RandomFunctions::squirrel3Noise($i + 100, $this->clock->now->format('YNmd')) % 200 === 1)
+            else if(in_array($i, $rarePetIndicies))
             {
                 $pet->species = $squirrel3->rngNextFromArray(
                     $this->em->getRepository(PetSpecies::class)->findBy([
@@ -231,17 +233,35 @@ class AdoptionService
         return [ $pets, $dialog ];
     }
 
+    public static function getRarePetDayForMonth(\DateTimeImmutable $dt): int
+    {
+        $year = (int)$dt->format('Y');
+        $month = (int)$dt->format('n');
+        $daysThisMonth = (int)$dt->format('t');
+
+        return RandomFunctions::squirrel3Noise($year, $month) % $daysThisMonth + 1;
+    }
+
     public static function isRarePetDay(\DateTimeImmutable $dt)
     {
+        return count(self::getRarePetIndicies($dt)) > 0;
+    }
+
+    public static function getRarePetIndicies(\DateTimeImmutable $dt)
+    {
+        $rarePetDayOfMonth = self::getRarePetDayForMonth($dt);
+
         $numPets = self::getNumberOfPets($dt);
 
-        for($i = 0; $i < $numPets; $i++)
-        {
-            if(RandomFunctions::squirrel3Noise($i + 100, $dt->format('YNmd')) % 200 === 1)
-                return true;
-        }
+        $rarePetIndicies = [];
 
-        return false;
+        if(RandomFunctions::squirrel3Noise(591, $dt->format('NmYd')) % 100 === 1)
+            $rarePetIndicies[] = RandomFunctions::squirrel3Noise(1002, $dt->format('1YmNd')) % $numPets;
+
+        if($rarePetDayOfMonth == $dt->format('j'))
+            $rarePetIndicies[] = RandomFunctions::squirrel3Noise(314159, $dt->format('YdmN')) % $numPets;
+
+        return array_values(array_unique($rarePetIndicies));
     }
 
     public function numberOfSeasonalPets(int $totalPets, IRandom $squirrel3): int
