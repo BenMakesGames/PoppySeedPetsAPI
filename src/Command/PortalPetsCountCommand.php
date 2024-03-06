@@ -34,12 +34,18 @@ class PortalPetsCountCommand extends Command
         for($i = 0; $i < 365; $i++)
         {
             $number = AdoptionService::getNumberOfPets($clock->now);
+            $rarePetIndicies = AdoptionService::getRarePetIndicies($clock->now);
 
             $min = min($min, $number);
             $max = max($max, $number);
             $total += $number;
 
-            $output->writeln($clock->now->format('Y-m-d') . ': ' . $number);
+            $output->write($clock->now->format('Y-m-d') . ': ' . $number);
+
+            if(count($rarePetIndicies) > 0)
+                $output->write(' (rare pets: ' . implode(', ', $rarePetIndicies) . ')');
+
+            $output->writeln('');
 
             $clock->now = $clock->now->add(\DateInterval::createFromDateString('1 day'));
         }
