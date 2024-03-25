@@ -19,7 +19,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class HoliService
 {
-    public const HOLI_ACTIVITY_LOG_ICON = 'ui/holidays/holi';
+    public const HOLI_ACTIVITY_LOG_ICON = 'calendar/holidays/holi';
 
     public function __construct(
         private readonly PetRelationshipRepository $petRelationshipRepository,

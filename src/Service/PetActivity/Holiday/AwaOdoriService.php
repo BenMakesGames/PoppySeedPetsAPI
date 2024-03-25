@@ -113,7 +113,7 @@ class AwaOdoriService
             : PetActivityLogFactory::createUnreadLog($this->em, $pet, $listOfPetNames . ' went out dancing together!');
 
         $log
-            ->setIcon('ui/holidays/awa-odori')
+            ->setIcon('calendar/holidays/awa-odori')
             ->setChanges($changes->compare($pet))
             ->addTags($activityLogTags)
             ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
