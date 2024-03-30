@@ -11,6 +11,7 @@ use App\Service\Filter\PetSpeciesFilterService;
 use App\Service\ResponseService;
 use App\Service\Typeahead\ItemTypeaheadService;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -75,6 +76,28 @@ class EncyclopediaController extends AbstractController
         return $responseService->success(
             $petSpeciesFilterService->getResults($request->query),
             [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::PET_ENCYCLOPEDIA ]
+        );
+    }
+
+    /**
+     * @DoesNotRequireHouseHours()
+     */
+    #[Route("/speciesByFamily/{familyName}", methods: ["GET"])]
+    public function speciesByFamily(string $familyName,
+        ManagerRegistry $doctrine,
+        ResponseService $responseService)
+    {
+        $species = $doctrine->getRepository(PetSpecies::class, 'readonly')
+            ->createQueryBuilder('s')
+            ->where('s.family = :family')
+            ->orderBy('s.nameSort', 'ASC')
+            ->setParameter('family', $familyName)
+            ->getQuery()
+            ->execute();
+
+        return $responseService->success(
+            $species,
+            [ SerializationGroupEnum::PET_ENCYCLOPEDIA ]
         );
     }
 
