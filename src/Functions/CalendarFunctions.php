@@ -251,7 +251,6 @@ final class CalendarFunctions
     public static function isEaster(\DateTimeInterface $dt): bool
     {
         $easter = \DateTimeImmutable::createFromFormat('U', easter_date((int)$dt->format('Y')));
-        $easter = $easter->setTime(0, 0, 0);
 
         if($dt > $easter)
             return false;

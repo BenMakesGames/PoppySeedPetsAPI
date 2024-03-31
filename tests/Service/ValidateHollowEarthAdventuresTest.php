@@ -6,6 +6,8 @@ use App\Entity\HollowEarthTileCard;
 use App\Entity\Item;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use function PHPUnit\Framework\assertFalse;
+use function PHPUnit\Framework\assertTrue;
 
 class ValidateHollowEarthAdventuresTest extends KernelTestCase
 {
@@ -49,8 +51,7 @@ class ValidateHollowEarthAdventuresTest extends KernelTestCase
         {
             $item = $em->getRepository(Item::class)->findOneBy([ 'name' => $itemName ]);
 
-            if(!$item)
-                self::fail("Adventure \"{$adventureName}\" references item \"{$itemName}\" which does not exist.");
+            self::assertNotNull($item, "Adventure \"{$adventureName}\" references item \"{$itemName}\" which does not exist.");
         }
     }
 
@@ -67,7 +68,6 @@ class ValidateHollowEarthAdventuresTest extends KernelTestCase
 
     private static function validatePetChallenge(EntityManagerInterface $em, string $adventureName, array $petChallenge)
     {
-        if(!array_key_exists('ifSuccess', $petChallenge))
-            self::fail("Adventure \"{$adventureName}\" has a pet challenge without an \"ifSuccess\" key.");
+        assertTrue(array_key_exists('ifSuccess', $petChallenge), "Adventure \"{$adventureName}\" has a pet challenge without an \"ifSuccess\" key.");
     }
 }
