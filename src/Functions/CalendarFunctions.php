@@ -250,14 +250,15 @@ final class CalendarFunctions
 
     public static function isEaster(\DateTimeInterface $dt): bool
     {
-        $easter = \DateTimeImmutable::createFromFormat('U', easter_date((int)$dt->format('Y')));
+        // I don't love this way of doing it, but it works for easter (whose celebrations never span two years)
+        // "z" is "the day of the year", do we can test the date that way, ignoring time
+        $easter = (int)\DateTimeImmutable::createFromFormat('U', easter_date((int)$dt->format('Y')))->format('z');
+        $now = (int)$dt->format('z');
 
-        if($dt > $easter)
+        if($now > $easter)
             return false;
 
-        $diff = $dt->diff($easter)->days;
-
-        return $diff < 3;
+        return $easter - $now < 3;
     }
 
     public static function isHoli(\DateTimeInterface $dt): bool
