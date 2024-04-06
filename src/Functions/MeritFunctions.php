@@ -22,7 +22,7 @@ class MeritFunctions
         if($pet->getPregnancy())
         {
             // remove MeritEnum::VOLAGAMY from $canUnlearn:
-            $canUnlearn = array_diff($canUnlearn, [ MeritEnum::VOLAGAMY ]);
+            $canUnlearn = array_values(array_diff($canUnlearn, [ MeritEnum::VOLAGAMY ]));
         }
 
         return $canUnlearn;
