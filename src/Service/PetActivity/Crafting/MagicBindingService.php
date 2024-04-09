@@ -282,6 +282,9 @@ class MagicBindingService
             {
                 if($this->houseSimService->hasInventory('Sunflower') && $this->houseSimService->hasInventory('Dark Matter'))
                     $possibilities[] = new ActivityCallback($this->createNightAndDay(...), 8);
+
+                if($this->houseSimService->hasInventory('Scales') && $this->houseSimService->hasInventory('Tentacle'))
+                    $possibilities[] = new ActivityCallback($this->createSEpee(...), 8);
             }
 
             if($this->houseSimService->hasInventory('Iron Sword'))
@@ -1020,7 +1023,8 @@ class MagicBindingService
 
         if($umbraCheck < 20)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Rapier, but kept messing up the spell.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Rapier, but kept messing up the spell.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -1035,11 +1039,46 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Dark Matter', 1);
             $this->houseSimService->getState()->loseItem('Rapier', 1);
             $pet->increaseEsteem(6);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound Night and Day...', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound Night and Day...')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
             $this->inventoryService->petCollectsItem('Night and Day', $pet, $pet->getName() . ' enchanted this.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
+        }
+
+        return $activityLog;
+    }
+
+    public function createSEpee(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+
+        if($umbraCheck < 20)
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Rapier, but kept messing up the spell.')
+                ->setIcon('icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->houseSimService->getState()->loseItem('Quintessence', 1);
+            $this->houseSimService->getState()->loseItem('Scales', 1);
+            $this->houseSimService->getState()->loseItem('Tentacle', 1);
+            $this->houseSimService->getState()->loseItem('Rapier', 1);
+            $pet->increaseEsteem(6);
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound S. Epée...')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
+            ;
+            $this->inventoryService->petCollectsItem('S. Epée', $pet, $pet->getName() . ' enchanted this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
         }
