@@ -44,4 +44,6 @@ class PetActivityLogTag
     {
         return $this->emoji;
     }
+
+
 }

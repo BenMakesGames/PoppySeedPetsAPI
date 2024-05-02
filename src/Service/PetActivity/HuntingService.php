@@ -10,6 +10,7 @@ use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\MoonPhaseEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
@@ -270,7 +271,10 @@ class HuntingService
         if($this->squirrel3->rngNextInt(1, $skill) >= 6)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% ' . $defeated . ' a Dust Bunny, reducing it to Fluff!', 'items/ambiguous/fluff')
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Hunting' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Hunting,
+                    PetActivityLogTagEnum::Location_At_Home,
+                ]))
             ;
             $this->inventoryService->petCollectsItem('Fluff', $pet, 'The remains of a Dust Bunny that ' . $pet->getName() . ' hunted.', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
@@ -280,7 +284,10 @@ class HuntingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% ' . $chased . ' a Dust Bunny, but wasn\'t able to catch up with it.', '')
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Hunting' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Hunting,
+                    PetActivityLogTagEnum::Location_At_Home,
+                ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
 
@@ -306,7 +313,10 @@ class HuntingService
         if($this->squirrel3->rngNextInt(1, $skill) >= 6)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% ' . $defeated . ' a Plastic Bag, reducing it to Plastic... somehow?', 'items/ambiguous/fluff')
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Hunting' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Hunting,
+                    PetActivityLogTagEnum::Location_At_Home,
+                ]))
             ;
             $this->inventoryService->petCollectsItem('Plastic', $pet, 'The remains of a vicious Plastic Bag that ' . $pet->getName() . ' hunted!', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
@@ -315,7 +325,10 @@ class HuntingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% ' . $chased . ' a Plastic Bag, but wasn\'t able to catch up with it!', '')
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Hunting' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Hunting,
+                    PetActivityLogTagEnum::Location_At_Home,
+                ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, false);

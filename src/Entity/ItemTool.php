@@ -48,26 +48,26 @@ class ItemTool
     #[ORM\Column(type: 'integer')]
     private $science = 0;
 
-    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"])]
+    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'float')]
     private $gripX = 0.5;
 
-    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"])]
+    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'float')]
     private $gripY = 0.5;
 
-    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"])]
+    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'integer')]
     private $gripAngle = 0;
 
     /**
      * A fixed grip angle means that the item will ALWAYS be rendered at this angle, regardless of the attributes of the pet that holds it
-     * @Groups({"myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"})
      */
+    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'boolean')]
     private $gripAngleFixed = false;
 
-    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"])]
+    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'float')]
     private $gripScale = 1;
 
@@ -80,7 +80,7 @@ class ItemTool
     #[ORM\Column(type: 'boolean')]
     private $protectionFromHeat = false;
 
-    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet"])]
+    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'boolean')]
     private $alwaysInFront = false;
 

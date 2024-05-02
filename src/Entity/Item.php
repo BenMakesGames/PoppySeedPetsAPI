@@ -34,7 +34,7 @@ class Item
     #[ORM\Column(type: 'json', nullable: true)]
     private $useActions = [];
 
-    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth", "petGroupDetails", "helperPet"])]
+    #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet"])]
     #[ORM\OneToOne(targetEntity: 'App\Entity\ItemTool')]
     private $tool;
 

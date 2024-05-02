@@ -10,6 +10,7 @@ use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\MoonPhaseEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
@@ -286,14 +287,19 @@ class GatheringService
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::GATHER, false);
 
         return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out gathering, but couldn\'t find anything.', 'icons/activity-logs/confused')
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                PetActivityLogTagEnum::Gathering
+            ]))
         ;
     }
 
     private function foundPaperBag(Pet $pet): PetActivityLog
     {
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a Paper Bag just, like, lyin\' around.', 'items/bag/paper')
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                PetActivityLogTagEnum::Gathering,
+                PetActivityLogTagEnum::Location_Neighborhood
+            ]))
         ;
 
         $this->inventoryService->petCollectsItem('Paper Bag', $pet, $pet->getName() . ' found this just lyin\' around.', $activityLog);
@@ -311,7 +317,11 @@ class GatheringService
             $message = '%pet:' . $pet->getId() . '.name% found a Tea Bush, and grabbed a few Tea Leaves, as well as some Worms which had surfaced to escape the rain.';
 
             $activityLog = $this->responseService->createActivityLog($pet, $message, 'items/veggie/tea-leaves')
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Gathering,
+                    PetActivityLogTagEnum::Rain,
+                    PetActivityLogTagEnum::Location_Micro_Jungle,
+                ]))
             ;
 
             $this->inventoryService->petCollectsItem('Tea Leaves', $pet, $pet->getName() . ' harvested this from a Tea Bush.', $activityLog);
@@ -322,7 +332,10 @@ class GatheringService
             $message = '%pet:' . $pet->getId() . '.name% found a Tea Bush, and grabbed a few Tea Leaves.';
 
             $activityLog = $this->responseService->createActivityLog($pet, $message, 'items/veggie/tea-leaves')
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Gathering,
+                    PetActivityLogTagEnum::Location_Micro_Jungle,
+                ]))
             ;
 
             $this->inventoryService->petCollectsItem('Tea Leaves', $pet, $pet->getName() . ' harvested this from a Tea Bush.', $activityLog);
@@ -852,7 +865,7 @@ class GatheringService
 
             $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a lone Naner Tree in the island\'s Micro-Jungle. They left a small offering for Nang Tani... who appeared out of thin air, and gave them ' . $loot->getNameWithArticle() . '!', '')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a lone Naner Tree in the island\'s Micro-jungle. They left a small offering for Nang Tani... who appeared out of thin air, and gave them ' . $loot->getNameWithArticle() . '!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
@@ -860,11 +873,11 @@ class GatheringService
 
             $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Nang Tani', '%pet:' . $pet->getId() . '.name% encountered Nang Tani at a lone Naner Tree!');
 
-            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' received this from Nang Tani while leaving an offering at a lone Naner Tree in the island\'s Micro-Jungle.', $activityLog);
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' received this from Nang Tani while leaving an offering at a lone Naner Tree in the island\'s Micro-jungle.', $activityLog);
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a lone Naner Tree in the island\'s Micro-Jungle. They left a small offering for Nang Tani, and left.', '')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a lone Naner Tree in the island\'s Micro-jungle. They left a small offering for Nang Tani, and left.', '')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
@@ -917,24 +930,24 @@ class GatheringService
 
         if(count($loot) === 0)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% entered the island\'s Micro-Jungle, but couldn\'t find anything.', 'icons/activity-logs/confused')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% entered the island\'s Micro-jungle, but couldn\'t find anything.', 'icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% entered the island\'s Micro-Jungle, and got ' . ArrayFunctions::list_nice($loot) . '.', '')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% entered the island\'s Micro-jungle, and got ' . ArrayFunctions::list_nice($loot) . '.', '')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
 
             foreach($loot as $itemName)
-                $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in the island\'s Micro-Jungle.', $activityLog);
+                $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in the island\'s Micro-jungle.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
         }
 
-        $this->maybeGetHeatstroke($petWithSkills, $activityLog, 6, 'the Micro-Jungle');
+        $this->maybeGetHeatstroke($petWithSkills, $activityLog, 6, 'the Micro-jungle');
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60) + count($loot) * 5, PetActivityStatEnum::GATHER, count($loot) > 0);
 
@@ -1277,29 +1290,29 @@ class GatheringService
 
         if(count($allLoot) === 0)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored deep in the island\'s Micro-Jungle, but couldn\'t find anything.', 'icons/activity-logs/confused')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored deep in the island\'s Micro-jungle, but couldn\'t find anything.', 'icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored deep in the island\'s Micro-Jungle, and got ' . ArrayFunctions::list_nice($allLoot) . '.', '')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored deep in the island\'s Micro-jungle, and got ' . ArrayFunctions::list_nice($allLoot) . '.', '')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
 
             $tropicalSpice = SpiceRepository::findOneByName($this->em, 'Tropical');
 
             foreach($foodLoot as $itemName)
-                $this->inventoryService->petCollectsEnhancedItem($itemName, null, $tropicalSpice, $pet, $pet->getName() . ' found this deep in the island\'s Micro-Jungle.', $activityLog);
+                $this->inventoryService->petCollectsEnhancedItem($itemName, null, $tropicalSpice, $pet, $pet->getName() . ' found this deep in the island\'s Micro-jungle.', $activityLog);
 
             foreach($extraLoot as $itemName)
-                $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this deep in the island\'s Micro-Jungle.', $activityLog);
+                $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this deep in the island\'s Micro-jungle.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, $this->rng->rngNextInt(2, 3), [ PetSkillEnum::NATURE ], $activityLog);
         }
 
-        $this->maybeGetHeatstroke($petWithSkills, $activityLog, 8, 'the Micro-Jungle');
+        $this->maybeGetHeatstroke($petWithSkills, $activityLog, 8, 'the Micro-jungle');
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60) + count($allLoot) * 5, PetActivityStatEnum::GATHER, count($allLoot) > 0);
 
@@ -1338,7 +1351,7 @@ class GatheringService
 
         if(count($loot) === 0)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored deep in the island\'s Micro-Jungle, and found a ruined settlement. They looked around for a while, but didn\'t really find anything...', 'icons/activity-logs/confused')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored deep in the island\'s Micro-jungle, and found a ruined settlement. They looked around for a while, but didn\'t really find anything...', 'icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
@@ -1347,13 +1360,13 @@ class GatheringService
         {
             sort($loot);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored deep in the island\'s Micro-Jungle, and found a ruined settlement. They looked around for a while, and scavenged up ' . ArrayFunctions::list_nice($loot) . '.', '')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored deep in the island\'s Micro-jungle, and found a ruined settlement. They looked around for a while, and scavenged up ' . ArrayFunctions::list_nice($loot) . '.', '')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
 
             foreach($loot as $itemName)
             {
-                $item = $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in a ruined settlement deep in the island\'s Micro-Jungle.', $activityLog);
+                $item = $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in a ruined settlement deep in the island\'s Micro-jungle.', $activityLog);
 
                 if($itemName === 'No Right Turns')
                     $item->setEnchantment(EnchantmentRepository::findOneByName($this->em, 'Thorn-covered'));
@@ -1362,7 +1375,7 @@ class GatheringService
             $this->petExperienceService->gainExp($pet, 2 + count($loot), [ PetSkillEnum::NATURE ], $activityLog);
         }
 
-        $this->maybeGetHeatstroke($petWithSkills, $activityLog, 8, 'the Micro-Jungle');
+        $this->maybeGetHeatstroke($petWithSkills, $activityLog, 8, 'the Micro-jungle');
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60) + count($loot) * 5, PetActivityStatEnum::GATHER, count($loot) > 0);
 
