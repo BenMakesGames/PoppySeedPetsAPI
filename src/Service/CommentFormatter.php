@@ -4,7 +4,7 @@ namespace App\Service;
 use App\Entity\Pet;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class CommentFormatter
 {

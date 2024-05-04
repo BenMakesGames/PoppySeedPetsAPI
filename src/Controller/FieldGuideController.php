@@ -45,7 +45,6 @@ class FieldGuideController extends AbstractController
                         'image' => $image,
                         'description' => $description,
                     ]
-
                 ]
             );
 

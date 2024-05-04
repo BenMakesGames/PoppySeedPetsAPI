@@ -1,20 +1,22 @@
 <?php
 namespace App\Service;
 
+use App\Entity\Item;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\PetActivityLogTag;
+use App\Entity\UnreadPetActivityLog;
 use App\Entity\User;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
-use App\Functions\SimpleDb;
 use App\Functions\UserMenuFunctions;
 use App\Model\PetChangesSummary;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -52,6 +54,7 @@ class ResponseService
 
     private function getUser(): ?User
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->security->getUser();
     }
 
@@ -166,23 +169,34 @@ class ResponseService
      */
     public function findUnreadForUser(User $user): array
     {
-        $logs = SimpleDb::createReadOnlyConnection()
-            ->query(
-                'SELECT l.id,l.entry,l.icon,l.changes,l.interestingness
-                FROM unread_pet_activity_log AS ul
-                INNER JOIN pet AS p ON p.id = ul.pet_id
-                INNER JOIN pet_activity_log AS l ON ul.pet_activity_log_id=l.id
-                WHERE p.owner_id = :userId',
-                [
-                    ':userId' => $user->getId()
-                ]
-            )
-            ->mapResults(
-                fn($id, $entry, $icon, $changes, $interestingness)
-                    => new FlashMessage($id, $entry, $icon, unserialize($changes), $interestingness)
-            );
+        $logs = $this->em->getRepository(UnreadPetActivityLog::class)->createQueryBuilder('a')
+            ->select('a')
+            ->join('a.pet', 'p')
+            ->join('a.petActivityLog', 'l')
+            ->where('p.owner = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->execute();
 
-        return $logs;
+        return array_map(
+            function(UnreadPetActivityLog $l) {
+                $message = new FlashMessage(
+                    $l->getPetActivityLog()->getId(),
+                    $l->getPetActivityLog()->getEntry(),
+                    $l->getPetActivityLog()->getIcon(),
+                    $l->getPetActivityLog()->getChanges(),
+                    $l->getPetActivityLog()->getInterestingness()
+                );
+
+                $message
+                    ->setPet($l->getPet())
+                    ->setEquippedItem($l->getPetActivityLog()->getEquippedItem())
+                    ->setTags($l->getPetActivityLog()->getTags()->toArray());
+
+                return $message;
+            },
+            $logs
+        );
     }
 
     private function injectUserData(array &$responseData)
@@ -254,6 +268,18 @@ class FlashMessage
     #[Groups(["petActivityLogs"])]
     public int $interestingness;
 
+    #[Groups(["petActivityLogs"])]
+    /**
+     * @var PetActivityLogTag[] $tags
+     */
+    public array $tags;
+
+    #[Groups(["petActivityLogs"])]
+    public ?Pet $pet;
+
+    #[Groups(["petActivityLogs"])]
+    public ?Item $equippedItem;
+
     public function __construct(int $id, string $entry, string $icon, ?PetChangesSummary $changes, int $interestingness)
     {
         $this->id = $id;
@@ -261,5 +287,27 @@ class FlashMessage
         $this->icon = $icon;
         $this->changes = $changes;
         $this->interestingness = $interestingness;
+    }
+
+    public function setPet(?Pet $pet): self
+    {
+        $this->pet = $pet;
+        return $this;
+    }
+
+    public function setEquippedItem(?Item $equippedItem): self
+    {
+        $this->equippedItem = $equippedItem;
+        return $this;
+    }
+
+    /**
+     * @param PetActivityLogTag[] $tags
+     * @return $this
+     */
+    public function setTags(array $tags): self
+    {
+        $this->tags = $tags;
+        return $this;
     }
 }
