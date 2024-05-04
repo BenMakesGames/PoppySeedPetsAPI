@@ -312,6 +312,7 @@ final class RecipeRepository
         [ 'name' => 'Limestone', 'ingredients' => '422:1,1130:1', 'makes' => '49:1' ],
         [ 'name' => 'Little Strongbox', 'ingredients' => '98:1,1129:1', 'makes' => '97:1' ],
         [ 'name' => 'Loaf of Plain Bread', 'ingredients' => '12:1,13:1,16:1,65:1,111:1', 'makes' => '112:5' ],
+        [ 'name' => 'Lox', 'ingredients' => '10:1,12:1,33:1', 'makes' => '1383:2' ],
         [ 'name' => 'Mackin Cheese B', 'ingredients' => '13:1,18:1,65:1,255:1,262:1', 'makes' => '351:4' ],
         [ 'name' => 'Mackin Cheese', 'ingredients' => '13:1,16:1,65:1,255:1,262:1', 'makes' => '351:4' ],
         [ 'name' => 'Magic Bean Milk', 'ingredients' => '171:1', 'makes' => '216:1' ],
