@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Entity\Pet;
 use App\Entity\User;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\PetActivityLogFactory;
@@ -65,7 +66,7 @@ class PetAndPraiseService
         PetActivityLogFactory::createUnreadLog($this->em, $pet, '%user:' . $petter->getId() . '.Name% pet ' . '%pet:' . $pet->getId() . '.name%.')
             ->setIcon('ui/affection')
             ->setChanges($changes->compare($pet))
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Petting' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Petting ]))
         ;
 
         $this->userStatsRepository->incrementStat($petter, UserStatEnum::PETTED_A_PET);

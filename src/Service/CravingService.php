@@ -6,6 +6,7 @@ use App\Entity\ItemGroup;
 use App\Entity\Pet;
 use App\Entity\PetCraving;
 use App\Enum\MeritEnum;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
@@ -119,7 +120,7 @@ class CravingService
         StatusEffectHelpers::applyStatusEffect($this->em, $pet, $statusEffect, 8 * 60);
 
         PetActivityLogFactory::createUnreadLog($this->em, $pet, 'The ' . $food->getName() . ' that ' . ActivityHelpers::PetName($pet) . ' ate satisfied their craving! They\'re feeling ' . $statusEffect . '!')
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Eating ]))
             ->setIcon('icons/status-effect/craving');
     }
 }

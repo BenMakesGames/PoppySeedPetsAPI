@@ -834,7 +834,10 @@ class UmbraService
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle that was obviously home to vampires. They snuck around inside for a while, but couldn\'t find a good opportunity to steal anything.')
                     ->setIcon('icons/activity-logs/confused')
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Stealth' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                        PetActivityLogTagEnum::The_Umbra,
+                        PetActivityLogTagEnum::Stealth,
+                    ]))
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::ARCANA ], $activityLog);

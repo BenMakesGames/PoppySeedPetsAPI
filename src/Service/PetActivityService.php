@@ -11,6 +11,7 @@ use App\Enum\ActivityPersonalityEnum;
 use App\Enum\GatheringHolidayEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
@@ -448,7 +449,7 @@ class PetActivityService
 
                 PetActivityLogFactory::createUnreadLog($this->em, $pet, $description . ' %pet:' . $pet->getId() . '.name% wanted to make something, but couldn\'t find any materials to work with.')
                     ->setIcon('icons/activity-logs/house-too-full')
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'House Too Full' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::House_Too_Full ]))
                 ;
             }
             else

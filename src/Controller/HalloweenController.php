@@ -5,6 +5,7 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
@@ -167,7 +168,7 @@ class HalloweenController extends AbstractController
                 $em,
                 $user,
                 'You gave ' . $candy->getFullItemName() . ' to ' . GrammarFunctions::indefiniteArticle($trickOrTreater->getSpecies()->getName()) . ' ' . $trickOrTreater->getSpecies()->getName() . ' dressed as ' . $trickOrTreater->getCostume() . '!',
-                [ 'Special Event', 'Halloween' ]
+                [ PetActivityLogTagEnum::Special_Event, PetActivityLogTagEnum::Halloween ]
             );
         }
 

@@ -6,6 +6,7 @@ use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
@@ -81,7 +82,7 @@ class HoliService
 
         return PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' enjoyed watching others participate in Holi this year, but didn\'t have any relationships to repair, themselves.')
             ->setIcon(self::HOLI_ACTIVITY_LOG_ICON)
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Holi', 'Special Event' ]));
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Holi, 'Special Event' ]));
     }
 
     private function doReconcileWithPet(Pet $pet, PetRelationship $relationshipToReconcile): PetActivityLog
@@ -117,7 +118,7 @@ class HoliService
             ->increaseEsteem(4)
         ;
 
-        $tags = PetActivityLogTagHelpers::findByNames($this->em, [ 'Holi', 'Special Event', '1-on-1 Hangout' ]);
+        $tags = PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Holi, PetActivityLogTagEnum::Special_Event, PetActivityLogTagEnum::One_on_One_Hangout ]);
 
         $otherPetLogMessage = 'In the spirit of Holi, ' . ActivityHelpers::PetName($pet) . ' talked with ' . ActivityHelpers::PetName($otherPet) . '. The two reconciled, and are now friends!';
 

@@ -8,6 +8,7 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\HolidayEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SocialTimeWantEnum;
@@ -569,12 +570,12 @@ class PetSocialActivityService
 
         $petLog
             ->setChanges($petChanges->compare($pet->getPet()))
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ '1-on-1 Hangout' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::One_on_One_Hangout ]))
         ;
 
         $friendLog
             ->setChanges($friendChanges->compare($friend->getPet()))
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ '1-on-1 Hangout' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::One_on_One_Hangout ]))
         ;
     }
 
