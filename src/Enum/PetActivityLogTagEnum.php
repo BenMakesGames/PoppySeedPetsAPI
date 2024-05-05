@@ -93,4 +93,5 @@ class PetActivityLogTagEnum
     public const Location_Under_a_Bridge = 'Location: Under a Bridge';
     public const Location_Roadside_Creek = 'Location: Roadside Creek';
     public const Location_At_Home = 'Location: At Home';
+    public const Location_Noetalas_Cocoon = 'Location: Noetala\'s Cocoon';
 }

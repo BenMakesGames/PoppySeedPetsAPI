@@ -6,6 +6,7 @@ use App\Entity\PetActivityLog;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SpiritCompanionStarEnum;
@@ -711,7 +712,10 @@ class UmbraService
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
-                $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]));
+                $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    'The Umbra',
+                    PetActivityLogTagEnum::Location_Noetalas_Cocoon,
+                ]));
 
                 return $activityLog;
             }
@@ -732,7 +736,12 @@ class UmbraService
                 $pet->increaseEsteem(3);
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' fell into a giant cocoon. While trying to find their way out, ' . ActivityHelpers::PetName($pet) . ' was ambushed by one of Noetala\'s guard, but was able to defeat it!')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Stealth', 'Fighting' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                        PetActivityLogTagEnum::The_Umbra,
+                        PetActivityLogTagEnum::Stealth,
+                        PetActivityLogTagEnum::Fighting,
+                        PetActivityLogTagEnum::Location_Noetalas_Cocoon,
+                    ]))
                 ;
 
                 $didWhat = 'defeated one of Noetala\'s guard, and took this';
@@ -747,7 +756,12 @@ class UmbraService
                 $pet->increaseEsteem(-3);
                 $pet->increaseSafety(-$this->squirrel3->rngNextInt(4, 8));
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% fell into a giant cocoon. While trying to find their way out, ' . $pet->getName() . ' was ambushed by one of Noetala\'s guard, and was wounded and covered in Fluff before being able to escape!')
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Stealth', 'Fighting' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                        PetActivityLogTagEnum::The_Umbra,
+                        PetActivityLogTagEnum::Stealth,
+                        PetActivityLogTagEnum::Fighting,
+                        PetActivityLogTagEnum::Location_Noetalas_Cocoon,
+                    ]))
                 ;
                 $didWhat = 'was attacked by one of Noetala\'s guard, and covered in this';
 
@@ -767,12 +781,16 @@ class UmbraService
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon Noetala\'s giant cocoon. They snuck around inside for a bit, and made off with ' . ArrayFunctions::list_nice($loot) . '.')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Stealth' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::The_Umbra,
+                    PetActivityLogTagEnum::Stealth,
+                    PetActivityLogTagEnum::Location_Noetalas_Cocoon,
+                ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::ARCANA ], $activityLog);
 
-            if($this->squirrel3->rngNextInt(1, 100) === 1)
+            if($this->squirrel3->rngNextInt(1, 50) === 1)
                 $activityLog->setEntry($activityLog->getEntry() . ' ("Snuck"? "Sneaked"? I dunno. One of thems.)');
 
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
