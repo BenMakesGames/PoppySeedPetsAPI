@@ -323,8 +323,10 @@ class FlashMessage
     public function setCreatedItems(array $createdItems): self
     {
         $this->createdItems = array_map(fn(PetActivityLogItem $logItem) => [
-            'name' => $logItem->getItem()->getName(),
-            'image' => $logItem->getItem()->getImage(),
+            'item' => [
+                'name' => $logItem->getItem()->getName(),
+                'image' => $logItem->getItem()->getImage(),
+            ]
         ], $createdItems);
 
         return $this;

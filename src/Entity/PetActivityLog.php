@@ -52,6 +52,7 @@ class PetActivityLog
     #[ORM\ManyToMany(targetEntity: PetActivityLogTag::class)]
     private $tags;
 
+    #[Groups(["petActivityLogAndPublicPet"])]
     #[ORM\OneToMany(mappedBy: 'log', targetEntity: PetActivityLogItem::class, orphanRemoval: true)]
     private Collection $createdItems;
 
