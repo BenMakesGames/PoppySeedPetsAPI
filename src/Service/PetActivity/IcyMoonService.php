@@ -340,15 +340,18 @@ class IcyMoonService
             {
                 $this->houseSimService->getState()->loseItem('Icy Moon', 1);
 
+                $lavaOrFirestone = $this->rng->rngNextFromArray([ 'Liquid-hot Magma', 'Firestone' ]);
+
                 $activityLog->setEntry($activityLog->getEntry() . ' As they were leaving, the caves began to shake violently! %pet:' . $pet->getId() . '.name% managed to start up the Tiny Rocketship, and shot out of the moon as it crumbled into pieces!')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                     ->addTag(PetActivityLogTagHelpers::findOneByName($this->em, PetActivityLogTagEnum::Location_Escaping_Icy_Moon))
+                    ->addCreatedItem(ItemRepository::findOneByName($this->em, $lavaOrFirestone))
                 ;
 
                 $this->inventoryService->petCollectsEnhancedItem('Everice', null, $this->getIcySpice(), $pet, 'The remains of a collapsed Icy Moon.', $activityLog);
                 $this->inventoryService->petCollectsEnhancedItem('Everice', null, $this->getIcySpice(), $pet, 'The remains of a collapsed Icy Moon.', $activityLog);
                 $this->inventoryService->petCollectsItem($this->rng->rngNextFromArray([ 'Rock', 'Silica Grounds' ]), $pet, 'The remains of a collapsed Icy Moon.', $activityLog);
-                $this->inventoryService->petCollectsItem($this->rng->rngNextFromArray([ 'Liquid-hot Magma', 'Firestone' ]), $pet, 'The remains of a collapsed Icy Moon.', $activityLog);
+                $this->inventoryService->petCollectsItem($lavaOrFirestone, $pet, 'The remains of a collapsed Icy Moon.', $activityLog);
             }
         }
         else

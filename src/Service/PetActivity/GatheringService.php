@@ -322,6 +322,7 @@ class GatheringService
                     PetActivityLogTagEnum::Rain,
                     PetActivityLogTagEnum::Location_Micro_Jungle,
                 ]))
+                ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Worms'))
             ;
 
             $this->inventoryService->petCollectsItem('Tea Leaves', $pet, $pet->getName() . ' harvested this from a Tea Bush.', $activityLog);
@@ -336,6 +337,7 @@ class GatheringService
                     PetActivityLogTagEnum::Gathering,
                     PetActivityLogTagEnum::Location_Micro_Jungle,
                 ]))
+                ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Tea Leaves'))
             ;
 
             $this->inventoryService->petCollectsItem('Tea Leaves', $pet, $pet->getName() . ' harvested this from a Tea Bush.', $activityLog);

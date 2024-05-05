@@ -12,6 +12,7 @@ use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
+use App\Functions\ItemRepository;
 use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
@@ -209,6 +210,7 @@ class FishingService
                 PetActivityLogTagEnum::Fishing,
                 PetActivityLogTagEnum::Location_Stream,
             ]))
+            ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Merchant Fish'))
         ;
 
         $this->inventoryService->petCollectsItem('Merchant Fish', $pet, $pet->getName() . ' fished this out of a Stream.', $activityLog);
@@ -235,6 +237,7 @@ class FishingService
                     PetActivityLogTagEnum::Fishing,
                     PetActivityLogTagEnum::Location_Small_Lake
                 ]))
+                ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Fish'))
             ;
 
             $this->inventoryService->petCollectsItem('Fish', $pet, 'From a Mini Minnow that ' . $pet->getName() . ' fished at a Small Lake.', $activityLog);
@@ -252,6 +255,7 @@ class FishingService
                     PetActivityLogTagEnum::Gathering,
                     PetActivityLogTagEnum::Location_Small_Lake
                 ]))
+                ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Silica Grounds'))
             ;
             $this->inventoryService->petCollectsItem('Silica Grounds', $pet, $pet->getName() . ' took this from a Small Lake.', $activityLog);
 
@@ -288,6 +292,7 @@ class FishingService
                     PetActivityLogTagEnum::Fishing,
                     PetActivityLogTagEnum::Location_Under_a_Bridge,
                 ]))
+                ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Fish'))
             ;
             $this->inventoryService->petCollectsItem('Fish', $pet, 'From a Muscly Trout that ' . $pet->getName() . ' fished Under a Bridge.', $activityLog);
 
@@ -307,6 +312,7 @@ class FishingService
                     PetActivityLogTagEnum::Fishing,
                     PetActivityLogTagEnum::Location_Under_a_Bridge,
                 ]))
+                ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Canned Food'))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
 

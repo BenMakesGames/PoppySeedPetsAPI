@@ -275,6 +275,7 @@ class HuntingService
                     PetActivityLogTagEnum::Hunting,
                     PetActivityLogTagEnum::Location_At_Home,
                 ]))
+                ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Fluff'))
             ;
             $this->inventoryService->petCollectsItem('Fluff', $pet, 'The remains of a Dust Bunny that ' . $pet->getName() . ' hunted.', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
@@ -317,6 +318,7 @@ class HuntingService
                     PetActivityLogTagEnum::Hunting,
                     PetActivityLogTagEnum::Location_At_Home,
                 ]))
+                ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Plastic'))
             ;
             $this->inventoryService->petCollectsItem('Plastic', $pet, 'The remains of a vicious Plastic Bag that ' . $pet->getName() . ' hunted!', $activityLog);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
@@ -352,6 +354,7 @@ class HuntingService
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wrestled a Goat, and won, receiving Creamy Milk.', '')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting' ]))
+                    ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Creamy Milk'))
                 ;
                 $this->inventoryService->petCollectsItem('Creamy Milk', $pet, $pet->getName() . '\'s prize for out-wrestling a Goat.', $activityLog);
             }
@@ -359,6 +362,7 @@ class HuntingService
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wrestled a Goat, and won, receiving Butter.', '')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting' ]))
+                    ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Butter'))
                 ;
                 $this->inventoryService->petCollectsItem('Butter', $pet, $pet->getName() . '\'s prize for out-wrestling a Goat.', $activityLog);
             }
@@ -371,6 +375,7 @@ class HuntingService
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wrestled a Goat. The Goat won.', '')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting' ]))
+                    ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Fluff'))
                 ;
                 $this->inventoryService->petCollectsItem('Fluff', $pet, $pet->getName() . ' wrestled a Goat, and lost, but managed to grab a fistful of Fluff.', $activityLog);
             }

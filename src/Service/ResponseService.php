@@ -4,6 +4,7 @@ namespace App\Service;
 use App\Entity\Item;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\PetActivityLogItem;
 use App\Entity\PetActivityLogTag;
 use App\Entity\UnreadPetActivityLog;
 use App\Entity\User;
@@ -191,7 +192,8 @@ class ResponseService
                 $message
                     ->setPet($l->getPet())
                     ->setEquippedItem($l->getPetActivityLog()->getEquippedItem())
-                    ->setTags($l->getPetActivityLog()->getTags()->toArray());
+                    ->setTags($l->getPetActivityLog()->getTags()->toArray())
+                    ->setCreatedItems($l->getPetActivityLog()->getCreatedItems()->toArray());
 
                 return $message;
             },
@@ -280,6 +282,9 @@ class FlashMessage
     #[Groups(["petActivityLogs"])]
     public ?Item $equippedItem;
 
+    #[Groups(["petActivityLogs"])]
+    public array $createdItems;
+
     public function __construct(int $id, string $entry, string $icon, ?PetChangesSummary $changes, int $interestingness)
     {
         $this->id = $id;
@@ -308,6 +313,20 @@ class FlashMessage
     public function setTags(array $tags): self
     {
         $this->tags = $tags;
+        return $this;
+    }
+
+    /**
+     * @param PetActivityLogItem[] $createdItems
+     * @return $this
+     */
+    public function setCreatedItems(array $createdItems): self
+    {
+        $this->createdItems = array_map(fn(PetActivityLogItem $logItem) => [
+            'name' => $logItem->getItem()->getName(),
+            'image' => $logItem->getItem()->getImage(),
+        ], $createdItems);
+
         return $this;
     }
 }
