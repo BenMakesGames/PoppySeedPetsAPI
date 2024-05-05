@@ -70,7 +70,6 @@ class PetActivityLogTagEnum
     public const Le_Manoir_de_Chocolat = 'Le Manoir de Chocolat';
     public const Romance = 'Romance';
     public const Submarine = 'Submarine';
-    public const Icy_Moon = 'Icy Moon';
     public const Moneys = 'Moneys';
     public const Pooping = 'Pooping';
     public const Shedding = 'Shedding';
@@ -94,4 +93,7 @@ class PetActivityLogTagEnum
     public const Location_Roadside_Creek = 'Location: Roadside Creek';
     public const Location_At_Home = 'Location: At Home';
     public const Location_Noetalas_Cocoon = 'Location: Noetala\'s Cocoon';
+    public const Location_Icy_Moon = 'Location: Icy Moon';
+    public const Location_Cryovolcano = 'Location: Cryovolcano';
+    public const Location_Escaping_Icy_Moon = 'Location: Escaping Icy Moon';
 }

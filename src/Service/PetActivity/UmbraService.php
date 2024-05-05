@@ -695,8 +695,6 @@ class UmbraService
     {
         $pet = $petWithSkills->getPet();
 
-        $loot = [ 'Noetala Egg' ];
-
         if($pet->hasMerit(MeritEnum::BEHATTED) && $this->squirrel3->rngNextInt(1, 100) === 1)
         {
             $activityLog = $this->hattierService->petMaybeUnlockAura(
@@ -713,13 +711,15 @@ class UmbraService
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
                 $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
-                    'The Umbra',
+                    PetActivityLogTagEnum::The_Umbra,
                     PetActivityLogTagEnum::Location_Noetalas_Cocoon,
                 ]));
 
                 return $activityLog;
             }
         }
+
+        $loot = [ 'Noetala Egg' ];
 
         if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) < 15)
         {
@@ -742,6 +742,7 @@ class UmbraService
                         PetActivityLogTagEnum::Fighting,
                         PetActivityLogTagEnum::Location_Noetalas_Cocoon,
                     ]))
+                    ->addCreatedItem(ItemRepository::findOneByName($this->em, $loot[0]))
                 ;
 
                 $didWhat = 'defeated one of Noetala\'s guard, and took this';
@@ -786,6 +787,7 @@ class UmbraService
                     PetActivityLogTagEnum::Stealth,
                     PetActivityLogTagEnum::Location_Noetalas_Cocoon,
                 ]))
+                ->addCreatedItem(ItemRepository::findOneByName($this->em, $loot[0]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::ARCANA ], $activityLog);

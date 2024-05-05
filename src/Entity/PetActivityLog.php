@@ -52,10 +52,14 @@ class PetActivityLog
     #[ORM\ManyToMany(targetEntity: PetActivityLogTag::class)]
     private $tags;
 
+    #[ORM\OneToMany(mappedBy: 'log', targetEntity: PetActivityLogItem::class, orphanRemoval: true)]
+    private Collection $createdItems;
+
     public function __construct()
     {
         $this->createdOn = new \DateTimeImmutable();
         $this->tags = new ArrayCollection();
+        $this->createdItems = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -177,6 +181,29 @@ class PetActivityLog
         if (!$this->tags->contains($tag)) {
             $this->tags[] = $tag;
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PetActivityLogItem>
+     */
+    public function getCreatedItems(): Collection
+    {
+        return $this->createdItems;
+    }
+
+    public function addCreatedItem(Item $item): static
+    {
+        if ($this->createdItems->exists(fn(PetActivityLogItem $createdItem) => $createdItem->getItem()->getId() === $item->getId()))
+            return $this;
+
+        $createdItem = (new PetActivityLogItem())
+            ->setItem($item)
+            ->setLog($this)
+        ;
+
+        $this->createdItems->add($createdItem);
 
         return $this;
     }
