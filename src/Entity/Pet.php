@@ -97,7 +97,7 @@ class Pet
 
     #[ORM\ManyToOne(targetEntity: PetSpecies::class)]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups([SerializationGroupEnum::MY_PET, 'houseSitterPet', 'userPublicProfile', 'petPublicProfile', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet'])]
+    #[Groups([SerializationGroupEnum::MY_PET, 'houseSitterPet', 'userPublicProfile', 'petPublicProfile', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet', 'petActivityLogs'])]
     private $species;
 
     #[ORM\OneToOne(targetEntity: Inventory::class, inversedBy: 'holder')]

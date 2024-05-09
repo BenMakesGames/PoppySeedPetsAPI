@@ -53,7 +53,7 @@ class PetActivityLog
     private $tags;
 
     #[Groups(["petActivityLogAndPublicPet"])]
-    #[ORM\OneToMany(mappedBy: 'log', targetEntity: PetActivityLogItem::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'log', targetEntity: PetActivityLogItem::class, orphanRemoval: true, cascade: ['persist'])]
     private Collection $createdItems;
 
     public function __construct()
