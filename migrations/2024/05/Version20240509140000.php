@@ -16,6 +16,7 @@ final class Version20240509140000 extends AbstractMigration
 
     public const New_Tags = [
         [ 'id' => 90, 'title' => 'Location: Abandoned Quarry', 'color' => '917876', 'emoji' => '🧱' ],
+        [ 'id' => 91, 'title' => 'Location: Hollow Log', 'color' => '392a17', 'emoji' => '🪵' ],
     ];
 
     public function up(Schema $schema): void

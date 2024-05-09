@@ -445,7 +445,10 @@ class GatheringService
             if($petWithSkills->getCanSeeInTheDark()->getTotal() <= 0)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a Hollow Log, but it was too dark inside to see anything.', '')
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Dark' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                        'Gathering', 'Dark',
+                        PetActivityLogTagEnum::Location_Hollow_Log
+                    ]))
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
@@ -454,7 +457,11 @@ class GatheringService
             else if($this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getBrawl(false)->getTotal()) >= 15)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' looked inside a Hollow Log, and found a Huge Toad! They got the jump on it, wrestled it to the ground, and claimed its Toadstool!', 'items/fungus/toadstool')
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Fighting', 'Dark', 'Stealth' ]))
+                    ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Toadstool'))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                        'Gathering', 'Fighting', 'Dark', 'Stealth',
+                        PetActivityLogTagEnum::Location_Hollow_Log
+                    ]))
                 ;
                 $this->inventoryService->petCollectsItem('Toadstool', $pet, $pet->getName() . ' harvested this from the back of a Huge Toad found inside a Hollow Log.', $activityLog);
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH, PetSkillEnum::BRAWL ], $activityLog);
@@ -466,7 +473,10 @@ class GatheringService
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' looked inside a Hollow Log, and found a Huge Toad, but it hopped into the woods, and ' . ActivityHelpers::PetName($pet) . ' lost sight of it!', '')
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Fighting', 'Dark', 'Stealth' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                        'Gathering', 'Fighting', 'Dark', 'Stealth',
+                        PetActivityLogTagEnum::Location_Hollow_Log
+                    ]))
                 ;
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH, PetSkillEnum::BRAWL ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
@@ -478,7 +488,11 @@ class GatheringService
         {
             $activityLog = $this->responseService->createActivityLog($pet, 'Resting on top of a Hollow Log, ' . ActivityHelpers::PetName($pet) . ' spotted a Red Bow! (Hot dang!)', 'items/hat/bow-red')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
+                ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Red Bow'))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    'Gathering',
+                    PetActivityLogTagEnum::Location_Hollow_Log
+                ]))
             ;
             $this->inventoryService->petCollectsItem('Red Bow', $pet, $pet->getName() . ' found this on top of a Hollow Log!', $activityLog);
 
@@ -492,7 +506,11 @@ class GatheringService
             if($this->rng->rngNextBool())
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% broke a Crooked Stick off of a Hollow Log.', 'items/plant/stick-crooked')
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
+                    ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Crooked Stick'))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                        'Gathering',
+                        PetActivityLogTagEnum::Location_Hollow_Log
+                    ]))
                 ;
                 $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' broke this off of a Hollow Log.', $activityLog);
             }
@@ -501,14 +519,21 @@ class GatheringService
                 if($petWithSkills->getCanSeeInTheDark()->getTotal() > 0)
                 {
                     $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' looked inside a Hollow Log, and found a Grandparoot!', '')
-                        ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Dark' ]))
+                        ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Grandparoot'))
+                        ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                            'Gathering', 'Dark',
+                            PetActivityLogTagEnum::Location_Hollow_Log
+                        ]))
                     ;
                     $this->inventoryService->petCollectsItem('Grandparoot', $pet, $pet->getName() . ' found this growing inside a Hollow Log.', $activityLog);
                 }
                 else
                 {
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a Hollow Log, but it was too dark inside to see anything.', '')
-                        ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Dark' ]))
+                        ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                            'Gathering', 'Dark',
+                            PetActivityLogTagEnum::Location_Hollow_Log
+                        ]))
                     ;
                     $success = false;
                 }

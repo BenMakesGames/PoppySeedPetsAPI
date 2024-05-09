@@ -97,4 +97,5 @@ class PetActivityLogTagEnum
     public const Location_Cryovolcano = 'Location: Cryovolcano';
     public const Location_Escaping_Icy_Moon = 'Location: Escaping Icy Moon';
     public const Location_Abandoned_Quarry = 'Location: Abandoned Quarry';
+    public const Location_Hollow_Log = 'Location: Hollow Log';
 }
