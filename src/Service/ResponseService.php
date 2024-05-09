@@ -280,7 +280,7 @@ class FlashMessage
     public ?Pet $pet;
 
     #[Groups(["petActivityLogs"])]
-    public ?Item $equippedItem;
+    public array $equippedItem;
 
     #[Groups(["petActivityLogs"])]
     public array $createdItems;
@@ -302,7 +302,18 @@ class FlashMessage
 
     public function setEquippedItem(?Item $equippedItem): self
     {
-        $this->equippedItem = $equippedItem;
+        $this->equippedItem = [
+            'name' => $equippedItem->getName(),
+            'image' => $equippedItem->getImage(),
+            'tool' => [
+                'gripX' => $equippedItem->getTool()?->getGripX() ?? 0.5,
+                'gripY' => $equippedItem->getTool()?->getGripY() ?? 0.5,
+                'gripAngle' => $equippedItem->getTool()?->getGripAngle() ?? 0,
+                'gripAngleFixed' => $equippedItem->getTool()?->getGripAngleFixed() ?? false,
+                'gripScale' => $equippedItem->getTool()?->getGripScale() ?? 1.0,
+                'alwaysInFront' => $equippedItem->getTool()?->getAlwaysInFront() ?? false,
+            ]
+        ];
         return $this;
     }
 

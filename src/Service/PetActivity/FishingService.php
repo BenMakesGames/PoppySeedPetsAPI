@@ -466,7 +466,7 @@ class FishingService
                 $activityLog = $this->responseService->createActivityLog($pet, $discoveredHugeToad . ' ' . $pet->getName() . ' used all their strength to reel it in!', '')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Fishing,
-                        PetActivityLogTagEnum::Location_Roadside_Creek,
+                        //PetActivityLogTagEnum::Location_Roadside_Creek,
                     ]))
                 ;
                 $this->inventoryService->petCollectsItem('Toad Legs', $pet, 'From a Huge Toad that ' . $pet->getName() . ' fished at a Roadside Creek.', $activityLog);
@@ -485,7 +485,7 @@ class FishingService
                 $activityLog = $this->responseService->createActivityLog($pet, $discoveredHugeToad . ' ' . $pet->getName() . ' tried to reel it in, but it was too strong, and got away.', '')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Fishing,
-                        PetActivityLogTagEnum::Location_Roadside_Creek,
+                        //PetActivityLogTagEnum::Location_Roadside_Creek,
                     ]))
                 ;
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
@@ -505,7 +505,7 @@ class FishingService
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at a Roadside Creek, and caught a Singing Fish!', $gotMusic ? 'items/music/note' : 'items/tool/fishing-rod/crooked')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Fishing,
-                        PetActivityLogTagEnum::Location_Roadside_Creek,
+                        //PetActivityLogTagEnum::Location_Roadside_Creek,
                     ]))
                 ;
                 $this->inventoryService->petCollectsItem($this->rng->rngNextInt(1, 2) === 1 ? 'Plastic' : 'Fish', $pet, 'From a Singing Fish that ' . $pet->getName() . ' fished at a Roadside Creek.', $activityLog);
@@ -524,7 +524,7 @@ class FishingService
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at a Roadside Creek, and almost caught a Singing Fish, but it got away.', '')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Fishing,
-                        PetActivityLogTagEnum::Location_Roadside_Creek,
+                        //PetActivityLogTagEnum::Location_Roadside_Creek,
                     ]))
                 ;
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
