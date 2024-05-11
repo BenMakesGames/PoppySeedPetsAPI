@@ -157,7 +157,6 @@ class GatheringService
         if($this->rng->rngNextInt(1, 2000) < $petWithSkills->getPerception()->getTotal())
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% went to an Abandoned Quarry, and happened to find a piece of Striped Microcline!')
-                ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Striped Microcline'))
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Gathering,
                     PetActivityLogTagEnum::Location_Abandoned_Quarry
@@ -259,7 +258,6 @@ class GatheringService
             $bone = $this->rng->rngNextFromArray([ 'Rib', 'Stereotypical Bone' ]);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% went to an Abandoned Quarry, and happened to find a ' . $bone . '!')
-                ->addCreatedItem(ItemRepository::findOneByName($this->em, $bone))
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Gathering,
                     PetActivityLogTagEnum::Location_Abandoned_Quarry
@@ -275,7 +273,6 @@ class GatheringService
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a huge block of Limestone at an Abandoned Quarry, and, with all their might, pushed, dragged, and "rolled" it home.')
                 ->setIcon('items/mineral/limestone')
-                ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Limestone'))
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Gathering,
                     PetActivityLogTagEnum::Location_Abandoned_Quarry
@@ -290,7 +287,6 @@ class GatheringService
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a huge block of Limestone at an Abandoned Quarry, and carried it home.')
                 ->setIcon('items/mineral/limestone')
-                ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Limestone'))
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Gathering,
                     PetActivityLogTagEnum::Location_Abandoned_Quarry
@@ -319,7 +315,6 @@ class GatheringService
     private function foundPaperBag(Pet $pet): PetActivityLog
     {
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a Paper Bag just, like, lyin\' around.', 'items/bag/paper')
-            ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Paper Bag'))
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                 PetActivityLogTagEnum::Gathering,
                 PetActivityLogTagEnum::Location_Neighborhood
@@ -346,7 +341,6 @@ class GatheringService
                     PetActivityLogTagEnum::Rain,
                     PetActivityLogTagEnum::Location_Micro_Jungle,
                 ]))
-                ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Worms'))
             ;
 
             $this->inventoryService->petCollectsItem('Tea Leaves', $pet, $pet->getName() . ' harvested this from a Tea Bush.', $activityLog);
@@ -361,7 +355,6 @@ class GatheringService
                     PetActivityLogTagEnum::Gathering,
                     PetActivityLogTagEnum::Location_Micro_Jungle,
                 ]))
-                ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Tea Leaves'))
             ;
 
             $this->inventoryService->petCollectsItem('Tea Leaves', $pet, $pet->getName() . ' harvested this from a Tea Bush.', $activityLog);
@@ -457,7 +450,6 @@ class GatheringService
             else if($this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getBrawl(false)->getTotal()) >= 15)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' looked inside a Hollow Log, and found a Huge Toad! They got the jump on it, wrestled it to the ground, and claimed its Toadstool!', 'items/fungus/toadstool')
-                    ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Toadstool'))
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         'Gathering', 'Fighting', 'Dark', 'Stealth',
                         PetActivityLogTagEnum::Location_Hollow_Log
@@ -488,7 +480,6 @@ class GatheringService
         {
             $activityLog = $this->responseService->createActivityLog($pet, 'Resting on top of a Hollow Log, ' . ActivityHelpers::PetName($pet) . ' spotted a Red Bow! (Hot dang!)', 'items/hat/bow-red')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Red Bow'))
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     'Gathering',
                     PetActivityLogTagEnum::Location_Hollow_Log
@@ -506,7 +497,6 @@ class GatheringService
             if($this->rng->rngNextBool())
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% broke a Crooked Stick off of a Hollow Log.', 'items/plant/stick-crooked')
-                    ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Crooked Stick'))
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         'Gathering',
                         PetActivityLogTagEnum::Location_Hollow_Log
@@ -519,7 +509,6 @@ class GatheringService
                 if($petWithSkills->getCanSeeInTheDark()->getTotal() > 0)
                 {
                     $activityLog = $this->responseService->createActivityLog($pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' looked inside a Hollow Log, and found a Grandparoot!', '')
-                        ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Grandparoot'))
                         ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                             'Gathering', 'Dark',
                             PetActivityLogTagEnum::Location_Hollow_Log

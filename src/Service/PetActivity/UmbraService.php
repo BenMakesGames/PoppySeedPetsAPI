@@ -742,7 +742,6 @@ class UmbraService
                         PetActivityLogTagEnum::Fighting,
                         PetActivityLogTagEnum::Location_Noetalas_Cocoon,
                     ]))
-                    ->addCreatedItem(ItemRepository::findOneByName($this->em, $loot[0]))
                 ;
 
                 $didWhat = 'defeated one of Noetala\'s guard, and took this';
@@ -787,7 +786,6 @@ class UmbraService
                     PetActivityLogTagEnum::Stealth,
                     PetActivityLogTagEnum::Location_Noetalas_Cocoon,
                 ]))
-                ->addCreatedItem(ItemRepository::findOneByName($this->em, $loot[0]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::ARCANA ], $activityLog);

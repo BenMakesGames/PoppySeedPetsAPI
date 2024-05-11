@@ -96,7 +96,6 @@ class IcyMoonService
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to explore an Icy Moon, but got lost in the endless snowfields. They picked up a chunk of Everice, at least.')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Location_Icy_Moon, 'Gathering' ]))
-            ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Everice'))
         ;
 
         $this->inventoryService->petCollectsEnhancedItem('Everice', null, $this->getIcySpice(), $pet, $pet->getName() . ' found this in a snowfield on an Icy Moon.', $activityLog);
@@ -112,7 +111,6 @@ class IcyMoonService
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% explored an Icy Moon. They found a field of rocks that poked up out of the moon\'s icy surface, and grabbed a sample to take home.')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Location: Icy Moon', 'Gathering' ]))
-            ->addCreatedItem(ItemRepository::findOneByName($this->em, 'Rock'))
         ;
 
         $this->inventoryService->petCollectsEnhancedItem('Rock', null, $this->getIcySpice(), $pet, $pet->getName() . ' found this in a field of rocks on an Icy Moon.', $activityLog);
@@ -154,7 +152,6 @@ class IcyMoonService
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% explored an Icy Moon, and found a Cryovolcano! It was a bit cold, but they rummaged through the deposits, and found a sample of ' . $loot . '!' . $extra)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Location_Icy_Moon, PetActivityLogTagEnum::Location_Cryovolcano, 'Gathering' ]))
-                ->addCreatedItem(ItemRepository::findOneByName($this->em, $loot))
             ;
 
             $this->petExperienceService->gainExp($pet, $roll >= 25 ? 3 : 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
@@ -305,7 +302,6 @@ class IcyMoonService
                     PetActivityLogTagEnum::Gathering,
                     PetActivityLogTagEnum::Dark
                 ]))
-                ->addCreatedItem(ItemRepository::findOneByName($this->em, $loot[count($loot) - 1]))
             ;
 
             foreach($loot as $itemName)
@@ -345,7 +341,6 @@ class IcyMoonService
                 $activityLog->setEntry($activityLog->getEntry() . ' As they were leaving, the caves began to shake violently! %pet:' . $pet->getId() . '.name% managed to start up the Tiny Rocketship, and shot out of the moon as it crumbled into pieces!')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                     ->addTag(PetActivityLogTagHelpers::findOneByName($this->em, PetActivityLogTagEnum::Location_Escaping_Icy_Moon))
-                    ->addCreatedItem(ItemRepository::findOneByName($this->em, $lavaOrFirestone))
                 ;
 
                 $this->inventoryService->petCollectsEnhancedItem('Everice', null, $this->getIcySpice(), $pet, 'The remains of a collapsed Icy Moon.', $activityLog);
