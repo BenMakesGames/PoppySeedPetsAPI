@@ -71,7 +71,7 @@ class RockController extends AbstractController
         return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
 
-    #[Route("pommegranite/{rock}/smash", methods: ["POST"])]
+    #[Route("/pommegranite/{rock}/smash", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openPommegranite(
         Inventory $rock, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
