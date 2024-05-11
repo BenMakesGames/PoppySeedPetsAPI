@@ -519,7 +519,7 @@ class Pet
     }
 
     #[SerializedName('colorA')]
-    #[Groups(['myPet', 'houseSitterPet', 'userPublicProfile', 'petPublicProfile', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet'])]
+    #[Groups(['myPet', 'houseSitterPet', 'userPublicProfile', 'petPublicProfile', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet', 'petActivityLogs'])]
     public function getPerceivedColorA(): string
     {
         if($this->hasStatusEffect(StatusEffectEnum::INVISIBLE))
@@ -535,7 +535,7 @@ class Pet
     }
 
     #[SerializedName('colorB')]
-    #[Groups(['myPet', 'houseSitterPet', 'userPublicProfile', 'petPublicProfile', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet'])]
+    #[Groups(['myPet', 'houseSitterPet', 'userPublicProfile', 'petPublicProfile', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet', 'petActivityLogs'])]
     public function getPerceivedColorB(): string
     {
         if($this->hasStatusEffect(StatusEffectEnum::INVISIBLE))
@@ -1141,7 +1141,7 @@ class Pet
         return $this->getStatusEffect($statusEffect) !== null;
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet', 'houseSitterPet', 'petActivityLogs'])]
     public function getStatuses(): array
     {
         return array_values(array_map(fn(StatusEffect $se) => $se->getStatus(), $this->statusEffects->toArray()));
