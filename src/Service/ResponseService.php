@@ -274,16 +274,16 @@ class FlashMessage
     /**
      * @var PetActivityLogTag[] $tags
      */
-    public array $tags;
+    public array $tags = [];
 
     #[Groups(["petActivityLogs"])]
     public ?Pet $pet;
 
     #[Groups(["petActivityLogs"])]
-    public array $equippedItem;
+    public ?array $equippedItem;
 
     #[Groups(["petActivityLogs"])]
-    public array $createdItems;
+    public array $createdItems = [];
 
     public function __construct(int $id, string $entry, string $icon, ?PetChangesSummary $changes, int $interestingness)
     {
