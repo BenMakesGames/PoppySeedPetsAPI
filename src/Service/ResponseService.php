@@ -302,7 +302,7 @@ class FlashMessage
 
     public function setEquippedItem(?Item $equippedItem): self
     {
-        $this->equippedItem = [
+        $this->equippedItem = $equippedItem === null ? null : [
             'name' => $equippedItem->getName(),
             'image' => $equippedItem->getImage(),
             'tool' => [
