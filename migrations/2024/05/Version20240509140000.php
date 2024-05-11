@@ -17,6 +17,7 @@ final class Version20240509140000 extends AbstractMigration
     public const New_Tags = [
         [ 'id' => 90, 'title' => 'Location: Abandoned Quarry', 'color' => '917876', 'emoji' => '🧱' ],
         [ 'id' => 91, 'title' => 'Location: Hollow Log', 'color' => '392a17', 'emoji' => '🪵' ],
+        [ 'id' => 92, 'title' => 'Location: The Deep Sea', 'color' => '002244', 'emoji' => '🌊' ],
     ];
 
     public function up(Schema $schema): void
@@ -30,8 +31,6 @@ final class Version20240509140000 extends AbstractMigration
             ({$tag['id']}, "{$tag['title']}", "{$tag['color']}", "{$tag['emoji']}")
             ON DUPLICATE KEY UPDATE `id` = `id`;
             EOSQL);
-
-            $this->addSql('UPDATE pet_activity_log_tag SET title="Location: Icy Moon" WHERE title="Icy Moon"');
         }
     }
 

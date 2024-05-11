@@ -22,7 +22,7 @@ class PetActivityLogTag
     private $color;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
-    #[ORM\Column(type: 'string', length: 12)]
+    #[ORM\Column(type: 'string', length: 100)]
     private $emoji;
 
     public function getId(): ?int

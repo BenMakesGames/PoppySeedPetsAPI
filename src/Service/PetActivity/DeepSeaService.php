@@ -6,6 +6,7 @@ use App\Entity\PetActivityLog;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
@@ -387,7 +388,10 @@ class DeepSeaService
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
 
         $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the deep sea, %pet:' . $pet->getId() . '.name% watched a pod of whales go by! ' . $pet->getName() . ' swam and sang along with them for a while...', 'items/tool/submarine')
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine' ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                'Submarine',
+                PetActivityLogTagEnum::Location_The_Deep_Sea,
+            ]))
         ;
 
         $pet->increaseLove($this->rng->rngNextInt(2, 4));

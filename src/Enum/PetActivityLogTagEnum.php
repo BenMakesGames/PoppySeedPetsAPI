@@ -82,6 +82,7 @@ class PetActivityLogTagEnum
     public const Awa_Odori = 'Awa Odori';
     public const Gourmand = 'Gourmand';
     public const Relationship_Change = 'Relationship Change';
+    public const Whale = 'Whales';
 
     public const Rain = 'Rain';
 
@@ -98,4 +99,5 @@ class PetActivityLogTagEnum
     public const Location_Escaping_Icy_Moon = 'Location: Escaping Icy Moon';
     public const Location_Abandoned_Quarry = 'Location: Abandoned Quarry';
     public const Location_Hollow_Log = 'Location: Hollow Log';
+    public const Location_The_Deep_Sea = 'Location: The Deep Sea';
 }
