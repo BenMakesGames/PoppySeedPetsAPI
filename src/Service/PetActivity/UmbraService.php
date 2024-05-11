@@ -295,7 +295,7 @@ class UmbraService
             'Music Note' => 'a',
             'Ginger' => 'some',
             'Oil' => 'some',
-            'Silica Grounds' => 'some'
+            'Pommegranite' => 'a',
         ];
 
         if($this->squirrel3->rngNextInt(1, 10) === 1)
@@ -1089,7 +1089,7 @@ class UmbraService
         $pet = $petWithSkills->getPet();
 
         $loot = [
-            'Eggplant', 'Grandparoot'
+            'Eggplant', 'Eggplant', 'Grandparoot', 'Grandparoot', 'Pommegranite'
         ];
 
         $didWhat = 'harvested this from a Cursed Garden in the Umbra';
