@@ -5,6 +5,7 @@ use App\Entity\PetActivityLog;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\CalendarFunctions;
@@ -567,7 +568,11 @@ class SmithingService
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a High Tide.')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing', 'Physics' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Smithing,
+                    PetActivityLogTagEnum::Physics,
+                    PetActivityLogTagEnum::Location_At_Home,
+                ]))
             ;
             $this->inventoryService->petCollectsItem('High Tide', $pet, $pet->getName() . ' created this.', $activityLog);
 
@@ -644,7 +649,10 @@ class SmithingService
 
             $activityLog
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Smithing,
+                    PetActivityLogTagEnum::Location_At_Home,
+                ]))
             ;
 
             $this->inventoryService->petCollectsItem('Glass', $pet, $pet->getName() . ' created this from Silica Grounds and Limestone.', $activityLog);
@@ -692,7 +700,10 @@ class SmithingService
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made TWO Crystal Balls out of Glass!')
                 ->setIcon('items/mineral/silica-glass-ball')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Smithing,
+                    PetActivityLogTagEnum::Location_At_Home,
+                ]))
             ;
             $this->inventoryService->petCollectsItem('Crystal Ball', $pet, $pet->getName() . ' created this from Glass.', $activityLog);
             $this->inventoryService->petCollectsItem('Crystal Ball', $pet, $pet->getName() . ' created this from Glass.', $activityLog);
@@ -711,7 +722,10 @@ class SmithingService
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made a Crystal Ball out of Glass.')
                 ->setIcon('items/mineral/silica-glass-ball')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Smithing,
+                    PetActivityLogTagEnum::Location_At_Home,
+                ]))
             ;
             $this->inventoryService->petCollectsItem('Crystal Ball', $pet, $pet->getName() . ' created this from Glass.', $activityLog);
 
