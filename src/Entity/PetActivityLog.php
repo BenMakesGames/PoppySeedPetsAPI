@@ -196,7 +196,7 @@ class PetActivityLog
 
     public function addCreatedItem(Item $item): static
     {
-        if ($this->createdItems->exists(fn(PetActivityLogItem $createdItem) => $createdItem->getItem()->getId() === $item->getId()))
+        if ($this->createdItems->exists(fn(int $key, PetActivityLogItem $createdItem) => $createdItem->getItem()->getId() === $item->getId()))
             return $this;
 
         $createdItem = (new PetActivityLogItem())

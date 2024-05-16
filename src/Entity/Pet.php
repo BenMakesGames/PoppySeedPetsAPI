@@ -235,6 +235,7 @@ class Pet
     private $selfReflectionPoint = 0;
 
     #[ORM\OneToOne(targetEntity: PetHouseTime::class, mappedBy: 'pet', cascade: ['persist', 'remove'])]
+    #[Groups(['myPet', 'houseSitterPet'])]
     private $houseTime;
 
     /**

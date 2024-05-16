@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Functions\NumberFunctions;
 use App\Service\PetExperienceService;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Table]
 #[ORM\Index(name: 'activity_time_idx', columns: ['activity_time'])]
@@ -22,6 +23,7 @@ class PetHouseTime
     private $pet;
 
     #[ORM\Column(type: 'integer')]
+    #[Groups(['myPet', 'houseSitterPet'])]
     private $activityTime = 59;
 
     #[ORM\Column(type: 'integer')]

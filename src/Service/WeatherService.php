@@ -3,7 +3,6 @@ namespace App\Service;
 
 use App\Entity\Pet;
 use App\Functions\CalendarFunctions;
-use App\Functions\RandomFunctions;
 use App\Model\WeatherData;
 use App\Model\WeatherForecastData;
 
