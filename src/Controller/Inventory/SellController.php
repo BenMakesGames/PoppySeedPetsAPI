@@ -81,8 +81,6 @@ class SellController extends AbstractController
                     {
                         $inventoryToUpdateMinimumPriceFor[$key] = [
                             'item' => $i->getItem(),
-                            'enchantment' => $i->getEnchantment(),
-                            'spice' => $i->getSpice()
                         ];
                     }
                 }
@@ -109,8 +107,6 @@ class SellController extends AbstractController
                     {
                         $inventoryToUpdateMinimumPriceFor[$key] = [
                             'item' => $i->getItem(),
-                            'enchantment' => $i->getEnchantment(),
-                            'spice' => $i->getSpice()
                         ];
                     }
                 }
@@ -123,7 +119,7 @@ class SellController extends AbstractController
         $em->flush();
 
         foreach($inventoryToUpdateMinimumPriceFor as $i)
-            $marketService->updateLowestPriceForItem($i['item'], $i['enchantment'], $i['spice']);
+            $marketService->updateLowestPriceForItem($i['item']);
 
         $em->flush();
 
@@ -132,10 +128,6 @@ class SellController extends AbstractController
 
     private static function getInventoryKey(Inventory $inventory): string
     {
-        return
-            $inventory->getItem()->getId() . ',' .
-            ($inventory->getEnchantment() ? $inventory->getEnchantment()->getId() : 'null') . ','.
-            ($inventory->getSpice() ? $inventory->getSpice()->getId() : 'null')
-        ;
+        return $inventory->getItem()->getId();
     }
 }

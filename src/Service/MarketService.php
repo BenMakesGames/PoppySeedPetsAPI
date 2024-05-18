@@ -52,14 +52,14 @@ class MarketService
         return null;
     }
 
-    public function updateLowestPriceForItem(Item $item, ?Enchantment $enchantment, ?Spice $spice)
+    public function updateLowestPriceForItem(Item $item)
     {
-        $lowestPrice = $this->computeLowestPriceForItem($item, $enchantment, $spice);
+        $lowestPrice = $this->computeLowestPriceForItem($item);
 
-        $this->marketListingRepository->upsertLowestPriceForItem($item, $enchantment, $spice, $lowestPrice);
+        $this->marketListingRepository->upsertLowestPriceForItem($item, $lowestPrice);
     }
 
-    private function computeLowestPriceForItem(Item $item, ?Enchantment $enchantment, ?Spice $spice): ?int
+    private function computeLowestPriceForItem(Item $item): ?int
     {
         $qb = $this->em->createQueryBuilder()
             ->select('MIN(i.sellPrice)')
@@ -68,26 +68,6 @@ class MarketService
             ->andWhere('inventory.item = :item')
             ->setParameter('item', $item)
         ;
-
-        if($enchantment)
-        {
-            $qb = $qb
-                ->andWhere('inventory.enchantment = :enchantment')
-                ->setParameter('enchantment', $enchantment)
-            ;
-        }
-        else
-            $qb->andWhere('inventory.enchantment IS NULL');
-
-        if($spice)
-        {
-            $qb = $qb
-                ->andWhere('inventory.spice = :spice')
-                ->setParameter('spice', $spice)
-            ;
-        }
-        else
-            $qb->andWhere('inventory.spice IS NULL');
 
         $minPrice = (int)$qb->getQuery()->getSingleScalarResult();
 
@@ -117,6 +97,8 @@ class MarketService
         $this->userStatsRepository->incrementStat($newOwner, UserStatEnum::ITEMS_BOUGHT_IN_MARKET, 1);
 
         $item
+            ->setSpice(null)
+            ->setEnchantment(null)
             ->changeOwner($newOwner, $newItemComment, $this->em)
             ->setLocation($location)
         ;
@@ -202,9 +184,9 @@ class MarketService
         return true;
     }
 
-    public function removeMarketListingForItem(int $itemId, int $bonusId, int $spiceId)
+    public function removeMarketListingForItem(int $itemId)
     {
-        $item = $this->marketListingRepository->findMarketListingForItem($itemId, $bonusId, $spiceId);
+        $item = $this->marketListingRepository->findMarketListingForItem($itemId);
 
         if(!$item)
             return;

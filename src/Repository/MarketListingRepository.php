@@ -26,15 +26,13 @@ class MarketListingRepository extends ServiceEntityRepository
         parent::__construct($registry, MarketListing::class);
     }
 
-    public function upsertLowestPriceForItem(Item $item, ?Enchantment $enchantment, ?Spice $spice, ?int $lowestPrice)
+    public function upsertLowestPriceForItem(Item $item, ?int $lowestPrice)
     {
         if($lowestPrice != null && $lowestPrice <= 0)
             throw new \InvalidArgumentException('Lowest price must be null or greater than 0.');
 
         $existingRecord = $this->findOneBy([
             'item' => $item,
-            'enchantment' => $enchantment,
-            'spice' => $spice,
         ]);
 
         if($existingRecord)
@@ -52,40 +50,17 @@ class MarketListingRepository extends ServiceEntityRepository
 
         $newRecord = (new MarketListing())
             ->setItem($item)
-            ->setEnchantment($enchantment)
-            ->setSpice($spice)
             ->setMinimumSellPrice($lowestPrice)
-            ->setFullItemName(InventoryModifierFunctions::getNameWithModifiersForItem($item, $enchantment, $spice))
         ;
 
         $this->_em->persist($newRecord);
     }
 
-    public function findMarketListingForItem(int $itemId, int $bonusId, int $spiceId): ?MarketListing
+    public function findMarketListingForItem(int $itemId): ?MarketListing
     {
         $qb = $this->createQueryBuilder('ml')
             ->andWhere('ml.item = :itemId')
             ->setParameter('itemId', $itemId);
-
-        if($bonusId)
-        {
-            $qb = $qb
-                ->andWhere('ml.enchantment = :bonusId')
-                ->setParameter('bonusId', $bonusId)
-            ;
-        }
-        else
-            $qb->andWhere('ml.enchantment IS NULL');
-
-        if($spiceId)
-        {
-            $qb = $qb
-                ->andWhere('ml.spice = :spiceId')
-                ->setParameter('spiceId', $spiceId)
-            ;
-        }
-        else
-            $qb->andWhere('ml.spice IS NULL');
 
         return $qb->getQuery()->getOneOrNullResult();
     }

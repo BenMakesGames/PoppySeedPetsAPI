@@ -37,11 +37,9 @@ class MarketFilterService
                 'name' => [ $this, 'filterName' ],
                 'edible' => [ $this, 'filterEdible' ],
                 'candy' => [ $this, 'filterCandy' ],
-                'spice' => [ $this, 'filterSpice' ],
                 'foodFlavors' => [ $this, 'filterFoodFlavors' ],
                 'equipable' => [ $this, 'filterEquipable' ],
                 'equipStats' => [ $this, 'filterEquipStats' ],
-                'bonus' => [ $this, 'filterBonus' ],
                 'aHat' => [ $this, 'filterAHat' ],
                 'hasDonated' => [ $this, 'filterHasDonated' ],
                 'itemGroup' => [ $this, 'filterItemGroup' ],
@@ -58,10 +56,8 @@ class MarketFilterService
     public function createQueryBuilder(): QueryBuilder
     {
         return $this->repository->createQueryBuilder('l')
-            ->select('l,item,enchantment,spice')
+            ->select('l,item')
             ->leftJoin('l.item', 'item')
-            ->leftJoin('l.enchantment', 'enchantment')
-            ->leftJoin('l.spice', 'spice')
         ;
     }
 
@@ -79,14 +75,14 @@ class MarketFilterService
         if(array_key_exists('nameExactMatch', $filters) && StringFunctions::isTruthy($filters['nameExactMatch']))
         {
             $qb
-                ->andWhere('l.fullItemName = :nameLike')
+                ->andWhere('item.name = :nameLike')
                 ->setParameter('nameLike', $name)
             ;
         }
         else
         {
             $qb
-                ->andWhere('l.fullItemName LIKE :nameLike')
+                ->andWhere('item.name LIKE :nameLike')
                 ->setParameter('nameLike', '%' . StringFunctions::escapeMySqlWildcardCharacters($name) . '%')
             ;
         }
@@ -126,9 +122,6 @@ class MarketFilterService
         if(!in_array('food', $qb->getAllAliases()))
             $qb->leftJoin('item.food', 'food');
 
-        if(!in_array('spiceFood', $qb->getAllAliases()))
-            $qb->leftJoin('spice.effects', 'spiceFood');
-
         $qb
             ->andWhere('item.food IS NOT NULL')
         ;
@@ -145,22 +138,6 @@ class MarketFilterService
             $qb->andWhere('item.tool IS NULL');
         else
             $qb->andWhere('item.tool IS NOT NULL');
-    }
-
-    public function filterBonus(QueryBuilder $qb, $value)
-    {
-        if(strtolower($value) === 'false' || !$value)
-            $qb->andWhere('item.enchants IS NULL');
-        else
-            $qb->andWhere('item.enchants IS NOT NULL');
-    }
-
-    public function filterSpice(QueryBuilder $qb, $value)
-    {
-        if(strtolower($value) === 'false' || !$value)
-            $qb->andWhere('item.spice IS NULL');
-        else
-            $qb->andWhere('item.spice IS NOT NULL');
     }
 
     public function filterAHat(QueryBuilder $qb, $value)

@@ -26,29 +26,8 @@ class MarketListing
     /**
      * @Groups("marketItem")
      */
-    #[ORM\ManyToOne(targetEntity: Enchantment::class)]
-    private $enchantment;
-
-    #[ORM\Column(type: 'integer')]
-    private $nonNullableEnchantment = -1;
-
-    /**
-     * @Groups("marketItem")
-     */
-    #[ORM\ManyToOne(targetEntity: Spice::class)]
-    private $spice;
-
-    #[ORM\Column(type: 'integer')]
-    private $nonNullableSpice = -1;
-
-    /**
-     * @Groups("marketItem")
-     */
     #[ORM\Column(type: 'integer', nullable: true)]
     private $minimumSellPrice;
-
-    #[ORM\Column(type: 'string', length: 100)]
-    private $fullItemName;
 
     public function getId(): ?int
     {
@@ -67,32 +46,6 @@ class MarketListing
         return $this;
     }
 
-    public function getEnchantment(): ?Enchantment
-    {
-        return $this->enchantment;
-    }
-
-    public function setEnchantment(?Enchantment $enchantment): self
-    {
-        $this->enchantment = $enchantment;
-        $this->nonNullableEnchantment = $enchantment ? $enchantment->getId() : -1;
-
-        return $this;
-    }
-
-    public function getSpice(): ?Spice
-    {
-        return $this->spice;
-    }
-
-    public function setSpice(?Spice $spice): self
-    {
-        $this->spice = $spice;
-        $this->nonNullableSpice = $spice ? $spice->getId() : -1;
-
-        return $this;
-    }
-
     public function getMinimumSellPrice(): ?int
     {
         return $this->minimumSellPrice;
@@ -101,18 +54,6 @@ class MarketListing
     public function setMinimumSellPrice(?int $minimumSellPrice): self
     {
         $this->minimumSellPrice = $minimumSellPrice;
-
-        return $this;
-    }
-
-    public function getFullItemName(): ?string
-    {
-        return $this->fullItemName;
-    }
-
-    public function setFullItemName(string $fullItemName): self
-    {
-        $this->fullItemName = $fullItemName;
 
         return $this;
     }
