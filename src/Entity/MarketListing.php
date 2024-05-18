@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Table]
-#[ORM\UniqueConstraint(name: 'market_listing_unique', columns: ['item_id', 'non_nullable_enchantment', 'non_nullable_spice'])]
+#[ORM\UniqueConstraint(name: 'market_listing_unique', columns: ['item_id'])]
 #[ORM\Entity(repositoryClass: MarketListingRepository::class)]
 class MarketListing
 {
@@ -19,7 +19,7 @@ class MarketListing
     /**
      * @Groups("marketItem")
      */
-    #[ORM\ManyToOne(targetEntity: Item::class, inversedBy: 'marketListings')]
+    #[ORM\ManyToOne(targetEntity: Item::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $item;
 
