@@ -12,8 +12,9 @@ class Music
         'Every day, every night, let\'s do the royal rainbow - yes! The cosmic message of looove!',
         'I love you, iki ga tomaru kurai sou... I miss you, tsuyoku dakishimete itsumademo...',
 
-        // Manha-manha
+        // Sesame Street
         'Manha-manha - do dooooo d-do-do.... manha-manha - do do-do do...',
+        '1! 2! 3! 4! 1-2-3-4! 1-2-3-4! 1, 2, I love counting, whatever the amount! Haha!',
 
         // Tom's Diner
         'There\'s a woman, on the outside, looking inside; does she see me? No she does not really see me, \'cause she sees her own reflection...',
@@ -42,6 +43,7 @@ class Music
 
         // Sonic (the Hedgehog)
         'Rollin\' around at the speed of sou-ound... got places to go - gotta\' follow my rain-bow!',
+        'Moooonliiight all around. Shaaadooows on the ground. Will there ever be an eeend? Forever running from this lunacyyy...',
 
         // Beck, Timebomb
         'We\'re going sideways! Highways! Riding on an elevator - cold just like an alligator - now my baby\'s out of date!',
@@ -84,6 +86,7 @@ class Music
 
         // Caravan Palace
         'Act like a brother (every day is a miracle). Help one another (connect back with the people). Give it to your lover (and all the people you miss). Let\'s go, already...',
+        'Every night... sym-pho-ny... oh, rock it for me... then beat it out in a minor key...',
 
         // Klingon Victory Song
         'yIja\'Qo\', Bagh Da tuH mogh, ChojaH Duh rHo... yIjah, Qey\' \'oH! yIjah, Qey\' \'oH! yIjah, Qey\' \'oH!',
@@ -197,6 +200,7 @@ class Music
 
         // Phoenix
         'No, I gotta be someone else. These days it comes, it comes, it comes, it comes, it comes and goes...',
+        'Woo-ha! Singing hallelu-jah! Run for your life, cover your eyes, alpha zulu - hey, hey!',
 
         // I:Scintilla, The Bells
         'The florrrescent lightiiing does nothiiing to keep you from hiiiiiidiiiiiiiiiiiiiii i-i-iyeaaaaaaaaahah-ah, ah-aaahhh...!',
@@ -309,5 +313,48 @@ class Music
 
         // Starships, by Nicki Minaj
         'Starships... were meant to flyyy-y-y... hands up, and touch the skyyy-y-y... let\'s do this one more tiii-i-ime... can\'t stop--',
+
+        // Papercut, by Oohyo
+        'Papercut you gave me... just a papercut you left me... papercut you gave me... just a papercut you left me...',
+
+        // Crystal Gems
+        'If you\'re evil and you\'re on the rise... you can count on the four of us takin\' you down...',
+
+        // Canopée, by Polo & Pan
+        'Jungle sauvaaage ouvre tes bras... il en faut peuuu-u pour toi et moi...',
+
+        // Moon (And It Went Like)
+        'And it went like: mm-mm... mm-mm... mm-hm-m-m-mm-mm mm-mm... mm-mm... mm-mm, mm...',
+
+        // Imogen Heap
+        'It\'s not meant to beee liiike thiiis... not what I plaaaned aaat allll... I don\'t want to feeel liiike thiiis... yea-aay-ah...',
+        'Hiiiiiide aaaaand seeeeeeeeeee--... traaaaiins aaaaand seeewing ma-chiiiiines...',
+
+        // Lifelight, Andy Hunter
+        'It\'s you - the star that guides when I\'m lost at night. So light up the sky - a ray of life to every eye... life to every eeeeyee!',
+
+        // Nao Sei Parar
+        'Ba-da ba ba, ba ba-da... ba-da-d\'loooo. Ba-da ba ba, ba ba-da... ba-da-d\'looooooooooooooooooooooooooooooooooooooooooooooooooooooo...!-- Eu não sei quando paraaar... só quando você voltaaar... ba-da-d\'loo...',
+
+        // Prelude, by TheFatRat
+        'Ohmygod... ... ... ... GO!',
+
+        // If I Could, by Tut Tut Child
+        'If. I. Could. I wou-ould... If. I. Could. I wou-ould... oo-oh-ohhh...',
+
+        // I Remember, by Culture Shock
+        'I remember... (I remember... (I remember...)) ... I-i-i-i! I remember, I remember!',
+
+        // Seeing What's Next, by Hollywood Principle
+        'Now is the right time - I\'m making my move. I\'m... on a high now. You... can\'t bring me down.',
+
+        // Agitations tropicales, by L'Impératrice
+        'Monarque ingénue et fière... elle seule domine. L\'assemblée, docile, chemine... vers son parfum... thérémine.',
+
+        // To Let Myself Go, by The Avener & Ane Brun
+        'To let myself go, to let myself flow... is the only way of being...',
+
+        // Black to White, by Felix Cartal
+        'Big sound... break down... feel-innnn\' right. I\'m those... emooo-tioooons...',
     ];
 }
