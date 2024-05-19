@@ -93,7 +93,7 @@ class CreateBidController extends AbstractController
 
         $listing = MarketListingRepository::findMarketListingForItem($em, $itemId);
 
-        if($listing && $listing->getMinimumSellPrice() <= $bid)
+        if($listing && InventoryForSale::calculateBuyPrice($listing->getMinimumSellPrice()) <= $bid)
             throw new PSPInvalidOperationException('Someone is currently selling ' . $item->getName() . ' for less than or equal to that price! [Go buy those up, first!](/market?filter.name=' . urlencode($item->getName()) . ')');
 
         $transactionService->spendMoney($user, $bid * $quantity, 'Money put in for a bid on ' . $quantity . 'x ' . $item->getName() . '.', false);
