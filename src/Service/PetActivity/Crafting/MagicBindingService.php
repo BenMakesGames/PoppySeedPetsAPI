@@ -466,7 +466,10 @@ class MagicBindingService
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Glowing Twenty-sided Die from a chunk of Blackonite!', '')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 30)
-                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                        PetActivityLogTagEnum::Magic_binding,
+                        PetActivityLogTagEnum::Location_At_Home,
+                    ]))
                 ;
 
                 $this->inventoryService->petCollectsItem('Glowing Twenty-sided Die', $pet, $pet->getName() . ' created this from a chunk of Blackonite!', $activityLog);
