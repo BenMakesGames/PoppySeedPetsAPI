@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Article;
 
+use App\Annotations\DoesNotRequireHouseHours;
 use App\Controller\AdminController;
 use App\Entity\Article;
 use App\Entity\DesignGoal;

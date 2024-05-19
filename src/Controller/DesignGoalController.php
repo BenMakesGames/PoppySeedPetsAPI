@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Annotations\DoesNotRequireHouseHours;
 use App\Entity\DesignGoal;
 use App\Enum\SerializationGroupEnum;
 use App\Service\ResponseService;
