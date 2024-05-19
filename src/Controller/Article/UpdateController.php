@@ -25,8 +25,7 @@ class UpdateController extends AdminController
      */
     #[IsGranted("ROLE_ADMIN")]
     public function handle(
-        Article $article, ResponseService $responseService, Request $request, EntityManagerInterface $em,
-        DesignGoalRepository $designGoalRepository
+        Article $article, ResponseService $responseService, Request $request, EntityManagerInterface $em
     )
     {
         $this->adminIPsOnly($request);
@@ -38,7 +37,7 @@ class UpdateController extends AdminController
         if($title === '' || $body === '')
             throw new PSPFormValidationException('title and body are both required.');
 
-        $designGoals = $designGoalRepository->findByIdsFromParameters($request->request, 'designGoals');
+        $designGoals = DesignGoalRepository::findByIdsFromParameters($em, $request->request, 'designGoals');
 
         $article
             ->setImageUrl($imageUrl == '' ? null : $imageUrl)

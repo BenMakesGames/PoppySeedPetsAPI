@@ -2,14 +2,9 @@
 namespace App\Controller\Dragon;
 
 use App\Entity\User;
-use App\Entity\UserStats;
-use App\Enum\SerializationGroupEnum;
-use App\Enum\UserStatEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\DragonHelpers;
-use App\Repository\DragonRepository;
 use App\Service\ResponseService;
-use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Attribute\IsGranted;

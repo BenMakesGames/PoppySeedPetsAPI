@@ -2,13 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\DesignGoalRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: DesignGoalRepository::class)]
+#[ORM\Entity]
 class DesignGoal
 {
     #[Groups(["designGoal", "article"])]

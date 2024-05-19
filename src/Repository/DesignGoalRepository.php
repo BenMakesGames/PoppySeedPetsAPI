@@ -3,28 +3,15 @@
 namespace App\Repository;
 
 use App\Entity\DesignGoal;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-/**
- * @method DesignGoal|null find($id, $lockMode = null, $lockVersion = null)
- * @method DesignGoal|null findOneBy(array $criteria, array $orderBy = null)
- * @method DesignGoal[]    findAll()
- * @method DesignGoal[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- * @deprecated
- */
-class DesignGoalRepository extends ServiceEntityRepository
+class DesignGoalRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, DesignGoal::class);
-    }
-
     /**
      * @return DesignGoal[]
      */
-    public function findByIdsFromParameters(ParameterBag $params, string $fieldName): array
+    public static function findByIdsFromParameters(EntityManagerInterface $em, ParameterBag $params, string $fieldName): array
     {
         // *sigh* PHP...
         $designGoalIds =
@@ -39,6 +26,6 @@ class DesignGoalRepository extends ServiceEntityRepository
             )
         ;
 
-        return $this->findBy([ 'id' => $designGoalIds ]);
+        return $em->getRepository(DesignGoal::class)->findBy([ 'id' => $designGoalIds ]);
     }
 }

@@ -4,26 +4,13 @@ namespace App\Repository;
 
 use App\Entity\Dragon;
 use App\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 
-/**
- * @method Dragon|null find($id, $lockMode = null, $lockVersion = null)
- * @method Dragon|null findOneBy(array $criteria, array $orderBy = null)
- * @method Dragon[]    findAll()
- * @method Dragon[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- * @deprecated
- */
-class DragonRepository extends ServiceEntityRepository
+class DragonRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public static function findWhelp(EntityManagerInterface $em, User $user): ?Dragon
     {
-        parent::__construct($registry, Dragon::class);
-    }
-
-    public function findWhelp(User $user): ?Dragon
-    {
-        return $this->findOneBy([
+        return $em->getRepository(Dragon::class)->findOneBy([
             'owner' => $user,
             'isAdult' => false
         ]);

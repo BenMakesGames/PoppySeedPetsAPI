@@ -2,10 +2,8 @@
 namespace App\Controller\Dragon;
 
 use App\Entity\User;
-use App\Enum\SerializationGroupEnum;
 use App\Functions\DragonHelpers;
 use App\Functions\RequestFunctions;
-use App\Repository\DragonRepository;
 use App\Service\DragonService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;

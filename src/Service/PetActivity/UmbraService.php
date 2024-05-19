@@ -1,6 +1,7 @@
 <?php
 namespace App\Service\PetActivity;
 
+use App\Entity\Dragon;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\GuildEnum;
@@ -24,7 +25,6 @@ use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Model\WeatherData;
-use App\Repository\DragonRepository;
 use App\Service\Clock;
 use App\Service\FieldGuideService;
 use App\Service\HattierService;
@@ -44,7 +44,6 @@ class UmbraService
         private readonly GuildService $guildService,
         private readonly StrangeUmbralEncounters $strangeUmbralEncounters,
         private readonly FieldGuideService $fieldGuideService,
-        private readonly DragonRepository $dragonRepository,
         private readonly IRandom $squirrel3,
         private readonly HattierService $hattierService,
         private readonly EntityManagerInterface $em,
@@ -108,7 +107,7 @@ class UmbraService
                     break;
 
                 case 13:
-                    $dragon = $this->dragonRepository->findOneBy([ 'owner' => $pet->getOwner() ]);
+                    $dragon = $this->em->getRepository(Dragon::class)->findOneBy([ 'owner' => $pet->getOwner() ]);
 
                     if($dragon)
                         $activityLog = $this->visitLibraryOfFire($petWithSkills);

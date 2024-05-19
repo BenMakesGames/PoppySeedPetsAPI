@@ -16,8 +16,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class PetAssistantService
 {
     public function __construct(
-        private readonly EntityManagerInterface $em,
-        private readonly DragonRepository $dragonRepository
+        private readonly EntityManagerInterface $em
     )
     {
     }
@@ -98,7 +97,7 @@ class PetAssistantService
         if($fireplace->getHelper())
             throw new PSPInvalidOperationException('Your Fireplace already has a helper! ' . $fireplace->getHelper()->getName() . '!');
 
-        $whelp = $this->dragonRepository->findWhelp($user);
+        $whelp = DragonRepository::findWhelp($this->em, $user);
 
         if($whelp)
             throw new PSPInvalidOperationException('There\'s already a dragon living here...');

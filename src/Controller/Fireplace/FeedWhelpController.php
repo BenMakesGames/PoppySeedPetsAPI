@@ -13,7 +13,6 @@ use App\Functions\ArrayFunctions;
 use App\Functions\RequestFunctions;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Repository\DragonRepository;
-use App\Repository\InventoryRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -29,22 +28,21 @@ class FeedWhelpController extends AbstractController
     #[Route("/feedWhelp", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function feedWhelp(
-        Request $request, InventoryRepository $inventoryRepository, ResponseService $responseService,
-        InventoryService $inventoryService, EntityManagerInterface $em, DragonRepository $dragonRepository,
-        IRandom $squirrel3
+        Request $request, ResponseService $responseService,
+        InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3
     )
     {
         /** @var User $user */
         $user = $this->getUser();
 
-        $whelp = $dragonRepository->findWhelp($user);
+        $whelp = DragonRepository::findWhelp($em, $user);
 
         if(!$whelp)
             throw new PSPNotUnlockedException('Dragon Whelp');
 
         $itemIds = RequestFunctions::getUniqueIdsOrThrow($request, 'food', 'No items were selected as food???');
 
-        $items = $inventoryRepository->findBy([
+        $items = $em->getRepository(Inventory::class)->findBy([
             'id' => $itemIds,
             'owner' => $user->getId(),
             'location' => LocationEnum::HOME

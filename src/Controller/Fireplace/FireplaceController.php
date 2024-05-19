@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Fireplace;
 
+use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
@@ -9,6 +10,7 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\DragonRepository;
 use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -22,7 +24,7 @@ class FireplaceController extends AbstractController
      */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getFireplace(
-        InventoryRepository $inventoryRepository, ResponseService $responseService, DragonRepository $dragonRepository,
+        InventoryRepository $inventoryRepository, ResponseService $responseService, EntityManagerInterface $em,
         NormalizerInterface $normalizer
     )
     {
@@ -37,7 +39,7 @@ class FireplaceController extends AbstractController
             'location' => LocationEnum::MANTLE
         ]);
 
-        $dragon = $dragonRepository->findWhelp($user);
+        $dragon = DragonRepository::findWhelp($em, $user);
 
         return $responseService->success(
             [
@@ -68,18 +70,18 @@ class FireplaceController extends AbstractController
     #[Route("/whelpFood", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getWhelpFood(
-        InventoryRepository $inventoryRepository, ResponseService $responseService, DragonRepository $dragonRepository
+        ResponseService $responseService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
         $user = $this->getUser();
 
-        $whelp = $dragonRepository->findWhelp($user);
+        $whelp = DragonRepository::findWhelp($em, $user);
 
         if(!$whelp)
             throw new PSPNotUnlockedException('Dragon Whelp');
 
-        $food = $inventoryRepository->createQueryBuilder('i')
+        $food = $em->getRepository(Inventory::class)->createQueryBuilder('i')
             ->andWhere('i.owner=:user')->setParameter('user', $user->getId())
             ->andWhere('i.location=:home')->setParameter('home', LocationEnum::HOME)
             ->join('i.item', 'item')

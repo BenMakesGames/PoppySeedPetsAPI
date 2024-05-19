@@ -6,7 +6,6 @@ use App\Entity\Dragon;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Functions\ColorFunctions;
-use App\Repository\DragonRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetAssistantService;
@@ -62,8 +61,7 @@ The Library of Fire is always open. We look forward to seeing you!');
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function meltSeal(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, DragonRepository $dragonRepository, IRandom $squirrel3,
-        PetAssistantService $petAssistantService
+        EntityManagerInterface $em, IRandom $squirrel3, PetAssistantService $petAssistantService
     )
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'letterFromTheLibraryOfFire/#/meltSeal');
@@ -71,7 +69,7 @@ The Library of Fire is always open. We look forward to seeing you!');
         /** @var User $user */
         $user = $this->getUser();
         $fireplace = $user->getFireplace();
-        $dragon = $dragonRepository->findOneBy([ 'owner' => $user ]);
+        $dragon = $em->getRepository(Dragon::class)->findOneBy([ 'owner' => $user ]);
 
         if($fireplace && !$dragon)
         {

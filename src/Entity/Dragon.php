@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\DragonRepository;
 use App\Service\Squirrel3;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: DragonRepository::class)]
+#[ORM\Entity]
 class Dragon
 {
     // as a whelp:

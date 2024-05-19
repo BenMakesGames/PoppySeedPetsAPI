@@ -15,7 +15,6 @@ use App\Functions\DragonHelpers;
 use App\Functions\EnchantmentRepository;
 use App\Functions\PlayerLogFactory;
 use App\Functions\SpiceRepository;
-use App\Repository\DragonRepository;
 use App\Service\PetActivity\TreasureMapService;
 use Doctrine\ORM\EntityManagerInterface;
 

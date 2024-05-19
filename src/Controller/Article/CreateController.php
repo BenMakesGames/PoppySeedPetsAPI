@@ -23,8 +23,7 @@ class CreateController extends AdminController
      */
     #[IsGranted("ROLE_ADMIN")]
     public function createNew(
-        Request $request, ResponseService $responseService, EntityManagerInterface $em,
-        DesignGoalRepository $designGoalRepository
+        Request $request, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         $this->adminIPsOnly($request);
@@ -39,7 +38,7 @@ class CreateController extends AdminController
         if(\mb_strlen($title) > 255)
             throw new PSPFormValidationException('title may not be longer than 255 characters.');
 
-        $designGoals = $designGoalRepository->findByIdsFromParameters($request->request, 'designGoals');
+        $designGoals = DesignGoalRepository::findByIdsFromParameters($em, $request->request, 'designGoals');
 
         $article = (new Article())
             ->setImageUrl($imageUrl == '' ? null : $imageUrl)

@@ -1,11 +1,11 @@
 <?php
 namespace App\Controller\Item;
 
+use App\Entity\Dragon;
 use App\Entity\Inventory;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\PetColorFunctions;
-use App\Repository\DragonRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,15 +20,14 @@ class SpicyKonpeitoController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function feedToDragon(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        DragonRepository $dragonRepository, PetColorFunctions $petColorChangingService,
-        IRandom $rng
+        PetColorFunctions $petColorChangingService, IRandom $rng
     )
     {
         $user = $this->getUser();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'spicyKonpeito/#/give');
 
-        $dragon = $dragonRepository->findOneBy([ 'owner' => $user ]);
+        $dragon = $em->getRepository(Dragon::class)->findOneBy([ 'owner' => $user ]);
 
         if(!$dragon || !$dragon->getIsAdult())
             throw new PSPNotUnlockedException('Dragon Den');
