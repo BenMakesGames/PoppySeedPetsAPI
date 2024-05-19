@@ -6,6 +6,7 @@ use App\Entity\DesignGoal;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\DesignGoalRepository;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -16,10 +17,10 @@ class DesignGoalController extends AbstractController
     /**
      * @DoesNotRequireHouseHours()
      */
-    public function getAll(DesignGoalRepository $designGoalRepository, ResponseService $responseService)
+    public function getAll(EntityManagerInterface $em, ResponseService $responseService)
     {
         return $responseService->success(
-            $designGoalRepository->findAll(),
+            $em->getRepository(DesignGoal::class)->findAll(),
             [ SerializationGroupEnum::DESIGN_GOAL ]
         );
     }
