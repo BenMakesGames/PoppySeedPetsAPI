@@ -127,9 +127,7 @@ class MarketFilterService
         ;
 
         foreach($value as $stat)
-        {
-            $qb->andWhere($qb->expr()->orX('food.' . $stat . ' > 0', 'spiceFood.' . $stat . ' > 0'));
-        }
+            $qb->andWhere('food.' . $stat . ' > 0');
     }
 
     public function filterEquipable(QueryBuilder $qb, $value)
