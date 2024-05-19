@@ -11,17 +11,16 @@ use App\Functions\DesignGoalRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
-* @Route("/article")
-*/
+#[Route("/article")]
 class UpdateController extends AdminController
 {
     /**
      * @DoesNotRequireHouseHours()
-     * @Route("/{article}", methods={"POST"}, requirements={"article"="\d+"})
      */
+    #[Route("/{article}", methods: ["POST"], requirements: ["article" => "\d+"])]
     #[IsGranted("ROLE_ADMIN")]
     public function handle(
         Article $article, ResponseService $responseService, Request $request, EntityManagerInterface $em
