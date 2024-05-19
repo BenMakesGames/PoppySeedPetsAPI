@@ -2,13 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\MarketListingRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Table]
 #[ORM\UniqueConstraint(name: 'market_listing_unique', columns: ['item_id'])]
-#[ORM\Entity(repositoryClass: MarketListingRepository::class)]
+#[ORM\Entity]
 class MarketListing
 {
     #[ORM\Id]

@@ -9,7 +9,7 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\DragonHelpers;
-use App\Repository\DragonRepository;
+use App\Functions\DragonRepository;
 use App\Repository\PetRepository;
 use Doctrine\ORM\EntityManagerInterface;
 

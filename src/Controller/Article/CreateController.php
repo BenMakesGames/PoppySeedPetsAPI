@@ -4,12 +4,10 @@ namespace App\Controller\Article;
 use App\Controller\AdminController;
 use App\Entity\Article;
 use App\Exceptions\PSPFormValidationException;
-use App\Repository\DesignGoalRepository;
+use App\Functions\DesignGoalRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use App\Annotations\DoesNotRequireHouseHours;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**

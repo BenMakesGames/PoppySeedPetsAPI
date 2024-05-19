@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repository;
+namespace App\Functions;
 
 use App\Entity\DesignGoal;
 use Doctrine\ORM\EntityManagerInterface;

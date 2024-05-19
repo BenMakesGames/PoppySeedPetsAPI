@@ -6,12 +6,10 @@ use App\Entity\Article;
 use App\Entity\DesignGoal;
 use App\Exceptions\PSPFormValidationException;
 use App\Functions\ArrayFunctions;
-use App\Repository\DesignGoalRepository;
+use App\Functions\DesignGoalRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use App\Annotations\DoesNotRequireHouseHours;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**

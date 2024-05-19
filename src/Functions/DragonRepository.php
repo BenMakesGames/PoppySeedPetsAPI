@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repository;
+namespace App\Functions;
 
 use App\Entity\Dragon;
 use App\Entity\User;

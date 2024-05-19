@@ -2,19 +2,17 @@
 namespace App\Service;
 
 use App\Entity\DailyMarketInventoryTransaction;
-use App\Entity\Enchantment;
 use App\Entity\Inventory;
 use App\Entity\InventoryForSale;
 use App\Entity\Item;
-use App\Entity\Spice;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\InventoryModifierFunctions;
+use App\Functions\MarketListingRepository;
 use App\Functions\UserQuestRepository;
 use App\Repository\MarketBidRepository;
-use App\Repository\MarketListingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class MarketService
@@ -23,8 +21,7 @@ class MarketService
         private readonly EntityManagerInterface $em,
         private readonly UserStatsService $userStatsRepository,
         private readonly MarketBidRepository $marketBidRepository,
-        private readonly TransactionService $transactionService,
-        private readonly MarketListingRepository $marketListingRepository
+        private readonly TransactionService $transactionService
     )
     {
     }
@@ -56,7 +53,7 @@ class MarketService
     {
         $lowestPrice = $this->computeLowestPriceForItem($item);
 
-        $this->marketListingRepository->upsertLowestPriceForItem($item, $lowestPrice);
+        MarketListingRepository::upsertLowestPriceForItem($this->em, $item, $lowestPrice);
     }
 
     private function computeLowestPriceForItem(Item $item): ?int
@@ -186,7 +183,7 @@ class MarketService
 
     public function removeMarketListingForItem(int $itemId)
     {
-        $item = $this->marketListingRepository->findMarketListingForItem($itemId);
+        $item = MarketListingRepository::findMarketListingForItem($this->em, $itemId);
 
         if(!$item)
             return;

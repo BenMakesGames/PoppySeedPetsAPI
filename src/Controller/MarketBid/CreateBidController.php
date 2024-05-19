@@ -14,6 +14,7 @@ use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ItemRepository;
+use App\Functions\MarketListingRepository;
 use App\Repository\MarketBidRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -84,27 +85,16 @@ class CreateBidController extends AbstractController
 
         $bid = $request->request->getInt('bid');
 
-        $availableToBuy = (int)$em->getRepository(InventoryForSale::class)->createQueryBuilder('i')
-            ->select('COUNT(i.id)')
-            ->join('i.inventory', 'inventory')
-            ->andWhere('inventory.owner!=:user')
-            ->andWhere('i.sellPrice<=:price')
-            ->andWhere('inventory.item=:item')
-            ->setParameter('user', $user->getId())
-            ->setParameter('price', $bid / 1.02)
-            ->setParameter('item', $itemId)
-            ->getQuery()
-            ->getSingleScalarResult()
-        ;
-
-        if($availableToBuy > 0)
-            throw new PSPInvalidOperationException('Someone is currently selling ' . $item->getName() . ' for less than or equal to that price! [Go buy those up, first!](/market?filter.name=' . urlencode($item->getName()) . ')');
-
         if($bid < 2)
             throw new PSPFormValidationException('No one can sell an item for less than 2~~m~~, so bidding for less than that wouldn\'t ever work :P');
 
         if($bid * $quantity > $user->getMoneys())
             throw new PSPNotEnoughCurrencyException(($bid * $quantity) . '~~m~~', $user->getMoneys() . '~~m~~');
+
+        $listing = MarketListingRepository::findMarketListingForItem($em, $itemId);
+
+        if($listing && $listing->getMinimumSellPrice() <= $bid)
+            throw new PSPInvalidOperationException('Someone is currently selling ' . $item->getName() . ' for less than or equal to that price! [Go buy those up, first!](/market?filter.name=' . urlencode($item->getName()) . ')');
 
         $transactionService->spendMoney($user, $bid * $quantity, 'Money put in for a bid on ' . $quantity . 'x ' . $item->getName() . '.', false);
 

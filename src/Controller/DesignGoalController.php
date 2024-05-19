@@ -1,10 +1,8 @@
 <?php
 namespace App\Controller;
 
-use App\Annotations\DoesNotRequireHouseHours;
 use App\Entity\DesignGoal;
 use App\Enum\SerializationGroupEnum;
-use App\Repository\DesignGoalRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
