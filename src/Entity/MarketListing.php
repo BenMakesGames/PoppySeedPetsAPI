@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Table]
 #[ORM\UniqueConstraint(name: 'market_listing_unique', columns: ['item_id'])]
