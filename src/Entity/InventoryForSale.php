@@ -2,11 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\InventoryForSaleRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: InventoryForSaleRepository::class)]
+#[ORM\Entity]
 #[ORM\Index(name: 'sell_price_idx', columns: ['sell_price'])]
 #[ORM\Index(name: 'sell_list_date_idx', columns: ['sell_list_date'])]
 class InventoryForSale

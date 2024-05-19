@@ -356,5 +356,8 @@ class Music
 
         // Black to White, by Felix Cartal
         'Big sound... break down... feel-innnn\' right. I\'m those... emooo-tioooons...',
+
+        // Hikari, by Hikaru Utada
+        'Suizhuka niiiii... deguchi niiiii... tatte. Kurayamiiii nii-ii... hikaaaari wooo... ute (ute, ute, ute)'
     ];
 }

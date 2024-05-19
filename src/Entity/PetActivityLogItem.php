@@ -2,11 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\PetActivityLogItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: PetActivityLogItemRepository::class)]
+#[ORM\Entity]
 class PetActivityLogItem
 {
     #[ORM\Id]
