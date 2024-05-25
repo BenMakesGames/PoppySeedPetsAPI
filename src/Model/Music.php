@@ -358,6 +358,9 @@ class Music
         'Big sound... break down... feel-innnn\' right. I\'m those... emooo-tioooons...',
 
         // Hikari, by Hikaru Utada
-        'Suizhuka niiiii... deguchi niiiii... tatte. Kurayamiiii nii-ii... hikaaaari wooo... ute (ute, ute, ute)'
+        'Suizhuka niiiii... deguchi niiiii... tatte. Kurayamiiii nii-ii... hikaaaari wooo... ute (ute, ute, ute)',
+
+        // Mr Blue Sky, by ELO
+        'Hey there, Mr. Blue. We\'re so pleased to be with you. Look around, see what you do. Everybody smiles at you!',
     ];
 }
