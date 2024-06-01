@@ -279,6 +279,12 @@ class Protocol7Service
         $pet = $petWithSkills->getPet();
         $now = new \DateTimeImmutable();
 
+        $name = $this->rng->rngNextFromArray([
+            'Annabellastasia',
+            'Xerxeneea',
+            'Jellybingus',
+        ]);
+
         $petQuest = $this->petQuestRepository->findOrCreate($pet, 'Next Annabellastasia Encounter', $now->format('Y-m-d'));
 
         if($petQuest->getValue() > $now->format('Y-m-d'))
@@ -286,11 +292,12 @@ class Protocol7Service
 
         $petQuest->setValue($now->modify('+' . $this->rng->rngNextInt(20, 40) . ' days')->format('Y-m-d'));
 
-        $activityLog = $this->responseService->createActivityLog($pet, 'In Project-E, ' . '%pet:' . $pet->getId() . '.name% ran into a girl named Annabellastasia, who handed %pet:' . $pet->getId() . '.name% a Black Bow.', 'items/hat/bow-black')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'In Project-E, ' . '%pet:' . $pet->getId() . '.name% ran into a girl named ' . $name . ', who handed %pet:' . $pet->getId() . '.name% a Black Bow.')
+            ->setIcon('items/hat/bow-black')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
         ;
-        $this->inventoryService->petCollectsItem('Black Bow', $pet, $pet->getName() . ' received this from a girl named Annabellastasia in Project-E.', $activityLog);
+        $this->inventoryService->petCollectsItem('Black Bow', $pet, $pet->getName() . ' received this from a girl named ' . $name . ' in Project-E.', $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
         return $activityLog;
     }

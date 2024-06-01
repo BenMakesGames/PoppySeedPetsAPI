@@ -161,6 +161,7 @@ class GatheringService
                     PetActivityLogTagEnum::Gathering,
                     PetActivityLogTagEnum::Location_Abandoned_Quarry
                 ]))
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
@@ -247,6 +248,7 @@ class GatheringService
                     PetActivityLogTagEnum::Gathering,
                     PetActivityLogTagEnum::Location_Abandoned_Quarry
                 ]))
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::ARCANA ], $activityLog);
