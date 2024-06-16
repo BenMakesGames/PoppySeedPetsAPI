@@ -87,6 +87,7 @@ class Music
         // Caravan Palace
         'Act like a brother (every day is a miracle). Help one another (connect back with the people). Give it to your lover (and all the people you miss). Let\'s go, already...',
         'Every night... sym-pho-ny... oh, rock it for me... then beat it out in a minor key...',
+        'You bother me (woop!) You\'re ahead of me (woop!) How can you be so placid, when you disagree? You\'re fault-free. Steppin\' up for me. I\'m the hero\'s sidekick (oui, c\'est la vie).',
 
         // Klingon Victory Song
         'yIja\'Qo\', Bagh Da tuH mogh, ChojaH Duh rHo... yIjah, Qey\' \'oH! yIjah, Qey\' \'oH! yIjah, Qey\' \'oH!',
@@ -160,7 +161,7 @@ class Music
         'I\'m blue, da-ba-dee, da-ba-die! A da-ba-dee... da-ba-die, a da-ba-dee, da-ba-die...',
 
         // Mary Poppins
-        'Now where is there a more happier crew... than thems that sing chim chim cher-ee, chim cher-oo...',
+        'Nowhere is there a more happier crew... than thems that sing chim chim cher-ee, chim cher-oo...',
 
         // Sayonara Wild Hearts
         'And all the things I need to say... and all the big words seem to stay... on the insiiide... on the insi-i-iiide!',
@@ -250,6 +251,7 @@ class Music
 
         // Daft Punk
         'Music\'s got me feeling so free, we\'re gonna celebrate - celebrate and dance so free. One more time...',
+        'More than. Hour. Hour. Never. Ever. After. Work is. Over...',
 
         // Moldy Peaches
         'I kiss you on the brain in the shadow of a train; kiss you all starry-eyed, my body\'s swingin\' from side to side. I don\'t see what anyone can see in anyone else... bu-ut you...',
@@ -362,5 +364,17 @@ class Music
 
         // Mr Blue Sky, by ELO
         'Hey there, Mr. Blue. We\'re so pleased to be with you. Look around, see what you do. Everybody smiles at you!',
+
+        // Shooting Stars, by Bag Raiders
+        'Gave my love to a shooooting star, but she moooves so fast, that I can\'t keep up - I\'m chasing...',
+
+        // D.A.N.C.E., by Justice
+        'Do the D.A.N.C.E. 1, 2, 3, 4, fight! Stick to the B.E.A.T. Get ready to ignite!',
+
+        // Let Go, by Frou Frou
+        'Yeah, let go. Just get in. Oh, it\'s soooo amaaazing here. It\'s alright. \'Cause there\'s beauuutyyy in the breakdown.',
+
+        // Sing Along, by Blue Man Group
+        'If I sing a song, will you... sing along? If I sing a song will you... sing along? Should I just keep singing right here, by myself?',
     ];
 }
