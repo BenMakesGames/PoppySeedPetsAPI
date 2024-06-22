@@ -269,7 +269,7 @@ class Pet
     private $lunchboxIndex;
 
     #[ORM\Column(type: 'smallint')]
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet', 'houseSitterPet', 'petActivityLogs'])]
     private $wereform;
 
     public function __construct()
@@ -520,7 +520,7 @@ class Pet
     }
 
     #[SerializedName('colorA')]
-    #[Groups(['myPet', 'houseSitterPet', 'userPublicProfile', 'petPublicProfile', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet', 'petActivityLogs'])]
+    #[Groups(['myPet', 'houseSitterPet', 'userPublicProfile', 'petPublicProfile', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet', 'petActivityLogs', 'petActivityLogs'])]
     public function getPerceivedColorA(): string
     {
         if($this->hasStatusEffect(StatusEffectEnum::INVISIBLE))
@@ -1643,7 +1643,7 @@ class Pet
     }
 
     #[SerializedName('scale')]
-    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "helperPet", "petActivityLogAndPublicPet"])]
+    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
     public function getPerceivedScale(): int
     {
         if(!$this->getMom())
@@ -1785,5 +1785,25 @@ class Pet
         $this->wereform = $wereform;
 
         return $this;
+    }
+
+    private const MeritsApplicableToReenactments = [
+        MeritEnum::INVERTED,
+        MeritEnum::VERY_INVERTED,
+        MeritEnum::SPECTRAL,
+    ];
+
+    #[Groups(['petActivityLogs'])]
+    #[SerializedName('merits')]
+    public function getPetActivityLogMerits(): array
+    {
+        return array_values(
+            $this->merits
+                ->filter(fn(Merit $m) => in_array($m->getName(), self::MeritsApplicableToReenactments))
+                ->map(fn(Merit $m) => [
+                    'name' => $m->getName(),
+                ])
+                ->toArray()
+        );
     }
 }
