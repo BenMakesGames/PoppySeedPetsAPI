@@ -376,5 +376,11 @@ class Music
 
         // Sing Along, by Blue Man Group
         'If I sing a song, will you... sing along? If I sing a song will you... sing along? Should I just keep singing right here, by myself?',
+
+        // Cowgirl (Eraser of Love), by Underworld
+        'I wanna give you everything, I wanna give you energy, I wanna give a good thing, I wanna give you everything...',
+
+        // Is You, by D.I.M. (Le Castle Vania Remix, maybe - it hardly matters with lyrics like this :P)
+        'Is you, you, you, you... is you, you, you, you... is you, you, you, you... is yoouu, yooouu-- y-ouuu-- y----ooo-- --...',
     ];
 }
