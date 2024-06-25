@@ -114,10 +114,9 @@ class Fireplace
     public function addFuel(int $fuel, int $alcohol): self
     {
         $heatToAdd = min($fuel, self::MAX_HEAT - $this->heat);
-        $alcoholToAdd = min($alcohol, $fuel - $this->alcohol);
 
         $this->heat += $heatToAdd;
-        $this->alcohol += $alcoholToAdd;
+        $this->alcohol += $alcohol;
 
         if($this->getHelper())
             $this->soot += $heatToAdd;
