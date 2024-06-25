@@ -71,7 +71,11 @@ class InventoryRepository extends ServiceEntityRepository
             ->leftJoin('i.item', 'item')
             ->leftJoin('i.spice', 'spice')
             ->leftJoin('spice.effects', 'effects')
-            ->andWhere('item.fertilizer>0 OR effects.food!=0 OR effects.love!=0')
+
+            // has positive fertilizer - DON'T care about spices or whatever, we definitely want to show it
+            // has 0 or negative fertilizer - only show if it has food or love greater than negative fertilizer (food + love exceeds badness of fertilizer)
+            ->andWhere('item.fertilizer > 0 OR (effects.food + effects.love > -item.fertilizer)')
+
             ->addOrderBy('item.name', 'ASC')
             ->setParameter('owner', $user->getId())
             ->setParameter('home', LocationEnum::HOME)

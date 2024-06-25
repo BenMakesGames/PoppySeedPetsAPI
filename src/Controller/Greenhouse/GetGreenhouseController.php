@@ -24,7 +24,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 #[Route("/greenhouse")]
-class GreenhouseController extends AbstractController
+class GetGreenhouseController extends AbstractController
 {
     /**
      * @Route("", methods={"GET"})
