@@ -8,11 +8,13 @@ use App\Entity\User;
 use App\Entity\UserUnlockedAura;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PlayerActivityLogTagEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\EnchantmentRepository;
 use App\Functions\PetActivityLogFactory;
+use App\Functions\PlayerLogFactory;
 use App\Functions\UserUnlockedFeatureHelpers;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -104,6 +106,8 @@ class HattierService
                 ;
 
                 $this->em->persist($unlockedAura);
+
+                PlayerLogFactory::create($this->em, $user, 'You unlocked the "' . $enchantment->getAura()->getName() . '" styling!', [ PlayerActivityLogTagEnum::Hattier ]);
             }
 
             $this->userAurasPerRequestCache[$cacheKey] = $unlockedAura;

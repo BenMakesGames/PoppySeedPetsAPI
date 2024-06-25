@@ -11,8 +11,8 @@ class IndexController extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()
-     * @Route("/about")
      */
+    #[Route("/about")]
     public function about(ResponseService $responseService)
     {
         return $responseService->success([

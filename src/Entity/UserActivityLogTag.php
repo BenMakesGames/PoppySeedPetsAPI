@@ -22,7 +22,7 @@ class UserActivityLogTag
     private $color;
 
     #[Groups(["userActivityLogs"])]
-    #[ORM\Column(type: 'string', length: 12)]
+    #[ORM\Column(type: 'string', length: 100)]
     private $emoji;
 
     public function getId(): ?int

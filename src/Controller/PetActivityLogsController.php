@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Annotations\DoesNotRequireHouseHours;
 use App\Entity\PetActivityLogTag;
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
@@ -33,6 +34,9 @@ class PetActivityLogsController extends AbstractController
         return $responseService->success($logs, [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::PET_ACTIVITY_LOGS_AND_PUBLIC_PET ]);
     }
 
+    /**
+     * @DoesNotRequireHouseHours()
+     */
     #[Route("/getAllTags", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getAllTags(ResponseService $responseService, EntityManagerInterface $em)

@@ -4,7 +4,9 @@ namespace App\Controller\Item\Pinata;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
+use App\Enum\PlayerActivityLogTagEnum;
 use App\Enum\UserStatEnum;
+use App\Functions\PlayerLogFactory;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -100,6 +102,8 @@ class EggplantController extends AbstractController
         }
 
         $em->remove($inventory);
+
+        PlayerLogFactory::create($em, $user, $message, [ PlayerActivityLogTagEnum::Item_Use ]);
 
         $em->flush();
 
