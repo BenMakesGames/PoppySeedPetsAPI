@@ -125,7 +125,7 @@ class CookController extends AbstractController
             }
         }
 
-        $results = $cookingService->prepareRecipe($user, $inventory[0]->getOwner(), $inventory, true);
+        $results = $cookingService->prepareRecipeByHand($user, $inventory[0]->getOwner(), $inventory);
 
         // do this before checking if anything was made
         // because if NOTHING was made, a record in "RecipeAttempted" was made :P

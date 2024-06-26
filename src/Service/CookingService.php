@@ -100,9 +100,30 @@ class CookingService
 
     /**
      * @param Inventory[] $inventory
+     * @param ItemQuantity[] $recipe
+     */
+    public function prepareRecipeWithCookingBuddy(User $inventoryOwner, array $inventory, array $recipe, int $batchSize): ?PrepareRecipeResults
+    {
+        $quantities = CookingService::buildQuantitiesFromInventory($inventory);
+
+        if(count($quantities) === 0)
+            return null;
+
+        $batchQuantities = ItemQuantity::divide($quantities, $batchSize);
+
+        $matchedRecipe = $this->findRecipeFromQuantities($batchQuantities);
+
+        if(!$matchedRecipe || $matchedRecipe['name'] != $recipe['name'])
+            throw new \InvalidArgumentException("Given inventory does not match recipe and batchSize");
+
+        return $this->prepareRecipe($inventory, $recipe, $batchSize, $inventoryOwner, $inventoryOwner);
+    }
+
+    /**
+     * @param Inventory[] $inventory
      * @throws EnumInvalidValueException
      */
-    public function prepareRecipe(User $preparer, User $inventoryOwner, array $inventory, bool $teachCookingBuddies): ?PrepareRecipeResults
+    public function prepareRecipeByHand(User $preparer, User $inventoryOwner, array $inventory): ?PrepareRecipeResults
     {
         $quantities = CookingService::buildQuantitiesFromInventory($inventory);
 
@@ -157,6 +178,68 @@ class CookingService
             }
         }
 
+        $results = $this->prepareRecipe($inventory, $recipe, $multiple, $inventoryOwner, $preparer);
+
+        if($this->hasACookingBuddy($inventoryOwner))
+        {
+            $this->learnRecipe($inventoryOwner, $recipe['name']);
+        }
+
+        return $results;
+    }
+
+    public function learnRecipe(User $user, string $recipeName): bool
+    {
+        $alreadyKnownRecipe = $this->em->getRepository(KnownRecipes::class)->count([
+            'user' => $user,
+            'recipe' => $recipeName
+        ]) > 0;
+
+        if($alreadyKnownRecipe)
+            return false;
+
+        if(!ArrayFunctions::any(RecipeRepository::RECIPES, fn($recipe) => $recipe['name'] === $recipeName))
+            throw new \Exception('Cannot learn recipe "' . $recipeName . '" - it doesn\'t exist!');
+
+        $knownRecipe = (new KnownRecipes())
+            ->setUser($user)
+            ->setRecipe($recipeName)
+        ;
+
+        $this->em->persist($knownRecipe);
+
+        $this->userStatsRepository->incrementStat($user, UserStatEnum::RECIPES_LEARNED_BY_COOKING_BUDDY);
+
+        return true;
+    }
+
+    public function hasACookingBuddy(User $user): bool
+    {
+        return $this->inventoryRepository->count([
+            'owner' => $user,
+            'item' => [ 158, 454 ] // IDs of Cooking Buddy and Cooking "Alien"
+        ]) > 0;
+    }
+
+    public function showRecipeNamesToCookingBuddy(User $user, array $recipeNames): string
+    {
+        if(!$this->hasACookingBuddy($user))
+            return 'You need a Cooking Buddy to do this.';
+
+        $recipeNames = array_unique($recipeNames); // prevent duplicates, in case you (Ben) made a mistake somewhere else
+
+        $countLearnedRecipes = ArrayFunctions::sum($recipeNames, function($recipeName) use($user) {
+            return $this->learnRecipe($user, $recipeName) ? 1 : 0;
+        });
+
+        if($countLearnedRecipes === 0)
+            return 'Your Cooking Buddy already knows all these recipes.';
+
+        return 'Your Cooking Buddy learned ' . $countLearnedRecipes . ' new recipe' . ($countLearnedRecipes === 1 ? '' : 's') . '.';
+    }
+
+    private function prepareRecipe(array $inventory, ?array $recipe, int $multiple, User $inventoryOwner, User $preparer): PrepareRecipeResults
+    {
         /** @var Spice[] $spices */
         $spices = [];
         $allLockedToOwner = true;
@@ -210,11 +293,6 @@ class CookingService
 
         $this->userStatsRepository->incrementStat($preparer, UserStatEnum::COOKED_SOMETHING, $multiple);
 
-        if($teachCookingBuddies && $this->hasACookingBuddy($inventoryOwner))
-        {
-            $this->learnRecipe($inventoryOwner, $recipe['name']);
-        }
-
         $results = new PrepareRecipeResults();
         $results->inventory = $newInventory;
         $results->quantities = $makes;
@@ -222,55 +300,5 @@ class CookingService
         $results->location = $locationOfFirstItem;
 
         return $results;
-    }
-
-    public function learnRecipe(User $user, string $recipeName): bool
-    {
-        $alreadyKnownRecipe = $this->em->getRepository(KnownRecipes::class)->count([
-            'user' => $user,
-            'recipe' => $recipeName
-        ]) > 0;
-
-        if($alreadyKnownRecipe)
-            return false;
-
-        if(!ArrayFunctions::any(RecipeRepository::RECIPES, fn($recipe) => $recipe['name'] === $recipeName))
-            throw new \Exception('Cannot learn recipe "' . $recipeName . '" - it doesn\'t exist!');
-
-        $knownRecipe = (new KnownRecipes())
-            ->setUser($user)
-            ->setRecipe($recipeName)
-        ;
-
-        $this->em->persist($knownRecipe);
-
-        $this->userStatsRepository->incrementStat($user, UserStatEnum::RECIPES_LEARNED_BY_COOKING_BUDDY);
-
-        return true;
-    }
-
-    public function hasACookingBuddy(User $user): bool
-    {
-        return $this->inventoryRepository->count([
-            'owner' => $user,
-            'item' => [ 158, 454 ] // IDs of Cooking Buddy and Cooking "Alien"
-        ]) > 0;
-    }
-
-    public function showRecipeNamesToCookingBuddy(User $user, array $recipeNames): string
-    {
-        if(!$this->hasACookingBuddy($user))
-            return 'You need a Cooking Buddy to do this.';
-
-        $recipeNames = array_unique($recipeNames); // prevent duplicates, in case you (Ben) made a mistake somewhere else
-
-        $countLearnedRecipes = ArrayFunctions::sum($recipeNames, function($recipeName) use($user) {
-            return $this->learnRecipe($user, $recipeName) ? 1 : 0;
-        });
-
-        if($countLearnedRecipes === 0)
-            return 'Your Cooking Buddy already knows all these recipes.';
-
-        return 'Your Cooking Buddy learned ' . $countLearnedRecipes . ' new recipe' . ($countLearnedRecipes === 1 ? '' : 's') . '.';
     }
 }

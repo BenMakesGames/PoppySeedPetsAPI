@@ -193,7 +193,7 @@ class CookingBuddyController extends AbstractController
             $inventoryToUse = array_merge($inventoryToUse, $inventory);
         }
 
-        $results = $cookingService->prepareRecipe($user, $user, $inventoryToUse, false);
+        $results = $cookingService->prepareRecipeWithCookingBuddy($user, $inventoryToUse, $recipe, $quantity);
 
         $userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING);
 
