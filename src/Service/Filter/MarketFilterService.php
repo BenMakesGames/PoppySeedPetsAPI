@@ -37,9 +37,11 @@ class MarketFilterService
                 'name' => [ $this, 'filterName' ],
                 'edible' => [ $this, 'filterEdible' ],
                 'candy' => [ $this, 'filterCandy' ],
+                'spice' => [ $this, 'filterSpice' ],
                 'foodFlavors' => [ $this, 'filterFoodFlavors' ],
                 'equipable' => [ $this, 'filterEquipable' ],
                 'equipStats' => [ $this, 'filterEquipStats' ],
+                'bonus' => [ $this, 'filterBonus' ],
                 'aHat' => [ $this, 'filterAHat' ],
                 'hasDonated' => [ $this, 'filterHasDonated' ],
                 'itemGroup' => [ $this, 'filterItemGroup' ],
@@ -136,6 +138,22 @@ class MarketFilterService
             $qb->andWhere('item.tool IS NULL');
         else
             $qb->andWhere('item.tool IS NOT NULL');
+    }
+
+    public function filterBonus(QueryBuilder $qb, $value)
+    {
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('item.enchants IS NULL');
+        else
+            $qb->andWhere('item.enchants IS NOT NULL');
+    }
+
+    public function filterSpice(QueryBuilder $qb, $value)
+    {
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('item.spice IS NULL');
+        else
+            $qb->andWhere('item.spice IS NOT NULL');
     }
 
     public function filterAHat(QueryBuilder $qb, $value)
