@@ -38,7 +38,7 @@ class MaracaController extends AbstractController
         if($squirrel3->rngNextInt(1, 2) === 1)
             $inventoryService->receiveItem('Magic Beans', $user, $user, $user->getName() . ' sacrificed a Maraca for these.', $location);
         else
-            $inventoryService->receiveItem('Beans', $user, $user, $user->getName() . ' sacrificed a Maraca for these.', $location);
+            $inventoryService->receiveItem('Everybeans', $user, $user, $user->getName() . ' sacrificed a Maraca for these.', $location);
 
         // 50/50 chance of extra Beans
         if($count === 3)
