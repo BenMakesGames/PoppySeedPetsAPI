@@ -21,7 +21,7 @@ class MonthlyStoryAdventureStep
     #[ORM\JoinColumn(nullable: false)]
     private $adventure;
 
-    #[Groups([ "starKindredStoryStepAvailable" ])]
+    #[Groups([ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" ])]
     #[ORM\Column(type: 'string', length: 30)]
     private $title;
 
@@ -51,6 +51,7 @@ class MonthlyStoryAdventureStep
     #[ORM\Column(type: 'integer')]
     private $maxPets;
 
+    #[Groups([ "starKindredStoryStepComplete" ])]
     #[ORM\Column(type: 'text', nullable: true)]
     private $narrative;
 

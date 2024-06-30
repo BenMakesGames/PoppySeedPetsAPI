@@ -195,7 +195,7 @@ class CookingBuddyController extends AbstractController
 
         $results = $cookingService->prepareRecipeWithCookingBuddy($user, $inventoryToUse, $recipe, $quantity);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING);
+        $userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING, $quantity);
 
         $em->flush();
 
