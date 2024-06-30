@@ -382,5 +382,8 @@ class Music
 
         // Is You, by D.I.M. (Le Castle Vania Remix, maybe - it hardly matters with lyrics like this :P)
         'Is you, you, you, you... is you, you, you, you... is you, you, you, you... is yoouu, yooouu-- y-ouuu-- y----ooo-- --...',
+
+        // We're Back, by Heartbreak
+        'So. You\'ve hearrrd it allll befoorre. Well we\'re baaack. From the disco tooo theee raaadiooo... whoa-oh, yeah!',
     ];
 }
