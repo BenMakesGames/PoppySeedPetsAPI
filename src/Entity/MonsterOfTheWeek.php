@@ -2,10 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\MonsterOfTheWeekRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: MonsterOfTheWeekRepository::class)]
+#[ORM\Entity]
 class MonsterOfTheWeek
 {
     #[ORM\Id]
@@ -24,6 +23,18 @@ class MonsterOfTheWeek
 
     #[ORM\Column]
     private ?int $communityTotal = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Item $easyPrize = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Item $mediumPrize = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Item $hardPrize = null;
 
     public function getId(): ?int
     {
@@ -74,6 +85,42 @@ class MonsterOfTheWeek
     public function setCommunityTotal(int $communityTotal): static
     {
         $this->communityTotal = $communityTotal;
+
+        return $this;
+    }
+
+    public function getEasyPrize(): Item
+    {
+        return $this->easyPrize;
+    }
+
+    public function setEasyPrize(Item $easyPrize): static
+    {
+        $this->easyPrize = $easyPrize;
+
+        return $this;
+    }
+
+    public function getMediumPrize(): Item
+    {
+        return $this->mediumPrize;
+    }
+
+    public function setMediumPrize(Item $mediumPrize): static
+    {
+        $this->mediumPrize = $mediumPrize;
+
+        return $this;
+    }
+
+    public function getHardPrize(): Item
+    {
+        return $this->hardPrize;
+    }
+
+    public function setHardPrize(Item $hardPrize): static
+    {
+        $this->hardPrize = $hardPrize;
 
         return $this;
     }

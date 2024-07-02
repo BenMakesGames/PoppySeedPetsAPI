@@ -2,11 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\MonsterOfTheWeekContributionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: MonsterOfTheWeekContributionRepository::class)]
+#[ORM\Entity]
 class MonsterOfTheWeekContribution
 {
     #[ORM\Id]
@@ -23,13 +22,18 @@ class MonsterOfTheWeekContribution
     private ?User $user = null;
 
     #[ORM\Column]
-    private ?int $points = null;
+    private int $points = 0;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $modifiedOn = null;
+    private \DateTimeImmutable $modifiedOn;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $rewardsClaimed = null;
+    private int $rewardsClaimed = 0;
+
+    public function __construct()
+    {
+        $this->modifiedOn = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -41,7 +45,7 @@ class MonsterOfTheWeekContribution
         return $this->monsterOfTheWeek;
     }
 
-    public function setMonsterOfTheWeek(?MonsterOfTheWeek $monsterOfTheWeek): static
+    public function setMonsterOfTheWeek(MonsterOfTheWeek $monsterOfTheWeek): static
     {
         $this->monsterOfTheWeek = $monsterOfTheWeek;
 
@@ -53,7 +57,7 @@ class MonsterOfTheWeekContribution
         return $this->user;
     }
 
-    public function setUser(?User $user): static
+    public function setUser(User $user): static
     {
         $this->user = $user;
 
@@ -65,9 +69,13 @@ class MonsterOfTheWeekContribution
         return $this->points;
     }
 
-    public function setPoints(int $points): static
+    public function addPoints(int $points): static
     {
-        $this->points = $points;
+        if($points < 1)
+            throw new \InvalidArgumentException('Points must be a positive integer.');
+
+        $this->points += $points;
+        $this->modifiedOn = new \DateTimeImmutable();
 
         return $this;
     }
@@ -75,13 +83,6 @@ class MonsterOfTheWeekContribution
     public function getModifiedOn(): ?\DateTimeImmutable
     {
         return $this->modifiedOn;
-    }
-
-    public function setModifiedOn(\DateTimeImmutable $modifiedOn): static
-    {
-        $this->modifiedOn = $modifiedOn;
-
-        return $this;
     }
 
     public function getRewardsClaimed(): ?int
@@ -92,6 +93,7 @@ class MonsterOfTheWeekContribution
     public function setRewardsClaimed(int $rewardsClaimed): static
     {
         $this->rewardsClaimed = $rewardsClaimed;
+        $this->modifiedOn = new \DateTimeImmutable();
 
         return $this;
     }
