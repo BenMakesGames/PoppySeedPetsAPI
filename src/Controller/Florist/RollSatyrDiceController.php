@@ -1,9 +1,11 @@
 <?php
-namespace App\Controller\Plaza;
+namespace App\Controller\Florist;
 
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotEnoughCurrencyException;
+use App\Exceptions\PSPNotUnlockedException;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -14,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route("/plaza")]
+#[Route("/florist")]
 class RollSatyrDiceController extends AbstractController
 {
     #[Route("/rollSatyrDice", methods: ["POST"])]
@@ -26,6 +28,9 @@ class RollSatyrDiceController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
+
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Florist))
+            throw new PSPNotUnlockedException('Florist');
 
         $bet = $request->request->getInt('bet');
 

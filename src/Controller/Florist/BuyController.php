@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller;
+namespace App\Controller\Florist;
 
 use App\Entity\User;
 use App\Enum\LocationEnum;
@@ -20,21 +20,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/florist")]
-class FloristController extends AbstractController
+class BuyController extends AbstractController
 {
-    #[Route("", methods: ["GET"])]
-    #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getInventory(FloristService $floristService, ResponseService $responseService)
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Florist))
-            throw new PSPNotUnlockedException('Florist');
-
-        return $responseService->success($floristService->getInventory($user));
-    }
-
     #[Route("/buy", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buyFlowerbomb(
