@@ -46,4 +46,5 @@ final class UserStatEnum
     const HOLLOW_EARTH_SPACES_MOVED = 'Spaces Moved in the Hollow Earth';
     const TOOLS_DIPPED_IN_A_DRAGON_VASE = 'Tools Dipped in a Dragon Vase';
     const FOODS_DIPPED_IN_A_HOT_POT = 'Foods Dipped in a Hot Pot';
+    const ROLLED_SATYR_DICE = 'Rolled Satyr Dice';
 }

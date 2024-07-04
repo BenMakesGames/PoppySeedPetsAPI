@@ -1329,7 +1329,7 @@ class TraderService
     }
 
     /**
-     * CAREFUL: Also used by some items, to perform transmutations.
+     * CAREFUL: Also used by some items, to perform transmutations, and the florist!
      */
     public function makeExchange(User $user, TraderOffer $exchange, int $location, int $quantity, string $itemDescription = 'Received by trading with the Trader.')
     {
@@ -1341,7 +1341,7 @@ class TraderService
                     $itemQuantity = $this->inventoryService->loseItem($user, $cost->item->getId(), $location, $cost->quantity * $quantity);
 
                     if($itemQuantity < $cost->quantity * $quantity)
-                        throw new PSPNotFoundException('You do not have the items needed to make this exchange. (Expected ' . ($cost->quantity * $quantity) . ' items; only found ' . $itemQuantity . '.)');
+                        throw new PSPNotFoundException('You do not have the items needed to make this exchange. (Needs ' . ($cost->quantity * $quantity) . ' ' . $cost->item->getName() . '; you have ' . $itemQuantity . '.)');
 
                     break;
 

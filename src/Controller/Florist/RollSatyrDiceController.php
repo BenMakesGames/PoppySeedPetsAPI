@@ -4,6 +4,7 @@ namespace App\Controller\Florist;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
+use App\Enum\UserStatEnum;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Service\Clock;
@@ -11,6 +12,7 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,7 +26,8 @@ class RollSatyrDiceController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function rollEm(
         ResponseService $responseService, EntityManagerInterface $em, InventoryService $inventoryService,
-        Request $request, IRandom $squirrel3, TransactionService $transactionService, Clock $clock
+        Request $request, IRandom $squirrel3, TransactionService $transactionService, Clock $clock,
+        UserStatsService $userStatsService
     )
     {
         /** @var User $user */
@@ -121,6 +124,8 @@ class RollSatyrDiceController extends AbstractController
 
         foreach($items as $itemName)
             $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from a game of Satyr Dice.', LocationEnum::HOME);
+
+        $userStatsService->incrementStat($user, UserStatEnum::ROLLED_SATYR_DICE);
 
         $em->flush();
 

@@ -44,12 +44,14 @@ class KatsGiftController extends AbstractController
 
         $em->remove($inventory);
 
+        $inventoryService->receiveItem('Lotus Flower', $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
+
         foreach($listOfItems as $itemName)
              $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You open the box, carefully preserving the Lotus flower "bow", revealing ' . ArrayFunctions::list_nice($listOfItems) . '!', [ 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You open the box, carefully preserving the Lotus flower "bow", and find ' . ArrayFunctions::list_nice($listOfItems) . '!', [ 'itemDeleted' => true ]);
     }
 
     #[Route("/{inventory}/gardeningSupplies", methods: ["POST"])]
@@ -82,6 +84,8 @@ class KatsGiftController extends AbstractController
 
         $em->remove($inventory);
 
+        $inventoryService->receiveItem('Lotus Flower', $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
+
         $toolItem = $inventoryService->receiveItem($tool, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked)
             ->setEnchantment(EnchantmentRepository::findOneByName($em, 'Fungilicious'));
 
@@ -90,7 +94,7 @@ class KatsGiftController extends AbstractController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You open the box, carefully preserving the Lotus flower "bow", revealing a ' . $toolItem->getFullItemName() . ', ' . ArrayFunctions::list_nice($extraItems) . '!', [ 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You open the box, carefully preserving the Lotus flower "bow", and find a ' . $toolItem->getFullItemName() . ', ' . ArrayFunctions::list_nice($extraItems) . '!', [ 'itemDeleted' => true ]);
     }
 
     #[Route("/{inventory}/fishingGear", methods: ["POST"])]
@@ -129,6 +133,8 @@ class KatsGiftController extends AbstractController
 
         $em->remove($inventory);
 
+        $inventoryService->receiveItem('Lotus Flower', $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
+
         $toolItem = $inventoryService->receiveItem($tool, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked)
             ->setEnchantment(EnchantmentRepository::findOneByName($em, $enchantment));
 
@@ -137,7 +143,7 @@ class KatsGiftController extends AbstractController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You open the box, carefully preserving the Lotus flower "bow", revealing a ' . $toolItem->getFullItemName() . ', ' . ArrayFunctions::list_nice($extraItems) . '!', [ 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You open the box, carefully preserving the Lotus flower "bow", and find a ' . $toolItem->getFullItemName() . ', ' . ArrayFunctions::list_nice($extraItems) . '!', [ 'itemDeleted' => true ]);
     }
 
     #[Route("/{inventory}/lava", methods: ["POST"])]
@@ -172,11 +178,13 @@ class KatsGiftController extends AbstractController
 
         $em->remove($inventory);
 
+        $inventoryService->receiveItem('Lotus Flower', $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
+
         foreach($itemList as $itemName)
             $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You open the box, carefully preserving the Lotus flower "bow", revealing ten buckets of Liquid-hot Magma! ... and a Rock, apparently!', [ 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You open the box, carefully preserving the Lotus flower "bow", and find ten buckets of Liquid-hot Magma! ... and a Rock, apparently!', [ 'itemDeleted' => true ]);
     }
 }
