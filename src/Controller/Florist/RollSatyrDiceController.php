@@ -6,6 +6,7 @@ use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotUnlockedException;
+use App\Service\Clock;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -23,7 +24,7 @@ class RollSatyrDiceController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function rollEm(
         ResponseService $responseService, EntityManagerInterface $em, InventoryService $inventoryService,
-        Request $request, IRandom $squirrel3, TransactionService $transactionService
+        Request $request, IRandom $squirrel3, TransactionService $transactionService, Clock $clock
     )
     {
         /** @var User $user */
@@ -39,6 +40,12 @@ class RollSatyrDiceController extends AbstractController
 
         $r1 = $squirrel3->rngNextInt(1, 6);
         $r2 = $squirrel3->rngNextInt(1, 6);
+
+        if($squirrel3->rngNextInt(1, 20) == 1)
+            $r1 = 0;
+
+        if($squirrel3->rngNextInt(1, 20 - $r1) == 1)
+            $r2 = 0;
 
         $total = $r1 + $r2;
 
@@ -78,6 +85,20 @@ class RollSatyrDiceController extends AbstractController
         {
             $items = [ 'Creamy Milk' ];
         }
+        else if($total === 1)
+        {
+            $items = [ 'Quintessence' ];
+        }
+        else if($total === 0)
+        {
+            $items = [ 'Quintessence', 'Quintessence', 'Quintessence', 'Quintessence', 'Quintessence', 'Quintessence', 'Quintessence', 'Quintessence', 'Quintessence', 'Quintessence' ];
+        }
+
+        $dayOfTheWeek = strtolower($clock->now->format('l'));
+        $dayOfTheWeekCoin = self::dayOfTheWeekCoin($clock->now->format('w'));
+
+        if($r1 === 0) $items[] = $dayOfTheWeekCoin;
+        if($r2 === 0) $items[] = $dayOfTheWeekCoin;
 
         $getDouble =
             ($total > 8 && $bet > 0) ||
@@ -104,10 +125,26 @@ class RollSatyrDiceController extends AbstractController
         $em->flush();
 
         return $responseService->success([
+            'dayOfTheWeek' => $dayOfTheWeek,
             'dice' => [ $r1, $r2 ],
             'getDouble' => $getDouble,
             'points' => $points,
             'items' => $items
         ]);
+    }
+
+    private static function dayOfTheWeekCoin(int $dayOfWeek): string
+    {
+        switch($dayOfWeek)
+        {
+            case 0: return 'Sunday Coin';
+            case 1: return 'Monday Coin';
+            case 2: return 'Tuesday Coin';
+            case 3: return 'Wednesday Coin';
+            case 4: return 'Thursday Coin';
+            case 5: return 'Friday Coin';
+            case 6: return 'Saturday Coin';
+            default: throw new \InvalidArgumentException("Invalid day of the week");
+        }
     }
 }

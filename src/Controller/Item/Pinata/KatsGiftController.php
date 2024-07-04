@@ -1,0 +1,182 @@
+<?php
+namespace App\Controller\Item\Pinata;
+
+use App\Controller\Item\ItemControllerHelpers;
+use App\Entity\Inventory;
+use App\Entity\User;
+use App\Functions\ArrayFunctions;
+use App\Functions\EnchantmentRepository;
+use App\Service\InventoryService;
+use App\Service\IRandom;
+use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
+#[Route("/item/katsGift")]
+class KatsGiftController extends AbstractController
+{
+    #[Route("/{inventory}/chocolates", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    public function getChocolates(
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
+        ResponseService $responseService, IRandom $rng
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'katsGift/#/chocolates');
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
+
+        $listOfItems = [
+            $rng->rngNextFromArray([ 'Chocolate Sword', 'Chocolate Wine', 'Chocolate-covered Naner' ]),
+            'Chocolate Bar', 'Chocolate Bar', 'Chocolate Bar',
+            'Chocolate Syrup', 'Chocolate Syrup',
+            'Chocolate Toffee Matzah', 'Chocolate Toffee Matzah', 'Chocolate Toffee Matzah',
+            'Cocoa Powder', 'Cocoa Powder',
+            'Chocolate Key'
+        ];
+
+        $location = $inventory->getLocation();
+        $locked = $inventory->getLockedToOwner();
+
+        $em->remove($inventory);
+
+        foreach($listOfItems as $itemName)
+             $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess('You open the box, carefully preserving the Lotus flower "bow", revealing ' . ArrayFunctions::list_nice($listOfItems) . '!', [ 'itemDeleted' => true ]);
+    }
+
+    #[Route("/{inventory}/gardeningSupplies", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    public function getGardeningSupplies(
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
+        ResponseService $responseService, IRandom $rng
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'katsGift/#/chocolates');
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
+
+        $tool = $rng->rngNextFromArray([
+            'Owl Trowel', 'Farmer\'s Multi-tool', 'Double Scythe',
+        ]);
+
+        $extraItems = [
+            'Worker Bee', 'Worker Bee', 'Worker Bee',
+            'Large Bag of Fertilizer', 'Large Bag of Fertilizer', 'Large Bag of Fertilizer', 'Large Bag of Fertilizer',
+            $rng->rngNextFromArray([ 'Limestone', 'Rock' ]),
+            $rng->rngNextFromArray([ 'Limestone', 'Rock' ]),
+            'Tile: Run-down Orchard'
+        ];
+
+        $location = $inventory->getLocation();
+        $locked = $inventory->getLockedToOwner();
+
+        $em->remove($inventory);
+
+        $toolItem = $inventoryService->receiveItem($tool, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked)
+            ->setEnchantment(EnchantmentRepository::findOneByName($em, 'Fungilicious'));
+
+        foreach($extraItems as $itemName)
+            $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess('You open the box, carefully preserving the Lotus flower "bow", revealing a ' . $toolItem->getFullItemName() . ', ' . ArrayFunctions::list_nice($extraItems) . '!', [ 'itemDeleted' => true ]);
+    }
+
+    #[Route("/{inventory}/fishingGear", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    public function getFishingGear(
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
+        ResponseService $responseService, IRandom $rng
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'katsGift/#/fishingGear');
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
+
+        $tool = $rng->rngNextFromArray([
+            'Ice Fishing', 'Sylvan Fishing Rod',
+        ]);
+
+        $enchantment = $rng->rngNextFromArray([
+            'Captain\'s', 'Fish-frying', 'Meat-seeking',
+        ]);
+
+        $extraItems = [
+            'Worms', 'Worms', 'Worms',
+            'Sunscreen',
+            $rng->rngNextFromArray([ 'Large, Yellow Plastic Bucket', 'Large Plastic Bucket' ]),
+            'Everice',
+            'Sportsball Oar', 'Sportsball Oar',
+            $rng->rngNextFromArray([ 'Tile: Private Fishing Spot', 'Tile: Gone Fishing' ]),
+            $rng->rngNextFromArray([ 'Cast Net', 'Fishing Recorder' ]),
+        ];
+
+        $location = $inventory->getLocation();
+        $locked = $inventory->getLockedToOwner();
+
+        $em->remove($inventory);
+
+        $toolItem = $inventoryService->receiveItem($tool, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked)
+            ->setEnchantment(EnchantmentRepository::findOneByName($em, $enchantment));
+
+        foreach($extraItems as $itemName)
+            $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess('You open the box, carefully preserving the Lotus flower "bow", revealing a ' . $toolItem->getFullItemName() . ', ' . ArrayFunctions::list_nice($extraItems) . '!', [ 'itemDeleted' => true ]);
+    }
+
+    #[Route("/{inventory}/lava", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    public function getLava(
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
+        ResponseService $responseService
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        ItemControllerHelpers::validateInventory($user, $inventory, 'katsGift/#/lava');
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
+
+        $itemList = [
+            'Liquid-hot Magma',
+            'Liquid-hot Magma',
+            'Liquid-hot Magma',
+            'Liquid-hot Magma',
+            'Liquid-hot Magma',
+            'Liquid-hot Magma',
+            'Liquid-hot Magma',
+            'Liquid-hot Magma',
+            'Liquid-hot Magma',
+            'Liquid-hot Magma',
+            'Rock'
+        ];
+
+        $location = $inventory->getLocation();
+        $locked = $inventory->getLockedToOwner();
+
+        $em->remove($inventory);
+
+        foreach($itemList as $itemName)
+            $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
+
+        $em->flush();
+
+        return $responseService->itemActionSuccess('You open the box, carefully preserving the Lotus flower "bow", revealing ten buckets of Liquid-hot Magma! ... and a Rock, apparently!', [ 'itemDeleted' => true ]);
+    }
+}
