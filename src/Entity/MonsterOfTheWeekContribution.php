@@ -27,8 +27,8 @@ class MonsterOfTheWeekContribution
     #[ORM\Column]
     private \DateTimeImmutable $modifiedOn;
 
-    #[ORM\Column(type: Types::SMALLINT)]
-    private int $rewardsClaimed = 0;
+    #[ORM\Column]
+    private bool $rewardsClaimed = false;
 
     public function __construct()
     {
@@ -64,7 +64,7 @@ class MonsterOfTheWeekContribution
         return $this;
     }
 
-    public function getPoints(): ?int
+    public function getPoints(): int
     {
         return $this->points;
     }
@@ -80,19 +80,19 @@ class MonsterOfTheWeekContribution
         return $this;
     }
 
-    public function getModifiedOn(): ?\DateTimeImmutable
+    public function getModifiedOn(): \DateTimeImmutable
     {
         return $this->modifiedOn;
     }
 
-    public function getRewardsClaimed(): ?int
+    public function getRewardsClaimed(): bool
     {
         return $this->rewardsClaimed;
     }
 
-    public function setRewardsClaimed(int $rewardsClaimed): static
+    public function setRewardsClaimed(): static
     {
-        $this->rewardsClaimed = $rewardsClaimed;
+        $this->rewardsClaimed = true;
         $this->modifiedOn = new \DateTimeImmutable();
 
         return $this;

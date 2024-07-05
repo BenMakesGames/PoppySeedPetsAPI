@@ -28,4 +28,9 @@ $schedule->run('php bin/console app:calculate-daily-stats')
     ->daily()
 ;
 
+$schedule->run('php bin/console app:create-monster-of-the-week')
+    ->description('Creates the monster of the week. (Runs every day, in case of failure.)')
+    ->daily()
+;
+
 return $schedule;

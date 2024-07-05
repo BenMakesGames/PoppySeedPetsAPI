@@ -23,9 +23,18 @@ class GetController extends AbstractController
 
         $query = $db->query(
             "
-                SELECT monster.id,monster.monster,contribution.points,contribution.rewards_claimed
+                SELECT
+                    monster.id,
+                    monster.monster,
+                    easy_prize.name AS easy_prize_name,
+                    medium_prize.name AS medium_prize_name,
+                    hard_prize.name AS hard_prize_name,
+                    contribution.points
                 FROM monster_of_the_week AS monster
                 LEFT JOIN monster_of_the_week_contribution AS contribution ON contribution.monster_of_the_week_id=monster.id AND contribution.user_id=?
+                LEFT JOIN item AS easy_prize ON easy_prize.id=monster.easy_prize_id
+                LEFT JOIN item AS medium_prize ON medium_prize.id=monster.medium_prize_id
+                LEFT JOIN item AS hard_prize ON hard_prize.id=monster.hard_prize_id
                 WHERE ? BETWEEN monster.start_date AND monster.end_date
                 LIMIT 1
             ",
@@ -40,6 +49,26 @@ class GetController extends AbstractController
         if(count($data) == 0)
             throw new PSPNotFoundException("No Monster of the Week is available.");
 
-        return $responseService->success($data[0]);
+        $milestones = MonsterOfTheWeekHelpers::getBasePrizeValues($data[0]['monster']);
+
+        return $responseService->success([
+            'id' => $data[0]['id'],
+            'type' => $data[0]['monster'],
+            'progress' => $data[0]['points'],
+            'milestones' => [
+                [
+                    'value' => $milestones[0],
+                    'prize' => $data[0]['easy_prize_name']
+                ],
+                [
+                    'value' => $milestones[1],
+                    'prize' => $data[0]['medium_prize_name']
+                ],
+                [
+                    'value' => $milestones[2],
+                    'prize' => $data[0]['hard_prize_name']
+                ]
+            ]
+        ]);
     }
 }
