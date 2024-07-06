@@ -5,6 +5,7 @@ namespace App\Controller\MonsterOfTheWeek;
 use App\Entity\Inventory;
 use App\Enum\MonsterOfTheWeekEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\RecipeRepository;
 
 final class MonsterOfTheWeekHelpers
 {
@@ -109,15 +110,20 @@ final class MonsterOfTheWeekHelpers
         $points = 0;
 
         if($item->getItem()->getFood())
-            $points = 1;
+            $points = $item->getItem()->getFood()->getGrantedSkill() ? 4 : 1;
+        else if($item->getItem()->getName() === 'Tiny Black Hole')
+            $points = 5;
         else if($item->getItem()->getUseActions())
             $points = 8;
-        else if($item->getItem()->getTool() || $item->getItem()->getEnchants())
+        else if($item->getItem()->getTool() || $item->getItem()->getEnchants() || $item->getItem()->getSpice())
             $points = 7;
         else
             $points = 15;
 
-        $points += floor(($item->getItem()->getRecycleValue() + $item->getItem()->getMuseumPoints()) / 2);
+        if(str_ends_with($item->getItem()->getName(), 'Baabble'))
+            $points += 20;
+
+        $points += $item->getItem()->getRecycleValue() + $item->getItem()->getMuseumPoints() - 1;
 
         return $points;
     }
