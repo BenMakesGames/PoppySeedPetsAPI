@@ -56,7 +56,7 @@ class ContributeController extends AbstractController
 
         foreach($items as $item)
         {
-            $points = MonsterOfTheWeekHelpers::getInventoryValue($monster->getMonster(), $item);
+            $points = MonsterOfTheWeekHelpers::getItemValue($monster->getMonster(), $item->getItem());
 
             $em->remove($item);
 

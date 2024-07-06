@@ -3,6 +3,7 @@
 namespace App\Controller\MonsterOfTheWeek;
 
 use App\Entity\Inventory;
+use App\Entity\Item;
 use App\Enum\MonsterOfTheWeekEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\RecipeRepository;
@@ -19,20 +20,6 @@ final class MonsterOfTheWeekHelpers
             MonsterOfTheWeekEnum::DIONYSUS => 'Dionysus\'s Hunger',
             MonsterOfTheWeekEnum::HUEHUECOYOTL => 'Huehuecoyotl\'s Folly',
             default => throw new \InvalidArgumentException("Invalid monster"),
-        };
-    }
-
-    public static function getBasePrizeValues(string $monster): array
-    {
-        return match($monster)
-        {
-            // [ easy = easy, medium = easy * ~2.5, hard = easy * ~3 ]
-            MonsterOfTheWeekEnum::ANHUR => [ 25, 60, 200 ],
-            MonsterOfTheWeekEnum::BOSHINOGAMI => [ 40, 100, 300 ],
-            MonsterOfTheWeekEnum::CARDEA => [ 10, 25, 70 ],
-            MonsterOfTheWeekEnum::DIONYSUS => [ 100, 250, 700 ],
-            MonsterOfTheWeekEnum::HUEHUECOYOTL => [ 25, 60, 200 ],
-            default => throw new \InvalidArgumentException("Invalid monster")
         };
     }
 
@@ -75,39 +62,39 @@ final class MonsterOfTheWeekHelpers
         };
     }
 
-    public static function getInventoryValue(string $monster, Inventory $item): int
+    public static function getItemValue(string $monster, Item $item): int
     {
         return match($monster)
         {
-            MonsterOfTheWeekEnum::ANHUR => self::getInventoryValueForAnhur($item),
-            MonsterOfTheWeekEnum::BOSHINOGAMI => self::getInventoryValueForBoshinogami($item),
-            MonsterOfTheWeekEnum::CARDEA => self::getInventoryValueForCardea($item),
-            MonsterOfTheWeekEnum::DIONYSUS => self::getInventoryValueForDionysus($item),
-            MonsterOfTheWeekEnum::HUEHUECOYOTL => self::getInventoryValueForHuehuecoyotl($item),
+            MonsterOfTheWeekEnum::ANHUR => self::getItemValueForAnhur($item),
+            MonsterOfTheWeekEnum::BOSHINOGAMI => self::getItemValueForBoshinogami($item),
+            MonsterOfTheWeekEnum::CARDEA => self::getItemValueForCardea($item),
+            MonsterOfTheWeekEnum::DIONYSUS => self::getItemValueForDionysus($item),
+            MonsterOfTheWeekEnum::HUEHUECOYOTL => self::getItemValueForHuehuecoyotl($item),
             default => 0,
         };
     }
 
-    public static function getInventoryValueForAnhur(Inventory $item): int
+    public static function getItemValueForAnhur(Item $item): int
     {
         $points = 0;
 
-        if($item->getItem()->getTool())
+        if($item->getTool())
         {
-            $effects = $item->getItem()->getTool();
+            $effects = $item->getTool();
 
             $points = max($points, $effects->getBrawl() + ($effects->getFocusSkill() == PetSkillEnum::BRAWL ? 2 : 0));
         }
 
-        if($item->getItem()->getEnchants() && $item->getItem()->getEnchants()->getEffects())
+        if($item->getEnchants() && $item->getEnchants()->getEffects())
         {
-            $effects = $item->getItem()->getEnchants()->getEffects();
+            $effects = $item->getEnchants()->getEffects();
             $points = max($points, $effects->getBrawl() + ($effects->getFocusSkill() == PetSkillEnum::BRAWL ? 2 : 0));
         }
 
-        if($item->getItem()->getFood())
+        if($item->getFood())
         {
-            $effects = $item->getItem()->getFood();
+            $effects = $item->getFood();
 
             $points = max($points, $effects->getGrantedSkill() == PetSkillEnum::BRAWL ? 2 : 0);
         }
@@ -115,84 +102,68 @@ final class MonsterOfTheWeekHelpers
         return $points;
     }
 
-    public static function getInventoryValueForBoshinogami(Inventory $item): int
+    public static function getItemValueForBoshinogami(Item $item): int
     {
-        if(!$item->getItem()->getHat())
+        if(!$item->getHat() || $item->getName() === 'Anniversary Poppy Seed* Muffin')
             return 0;
 
-        $points = 0;
-
-        if($item->getItem()->getFood())
-            $points = $item->getItem()->getFood()->getGrantedSkill() ? 4 : 1;
-        else if($item->getItem()->getName() === 'Tiny Black Hole')
-            $points = 5;
-        else if($item->getItem()->getUseActions())
-            $points = 8;
-        else if($item->getItem()->getTool() || $item->getItem()->getEnchants() || $item->getItem()->getSpice())
-            $points = 7;
-        else
-            $points = 15;
-
-        if(str_ends_with($item->getItem()->getName(), 'Baabble'))
-            $points += 20;
-
-        $points += $item->getItem()->getRecycleValue() + $item->getItem()->getMuseumPoints() - 1;
+        $points = $item->getRecycleValue() + $item->getMuseumPoints() * 2 - 1;
 
         return $points;
     }
 
-    public static function getInventoryValueForCardea(Inventory $item): int
+    public static function getItemValueForCardea(Item $item): int
     {
-        if(!$item->getItem()->hasItemGroup('Key') && $item->getItem()->getName() !== 'Password')
+        if(!$item->hasItemGroup('Key') && $item->getName() !== 'Password')
             return 0;
 
-        $points = 2 + floor($item->getItem()->getRecycleValue() / 3);
+        $points = 2 + floor($item->getRecycleValue() / 3);
 
-        if($item->getItem()->getTool() && $item->getItem()->getTool()->getLeadsToAdventure())
+        if($item->getTool() && $item->getTool()->getLeadsToAdventure())
             $points += 3;
 
         return $points;
     }
 
-    public static function getInventoryValueForDionysus(Inventory $item): int
+    public static function getItemValueForDionysus(Item $item): int
     {
-        if(!$item->getItem()->getFood())
+        if(!$item->getFood())
             return 0;
 
-        $food = $item->getItem()->getFood();
+        $food = $item->getFood();
 
         return $food->getFood() + $food->getLove() +
             ($food->getAlcohol() + $food->getCaffeine() + $food->getPsychedelic()) * 2;
     }
 
-    public static function getInventoryValueForHuehuecoyotl(Inventory $item): int
+    public static function getItemValueForHuehuecoyotl(Item $item): int
     {
-        if($item->getItem()->getName() === 'Musical Scales')
+        if($item->getName() === 'Musical Scales')
             return 2;
 
         $points = 0;
 
-        if($item->getItem()->getTool())
+        if($item->getTool())
         {
-            $effects = $item->getItem()->getTool();
+            $effects = $item->getTool();
 
             $points = max($points, $effects->getMusic() + ($effects->getFocusSkill() == PetSkillEnum::MUSIC ? 2 : 0));
         }
 
-        if($item->getItem()->getEnchants() && $item->getItem()->getEnchants()->getEffects())
+        if($item->getEnchants() && $item->getEnchants()->getEffects())
         {
-            $effects = $item->getItem()->getEnchants()->getEffects();
+            $effects = $item->getEnchants()->getEffects();
             $points = max($points, $effects->getMusic() + ($effects->getFocusSkill() == PetSkillEnum::MUSIC ? 2 : 0));
         }
 
-        if($item->getItem()->getFood())
+        if($item->getFood())
         {
-            $effects = $item->getItem()->getFood();
+            $effects = $item->getFood();
 
             $points = max($points, $effects->getGrantedSkill() == PetSkillEnum::MUSIC ? 2 : 0);
         }
 
-        if($item->getItem()->hasItemGroup('Musical Instrument'))
+        if($item->hasItemGroup('Musical Instrument'))
             $points += 2;
 
         return $points;

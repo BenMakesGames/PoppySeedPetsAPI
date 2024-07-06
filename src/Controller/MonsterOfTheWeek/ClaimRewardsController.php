@@ -57,6 +57,8 @@ class ClaimRewardsController extends AbstractController
         if($contribution->getPoints() >= $thresholds[1]) $rewards[] = $monster->getMediumPrize();
         if($contribution->getPoints() >= $thresholds[2]) $rewards[] = $monster->getHardPrize();
 
+        $contribution->setRewardsClaimed();
+
         foreach($rewards as $reward)
             $inventoryService->receiveItem($reward, $user, null, $user->getName() . ' received this for feeding ' . MonsterOfTheWeekHelpers::getSpiritNameWithArticle($monster->getMonster()) . '.', LocationEnum::HOME, true);
 

@@ -35,24 +35,24 @@ class GetFoodController extends AbstractController
         if($clock->now < $monster->getStartDate() || $clock->now > $monster->getEndDate())
             throw new PSPInvalidOperationException("It is not the time for this spirit! (Reload and try again?)");
 
-        $items = $em->getRepository(Inventory::class)->findBy([
+        $inventoryAtHome = $em->getRepository(Inventory::class)->findBy([
             'owner' => $user,
             'location' => LocationEnum::HOME
         ]);
 
         $foods = [];
 
-        foreach($items as $item)
+        foreach($inventoryAtHome as $i)
         {
-            $points = MonsterOfTheWeekHelpers::getInventoryValue($monster->getMonster(), $item);
+            $points = MonsterOfTheWeekHelpers::getItemValue($monster->getMonster(), $i->getItem());
 
             if($points < 1) continue;
 
             $foods[] = [
-                'id' => $item->getId(),
+                'id' => $i->getId(),
                 'item' => [
-                    'name' => $item->getItem()->getName(),
-                    'image' => $item->getItem()->getImage(),
+                    'name' => $i->getItem()->getName(),
+                    'image' => $i->getItem()->getImage(),
                 ],
                 'points' => $points
             ];
