@@ -59,24 +59,13 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
 
         if($e instanceof HttpException)
         {
-            switch($e->getStatusCode())
+            $message = match ($e->getStatusCode())
             {
-                case 429:
-                    $message = "You've made an awful lot of requests recently! Too many to be human! (The game thinks you're a bot; if you're not a bot, please let Ben know! https://docs.google.com/forms/d/e/1FAIpQLSczeBLNsktkSBbPZjyooHw5sEVJOBimJDS6xgEgIgFJvgqM8A/viewform?usp=sf_link )";
-                    break;
-
-                case 403:
-                case 401:
-                    $message = $e->getMessage();
-                    break;
-
-                case 404:
-                    $message = 'Classic 404! The thing you were trying to do or interact with couldn\'t be found! That generally shouldn\'t happen... reload and try again?';
-                    break;
-
-                default:
-                    $message = self::GenericErrorMessage;
-            }
+                429 => "You've made an awful lot of requests recently! Too many to be human! (The game thinks you're a bot; if you're not a bot, please let Ben know! https://docs.google.com/forms/d/e/1FAIpQLSczeBLNsktkSBbPZjyooHw5sEVJOBimJDS6xgEgIgFJvgqM8A/viewform?usp=sf_link )",
+                403, 401 => $e->getMessage(),
+                404 => 'Classic 404! The thing you were trying to do or interact with couldn\'t be found! That generally shouldn\'t happen... reload and try again?',
+                default => self::GenericErrorMessage,
+            };
 
             $event->setResponse($this->responseService->error($e->getStatusCode(), [ $message ]));
         }

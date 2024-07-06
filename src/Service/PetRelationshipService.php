@@ -291,23 +291,25 @@ class PetRelationshipService
     {
         $commitment = $rng->rngNextInt(0, 30);
 
-        switch($relationshipGoal)
+        $commitment += match($relationshipGoal)
         {
-            case RelationshipEnum::MATE: $commitment += 100; break;
-            case RelationshipEnum::FWB: $commitment += 80; break;
-            case RelationshipEnum::BFF: $commitment += 70; break;
-            case RelationshipEnum::FRIEND: $commitment += 50; break;
-            case RelationshipEnum::FRIENDLY_RIVAL: $commitment += 20; break;
-        }
+            RelationshipEnum::MATE => 100,
+            RelationshipEnum::FWB => 80,
+            RelationshipEnum::BFF => 70,
+            RelationshipEnum::FRIEND => 50,
+            RelationshipEnum::FRIENDLY_RIVAL => 20,
+            default => 0,
+        };
 
-        switch($startingRelationship)
+        $commitment += match($startingRelationship)
         {
-            case RelationshipEnum::MATE: $commitment += 30; break;
-            case RelationshipEnum::FWB: $commitment += 20; break;
-            case RelationshipEnum::BFF: $commitment += 18; break;
-            case RelationshipEnum::FRIEND: $commitment += 12; break;
-            case RelationshipEnum::FRIENDLY_RIVAL: $commitment += 5; break;
-        }
+            RelationshipEnum::MATE => 30,
+            RelationshipEnum::FWB => 20,
+            RelationshipEnum::BFF => 18,
+            RelationshipEnum::FRIEND => 12,
+            RelationshipEnum::FRIENDLY_RIVAL => 5,
+            default => 0,
+        };
 
         return $commitment;
     }

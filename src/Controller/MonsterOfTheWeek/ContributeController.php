@@ -33,7 +33,7 @@ class ContributeController extends AbstractController
         ]);
 
         if($clock->now < $monster->getStartDate() || $clock->now > $monster->getEndDate())
-            throw new PSPInvalidOperationException("It is not the time for this monster! (Reload and try again?)");
+            throw new PSPInvalidOperationException("It is not the time for this spirit! (Reload and try again?)");
 
         $itemIds = $request->get('items', []);
 
@@ -61,7 +61,7 @@ class ContributeController extends AbstractController
             $em->remove($item);
 
             if($points < 1)
-                throw new PSPInvalidOperationException('One or more of the selected items are not valid for this monster. (Reload and try again?)');
+                throw new PSPInvalidOperationException('The spirit is not interested in one or more of the selected items! (Reload and try again?)');
 
             $totalPoints += $points;
         }

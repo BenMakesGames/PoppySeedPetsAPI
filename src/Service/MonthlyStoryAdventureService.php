@@ -69,43 +69,18 @@ class MonthlyStoryAdventureService
     {
         $petSkills = array_map(fn(Pet $pet) => $pet->getComputedSkills(), $pets);
 
-        switch($step->getType())
+        $results = match ($step->getType())
         {
-            case StoryAdventureTypeEnum::COLLECT_STONE:
-                $results = $this->doCollectStone($user, $step, $petSkills);
-                break;
-
-            case StoryAdventureTypeEnum::GATHER:
-                $results = $this->doGather($user, $step, $petSkills);
-                break;
-
-            case StoryAdventureTypeEnum::HUNT:
-                $results = $this->doHunt($user, $step, $petSkills);
-                break;
-
-            case StoryAdventureTypeEnum::MINE_GOLD:
-                $results = $this->doMineGold($user, $step, $petSkills);
-                break;
-
-            case StoryAdventureTypeEnum::RANDOM_RECRUIT:
-                $results = $this->doRandomRecruit($user, $step, $petSkills);
-                break;
-
-            case StoryAdventureTypeEnum::STORY:
-                $results = $this->doStory($user, $step, $petSkills);
-                break;
-
-            case StoryAdventureTypeEnum::TREASURE_HUNT:
-                $results = $this->doTreasureHunt($user, $step, $petSkills);
-                break;
-
-            case StoryAdventureTypeEnum::WANDERING_MONSTER:
-                $results = $this->doWanderingMonster($user, $step, $petSkills);
-                break;
-
-            default:
-                throw new \Exception('Oh, dang: Ben forgot to implement this story adventure type! :(');
-        }
+            StoryAdventureTypeEnum::COLLECT_STONE => $this->doCollectStone($user, $step, $petSkills),
+            StoryAdventureTypeEnum::GATHER => $this->doGather($user, $step, $petSkills),
+            StoryAdventureTypeEnum::HUNT => $this->doHunt($user, $step, $petSkills),
+            StoryAdventureTypeEnum::MINE_GOLD => $this->doMineGold($user, $step, $petSkills),
+            StoryAdventureTypeEnum::RANDOM_RECRUIT => $this->doRandomRecruit($user, $step, $petSkills),
+            StoryAdventureTypeEnum::STORY => $this->doStory($user, $step, $petSkills),
+            StoryAdventureTypeEnum::TREASURE_HUNT => $this->doTreasureHunt($user, $step, $petSkills),
+            StoryAdventureTypeEnum::WANDERING_MONSTER => $this->doWanderingMonster($user, $step, $petSkills),
+            default => throw new \Exception('Oh, dang: Ben forgot to implement this story adventure type! :('),
+        };
 
         foreach($results->loot as $item)
             $this->inventoryService->receiveItem($item, $user, $user, $user->getName() . ' gave this to their pets during a game of ★Kindred.', LocationEnum::HOME);
@@ -147,34 +122,28 @@ class MonthlyStoryAdventureService
         if(!$step->getTreasure())
             return [];
 
-        switch($step->getTreasure())
+        return match ($step->getTreasure())
         {
-            case 'GoldChest': return [ 'Gold Chest' ];
-            case 'BigBasicChest': return [ 'Handicrafts Supply Box' ];
-            case 'CupOfLife': return [ 'Cup of Life' ];
-            case 'TwilightChest': return [ 'Twilight Box' ];
-            case 'TreasureMap': return [ 'Piece of Cetgueli\'s Map' ];
-            case 'WrappedSword': return [ 'Wrapped Sword' ];
-            case 'RubyChest': return [ 'Ruby Chest' ];
-            case 'BoxOfOres': return [ 'Box of Ores' ];
-            case 'CrystallizedQuint': return [ 'Quintessence' ];
-            case 'Ship': return [ 'Paper Boat' ];
-            case 'SkeletalRemains': return [ 'Dino Skull' ];
-            case 'BlackFlag': return [ 'Black Flag' ];
-            case 'ShalurianLighthouse': return [ 'Scroll of the Sea' ];
-            case 'Rainbow': return [ 'Rainbow' ];
-
-            case 'SmallMushrooms':
-            case 'LargeMushroom':
-                return [ 'Toadstool' ];
-
-            case 'PurpleGrass': return [ 'Quinacridone Magenta Dye' ];
-            case 'EnormousTibia': return [ 'Stereotypical Bone' ];
-            case 'FishBag': return [ 'Fish Bag' ];
-
-            default:
-                throw new \Exception("Bad Ben! He didn't code support for this adventure's treasure: \"{$step->getTreasure()}\"!");
-        }
+            'GoldChest' => [ 'Gold Chest' ],
+            'BigBasicChest' => [ 'Handicrafts Supply Box' ],
+            'CupOfLife' => [ 'Cup of Life' ],
+            'TwilightChest' => [ 'Twilight Box' ],
+            'TreasureMap' => [ 'Piece of Cetgueli\'s Map' ],
+            'WrappedSword' => [ 'Wrapped Sword' ],
+            'RubyChest' => [ 'Ruby Chest' ],
+            'BoxOfOres' => [ 'Box of Ores' ],
+            'CrystallizedQuint' => [ 'Quintessence' ],
+            'Ship' => [ 'Paper Boat' ],
+            'SkeletalRemains' => [ 'Dino Skull' ],
+            'BlackFlag' => [ 'Black Flag' ],
+            'ShalurianLighthouse' => [ 'Scroll of the Sea' ],
+            'Rainbow' => [ 'Rainbow' ],
+            'SmallMushrooms', 'LargeMushroom' => [ 'Toadstool' ],
+            'PurpleGrass' => [ 'Quinacridone Magenta Dye' ],
+            'EnormousTibia' => [ 'Stereotypical Bone' ],
+            'FishBag' => [ 'Fish Bag' ],
+            default => throw new \Exception("Bad Ben! He didn't code support for this adventure's treasure: \"{$step->getTreasure()}\"!"),
+        };
     }
 
     /**

@@ -140,16 +140,16 @@ class RollSatyrDiceController extends AbstractController
 
     private static function dayOfTheWeekCoin(int $dayOfWeek): string
     {
-        switch($dayOfWeek)
+        return match ($dayOfWeek)
         {
-            case 0: return 'Sunday Coin';
-            case 1: return 'Monday Coin';
-            case 2: return 'Tuesday Coin';
-            case 3: return 'Wednesday Coin';
-            case 4: return 'Thursday Coin';
-            case 5: return 'Friday Coin';
-            case 6: return 'Saturday Coin';
-            default: throw new \InvalidArgumentException("Invalid day of the week");
-        }
+            0 => 'Sunday Coin',
+            1 => 'Monday Coin',
+            2 => 'Tuesday Coin',
+            3 => 'Wednesday Coin',
+            4 => 'Thursday Coin',
+            5 => 'Friday Coin',
+            6 => 'Saturday Coin',
+            default => throw new \InvalidArgumentException("Invalid day of the week"),
+        };
     }
 }

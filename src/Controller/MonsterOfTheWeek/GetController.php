@@ -47,7 +47,7 @@ class GetController extends AbstractController
         $data = $query->getResults();
 
         if(count($data) == 0)
-            throw new PSPNotFoundException("No Monster of the Week is available.");
+            throw new PSPNotFoundException("No spirit was found...");
 
         $milestones = MonsterOfTheWeekHelpers::getBasePrizeValues($data[0]['monster']);
 

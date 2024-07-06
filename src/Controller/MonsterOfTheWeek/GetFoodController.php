@@ -33,7 +33,7 @@ class GetFoodController extends AbstractController
         ]);
 
         if($clock->now < $monster->getStartDate() || $clock->now > $monster->getEndDate())
-            throw new PSPInvalidOperationException("It is not the time for this monster! (Reload and try again?)");
+            throw new PSPInvalidOperationException("It is not the time for this spirit! (Reload and try again?)");
 
         $items = $em->getRepository(Inventory::class)->findBy([
             'owner' => $user,

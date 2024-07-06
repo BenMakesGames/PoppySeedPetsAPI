@@ -130,21 +130,19 @@ class GuildService
             return $this->doGuildIntroductions($pet);
         }
 
-        switch($pet->getGuildMembership()->getGuild()->getName())
+        return match ($pet->getGuildMembership()->getGuild()->getName())
         {
-            case GuildEnum::TIMES_ARROW: return $this->doTimesArrowMission($pet);
-            case GuildEnum::LIGHT_AND_SHADOW: return $this->doLightAndShadowMission($pet);
-            case GuildEnum::TAPESTRIES: return $this->doTapestriesMission($pet);
-            case GuildEnum::INNER_SANCTUM: return $this->doInnerSanctumMission($pet);
-            case GuildEnum::DWARFCRAFT: return $this->doDwarfcraftMission($pet);
-            case GuildEnum::GIZUBIS_GARDEN: return $this->gizubisGardenService->adventure($petWithSkills);
-            case GuildEnum::HIGH_IMPACT: return $this->doHighImpactMission($pet);
-            case GuildEnum::THE_UNIVERSE_FORGETS: return $this->doTheUniverseForgetsMission($pet);
-            case GuildEnum::CORRESPONDENCE: return $this->doCorrespondenceMission($pet);
-
-            default:
-                throw new EnumInvalidValueException('GuildEnum', $pet->getGuildMembership()->getGuild()->getName());
-        }
+            GuildEnum::TIMES_ARROW => $this->doTimesArrowMission($pet),
+            GuildEnum::LIGHT_AND_SHADOW => $this->doLightAndShadowMission($pet),
+            GuildEnum::TAPESTRIES => $this->doTapestriesMission($pet),
+            GuildEnum::INNER_SANCTUM => $this->doInnerSanctumMission($pet),
+            GuildEnum::DWARFCRAFT => $this->doDwarfcraftMission($pet),
+            GuildEnum::GIZUBIS_GARDEN => $this->gizubisGardenService->adventure($petWithSkills),
+            GuildEnum::HIGH_IMPACT => $this->doHighImpactMission($pet),
+            GuildEnum::THE_UNIVERSE_FORGETS => $this->doTheUniverseForgetsMission($pet),
+            GuildEnum::CORRESPONDENCE => $this->doCorrespondenceMission($pet),
+            default => throw new EnumInvalidValueException('GuildEnum', $pet->getGuildMembership()->getGuild()->getName()),
+        };
     }
 
     private function doGuildIntroductions(Pet $pet): PetActivityLog

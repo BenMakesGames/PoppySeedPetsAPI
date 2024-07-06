@@ -190,17 +190,17 @@ class PetRelationship
 
     public function getHappiness(): int
     {
-        switch($this->currentRelationship)
+        return match ($this->currentRelationship)
         {
-            case RelationshipEnum::BROKE_UP: return -80;
-            case RelationshipEnum::DISLIKE: return -35;
-            case RelationshipEnum::FRIENDLY_RIVAL: return 0;
-            case RelationshipEnum::FRIEND: return 35;
-            case RelationshipEnum::BFF: return 65;
-            case RelationshipEnum::FWB: return 70;
-            case RelationshipEnum::MATE: return 100;
-            default: return 0;
-        }
+            RelationshipEnum::BROKE_UP => -80,
+            RelationshipEnum::DISLIKE => -35,
+            RelationshipEnum::FRIENDLY_RIVAL => 0,
+            RelationshipEnum::FRIEND => 35,
+            RelationshipEnum::BFF => 65,
+            RelationshipEnum::FWB => 70,
+            RelationshipEnum::MATE => 100,
+            default => 0,
+        };
     }
 
     public function getLastMet(): \DateTimeImmutable

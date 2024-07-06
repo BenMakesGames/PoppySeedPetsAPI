@@ -9,70 +9,83 @@ use App\Functions\RecipeRepository;
 
 final class MonsterOfTheWeekHelpers
 {
+    public static function getSpiritNameWithArticle(string $monster): string
+    {
+        return match($monster)
+        {
+            MonsterOfTheWeekEnum::ANHUR => 'a Hunter of Anhur',
+            MonsterOfTheWeekEnum::BOSHINOGAMI => 'some Boshinogami',
+            MonsterOfTheWeekEnum::CARDEA => 'Cardea\'s Lockbearer',
+            MonsterOfTheWeekEnum::DIONYSUS => 'Dionysus\'s Hunger',
+            MonsterOfTheWeekEnum::HUEHUECOYOTL => 'Huehuecoyotl\'s Folly',
+            default => throw new \InvalidArgumentException("Invalid monster"),
+        };
+    }
+
     public static function getBasePrizeValues(string $monster): array
     {
-        switch($monster)
+        return match($monster)
         {
             // [ easy = easy, medium = easy * ~2.5, hard = easy * ~3 ]
-            case MonsterOfTheWeekEnum::ANHUR: return [ 25, 60, 200 ];
-            case MonsterOfTheWeekEnum::BOSHINOGAMI: return [ 40, 100, 300 ];
-            case MonsterOfTheWeekEnum::CARDEA: return [ 10, 25, 70 ];
-            case MonsterOfTheWeekEnum::DIONYSUS: return [ 100, 250, 700 ];
-            case MonsterOfTheWeekEnum::HUEHUECOYOTL: return [ 25, 60, 200 ];
-            default: throw new \InvalidArgumentException("Invalid monster");
-        }
+            MonsterOfTheWeekEnum::ANHUR => [ 25, 60, 200 ],
+            MonsterOfTheWeekEnum::BOSHINOGAMI => [ 40, 100, 300 ],
+            MonsterOfTheWeekEnum::CARDEA => [ 10, 25, 70 ],
+            MonsterOfTheWeekEnum::DIONYSUS => [ 100, 250, 700 ],
+            MonsterOfTheWeekEnum::HUEHUECOYOTL => [ 25, 60, 200 ],
+            default => throw new \InvalidArgumentException("Invalid monster")
+        };
     }
 
     public static function getEasyPrizes(string $monster): array
     {
-        switch($monster)
+        return match($monster)
         {
-            case MonsterOfTheWeekEnum::ANHUR: return [ 'Monster-summoning Scroll', 'Potion of Brawling', 'Wolf\'s Bane' ];
-            case MonsterOfTheWeekEnum::BOSHINOGAMI: return [ 'Handicrafts Supply Box', 'Potion of Crafts' ];
-            case MonsterOfTheWeekEnum::CARDEA: return [ 'Magpie Pouch, Magpie\'s Deal', 'Tile: Thieving Magpie' ];
-            case MonsterOfTheWeekEnum::DIONYSUS: return [ 'Essence d\'Assortiment', 'Potion of Nature' ];
-            case MonsterOfTheWeekEnum::HUEHUECOYOTL: return [ 'Potion of Music', 'Dancing Sword', 'LP' ];
-            default: throw new \InvalidArgumentException("Invalid monster");
-        }
+            MonsterOfTheWeekEnum::ANHUR=> [ 'Monster-summoning Scroll', 'Potion of Brawling', 'Wolf\'s Bane' ],
+            MonsterOfTheWeekEnum::BOSHINOGAMI=> [ 'Handicrafts Supply Box', 'Potion of Crafts' ],
+            MonsterOfTheWeekEnum::CARDEA=> [ 'Magpie Pouch, Magpie\'s Deal', 'Tile: Thieving Magpie' ],
+            MonsterOfTheWeekEnum::DIONYSUS=> [ 'Essence d\'Assortiment', 'Potion of Nature' ],
+            MonsterOfTheWeekEnum::HUEHUECOYOTL=> [ 'Potion of Music', 'Dancing Sword', 'LP' ],
+            default => throw new \InvalidArgumentException("Invalid monster")
+        };
     }
 
     public static function getMediumPrizes(string $monster): array
     {
-        switch($monster)
+        return match ($monster)
         {
-            case MonsterOfTheWeekEnum::ANHUR: return [ 'Tile: Giant Cave Toad', 'Monster Box', 'Very Strongbox' ];
-            case MonsterOfTheWeekEnum::BOSHINOGAMI: return [ 'Hat Box' ];
-            case MonsterOfTheWeekEnum::CARDEA: return [ 'Tile: Flying Keys, Only', 'Magic Crystal Ball', 'White Feathers', 'Tile: Triple Chest' ];
-            case MonsterOfTheWeekEnum::DIONYSUS: return [ 'Tile: Statue Garden', 'Whisper Stone' ];
-            case MonsterOfTheWeekEnum::HUEHUECOYOTL: return [ 'Magic Hourglass', 'Maraca', 'Tile: Very Cool Beans' ];
-            default: throw new \InvalidArgumentException("Invalid monster");
-        }
+            MonsterOfTheWeekEnum::ANHUR => [ 'Tile: Giant Cave Toad', 'Monster Box', 'Very Strongbox' ],
+            MonsterOfTheWeekEnum::BOSHINOGAMI => [ 'Hat Box' ],
+            MonsterOfTheWeekEnum::CARDEA => [ 'Tile: Flying Keys, Only', 'Magic Crystal Ball', 'White Feathers', 'Tile: Triple Chest' ],
+            MonsterOfTheWeekEnum::DIONYSUS => [ 'Tile: Statue Garden', 'Whisper Stone' ],
+            MonsterOfTheWeekEnum::HUEHUECOYOTL => [ 'Magic Hourglass', 'Maraca', 'Tile: Very Cool Beans' ],
+            default => throw new \InvalidArgumentException("Invalid monster"),
+        };
     }
 
     public static function getHardPrizes(string $monster): array
     {
-        switch($monster)
+        return match($monster)
         {
-            case MonsterOfTheWeekEnum::ANHUR: return [ 'Skill Scroll: Brawl', 'Skill Scroll: Stealth' ];
-            case MonsterOfTheWeekEnum::BOSHINOGAMI: return [ 'Scroll of Illusions', 'Skill Scroll: Crafts', 'Behatting Scroll' ];
-            case MonsterOfTheWeekEnum::CARDEA: return [ 'Ruby Feather', 'Skill Scroll: Arcana', 'Skill Scroll: Science', 'Forgetting Scroll' ];
-            case MonsterOfTheWeekEnum::DIONYSUS: return [ 'Skill Scroll: Nature' ];
-            case MonsterOfTheWeekEnum::HUEHUECOYOTL: return [ 'Skill Scroll: Music' ];
-            default: throw new \InvalidArgumentException("Invalid monster");
-        }
+            MonsterOfTheWeekEnum::ANHUR => [ 'Skill Scroll: Brawl', 'Skill Scroll: Stealth' ],
+            MonsterOfTheWeekEnum::BOSHINOGAMI => [ 'Scroll of Illusions', 'Skill Scroll: Crafts', 'Behatting Scroll' ],
+            MonsterOfTheWeekEnum::CARDEA => [ 'Ruby Feather', 'Skill Scroll: Arcana', 'Skill Scroll: Science', 'Forgetting Scroll' ],
+            MonsterOfTheWeekEnum::DIONYSUS => [ 'Skill Scroll: Nature' ],
+            MonsterOfTheWeekEnum::HUEHUECOYOTL => [ 'Skill Scroll: Music' ],
+            default => throw new \InvalidArgumentException("Invalid monster"),
+        };
     }
 
     public static function getInventoryValue(string $monster, Inventory $item): int
     {
-        switch($monster)
+        return match($monster)
         {
-            case MonsterOfTheWeekEnum::ANHUR: return self::getInventoryValueForAnhur($item);
-            case MonsterOfTheWeekEnum::BOSHINOGAMI: return self::getInventoryValueForBoshinogami($item);
-            case MonsterOfTheWeekEnum::CARDEA: return self::getInventoryValueForCardea($item);
-            case MonsterOfTheWeekEnum::DIONYSUS: return self::getInventoryValueForDionysus($item);
-            case MonsterOfTheWeekEnum::HUEHUECOYOTL: return self::getInventoryValueForHuehuecoyotl($item);
-            default: return 0;
-        }
+            MonsterOfTheWeekEnum::ANHUR => self::getInventoryValueForAnhur($item),
+            MonsterOfTheWeekEnum::BOSHINOGAMI => self::getInventoryValueForBoshinogami($item),
+            MonsterOfTheWeekEnum::CARDEA => self::getInventoryValueForCardea($item),
+            MonsterOfTheWeekEnum::DIONYSUS => self::getInventoryValueForDionysus($item),
+            MonsterOfTheWeekEnum::HUEHUECOYOTL => self::getInventoryValueForHuehuecoyotl($item),
+            default => 0,
+        };
     }
 
     public static function getInventoryValueForAnhur(Inventory $item): int

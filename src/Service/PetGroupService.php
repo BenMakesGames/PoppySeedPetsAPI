@@ -474,18 +474,13 @@ class PetGroupService
 
     public function generateName(int $type): string
     {
-        switch($type)
+        return match ($type)
         {
-            case PetGroupTypeEnum::BAND:
-                return $this->bandService->generateGroupName();
-            case PetGroupTypeEnum::ASTRONOMY:
-                return $this->astronomyClubService->generateGroupName();
-            case PetGroupTypeEnum::GAMING:
-                return $this->gamingGroupService->generateGroupName();
-            case PetGroupTypeEnum::SPORTSBALL:
-                return $this->sportsBallService->generateGroupName();
-            default:
-                throw new \Exception('Ben forgot to program group names for groups of type "' . $type . '"! (Bad Ben!)');
-        }
+            PetGroupTypeEnum::BAND => $this->bandService->generateGroupName(),
+            PetGroupTypeEnum::ASTRONOMY => $this->astronomyClubService->generateGroupName(),
+            PetGroupTypeEnum::GAMING => $this->gamingGroupService->generateGroupName(),
+            PetGroupTypeEnum::SPORTSBALL => $this->sportsBallService->generateGroupName(),
+            default => throw new \Exception('Ben forgot to program group names for groups of type "' . $type . '"! (Bad Ben!)'),
+        };
     }
 }

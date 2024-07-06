@@ -506,23 +506,22 @@ class TreasureMapService
 
     public static function getFluffmongerFlavorFoods($flavor)
     {
-        switch($flavor)
+        return match($flavor)
         {
-            case FlavorEnum::EARTHY: return [ 'Fried Tomato', 'Matzah Bread', 'Smashed Potatoes' ];
-            case FlavorEnum::FRUITY: return [ 'Fried Tomato', 'Naner Yogurt', 'Red' ];
-            case FlavorEnum::TANNIC: return [ 'Chocolate Ice Cream', 'Warm Red Muffin', 'Mixed Nuts' ];
-            case FlavorEnum::SPICY: return [ 'Candied Ginger', 'Onion Rings', 'Shakshouka' ];
-            case FlavorEnum::CREAMY: return [ 'Chocolate Ice Cream', 'Coconut Half', 'Eggnog' ];
-            case FlavorEnum::MEATY: return [ 'Fish', 'Beans', 'Hakuna Frittata' ];
-            case FlavorEnum::PLANTY: return [ 'Shakshouka', 'Hakuna Frittata', 'Coconut Half' ];
-            case FlavorEnum::FISHY: return [ 'Battered, Fried Fish', 'Fermented Fish Onigiri' ];
-            case FlavorEnum::FLORAL: return [ 'Apricot', 'Berry Muffin', 'Orange Juice' ];
-            case FlavorEnum::FATTY: return [ 'Onion Rings', 'Eggnog', 'Hakuna Frittata' ];
-            case FlavorEnum::ONIONY: return [ 'Onion Rings', 'Hakuna Frittata', 'Instant Ramen (Dry)' ];
-            case FlavorEnum::CHEMICALLY: return [ 'Fermented Fish Onigiri', 'Century Egg', 'Tomato "Sushi"' ];
-        }
-
-        throw new \Exception('Ben forgot to code Fluffmonger foods for the flavor "' . $flavor . '"!');
+            FlavorEnum::EARTHY => [ 'Fried Tomato', 'Matzah Bread', 'Smashed Potatoes' ],
+            FlavorEnum::FRUITY => [ 'Fried Tomato', 'Naner Yogurt', 'Red' ],
+            FlavorEnum::TANNIC => [ 'Chocolate Ice Cream', 'Warm Red Muffin', 'Mixed Nuts' ],
+            FlavorEnum::SPICY => [ 'Candied Ginger', 'Onion Rings', 'Shakshouka' ],
+            FlavorEnum::CREAMY => [ 'Chocolate Ice Cream', 'Coconut Half', 'Eggnog' ],
+            FlavorEnum::MEATY => [ 'Fish', 'Beans', 'Hakuna Frittata' ],
+            FlavorEnum::PLANTY => [ 'Shakshouka', 'Hakuna Frittata', 'Coconut Half' ],
+            FlavorEnum::FISHY => [ 'Battered, Fried Fish', 'Fermented Fish Onigiri' ],
+            FlavorEnum::FLORAL => [ 'Apricot', 'Berry Muffin', 'Orange Juice' ],
+            FlavorEnum::FATTY => [ 'Onion Rings', 'Eggnog', 'Hakuna Frittata' ],
+            FlavorEnum::ONIONY => [ 'Onion Rings', 'Hakuna Frittata', 'Instant Ramen (Dry)' ],
+            FlavorEnum::CHEMICALLY => [ 'Fermented Fish Onigiri', 'Century Egg', 'Tomato "Sushi"' ],
+            default => throw new \Exception('Ben forgot to code Fluffmonger foods for the flavor "' . $flavor . '"!'),
+        };
     }
 
     public function doToastSkeweredMarshmallow(Pet $pet)

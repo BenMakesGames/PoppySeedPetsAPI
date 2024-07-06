@@ -114,17 +114,12 @@ final class StatusEffectHelpers
 
     public static function getStatusEffectMaxDuration(string $status)
     {
-        switch($status)
+        return match ($status)
         {
-            case StatusEffectEnum::CAFFEINATED:
-                return 8 * 60;
-            case StatusEffectEnum::EGGPLANT_CURSED:
-            case StatusEffectEnum::GLITTER_BOMBED:
-                return 48 * 60;
-            case StatusEffectEnum::HEX_HEXED:
-                return 6 * 60;
-            default:
-                return 24 * 60;
-        }
+            StatusEffectEnum::CAFFEINATED => 8 * 60,
+            StatusEffectEnum::EGGPLANT_CURSED, StatusEffectEnum::GLITTER_BOMBED => 48 * 60,
+            StatusEffectEnum::HEX_HEXED => 6 * 60,
+            default => 24 * 60,
+        };
     }
 }

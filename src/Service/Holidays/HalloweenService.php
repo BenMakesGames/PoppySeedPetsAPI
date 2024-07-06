@@ -97,18 +97,17 @@ class HalloweenService
 
         $treated->setValue($treated->getValue() + 1);
 
-        $item = null;
-
-        switch($treated->getValue() % 61)
+        $item = match($treated->getValue() % 61)
         {
-            case 1: $item = 'Crooked Stick'; break;
-            case 3: $item = 'Super-wrinkled Cloth'; break;
-            case 8: $item = 'Smallish Pumpkin'; break;
-            case 15: $item = 'Glowing Six-sided Die'; break;
-            case 25: $item = 'Behatting Scroll'; break;
-            case 40: $item = 'Blood Wine'; break;
-            case 60: $item = 'Witch\'s Hat'; break;
-        }
+            1 => 'Crooked Stick',
+            3 => 'Super-wrinkled Cloth',
+            8 => 'Smallish Pumpkin',
+            15 => 'Glowing Six-sided Die',
+            25 => 'Behatting Scroll',
+            40 => 'Blood Wine',
+            60 => 'Witch\'s Hat',
+            default => null,
+        };
 
         if($item)
         {

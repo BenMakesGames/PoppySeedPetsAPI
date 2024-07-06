@@ -73,20 +73,13 @@ class RunParkEventsCommand extends Command
 
         $output->writeln('Looking for pets for a ' . $eventType . '.');
 
-        switch($eventType)
+        $parkEvent = match ($eventType)
         {
-            case ParkEventTypeEnum::KIN_BALL:
-                $parkEvent = $this->playKinBall();
-                break;
-            case ParkEventTypeEnum::TRI_D_CHESS:
-                $parkEvent = $this->playTriDChess();
-                break;
-            case ParkEventTypeEnum::JOUSTING:
-                $parkEvent = $this->playJousting();
-                break;
-            default:
-                throw new \Exception('oops: support for events of type "' . $eventType . '" has not been coded!');
-        }
+            ParkEventTypeEnum::KIN_BALL => $this->playKinBall(),
+            ParkEventTypeEnum::TRI_D_CHESS => $this->playTriDChess(),
+            ParkEventTypeEnum::JOUSTING => $this->playJousting(),
+            default => throw new \Exception('oops: support for events of type "' . $eventType . '" has not been coded!'),
+        };
 
         if($parkEvent)
         {

@@ -177,26 +177,26 @@ class PetGroup
 
     public function getMinimumSize(): int
     {
-        switch($this->type)
+        return match ($this->type)
         {
-            case PetGroupTypeEnum::BAND: return 2;
-            case PetGroupTypeEnum::ASTRONOMY: return 2;
-            case PetGroupTypeEnum::GAMING: return 3;
-            case PetGroupTypeEnum::SPORTSBALL: return 4;
-            default: throw new \Exception('Unhandled group type in group::getMinimumSize');
-        }
+            PetGroupTypeEnum::BAND => 2,
+            PetGroupTypeEnum::ASTRONOMY => 2,
+            PetGroupTypeEnum::GAMING => 3,
+            PetGroupTypeEnum::SPORTSBALL => 4,
+            default => throw new \Exception('Unhandled group type in group::getMinimumSize'),
+        };
     }
 
     public function getMaximumSize(): int
     {
-        switch($this->type)
+        return match ($this->type)
         {
-            case PetGroupTypeEnum::BAND: return 5;
-            case PetGroupTypeEnum::ASTRONOMY: return 6;
-            case PetGroupTypeEnum::GAMING: return 5;
-            case PetGroupTypeEnum::SPORTSBALL: return 8;
-            default: throw new \Exception('Unhandled group type in group::getMaximumSize');
-        }
+            PetGroupTypeEnum::BAND => 5,
+            PetGroupTypeEnum::ASTRONOMY => 6,
+            PetGroupTypeEnum::GAMING => 5,
+            PetGroupTypeEnum::SPORTSBALL => 8,
+            default => throw new \Exception('Unhandled group type in group::getMaximumSize'),
+        };
     }
 
     #[Groups(["petPublicProfile"])]

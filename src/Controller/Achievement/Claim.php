@@ -86,13 +86,13 @@ final class Claim extends AbstractController
 
     private static function describeYield(TraderOfferCostOrYield $yield)
     {
-        switch($yield->type)
+        return match ($yield->type)
         {
-            case CostOrYieldTypeEnum::ITEM: return $yield->quantity . '× ' . $yield->item->getName();
-            case CostOrYieldTypeEnum::MONEY: return $yield->quantity . '~~m~~';
-            case CostOrYieldTypeEnum::RECYCLING_POINTS: return $yield->quantity . ' Recycling Points';
-            default: throw new \Exception('Unexpected reward type "' . $yield->type . '"!? Weird! Ben should fix this!');
-        }
+            CostOrYieldTypeEnum::ITEM => $yield->quantity . '× ' . $yield->item->getName(),
+            CostOrYieldTypeEnum::MONEY => $yield->quantity . '~~m~~',
+            CostOrYieldTypeEnum::RECYCLING_POINTS => $yield->quantity . ' Recycling Points',
+            default => throw new \Exception('Unexpected reward type "' . $yield->type . '"!? Weird! Ben should fix this!'),
+        };
     }
 
     private static function getAchievementReward(

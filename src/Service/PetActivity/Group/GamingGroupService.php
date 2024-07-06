@@ -81,18 +81,12 @@ class GamingGroupService
 
         foreach($skills as $skill)
         {
-            switch($skill)
+            $total += match ($skill)
             {
-                case 'luck':
-                    $total += $pet->hasMerit(MeritEnum::LUCKY) ? 8 : 0;
-                    break;
-                case 'extroversion':
-                    $total += ($pet->getExtroverted() + 1) * 5 + $pet->getBonusMaximumFriends() * 2;
-                    break;
-                default:
-                    $total += $pet->getSkills()->getStat($skill);
-                    break;
-            }
+                'luck' => $pet->hasMerit(MeritEnum::LUCKY) ? 8 : 0,
+                'extroversion' => ($pet->getExtroverted() + 1) * 5 + $pet->getBonusMaximumFriends() * 2,
+                default => $pet->getSkills()->getStat($skill),
+            };
         }
 
         return $this->squirrel3->rngNextInt(1, 20 + $total);

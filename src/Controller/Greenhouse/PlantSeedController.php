@@ -58,13 +58,13 @@ class PlantSeedController extends AbstractController
             $plant->getPlant()->getType() === $seed->getItem()->getPlant()->getType()
         );
 
-        switch($seed->getItem()->getPlant()->getType())
+        $numberOfPlots = match ($seed->getItem()->getPlant()->getType())
         {
-            case PlantTypeEnum::EARTH: $numberOfPlots = $greenhouse->getMaxPlants(); break;
-            case PlantTypeEnum::WATER: $numberOfPlots = $greenhouse->getMaxWaterPlants(); break;
-            case PlantTypeEnum::DARK: $numberOfPlots = $greenhouse->getMaxDarkPlants(); break;
-            default: throw new \Exception('Selected item doesn\'t have a valid plant type! Someone let Ben know he messed up!');
-        }
+            PlantTypeEnum::EARTH => $greenhouse->getMaxPlants(),
+            PlantTypeEnum::WATER => $greenhouse->getMaxWaterPlants(),
+            PlantTypeEnum::DARK => $greenhouse->getMaxDarkPlants(),
+            default => throw new \Exception('Selected item doesn\'t have a valid plant type! Someone let Ben know he messed up!'),
+        };
 
         if(count($plantsOfSameType) >= $numberOfPlots)
             throw new PSPInvalidOperationException('You can\'t plant anymore plants of this type.');

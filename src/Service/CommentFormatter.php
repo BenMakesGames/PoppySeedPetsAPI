@@ -49,12 +49,12 @@ class CommentFormatter
     {
         $parts = preg_split('/[:\\.]/', $match);
 
-        switch($parts[0])
+        return match ($parts[0])
         {
-            case 'pet': return $this->doReplacePetPart($text, '%' . $match . '%', (int)$parts[1], $parts[2]);
-            case 'user': return $this->doReplaceUserPart($text, '%' . $match . '%', (int)$parts[1], $parts[2]);
-            default: return $text;
-        }
+            'pet' => $this->doReplacePetPart($text, '%' . $match . '%', (int)$parts[1], $parts[2]),
+            'user' => $this->doReplaceUserPart($text, '%' . $match . '%', (int)$parts[1], $parts[2]),
+            default => $text,
+        };
     }
 
     private function doReplacePetPart(string $text, string $match, int $petId, string $property)
