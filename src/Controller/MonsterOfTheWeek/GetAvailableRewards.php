@@ -62,7 +62,6 @@ class GetAvailableRewards extends AbstractController
                 'level' => $monster['level'],
                 'communityTotal' => $monster['community_total'],
                 'personalContribution' => $monster['points'],
-                'personalGoal' => $milestones[0],
                 'startDate' => $monster['start_date'],
                 'endDate' => $monster['end_date'],
                 'rewardsClaimed' => (bool)$monster['rewards_claimed'],

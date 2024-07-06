@@ -58,7 +58,6 @@ class GetController extends AbstractController
             'type' => $data[0]['monster'],
             'communityTotal' => $data[0]['community_total'],
             'personalContribution' => $data[0]['points'],
-            'personalGoal' => $milestones[0],
             'milestones' => [
                 [
                     'value' => $milestones[0] * $data[0]['level'],
