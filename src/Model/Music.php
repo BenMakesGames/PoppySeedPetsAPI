@@ -385,5 +385,11 @@ class Music
 
         // We're Back, by Heartbreak
         'So. You\'ve hearrrd it allll befoorre. Well we\'re baaack. From the disco tooo theee raaadiooo... whoa-oh, yeah!',
+
+        // The Spark, by Kabin Crew
+        'Think you can stop what we do - I doubt it! We got the energy, we\'ll tell ya all about it!',
+
+        // Disco Snails, by Vulf
+        'There\'s traffic on the freeway, for the snails are on the loose. Watch your step, they\'re only 1 inch tall atop their platform shoes.',
     ];
 }

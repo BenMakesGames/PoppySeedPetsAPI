@@ -22,7 +22,7 @@ class MonsterOfTheWeek
     private ?\DateTimeImmutable $endDate = null;
 
     #[ORM\Column]
-    private ?int $communityTotal = null;
+    private int $communityTotal = 0;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -35,6 +35,9 @@ class MonsterOfTheWeek
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Item $hardPrize = null;
+
+    #[ORM\Column]
+    private int $level = 1;
 
     public function getId(): ?int
     {
@@ -77,7 +80,7 @@ class MonsterOfTheWeek
         return $this;
     }
 
-    public function getCommunityTotal(): ?int
+    public function getCommunityTotal(): int
     {
         return $this->communityTotal;
     }
@@ -121,6 +124,18 @@ class MonsterOfTheWeek
     public function setHardPrize(Item $hardPrize): static
     {
         $this->hardPrize = $hardPrize;
+
+        return $this;
+    }
+
+    public function getLevel(): ?int
+    {
+        return $this->level;
+    }
+
+    public function setLevel(int $level): static
+    {
+        $this->level = $level;
 
         return $this;
     }

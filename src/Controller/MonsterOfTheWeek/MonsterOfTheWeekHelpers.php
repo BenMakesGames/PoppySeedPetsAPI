@@ -27,11 +27,11 @@ final class MonsterOfTheWeekHelpers
     {
         return match($monster)
         {
-            MonsterOfTheWeekEnum::ANHUR=> [ 'Monster-summoning Scroll', 'Potion of Brawling', 'Wolf\'s Bane' ],
-            MonsterOfTheWeekEnum::BOSHINOGAMI=> [ 'Handicrafts Supply Box', 'Potion of Crafts' ],
-            MonsterOfTheWeekEnum::CARDEA=> [ 'Magpie Pouch, Magpie\'s Deal', 'Tile: Thieving Magpie' ],
-            MonsterOfTheWeekEnum::DIONYSUS=> [ 'Essence d\'Assortiment', 'Potion of Nature' ],
-            MonsterOfTheWeekEnum::HUEHUECOYOTL=> [ 'Potion of Music', 'Dancing Sword', 'LP' ],
+            MonsterOfTheWeekEnum::ANHUR => [ 'Monster-summoning Scroll', 'Potion of Brawling', 'Wolf\'s Bane' ],
+            MonsterOfTheWeekEnum::BOSHINOGAMI => [ 'Handicrafts Supply Box', 'Potion of Crafts' ],
+            MonsterOfTheWeekEnum::CARDEA => [ 'Magpie Pouch, Magpie\'s Deal', 'Tile: Thieving Magpie' ],
+            MonsterOfTheWeekEnum::DIONYSUS => [ 'Essence d\'Assortiment', 'Potion of Nature' ],
+            MonsterOfTheWeekEnum::HUEHUECOYOTL => [ 'Potion of Music', 'Dancing Sword', 'LP' ],
             default => throw new \InvalidArgumentException("Invalid monster")
         };
     }

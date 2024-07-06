@@ -59,11 +59,24 @@ class CreateMonstersOfTheWeekCommand extends Command
 
         $monsterType = $this->selectMonsterType($previousTwoMonsterTypes);
 
+        $previousMonsterOfType = $this->getPreviousMonsterOfType($monsterType);
+
+        if(!$previousMonsterOfType)
+            $level = 300;
+        else
+        {
+            if($previousMonsterOfType->getCommunityTotal() >= MonsterOfTheWeekHelpers::getHardPrizes($monsterType)[2] * $previousMonsterOfType->getLevel())
+                $level = $previousMonsterOfType->getLevel() + 2;
+            else
+                $level = $previousMonsterOfType->getLevel() - 1;
+        }
+
         $monster = (new MonsterOfTheWeek())
             ->setMonster($monsterType)
             ->setStartDate($now->setTime(0, 0, 0))
             ->setEndDate($now->modify('+7 days')->setTime(23, 59, 59))
             ->setCommunityTotal(0)
+            ->setLevel($level)
             ->setEasyPrize($this->selectEasyPrize($monsterType))
             ->setMediumPrize($this->selectMediumPrize($monsterType))
             ->setHardPrize($this->selectHardPrize($monsterType));
@@ -72,6 +85,18 @@ class CreateMonstersOfTheWeekCommand extends Command
         $this->em->flush();
 
         return self::SUCCESS;
+    }
+
+    private function getPreviousMonsterOfType(string $monsterType): ?MonsterOfTheWeek
+    {
+        return $this->em->getRepository(MonsterOfTheWeek::class)
+            ->createQueryBuilder('m')
+            ->where('m.monster = :monsterType')
+            ->setParameter('monsterType', $monsterType)
+            ->orderBy('m.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     private function selectMonsterType(array $previousTwoMonsterTypes): string
@@ -99,7 +124,7 @@ class CreateMonstersOfTheWeekCommand extends Command
 
     private function selectPrizeItem(array $possiblePrizes): Item
     {
-        $this->em->getRepository(ItemRepository::class)->findOneBy([
+        return $this->em->getRepository(ItemRepository::class)->findOneBy([
             'name' => $possiblePrizes[array_rand($possiblePrizes)]
         ]);
     }
