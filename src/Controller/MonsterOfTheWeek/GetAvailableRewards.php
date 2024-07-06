@@ -26,6 +26,8 @@ class GetAvailableRewards extends AbstractController
                 SELECT
                     monster.id,
                     monster.monster,
+                    monster.level,
+                    monster.community_total,
                     monster.start_date,
                     monster.end_date,
                     easy_prize.name AS easy_prize_name,
@@ -57,21 +59,24 @@ class GetAvailableRewards extends AbstractController
             $monsters[] = [
                 'id' => $monster['id'],
                 'type' => $monster['monster'],
+                'level' => $monster['level'],
+                'communityTotal' => $monster['community_total'],
+                'personalContribution' => $monster['points'],
+                'personalGoal' => $milestones[0],
                 'startDate' => $monster['start_date'],
                 'endDate' => $monster['end_date'],
-                'progress' => $monster['points'],
                 'rewardsClaimed' => (bool)$monster['rewards_claimed'],
                 'milestones' => [
                     [
-                        'value' => $milestones[0],
+                        'value' => $milestones[0] * $monster['level'],
                         'prize' => $monster['easy_prize_name']
                     ],
                     [
-                        'value' => $milestones[1],
+                        'value' => $milestones[1] * $monster['level'],
                         'prize' => $monster['medium_prize_name']
                     ],
                     [
-                        'value' => $milestones[2],
+                        'value' => $milestones[2] * $monster['level'],
                         'prize' => $monster['hard_prize_name']
                     ]
                 ]

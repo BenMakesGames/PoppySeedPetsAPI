@@ -2,14 +2,26 @@
 
 namespace App\Controller\MonsterOfTheWeek;
 
-use App\Entity\Inventory;
 use App\Entity\Item;
 use App\Enum\MonsterOfTheWeekEnum;
 use App\Enum\PetSkillEnum;
-use App\Functions\RecipeRepository;
 
 final class MonsterOfTheWeekHelpers
 {
+    public static function getBasePrizeValues(string $monster): array
+    {
+        return match($monster)
+        {
+            // [ easy = easy, medium = easy * ~3, hard = medium * ~2.5 ]
+            MonsterOfTheWeekEnum::ANHUR => [ 25, 75, 200 ],
+            MonsterOfTheWeekEnum::BOSHINOGAMI => [ 40, 120, 300 ],
+            MonsterOfTheWeekEnum::CARDEA => [ 10, 30, 75 ],
+            MonsterOfTheWeekEnum::DIONYSUS => [ 100, 300, 750 ],
+            MonsterOfTheWeekEnum::HUEHUECOYOTL => [ 25, 75, 200 ],
+            default => throw new \InvalidArgumentException("Invalid monster")
+        };
+    }
+
     public static function getSpiritNameWithArticle(string $monster): string
     {
         return match($monster)
@@ -107,7 +119,10 @@ final class MonsterOfTheWeekHelpers
         if(!$item->getHat() || $item->getName() === 'Anniversary Poppy Seed* Muffin')
             return 0;
 
-        $points = $item->getRecycleValue() + $item->getMuseumPoints() * 2 - 1;
+        $points = $item->getRecycleValue() + ceil($item->getMuseumPoints() * 1.5) - 1;
+
+        if(str_ends_with($item->getName(), 'Baabble'))
+            $points += 10;
 
         return $points;
     }

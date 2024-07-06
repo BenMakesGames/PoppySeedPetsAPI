@@ -26,6 +26,8 @@ class GetController extends AbstractController
                 SELECT
                     monster.id,
                     monster.monster,
+                    monster.level,
+                    monster.community_total,
                     easy_prize.name AS easy_prize_name,
                     medium_prize.name AS medium_prize_name,
                     hard_prize.name AS hard_prize_name,
@@ -54,18 +56,20 @@ class GetController extends AbstractController
         return $responseService->success([
             'id' => $data[0]['id'],
             'type' => $data[0]['monster'],
-            'progress' => $data[0]['points'],
+            'communityTotal' => $data[0]['community_total'],
+            'personalContribution' => $data[0]['points'],
+            'personalGoal' => $milestones[0],
             'milestones' => [
                 [
-                    'value' => $milestones[0],
+                    'value' => $milestones[0] * $data[0]['level'],
                     'prize' => $data[0]['easy_prize_name']
                 ],
                 [
-                    'value' => $milestones[1],
+                    'value' => $milestones[1] * $data[0]['level'],
                     'prize' => $data[0]['medium_prize_name']
                 ],
                 [
-                    'value' => $milestones[2],
+                    'value' => $milestones[2] * $data[0]['level'],
                     'prize' => $data[0]['hard_prize_name']
                 ]
             ]

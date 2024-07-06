@@ -45,7 +45,7 @@ class ClaimRewardsController extends AbstractController
         $thresholds = MonsterOfTheWeekHelpers::getBasePrizeValues($monster->getMonster());
 
         if($contribution === null || $contribution->getPoints() < $thresholds[0])
-            throw new PSPInvalidOperationException("You did not feed this spirit enough :(");
+            throw new PSPInvalidOperationException("You didn't feed this spirit enough to get its attention :(");
 
         if($contribution->getRewardsClaimed())
             throw new PSPInvalidOperationException("You have already claimed the rewards for feeding this spirit!");
@@ -54,8 +54,8 @@ class ClaimRewardsController extends AbstractController
             $rewards[] = $monster->getEasyPrize()
         ];
 
-        if($contribution->getPoints() >= $thresholds[1]) $rewards[] = $monster->getMediumPrize();
-        if($contribution->getPoints() >= $thresholds[2]) $rewards[] = $monster->getHardPrize();
+        if($monster->getCommunityTotal() >= $thresholds[1] * $monster->getLevel()) $rewards[] = $monster->getMediumPrize();
+        if($monster->getCommunityTotal() >= $thresholds[2] * $monster->getLevel()) $rewards[] = $monster->getHardPrize();
 
         $contribution->setRewardsClaimed();
 
