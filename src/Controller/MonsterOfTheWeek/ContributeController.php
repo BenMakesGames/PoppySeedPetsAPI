@@ -85,8 +85,8 @@ class ContributeController extends AbstractController
         $em->flush();
 
         $em
-            ->createQuery("UPDATE App\\Entity\\MonsterOfTheWeek SET communityTotal = communityTotal + ? WHERE id = ?")
-            ->execute([ $totalPoints, $monster->getId() ]);
+            ->createQuery("UPDATE App\\Entity\\MonsterOfTheWeek AS m SET m.communityTotal = m.communityTotal + :points WHERE m.id = :id")
+            ->execute([ 'points' => $totalPoints, 'id' => $monster->getId() ]);
 
         return $responseService->success([
             'personalContribution' => $contribution->getPoints(),
