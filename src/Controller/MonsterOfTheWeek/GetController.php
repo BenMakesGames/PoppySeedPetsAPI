@@ -29,8 +29,11 @@ class GetController extends AbstractController
                     monster.level,
                     monster.community_total,
                     easy_prize.name AS easy_prize_name,
+                    easy_prize.image AS easy_prize_image,
                     medium_prize.name AS medium_prize_name,
+                    medium_prize.image AS medium_prize_image,
                     hard_prize.name AS hard_prize_name,
+                    hard_prize.image AS hard_prize_image,
                     contribution.points
                 FROM monster_of_the_week AS monster
                 LEFT JOIN monster_of_the_week_contribution AS contribution ON contribution.monster_of_the_week_id=monster.id AND contribution.user_id=?
@@ -61,15 +64,24 @@ class GetController extends AbstractController
             'milestones' => [
                 [
                     'value' => $milestones[0] * $data[0]['level'],
-                    'prize' => $data[0]['easy_prize_name']
+                    'item' => [
+                        'name' => $data[0]['easy_prize_name'],
+                        'image' => $data[0]['easy_prize_image'],
+                    ],
                 ],
                 [
                     'value' => $milestones[1] * $data[0]['level'],
-                    'prize' => $data[0]['medium_prize_name']
+                    'item' => [
+                        'name' => $data[0]['medium_prize_name'],
+                        'image' => $data[0]['medium_prize_image'],
+                    ],
                 ],
                 [
                     'value' => $milestones[2] * $data[0]['level'],
-                    'prize' => $data[0]['hard_prize_name']
+                    'item' => [
+                        'name' => $data[0]['hard_prize_name'],
+                        'image' => $data[0]['hard_prize_image'],
+                    ],
                 ]
             ]
         ]);

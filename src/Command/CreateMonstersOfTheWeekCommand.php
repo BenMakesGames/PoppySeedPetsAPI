@@ -84,6 +84,8 @@ class CreateMonstersOfTheWeekCommand extends Command
         $this->em->persist($monster);
         $this->em->flush();
 
+        $output->writeln("Created level-$level $monsterType");
+
         return self::SUCCESS;
     }
 
