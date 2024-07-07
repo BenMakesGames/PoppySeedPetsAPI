@@ -31,8 +31,11 @@ class GetAvailableRewards extends AbstractController
                     monster.start_date,
                     monster.end_date,
                     easy_prize.name AS easy_prize_name,
+                    easy_prize.image AS easy_prize_image,
                     medium_prize.name AS medium_prize_name,
+                    medium_prize.image AS medium_prize_image,
                     hard_prize.name AS hard_prize_name,
+                    hard_prize.image AS hard_prize_image,
                     contribution.points,
                     contribution.rewards_claimed
                 FROM monster_of_the_week AS monster
@@ -40,6 +43,7 @@ class GetAvailableRewards extends AbstractController
                 LEFT JOIN item AS easy_prize ON easy_prize.id=monster.easy_prize_id
                 LEFT JOIN item AS medium_prize ON medium_prize.id=monster.medium_prize_id
                 LEFT JOIN item AS hard_prize ON hard_prize.id=monster.hard_prize_id
+                WHERE contribution.rewards_claimed = 0
                 ORDER BY monster.id DESC
                 LIMIT 10
             ",
@@ -68,15 +72,24 @@ class GetAvailableRewards extends AbstractController
                 'milestones' => [
                     [
                         'value' => $milestones[0] * $monster['level'],
-                        'prize' => $monster['easy_prize_name']
+                        'item' => [
+                            'name' => $monster['easy_prize_name'],
+                            'image' => $monster['easy_prize_image'],
+                        ],
                     ],
                     [
                         'value' => $milestones[1] * $monster['level'],
-                        'prize' => $monster['medium_prize_name']
+                        'item' => [
+                            'name' => $monster['medium_prize_name'],
+                            'image' => $monster['medium_prize_image'],
+                        ],
                     ],
                     [
                         'value' => $milestones[2] * $monster['level'],
-                        'prize' => $monster['hard_prize_name']
+                        'item' => [
+                            'name' => $monster['hard_prize_name'],
+                            'image' => $monster['hard_prize_image'],
+                        ],
                     ]
                 ]
             ];

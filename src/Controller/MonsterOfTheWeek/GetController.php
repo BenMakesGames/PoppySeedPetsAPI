@@ -40,12 +40,12 @@ class GetController extends AbstractController
                 LEFT JOIN item AS easy_prize ON easy_prize.id=monster.easy_prize_id
                 LEFT JOIN item AS medium_prize ON medium_prize.id=monster.medium_prize_id
                 LEFT JOIN item AS hard_prize ON hard_prize.id=monster.hard_prize_id
-                WHERE ? BETWEEN monster.start_date AND monster.end_date
+                WHERE ? >= monster.start_date AND ? <= monster.end_date
                 LIMIT 1
             ",
             [
                 $user->getId(),
-                date("Y-m-d")
+                date("Y-m-d"), date("Y-m-d")
             ]
         );
 

@@ -34,7 +34,7 @@ class ClaimRewardsController extends AbstractController
             'id' => $monsterId
         ]);
 
-        if($clock->now <= $monster->getEndDate())
+        if($clock->now->setTime(0, 0, 0) <= $monster->getEndDate())
             throw new PSPInvalidOperationException("This spirit hasn't left, yet.");
 
         $contribution = $em->getRepository(MonsterOfTheWeekContribution::class)->findOneBy([
@@ -51,9 +51,10 @@ class ClaimRewardsController extends AbstractController
             throw new PSPInvalidOperationException("You have already claimed the rewards for feeding this spirit!");
 
         $rewards = [
-            $rewards[] = $monster->getEasyPrize()
+            MonsterOfTheWeekHelpers::getConsolationPrize($monster->getMonster())
         ];
 
+        if($monster->getCommunityTotal() >= $thresholds[0] * $monster->getLevel()) $rewards[] = $monster->getEasyPrize();
         if($monster->getCommunityTotal() >= $thresholds[1] * $monster->getLevel()) $rewards[] = $monster->getMediumPrize();
         if($monster->getCommunityTotal() >= $thresholds[2] * $monster->getLevel()) $rewards[] = $monster->getHardPrize();
 

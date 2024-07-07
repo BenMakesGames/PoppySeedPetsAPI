@@ -8,6 +8,19 @@ use App\Enum\PetSkillEnum;
 
 final class MonsterOfTheWeekHelpers
 {
+    public static function getConsolationPrize(string $monster): string
+    {
+        return match($monster)
+        {
+            MonsterOfTheWeekEnum::ANHUR => 'Crooked Stick',
+            MonsterOfTheWeekEnum::BOSHINOGAMI => 'Fluff',
+            MonsterOfTheWeekEnum::CARDEA => 'String',
+            MonsterOfTheWeekEnum::DIONYSUS => 'Blueberries',
+            MonsterOfTheWeekEnum::HUEHUECOYOTL => 'Music Note',
+            default => throw new \InvalidArgumentException("Invalid monster")
+        };
+    }
+
     public static function getBasePrizeValues(string $monster): array
     {
         return match($monster)
@@ -41,7 +54,7 @@ final class MonsterOfTheWeekHelpers
         {
             MonsterOfTheWeekEnum::ANHUR => [ 'Monster-summoning Scroll', 'Potion of Brawling', 'Wolf\'s Bane' ],
             MonsterOfTheWeekEnum::BOSHINOGAMI => [ 'Handicrafts Supply Box', 'Potion of Crafts' ],
-            MonsterOfTheWeekEnum::CARDEA => [ 'Magpie Pouch, Magpie\'s Deal', 'Tile: Thieving Magpie' ],
+            MonsterOfTheWeekEnum::CARDEA => [ 'Magpie Pouch', 'Magpie\'s Deal', 'Tile: Thieving Magpie' ],
             MonsterOfTheWeekEnum::DIONYSUS => [ 'Essence d\'Assortiment', 'Potion of Nature' ],
             MonsterOfTheWeekEnum::HUEHUECOYOTL => [ 'Potion of Music', 'Dancing Sword', 'LP' ],
             default => throw new \InvalidArgumentException("Invalid monster")

@@ -6,7 +6,6 @@ use App\Controller\MonsterOfTheWeek\MonsterOfTheWeekHelpers;
 use App\Entity\Item;
 use App\Entity\MonsterOfTheWeek;
 use App\Enum\MonsterOfTheWeekEnum;
-use App\Functions\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -33,15 +32,16 @@ class CreateMonstersOfTheWeekCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        // population increase
-        $now = new \DateTimeImmutable();
+        $currentMonday = (new \DateTimeImmutable())
+            ->modify('tomorrow')
+            ->modify('last monday')
+            ->setTime(0, 0, 0);
 
         $monsterId = $this->em->getRepository(MonsterOfTheWeek::class)
             ->createQueryBuilder('m')
             ->select('m.id')
-            ->where('m.startDate <= :now')
-            ->andWhere('m.endDate >= :now')
-            ->setParameter('now', $now)
+            ->where('m.startDate = :startDate')
+            ->setParameter('startDate', $currentMonday)
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
@@ -55,14 +55,14 @@ class CreateMonstersOfTheWeekCommand extends Command
             ->orderBy('m.id', 'DESC')
             ->setMaxResults(2)
             ->getQuery()
-            ->getResult();
+            ->getSingleColumnResult();
 
         $monsterType = $this->selectMonsterType($previousTwoMonsterTypes);
 
         $previousMonsterOfType = $this->getPreviousMonsterOfType($monsterType);
 
         if(!$previousMonsterOfType)
-            $level = 300;
+            $level = 155;
         else
         {
             if($previousMonsterOfType->getCommunityTotal() >= MonsterOfTheWeekHelpers::getHardPrizes($monsterType)[2] * $previousMonsterOfType->getLevel())
@@ -73,8 +73,8 @@ class CreateMonstersOfTheWeekCommand extends Command
 
         $monster = (new MonsterOfTheWeek())
             ->setMonster($monsterType)
-            ->setStartDate($now->setTime(0, 0, 0))
-            ->setEndDate($now->modify('+7 days')->setTime(23, 59, 59))
+            ->setStartDate($currentMonday)
+            ->setEndDate($currentMonday->modify('next sunday')->setTime(23, 59, 59))
             ->setCommunityTotal(0)
             ->setLevel($level)
             ->setEasyPrize($this->selectEasyPrize($monsterType))
@@ -126,7 +126,7 @@ class CreateMonstersOfTheWeekCommand extends Command
 
     private function selectPrizeItem(array $possiblePrizes): Item
     {
-        return $this->em->getRepository(ItemRepository::class)->findOneBy([
+        return $this->em->getRepository(Item::class)->findOneBy([
             'name' => $possiblePrizes[array_rand($possiblePrizes)]
         ]);
     }
