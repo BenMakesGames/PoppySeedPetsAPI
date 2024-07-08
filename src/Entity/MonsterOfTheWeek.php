@@ -143,6 +143,6 @@ class MonsterOfTheWeek
 
     public function isCurrent(\DateTimeImmutable $todaysDate): bool
     {
-        return $this->startDate <= $todaysDate->setTime(0, 0, 0) && $this->endDate >= $todaysDate->setTime(0, 0, 0);
+        return $todaysDate->setTime(0, 0, 0) >= $this->startDate && $todaysDate->setTime(0, 0, 0) <= $this->endDate;
     }
 }

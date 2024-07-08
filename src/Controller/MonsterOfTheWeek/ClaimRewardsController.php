@@ -54,9 +54,14 @@ class ClaimRewardsController extends AbstractController
             MonsterOfTheWeekHelpers::getConsolationPrize($monster->getMonster())
         ];
 
-        if($monster->getCommunityTotal() >= $thresholds[0] * $monster->getLevel()) $rewards[] = $monster->getEasyPrize();
-        if($monster->getCommunityTotal() >= $thresholds[1] * $monster->getLevel()) $rewards[] = $monster->getMediumPrize();
-        if($monster->getCommunityTotal() >= $thresholds[2] * $monster->getLevel()) $rewards[] = $monster->getHardPrize();
+        if($monster->getCommunityTotal() >= $thresholds[0] * $monster->getLevel())
+            $rewards[] = $monster->getEasyPrize()->getName();
+
+        if($monster->getCommunityTotal() >= $thresholds[1] * $monster->getLevel())
+            $rewards[] = $monster->getMediumPrize()->getName();
+
+        if($monster->getCommunityTotal() >= $thresholds[2] * $monster->getLevel())
+            $rewards[] = $monster->getHardPrize()->getName();
 
         $contribution->setRewardsClaimed();
 
@@ -67,9 +72,10 @@ class ClaimRewardsController extends AbstractController
 
         $punctuation = match(count($rewards))
         {
-            1 => '.',
+            1 => '. (The spirit was 0% impressed by the island\'s offerings.)',
             2 => '!',
-            3 => '! :D'
+            3 => '! :)',
+            4 => '! :D'
         };
 
         return $responseService->success('You received ' . ArrayFunctions::list_nice($rewards) . $punctuation);

@@ -32,7 +32,7 @@ class ContributeController extends AbstractController
             'id' => $monsterId
         ]);
 
-        if($monster->isCurrent($clock->now))
+        if(!$monster->isCurrent($clock->now))
             throw new PSPInvalidOperationException("It is not the time for this spirit! (Reload and try again?)");
 
         $itemIds = $request->get('items', []);
