@@ -24,7 +24,6 @@
         "phpdocumentor/reflection-docblock": "^5.3",
         "symfony/amazon-mailer": "6.4.*",
         "symfony/apache-pack": "^1.0",
-        "symfony/asset": "6.4.*",
         "symfony/console": "6.4.*",
         "symfony/dotenv": "6.4.*",
         "symfony/expression-language": "6.4.*",
