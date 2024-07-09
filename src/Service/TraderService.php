@@ -1375,7 +1375,7 @@ class TraderService
             {
                 case CostOrYieldTypeEnum::ITEM:
                     for($i = 0; $i < $yield->quantity * $quantity; $i++)
-                        $this->inventoryService->receiveItem($yield->item, $user, null, $itemDescription, $location, $exchange->lockedToAccount);
+                        $this->inventoryService->receiveItem($yield->item, $user, null, $itemDescription, $location, true);
 
                     break;
 
