@@ -203,7 +203,7 @@ class TraderService
         if(count($holidayOffers) > 0)
         {
             array_unshift($offers, [
-                'title' => 'Special',
+                'title' => 'Special Offers',
                 'trades' => $holidayOffers
             ]);
         }
