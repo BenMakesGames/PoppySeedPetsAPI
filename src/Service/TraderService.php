@@ -267,13 +267,22 @@ class TraderService
             TraderOffer::createTradeOffer(
                 [
                     TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Chocolate-stained Cloth'), 1),
-                    TraderOfferCostOrYield::createMoney(5)
                 ],
                 [
                     TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'White Cloth'), 1),
+                ],
+                'There you go! Good as new!',
+                $user,
+                $quantities
+            ),
+            TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Chocolate-stained Cloth'), 1),
+                ],
+                [
                     TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Cocoa Powder'), 1),
                 ],
-                'There you go! Good as new! And I even kept the Cocoa Powder for you.',
+                'There you go! Usable Cocoa Powder!',
                 $user,
                 $quantities
             ),
