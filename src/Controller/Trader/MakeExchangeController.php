@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller;
+namespace App\Controller\Trader;
 
 use App\Entity\User;
 use App\Enum\LocationEnum;
@@ -10,10 +10,8 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\UserQuestRepository;
-use App\Repository\TraderRepository;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
-use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,43 +21,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/trader")]
-class TraderController extends AbstractController
+class MakeExchangeController extends AbstractController
 {
-    #[Route("", methods: ["GET"])]
-    #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getExchanges(
-        TraderService $traderService, ResponseService $responseService, TraderRepository $traderRepository,
-        EntityManagerInterface $em, IRandom $rng
-    )
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Trader))
-            throw new PSPNotUnlockedException('Trader');
-
-        $offers = $traderService->getOffers($user);
-
-        $trader = $traderRepository->findOneBy([ 'user' => $user->getId() ]);
-
-        if(!$trader)
-        {
-            $trader = TraderService::generateTrader($rng)
-                ->setUser($user)
-            ;
-
-            $em->persist($trader);
-            $em->flush();
-        }
-
-        $data = [
-            'trades' => $offers,
-            'trader' => $trader,
-        ];
-
-        return $responseService->success($data, [ SerializationGroupEnum::TRADER_OFFER, SerializationGroupEnum::MARKET_ITEM ]);
-    }
-
     #[Route("/{id}/exchange", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function makeExchange(

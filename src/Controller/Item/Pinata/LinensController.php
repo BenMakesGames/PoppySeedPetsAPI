@@ -3,11 +3,11 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\Trader;
 use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
-use App\Repository\TraderRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -58,7 +58,7 @@ class LinensController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function giveToTrader(
         Inventory $inventory, ResponseService $responseService, IRandom $rng,
-        EntityManagerInterface $em, TraderRepository $traderRepository
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -69,7 +69,7 @@ class LinensController extends AbstractController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Trader))
             throw new PSPNotUnlockedException('Trader');
 
-        $trader = $traderRepository->findOneBy([ 'user' => $user->getId() ]);
+        $trader = $em->getRepository(Trader::class)->findOneBy([ 'user' => $user->getId() ]);
 
         if(!$trader)
             throw new PSPInvalidOperationException('You should probably go visit the Trader first... at least once...');
