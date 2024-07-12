@@ -16,8 +16,8 @@ class SearchController extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()
-     * @Route("/search", methods={"GET"})
      */
+    #[Route("/search", methods: ["GET"])]
     public function search(Request $request, UserFilterService $userFilterService, ResponseService $responseService)
     {
         return $responseService->success(
