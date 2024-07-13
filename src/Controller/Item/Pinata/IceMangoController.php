@@ -34,13 +34,19 @@ class IceMangoController extends AbstractController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
+        $mangoesShattered = $userStatsRepository->incrementStat($user, UserStatEnum::SHATTERED_ICE_MANGO);
 
-        switch($rng->rngNextInt(1, 4))
+        $contents = $rng->rngNextInt(1, 4);
+
+        if($mangoesShattered->getValue() === 1)
+            $contents = 4;
+
+        switch($contents)
         {
             case 1:
                 $inventoryService->receiveItem('Everice', $user, $user, $user->getName() . ' shattered an Ice "Mango"... it was actually just an ice-encrusted Mango. This is that ice.', $location, $lockedToOwner);
                 $inventoryService->receiveItem('Mango', $user, $user, $user->getName() . ' shattered an Ice "Mango"... it was actually just an ice-encrusted Mango. This is that Mango.', $location, $lockedToOwner);
-                $message = 'You smash the "mango", but rather than shattering to bits, a layer of ice breaks off, revealing _an actual Mango_, inside! It was actually just some ice-encrusted Mango after all!';
+                $message = 'You smash the "mango", but rather than shattering to bits, a layer of ice breaks off, revealing _an actual Mango_, inside! It _was_ just some ice-encrusted Mango after all! (The item description _lied!_ IT _LIED!!_)';
                 break;
 
             case 2:

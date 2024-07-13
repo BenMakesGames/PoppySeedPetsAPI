@@ -3,12 +3,14 @@ namespace App\Controller\Achievement;
 
 use App\Entity\User;
 use App\Entity\UserBadge;
+use App\Entity\UserQuest;
 use App\Entity\UserStats;
 use App\Entity\UserUnlockedFeature;
 use App\Enum\BadgeEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\InMemoryCache;
 use App\Functions\ItemRepository;
+use App\Functions\UserQuestRepository;
 use App\Model\TraderOfferCostOrYield;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -101,6 +103,16 @@ final class BadgeHelpers
             case BadgeEnum::BAABBLES_OPENED_1000:
                 $progress = [ 'target' => 1000, 'current' => self::getStatTotal($user, [ 'Opened a Black Baabble', 'Opened a White Baabble', 'Opened a Gold Baabble', 'Opened a Shiny Baabble' ], $em, $cache) ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Skill Scroll: Crafts'), 1);
+                break;
+
+            case BadgeEnum::WEEKDAY_COINS_TRADED_1:
+                $progress = [ 'target' => 1, 'current' => self::getStatTotal($user, [ 'Traded for Kat\'s Gift Package' ], $em, $cache) ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Quintessence'), 7);
+                break;
+
+            case BadgeEnum::WEEKDAY_COINS_TRADED_7:
+                $progress = [ 'target' => 7, 'current' => self::getStatTotal($user, [ 'Traded for Kat\'s Gift Package' ], $em, $cache) ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Quintessence'), 7);
                 break;
 
             case BadgeEnum::MONEYS_SPENT_10:
@@ -424,6 +436,81 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Monster-summoning Scroll'), 2);
                 break;
 
+            case BadgeEnum::GREAT_SPIRIT_MINOR_REWARDS_1:
+                $progress = [ 'target' => 1, 'current' => self::getStatTotal($user, [ UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_A_GREAT_SPIRIT ], $em, $cache) ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Magic Crystal Ball'), 1);
+                break;
+
+            case BadgeEnum::GREAT_SPIRIT_MODERATE_REWARDS_5:
+                $progress = [ 'target' => 5, 'current' => self::getStatTotal($user, [ UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_A_GREAT_SPIRIT ], $em, $cache) ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Magic Crystal Ball'), 1);
+                break;
+
+            case BadgeEnum::GREAT_SPIRIT_MAJOR_REWARDS_10:
+                $progress = [ 'target' => 10, 'current' => self::getStatTotal($user, [ UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_A_GREAT_SPIRIT ], $em, $cache) ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Magic Crystal Ball'), 1);
+                break;
+
+            case BadgeEnum::GREAT_SPIRIT_HUNTER_OF_ANHUR_10:
+                $progress = [
+                    'target' => 10,
+                    'current' => self::getStatTotal($user, [
+                        UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_A_HUNTER_OF_ANHUR,
+                        UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_A_HUNTER_OF_ANHUR,
+                        UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_A_HUNTER_OF_ANHUR
+                    ], $em, $cache)
+                ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Major Scroll of Riches'), 2);
+                break;
+
+            case BadgeEnum::GREAT_SPIRIT_BOSHINOGAMI_10:
+                $progress = [
+                    'target' => 10,
+                    'current' => self::getStatTotal($user, [
+                        UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_SOME_BOSHINOGAMI,
+                        UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_SOME_BOSHINOGAMI,
+                        UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_SOME_BOSHINOGAMI
+                    ], $em, $cache)
+                ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Behatting Scroll'), 1);
+                break;
+
+            case BadgeEnum::GREAT_SPIRIT_CARDEAS_LOCKBEARER_10:
+                $progress = [
+                    'target' => 10,
+                    'current' => self::getStatTotal($user, [
+                        UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_CARDEAS_LOCKBEARER,
+                        UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_CARDEAS_LOCKBEARER,
+                        UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_CARDEAS_LOCKBEARER
+                    ], $em, $cache)
+                ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Cryptocurrency Wallet'), 4);
+                break;
+
+            case BadgeEnum::GREAT_SPIRIT_DIONYSUSS_HUNGER_10:
+                $progress = [
+                    'target' => 10,
+                    'current' => self::getStatTotal($user, [
+                        UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_DIONYSUSS_HUNGER,
+                        UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_DIONYSUSS_HUNGER,
+                        UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_DIONYSUSS_HUNGER
+                    ], $em, $cache)
+                ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Scroll of Chocolate'), 5);
+                break;
+
+            case BadgeEnum::GREAT_SPIRIT_HUEHUECOYOTLS_FOLLY_10:
+                $progress = [
+                    'target' => 10,
+                    'current' => self::getStatTotal($user, [
+                        UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_HUEHUECOYOTLS_FOLLY,
+                        UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_HUEHUECOYOTLS_FOLLY,
+                        UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_HUEHUECOYOTLS_FOLLY
+                    ], $em, $cache)
+                ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Hollow Earth Booster Pack: Community Pack'), 3);
+                break;
+
             case BadgeEnum::MISREAD_SCROLL:
                 $progress = [ 'target' => 1, 'current' => self::getStatTotal($user, [ 'Misread a Scroll' ], $em, $cache) ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Pectin'), 1);
@@ -442,6 +529,11 @@ final class BadgeHelpers
             case BadgeEnum::READ_SCROLL_100:
                 $progress = [ 'target' => 100, 'current' => self::getStatTotal($user, [ UserStatEnum::READ_A_SCROLL ], $em, $cache) ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Spice Rack'), 5);
+                break;
+
+            case BadgeEnum::ICE_MANGOES_10:
+                $progress = [ 'target' => 10, 'current' => self::getStatTotal($user, [ UserStatEnum::SHATTERED_ICE_MANGO ], $em, $cache) ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Mango Pudding'), 1);
                 break;
 
             case BadgeEnum::WHISPER_STONE:
@@ -735,6 +827,16 @@ final class BadgeHelpers
             case BadgeEnum::ACHIEVEMENTS_120:
                 $progress = [ 'target' => 120, 'current' => self::getStatTotal($user, [ UserStatEnum::ACHIEVEMENTS_CLAIMED ], $em, $cache) ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Chocolate-covered Honeycomb'), 1);
+                break;
+
+            case BadgeEnum::ACHIEVEMENTS_130:
+                $progress = [ 'target' => 130, 'current' => self::getStatTotal($user, [ UserStatEnum::ACHIEVEMENTS_CLAIMED ], $em, $cache) ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Chocolate Syrup'), 1);
+                break;
+
+            case BadgeEnum::ACHIEVEMENTS_140:
+                $progress = [ 'target' => 140, 'current' => self::getStatTotal($user, [ UserStatEnum::ACHIEVEMENTS_CLAIMED ], $em, $cache) ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Chocolate Hammer'), 1);
                 break;
 
             default:

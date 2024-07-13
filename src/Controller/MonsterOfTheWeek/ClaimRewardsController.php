@@ -6,11 +6,14 @@ use App\Entity\MonsterOfTheWeek;
 use App\Entity\MonsterOfTheWeekContribution;
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Enum\MonsterOfTheWeekEnum;
+use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ArrayFunctions;
 use App\Service\Clock;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,7 +27,7 @@ class ClaimRewardsController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function claimRewards(
         int $monsterId, InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
-        Clock $clock
+        UserStatsService $userStatsService, Clock $clock
     )
     {
         /** @var User $user */
@@ -55,13 +58,25 @@ class ClaimRewardsController extends AbstractController
         ];
 
         if($monster->getCommunityTotal() >= $thresholds[0] * $monster->getLevel())
+        {
             $rewards[] = $monster->getEasyPrize()->getName();
+            $userStatsService->incrementStat($user, UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_A_GREAT_SPIRIT);
+            $userStatsService->incrementStat($user, self::ReceivedAPrizeFrom('Minor', $monster->getMonster()));
+        }
 
         if($monster->getCommunityTotal() >= $thresholds[1] * $monster->getLevel())
+        {
             $rewards[] = $monster->getMediumPrize()->getName();
+            $userStatsService->incrementStat($user, UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_A_GREAT_SPIRIT);
+            $userStatsService->incrementStat($user, self::ReceivedAPrizeFrom('Moderate', $monster->getMonster()));
+        }
 
         if($monster->getCommunityTotal() >= $thresholds[2] * $monster->getLevel())
+        {
             $rewards[] = $monster->getHardPrize()->getName();
+            $userStatsService->incrementStat($user, UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_A_GREAT_SPIRIT);
+            $userStatsService->incrementStat($user, self::ReceivedAPrizeFrom('Major', $monster->getMonster()));
+        }
 
         $contribution->setRewardsClaimed();
 
@@ -79,5 +94,39 @@ class ClaimRewardsController extends AbstractController
         };
 
         return $responseService->success('You received ' . ArrayFunctions::list_nice($rewards) . $punctuation);
+    }
+
+    public static function ReceivedAPrizeFrom(string $prizeType, string $monster): string
+    {
+        return match($prizeType)
+        {
+            'Minor' => match ($monster)
+            {
+                MonsterOfTheWeekEnum::ANHUR => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_A_HUNTER_OF_ANHUR,
+                MonsterOfTheWeekEnum::BOSHINOGAMI => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_SOME_BOSHINOGAMI,
+                MonsterOfTheWeekEnum::CARDEA => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_CARDEAS_LOCKBEARER,
+                MonsterOfTheWeekEnum::DIONYSUS => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_DIONYSUSS_HUNGER,
+                MonsterOfTheWeekEnum::HUEHUECOYOTL => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_HUEHUECOYOTLS_FOLLY,
+                default => throw new \Exception('Invalid monster: ' . $monster)
+            },
+            'Moderate' => match ($monster)
+            {
+                MonsterOfTheWeekEnum::ANHUR => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_A_HUNTER_OF_ANHUR,
+                MonsterOfTheWeekEnum::BOSHINOGAMI => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_SOME_BOSHINOGAMI,
+                MonsterOfTheWeekEnum::CARDEA => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_CARDEAS_LOCKBEARER,
+                MonsterOfTheWeekEnum::DIONYSUS => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_DIONYSUSS_HUNGER,
+                MonsterOfTheWeekEnum::HUEHUECOYOTL => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_HUEHUECOYOTLS_FOLLY,
+                default => throw new \Exception('Invalid monster: ' . $monster)
+            },
+            'Major' => match ($monster)
+            {
+                MonsterOfTheWeekEnum::ANHUR => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_A_HUNTER_OF_ANHUR,
+                MonsterOfTheWeekEnum::BOSHINOGAMI => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_SOME_BOSHINOGAMI,
+                MonsterOfTheWeekEnum::CARDEA => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_CARDEAS_LOCKBEARER,
+                MonsterOfTheWeekEnum::DIONYSUS => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_DIONYSUSS_HUNGER,
+                MonsterOfTheWeekEnum::HUEHUECOYOTL => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_HUEHUECOYOTLS_FOLLY,
+                default => throw new \Exception('Invalid monster: ' . $monster)
+            }
+        };
     }
 }

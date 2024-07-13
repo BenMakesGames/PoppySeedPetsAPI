@@ -47,4 +47,29 @@ final class UserStatEnum
     const TOOLS_DIPPED_IN_A_DRAGON_VASE = 'Tools Dipped in a Dragon Vase';
     const FOODS_DIPPED_IN_A_HOT_POT = 'Foods Dipped in a Hot Pot';
     const ROLLED_SATYR_DICE = 'Rolled Satyr Dice';
+    const SHATTERED_ICE_MANGO = 'Shattered an Ice "Mango"';
+
+    const RECEIVED_A_MINOR_PRIZE_FROM_A_GREAT_SPIRIT = 'Received a Minor Reward from a Great Spirit';
+    const RECEIVED_A_MODERATE_PRIZE_FROM_A_GREAT_SPIRIT = 'Received a Moderate Reward from a Great Spirit';
+    const RECEIVED_A_MAJOR_PRIZE_FROM_A_GREAT_SPIRIT = 'Received a Major Reward from a Great Spirit';
+
+    const RECEIVED_A_MINOR_PRIZE_FROM_A_HUNTER_OF_ANHUR = 'Received a Minor Reward from a Hunter of Anhur';
+    const RECEIVED_A_MODERATE_PRIZE_FROM_A_HUNTER_OF_ANHUR = 'Received a Moderate Reward from a Hunter of Anhur';
+    const RECEIVED_A_MAJOR_PRIZE_FROM_A_HUNTER_OF_ANHUR = 'Received a Major Reward from a Hunter of Anhur';
+
+    const RECEIVED_A_MINOR_PRIZE_FROM_SOME_BOSHINOGAMI = 'Received a Minor Reward from some Boshinogami';
+    const RECEIVED_A_MODERATE_PRIZE_FROM_SOME_BOSHINOGAMI = 'Received a Moderate Reward from some Boshinogami';
+    const RECEIVED_A_MAJOR_PRIZE_FROM_SOME_BOSHINOGAMI = 'Received a Major Reward from some Boshinogami';
+
+    const RECEIVED_A_MINOR_PRIZE_FROM_CARDEAS_LOCKBEARER = 'Received a Minor Reward from Cardea\'s Lockbearer';
+    const RECEIVED_A_MODERATE_PRIZE_FROM_CARDEAS_LOCKBEARER = 'Received a Moderate Reward from Cardea\'s Lockbearer';
+    const RECEIVED_A_MAJOR_PRIZE_FROM_CARDEAS_LOCKBEARER = 'Received a Major Reward from Cardea\'s Lockbearer';
+
+    const RECEIVED_A_MINOR_PRIZE_FROM_DIONYSUSS_HUNGER = 'Received a Minor Reward from Dionysus\'s Hunger';
+    const RECEIVED_A_MODERATE_PRIZE_FROM_DIONYSUSS_HUNGER = 'Received a Moderate Reward from Dionysus\'s Hunger';
+    const RECEIVED_A_MAJOR_PRIZE_FROM_DIONYSUSS_HUNGER = 'Received a Major Reward from Dionysus\'s Hunger';
+
+    const RECEIVED_A_MINOR_PRIZE_FROM_HUEHUECOYOTLS_FOLLY = 'Received a Minor Reward from Huehuecoyotl\'s Folly';
+    const RECEIVED_A_MODERATE_PRIZE_FROM_HUEHUECOYOTLS_FOLLY = 'Received a Moderate Reward from Huehuecoyotl\'s Folly';
+    const RECEIVED_A_MAJOR_PRIZE_FROM_HUEHUECOYOTLS_FOLLY = 'Received a Major Reward from Huehuecoyotl\'s Folly';
 }

@@ -31,7 +31,7 @@ class TradeForKatsGiftPackageController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function makeTrade(
         InventoryRepository $inventoryRepository, ResponseService $responseService,
-        EntityManagerInterface $em, TraderService $traderService
+        EntityManagerInterface $em, TraderService $traderService, UserStatsService $userStatsService
     )
     {
         /** @var User $user */
@@ -61,6 +61,7 @@ class TradeForKatsGiftPackageController extends AbstractController
         );
 
         $traderService->makeExchange($user, $exchange, LocationEnum::HOME, 1, 'Received by trading with the florist, Kat.');
+        $userStatsService->incrementStat($user, 'Traded for Kat\'s Gift Package');
 
         $em->flush();
 

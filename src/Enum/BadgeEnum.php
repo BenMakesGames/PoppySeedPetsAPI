@@ -20,6 +20,9 @@ final class BadgeEnum
     public const MONEYS_SPENT_10000 = 'MoneysSpent10000';
     public const MONEYS_SPENT_100000 = 'MoneysSpent100000';
 
+    public const WEEKDAY_COINS_TRADED_1 = 'WeekdayCoins1';
+    public const WEEKDAY_COINS_TRADED_7 = 'WeekdayCoins7';
+
     public const PETTED_10 = 'Petted10';
     public const PETTED_100 = 'Petted100';
     public const PETTED_1000 = 'Petted1000';
@@ -83,10 +86,22 @@ final class BadgeEnum
     public const HOLLOW_EARTH_TRAVEL_100 = 'HollowEarthTravel100';
     public const HOLLOW_EARTH_TRAVEL_1000 = 'HollowEarthTravel1000';
 
+    public const GREAT_SPIRIT_MINOR_REWARDS_1 = 'GreatSpiritMinorRewards1';
+    public const GREAT_SPIRIT_MODERATE_REWARDS_5 = 'GreatSpiritModerateRewards5';
+    public const GREAT_SPIRIT_MAJOR_REWARDS_10 = 'GreatSpiritMajorRewards10';
+
+    public const GREAT_SPIRIT_HUNTER_OF_ANHUR_10 = 'GreatSpiritHunterOfAnhur10';
+    public const GREAT_SPIRIT_BOSHINOGAMI_10 = 'GreatSpiritBoshinogami10';
+    public const GREAT_SPIRIT_CARDEAS_LOCKBEARER_10 = 'GreatSpiritCardeasLockbearer10';
+    public const GREAT_SPIRIT_DIONYSUSS_HUNGER_10 = 'GreatSpiritDionysussHunger10';
+    public const GREAT_SPIRIT_HUEHUECOYOTLS_FOLLY_10 = 'GreatSpiritHuehuecoyotlsFolly10';
+
     public const MISREAD_SCROLL = 'MisreadScroll1';
     public const READ_SCROLL_1 = 'ReadScroll1';
     public const READ_SCROLL_10 = 'ReadScroll10';
     public const READ_SCROLL_100 = 'ReadScroll100';
+
+    public const ICE_MANGOES_10 = 'IceMangoes10';
 
     public const WHISPER_STONE = 'WhisperStone';
 
@@ -164,4 +179,6 @@ final class BadgeEnum
     public const ACHIEVEMENTS_100 = 'Achievements100';
     public const ACHIEVEMENTS_110 = 'Achievements110';
     public const ACHIEVEMENTS_120 = 'Achievements120';
+    public const ACHIEVEMENTS_130 = 'Achievements130';
+    public const ACHIEVEMENTS_140 = 'Achievements140';
 }
