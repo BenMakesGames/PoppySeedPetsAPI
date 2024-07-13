@@ -100,7 +100,7 @@ class IcyMoonService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Location_Icy_Moon, PetActivityLogTagEnum::Gathering ]))
             ;
 
-            $this->inventoryService->petCollectsEnhancedItem('Ice Mango', null, $this->getIcySpice(), $pet, $pet->getName() . ' found this in a snowfield on an Icy Moon.', $activityLog);
+            $this->inventoryService->petCollectsEnhancedItem('Ice "Mango"', null, $this->getIcySpice(), $pet, $pet->getName() . ' found this in a snowfield on an Icy Moon.', $activityLog);
         }
         else if($pet->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 100) === 1)
         {
@@ -108,7 +108,7 @@ class IcyMoonService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Location_Icy_Moon, PetActivityLogTagEnum::Gathering, PetActivityLogTagEnum::Lucky ]))
             ;
 
-            $this->inventoryService->petCollectsEnhancedItem('Ice Mango', null, $this->getIcySpice(), $pet, $pet->getName() . ' found this in a snowfield on an Icy Moon.', $activityLog);
+            $this->inventoryService->petCollectsEnhancedItem('Ice "Mango"', null, $this->getIcySpice(), $pet, $pet->getName() . ' found this in a snowfield on an Icy Moon.', $activityLog);
         }
         else
         {
