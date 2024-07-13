@@ -526,6 +526,7 @@ final class RecipeRepository
         [ 'name' => 'Red Juice, and Pectin', 'ingredients' => '2:1', 'makes' => '121:2,680:1' ],
         [ 'name' => 'Red Marmalade', 'ingredients' => '2:1,12:1,121:1', 'makes' => '185:2' ],
         [ 'name' => 'Red Pancakes', 'ingredients' => '2:1,12:1,13:1,14:1,16:1,48:1,65:1', 'makes' => '218:2' ],
+        [ 'name' => 'Red Pear', 'ingredients' => '1393:2', 'makes' => '1394:1' ],
         [ 'name' => 'Red PB&J', 'ingredients' => '112:1,185:1,512:1', 'makes' => '530:2' ],
         [ 'name' => 'Red Pie', 'ingredients' => '2:1,12:1,16:1,196:1', 'makes' => '221:2' ],
         [ 'name' => 'Red Red', 'ingredients' => '4:1,7:1,33:1,133:1,170:1,195:1,248:1', 'makes' => '1344:2' ],

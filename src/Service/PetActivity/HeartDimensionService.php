@@ -36,21 +36,28 @@ class HeartDimensionService
 
     public function canAdventure(Pet $pet): bool
     {
-        return
-            $pet->getAffectionAdventures() < $pet->getAffectionLevel() &&
-            $pet->getAffectionAdventures() < 6
-        ;
+        return $pet->getAffectionAdventures() < $pet->getAffectionLevel();
     }
 
-    public function noAdventuresRemaining(Pet $pet): PetActivityLog
+    public function chanceOfHeartDimensionAdventure(Pet $pet): bool
+    {
+        if($pet->getAffectionAdventures() < 6)
+            return 80;
+        else
+            return 10;
+    }
+
+    public function notEnoughAffectionAdventure(Pet $pet): PetActivityLog
     {
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
 
-        EquipmentFunctions::unequipPet($pet);
-
-        return PetActivityLogFactory::createUnreadLog($this->em, $pet, 'There being nothing more ' . '%pet:' . $pet->getId() . '.name% can do in the Heart Dimension right now, they put the Heartstone down.')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name%\'s Affection Level must be increased before they can venture into the Heart Dimension again.')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Heart Dimension', 'Adventure!' ]))
         ;
+
+        $this->unequipHeartstone($pet, $activityLog);
+
+        return $activityLog;
     }
 
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -61,37 +68,32 @@ class HeartDimensionService
 
         $adventure = $pet->getAffectionAdventures() + 1;
 
-        switch($adventure)
+        $activityLog = match ($adventure)
         {
-            case 1:
-                $activityLog = $this->fightAngrySpirit($petWithSkills);
-                break;
-            case 2:
-                $activityLog = $this->beInspired($petWithSkills);
-                break;
-            case 3:
-                $activityLog = $this->defeatNightmare($petWithSkills);
-                break;
-            case 4:
-                $activityLog = $this->haveDivineVision($petWithSkills);
-                break;
-            case 5:
-                $activityLog = $this->defeatShadow($petWithSkills);
-                break;
-            case 6:
-                $activityLog = $this->unlockTransformingAHeartStone($pet);
-                break;
-            default:
-                throw new \Exception('Ben made a bad error! There is no Heart Dimension adventure that ' . $pet->getName() . ' can go on!');
+            1 => $this->fightAngrySpirit($petWithSkills),
+            2 => $this->beInspired($petWithSkills),
+            3 => $this->defeatNightmare($petWithSkills),
+            4 => $this->haveDivineVision($petWithSkills),
+            5 => $this->defeatShadow($petWithSkills),
+            6 => $this->unlockTransformingAHeartstone($pet),
+            7 => $this->randomAdventure($pet),
+            default => throw new \Exception('Ben made a bad error! There is no Heart Dimension adventure that ' . $pet->getName() . ' can go on!'),
+        };
+
+        if($adventure < 7)
+        {
+            $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY);
+            $bugChance1InX = 10;
         }
+        else
+            $bugChance1InX = 40;
 
         $activityLog
-            ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
             ->setChanges($changes->compare($pet))
         ;
 
-        if(AdventureMath::petAttractsBug($this->rng, $pet, 10))
+        if(AdventureMath::petAttractsBug($this->rng, $pet, $bugChance1InX))
             $this->inventoryService->petAttractsRandomBug($pet, 'Heart Beetle');
 
         return $activityLog;
@@ -342,4 +344,54 @@ class HeartDimensionService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Heart Dimension' ]))
         ;
     }
+
+    private function randomAdventure(Pet $pet): PetActivityLog
+    {
+        return match($this->rng->rngNextInt(1, 3))
+        {
+            1 => $this->doCelestePlusShortHike($pet),
+            2 => $this->doBalatro($pet),
+            3 => $this->doEverything($pet),
+        };
+    }
+
+    private function doCelestePlusShortHike(Pet $pet): PetActivityLog
+    {
+        $message = ActivityHelpers::PetName($pet) . ' dreamed about the Heart Dimensions. They were climbing a twisted mountain surrounded by fierce winds. But they were helped by friendly animals that lived there, and eventually reached the top.';
+
+        $pet->increaseEsteem(4);
+
+        return PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
+            ->setIcon('icons/activity-logs/heart-dimension')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Heart Dimension' ]))
+        ;
+    }
+
+    private function doBalatro(Pet $pet): PetActivityLog
+    {
+        $message = ActivityHelpers::PetName($pet) . ' dreamed about the Heart Dimensions. They played a strange game of cards against an unseen opponent, and barely managed to win. When they awoke, ' . ActivityHelpers::PetName($pet) . ' was holding an Ace of Hearts.';
+
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
+            ->setIcon('icons/activity-logs/heart-dimension')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Heart Dimension' ]));
+
+        $this->inventoryService->petCollectsItem('Ace of Hearts', $pet, $pet->getName() . ' dreamed they defeated an unseen opponent in the Heart Dimensions at a game of cards, and awoke holding this.', $activityLog);
+
+        return $activityLog;
+    }
+
+    private function doEverything(Pet $pet): PetActivityLog
+    {
+        $message = ActivityHelpers::PetName($pet) . ' dreamed about the Heart Dimensions. They dreamed of being a flower, a forest, a grain of sand carried by the wind, a moose, a moon, a galaxy, an atom of oxygen... when they awoke, they felt simultaneously Tired, and Inspired.';
+
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::INSPIRED, 3 * 60);
+        StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::TIRED, 3 * 60);
+
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
+            ->setIcon('icons/activity-logs/heart-dimension')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Heart Dimension' ]));
+
+        return $activityLog;
+    }
+
 }

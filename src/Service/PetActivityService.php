@@ -64,7 +64,6 @@ use App\Service\PetActivity\Protocol7Service;
 use App\Service\PetActivity\TreasureMapService;
 use App\Service\PetActivity\UmbraService;
 use Doctrine\ORM\EntityManagerInterface;
-use phpDocumentor\Reflection\DocBlock\TagFactory;
 
 class PetActivityService
 {
@@ -640,13 +639,14 @@ class PetActivityService
                 return true;
 
             case 'Heartstone':
-                if($this->rng->rngNextInt(1, 3) === 1)
+                if(!$this->heartDimensionService->canAdventure($pet))
                 {
-                    if($this->heartDimensionService->canAdventure($pet))
-                        $this->heartDimensionService->adventure($petWithSkills);
-                    else
-                        $this->heartDimensionService->noAdventuresRemaining($pet);
-
+                    $this->heartDimensionService->notEnoughAffectionAdventure($pet);
+                    return true;
+                }
+                else if($this->rng->rngNextInt(1, 100) <= $this->heartDimensionService->chanceOfHeartDimensionAdventure($pet))
+                {
+                    $this->heartDimensionService->adventure($petWithSkills);
                     return true;
                 }
 

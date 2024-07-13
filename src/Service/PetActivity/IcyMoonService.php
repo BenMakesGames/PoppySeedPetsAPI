@@ -94,11 +94,30 @@ class IcyMoonService
     {
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
 
-        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to explore an Icy Moon, but got lost in the endless snowfields. They picked up a chunk of Everice, at least.')
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Location_Icy_Moon, 'Gathering' ]))
-        ;
+        if($this->rng->rngNextInt(1, 100) === 1)
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to explore an Icy Moon, but got lost in the endless snowfields. They picked up a chunk of Everi-- wait, no: that\'s an Ice Mango!')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Location_Icy_Moon, PetActivityLogTagEnum::Gathering ]))
+            ;
 
-        $this->inventoryService->petCollectsEnhancedItem('Everice', null, $this->getIcySpice(), $pet, $pet->getName() . ' found this in a snowfield on an Icy Moon.', $activityLog);
+            $this->inventoryService->petCollectsEnhancedItem('Ice Mango', null, $this->getIcySpice(), $pet, $pet->getName() . ' found this in a snowfield on an Icy Moon.', $activityLog);
+        }
+        else if($pet->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 100) === 1)
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to explore an Icy Moon, but got lost in the endless snowfields. They picked up a chunk of Everi-- wait, no: that\'s an Ice Mango! (Lucky~!)')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Location_Icy_Moon, PetActivityLogTagEnum::Gathering, PetActivityLogTagEnum::Lucky ]))
+            ;
+
+            $this->inventoryService->petCollectsEnhancedItem('Ice Mango', null, $this->getIcySpice(), $pet, $pet->getName() . ' found this in a snowfield on an Icy Moon.', $activityLog);
+        }
+        else
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to explore an Icy Moon, but got lost in the endless snowfields. They picked up a chunk of Everice, at least.')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Location_Icy_Moon, PetActivityLogTagEnum::Gathering ]))
+            ;
+
+            $this->inventoryService->petCollectsEnhancedItem('Everice', null, $this->getIcySpice(), $pet, $pet->getName() . ' found this in a snowfield on an Icy Moon.', $activityLog);
+        }
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
 
