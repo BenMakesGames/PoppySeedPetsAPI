@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20240713032000 extends AbstractMigration
+final class Version20240713152000 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -39,6 +39,9 @@ final class Version20240713032000 extends AbstractMigration
         -- grammar
         INSERT INTO item_grammar (`id`, `item_id`, `article`) VALUES (1487,1396,NULL) ON DUPLICATE KEY UPDATE `id` = `id`;
         EOSQL);
+
+        // Ice "Mango"
+        $this->addSql('UPDATE `poppyseedpets`.`item` SET `name`=\'Ice "Mango"\' WHERE `id`=1395;');
     }
 
     public function down(Schema $schema): void
