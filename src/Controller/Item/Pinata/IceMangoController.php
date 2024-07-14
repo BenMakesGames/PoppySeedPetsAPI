@@ -6,6 +6,7 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ItemRepository;
+use App\Functions\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -35,18 +36,21 @@ class IceMangoController extends AbstractController
         $lockedToOwner = $inventory->getLockedToOwner();
 
         $mangoesShattered = $userStatsRepository->incrementStat($user, UserStatEnum::SHATTERED_ICE_MANGO);
+        $lastShatterEffect = UserQuestRepository::findOrCreate($em, $user, 'Last Ice "Mango" Shattering', 0);
 
-        $contents = $rng->rngNextInt(1, 4);
+        $possibleEffects = array_diff([ 1, 2, 3, 4 ], [ $lastShatterEffect->getValue() ]);
+
+        $effect = $rng->rngNextFromArray($possibleEffects);
 
         if($mangoesShattered->getValue() === 1)
-            $contents = 4;
+            $effect = 4;
 
-        switch($contents)
+        switch($effect)
         {
             case 1:
                 $inventoryService->receiveItem('Everice', $user, $user, $user->getName() . ' shattered an Ice "Mango"... it was actually just an ice-encrusted Mango. This is that ice.', $location, $lockedToOwner);
                 $inventoryService->receiveItem('Mango', $user, $user, $user->getName() . ' shattered an Ice "Mango"... it was actually just an ice-encrusted Mango. This is that Mango.', $location, $lockedToOwner);
-                $message = 'You smash the "mango", but rather than shattering to bits, a layer of ice breaks off, revealing _an actual Mango_, inside! It _was_ just some ice-encrusted Mango after all! (The item description _lied!_ IT _LIED!!_)';
+                $message = 'You smash the "mango", but rather than shattering to bits, a layer of ice breaks off, revealing _an actual Mango_, inside! It _was_ just some ice-encrusted Mango after all! (The item description _lied!_ IT LIED!!)';
                 break;
 
             case 2:
@@ -82,6 +86,8 @@ class IceMangoController extends AbstractController
             default:
                 throw new \Exception('This should never happen. But it did. Ben has been notified.');
         }
+
+        $lastShatterEffect->setValue($effect);
 
         $em->remove($inventory);
 

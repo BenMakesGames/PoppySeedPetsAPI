@@ -45,6 +45,11 @@ final class Version20240713152000 extends AbstractMigration
         $this->addSql(<<<EOSQL
         UPDATE `poppyseedpets`.`item` SET `description`='This is not merely some ice-encrusted Mango! Ha! _Perish_ the thought!' WHERE  `id`=1395;
         EOSQL);
+
+        // Onion description fix
+        $this->addSql(<<<EOSQL
+        UPDATE `item` SET `description` = '\"What can you do with onions?\" \"WHAT CAN YOU DO WITH ONIONS?!?\" I mean, Onion Rings, for one! Coat \'em in a mixture of flour and Baking Soda... dip \'em in Oil... MM!\n\n<small>\"What can you do with onions.\" \\*shakes head\\* Some people; honestly...</small>' WHERE `item`.`id` = 7;
+        EOSQL);
     }
 
     public function down(Schema $schema): void
