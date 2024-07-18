@@ -155,6 +155,22 @@ class IronSmithingService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
         }
+        else if($roll >= $making['difficulty'] + 10)
+        {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->houseSimService->getState()->loseItem('Iron Bar', 1);
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged ' . $making['description'] . ' from an Iron Bar with enough left over to make a Nail File, as well!.', $making['image'])
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $making['difficulty'] + 10)
+            ;
+
+            $this->inventoryService->petCollectsItem($making['item'], $pet, $pet->getName() . ' forged this from an Iron Bar.', $activityLog);
+            $this->inventoryService->petCollectsItem('Nail File', $pet, $pet->getName() . ' created this with the leftovers from making ' . $making['item'] . '.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, $making['experience'] + 2, [ PetSkillEnum::CRAFTS ], $activityLog);
+            $pet->increaseEsteem(4);
+        }
         else if($roll >= $making['difficulty'])
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
@@ -162,6 +178,7 @@ class IronSmithingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged ' . $making['description'] . ' from an Iron Bar.', $making['image'])
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $making['difficulty'])
             ;
 
             $this->inventoryService->petCollectsItem($making['item'], $pet, $pet->getName() . ' forged this from an Iron Bar.', $activityLog);
