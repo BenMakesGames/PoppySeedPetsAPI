@@ -497,6 +497,7 @@ final class RecipeRepository
         [ 'name' => 'Plain Yogurt (from Blackberry Yogurt)', 'ingredients' => '10:1,13:1,151:1', 'makes' => '113:2,151:1' ],
         [ 'name' => 'Plain Yogurt (from Blueberry Yogurt)', 'ingredients' => '10:1,13:1,150:1', 'makes' => '113:2,150:1' ],
         [ 'name' => 'Plain Yogurt (from Coffee Yogurt)', 'ingredients' => '10:1,13:1,251:1', 'makes' => '113:2,251:1' ],
+        [ 'name' => 'Plain Yogurt (from Figurt)', 'ingredients' => '10:1,13:1,1112:1', 'makes' => '113:2,1112:1' ],
         [ 'name' => 'Plain Yogurt (from Mango Yogurt)', 'ingredients' => '10:1,13:1,988:1', 'makes' => '113:2,988:1' ],
         [ 'name' => 'Plain Yogurt (from Naner Yogurt)', 'ingredients' => '10:1,13:1,495:1', 'makes' => '113:2,495:1' ],
         [ 'name' => 'Plain Yogurt (from Red Yogurt)', 'ingredients' => '10:1,13:1,274:1', 'makes' => '113:2,274:1' ],
