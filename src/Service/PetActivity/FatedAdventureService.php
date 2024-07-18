@@ -2,6 +2,7 @@
 
 namespace App\Service\PetActivity;
 
+use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\StatusEffect;
 use App\Enum\EnumInvalidValueException;
@@ -49,7 +50,8 @@ class FatedAdventureService
                 StatusEffectEnum::FATED_SOAKEDLY,
                 StatusEffectEnum::FATED_ELECTRICALLY,
                 StatusEffectEnum::FATED_FERALLY,
-                StatusEffectEnum::FATED_LUNARLY
+                StatusEffectEnum::FATED_LUNARLY,
+                StatusEffectEnum::FATED_CHEESEWARDLY,
             ])
         );
 
@@ -75,6 +77,7 @@ class FatedAdventureService
             StatusEffectEnum::FATED_ELECTRICALLY => $this->doElectricFate($petWithSkills),
             StatusEffectEnum::FATED_FERALLY => $this->doFurryFate($petWithSkills),
             StatusEffectEnum::FATED_LUNARLY => $this->doLunarFate($petWithSkills),
+            StatusEffectEnum::FATED_CHEESEWARDLY => $this->doCheesewardlyFate($petWithSkills),
             default => throw new \Exception("Unsupported fate! Ben made a terrible mistake!"),
         };
 
@@ -244,6 +247,26 @@ class FatedAdventureService
             $this->inventoryService->petCollectsItem('Moth', $pet, $pet->getName() . ' met this moth (and several of its friends!) in the woods, and in so doing apparently fulfilled their moon-y fate.', $log);
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE ], $log);
+
+        return $log;
+    }
+
+    /**
+     * @throws EnumInvalidValueException
+     */
+    private function doCheesewardlyFate(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' was resting at home, when they felt a drop of something hit their face, causing them to reflexively blink. After blinking, ' . ActivityHelpers::PetName($pet) . ' found themselves in an abstract dimension of pure cheese! They gathered up as much as they could, but eventually blinked again, finding themselves back at home, and sensing that they had realized their cheesewardly fate! (Neat!)');
+
+        $this->inventoryService->petCollectsItem('Cheese-covered... Something', $pet, $pet->getName() . ' found this in an abstract dimension of pure cheese, and in so doing apparently fulfilled their cheesewardly fate.', $log);
+        $this->inventoryService->petCollectsItem('Cheese-covered... Something', $pet, $pet->getName() . ' found this in an abstract dimension of pure cheese, and in so doing apparently fulfilled their cheesewardly fate.', $log);
+        $this->inventoryService->petCollectsItem('Cheese', $pet, $pet->getName() . ' found this in an abstract dimension of pure cheese, and in so doing apparently fulfilled their cheesewardly fate.', $log);
+        $this->inventoryService->petCollectsItem('Cheese', $pet, $pet->getName() . ' found this in an abstract dimension of pure cheese, and in so doing apparently fulfilled their cheesewardly fate.', $log);
+
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(5, 10), PetActivityStatEnum::OTHER, null);
         $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE ], $log);
 
         return $log;

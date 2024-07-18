@@ -51,6 +51,7 @@ final class StatusEffectEnum
     public const FATED_ELECTRICALLY = 'Fated (Electrically)';
     public const FATED_FERALLY = 'Fated (Ferally)';
     public const FATED_LUNARLY = 'Fated (Lunarly)';
+    public const FATED_CHEESEWARDLY = 'Fated (Cheesewardly)';
 
     public const DAYDREAM_ICE_CREAM = 'Daydreaming (Ice Cream)';
     public const DAYDREAM_PIZZA = 'Daydreaming (Pizza)';

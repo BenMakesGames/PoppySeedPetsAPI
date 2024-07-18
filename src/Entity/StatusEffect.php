@@ -119,6 +119,7 @@ class StatusEffect
             StatusEffectEnum::FATED_ELECTRICALLY,
             StatusEffectEnum::FATED_FERALLY,
             StatusEffectEnum::FATED_LUNARLY,
+            StatusEffectEnum::FATED_CHEESEWARDLY,
 
             StatusEffectEnum::LAPINE_WHISPERS,
             StatusEffectEnum::ONEIRIC,

@@ -389,6 +389,28 @@ class InventoryService
             $this->responseService->setReloadInventory();
         }
 
+        if($pet->hasStatusEffect(StatusEffectEnum::FRUIT_CLOBBERING) && $item->hasItemGroup('Fresh Fruit'))
+        {
+            $pectin = ItemRepository::findOneByName($this->em, 'Pectin');
+
+            $extraItem = (new Inventory())
+                ->setOwner($pet->getOwner())
+                ->setCreatedBy($pet->getOwner())
+                ->setItem($pectin)
+                ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' while ' . StatusEffectEnum::FRUIT_CLOBBERING . '.')
+                ->setLocation(LocationEnum::HOME)
+                ->setSpice($extraItemSpice)
+                ->setEnchantment($bonus)
+            ;
+
+            $this->applySeasonalSpiceToNewItem($extraItem);
+
+            if(!$this->houseSimService->getState()->addInventory($extraItem))
+                $this->em->persist($extraItem);
+
+            $this->responseService->setReloadInventory();
+        }
+
         if($pet->hasStatusEffect(StatusEffectEnum::SPICED) && $item->getSpice())
         {
             $extraItem = (new Inventory())

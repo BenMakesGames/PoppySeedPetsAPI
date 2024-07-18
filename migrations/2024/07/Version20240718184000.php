@@ -36,6 +36,21 @@ final class Version20240718184000 extends AbstractMigration
         -- grammar
         INSERT INTO item_grammar (`id`, `item_id`, `article`) VALUES (1488,1397,"a") ON DUPLICATE KEY UPDATE `id` = `id`;
         EOSQL);
+
+        // add Fated (Cheesewardly) to Cheesy Broccoli
+        $this->addSql('UPDATE `item_food` SET `granted_status_effect` = \'Fated (Cheesewardly)\', `granted_status_effect_duration` = 1 WHERE `item_food`.`id` = 273;');
+
+        // Cheese-covered... Something
+        $this->addSql(<<<EOSQL
+        -- hat
+        INSERT INTO item_hat (`id`, `head_x`, `head_y`, `head_angle`, `head_scale`, `head_angle_fixed`) VALUES (259,0.5,0.615,0,0.58,0) ON DUPLICATE KEY UPDATE `id` = `id`;
+        
+        -- the item itself!
+        INSERT INTO item (`id`, `name`, `description`, `image`, `use_actions`, `tool_id`, `food_id`, `fertilizer`, `plant_id`, `hat_id`, `fuel`, `recycle_value`, `enchants_id`, `spice_id`, `treasure_id`, `is_bug`, `hollow_earth_tile_card_id`, `cannot_be_thrown_out`, `museum_points`) VALUES (1398,"Cheese-covered... Something",NULL,"box/cheese-covered-lump","[[\"Clean\",\"cheesyLump\\/#\\/clean\"]]",NULL,NULL,0,NULL,259,0,0,NULL,NULL,NULL,0,NULL,0,5) ON DUPLICATE KEY UPDATE `id` = `id`;
+        
+        -- grammar
+        INSERT INTO item_grammar (`id`, `item_id`, `article`) VALUES (1489,1398,"a") ON DUPLICATE KEY UPDATE `id` = `id`;
+        EOSQL);
     }
 
     public function down(Schema $schema): void
