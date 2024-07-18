@@ -4,6 +4,7 @@ namespace App\Service\PetActivity\Crafting;
 use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\PetActivityLogFactory;
@@ -109,7 +110,7 @@ class NotReallyCraftsService
 
             $pet->increaseEsteem(3);
 
-            $tags = [ 'Gathering', 'Physics' ];
+            $tags = [ 'Gathering', 'Physics', PetActivityLogTagEnum::Location_At_Home ];
             if($lucky) $tags[] = 'Lucky~!';
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% sifted through a Planetary Ring, and found ' . $loot . $exclaim)
@@ -126,7 +127,7 @@ class NotReallyCraftsService
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% sifted through a Planetary Ring, looking for something interesting, but couldn\'t find anything.')
                 ->setIcon('icons/activity-logs/confused')
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Physics' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Physics', PetActivityLogTagEnum::Location_At_Home ]))
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::NATURE ], $activityLog);

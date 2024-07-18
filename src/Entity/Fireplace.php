@@ -6,6 +6,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 #[ORM\Table]
 #[ORM\Index(name: 'heat_index', columns: ['heat'])]
@@ -122,6 +123,13 @@ class Fireplace
             $this->soot += $heatToAdd;
 
         return $this;
+    }
+
+    #[Groups(["myFireplace"])]
+    #[SerializedName('heat')]
+    public function getHeatPercent(): int
+    {
+        return (int)($this->heat * 100 / self::MAX_HEAT);
     }
 
     #[Groups(["myFireplace"])]
