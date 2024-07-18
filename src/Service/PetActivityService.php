@@ -1126,7 +1126,7 @@ class PetActivityService
 
         $soNice = $this->rng->rngNextFromArray([
             'Gosh dang, she\'s so nice!',
-            'How\'d she got so friggin\' sweet!',
+            'How\'d she get so friggin\' sweet!',
             'She\'s just the best!',
         ]);
 
