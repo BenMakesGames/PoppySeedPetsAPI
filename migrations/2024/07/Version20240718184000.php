@@ -40,6 +40,11 @@ final class Version20240718184000 extends AbstractMigration
         // add Fated (Cheesewardly) to Cheesy Broccoli
         $this->addSql('UPDATE `item_food` SET `granted_status_effect` = \'Fated (Cheesewardly)\', `granted_status_effect_duration` = 1 WHERE `item_food`.`id` = 273;');
 
+        // Cheesy Broccoli description change
+        $this->addSql(<<<EOSQL
+        UPDATE `item` SET `description` = 'So you took a potent vegetable from a strange dimension, and just _casually_ dipped it in hot liquid cheese?! Did you even once stop to consider the potential consequences of such an action!?!' WHERE `item`.`id` = 694; 
+        EOSQL);
+
         // Cheese-covered... Something
         $this->addSql(<<<EOSQL
         -- hat
