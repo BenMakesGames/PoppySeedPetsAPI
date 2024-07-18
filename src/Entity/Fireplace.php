@@ -129,7 +129,10 @@ class Fireplace
     #[SerializedName('heat')]
     public function getHeatPercent(): int
     {
-        return (int)($this->heat * 100 / self::MAX_HEAT);
+        if($this->heat <= 0)
+            return 0;
+        else
+            return (int)max(1, $this->heat * 100 / self::MAX_HEAT);
     }
 
     #[Groups(["myFireplace"])]
@@ -140,23 +143,23 @@ class Fireplace
 
         $words = [];
 
-        if($this->getHeat() >= 2.5 * 24 * 60)
+        if($this->getHeatPercent() >= 90)
             $words[] = 'overwhelming';
-        else if($this->getHeat() >= 2 * 24 * 60)
+        else if($this->getHeatPercent() >= 80)
             $words[] = 'slightly-intimidating';
-        else if($this->getHeat() >= 1.5 * 24 * 60)
+        else if($this->getHeatPercent() >= 70)
             $words[] = 'very strong';
-        else if($this->getHeat() >= 24 * 60)
+        else if($this->getHeatPercent() >= 60)
             $words[] = 'strong';
-        else if($this->getHeat() >= 16 * 60)
+        else if($this->getHeatPercent() >= 50)
             $words[] = 'sizable';
-        else if($this->getHeat() >= 8 * 60)
+        else if($this->getHeatPercent() >= 30)
             $words[] = 'medium';
-        else if($this->getHeat() >= 4 * 60)
+        else if($this->getHeatPercent() >= 20)
             $words[] = 'small';
-        else if($this->getHeat() >= 2 * 60)
+        else if($this->getHeatPercent() >= 10)
             $words[] = 'very small';
-        else if($this->getHeat() > 60)
+        else if($this->getHeatPercent() >= 5)
             $words[] = 'faintly-glowing';
         else
             $words[] = 'only technically warm';
