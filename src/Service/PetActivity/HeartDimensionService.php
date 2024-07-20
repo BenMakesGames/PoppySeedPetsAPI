@@ -41,7 +41,7 @@ class HeartDimensionService
 
     public function chanceOfHeartDimensionAdventure(Pet $pet): bool
     {
-        if($pet->getAffectionAdventures() < 6)
+        if($pet->getAffectionAdventures() + 1 < 6)
             return 80;
         else
             return 10;
@@ -347,6 +347,8 @@ class HeartDimensionService
 
     private function randomAdventure(Pet $pet): PetActivityLog
     {
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+
         return match($this->rng->rngNextInt(1, 3))
         {
             1 => $this->doCelestePlusShortHike($pet),
