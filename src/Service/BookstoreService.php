@@ -198,8 +198,8 @@ class BookstoreService
     {
         $bookPrices = [
             'Welcome Note' => 10, // remember: this item can be turned into plain paper
-            'Unlocking the Secrets of Grandparoot' => 15,
             'Cooking 101' => 15,
+            'A Guide to Our Weather' => 15,
         ];
 
         $flowersPurchased = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => 'Flowerbombs Purchased' ]);
@@ -211,6 +211,9 @@ class BookstoreService
 
         if($cookedSomething)
         {
+            if($cookedSomething->getValue() >= 1)
+                $bookPrices['Unlocking the Secrets of Grandparoot'] = 15;
+
             if($cookedSomething->getValue() >= 5)
                 $bookPrices['Candy-maker\'s Cookbook'] = 20;
 
