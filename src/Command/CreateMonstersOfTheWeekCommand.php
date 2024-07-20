@@ -65,7 +65,7 @@ class CreateMonstersOfTheWeekCommand extends Command
             $level = 155;
         else
         {
-            if($previousMonsterOfType->getCommunityTotal() >= MonsterOfTheWeekHelpers::getHardPrizes($monsterType)[2] * $previousMonsterOfType->getLevel())
+            if($previousMonsterOfType->getCommunityTotal() >= MonsterOfTheWeekHelpers::getBasePrizeValues($monsterType)[2] * $previousMonsterOfType->getLevel())
                 $level = $previousMonsterOfType->getLevel() + 2;
             else
                 $level = $previousMonsterOfType->getLevel() - 1;
