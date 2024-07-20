@@ -30,6 +30,9 @@ final class Version20240720130500 extends AbstractMigration
         -- grammar
         INSERT INTO item_grammar (`id`, `item_id`, `article`) VALUES (1490,1399,NULL) ON DUPLICATE KEY UPDATE `id` = `id`;
         EOSQL);
+
+        // first Monster of the Week
+        $this->addSql('INSERT INTO `poppyseedpets`.`monster_of_the_week` (`monster`, `start_date`, `end_date`, `community_total`, `easy_prize_id`, `medium_prize_id`, `hard_prize_id`, `level`) VALUES (\'Dionysus\', \'2024-07-20\', \'2024-07-28\', 0, 1296, 687, 997, 155);');
     }
 
     public function down(Schema $schema): void
