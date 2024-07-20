@@ -41,9 +41,9 @@ final class Version20240713152000 extends AbstractMigration
         EOSQL);
 
         // Ice "Mango"
-        $this->addSql('UPDATE `poppyseedpets`.`item` SET `name`=\'Ice "Mango"\' WHERE `id`=1395;');
+        $this->addSql('UPDATE `item` SET `name`=\'Ice "Mango"\' WHERE `id`=1395;');
         $this->addSql(<<<EOSQL
-        UPDATE `poppyseedpets`.`item` SET `description`='This is not merely some ice-encrusted Mango! Ha! _Perish_ the thought!' WHERE  `id`=1395;
+        UPDATE `item` SET `description`='This is not merely some ice-encrusted Mango! Ha! _Perish_ the thought!' WHERE  `id`=1395;
         EOSQL);
 
         // Onion description fix
