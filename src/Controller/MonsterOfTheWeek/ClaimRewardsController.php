@@ -47,7 +47,7 @@ class ClaimRewardsController extends AbstractController
 
         $thresholds = MonsterOfTheWeekHelpers::getBasePrizeValues($monster->getMonster());
 
-        if($contribution === null || $contribution->getPoints() < $thresholds[0])
+        if($contribution === null || $contribution->getPoints() < 1)
             throw new PSPInvalidOperationException("You didn't feed this spirit enough to get its attention :(");
 
         if($contribution->getRewardsClaimed())
