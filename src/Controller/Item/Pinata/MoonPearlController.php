@@ -42,17 +42,20 @@ class MoonPearlController extends AbstractController
         $inventoryService->receiveItem('Moon Dust', $user, $user, 'The contents of a Moon Pearl which was shattered by ' . $user->getName() . '.', $location);
         $inventoryService->receiveItem('Moon Dust', $user, $user, 'The contents of a Moon Pearl which was shattered by ' . $user->getName() . '.', $location);
 
-        /** @var Pet $helper */
-        $helper = $squirrel3->rngNextFromArray($petRepository->findBy([
+        /** @var Pet[] $helper */
+        $availableHelpers = $petRepository->findBy([
             'owner' => $user->getId(),
             'location' => PetLocationEnum::HOME
-        ]));
+        ]);
 
         $message = 'You shatter the Moon Pearl, yielding a couple lumps of Moon Dust, and some Silica Grounds.';
         $reloadPets = false;
 
-        if($helper)
+        if(count($availableHelpers) > 0)
         {
+            /** @var Pet $helper */
+            $helper = $squirrel3->rngNextFromArray($availableHelpers);
+
             $helperWithSkills = $helper->getComputedSkills();
             $skill = 20 + $helperWithSkills->getArcana()->getTotal() + $helperWithSkills->getIntelligence()->getTotal() + $helperWithSkills->getDexterity()->getTotal();
 
@@ -67,7 +70,7 @@ class MoonPearlController extends AbstractController
                 $message = 'You shatter the Moon Pearl, yielding a couple lumps of Moon Dust, and some Silica Grounds, and ' . $helper->getName() . ' gathers up the Quintessence before it evaporates away.';
 
                 if($location !== LocationEnum::HOME)
-                    $message .= ' (' . $helper->getName() . ' placed the items they got in the house... that\'s just where pets that items get go!)';
+                    $message .= ' (' . $helper->getName() . ' placed the items they got in the house... that\'s just where pets put the stuff they get, you know!)';
 
                 $reloadPets = true;
             }
