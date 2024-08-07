@@ -30,7 +30,7 @@ final class MonsterOfTheWeekHelpers
             MonsterOfTheWeekEnum::BOSHINOGAMI => [ 40, 120, 300 ],
             MonsterOfTheWeekEnum::CARDEA => [ 10, 30, 75 ],
             MonsterOfTheWeekEnum::DIONYSUS => [ 100, 300, 750 ],
-            MonsterOfTheWeekEnum::HUEHUECOYOTL => [ 25, 75, 200 ],
+            MonsterOfTheWeekEnum::HUEHUECOYOTL => [ 10, 30, 75 ],
             default => throw new \InvalidArgumentException("Invalid monster")
         };
     }
