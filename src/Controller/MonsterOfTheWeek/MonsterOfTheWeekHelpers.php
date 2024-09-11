@@ -25,14 +25,21 @@ final class MonsterOfTheWeekHelpers
     {
         return match($monster)
         {
-            // [ easy = easy, medium = easy * ~3, hard = medium * ~2.5 ]
-            MonsterOfTheWeekEnum::ANHUR => [ 25, 75, 200 ],
-            MonsterOfTheWeekEnum::BOSHINOGAMI => [ 40, 120, 300 ],
-            MonsterOfTheWeekEnum::CARDEA => [ 10, 30, 75 ],
-            MonsterOfTheWeekEnum::DIONYSUS => [ 100, 300, 750 ],
-            MonsterOfTheWeekEnum::HUEHUECOYOTL => [ 10, 30, 75 ],
+            // [ easy = hard / 7.5, rounding down to a nice number; medium is about half way between ]
+            MonsterOfTheWeekEnum::ANHUR => [ 25, 110, 200 ],
+            MonsterOfTheWeekEnum::BOSHINOGAMI => [ 40, 170, 300 ],
+            MonsterOfTheWeekEnum::CARDEA => [ 10, 45, 75 ],
+            MonsterOfTheWeekEnum::DIONYSUS => [ 100, 425, 750 ],
+            MonsterOfTheWeekEnum::HUEHUECOYOTL => [ 10, 45, 75 ],
             default => throw new \InvalidArgumentException("Invalid monster")
         };
+    }
+
+    public static function getCommunityContributionLevel(string $monster, int $communityContribution)
+    {
+        $highValue = self::getBasePrizeValues($monster)[2];
+
+        return max(1, ceil($communityContribution / $highValue));
     }
 
     public static function getSpiritNameWithArticle(string $monster): string
