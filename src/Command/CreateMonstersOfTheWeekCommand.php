@@ -67,8 +67,9 @@ class CreateMonstersOfTheWeekCommand extends Command
         {
             $communityPerformanceLevel = MonsterOfTheWeekHelpers::getCommunityContributionLevel($previousMonsterOfType->getMonster(), $previousMonsterOfType->getCommunityTotal());
 
+            // adding some random factors, so players can't totally count on specific weight.
             $add = random_int(-1, 1);
-            $communityLevelWeight = 0.591893;
+            $communityLevelWeight = random_int(572500, 622500) / 1000000; // from 0.5725 to 0.6225 (spread of 0.05, or 5%, around 60%)
 
             $level = ceil(
                 $previousMonsterOfType->getLevel() * (1 - $communityLevelWeight) +
