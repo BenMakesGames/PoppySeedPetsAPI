@@ -37,6 +37,12 @@ class TraderOffer
      */
     public $canMakeExchange;
 
+    /**
+     * @var bool
+     * @Groups({"traderOffer"})
+     */
+    public $lockedToAccount;
+
     public static function createTradeOffer(
         array $cost, array $yield, string $comment, User $user, array $inventoryQuantitiesByNameAtLocation, bool $lockedToAccount = false
     ): TraderOffer
@@ -48,6 +54,7 @@ class TraderOffer
         $trade->yield = $yield;
         $trade->comment = $comment;
         $trade->canMakeExchange = TraderOffer::getMaxExchanges($cost, $user, $inventoryQuantitiesByNameAtLocation);
+        $trade->lockedToAccount = $lockedToAccount;
 
         return $trade;
     }

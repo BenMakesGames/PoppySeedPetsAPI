@@ -57,7 +57,8 @@ class TradeForKatsGiftPackageController extends AbstractController
             ],
             '',
             $user,
-            $quantities
+            $quantities,
+            true
         );
 
         $traderService->makeExchange($user, $exchange, LocationEnum::HOME, 1, 'Received by trading with the florist, Kat.');

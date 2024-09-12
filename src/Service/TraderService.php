@@ -654,7 +654,6 @@ class TraderService
                 $user,
                 $quantities
             );
-
         }
 
         if(CalendarFunctions::isValentinesOrAdjacent($this->clock->now))
@@ -1168,7 +1167,8 @@ class TraderService
                 [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Li\'l Pocket Dimension'), 1) ],
                 'I happened to get a few of these while traveling with a... well, let\'s just say he\'s a traveler. And, I mean, he didn\'t tell me _not_ to sell them, so... here we are.',
                 $user,
-                $quantities
+                $quantities,
+                true
             ),
 
             TraderOffer::createTradeOffer(
@@ -1384,7 +1384,7 @@ class TraderService
             {
                 case CostOrYieldTypeEnum::ITEM:
                     for($i = 0; $i < $yield->quantity * $quantity; $i++)
-                        $this->inventoryService->receiveItem($yield->item, $user, null, $itemDescription, $location, true);
+                        $this->inventoryService->receiveItem($yield->item, $user, null, $itemDescription, $location, $exchange->lockedToAccount);
 
                     break;
 
