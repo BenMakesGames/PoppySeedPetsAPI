@@ -809,6 +809,32 @@ class TraderService
             );
         }
 
+        if(CalendarFunctions::isCreepyMaskDay($this->clock->now))
+        {
+            if($this->clock->now->format('n') >= 10 || $this->clock->now->format('n') <= 3) // Oct - Mar
+                $masks = [ 'Ashen Yew', 'Crystalline', 'Gold Devil' ];
+            else
+                $masks = [ 'Blue Magic', 'La Feuille', 'The Unicorn' ];
+
+            $payment = self::getCreepyMaskDayPayment((int)$this->clock->now->format('n'));
+
+            foreach($masks as $mask)
+            {
+                $offers[] = TraderOffer::createTradeOffer(
+                    [
+                        TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, $payment[0]), $payment[1]),
+                    ],
+                    [
+                        TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, $mask), 1),
+                    ],
+                    "",
+                    $user,
+                    $quantities,
+                    true
+                );
+            }
+        }
+
         $uniqueOffers = $this->getSpecialOfferItemsAndPrices(self::NUMBER_OF_DAILY_SPECIAL_OFFERS - count($offers));
 
         foreach($uniqueOffers as $uniqueOffer)
@@ -827,6 +853,25 @@ class TraderService
         }
 
         return $offers;
+    }
+
+    public static function getCreepyMaskDayPayment(int $month): array
+    {
+        return match($month)
+        {
+            1 => [ 'Wand of Lightning', 1 ],
+            2 => [ 'Wed Bawwoon', 1 ],
+            3 => [ 'Gummy Worms', 3 ],
+            4 => [ 'Mysterious Seed', 1 ],
+            5 => [ 'Petrichor', 1 ],
+            6 => [ 'Sun-sun Flag-flag, Son', 1 ],
+            7 => [ 'Rainbow Wings', 1 ],
+            8 => [ 'Fermented Fish Onigiri', 3 ],
+            9 => [ 'Little Strongbox', 1 ],
+            10 => [ 'Tile: Bats!', 1 ],
+            11 => [ 'Regular-sized Pumpkin', 1 ],
+            12 => [ 'Magic Pinecone', 1 ],
+        };
     }
 
     public const NUMBER_OF_DAILY_SPECIAL_OFFERS = 5;

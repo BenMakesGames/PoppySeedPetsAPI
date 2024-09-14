@@ -297,6 +297,11 @@ final class CalendarFunctions
         return $dt->format('md') === '0229';
     }
 
+    public static function isCreepyMaskDay(\DateTimeInterface $dt): bool
+    {
+        return $dt->format('D j') === 'Fri 13';
+    }
+
     public static function isChineseNewYear(\DateTimeInterface $dt): bool
     {
         $chineseCalendarInfo = self::getChineseCalendarInfo($dt);
@@ -405,6 +410,9 @@ final class CalendarFunctions
 
         if(self::isLeapDay($dt))
             $events[] = HolidayEnum::LEAP_DAY;
+
+        if(self::isCreepyMaskDay($dt))
+            $events[] = HolidayEnum::CREEPY_MASK_DAY;
 
         return $events;
     }

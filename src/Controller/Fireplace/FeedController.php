@@ -10,9 +10,12 @@ use App\Enum\UserStatEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
+use App\Functions\CalendarFunctions;
 use App\Functions\PlayerLogFactory;
 use App\Functions\RequestFunctions;
+use App\Functions\UserQuestRepository;
 use App\Repository\InventoryRepository;
+use App\Service\Clock;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetAssistantService;
@@ -32,7 +35,7 @@ class FeedController extends AbstractController
     public function feedFireplace(
         Request $request, InventoryRepository $inventoryRepository, ResponseService $responseService,
         EntityManagerInterface $em, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository
+        UserStatsService $userStatsRepository, Clock $clock
     )
     {
         /** @var User $user */
@@ -99,6 +102,23 @@ class FeedController extends AbstractController
                 [ 'Charcoal', 'Glass', 'Spider Roe' ],
                 [ 'Coke', 'Magic Smoke' ]
             );
+
+            if(
+                CalendarFunctions::isCreepyMaskDay($clock->now) ||
+                CalendarFunctions::isCreepyMaskDay($clock->now->modify('+1 day')) ||
+                CalendarFunctions::isCreepyMaskDay($clock->now->modify('+2 day')) ||
+                CalendarFunctions::isCreepyMaskDay($clock->now->modify('+3 day')) ||
+                CalendarFunctions::isCreepyMaskDay($clock->now->modify('+4 day')) ||
+                CalendarFunctions::isCreepyMaskDay($clock->now->modify('+5 day')))
+            {
+                $quest = UserQuestRepository::findOrCreate($em, $user, 'Get ' . $clock->now->format('M Y') . ' Creepy Mask Day', false);
+
+                if($quest->getValue() === false)
+                {
+                    $quest->setValue(true);
+                    $extraItem = 'Creepy Mask Day';
+                }
+            }
 
             $loot = $inventoryService->receiveItem($extraItem, $user, $user, $helper->getName() . ' found this in ' . $user->getName() . '\'s Fireplace chimney.', LocationEnum::HOME);
 
