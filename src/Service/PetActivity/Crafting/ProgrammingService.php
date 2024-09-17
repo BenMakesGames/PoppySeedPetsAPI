@@ -103,8 +103,14 @@ class ProgrammingService
             }
         }
 
-        if($this->houseSimService->hasInventory('Regex') && $this->houseSimService->hasInventory('Password'))
-            $possibilities[] = new ActivityCallback($this->createBruteForce(...), 10);
+        if($this->houseSimService->hasInventory('Regex'))
+        {
+            if($this->houseSimService->hasInventory('Password'))
+                $possibilities[] = new ActivityCallback($this->createBruteForce(...), 10);
+
+            if($this->houseSimService->hasInventory('4-function Calculator'))
+                $possibilities[] = new ActivityCallback($this->createHapaxLegomenon(...), 10);
+        }
 
         if($this->houseSimService->hasInventory('Brute Force') && $this->houseSimService->hasInventory('XOR') && $this->houseSimService->hasInventory('Gold Bar'))
             $possibilities[] = new ActivityCallback($this->createL33tH4xx0r(...), 10);
@@ -825,6 +831,44 @@ class ProgrammingService
             else
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started to calculate Viswanath\'s Constant, but couldn\'t figure out any of the maths; not even a single one!')
+                    ->setIcon('icons/activity-logs/confused')
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
+                ;
+
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, false);
+
+                return $activityLog;
+            }
+        }
+    }
+
+    private function createHapaxLegomenon(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+
+        if($roll >= 15)
+        {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->houseSimService->getState()->loseItem('Regex', 1);
+            $this->houseSimService->getState()->loseItem('4-function Calculator', 1);
+            $pet->increaseEsteem(1);
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% calculated Viswanath\'s Constant.')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
+            ;
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->inventoryService->petCollectsItem('Hapax Legomenon', $pet, $pet->getName() . ' calculated this.', $activityLog);
+            return $activityLog;
+        }
+        else
+        {
+            if($this->rng->rngNextInt(1, 3) === 1)
+                return $this->fightInfinityImp($petWithSkills, 'computing a Hapax Legomenon');
+            else
+            {
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started to computing a Hapax Legomenon, but kept coming up with nonsense results...')
                     ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
                 ;
