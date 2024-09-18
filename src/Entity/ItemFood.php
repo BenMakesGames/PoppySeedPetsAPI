@@ -393,17 +393,23 @@ class ItemFood
         else if($this->junk < 0)
             $modifiers[] = 'alleviates poison!';
 
-        if($this->alcohol > 2)
+        if($this->alcohol > 6)
+            $modifiers[] = 'very alcoholic';
+        else if($this->alcohol > 3)
             $modifiers[] = 'alcoholic';
         else if($this->alcohol > 0)
             $modifiers[] = 'mildly alcoholic';
 
-        if($this->caffeine > 2)
+        if($this->caffeine > 6)
+            $modifiers[] = 'very caffeinated';
+        else if($this->caffeine > 3)
             $modifiers[] = 'caffeinated';
         else if($this->caffeine > 0)
             $modifiers[] = 'mildly caffeinated';
 
-        if($this->psychedelic > 2)
+        if($this->psychedelic > 6)
+            $modifiers[] = 'very trippy';
+        else if($this->psychedelic > 3)
             $modifiers[] = 'trippy';
         else if($this->psychedelic > 0)
             $modifiers[] = 'slightly trippy';

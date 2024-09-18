@@ -94,7 +94,8 @@ class TraderService
         private readonly InventoryRepository $inventoryRepository,
         private readonly Clock $clock,
         private readonly EntityManagerInterface $em,
-        private readonly CacheHelper $cache
+        private readonly CacheHelper $cache,
+        private readonly UserStatsService $userStatsService
     )
     {
     }
@@ -1145,15 +1146,19 @@ class TraderService
             $quantities
         );
 
+        $offers[] = TraderOffer::createTradeOffer(
+            [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Hapax Legomenon'), 1) ],
+            [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Hebenon'), 1) ],
+            'That\'s some wild stuff! Careful how you use it!',
+            $user,
+            $quantities
+        );
+
         return $offers;
     }
 
     private function getCuriositiesOffers(User $user, array $quantities): array
     {
-        $moonName = $this->rng->rngNextFromArray([
-            'Europa', 'Ganymede', 'Callisto', 'Mimas', 'Enceladus', 'Titan', 'Miranda', 'Umbriel', 'Triton'
-        ]);
-
         return [
             TraderOffer::createTradeOffer(
                 [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Secret Seashell'), 20) ],
@@ -1430,6 +1435,9 @@ class TraderService
                 case CostOrYieldTypeEnum::ITEM:
                     for($i = 0; $i < $yield->quantity * $quantity; $i++)
                         $this->inventoryService->receiveItem($yield->item, $user, null, $itemDescription, $location, $exchange->lockedToAccount);
+
+                    if($yield->item->getName() === 'Hebenon')
+                        $this->userStatsService->incrementStat($user, 'Traded for Hebenon', $yield->quantity * $quantity);
 
                     break;
 

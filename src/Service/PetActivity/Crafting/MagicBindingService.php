@@ -315,6 +315,9 @@ class MagicBindingService
                     $possibilities[] = new ActivityCallback($this->createCattail(...), 8);
             }
 
+            if($this->houseSimService->hasInventory('Snakebite') && $this->houseSimService->hasInventory('Hebenon'))
+                $possibilities[] = new ActivityCallback($this->createMalice(...), 8);
+
             $magicSmokeWeight = 1;
         }
         else
@@ -3179,6 +3182,44 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Cattail', $pet, $pet->getName() . ' created this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+
+            return $activityLog;
+        }
+    }
+
+    public function createMalice(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+
+        if($umbraCheck < 20)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Snakebite, but the enchantment wouldn\'t stick.', 'icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+
+            return $activityLog;
+        }
+        else // success!
+        {
+            $this->houseSimService->getState()->loseItem('Quintessence', 1);
+            $this->houseSimService->getState()->loseItem('Hebenon', 1);
+            $this->houseSimService->getState()->loseItem('Snakebite');
+            $pet->increaseEsteem(3);
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% steeped a Snakebite in Hebenon, then cast a spell on it, turning the Snakebite into Malice!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Magic_binding,
+                    PetActivityLogTagEnum::Location_At_Home,
+                ]))
+            ;
+            $this->inventoryService->petCollectsItem('Malice', $pet, $pet->getName() . ' bound this.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
 
             return $activityLog;

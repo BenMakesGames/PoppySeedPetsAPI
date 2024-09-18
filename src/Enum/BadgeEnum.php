@@ -104,6 +104,7 @@ final class BadgeEnum
     public const ICE_MANGOES_10 = 'IceMangoes10';
 
     public const WHISPER_STONE = 'WhisperStone';
+    public const HONORIFICABILITUDINITATIBUS = 'Honorificabilitudinitatibus';
 
     public const OPENED_HAT_BOX_1 = 'OpenedHatBox1';
     public const OPENED_HAT_BOX_10 = 'OpenedHatBox10';

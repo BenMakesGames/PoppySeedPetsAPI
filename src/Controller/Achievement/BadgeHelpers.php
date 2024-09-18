@@ -541,6 +541,11 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Magic Smoke'), 2);
                 break;
 
+            case BadgeEnum::HONORIFICABILITUDINITATIBUS:
+                $progress = [ 'target' => 10, 'current' => self::getStatTotal($user, [ 'Traded for Hebenon' ], $em, $cache) ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Magic Leaf'), 1);
+                break;
+
             case BadgeEnum::OPENED_HAT_BOX_1:
                 $progress = [ 'target' => 1, 'current' => self::getStatTotal($user, [ 'Opened a Hat Box' ], $em, $cache) ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Coconut Half'), 1);
