@@ -778,22 +778,6 @@ class TraderService
             );
         }
 
-        // talk like a pirate day
-        if(CalendarFunctions::isTalkLikeAPirateDay($this->clock->now))
-        {
-            $offers[] = TraderOffer::createTradeOffer(
-                [
-                    TraderOfferCostOrYield::createMoney(10),
-                ],
-                [
-                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Rusty Rapier'), 1),
-                ],
-                "If I had 10~~m~~ for every Rapier I found lying on the bottom of the ocean, I'd be a very wealthy fish!\n\nOhohohoho!",
-                $user,
-                $quantities
-            );
-        }
-
         if(CalendarFunctions::isMayThe4th($this->clock->now))
         {
             $offers[] = TraderOffer::createTradeOffer(
