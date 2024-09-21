@@ -198,7 +198,6 @@ final class CalendarFunctions
 
     public static function isTalkLikeAPirateDay(\DateTimeInterface $dt): bool
     {
-        return true;
         $monthAndDay = $dt->format('nd');
         return $monthAndDay === '919';
     }
