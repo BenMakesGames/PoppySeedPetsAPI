@@ -311,6 +311,9 @@ class AdoptionService
         if(CalendarFunctions::isHalloween($this->clock->now))
             return PetShelterPet::PET_HALLOWEEN_NAMES;
 
+        if(CalendarFunctions::isTalkLikeAPirateDay($this->clock->now))
+            return PetShelterPet::PET_PIRATE_NAMES;
+
         // PSP Thanksgiving overlaps Black Friday, but for pet adoption purposes, we want Black Friday to win out:
         if(CalendarFunctions::isBlackFriday($this->clock->now))
             return PetShelterPet::PET_BLACK_FRIDAY_NAMES;

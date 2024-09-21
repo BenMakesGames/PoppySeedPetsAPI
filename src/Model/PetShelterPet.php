@@ -65,6 +65,16 @@ class PetShelterPet
         'Zofija', 'Zuan', 'Zygmunt'
     ];
 
+    public const PET_PIRATE_NAMES = [
+        'Captain Jim Starling',
+        'Captain Jake Robin',
+        'Captain John Parrot',
+        'Captain Jorge Dove',
+        'Captain Jane Seagull',
+        'Captain Jill Hummingbird',
+        'Captain Jeff Chickadee',
+    ];
+
     public const PET_HALLOWEEN_NAMES = [
         'Pumpkin', 'Luna', 'Magic', 'Bones', 'Haunt', 'Spirit', 'Cauldron', 'Werewolf', 'Vampire',
     ];
