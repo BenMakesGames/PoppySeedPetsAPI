@@ -567,6 +567,7 @@ final class RecipeRepository
         [ 'name' => 'Smashed Potatoes (with both)', 'ingredients' => '13:1,65:1,437:1', 'makes' => '438:3' ],
         [ 'name' => 'Smashed Potatoes (with Butter)', 'ingredients' => '65:1,437:1', 'makes' => '438:2' ],
         [ 'name' => 'Smashed Potatoes (with Milk)', 'ingredients' => '13:1,437:1', 'makes' => '438:2' ],
+        [ 'name' => 'Soufflé', 'ingredients' => '13:1,14:1,16:1,62:1,65:1', 'makes' => '1410:3' ],
         [ 'name' => 'Sour Cream and Onion Dip', 'ingredients' => '7:1,304:1', 'makes' => '1396:3' ],
         [ 'name' => 'Soy Sauce', 'ingredients' => '10:1,16:1,170:1', 'makes' => '324:2' ],
         [ 'name' => 'Soy-ginger Fish', 'ingredients' => '33:1,43:1,324:1', 'makes' => '1243:2' ],

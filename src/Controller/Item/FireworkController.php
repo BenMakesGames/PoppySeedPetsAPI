@@ -18,7 +18,7 @@ class FireworkController extends AbstractController
 {
     #[Route("/{inventory}/light", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function read(
+    public function light(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         HattierService $hattierService
     )

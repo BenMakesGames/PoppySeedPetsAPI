@@ -143,6 +143,8 @@ final class MonsterOfTheWeekHelpers
 
         if(str_ends_with($item->getName(), 'Baabble'))
             $points += 10;
+        else if($item->getName() === 'Heart Beetle')
+            $points = 2;
 
         return $points;
     }

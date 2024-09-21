@@ -3,14 +3,12 @@ namespace App\Controller\Achievement;
 
 use App\Entity\User;
 use App\Entity\UserBadge;
-use App\Entity\UserQuest;
 use App\Entity\UserStats;
 use App\Entity\UserUnlockedFeature;
 use App\Enum\BadgeEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\InMemoryCache;
 use App\Functions\ItemRepository;
-use App\Functions\UserQuestRepository;
 use App\Model\TraderOfferCostOrYield;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -28,6 +26,11 @@ final class BadgeHelpers
     private static function getUnlockedFieldGuideEntries(User $user): int
     {
         return $user->getFieldGuideEntries()->count();
+    }
+
+    private static function getWorkerBeeCount(User $user): int
+    {
+        return $user->getBeehive()->getWorkers();
     }
 
     private static function getUnlockedAuras(User $user): int
@@ -546,6 +549,11 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Magic Leaf'), 1);
                 break;
 
+            case BadgeEnum::SOUFFLE_STARTLER:
+                $progress = [ 'target' => 1, 'current' => self::getStatTotal($user, [ 'Startled Soufflé' ], $em, $cache) ];
+                $reward = TraderOfferCostOrYield::createMoney(10);
+                break;
+
             case BadgeEnum::OPENED_HAT_BOX_1:
                 $progress = [ 'target' => 1, 'current' => self::getStatTotal($user, [ 'Opened a Hat Box' ], $em, $cache) ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Coconut Half'), 1);
@@ -643,6 +651,16 @@ final class BadgeHelpers
             case BadgeEnum::PLAYING_BOTH_SIDES:
                 $progress = [ 'target' => 2, 'current' => self::getCompletedBadges($user, [ BadgeEnum::FEED_THE_ANTS_10, BadgeEnum::FEED_THE_BEES_10 ]) ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Dicerca'), 1);
+                break;
+
+            case BadgeEnum::WORKER_BEES_1000:
+                $progress = [ 'target' => 1000, 'current' => self::getWorkerBeeCount($user) ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Honeydont'), 10);
+                break;
+
+            case BadgeEnum::WORKER_BEES_10000:
+                $progress = [ 'target' => 10000, 'current' => self::getWorkerBeeCount($user) ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Honeydont'), 100);
                 break;
 
             // Cataloging

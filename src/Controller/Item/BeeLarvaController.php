@@ -133,7 +133,7 @@ class BeeLarvaController extends AbstractController
         $antQueenId = ItemRepository::getIdByName($em, 'Ant Queen');
 
         if($inventoryService->loseItem($user, $antQueenId, $inventory->getLocation()) < 1)
-            return $responseService->itemActionSuccess('Narrator: But there\'s was no Ant Queen for ' . $user->getName() . ' to give it to.');
+            return $responseService->itemActionSuccess('Narrator: But there was no Ant Queen for ' . $user->getName() . ' to give it to.');
 
         $inventoryService->receiveItem('Ant Queen\'s Favor', $user, $user, $user->getName() . ' received this from an Ant Queen in exchange for a Bee Larva...', $inventory->getLocation());
 

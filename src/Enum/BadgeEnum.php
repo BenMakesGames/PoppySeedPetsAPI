@@ -104,7 +104,9 @@ final class BadgeEnum
     public const ICE_MANGOES_10 = 'IceMangoes10';
 
     public const WHISPER_STONE = 'WhisperStone';
+
     public const HONORIFICABILITUDINITATIBUS = 'Honorificabilitudinitatibus';
+    public const SOUFFLE_STARTLER = 'SouffleStartler';
 
     public const OPENED_HAT_BOX_1 = 'OpenedHatBox1';
     public const OPENED_HAT_BOX_10 = 'OpenedHatBox10';
@@ -123,6 +125,9 @@ final class BadgeEnum
     public const FEED_THE_BEES_10 = 'FedBees10';
     public const FEED_THE_CENTIPEDES_10 = 'FedCentipedes10';
     public const PLAYING_BOTH_SIDES = 'FedAntsAndBees10';
+
+    public const WORKER_BEES_1000 = 'WorkerBees1000';
+    public const WORKER_BEES_10000 = 'WorkerBees10000';
 
     public const LONGEST_FIRE_1_HOUR = 'LongestFire60';
     public const LONGEST_FIRE_1_DAY = 'LongestFire1440';

@@ -89,6 +89,7 @@ Whatever the circumstances that lead to your overabundance of milk, fret not! Th
 * Pancakes
 * Plain Bread
 * Qatayef
+* Soufflé
 * Teas
 * Vichyssoise
 * Yogurt
@@ -202,6 +203,16 @@ A tasty Arabic dessert filled with nuts and cream! (It\'s a little involved, but
 * Baking Powder
 * Wheat Flour
 * Wheat
+
+#### Soufflé
+
+An airy, fluffy dish that is known for collapsing at the slightest provocation.
+
+* Creamy Milk!
+* Butter
+* Egg (the fats don\'t stop! they can\'t! they _won\'t_!)
+* Wheat Flour
+* Cream of Tartar
 
 #### Teas
 
