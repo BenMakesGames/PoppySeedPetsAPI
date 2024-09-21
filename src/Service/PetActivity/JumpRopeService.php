@@ -172,10 +172,11 @@ class JumpRopeService
 
         $animal = $this->rng->rngNextFromArray([
             'mongoose',
-            'possum',
+            'loris (the non-slow kind)',
             'anteater',
             'tree shrew',
             'mouse deer',
+            'rat',
         ]);
 
         $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' performed some Scissor Jumps with their Jump Rope. Their jumps were so sudden and so sharp, they startled a passing ' . $animal . ', which, in its confusion, ran close to ' . ActivityHelpers::PetName($pet) . ' and got some of its Fluff trimmed off!')
