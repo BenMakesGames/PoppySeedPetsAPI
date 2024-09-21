@@ -52,6 +52,7 @@ use App\Service\PetActivity\GuildService;
 use App\Service\PetActivity\HeartDimensionService;
 use App\Service\PetActivity\HuntingService;
 use App\Service\PetActivity\IcyMoonService;
+use App\Service\PetActivity\JumpRopeService;
 use App\Service\PetActivity\KappaService;
 use App\Service\PetActivity\LetterService;
 use App\Service\PetActivity\MagicBeanstalkService;
@@ -110,7 +111,8 @@ class PetActivityService
         private readonly KappaService $kappaService,
         private readonly FatedAdventureService $fatedAdventureService,
         private readonly PetCleaningSelfService $petCleaningSelfService,
-        private readonly CachingMeritAdventureService $cachingMeritAdventureService
+        private readonly CachingMeritAdventureService $cachingMeritAdventureService,
+        private readonly JumpRopeService $jumpRopeService
     )
     {
     }
@@ -729,6 +731,14 @@ class PetActivityService
                 if($this->rng->rngNextInt(1, 10) == 1)
                 {
                     $this->treasureMapService->doToastSkeweredMarshmallow($pet);
+                    return true;
+                }
+                break;
+
+            case 'Jump Rope':
+                if($this->rng->rngNextInt(1, 4) == 1)
+                {
+                    $this->jumpRopeService->adventure($petWithSkills);
                     return true;
                 }
                 break;

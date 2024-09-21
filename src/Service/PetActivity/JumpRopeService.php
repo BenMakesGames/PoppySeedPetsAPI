@@ -1,0 +1,365 @@
+<?php
+namespace App\Service\PetActivity;
+
+use App\Entity\PetActivityLog;
+use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogTagEnum;
+use App\Enum\PetActivityStatEnum;
+use App\Enum\PetSkillEnum;
+use App\Functions\ActivityHelpers;
+use App\Functions\AdventureMath;
+use App\Functions\ArrayFunctions;
+use App\Functions\DateFunctions;
+use App\Functions\ItemRepository;
+use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
+use App\Model\ComputedPetSkills;
+use App\Model\PetChanges;
+use App\Service\Clock;
+use App\Service\InventoryService;
+use App\Service\IRandom;
+use App\Service\PetExperienceService;
+use Doctrine\ORM\EntityManagerInterface;
+
+class JumpRopeService
+{
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly IRandom $rng,
+        private readonly InventoryService $inventoryService,
+        private readonly PetExperienceService $petExperienceService
+    )
+    {
+    }
+
+    public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $this->em->remove($pet->getTool());
+        $pet->setTool(null);
+
+        $changes = new PetChanges($pet);
+
+        // TODO: other things the pet can do in here?
+        $activityLog = match($this->rng->rngNextInt(1, 10))
+        {
+            1 => $this->basicBounce($petWithSkills),
+            2 => $this->crissCross($petWithSkills),
+            3 => $this->doubleUnder($petWithSkills),
+            4 => $this->scissorJump($petWithSkills),
+            5 => $this->toad($petWithSkills),
+            6 => $this->ropeRelease($petWithSkills),
+            7 => $this->heelToToe($petWithSkills),
+            8 => $this->mobiusFlip($petWithSkills),
+            9 => $this->shadowWeave($petWithSkills),
+            10 => $this->schrodingerSkip($petWithSkills),
+        };
+
+        $activityLog
+            ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
+            ->setChanges($changes->compare($pet))
+        ;
+
+        if(AdventureMath::petAttractsBug($this->rng, $pet, 75))
+            $this->inventoryService->petAttractsRandomBug($pet);
+
+        return $activityLog;
+    }
+
+    private function doBreakCheck(ComputedPetSkills $petWithSkills, int $difficulty, PetActivityLog $log)
+    {
+        $skillCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal());
+
+        if($skillCheck < $difficulty)
+        {
+            $log->setEntry($log->getEntry() . ' Unfortunately, the Jump Rope couldn\'t handle the stress, and fell apart!');
+
+            $pet = $petWithSkills->getPet();
+            $this->em->remove($pet->getTool());
+            $pet->setTool(null);
+        }
+    }
+
+    private function basicBounce(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $location = $this->rng->rngNextFromArray([
+            PetActivityLogTagEnum::Location_Neighborhood,
+            PetActivityLogTagEnum::Location_At_Home
+        ]);
+
+        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' performed some Basic Bounces with their Jump Rope.')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                PetActivityLogTagEnum::Adventure,
+                $location
+            ]));
+
+        $this->doBreakCheck($petWithSkills, 5, $log);
+
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $log);
+
+        return $log;
+    }
+
+    private function crissCross(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $location = $this->rng->rngNextFromArray([
+            PetActivityLogTagEnum::Location_Neighborhood,
+            PetActivityLogTagEnum::Location_At_Home
+        ]);
+
+        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' performed some Criss-crosses with their Jump Rope.')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                PetActivityLogTagEnum::Adventure,
+                $location
+            ]));
+
+        $this->doBreakCheck($petWithSkills, 7, $log);
+
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $log);
+
+        return $log;
+    }
+
+    private function doubleUnder(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $location = $this->rng->rngNextFromArray([
+            PetActivityLogTagEnum::Location_Neighborhood,
+            PetActivityLogTagEnum::Location_At_Home
+        ]);
+
+        $mineral = $this->rng->rngNextFromArray([
+            'Silica Grounds',
+            'Iron Ore',
+            'Silver Ore',
+            'Gold Ore',
+            'Gypsum',
+        ]);
+
+        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' performed some Double-unders with their Jump Rope. The strength of their jump rattled some nearby rocks, which crumbled, revealing some ' . $mineral . '.')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                PetActivityLogTagEnum::Adventure,
+                $location
+            ]));
+
+        $this->inventoryService->petCollectsItem($mineral, $pet, 'Fell out a rock that was shaken by ' . $pet->getName() . '\'s powerful jump rope skills.', $log);
+
+        $this->doBreakCheck($petWithSkills, 9, $log);
+
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $log);
+
+        return $log;
+    }
+
+    private function scissorJump(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $location = $this->rng->rngNextFromArray([
+            PetActivityLogTagEnum::Location_Neighborhood,
+            PetActivityLogTagEnum::Location_At_Home
+        ]);
+
+        $animal = $this->rng->rngNextFromArray([
+            'mongoose',
+            'possum',
+            'anteater',
+            'tree shrew',
+            'mouse deer',
+        ]);
+
+        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' performed some Scissor Jumps with their Jump Rope. Their jumps were so sudden and so sharp, they startled a passing ' . $animal . ', which, in its confusion, ran close to ' . ActivityHelpers::PetName($pet) . ' and got some of its Fluff trimmed off!')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                PetActivityLogTagEnum::Adventure,
+                $location
+            ]));
+
+        $this->inventoryService->petCollectsItem('Fluff', $pet, 'Trimmed off a passing ' . $animal . ' by ' . $pet->getName() . '\'s sharp jump rope skills.', $log);
+        $this->inventoryService->petCollectsItem('Fluff', $pet, 'Trimmed off a passing ' . $animal . ' by ' . $pet->getName() . '\'s sharp jump rope skills.', $log);
+
+        $this->doBreakCheck($petWithSkills, 13, $log);
+
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::CRAFTS ], $log);
+
+        return $log;
+    }
+
+    private function toad(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $location = $this->rng->rngNextFromArray([
+            PetActivityLogTagEnum::Location_Neighborhood,
+            PetActivityLogTagEnum::Location_Stream,
+            PetActivityLogTagEnum::Location_Hollow_Log,
+            PetActivityLogTagEnum::Location_Small_Lake,
+        ]);
+
+        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' performed some Toads with their Jump Rope - you know, where you cross your legs mid-air while doing a basic jump? An actual toad happened to be watching, and was so impressed it forgot its legs when it finally hopped away.')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                PetActivityLogTagEnum::Adventure,
+                $location
+            ]));
+
+        $this->inventoryService->petCollectsItem('Toad Legs', $pet, 'Dropped by a toad who was so impressed with ' . $pet->getName() . '\'s jump rope skills.', $log);
+
+        $this->doBreakCheck($petWithSkills, 15, $log);
+
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $log);
+
+        return $log;
+    }
+
+    private function ropeRelease(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $location = $this->rng->rngNextFromArray([
+            PetActivityLogTagEnum::Location_Micro_Jungle,
+        ]);
+
+        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' performed some Rope Releases with their Jump Rope - you know, where you let go of both handles while mid-jump, then catch them again? Except this one time, they caught some falling tree fruit, instead!')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                PetActivityLogTagEnum::Adventure,
+                $location
+            ]));
+
+        $fruit = [
+            'Naner',
+            'Cacao Fruit',
+            'Mango',
+            'Red',
+            'Orange',
+            'Pamplemousse',
+            'Yellowy Lime',
+        ];
+
+        shuffle($fruit);
+
+        $this->inventoryService->petCollectsItem($fruit[0], $pet, 'Fell out of a tree while ' . $pet->getName() . '\'s was practicing their jump rope skills.', $log);
+        $this->inventoryService->petCollectsItem($fruit[1], $pet, 'Fell out of a tree while ' . $pet->getName() . '\'s was practicing their jump rope skills.', $log);
+
+        $this->doBreakCheck($petWithSkills, 17, $log);
+
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::SCIENCE ], $log);
+
+        return $log;
+    }
+
+    private function heelToToe(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $location = $this->rng->rngNextFromArray([
+            PetActivityLogTagEnum::Location_Roadside_Creek,
+            PetActivityLogTagEnum::Location_Stream,
+            PetActivityLogTagEnum::Location_Small_Lake,
+        ]);
+
+        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' performed some Heel-to-Toes with their Jump Rope - you know, where you alternate between landing on your heel and toe in a fluid motion? The motion was _so_ fluid, some fish became confused and leapt out of the water, landing near ' . ActivityHelpers::PetName($pet) . '.')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                PetActivityLogTagEnum::Adventure,
+                $location
+            ]));
+
+        $this->inventoryService->petCollectsItem('Fish', $pet, 'Leapt out of the water due to ' . $pet->getName() . '\'s extremely fluid jump rope skills.', $log);
+        $this->inventoryService->petCollectsItem('Fish', $pet, 'Leapt out of the water due to ' . $pet->getName() . '\'s extremely fluid jump rope skills.', $log);
+
+        $this->doBreakCheck($petWithSkills, 20, $log);
+
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL, PetSkillEnum::SCIENCE ], $log);
+
+        return $log;
+    }
+
+    private function mobiusFlip(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $location = $this->rng->rngNextFromArray([
+            PetActivityLogTagEnum::Location_Abandoned_Quarry,
+            PetActivityLogTagEnum::Location_Neighborhood,
+            PetActivityLogTagEnum::Location_Roadside_Creek,
+        ]);
+
+        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' performed some Möbius Flips with their Jump Rope - you know, where you create a continuous loop with the rope while performing a backflip? The maneuver was so complex, it caused a hot dog to leap out of a nearby paper bag, and take on some complex properties of its own.')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                PetActivityLogTagEnum::Adventure,
+                $location
+            ]));
+
+        $this->inventoryService->petCollectsItem('Mandelbrat', $pet, 'Produced by ' . $pet->getName() . '\'s complex jump rope skills.', $log);
+
+        $this->doBreakCheck($petWithSkills, 23, $log);
+
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL, PetSkillEnum::SCIENCE ], $log);
+
+        return $log;
+    }
+
+    private function shadowWeave(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $location = $this->rng->rngNextFromArray([
+            PetActivityLogTagEnum::Location_Neighborhood,
+            PetActivityLogTagEnum::Location_Roadside_Creek
+        ]);
+
+        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' performed some Shadow Weaves with their Jump Rope - you know, where intricate manipulations of the rope make it appear as if its passing straight through you? The illusion was so convincing, the universe felt compelled to create and kick up some dust to try and conceal the act.')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                PetActivityLogTagEnum::Adventure,
+                $location
+            ]));
+
+        $this->inventoryService->petCollectsItem('Magic Smoke', $pet, 'Produced by the universe in response to ' . $pet->getName() . '\'s super-natural jump rope skills.', $log);
+
+        $this->doBreakCheck($petWithSkills, 26, $log);
+
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::BRAWL, PetSkillEnum::STEALTH, PetSkillEnum::ARCANA ], $log);
+
+        return $log;
+    }
+
+    private function schrodingerSkip(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $location = $this->rng->rngNextFromArray([
+            PetActivityLogTagEnum::Location_Neighborhood,
+            PetActivityLogTagEnum::Location_At_Home
+        ]);
+
+        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' performed some Schrödinger\'s Skips with their Jump Rope - you know, where you jump and don\'t jump at the same time? The act perturbed the surrounding fabric of space-time, creating some Strange Fields...')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                PetActivityLogTagEnum::Adventure,
+                $location
+            ]));
+
+        $this->inventoryService->petCollectsItem('Strange Field', $pet, 'Produced by ' . $pet->getName() . '\'s sci-fi jump rope skills.', $log);
+        $this->inventoryService->petCollectsItem('Strange Field', $pet, 'Produced by ' . $pet->getName() . '\'s sci-fi jump rope skills.', $log);
+
+        $this->doBreakCheck($petWithSkills, 30, $log);
+
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->gainExp($pet, 5, [ PetSkillEnum::BRAWL, PetSkillEnum::SCIENCE ], $log);
+
+        return $log;
+    }
+}
