@@ -97,16 +97,20 @@ class AdoptionService
 
         for($i = 0; $i < $numPets; $i++)
         {
+            if(CalendarFunctions::isTalkLikeAPirateDay($this->clock->now))
+                $name = PetShelterPet::generatePirateName($this->clock->now, $i);
+            else if(CalendarFunctions::isPiDay($this->clock->now))
+                $name = $squirrel3->rngNextFromArray([ 'Pi',  'Pi', 'Pie', 'Pie', 'Pie', 'Pie', 'Pie', 'Cake' ]);
+            else
+                $name = $squirrel3->rngNextFromArray(PetShelterPet::PET_NAMES);
+
             if($i < $numSeasonalPets)
             {
                 [$colorA, $colorB] = $squirrel3->rngNextSubsetFromArray($this->getSeasonalColors(), 2);
 
                 $seasonalNames = $this->getSeasonalNames();
 
-                if(count($seasonalNames) === $numSeasonalPets)
-                    $name = $seasonalNames[$i];
-                else
-                    $name = $squirrel3->rngNextFromArray($seasonalNames);
+                $name = $squirrel3->rngNextFromArray($seasonalNames);
             }
             else if($i === $numPets - 1 && !$isBlueMoon && !$isPinkMoon)
             {
@@ -121,8 +125,6 @@ class AdoptionService
 
                 $colorA = ColorFunctions::HSL2Hex($h1, $s1, $l1);
                 $colorB = ColorFunctions::HSL2Hex($h2, $s2, $l2);
-
-                $name = $squirrel3->rngNextFromArray(PetShelterPet::PET_NAMES);
             }
             else
             {
@@ -167,11 +169,6 @@ class AdoptionService
                     $colorA = $squirrel3->rngNextTweakedColor($basePet->getColorA());
                     $colorB = $squirrel3->rngNextTweakedColor($basePet->getColorB());
                 }
-
-                if(CalendarFunctions::isPiDay($this->clock->now))
-                    $name = $squirrel3->rngNextFromArray([ 'Pi',  'Pi', 'Pie', 'Pie', 'Pie', 'Pie', 'Pie', 'Cake' ]);
-                else
-                    $name = $squirrel3->rngNextFromArray(PetShelterPet::PET_NAMES);
             }
 
             $pet = new PetShelterPet();
@@ -310,9 +307,6 @@ class AdoptionService
 
         if(CalendarFunctions::isHalloween($this->clock->now))
             return PetShelterPet::PET_HALLOWEEN_NAMES;
-
-        if(CalendarFunctions::isTalkLikeAPirateDay($this->clock->now))
-            return PetShelterPet::PET_PIRATE_NAMES;
 
         // PSP Thanksgiving overlaps Black Friday, but for pet adoption purposes, we want Black Friday to win out:
         if(CalendarFunctions::isBlackFriday($this->clock->now))

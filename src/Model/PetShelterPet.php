@@ -65,15 +65,30 @@ class PetShelterPet
         'Zofija', 'Zuan', 'Zygmunt'
     ];
 
-    public const PET_PIRATE_NAMES = [
-        'Captain Jim Starling',
-        'Captain Jake Robin',
-        'Captain John Parrot',
-        'Captain Jorge Dove',
-        'Captain Jane Seagull',
-        'Captain Jill Hummingbird',
-        'Captain Jeff Chickadee',
-    ];
+    public static function generatePirateName(\DateTimeImmutable $dt, int $index)
+    {
+        $i1 = (int)$dt->format('jz') + $index * (int)$dt->format('w') * 71; // 71 = a small prime
+        $i2 = (int)$dt->format('Yz') + $index * (int)$dt->format('N') * 167; // 167 = a slightly-larger prime
+
+        // all names have one syllable. except Jorge.
+        $firstNames = [
+            'Jake', 'Jade', 'Jane', 'Jay', 'Jax', 'Jaz', 'Jean', 'Jed', 'Jeff', 'Jen', 'Jess', 'Jet', 'Jewel', 'Jill',
+            'Jim', 'Jin', 'Jo', 'Joan', 'Joe', 'Joel', 'John', 'Joon', 'Jorge', 'Joy', 'Joyce', 'Juan', 'Jude', 'Jules',
+            'Jun',
+        ];
+
+        // all names have two syllables
+        $birds = [
+            'Robin', 'Seagull', 'Spearow', 'Starling', 'Parrot', 'Nuthatch', 'Titmouse', 'Puffin', 'Goldfinch',
+            'Warbler', 'Penguin', 'Owlet', 'Martin', 'Magpie', 'Antwren', 'Lovebird', 'Fruitdove', 'Waxbill',
+        ];
+
+        $firstName = $firstNames[$i1 % count($firstNames)];
+        $lastName = $birds[$i2 % count($birds)];
+
+        return 'Captain ' . $firstName . ' ' . $lastName;
+    }
+
 
     public const PET_HALLOWEEN_NAMES = [
         'Pumpkin', 'Luna', 'Magic', 'Bones', 'Haunt', 'Spirit', 'Cauldron', 'Werewolf', 'Vampire',

@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
+use App\Enum\StatusEffectEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
@@ -15,6 +16,7 @@ use App\Functions\CalendarFunctions;
 use App\Functions\ItemRepository;
 use App\Functions\MeritRepository;
 use App\Functions\ProfanityFilterFunctions;
+use App\Functions\StatusEffectHelpers;
 use App\Functions\UserQuestRepository;
 use App\Model\PetShelterPet;
 use App\Repository\PetRepository;
@@ -91,7 +93,11 @@ class AdoptController extends AbstractController
         if($numberOfPetsAtHome >= $user->getMaxPets())
             $newPet->setLocation(PetLocationEnum::DAYCARE);
 
-        if(CalendarFunctions::isLeapDay($clock->now))
+        if(CalendarFunctions::isTalkLikeAPirateDay($clock->now))
+        {
+            StatusEffectHelpers::applyStatusEffect($em, $newPet, StatusEffectEnum::FATED_SOAKEDLY, 1);
+        }
+        else if(CalendarFunctions::isLeapDay($clock->now))
         {
             $newPet->addMerit(MeritRepository::findOneByName($em, 'Behatted'));
 
