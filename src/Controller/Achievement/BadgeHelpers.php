@@ -550,7 +550,7 @@ final class BadgeHelpers
                 break;
 
             case BadgeEnum::SOUFFLE_STARTLER:
-                $progress = [ 'target' => 1, 'current' => self::getStatTotal($user, [ 'Startled Soufflé' ], $em, $cache) ];
+                $progress = [ 'target' => 1, 'current' => self::getStatTotal($user, [ 'Soufflés Startled' ], $em, $cache) ];
                 $reward = TraderOfferCostOrYield::createMoney(10);
                 break;
 
