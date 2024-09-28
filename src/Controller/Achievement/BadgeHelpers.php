@@ -30,7 +30,7 @@ final class BadgeHelpers
 
     private static function getWorkerBeeCount(User $user): int
     {
-        return $user->getBeehive()->getWorkers();
+        return $user->getBeehive()?->getWorkers() ?? 0;
     }
 
     private static function getUnlockedAuras(User $user): int
