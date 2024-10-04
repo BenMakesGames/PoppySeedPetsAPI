@@ -36,12 +36,8 @@ class JumpRopeService
     {
         $pet = $petWithSkills->getPet();
 
-        $this->em->remove($pet->getTool());
-        $pet->setTool(null);
-
         $changes = new PetChanges($pet);
 
-        // TODO: other things the pet can do in here?
         $activityLog = match($this->rng->rngNextInt(1, 10))
         {
             1 => $this->basicBounce($petWithSkills),
