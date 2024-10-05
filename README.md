@@ -23,3 +23,29 @@
 UPDATE user SET email=CONCAT(id, '@poppyseedpets.com') WHERE email NOT LIKE '%@poppyseedpets.com';
 ```
 
+## Other Config Considerations
+
+### Brotli
+
+After the brotli mod is installed and enabled, use these rules to compress API responses (`application/json`):
+
+```
+<IfModule mod_brotli.c>
+    AddOutputFilterByType BROTLI_COMPRESS application/json
+
+    BrotliCompressionQuality 6
+    BrotliCompressionWindow 19
+    BrotliCompressionMaxInputBlock 18
+
+    Header append Vary Accept-Encoding env=!dont-vary
+</IfModule>
+```
+
+The largest API calls happen when the player views their house (pets & items). I was seeing requests that rarely even get to 200KB, but I'm sure some whacky user has many hundreds of items and maybe gets to 1MB.
+
+* BrotliCompressionWindow of 19 = 512KB
+* BrotliCompressionMaxInputBlock of 18 = 256KB
+
+We could probably go even lower, but these values are already smaller (less RAM-using) than typical settings that "balance for performance", so I'm sure it's fine :P
+
+The `Header append Vary Accept-Encoding` setting is because the API sits behind the AWS load balancer - a proxy - and we need to tell that proxy that the `Accept-Encoding` header is important information for us, and to please pass it along.
