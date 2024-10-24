@@ -23,17 +23,11 @@ final class Showcase extends AbstractController
     {
         $db = SimpleDb::createReadOnlyConnection();
 
-        $time = microtime(true);
-
         $totalCount = $db->query('SELECT COUNT(DISTINCT(user_id)) FROM user_badge')->getSingleValue();
-
-        $performanceProfiler->logExecutionTime(__METHOD__ . ' - Count', microtime(true) - $time);
 
         $totalPages = ceil($totalCount / self::PAGE_SIZE);
 
         $page = min($request->query->getInt('page', 0), $totalPages - 1);
-
-        $time = microtime(true);
 
         $achievers = SimpleDb::createReadOnlyConnection()
             ->query(
@@ -55,8 +49,6 @@ final class Showcase extends AbstractController
                     'icon' => $icon,
                 ]
             ]);
-
-        $performanceProfiler->logExecutionTime(__METHOD__ . ' - Get Page', microtime(true) - $time);
 
         return $responseService->success([
             'pageSize' => self::PAGE_SIZE,
