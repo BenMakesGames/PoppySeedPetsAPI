@@ -18,7 +18,7 @@ final class Showcase extends AbstractController
     #[Route("/showcase", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getShowcase(
-        ResponseService $responseService, Request $request, PerformanceProfiler $performanceProfiler
+        ResponseService $responseService, Request $request
     )
     {
         $db = SimpleDb::createReadOnlyConnection();
