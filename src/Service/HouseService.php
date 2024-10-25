@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Entity\Pet;
 use App\Entity\User;
+use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
@@ -122,6 +123,7 @@ class HouseService
     /**
      * @param Pet[] $petsWithTime
      * @return Pet[]
+     * @throws EnumInvalidValueException
      */
     private function processPets(array $petsWithTime): array
     {
@@ -131,7 +133,9 @@ class HouseService
         {
             if($pet->getHouseTime()->getActivityTime() >= 60)
             {
+                $time = microtime(true);
                 $this->petActivityService->runHour($pet);
+                $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - Ran Pet Hour', microtime(true) - $time);
             }
 
             $hungOut = false;
