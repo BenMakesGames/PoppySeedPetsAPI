@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[ORM\Table]
 #[ORM\Index(name: 'commitment_idx', columns: ['commitment'])]
+#[ORM\Index(name: 'current_relationship_idx', columns: ['current_relationship'])]
 #[ORM\Entity(repositoryClass: 'App\Repository\PetRelationshipRepository')]
 class PetRelationship
 {
@@ -55,10 +56,8 @@ class PetRelationship
     #[ORM\Column(type: 'integer')]
     private $commitment;
 
-    /**
-     * @Groups({"petFriend"})
-     * @SerializedName("commitment")
-     */
+    #[Groups(["petFriend"])]
+    #[SerializedName("commitment")]
     #[ORM\Column(type: 'smallint')]
     private $rating = 0;
 

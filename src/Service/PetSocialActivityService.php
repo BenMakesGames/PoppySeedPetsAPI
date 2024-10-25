@@ -36,12 +36,17 @@ class PetSocialActivityService
         private readonly HoliService $holiService,
         private readonly PetRelationshipRepository $petRelationshipRepository,
         private readonly PregnancyService $pregnancyService,
-        private readonly AwaOdoriService $awaOdoriService
+        private readonly AwaOdoriService $awaOdoriService,
+        private readonly PerformanceProfiler $performanceProfiler
     )
     {
     }
 
-    public function runSocialTime(Pet $pet): bool
+    /**
+     * @param Pet[] $roommates
+     * @throws EnumInvalidValueException
+     */
+    public function runSocialTime(Pet $pet, array $roommates): bool
     {
         if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
         {
@@ -55,7 +60,7 @@ class PetSocialActivityService
             return false;
         }
 
-        if(!$pet->hasStatusEffect(StatusEffectEnum::WEREFORM) && $this->meetRoommates($pet))
+        if(!$pet->hasStatusEffect(StatusEffectEnum::WEREFORM) && $this->meetRoommates($pet, $roommates))
         {
             $this->petExperienceService->spendSocialEnergy($pet, PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT);
             return true;
@@ -123,7 +128,11 @@ class PetSocialActivityService
 
     public function recomputeFriendRatings(Pet $pet)
     {
+        $time = microtime(true);
+
         $friends = $this->petRelationshipRepository->getFriends($pet);
+
+        $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - Fetch Friends', microtime(true) - $time);
 
         if(count($friends) == 0)
             return;
@@ -579,37 +588,28 @@ class PetSocialActivityService
         ;
     }
 
-    private function meetRoommates(Pet $pet): bool
+    /**
+     * @param Pet[] $roommates
+     */
+    private function meetRoommates(Pet $pet, array $roommates): bool
     {
-        /** @var Pet[] $otherPets */
-        $otherPets = $this->em->getRepository(Pet::class)->createQueryBuilder('p')
-            ->andWhere('p.owner = :owner')
-            ->andWhere('p.location = :home')
-            ->andWhere('p.id != :thisPet')
-            ->setParameter('owner', $pet->getOwner())
-            ->setParameter('thisPet', $pet->getId())
-            ->setParameter('home', PetLocationEnum::HOME)
-            ->getQuery()
-            ->getResult()
-        ;
-
         $metNewPet = false;
 
-        foreach($otherPets as $otherPet)
+        foreach($roommates as $roommate)
         {
-            if($otherPet->hasMerit(MeritEnum::AFFECTIONLESS))
+            if($roommate->hasMerit(MeritEnum::AFFECTIONLESS))
                 continue;
 
-            if(!$pet->hasRelationshipWith($otherPet))
+            if(!$pet->hasRelationshipWith($roommate))
             {
                 $metNewPet = true;
-                $this->petRelationshipService->meetRoommate($pet, $otherPet);
+                $this->petRelationshipService->meetRoommate($pet, $roommate);
             }
 
-            if(!$otherPet->hasRelationshipWith($pet))
+            if(!$roommate->hasRelationshipWith($pet))
             {
                 $metNewPet = true;
-                $this->petRelationshipService->meetRoommate($otherPet, $pet);
+                $this->petRelationshipService->meetRoommate($roommate, $pet);
             }
         }
 

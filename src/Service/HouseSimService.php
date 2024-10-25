@@ -15,29 +15,35 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class HouseSimService
 {
-    // services
-    private EntityManagerInterface $em;
-
     // data
     private IHouseSim $houseState;
     private array $petIdsThatRanSocialTime = [];
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly PerformanceProfiler $performanceProfiler
+    )
     {
-        $this->em = $em;
-
         $this->houseState = new NoHouseSim();
     }
 
     public function begin(EntityManagerInterface $em, User $user)
     {
+        $time = microtime(true);
+
         $inventory = $em->getRepository(Inventory::class)->findBy([
             'owner' => $user,
             'location' => LocationEnum::HOME
         ]);
 
+        $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - Fetch Inventory', microtime(true) - $time);
+
+        $time = microtime(true);
+
         $this->houseState = new HouseSim($inventory);
         $this->petIdsThatRanSocialTime = [];
+
+        $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - Tally Inventory', microtime(true) - $time);
     }
 
     public function end(EntityManagerInterface $em)

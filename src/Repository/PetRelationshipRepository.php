@@ -21,7 +21,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PetRelationshipRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(
+        ManagerRegistry $registry,
+        private readonly PerformanceProfiler $performanceProfiler
+    )
     {
         parent::__construct($registry, PetRelationship::class);
     }
@@ -32,6 +35,8 @@ class PetRelationshipRepository extends ServiceEntityRepository
     public function getRelationshipsToHangOutWith(Pet $pet): array
     {
         $maxFriendsToConsider = $pet->getMaximumFriends();
+
+        $time = microtime(true);
 
         $qb = $this->createQueryBuilder('r')
             ->leftJoin('r.pet', 'pet')
@@ -50,6 +55,8 @@ class PetRelationshipRepository extends ServiceEntityRepository
         ;
 
         $friends = $qb->getQuery()->execute();
+
+        $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - SQL query', microtime(true) - $time);
 
         if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
         {

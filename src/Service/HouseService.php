@@ -21,7 +21,8 @@ class HouseService
         private readonly IRandom $squirrel3,
         private readonly HouseSimService $houseSimService,
         private readonly SagaSagaService $sagaSagaService,
-        private readonly PetSocialActivityService $petSocialActivityService
+        private readonly PetSocialActivityService $petSocialActivityService,
+        private readonly PerformanceProfiler $performanceProfiler
     )
     {
     }
@@ -99,6 +100,8 @@ class HouseService
 
         if(count($petsWithTime) > 0)
         {
+            $time = microtime(true);
+
             $this->houseSimService->begin($this->em, $user);
 
             while(count($petsWithTime) > 0)
@@ -111,6 +114,8 @@ class HouseService
             $this->houseSimService->end($this->em);
 
             $this->em->flush();
+
+            $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - Ran Hours', microtime(true) - $time);
         }
     }
 
@@ -133,8 +138,10 @@ class HouseService
 
             if($this->petCanRunSocialTime($pet))
             {
+                $roommates = array_filter($petsWithTime, fn(Pet $p) => $p !== $pet);
+
                 // only one social activity per request, to avoid weird bugs...
-                $hungOut = $this->petSocialActivityService->runSocialTime($pet);
+                $hungOut = $this->petSocialActivityService->runSocialTime($pet, $roommates);
 
                 if($hungOut)
                     $this->petSocialActivityService->recomputeFriendRatings($pet);
