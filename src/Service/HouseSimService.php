@@ -38,12 +38,8 @@ class HouseSimService
 
         $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - Fetch Inventory', microtime(true) - $time);
 
-        $time = microtime(true);
-
         $this->houseState = new HouseSim($inventory);
         $this->petIdsThatRanSocialTime = [];
-
-        $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - Tally Inventory', microtime(true) - $time);
     }
 
     public function end(EntityManagerInterface $em)
