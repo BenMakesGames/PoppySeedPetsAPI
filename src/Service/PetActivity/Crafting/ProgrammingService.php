@@ -854,7 +854,7 @@ class ProgrammingService
             $this->houseSimService->getState()->loseItem('Regex', 1);
             $this->houseSimService->getState()->loseItem('4-function Calculator', 1);
             $pet->increaseEsteem(1);
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% calculated Viswanath\'s Constant.')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% computed a Hapax Legomenon.')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
