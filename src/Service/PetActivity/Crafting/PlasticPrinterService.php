@@ -76,7 +76,8 @@ class PlasticPrinterService
 
     private function printerActingUp(Pet $pet): PetActivityLog
     {
-        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to print something out of Plastic, but the 3D Printer kept acting up.', 'icons/activity-logs/confused')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to print something out of Plastic, but the 3D Printer kept acting up.')
+            ->setIcon('icons/activity-logs/confused')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                 '3D Printing',
                 PetActivityLogTagEnum::Location_At_Home
@@ -101,7 +102,7 @@ class PlasticPrinterService
 
             $pet->increaseEsteem(2);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Plastic Fishing Rod.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Plastic Fishing Rod.')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     '3D Printing',
@@ -133,7 +134,7 @@ class PlasticPrinterService
 
             $pet->increaseEsteem(2);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Nonsenserang!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Nonsenserang!')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     '3D Printing',
@@ -168,7 +169,6 @@ class PlasticPrinterService
             ;
 
             $pet->increaseEsteem(3);
-            $this->petExperienceService->gainExp($pet, $getExtraStuff ? 3 : 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ]);
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::PLASTIC_PRINT, true);
 
             if($getExtraStuff)
@@ -177,7 +177,7 @@ class PlasticPrinterService
                     'Fluff', 'Feathers', 'Dark Matter', 'Aging Powder', 'Baking Powder', 'Spider', 'Moon Dust',
                 ]));
 
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created an Evil Feather Duster. While they were testing it out, they found ' . $extraLoot->getNameWithArticle() . '!', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created an Evil Feather Duster. While they were testing it out, they found ' . $extraLoot->getNameWithArticle() . '!')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 21)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         '3D Printing',
@@ -189,7 +189,7 @@ class PlasticPrinterService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created an Evil Feather Duster.', '')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created an Evil Feather Duster.')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         '3D Printing',
@@ -199,6 +199,7 @@ class PlasticPrinterService
             }
 
             $this->inventoryService->petCollectsItem('Evil Feather Duster', $pet, $pet->getName() . ' created this from Black Feathers and Plastic.', $activityLog);
+            $this->petExperienceService->gainExp($pet, $getExtraStuff ? 3 : 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ], $activityLog);
 
             return $activityLog;
         }
@@ -218,7 +219,7 @@ class PlasticPrinterService
             $this->houseSimService->getState()->loseItem('Iron Bar', 1);
             $this->houseSimService->getState()->loseItem('Plastic', 1);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Compass.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Compass.')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     '3D Printing',
@@ -288,7 +289,7 @@ class PlasticPrinterService
             $this->houseSimService->getState()->loseItem('String', 1);
             $this->houseSimService->getState()->loseItem('Antenna', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% printed up and decorated a Dicerca mask.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% printed up and decorated a Dicerca mask.')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     '3D Printing',
@@ -318,7 +319,7 @@ class PlasticPrinterService
             $this->houseSimService->getState()->loseItem('Yellow Dye', 1);
             $this->houseSimService->getState()->loseItem('Plastic', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% printed a Toy Alien Gun.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% printed a Toy Alien Gun.')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     '3D Printing',
@@ -359,7 +360,7 @@ class PlasticPrinterService
 
         if($roll >= 30 && $pet->hasMerit(MeritEnum::BEHATTED))
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created ' . $itemToCraft->getNameWithArticle() . '... and a pair of Googly Eyes with bits of leftover Plastic!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created ' . $itemToCraft->getNameWithArticle() . '... and a pair of Googly Eyes with bits of leftover Plastic!')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 30)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     '3D Printing',
@@ -373,7 +374,7 @@ class PlasticPrinterService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created ' . $itemToCraft->getNameWithArticle() . '.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created ' . $itemToCraft->getNameWithArticle() . '.')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     '3D Printing',
@@ -402,7 +403,7 @@ class PlasticPrinterService
 
         $pet->increaseEsteem(2);
 
-        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Plastic Idol.', '')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Plastic Idol.')
             ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                 '3D Printing',
@@ -430,7 +431,7 @@ class PlasticPrinterService
 
             $pet->increaseEsteem(2);
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% zhuzhed up a Grabby Arm, turning it into a Dino Grabby Arm.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% zhuzhed up a Grabby Arm, turning it into a Dino Grabby Arm.')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     '3D Printing',

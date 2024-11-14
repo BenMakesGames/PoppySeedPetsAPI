@@ -11,6 +11,7 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
@@ -137,17 +138,24 @@ class EatingService
 
         if($food->leftovers)
         {
-            $leftoverNames = [];
-
-            foreach($food->leftovers as $leftoverItem)
-            {
-                $leftoverNames[] = $leftoverItem->getNameWithArticle();
-                $this->inventoryService->petCollectsItem($leftoverItem, $pet, $pet->getName() . ' ate ' . GrammarFunctions::indefiniteArticle($food->name) . ' ' . $food->name . '; this was left over.', null);
-            }
+            $leftoverNames = array_map(fn(Item $item) => $item->getNameWithArticle(), $food->leftovers);
 
             $wasOrWere = count($food->leftovers) === 1 ? 'was' : 'were';
 
-            $this->responseService->addFlashMessage('After ' . $pet->getName() . ' ate the ' . $food->name . ', ' . ArrayFunctions::list_nice($leftoverNames) . ' ' . $wasOrWere . ' left over.');
+            $changes = new PetChanges($pet);
+
+            $activityLog = PetActivityLogFactory::createUnreadLog(
+                $this->em,
+                $pet,
+                'After ' . $pet->getName() . ' ate the ' . $food->name . ', ' . ArrayFunctions::list_nice($leftoverNames) . ' ' . $wasOrWere . ' left over.'
+            );
+
+            foreach($food->leftovers as $leftoverItem)
+                $this->inventoryService->petCollectsItem($leftoverItem, $pet, $pet->getName() . ' ate ' . GrammarFunctions::indefiniteArticle($food->name) . ' ' . $food->name . '; this was left over.', $activityLog);
+
+            $activityLog
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Eating ]))
+                ->setChanges($changes->compare($pet));
         }
 
         $bonusItems = [];
@@ -193,7 +201,7 @@ class EatingService
 
             $activityLog
                 ->setChanges($changes->compare($pet))
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Lucky Food' ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Lucky_Food ]))
             ;
         }
 

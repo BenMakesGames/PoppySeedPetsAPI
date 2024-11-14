@@ -39,7 +39,7 @@ class PetExperienceService
      * @param string[] $stats
      * @throws EnumInvalidValueException
      */
-    public function gainExp(Pet $pet, int $exp, array $stats, ?PetActivityLog $activityLog = null): bool
+    public function gainExp(Pet $pet, int $exp, array $stats, PetActivityLog $activityLog): bool
     {
         if(count($stats) == 0) return false;
 
@@ -93,7 +93,7 @@ class PetExperienceService
                 $pet->getSkills()->increaseScrollLevels();
                 $this->userStatsRepository->incrementStat($pet->getOwner(), 'Skill Scrolls Made by Pets');
 
-                $newItem = $this->inventoryService->petCollectsItem('Skill Scroll: ' . $statToLevel, $pet, $pet->getName() . ', a ' . $statToLevel . '-master, produced this scroll.', null);
+                $newItem = $this->inventoryService->petCollectsItem('Skill Scroll: ' . $statToLevel, $pet, $pet->getName() . ', a ' . $statToLevel . '-master, produced this scroll.', $activityLog);
                 $newItem->setLockedToOwner(true);
             }
             else

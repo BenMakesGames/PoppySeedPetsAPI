@@ -1053,7 +1053,6 @@ class UmbraService
             if($roll >= 30)
                 $prizes[] = $this->squirrel3->rngNextFromArray($possiblePrizes);
 
-            $this->petExperienceService->gainExp($pet, 2 + count($prizes), [ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ]);
             $pet
                 ->increaseEsteem(3)
                 ->increaseSafety(3)
@@ -1065,6 +1064,8 @@ class UmbraService
 
             foreach($prizes as $prize)
                 $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' defeated an Abandondero, and took this.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 2 + count($prizes), [ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
         }
         else
         {
