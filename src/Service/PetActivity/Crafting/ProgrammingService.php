@@ -859,7 +859,7 @@ class ProgrammingService
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::PROGRAM, true);
                 $this->houseSimService->getState()->loseItem('Regex', 1);
                 $this->houseSimService->getState()->loseItem('Hash Table', 1);
-                $pet->increaseEsteem(1);
+                $pet->increaseEsteem(3);
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% computed a Hapax Legomenon with the help of a 4-function Calculator that they found ' . $whereFound . '!')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15 + 10)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
