@@ -1161,12 +1161,12 @@ class MagicBindingService
 
             $this->houseSimService->getState()->loseItem('Musical Scales', 1);
 
-            for($i = 0; $i < 6; $i++)
-                $this->inventoryService->petCollectsItem('Music Note', $pet, $pet->getName() . ' accidentally broke apart Musical Scales into Music Notes, of which this is one.', null);
-
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Dancing Sword, but accidentally dropped the Musical Scales, scattering Music Notes everywhere, and breaking one.', '')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
+
+            for($i = 0; $i < 6; $i++)
+                $this->inventoryService->petCollectsItem('Music Note', $pet, $pet->getName() . ' accidentally broke apart Musical Scales into Music Notes, of which this is one.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA, PetSkillEnum::MUSIC ], $activityLog);
         }

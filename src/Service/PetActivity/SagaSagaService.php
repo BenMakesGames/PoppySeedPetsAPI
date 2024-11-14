@@ -49,7 +49,12 @@ class SagaSagaService
 
         $skill = $this->rng->rngNextFromArray($possibleSkills);
 
-        $this->inventoryService->petCollectsItem('Skill Scroll: ' . $skill, $pet, $pet->getName() . ' was transformed into this scroll!', null);
+        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' got 5 points in ' . $skill . ', and was transformed into a skill scroll! All that remains is their ghost...')
+            ->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY)
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Level-up' ]))
+        ;
+
+        $this->inventoryService->petCollectsItem('Skill Scroll: ' . $skill, $pet, $pet->getName() . ' was transformed into this scroll!', $log);
 
         $pet
             ->removeMerit(MeritRepository::findOneByName($this->em, MeritEnum::SAGA_SAGA))
@@ -75,12 +80,7 @@ class SagaSagaService
             ->setActivityTime(0)
         ;
 
-        PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' got 5 points in ' . $skill . ', and was transformed into a skill scroll! All that remains is their ghost...')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY)
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Level-up' ]))
-        ;
-
-        $this->responseService->setReloadPets(true);
+        $this->responseService->setReloadPets();
 
         $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::COMPLETED_A_SAGA_SAGA);
 
