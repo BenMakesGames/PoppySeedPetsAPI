@@ -107,9 +107,6 @@ class ProgrammingService
         {
             if($this->houseSimService->hasInventory('Password'))
                 $possibilities[] = new ActivityCallback($this->createBruteForce(...), 10);
-
-            if($this->houseSimService->hasInventory('4-function Calculator'))
-                $possibilities[] = new ActivityCallback($this->createHapaxLegomenon(...), 10);
         }
 
         if($this->houseSimService->hasInventory('Brute Force') && $this->houseSimService->hasInventory('XOR') && $this->houseSimService->hasInventory('Gold Bar'))
@@ -128,6 +125,9 @@ class ProgrammingService
 
             if($this->houseSimService->hasInventory('Ruler'))
                 $possibilities[] = new ActivityCallback($this->createViswanathsConstant(...), 10);
+
+            if($this->houseSimService->hasInventory('Regex'))
+                $possibilities[] = new ActivityCallback($this->createHapaxLegomenon(...), 10);
 
             if($this->houseSimService->hasInventory('XOR') && $this->houseSimService->hasInventory('Fiberglass Bow'))
                 $possibilities[] = new ActivityCallback($this->createResonatingBow(...), 10);
@@ -781,48 +781,45 @@ class ProgrammingService
         $pet = $petWithSkills->getPet();
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
-        $lucky = $pet->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 60) == 1;
+        $has4FunctionCalculator = $this->houseSimService->hasInventory('4-function Calculator');
 
-        if($lucky || $this->rng->rngNextInt(1, 100) == 1)
+        if(!$has4FunctionCalculator)
+            $roll -= 10;
+
+        if($roll >= 16)
         {
-            $whereFound = $this->getDescriptionOfRummageLocation();
-
-            $tags = [ 'Programming' ];
-            $exclamation = '!';
-
-            if($lucky)
+            if(!$has4FunctionCalculator)
             {
-                $tags[] = 'Lucky~!';
-                $exclamation .= ' (Lucky~!)';
+                $whereFound = $this->getDescriptionOfRummageLocation();
+
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::PROGRAM, true);
+                $this->houseSimService->getState()->loseItem('Hash Table', 1);
+                $this->houseSimService->getState()->loseItem('Ruler', 1);
+                $pet->increaseEsteem(3);
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% calculated Viswanath\'s Constant with the help of a 4-function Calculator that they found ' . $whereFound . '!')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16 + 10)
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
+                ;
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->inventoryService->petCollectsItem('Viswanath\'s Constant', $pet, $pet->getName() . ' calculated this.', $activityLog);
+                $this->inventoryService->petCollectsItem('4-function Calculator', $pet, $pet->getName() . ' rummaged around the house, and found this ' . $whereFound . '!', $activityLog);
+
+                return $activityLog;
             }
-
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::PROGRAM, true);
-            $this->houseSimService->getState()->loseItem('Hash Table', 1);
-            $this->houseSimService->getState()->loseItem('Ruler', 1);
-            $pet->increaseEsteem(3);
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% calculated Viswanath\'s Constant with the help of a 4-function Calculator that they found ' . $whereFound . $exclamation)
-                ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags))
-            ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->inventoryService->petCollectsItem('Viswanath\'s Constant', $pet, $pet->getName() . ' calculated this.', $activityLog);
-            $this->inventoryService->petCollectsItem('4-function Calculator', $pet, $pet->getName() . ' rummaged around the house, and found this ' . $whereFound . $exclamation, $activityLog);
-
-            return $activityLog;
-        }
-        else if($roll >= 16)
-        {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
-            $this->houseSimService->getState()->loseItem('Hash Table', 1);
-            $this->houseSimService->getState()->loseItem('Ruler', 1);
-            $pet->increaseEsteem(1);
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% calculated Viswanath\'s Constant.')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
-            ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->inventoryService->petCollectsItem('Viswanath\'s Constant', $pet, $pet->getName() . ' calculated this.', $activityLog);
-            return $activityLog;
+            else
+            {
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+                $this->houseSimService->getState()->loseItem('Hash Table', 1);
+                $this->houseSimService->getState()->loseItem('Ruler', 1);
+                $pet->increaseEsteem(1);
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% calculated Viswanath\'s Constant.')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
+                ;
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->inventoryService->petCollectsItem('Viswanath\'s Constant', $pet, $pet->getName() . ' calculated this.', $activityLog);
+                return $activityLog;
+            }
         }
         else
         {
@@ -848,19 +845,44 @@ class ProgrammingService
         $pet = $petWithSkills->getPet();
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
+        $has4FunctionCalculator = $this->houseSimService->hasInventory('4-function Calculator');
+
+        if(!$has4FunctionCalculator)
+            $roll -= 10;
+
         if($roll >= 15)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
-            $this->houseSimService->getState()->loseItem('Regex', 1);
-            $this->houseSimService->getState()->loseItem('4-function Calculator', 1);
-            $pet->increaseEsteem(1);
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% computed a Hapax Legomenon.')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
-            ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->inventoryService->petCollectsItem('Hapax Legomenon', $pet, $pet->getName() . ' calculated this.', $activityLog);
-            return $activityLog;
+            if(!$has4FunctionCalculator)
+            {
+                $whereFound = $this->getDescriptionOfRummageLocation();
+
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::PROGRAM, true);
+                $this->houseSimService->getState()->loseItem('Regex', 1);
+                $this->houseSimService->getState()->loseItem('Hash Table', 1);
+                $pet->increaseEsteem(1);
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% computed a Hapax Legomenon with the help of a 4-function Calculator that they found ' . $whereFound . '!')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15 + 10)
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
+                ;
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->inventoryService->petCollectsItem('Hapax Legomenon', $pet, $pet->getName() . ' calculated this.', $activityLog);
+                $this->inventoryService->petCollectsItem('4-function Calculator', $pet, $pet->getName() . ' rummaged around the house, and found this ' . $whereFound . '!', $activityLog);
+                return $activityLog;
+            }
+            else
+            {
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+                $this->houseSimService->getState()->loseItem('Regex', 1);
+                $this->houseSimService->getState()->loseItem('Hash Table', 1);
+                $pet->increaseEsteem(1);
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% computed a Hapax Legomenon with the help of a 4-function Calculator.')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
+                ;
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->inventoryService->petCollectsItem('Hapax Legomenon', $pet, $pet->getName() . ' calculated this.', $activityLog);
+                return $activityLog;
+            }
         }
         else
         {
@@ -931,47 +953,44 @@ class ProgrammingService
         $pet = $petWithSkills->getPet();
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
 
-        $lucky = $pet->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 60) == 1;
+        $has4FunctionCalculator = $this->houseSimService->hasInventory('4-function Calculator');
 
-        if($lucky || $this->rng->rngNextInt(1, 100) == 1)
+        if(!$has4FunctionCalculator)
+            $roll -= 10;
+
+        if($roll >= 17)
         {
-            $whereFound = $this->getDescriptionOfRummageLocation();
-
-            $tags = [ 'Programming' ];
-            $exclamation = '!';
-
-            if($lucky)
+            if(!$has4FunctionCalculator)
             {
-                $tags[] = 'Lucky~!';
-                $exclamation .= ' (Lucky~!)';
-            }
+                $whereFound = $this->getDescriptionOfRummageLocation();
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::PROGRAM, true);
-            $this->houseSimService->getState()->loseItem('Imaginary Number', 1);
-            $this->houseSimService->getState()->loseItem('Painted Boomerang', 1);
-            $pet->increaseEsteem(5);
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% computed a Strange Attractor with the help of a 4-function Calculator that they found ' . $whereFound . $exclamation)
-                ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags))
-            ;
-            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->inventoryService->petCollectsItem('Strange Attractor', $pet, $pet->getName() . ' computed this from a Painted Boomerang and Imaginary Number.', $activityLog);
-            $this->inventoryService->petCollectsItem('4-function Calculator', $pet, $pet->getName() . ' rummaged around the house, and found this ' . $whereFound . $exclamation, $activityLog);
-            return $activityLog;
-        }
-        else if($roll >= 17)
-        {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
-            $this->houseSimService->getState()->loseItem('Imaginary Number', 1);
-            $this->houseSimService->getState()->loseItem('Painted Boomerang', 1);
-            $pet->increaseEsteem(3);
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% computed a Strange Attractor.')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
-            ;
-            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->inventoryService->petCollectsItem('Strange Attractor', $pet, $pet->getName() . ' computed this from a Painted Boomerang and Imaginary Number.', $activityLog);
-            return $activityLog;
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::PROGRAM, true);
+                $this->houseSimService->getState()->loseItem('Imaginary Number', 1);
+                $this->houseSimService->getState()->loseItem('Painted Boomerang', 1);
+                $pet->increaseEsteem(5);
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% computed a Strange Attractor with the help of a 4-function Calculator that they found ' . $whereFound . '!')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17 + 10)
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
+                ;
+                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->inventoryService->petCollectsItem('Strange Attractor', $pet, $pet->getName() . ' computed this from a Painted Boomerang and Imaginary Number.', $activityLog);
+                $this->inventoryService->petCollectsItem('4-function Calculator', $pet, $pet->getName() . ' rummaged around the house, and found this ' . $whereFound . '!', $activityLog);
+                return $activityLog;
+            }
+            else
+            {
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+                $this->houseSimService->getState()->loseItem('Imaginary Number', 1);
+                $this->houseSimService->getState()->loseItem('Painted Boomerang', 1);
+                $pet->increaseEsteem(3);
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% computed a Strange Attractor with the help of a 4-function Calculator.')
+                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
+                ;
+                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->inventoryService->petCollectsItem('Strange Attractor', $pet, $pet->getName() . ' computed this from a Painted Boomerang and Imaginary Number.', $activityLog);
+                return $activityLog;
+            }
         }
         else
         {
