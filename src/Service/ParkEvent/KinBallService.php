@@ -228,7 +228,8 @@ class KinBallService implements ParkEventInterface
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Park Event', 'Kin-ball' ]))
                 ;
 
-                $this->inventoryService->petCollectsItem($trophyItem, $participant->pet, $comment, $log);
+                if($trophyItem)
+                    $this->inventoryService->petCollectsItem($trophyItem, $participant->pet, $comment, $log);
 
                 $this->petExperienceService->gainExp(
                     $participant->pet,

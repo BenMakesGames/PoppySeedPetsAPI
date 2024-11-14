@@ -442,7 +442,9 @@ class JoustingService implements ParkEventInterface
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Park Event', 'Jousting' ]))
         ;
 
-        $this->inventoryService->petCollectsItem($trophyItem, $pet, $comment, $log);
+        if($trophyItem)
+            $this->inventoryService->petCollectsItem($trophyItem, $pet, $comment, $log);
+
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ], $log);
 
         $log->setChanges($changes->compare($pet));
