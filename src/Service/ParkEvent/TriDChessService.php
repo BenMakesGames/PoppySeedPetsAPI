@@ -257,6 +257,7 @@ class TriDChessService implements ParkEventInterface
             $state = new PetChanges($participant->pet);
 
             $wins = $this->wins[$participant->pet->getId()];
+            $trophyItem = null;
 
             if($wins === $this->round)
             {
@@ -266,7 +267,7 @@ class TriDChessService implements ParkEventInterface
 
                 $comment = $participant->pet->getName() . ' earned this by getting 1st place in a Tri-D Chess tournament!';
                 $this->transactionService->getMoney($participant->pet->getOwner(), $firstPlaceMoneys, $comment);
-                $this->inventoryService->petCollectsItem('Tri-D Chess Gold Trophy', $participant->pet, $comment, null);
+                $trophyItem = 'Tri-D Chess Gold Trophy';
                 $this->userStatsRepository->incrementStat($participant->pet->getOwner(), 'Gold Trophies Earned', 1);
 
                 $activityLogEntry = $participant->pet->getName() . ' played in a Tri-D chess tournament, and won! The whole thing!';
@@ -282,7 +283,7 @@ class TriDChessService implements ParkEventInterface
 
                 $comment = $participant->pet->getName() . ' earned this by getting 2nd place in a Tri-D Chess tournament!';
                 $this->transactionService->getMoney($participant->pet->getOwner(), $secondPlaceMoneys, $comment);
-                $this->inventoryService->petCollectsItem('Tri-D Chess Silver Trophy', $participant->pet, $comment, null);
+                $trophyItem = 'Tri-D Chess Silver Trophy';
                 $this->userStatsRepository->incrementStat($participant->pet->getOwner(), 'Silver Trophies Earned', 1);
 
                 $this->results .= $participant->pet->getName() . ' got 2nd place, and ' . $secondPlaceMoneys . '~~m~~!';
@@ -295,6 +296,9 @@ class TriDChessService implements ParkEventInterface
                 ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Park Event', 'Tri-D Chess' ]))
             ;
+
+            if($trophyItem)
+                $this->inventoryService->petCollectsItem($trophyItem, $participant->pet, $comment, $log);
 
             $this->petExperienceService->gainExp(
                 $participant->pet,

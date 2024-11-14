@@ -402,6 +402,7 @@ class JoustingService implements ParkEventInterface
         $changes = new PetChanges($pet);
 
         $exp = 1;
+        $trophyItem = null;
 
         if($team->wins === $this->round)
         {
@@ -409,7 +410,7 @@ class JoustingService implements ParkEventInterface
 
             $comment = $pet->getName() . ' earned this by getting 1st place in a Jousting tournament with ' . $teamMate->getName() . '!';
             $this->transactionService->getMoney($pet->getOwner(), $firstPlaceMoneys, $comment);
-            $this->inventoryService->petCollectsItem('Jousting Gold Trophy', $pet, $comment, null);
+            $trophyItem = 'Jousting Gold Trophy';
             $this->userStatsRepository->incrementStat($pet->getOwner(), 'Gold Trophies Earned', 1);
 
             $log = $pet->getName() . ' played in a Jousting tournament with ' . $teamMate->getName() . ', and won! The whole thing!';
@@ -429,7 +430,7 @@ class JoustingService implements ParkEventInterface
 
             $comment = $pet->getName() . ' earned this by getting 2nd place in a Jousting tournament with ' . $teamMate->getName() . '!';
             $this->transactionService->getMoney($pet->getOwner(), $secondPlaceMoneys, $comment);
-            $this->inventoryService->petCollectsItem('Jousting Silver Trophy', $pet, $comment, null);
+            $trophyItem = 'Jousting Silver Trophy';
             $this->userStatsRepository->incrementStat($pet->getOwner(), 'Silver Trophies Earned', 1);
         }
 
@@ -441,6 +442,7 @@ class JoustingService implements ParkEventInterface
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Park Event', 'Jousting' ]))
         ;
 
+        $this->inventoryService->petCollectsItem($trophyItem, $pet, $comment, $log);
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ], $log);
 
         $log->setChanges($changes->compare($pet));

@@ -200,6 +200,7 @@ class KinBallService implements ParkEventInterface
             foreach($team->pets as $participant)
             {
                 $expGain = 1;
+                $trophyItem = null;
 
                 $state = new PetChanges($participant->pet);
 
@@ -210,7 +211,7 @@ class KinBallService implements ParkEventInterface
                     $expGain++;
                     $comment = $participant->pet->getName() . ' earned this in a game of Kin-Ball!';
                     $this->transactionService->getMoney($participant->pet->getOwner(), $firstPlaceMoneys, $comment);
-                    $this->inventoryService->petCollectsItem('Kin-Ball Gold Trophy', $participant->pet, $comment, null);
+                    $trophyItem = 'Kin-Ball Gold Trophy';
                     $this->userStatsRepository->incrementStat($participant->pet->getOwner(), 'Gold Trophies Earned', 1);
                     $activityLogEntry = $participant->pet->getName() . ' played a game of Kin-Ball, and was on the winning team! They received ' . $firstPlaceMoneys . '~~m~~!';
                 }
@@ -226,6 +227,8 @@ class KinBallService implements ParkEventInterface
                     ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Park Event', 'Kin-ball' ]))
                 ;
+
+                $this->inventoryService->petCollectsItem($trophyItem, $participant->pet, $comment, $log);
 
                 $this->petExperienceService->gainExp(
                     $participant->pet,
