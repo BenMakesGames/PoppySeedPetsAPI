@@ -65,6 +65,7 @@ class PetActivityLogTagEnum
     public const Werecreature = 'Werecreature';
     public const Sick = 'Sick';
     public const Eating = 'Eating';
+    public const Leftovers = 'Leftovers';
     public const Spirit_Companion = 'Spirit Companion';
     public const Valentine_s = 'Valentine\'s';
     public const Le_Manoir_de_Chocolat = 'Le Manoir de Chocolat';

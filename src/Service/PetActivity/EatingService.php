@@ -154,7 +154,10 @@ class EatingService
                 $this->inventoryService->petCollectsItem($leftoverItem, $pet, $pet->getName() . ' ate ' . GrammarFunctions::indefiniteArticle($food->name) . ' ' . $food->name . '; this was left over.', $activityLog);
 
             $activityLog
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Eating ]))
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Eating,
+                    PetActivityLogTagEnum::Leftovers,
+                ]))
                 ->setChanges($changes->compare($pet));
         }
 
@@ -183,7 +186,7 @@ class EatingService
 
             $changes = new PetChanges($pet);
 
-            $activityLog = $this->responseService->createActivityLog($pet, $activityLogText, '', null);
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $activityLogText);
 
             foreach($bonusItems as $item)
             {
