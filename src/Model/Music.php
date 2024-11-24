@@ -391,5 +391,8 @@ class Music
 
         // Disco Snails, by Vulf
         'There\'s traffic on the freeway, for the snails are on the loose. Watch your step, they\'re only 1 inch tall atop their platform shoes.',
+
+        // Your Reality, by Dan Salvato (Doki Doki Literature Club)
+        'Every day, I imagine a future where I can be with you. In my hand... is a pen that will write a po-em of me and you...',
     ];
 }
