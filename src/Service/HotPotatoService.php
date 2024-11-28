@@ -18,11 +18,21 @@ class HotPotatoService
 
     public static function countTosses(Inventory $inventory): int
     {
+        return self::countMoves($inventory, ' tossed this to ');
+    }
+
+    public static function countTeleports(Inventory $inventory): int
+    {
+        return self::countMoves($inventory, ' magically transported ');
+    }
+
+    private static function countMoves(Inventory $inventory, string $identifyingText): int
+    {
         $numberOfTosses = 0;
 
         foreach($inventory->getComments() as $comment)
         {
-            if(strpos($comment, ' tossed this to ') !== false)
+            if(str_contains($comment, $identifyingText))
                 $numberOfTosses++;
         }
 
@@ -49,5 +59,24 @@ class HotPotatoService
             $messageStart = 'You toss the ' . $inventory->getFullItemName();
 
         return $this->responseService->itemActionSuccess($messageStart . ' to <a href="/poppyopedia/resident/' . $target->getId() . '">' . $target->getName() . '</a>!', [ 'itemDeleted' => true ]);
+    }
+
+    public function teleportItem(Inventory $inventory, string $messageStart = null): JsonResponse
+    {
+        $owner = $inventory->getOwner();
+
+        $target = UserFunctions::findOneRecentlyActive($this->em, $owner, 24);
+
+        if($target === null)
+            return $this->responseService->itemActionSuccess('Hm... there\'s no one to receive it! (I guess no one\'s been playing Poppy Seed Pets...)');
+
+        $inventory
+            ->changeOwner($target, 'This was magically transported from ' . $owner->getName() . ' to ' . $target->getName() . '!', $this->em)
+            ->setLocation(LocationEnum::HOME)
+        ;
+
+        $this->em->flush();
+
+        return $this->responseService->itemActionSuccess($messageStart . ' It then poofs out of existence, though you get the _strange sensation_ that is has been magically transported to <a href="/poppyopedia/resident/' . $target->getId() . '">' . $target->getName() . '</a>!', [ 'itemDeleted' => true ]);
     }
 }
