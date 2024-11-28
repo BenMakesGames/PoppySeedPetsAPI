@@ -316,7 +316,8 @@ class GatheringService
 
     private function foundPaperBag(Pet $pet): PetActivityLog
     {
-        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a Paper Bag just, like, lyin\' around.', 'items/bag/paper')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a Paper Bag just, like, lyin\' around.')
+            ->setIcon('items/bag/paper')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                 PetActivityLogTagEnum::Gathering,
                 PetActivityLogTagEnum::Location_Neighborhood
