@@ -91,7 +91,10 @@ class HornOfPlentyController extends AbstractController
 
         if($rng->rngNextInt(2, 6) <= $numberOfTosses)
         {
-            $inventory->changeItem(ItemRepository::findOneByName($em, 'Empty Horn of Plenty'));
+            $inventory
+                ->changeItem(ItemRepository::findOneByName($em, 'Empty Horn of Plenty'))
+                ->setLockedToOwner(false);
+
             $em->flush();
 
             return $responseService->itemActionSuccess($description . ' Apparently drained of all its magic, the horn became an Empty Horn of Plenty.', [ 'itemDeleted' => true ]);
