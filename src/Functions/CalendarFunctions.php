@@ -196,6 +196,22 @@ final class CalendarFunctions
         return $monthAndDay >= 812 && $monthAndDay <= 815;
     }
 
+    public static function isAHornOfPlentyDay(\DateTimeInterface $dt): bool
+    {
+        return
+            self::isThanksgivingMonsters($dt) ||
+            self::isChineseNewYear($dt) ||
+            self::isEaster($dt) ||
+            self::isHanukkah($dt) ||
+            self::isNewYearsHoliday($dt) ||
+            self::isSaintPatricksDay($dt) ||
+            self::isCincoDeMayo($dt) ||
+            self::isJuly4th($dt) ||
+            self::isBastilleDay($dt) ||
+            self::isSummerSolstice($dt) ||
+            self::isWinterSolstice($dt);
+    }
+
     public static function isTalkLikeAPirateDay(\DateTimeInterface $dt): bool
     {
         $monthAndDay = $dt->format('nd');

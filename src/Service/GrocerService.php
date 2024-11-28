@@ -102,6 +102,9 @@ class GrocerService
         if(CalendarFunctions::isAwaOdori($now))
             $inventory[] = $this->createInventoryData([ 'Odori 0.0%', 12 ], true);
 
+        if(CalendarFunctions::isAHornOfPlentyDay($now))
+            $inventory[] = $this->createInventoryData([ 'Horn of Plenty', 50 ], true);
+
         $hotBarIndex = RandomFunctions::squirrel3Noise($day, 78934) % count(self::HOT_BAR_ITEMS);
 
         $inventory[] = $this->createInventoryData(self::HOT_BAR_ITEMS[$hotBarIndex], true);
