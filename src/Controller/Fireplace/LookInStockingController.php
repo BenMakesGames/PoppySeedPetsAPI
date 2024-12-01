@@ -7,6 +7,7 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ItemRepository;
 use App\Functions\JewishCalendarFunctions;
 use App\Functions\PlayerLogFactory;
+use App\Functions\SpiceRepository;
 use App\Functions\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -40,44 +41,55 @@ class LookInStockingController extends AbstractController
             throw new PSPInvalidOperationException('There\'s nothing else in the stocking. Maybe tomorrow?');
 
         $randomRewards = [
-            'Mint', 'Chocolate Bar', 'Charcoal', 'Cheese', 'Crystal Ball', 'Fruit Basket',
-            'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die', 'Wings',
-            'Fluff', 'Paper Bag', 'Plastic Idol', 'Quintessence', 'Secret Seashell', 'Rock',
-            'Castella Cake'
+            [ 'Mint', true ],
+            [ 'Chocolate Bar', true ],
+            [ 'Charcoal', false ],
+            [ 'Cheese', true ],
+            [ 'Crystal Ball', false ],
+            [ 'Fruit Basket', true ],
+            [ 'Glowing Protojelly', false ],
+            [ 'Wings', false ],
+            [ 'Fluff', false ],
+            [ 'Paper Bag', true ],
+            [ 'Plastic Idol', false ],
+            [ 'Quintessence', false ],
+            [ 'Secret Seashell', false ],
+            [ 'Rock', false ],
+            [ 'Castella Cake', true ],
         ];
 
         $rewards = [
             null, // 1st
-            'Gold Key', // 2nd - International Day for the Abolition of Slavery
+            [ 'Gold Key', false ], // 2nd - International Day for the Abolition of Slavery
             null, // 3rd
-            'World\'s Best Sugar Cookie', // 4th - National Cookie Day
-            'Mysterious Seed', // 5th - World Soil Day
-            'Blue Firework', // 6th - Independence Day (Finland)
-            'Candle', // 7th - Day of the Little Candles
-            'Fig', // 8th - Bodhi Day
-            'Lutefisk', // 9th - Anna's Day
+            [ 'World\'s Best Sugar Cookie', true ], // 4th - National Cookie Day
+            [ 'Mysterious Seed', false ], // 5th - World Soil Day
+            [ 'Blue Firework', false ], // 6th - Independence Day (Finland)
+            [ 'Candle', false ], // 7th - Day of the Little Candles
+            [ 'Fig', true ], // 8th - Bodhi Day
+            [ 'Lutefisk', true ], // 9th - Anna's Day
             null, // 10th
-            'Liquid-hot Magma', // 11th - International Mountain Day
-            'Bungee Cord', // 12th - Jamhuri Day
+            [ 'Liquid-hot Magma', false ], // 11th - International Mountain Day
+            [ 'Bungee Cord', false ], // 12th - Jamhuri Day
             null, // 13th
-            'Bunch of Naners', // 14th - Monkey Day
-            'Tea Leaves', // 15th - International Tea Day
-            'Red Firework', // 16th - Day of Reconciliation
-            'Red Umbrella', // 17th - International Day to End Violence Against Sex Workers
+            [ 'Bunch of Naners', true ], // 14th - Monkey Day
+            [ 'Tea Leaves', true ], // 15th - International Tea Day
+            [ 'Red Firework', false ], // 16th - Day of Reconciliation
+            [ 'Red Umbrella', false ], // 17th - International Day to End Violence Against Sex Workers
             null, // 18th
-            'Behatting Scroll', // 19th - no particular holiday; just want to give one of these out
-            'String', // 20th - National Ugly Sweater Day (it's stupid, but sure)
+            [ 'Behatting Scroll', false ], // 19th - no particular holiday; just want to give one of these out
+            [ 'String', false ], // 20th - National Ugly Sweater Day (it's stupid, but sure)
             null, // 21st
-            'Compass (the Math Kind)', // 22nd - National Mathematics Day
-            'Large Radish', // 23rd - Night of the Radishes
-            'Fish', // 24th - Feast of the Seven Fishes
-            'Santa Hat', // 25th - Christmas
-            'Candle', // 26th - 1st day of Kwanzaa (candle-lighting is listed among ceremonies)
+            [ 'Compass (the Math Kind)', false ], // 22nd - National Mathematics Day
+            [ 'Large Radish', true ], // 23rd - Night of the Radishes
+            [ 'Fish', true ], // 24th - Feast of the Seven Fishes
+            [ 'Santa Hat', false ], // 25th - Christmas
+            [ 'Candle', false ], // 26th - 1st day of Kwanzaa (candle-lighting is listed among ceremonies)
             null, // 27th
-            'Corn', // 28th - 3rd day of Kwanzaa (corn is listed among symbols)
+            [ 'Corn', true ], // 28th - 3rd day of Kwanzaa (corn is listed among symbols)
             null, // 29th
-            'Apricot', // 30th - 4th day of Kwanzaa (fresh fruit is listed among symbols)
-            'Music Note', // 31st - New Year's Eve/Hogmanay
+            [ 'Apricot', true ], // 30th - 4th day of Kwanzaa (fresh fruit is listed among symbols)
+            [ 'Music Note', false ], // 31st - New Year's Eve/Hogmanay
         ];
 
         $item = $rewards[$monthAndDay - 1201];
@@ -85,14 +97,31 @@ class LookInStockingController extends AbstractController
         if(!$item)
         {
             if(JewishCalendarFunctions::isHanukkah($now))
-                $item = 'Dreidel';
+                $item = [ 'Dreidel', false ];
             else
                 $item = $squirrel3->rngNextFromArray($randomRewards);
         }
 
-        $itemObject = ItemRepository::findOneByName($em, $item);
+        $itemObject = ItemRepository::findOneByName($em, $item[0]);
 
-        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' found this in a stocking over their Fireplace on ' . $now->format('M j, Y') . '.', LocationEnum::HOME, true);
+        $newItem = $inventoryService->receiveItem($item[0], $user, $user, $user->getName() . ' found this in a stocking over their Fireplace on ' . $now->format('M j, Y') . '.', LocationEnum::HOME, true);
+
+        if($item[1])
+        {
+            $newItem->setSpice(
+                SpiceRepository::findOneByName($em, $squirrel3->rngNextFromArray([
+                    '5-Spice\'d',
+                    'Autumnal',
+                    'Buttery',
+                    'Chocolate-covered',
+                    'Ducky',
+                    'Juniper',
+                    'Nutmeg-laden',
+                    'Starry',
+                    'with Ponzu',
+                ])),
+            );
+        }
 
         $messages = [
             'You reach into the stocking and feel around... eventually your fingers find something. You pull it out...',

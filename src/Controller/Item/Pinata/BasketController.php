@@ -33,6 +33,7 @@ class BasketController extends AbstractController
 
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
+        $spice = $inventory->getSpice();
 
         $loot = [
             'Fish',
@@ -50,7 +51,11 @@ class BasketController extends AbstractController
             $exclaim = '.';
 
         foreach($loot as $item)
-            $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a Basket of Fish.', $location, $lockedToOwner);
+        {
+            $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a Basket of Fish.', $location, $lockedToOwner)
+                ->setSpice($spice)
+            ;
+        }
 
         $inventoryService->receiveItem('Fabric Mâché Basket', $user, $user, $user->getName() . ' took everything out of a Basket of Fish; this is what was left.', $location, $lockedToOwner);
 
@@ -76,10 +81,17 @@ class BasketController extends AbstractController
 
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
+        $spice = $inventory->getSpice();
 
-        $inventoryService->receiveItem('Apricot Preserves', $user, $user, $user->getName() . ' got this from a Fruit Basket.', $location, $lockedToOwner);
-        $inventoryService->receiveItem('Blueberries', $user, $user, $user->getName() . ' got this from a Fruit Basket.', $location, $lockedToOwner);
-        $inventoryService->receiveItem('Naner', $user, $user, $user->getName() . ' got this from a Fruit Basket.', $location, $lockedToOwner);
+        $fruit = [ 'Apricot Preserves', 'Blueberries', 'Naner' ];
+
+        foreach($fruit as $item)
+        {
+            $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a Fruit Basket.', $location, $lockedToOwner)
+                ->setSpice($spice)
+            ;
+        }
+
         $inventoryService->receiveItem('Fabric Mâché Basket', $user, $user, $user->getName() . ' took everything out of a Fruit Basket; this is what was left.', $location, $lockedToOwner);
 
         $em->remove($inventory);
