@@ -52,6 +52,7 @@ class CleanBirdBathController extends AbstractController
         if($itemsAtHome >= User::MAX_HOUSE_INVENTORY)
             throw new PSPInvalidOperationException('You don\'t have enough room in your house for all these items!');
 
+        // +1 item, because the items come in pairs (oil or bubblegum + a shed item), and we don't want to leave a lone shed item
         if($itemsAtHome + count($itemsInBirdBath) > User::MAX_HOUSE_INVENTORY + 1)
             $itemsToTake = array_slice($itemsInBirdBath, 0, User::MAX_HOUSE_INVENTORY - $itemsAtHome);
         else
