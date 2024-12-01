@@ -49,15 +49,29 @@ class CleanBirdBathController extends AbstractController
 
         $itemsAtHome = InventoryRepository::countItemsInLocation($em, $user, LocationEnum::HOME);
 
-        if($itemsAtHome + count($itemsInBirdBath) > User::MAX_HOUSE_INVENTORY)
+        if($itemsAtHome >= User::MAX_HOUSE_INVENTORY)
             throw new PSPInvalidOperationException('You don\'t have enough room in your house for all these items!');
 
-        foreach($itemsInBirdBath as $item)
+        if($itemsAtHome + count($itemsInBirdBath) > User::MAX_HOUSE_INVENTORY)
+        {
+            $itemsToTake = array_slice($itemsInBirdBath, 0, User::MAX_HOUSE_INVENTORY - $itemsAtHome);
+            $itemsRemaining = count($itemsInBirdBath);
+        }
+        else
+        {
+            $itemsToTake = $itemsInBirdBath;
+            $itemsRemaining = 0;
+        }
+
+        foreach($itemsToTake as $item)
             $item->setLocation(LocationEnum::HOME);
 
-        $itemNames = array_map(fn(Inventory $i) => $i->getItem()->getName(), $itemsInBirdBath);
+        $itemNames = array_map(fn(Inventory $i) => $i->getItem()->getName(), $itemsToTake);
 
         $message = 'You cleaned the bird bath, and found ' . ArrayFunctions::list_nice($itemNames) . '!';
+
+        if($itemsRemaining > 0)
+            $message .= ' (There\'s still ' . $itemsRemaining . ' more ' . ($itemsRemaining == 1 ? 'thing' : 'things') . ' on/in there, but your house is already full!)';
 
         PlayerLogFactory::create($em, $user, $message, [ 'Greenhouse', 'Birdbath' ]);
 
