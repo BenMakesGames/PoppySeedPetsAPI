@@ -53,15 +53,11 @@ class CleanBirdBathController extends AbstractController
             throw new PSPInvalidOperationException('You don\'t have enough room in your house for all these items!');
 
         if($itemsAtHome + count($itemsInBirdBath) > User::MAX_HOUSE_INVENTORY)
-        {
             $itemsToTake = array_slice($itemsInBirdBath, 0, User::MAX_HOUSE_INVENTORY - $itemsAtHome);
-            $itemsRemaining = count($itemsInBirdBath);
-        }
         else
-        {
             $itemsToTake = $itemsInBirdBath;
-            $itemsRemaining = 0;
-        }
+
+        $itemsRemaining = count($itemsInBirdBath) - count($itemsToTake);
 
         foreach($itemsToTake as $item)
             $item->setLocation(LocationEnum::HOME);
