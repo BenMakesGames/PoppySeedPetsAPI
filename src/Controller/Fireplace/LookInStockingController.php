@@ -78,7 +78,7 @@ class LookInStockingController extends AbstractController
             [ 'Red Umbrella', false ], // 17th - International Day to End Violence Against Sex Workers
             null, // 18th
             [ 'Behatting Scroll', false ], // 19th - no particular holiday; just want to give one of these out
-            [ 'String', false ], // 20th - National Ugly Sweater Day (it's stupid, but sure)
+            [ 'Scarf Bag', false ], // 20th - National Ugly Sweater Day (it's stupid, but sure)
             null, // 21st
             [ 'Compass (the Math Kind)', false ], // 22nd - National Mathematics Day
             [ 'Large Radish', true ], // 23rd - Night of the Radishes
