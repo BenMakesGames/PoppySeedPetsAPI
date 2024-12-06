@@ -274,6 +274,12 @@ class Item
         return $this->getFertilizer() > 0;
     }
 
+    #[Groups(["myInventory", "itemEncyclopedia"])]
+    public function getIsTreasure(): bool
+    {
+        return $this->getTreasure() != null;
+    }
+
     public function getRecycleValue(): int
     {
         return $this->recycleValue;

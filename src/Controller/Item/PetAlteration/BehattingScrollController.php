@@ -56,7 +56,7 @@ class BehattingScrollController extends AbstractController
             'awe-inspiring', 'incredible', 'breathtaking', 'amazing', 'fabulous'
         ]);
 
-        PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% was granted the ' . $adjective . ' power to wear hats!')
+        PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% was granted the ' . $adjective . ' power to wear <i class="fa-solid fa-hat-beach"></i>s!')
             ->setIcon('items/scroll/behatting');
 
         $em->flush();
