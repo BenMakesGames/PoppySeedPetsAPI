@@ -11,6 +11,7 @@ final class UnlockableFeatureEnum
     public const Museum = 'Museum';
     public const Park = 'Park';
     public const Greenhouse = 'Greenhouse';
+    public const CookingBuddy = 'Cooking Buddy';
     public const Basement = 'Basement';
     public const HollowEarth = 'Hollow Earth';
     public const Market = 'Market';

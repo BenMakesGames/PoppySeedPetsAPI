@@ -2,22 +2,19 @@
 
 namespace App\Command;
 
+use App\Entity\RecipeAttempted;
 use App\Functions\ArrayFunctions;
-use App\Repository\RecipeAttemptedRepository;
 use App\Service\InventoryService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ListTopAttemptedRecipesCommand extends PoppySeedPetsCommand
 {
-    private RecipeAttemptedRepository $recipeAttemptedRepository;
     private EntityManagerInterface $em;
 
     public function __construct(
-        RecipeAttemptedRepository $recipeAttemptedRepository,
         EntityManagerInterface $em
     )
     {
-        $this->recipeAttemptedRepository = $recipeAttemptedRepository;
         $this->em = $em;
 
         parent::__construct();
@@ -33,7 +30,7 @@ class ListTopAttemptedRecipesCommand extends PoppySeedPetsCommand
 
     protected function doCommand(): int
     {
-        $topRecipes = $this->recipeAttemptedRepository->createQueryBuilder('r')
+        $topRecipes = $this->em->getRepository(RecipeAttempted::class)->createQueryBuilder('r')
             ->select(['COUNT(r.user) AS qty', 'r.recipe'])
             ->groupBy('r.recipe')
             ->orderBy('qty', 'DESC')

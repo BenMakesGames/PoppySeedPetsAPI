@@ -4,7 +4,6 @@ namespace App\Controller\Item\Book;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\User;
-use App\Service\CookingService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,7 +15,7 @@ class NoodsBookController extends AbstractController
     #[Route("/{inventory}/upload", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function upload(
-        Inventory $inventory, ResponseService $responseService, CookingService $cookingService
+        Inventory $inventory, ResponseService $responseService
     )
     {
         /** @var User $user */
@@ -24,7 +23,7 @@ class NoodsBookController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'noodsBook/#/upload');
 
-        if(!$cookingService->hasACookingBuddy($user))
+        if(!$user->getCookingBuddy())
             $message = 'You need a Cooking Buddy to do this.';
         else
             $message = 'Your Cooking Buddy is too embarrassed to look at this book.';

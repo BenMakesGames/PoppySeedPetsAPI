@@ -10,7 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 final class UserMenuFunctions
 {
     private const DEFAULT_ORDER = [
-        'home', 'basement', 'greenhouse', 'beehive', 'dragonDen', 'hollowEarth', 'starKindred',
+        'home', 'cookingBuddy', 'basement', 'greenhouse', 'beehive', 'dragonDen', 'hollowEarth', 'starKindred',
         'fireplace', 'park', 'plaza', 'museum', 'zoologist', 'market', 'grocer', 'petShelter',
         'bookstore', 'trader', 'hattier', 'fieldGuide', 'mailbox', 'painter', 'florist',
         'journal', 'achievements'
@@ -71,6 +71,7 @@ final class UserMenuFunctions
         $menuItems = [];
         $locked =
             (self::maybeAddMenuItem($menuItems, 'home', $user, $userSortOrder, null) ? 0 : 1) +
+            (self::maybeAddMenuItem($menuItems, 'cookingBuddy', $user, $userSortOrder, UnlockableFeatureEnum::CookingBuddy) ? 0 : 1) +
             (self::maybeAddMenuItem($menuItems, 'basement', $user, $userSortOrder, UnlockableFeatureEnum::Basement) ? 0 : 1) +
             (self::maybeAddMenuItem($menuItems, 'greenhouse', $user, $userSortOrder, UnlockableFeatureEnum::Greenhouse) ? 0 : 1) +
             (self::maybeAddMenuItem($menuItems, 'beehive', $user, $userSortOrder, UnlockableFeatureEnum::Beehive) ? 0 : 1) +

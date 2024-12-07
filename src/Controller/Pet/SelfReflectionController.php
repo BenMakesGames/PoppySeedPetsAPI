@@ -14,7 +14,6 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetActivityLogFactory;
-use App\Repository\GuildRepository;
 use App\Repository\PetRelationshipRepository;
 use App\Repository\PetRepository;
 use App\Service\IRandom;
@@ -33,8 +32,8 @@ class SelfReflectionController extends AbstractController
     #[Route("/{pet}/selfReflection", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getGuildMembership(
-        Pet $pet, ResponseService $responseService, GuildRepository $guildRepository,
-        PetRelationshipRepository $petRelationshipRepository, PetRelationshipService $petRelationshipService
+        Pet $pet, ResponseService $responseService, PetRelationshipRepository $petRelationshipRepository,
+        PetRelationshipService $petRelationshipService, EntityManagerInterface $em
     )
     {
         // just to prevent scraping (this endpoint is currently - 2020-06-29 - used only for changing a pet's guild)
@@ -48,7 +47,7 @@ class SelfReflectionController extends AbstractController
                     'name' => $g->getName(),
                 ];
             },
-            $guildRepository->findAll()
+            $em->getRepository(Guild::class)->findAll()
         );
 
         $numberDisliked = $petRelationshipRepository->countRelationships($pet, [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ]);
@@ -94,8 +93,7 @@ class SelfReflectionController extends AbstractController
      */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function changeGuild(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
-        GuildRepository $guildRepository
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -118,7 +116,7 @@ class SelfReflectionController extends AbstractController
         if(!$guildId)
             throw new PSPFormValidationException('You gotta\' choose a guild!');
 
-        $guild = $guildRepository->find($guildId);
+        $guild = $em->getRepository(Guild::class)->find($guildId);
 
         if(!$guild)
             throw new PSPNotFoundException('That guild does not exist!');

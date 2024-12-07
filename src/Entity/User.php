@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Entity;
 
 use App\Enum\EnumInvalidValueException;
@@ -163,6 +162,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?HouseSitter $houseSitter = null;
+
+    #[ORM\OneToOne(mappedBy: 'owner', cascade: ['persist', 'remove'])]
+    private ?CookingBuddy $cookingBuddy = null;
 
     public function __construct()
     {
@@ -821,6 +823,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->houseSitter = $houseSitter;
+
+        return $this;
+    }
+
+    public function getCookingBuddy(): ?CookingBuddy
+    {
+        return $this->cookingBuddy;
+    }
+
+    public function setCookingBuddy(CookingBuddy $cookingBuddy): static
+    {
+        // set the owning side of the relation if necessary
+        if ($cookingBuddy->getOwner() !== $this) {
+            $cookingBuddy->setOwner($this);
+        }
+
+        $this->cookingBuddy = $cookingBuddy;
 
         return $this;
     }

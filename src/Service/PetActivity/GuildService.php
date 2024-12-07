@@ -1,6 +1,7 @@
 <?php
 namespace App\Service\PetActivity;
 
+use App\Entity\Guild;
 use App\Entity\GuildMembership;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
@@ -17,7 +18,6 @@ use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
-use App\Repository\GuildRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -26,7 +26,6 @@ use Doctrine\ORM\EntityManagerInterface;
 class GuildService
 {
     public function __construct(
-        private readonly GuildRepository $guildRepository,
         private readonly EntityManagerInterface $em,
         private readonly InventoryService $inventoryService,
         private readonly PetExperienceService $petExperienceService,
@@ -91,7 +90,7 @@ class GuildService
 
         $guildName = array_key_first($possibilities);
 
-        $guild = $this->guildRepository->findOneBy([ 'name' => $guildName ]);
+        $guild = $this->em->getRepository(Guild::class)->findOneBy([ 'name' => $guildName ]);
 
         $membership = (new GuildMembership())->setGuild($guild);
         $pet->setGuildMembership($membership);

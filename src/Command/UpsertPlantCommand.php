@@ -8,7 +8,6 @@ use App\Entity\PlantYield;
 use App\Entity\PlantYieldItem;
 use App\Enum\PlantTypeEnum;
 use App\Functions\ArrayFunctions;
-use App\Repository\PlantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -17,12 +16,10 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
     use AskItemTrait;
 
     private EntityManagerInterface $em;
-    private PlantRepository $plantRepository;
 
-    public function __construct(EntityManagerInterface $em, PlantRepository $plantRepository)
+    public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
-        $this->plantRepository = $plantRepository;
 
         parent::__construct();
     }
@@ -42,7 +39,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
             throw new \Exception('Can only be run in dev environments.');
 
         $name = $this->input->getArgument('plant');
-        $plant = $this->plantRepository->findOneBy(['name' => $name]);
+        $plant = $this->em->getRepository(Plant::class)->findOneBy(['name' => $name]);
 
         if($plant)
             $this->output->writeln('Updating "' . $plant->getName() . '"');

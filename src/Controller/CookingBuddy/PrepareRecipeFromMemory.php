@@ -1,0 +1,88 @@
+<?php
+namespace App\Controller\CookingBuddy;
+
+use App\Entity\Inventory;
+use App\Entity\KnownRecipes;
+use App\Entity\User;
+use App\Enum\LocationEnum;
+use App\Enum\SerializationGroupEnum;
+use App\Enum\UserStatEnum;
+use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\PSPNotFoundException;
+use App\Functions\RecipeRepository;
+use App\Service\CookingService;
+use App\Service\InventoryService;
+use App\Service\ResponseService;
+use App\Service\UserStatsService;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
+#[Route('/cookingBuddy')]
+class PrepareRecipeFromMemory extends AbstractController
+{
+    private const ALLOWED_LOCATIONS = [
+        LocationEnum::HOME,
+        LocationEnum::BASEMENT,
+        LocationEnum::MANTLE
+    ];
+
+    /**
+     * @Route("/prepare/{knownRecipe}/{quantity}", methods={"POST"}, requirements={"quantity"="\d+"})
+     */
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    public function prepareRecipeFromMemory(
+        KnownRecipes $knownRecipe, ResponseService $responseService, EntityManagerInterface $em,
+        UserStatsService $userStatsRepository, CookingService $cookingService, Request $request, int $quantity = 1
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if(!$user->getCookingBuddy())
+            throw new PSPNotFoundException('Cooking Buddy Not Found');
+
+        if($knownRecipe->getUser()->getId() !== $user->getId())
+            throw new PSPNotFoundException('Unknown recipe? Weird. Reload and try again.');
+
+        $recipeName = $knownRecipe->getRecipe();
+        $recipe = RecipeRepository::findOneByName($recipeName);
+
+        $ingredients = InventoryService::deserializeItemList($em, $recipe['ingredients']);
+
+        $location = $request->request->getInt('location');
+
+        if(!in_array($location, self::ALLOWED_LOCATIONS))
+            throw new PSPInvalidOperationException('Cooking Buddies are only usable on the house, Basement, or Fireplace Mantle.');
+
+        $inventoryToUse = [];
+
+        foreach($ingredients as $ingredient)
+        {
+            $inventory = $em->getRepository(Inventory::class)->findBy(
+                [
+                    'owner' => $user->getId(),
+                    'item' => $ingredient->item->getId(),
+                    'location' => $location
+                ],
+                [],
+                $ingredient->quantity * $quantity
+            );
+
+            if(count($inventory) !== $ingredient->quantity * $quantity)
+                throw new PSPInvalidOperationException('You do not have enough ' . $ingredient->item->getName() . ' to make ' . $recipe['name'] . '.');
+
+            $inventoryToUse = array_merge($inventoryToUse, $inventory);
+        }
+
+        $results = $cookingService->prepareRecipeWithCookingBuddy($user, $inventoryToUse, $recipe, $quantity);
+
+        $userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING, $quantity);
+
+        $em->flush();
+
+        return $responseService->success($results->inventory, [ SerializationGroupEnum::MY_INVENTORY ]);
+    }
+}

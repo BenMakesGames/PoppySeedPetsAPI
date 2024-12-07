@@ -14,7 +14,6 @@ use App\Functions\RecipeRepository;
 use App\Model\ItemQuantity;
 use App\Model\PrepareRecipeResults;
 use App\Repository\InventoryRepository;
-use App\Repository\RecipeAttemptedRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class CookingService
@@ -24,7 +23,6 @@ class CookingService
         private readonly EntityManagerInterface $em,
         private readonly UserStatsService $userStatsRepository,
         private readonly InventoryRepository $inventoryRepository,
-        private readonly RecipeAttemptedRepository $recipeAttemptedRepository,
         private readonly IRandom $squirrel3
     )
     {
@@ -73,7 +71,7 @@ class CookingService
         $quantities = CookingService::buildQuantitiesFromInventory($inventory);
         $ingredientList = InventoryService::serializeItemList($quantities);
 
-        $attempt = $this->recipeAttemptedRepository->findOneBy([
+        $attempt = $this->em->getRepository(RecipeAttempted::class)->findOneBy([
             'user' => $user,
             'recipe' => $ingredientList
         ]);
@@ -180,10 +178,8 @@ class CookingService
 
         $results = $this->prepareRecipe($inventory, $recipe, $multiple, $inventoryOwner, $preparer);
 
-        if($this->hasACookingBuddy($inventoryOwner))
-        {
+        if($inventoryOwner->getCookingBuddy())
             $this->learnRecipe($inventoryOwner, $recipe['name']);
-        }
 
         return $results;
     }
@@ -213,17 +209,9 @@ class CookingService
         return true;
     }
 
-    public function hasACookingBuddy(User $user): bool
-    {
-        return $this->inventoryRepository->count([
-            'owner' => $user,
-            'item' => [ 158, 454 ] // IDs of Cooking Buddy and Cooking "Alien"
-        ]) > 0;
-    }
-
     public function showRecipeNamesToCookingBuddy(User $user, array $recipeNames): string
     {
-        if(!$this->hasACookingBuddy($user))
+        if(!$user->getCookingBuddy())
             return 'You need a Cooking Buddy to do this.';
 
         $recipeNames = array_unique($recipeNames); // prevent duplicates, in case you (Ben) made a mistake somewhere else

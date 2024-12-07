@@ -119,29 +119,6 @@ class BetaBugController extends AbstractController
         $responseService->setReloadInventory();
     }
 
-    // if this list of names changes, it must also be changed in the front-end (cooking-buddy.component.ts)
-    private const COOKING_BUDDY_NAMES = [
-        'Asparagus', 'Arugula',
-        'Biryani', 'Bisque',
-        'Cake', 'Ceviche',
-        'Cookie', 'Couscous',
-        'Dal',
-        'Egg Roll', 'Edamame',
-        'Falafel',
-        'Gnocchi', 'Gobi', 'Goulash', 'Gumbo',
-        'Haggis', 'Halibut', 'Hummus',
-        'Kabuli', 'Kebab', 'Kimchi', 'Kiwi', 'Kuli Kuli',
-        'Larb',
-        'Masala', 'Moose',
-        'Pinto', 'Pho', 'Polenta', 'Pudding',
-        'Reuben',
-        'Schnitzel', 'Shawarma', 'Soba', 'Stew', 'Succotash',
-        'Taco', 'Tart',
-        'Walnut',
-        'Yuzu',
-        'Ziti',
-    ];
-
     private static function createCookingBuddy(
         ResponseService $responseService, EntityManagerInterface $em, PetFactory $petFactory, IRandom $rng,
         Inventory $inventoryItem, User $user, Merit $startingMerit, ?string $startingHatItem
@@ -149,7 +126,7 @@ class BetaBugController extends AbstractController
     {
         $newPet = $petFactory->createPet(
             $user,
-            self::COOKING_BUDDY_NAMES[$inventoryItem->getId() % count(self::COOKING_BUDDY_NAMES)],
+            $rng->rngNextFromArray(\App\Entity\CookingBuddy::NAMES),
             $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Cooking Buddy' ]),
             'd8d8d8', // body
             '236924', // "eyes"
