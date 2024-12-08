@@ -31,6 +31,9 @@ class BetaBugController extends AbstractController
     private const ALLOWED_ITEMS = [
         'Cooking Buddy',
         'Cooking "Alien"',
+        'Cooking... with Fire',
+        'Mini Cooking Buddy',
+        'Mega Cooking Buddy',
         'Sentient Beetle',
         'Rainbowsaber'
     ];
@@ -82,8 +85,11 @@ class BetaBugController extends AbstractController
 
         switch($item->getItem()->getName())
         {
-            case 'Cooking Buddy': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::getRandomStartingMerit($em, $rng), null); break;
-            case 'Cooking "Alien"': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::findOneByName($em, MeritEnum::BEHATTED), 'Antenna'); break;
+            case 'Cooking Buddy': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::getRandomStartingMerit($em, $rng), FlavorEnum::getRandomValue($rng), null, 'd8d8d8', 100); break;
+            case 'Cooking "Alien"': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::findOneByName($em, MeritEnum::BEHATTED), FlavorEnum::getRandomValue($rng), 'Antenna', 'd8d8d8', 100); break;
+            case 'Cooking... with Fire': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::getRandomStartingMerit($em, $rng), FlavorEnum::SPICY, null, '6e6e6e', 100); break;
+            case 'Mini Cooking Buddy': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::getRandomStartingMerit($em, $rng), FlavorEnum::getRandomValue($rng), null, 'd8d8d8', 60); break;
+            case 'Mega Cooking Buddy': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::getRandomStartingMerit($em, $rng), FlavorEnum::getRandomValue($rng), null, 'd8d8d8', 150); break;
             case 'Sentient Beetle': self::makeBeetleEvil($responseService, $em, $user, $item); break;
             case 'Rainbowsaber': self::makeGlitchedOutRainbowsaber($responseService, $em, $user, $item); break;
             default: throw new PSPInvalidOperationException("The Beta Bug cannot be used on that item!");
@@ -121,18 +127,21 @@ class BetaBugController extends AbstractController
 
     private static function createCookingBuddy(
         ResponseService $responseService, EntityManagerInterface $em, PetFactory $petFactory, IRandom $rng,
-        Inventory $inventoryItem, User $user, Merit $startingMerit, ?string $startingHatItem
+        Inventory $inventoryItem, User $user, Merit $startingMerit, string $favoriteFlavor, ?string $startingHatItem,
+        string $bodyColor, int $scale
     )
     {
         $newPet = $petFactory->createPet(
             $user,
             $rng->rngNextFromArray(\App\Entity\CookingBuddy::NAMES),
             $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Cooking Buddy' ]),
-            'd8d8d8', // body
+            $bodyColor,
             '236924', // "eyes"
-            FlavorEnum::getRandomValue($rng),
+            $favoriteFlavor,
             $startingMerit
         );
+
+        $newPet->setScale($scale);
 
         if($startingHatItem)
         {
