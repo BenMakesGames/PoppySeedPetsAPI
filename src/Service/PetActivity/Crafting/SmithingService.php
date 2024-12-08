@@ -164,7 +164,7 @@ class SmithingService
             if($this->houseSimService->hasInventory('Dragonstick'))
                 $possibilities[] = new ActivityCallback($this->createDragonbreath(...), 10);
 
-            if($this->houseSimService->hasInventory('Firestone'))
+            if($this->houseSimService->hasInventory('Cooking Buddy'))
                 $possibilities[] = new ActivityCallback($this->createCookingWithFire(...), 10);
         }
 
