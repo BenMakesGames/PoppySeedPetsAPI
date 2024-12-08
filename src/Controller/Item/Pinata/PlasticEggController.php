@@ -146,10 +146,6 @@ class PlasticEggController extends AbstractController
 
                 $possibleLoot = [
                     [
-                        'items' => [ 'Renaming Scroll' ],
-                        'description' => 'and there\'s a scroll inside! A... Renaming Scroll!',
-                    ],
-                    [
                         'items' => [ 'Behatting Scroll' ],
                         'description' => 'and there\'s a scroll inside! A... Behatting Scroll!'
                     ],
