@@ -155,6 +155,8 @@ final class RecipeRepository
         [ 'name' => 'Coffee Yogurt', 'ingredients' => '22:1,113:1', 'makes' => '251:2' ],
         [ 'name' => 'Complex Fish Taco (A)', 'ingredients' => '33:1,312:1,396:1,713:1', 'makes' => '714:2' ],
         [ 'name' => 'Complex Fish Taco (B)', 'ingredients' => '397:1,713:1', 'makes' => '714:1' ],
+        [ 'name' => 'Cooking Buddy (from Mega Cooking Buddy)', 'ingredients' => '1129:1,1417:1', 'makes' => '158:1' ],
+        [ 'name' => 'Cooking Buddy (from Mini Cooking Buddy)', 'ingredients' => '1130:1,1416:1', 'makes' => '158:1' ],
         [ 'name' => 'Cool Fierierstone', 'ingredients' => '482:1,937:1', 'makes' => '108:1,136:1,422:1' ],
         [ 'name' => 'Coquito', 'ingredients' => '13:1,533:1,646:1', 'makes' => '1319:2' ],
         [ 'name' => 'Corn Starch', 'ingredients' => '24:1', 'makes' => '1277:3' ],
