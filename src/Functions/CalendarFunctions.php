@@ -315,6 +315,7 @@ final class CalendarFunctions
 
     public static function isCreepyMaskDay(\DateTimeInterface $dt): bool
     {
+        return true;
         return $dt->format('D j') === 'Fri 13';
     }
 

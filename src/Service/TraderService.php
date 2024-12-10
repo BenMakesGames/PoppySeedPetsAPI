@@ -796,6 +796,23 @@ class TraderService
 
         if(CalendarFunctions::isCreepyMaskDay($this->clock->now))
         {
+            // TODO: can remove this block after 2024 :P
+            if($this->clock->now->format('Y') == '2024')
+            {
+                $offers[] = TraderOffer::createTradeOffer(
+                    [
+                        TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Magic Pinecone'), 1),
+                    ],
+                    [
+                        TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Wand of Lightning'), 2),
+                    ],
+                    "",
+                    $user,
+                    $quantities,
+                    true
+                );
+            }
+
             if($this->clock->now->format('n') >= 10 || $this->clock->now->format('n') <= 3) // Oct - Mar
                 $masks = [ 'Ashen Yew', 'Crystalline', 'Gold Devil' ];
             else
