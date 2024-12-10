@@ -844,7 +844,7 @@ class TraderService
     {
         return match($month)
         {
-            1 => [ 'Wand of Lightning', 1 ],
+            1 => [ 'Magic Pinecone', 1 ],
             2 => [ 'Wed Bawwoon', 1 ],
             3 => [ 'Gummy Worms', 3 ],
             4 => [ 'Mysterious Seed', 1 ],
@@ -855,7 +855,7 @@ class TraderService
             9 => [ 'Little Strongbox', 1 ],
             10 => [ 'Tile: Bats!', 1 ],
             11 => [ 'Regular-sized Pumpkin', 1 ],
-            12 => [ 'Magic Pinecone', 1 ],
+            12 => [ 'Wand of Lightning', 1 ],
         };
     }
 
