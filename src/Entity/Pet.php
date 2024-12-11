@@ -1737,6 +1737,13 @@ class Pet
         return \mb_substr($this->affectionExpressions, $rng->rngNextInt(0, \mb_strlen($this->affectionExpressions) - 1), 1);
     }
 
+    public function setAffectionExpressions(string $affectionExpressions): self
+    {
+        $this->affectionExpressions = $affectionExpressions;
+
+        return $this;
+    }
+
     public function getRenamingCharges(): int
     {
         return $this->renamingCharges;
