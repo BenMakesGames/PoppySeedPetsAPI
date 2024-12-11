@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Enum\ActivityPersonalityEnum;
-use App\Enum\AffectionExpressionEnum;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\FlavorEnum;
 use App\Enum\LoveLanguageEnum;
@@ -301,17 +300,23 @@ class Pet
         $this->loveLanguage = LoveLanguageEnum::getRandomValue($squirrel3);
         $this->lunchboxItems = new ArrayCollection();
 
-        $this->affectionExpressions = join('', $squirrel3->rngNextSubsetFromArray(AffectionExpressionEnum::getValues(), 3));
-
+        $this->assignAffectionExpressions($squirrel3);
         $this->assignActivityPersonality($squirrel3);
 
         $this->lunchboxIndex = $squirrel3->rngNextInt(0, 13);
     }
 
-    public function assignActivityPersonality(IRandom $squirrel3)
+    public function assignActivityPersonality(IRandom $rng)
     {
-        $activityPersonalities = $squirrel3->rngNextSubsetFromArray(ActivityPersonalityEnum::getValues(), 3);
+        $activityPersonalities = $rng->rngNextSubsetFromArray(ActivityPersonalityEnum::getValues(), 3);
         $this->activityPersonality = $activityPersonalities[0] | $activityPersonalities[1] | $activityPersonalities[2];
+    }
+
+    public function assignAffectionExpressions(IRandom $rng)
+    {
+        $expressions = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+        $affectionExpressions = $rng->rngNextSubsetFromArray($expressions, 3);
+        $this->affectionExpressions = implode('', $affectionExpressions);
     }
 
     public function getId(): ?int
@@ -1730,13 +1735,6 @@ class Pet
             return null;
 
         return \mb_substr($this->affectionExpressions, $rng->rngNextInt(0, \mb_strlen($this->affectionExpressions) - 1), 1);
-    }
-
-    public function setAffectionExpressions(string $affectionExpressions): self
-    {
-        $this->affectionExpressions = $affectionExpressions;
-
-        return $this;
     }
 
     public function getRenamingCharges(): int

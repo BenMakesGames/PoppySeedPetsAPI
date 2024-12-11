@@ -2,7 +2,6 @@
 namespace App\Command;
 
 use App\Entity\Pet;
-use App\Enum\AffectionExpressionEnum;
 use App\Service\IRandom;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -36,7 +35,7 @@ class AssignAffectionExpressionsCommand extends PoppySeedPetsCommand
             $pets = $this->em->getRepository(Pet::class)->findBy([ 'affectionExpressions' => '' ], null, 200);
 
             foreach ($pets as $pet) {
-                $pet->setAffectionExpressions(join('', $this->rng->rngNextSubsetFromArray(AffectionExpressionEnum::getValues(), 3)));
+                $pet->assignAffectionExpressions($this->rng);
             }
 
             $this->em->flush();
