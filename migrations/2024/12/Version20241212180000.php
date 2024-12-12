@@ -17,7 +17,7 @@ final class Version20241212180000 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $this->addSql(<<<EOSQL
-        UPDATE `design_goal` SET `name` = 'Cute & Nerdy', `description` = 'I\'m a nerdy person; my love of science will always show itself in anything I make. Poppy Seed Pets is also a cute game about taking care of pets! I think Maslow\'s Hierarchy of Needs has set some good groundwork for merging cuteness & nerdiness, and I want to keep that blend going!' WHERE `design_goal`.`id` = 5; 
+        UPDATE `design_goal` SET `name` = 'Cute & Nerdy', `description` = 'I started this game because I wanted to simulate Maslow\'s Hierarchy of Needs, and in doing so accidentally created a cute & nerdy game filled with affection, love, sci-fi, magic, and mythology! That cuteness & nerdiness is what drew people to the game in the first place, so it\'s something I want to be intentional about going forward!' WHERE `design_goal`.`id` = 5; 
         EOSQL);
     }
 
