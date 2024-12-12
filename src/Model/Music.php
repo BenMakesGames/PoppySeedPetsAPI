@@ -394,5 +394,8 @@ class Music
 
         // Your Reality, by Dan Salvato (Doki Doki Literature Club)
         'Every day, I imagine a future where I can be with you. In my hand... is a pen that will write a po-em of me and you...',
+
+        // ❅ LAST MINUTE ❅, by kitty
+        'I\'m up at night over shit I said and forgot about. You\'re the spider I\'m tired of being waterspout; you\'re too tiny to climb me...'
     ];
 }
