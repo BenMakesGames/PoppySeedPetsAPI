@@ -422,5 +422,36 @@ class Music
 
         // Fireflies, by Owl City
         'Why do I tire of counting sheep (please take me away from here), when I\'m far too tired to fall asleep?',
+
+        // Kami-sama no Iu Toori, by Yakushimaru Etsuko
+        'Tengoku iku tame... mainichi kosotto. Naisho de ii koto shiteta... kedo. Namida hitohira. Atama kurakura...',
+
+        // Chicane
+        'Oh mi i-chidan-da muh munh, shu ken geth che de. Nuka-i machi nanga-dei...',
+        'And somedaaayyy... the spirit of the hearrrt. To fiiind - to feeeel you calling your waaayyy...',
+
+        // Close to Me, by Sabrepulse
+        'Close to me-e! Close to me-e! Close to me-e! Close to me-e! Close to me! Close to me-e! Close to me-e! Close to meeeeeeeeeeeeeeeeeeeeeeeee...!!',
+
+        // I Really Like You, by Carly Rae Jepsen
+        'But I need to tell you somethin\' - I really, really, really, really, really, really like you!',
+
+        // Akihabara Cruise, by flippy 19XX
+        'Let me show you all the glamor and the gold... seeecret fantasies in the show biz world...',
+
+        // Love Like You, by Aivi & Surasshu
+        'Look at you go, I just adore you; I wish that I knew... what makes... you think I\'m so speeecial.',
+
+        // Back to Me, by KSHMR
+        'Paaaiiint my roses red, riiight before the end, I will let the raindrop caarry me...',
+
+        // The Grump Variations, by M. Bulteau
+        'GO! D-d-d-doo, d-d-d-doo, d-d-d-do-do-do! D-d-d-d d-d-d-d d-d-d-do-do-do! D-d-d-doo, d-d-d-doo, d-d-d-do-do-do-- AUGHGHGHGH!!',
+
+        // That Look, by Justin Hawkes
+        'EYES... I... I... I... I... I... I... I... look upon your-- EYES...',
+
+        // Transformations, by Maduk
+        'Someway, somehow... think I\'ve seen it before. Someway, somehow... think I\'ve seen it before...',
     ];
 }
