@@ -228,8 +228,9 @@ class Music
         // Qemists, S.W.A.G.
         'Don\'t hide the feeling deep inside - take it in your stride, at least you know you tried. Jump back and get back a little more.',
 
-        // Linkin Park, Burn it Down
+        // Linkin Park:
         'The colors confliiiiiiiiiicteeeed, as the flames climbed into the clouds...',
+        'I don\'t know what\'s worth fighting for, or why I have to screeaam. But now I have some clarity, to show you what I meeaan...',
 
         // Jayme Gutierrez, Like a Tiger
         'And now it sounds like I\'m straining my voice, but I\'m only really singing very soooftly. I sing the melody right over the beat to distract from any monotonicality-y.',
@@ -396,6 +397,30 @@ class Music
         'Every day, I imagine a future where I can be with you. In my hand... is a pen that will write a po-em of me and you...',
 
         // ❅ LAST MINUTE ❅, by kitty
-        'I\'m up at night over shit I said and forgot about. You\'re the spider I\'m tired of being waterspout; you\'re too tiny to climb me...'
+        'I\'m up at night over shit I said and forgot about. You\'re the spider I\'m tired of being waterspout; you\'re too tiny to climb me...',
+
+        // Cobrastyle, by Teddybers
+        'My style is di bom digi bom di deng di deng digi-digi (oh-oh, oh-oh, oh-oh-oh-o-oh!)',
+
+        // Girl Anachronism, by Dresden Dolls
+        'I am not so serious, this passion is a plagiarism. I might join your century, but only on a rare occasion...',
+
+        // Kick It, by The Breakfastaz
+        'Ki-- ki-- kick it now... Kick it, kick it now... Ki-- ki-- kick it now... Kick it, kick it now...',
+
+        // Something Good, by Utah Saints
+        'Ooo-ooh-oy, I just knooww that something good is gonna happeeennn... ooo-ooh-oy!',
+
+        // Mario Kart Love Song, by Sam Hart
+        'No one will touch us if we pick up a star, and if you spin out, you can ride in my car...',
+
+        // Dusk till Dawn, by Ladyhawk
+        'When you sense you\'re not alone, and the darkness starts to moan-- who\'s there? Shadows all around, but: you don\'t make a sound...',
+
+        // Upside Down, by Paloma Faith
+        'I tell you what. What I have fooouuund. That I\'m no foo-ool. I\'m just upside down.',
+
+        // Fireflies, by Owl City
+        'Why do I tire of counting sheep (please take me away from here), when I\'m far too tired to fall asleep?',
     ];
 }
