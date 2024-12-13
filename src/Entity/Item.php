@@ -87,7 +87,7 @@ class Item
     #[ORM\ManyToOne(targetEntity: HollowEarthTileCard::class)]
     private $hollowEarthTileCard;
 
-    #[Groups(["itemEncyclopedia"])]
+    #[Groups(["itemEncyclopedia", "myInventory"])]
     #[ORM\ManyToMany(targetEntity: ItemGroup::class, mappedBy: 'items')]
     private $itemGroups;
 
