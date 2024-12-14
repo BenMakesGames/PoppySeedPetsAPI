@@ -42,9 +42,9 @@ class InventoryRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findAnyOneFromItemGroup(User $owner, string $itemGroupName, array $locationsToCheck = Inventory::CONSUMABLE_LOCATIONS): ?Inventory
+    public static function findAnyOneFromItemGroup(EntityManagerInterface $em, User $owner, string $itemGroupName, array $locationsToCheck = Inventory::CONSUMABLE_LOCATIONS): ?Inventory
     {
-        return $this->createQueryBuilder('i')
+        return $em->getRepository(Inventory::class)->createQueryBuilder('i')
             ->andWhere('i.owner=:user')
             ->andWhere('i.location IN (:consumableLocations)')
             ->leftJoin('i.item', 'item')

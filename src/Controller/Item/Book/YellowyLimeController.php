@@ -10,6 +10,7 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Repository\InventoryRepository;
 use App\Service\CookingService;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -44,7 +45,7 @@ class YellowyLimeController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
         Inventory $inventory, ResponseService $responseService,
-        InventoryRepository $inventoryRepository
+        EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -52,7 +53,7 @@ class YellowyLimeController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'yellowyLime/#/read');
 
-        $magnifyingGlass = $inventoryRepository->findAnyOneFromItemGroup($user, 'Magnifying Glass', [
+        $magnifyingGlass = InventoryRepository::findAnyOneFromItemGroup($em, $user, 'Magnifying Glass', [
             LocationEnum::HOME,
             LocationEnum::BASEMENT,
             LocationEnum::MANTLE,

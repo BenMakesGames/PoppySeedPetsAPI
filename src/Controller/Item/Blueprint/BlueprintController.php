@@ -18,7 +18,6 @@ use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\PetChanges;
 use App\Repository\InventoryRepository;
-use App\Repository\PetRepository;
 use App\Service\BeehiveService;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
@@ -116,8 +115,7 @@ class BlueprintController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buildBeehive(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        InventoryRepository $inventoryRepository, BeehiveService $beehiveService,
-        PetExperienceService $petExperienceService
+        BeehiveService $beehiveService, PetExperienceService $petExperienceService
     )
     {
         /** @var User $user */
@@ -128,7 +126,7 @@ class BlueprintController extends AbstractController
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::Beehive))
             throw new PSPInvalidOperationException('You\'ve already got a Beehive!');
 
-        $magnifyingGlass = $inventoryRepository->findAnyOneFromItemGroup($user, 'Magnifying Glass', [
+        $magnifyingGlass = InventoryRepository::findAnyOneFromItemGroup($em, $user, 'Magnifying Glass', [
             LocationEnum::HOME,
             LocationEnum::BASEMENT,
             LocationEnum::MANTLE,
