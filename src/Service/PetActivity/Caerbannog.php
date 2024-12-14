@@ -133,7 +133,10 @@ class Caerbannog
         }
 
         foreach($loot as $lootName)
-            $this->inventoryService->petCollectsItem($lootName, $pet, $pet->getName() . ' looted this from the Caerbannog Cave.', $activityLog);
+        {
+            $this->inventoryService->petCollectsItem($lootName, $pet, $pet->getName() . ' looted this from the Caerbannog Cave.', $activityLog)
+                ->setSpice($pet->getTool()?->getSpice());
+        }
 
         return $activityLog;
     }
