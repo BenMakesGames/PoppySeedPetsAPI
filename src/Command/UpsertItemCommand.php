@@ -6,6 +6,7 @@ use App\Command\Traits\AskItemTrait;
 use App\Entity\Item;
 use App\Entity\ItemFood;
 use App\Entity\ItemGrammar;
+use App\Entity\ItemGroup;
 use App\Entity\ItemHat;
 use App\Entity\ItemTool;
 use App\Enum\FlavorEnum;
@@ -69,6 +70,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
         $this->fertilizer($item);
         $this->fuel($item);
         $this->recycleValueAndMuseumPoints($item);
+        $this->groups($item);
 
         $this->em->flush();
 
@@ -269,5 +271,26 @@ class UpsertItemCommand extends PoppySeedPetsCommand
 
         // museum points must be asked for AFTER recycle value:
         $item->setMuseumPoints($this->askInt('Museum Points', $item->getMuseumPoints() ?? max(1, floor($item->getRecycleValue() / 5) * 10)));
+    }
+
+    private function groups(Item $item)
+    {
+        while(true)
+        {
+            $itemGroup = $this->askString('Add to an item group (~) ', null);
+
+            if(!$itemGroup)
+                return;
+
+            $itemGroup = $this->em->getRepository(ItemGroup::class)->findOneBy([ 'name' => $itemGroup ]);
+
+            if(!$itemGroup)
+            {
+                $this->output->writeln('No item group found with that name.');
+                continue;
+            }
+
+            $item->addItemGroup($itemGroup);
+        }
     }
 }
