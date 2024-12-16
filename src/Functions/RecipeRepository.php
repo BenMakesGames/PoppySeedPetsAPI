@@ -590,6 +590,7 @@ final class RecipeRepository
         [ 'name' => 'Spirit Polymorph Potion (A)', 'ingredients' => '6:1,55:1,135:1', 'makes' => '339:1' ],
         [ 'name' => 'Spirit Polymorph Potion (B)', 'ingredients' => '55:1,135:1,368:1', 'makes' => '339:1' ],
         [ 'name' => 'Stargazy Pie', 'ingredients' => '14:1,33:1,196:1,437:1', 'makes' => '1155:2' ],
+        [ 'name' => 'String Cheese', 'ingredients' => '68:1,255:1', 'makes' => '1422:1' ],
         [ 'name' => 'Sugar (from Honeycomb)', 'ingredients' => '423:1', 'makes' => '12:3' ],
         [ 'name' => 'Sugar (from Sweet Beet)', 'ingredients' => '11:1', 'makes' => '12:3' ],
         [ 'name' => 'Sunflower Oil', 'ingredients' => '177:1', 'makes' => '195:2' ],
