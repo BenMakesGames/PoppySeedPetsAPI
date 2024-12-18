@@ -32,6 +32,7 @@ final class RecipeRepository
         [ 'name' => 'Apricot Gummies (using Corn Syrup)', 'ingredients' => '12:1,25:1,130:1', 'makes' => '26:2,175:2' ],
         [ 'name' => 'Apricot PB&J', 'ingredients' => '112:1,179:1,512:1', 'makes' => '529:2' ],
         [ 'name' => 'Apricot Preserves', 'ingredients' => '12:1,121:1,130:1', 'makes' => '179:2' ],
+        [ 'name' => 'Avocado Salad', 'ingredients' => '7:1,133:1,195:1,958:1,1205:1', 'makes' => '1423:3' ],
         [ 'name' => 'Avocado Toast', 'ingredients' => '112:1,958:1', 'makes' => '1109:2' ],
         [ 'name' => 'Bag of Fertilizer (A)', 'ingredients' => '829:1,1130:1', 'makes' => '830:1' ],
         [ 'name' => 'Bag of Fertilizer (B)', 'ingredients' => '831:1,1129:1', 'makes' => '830:1' ],

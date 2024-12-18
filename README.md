@@ -1,3 +1,11 @@
+- Poppyopedia & market (& basement search), add the ability to search by "item tags" and extra properties (flammable, hat, etc) by icon (or something)
+- Filter museum items by name?
+- remove double-quotes from player responses
+- pet filter in pet activity log
+- In item popup, show if item has been donated or not
+-
+
+
 # Poppy Seed Pets!
 
 ## Install & Configure
