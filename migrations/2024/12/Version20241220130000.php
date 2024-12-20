@@ -57,6 +57,13 @@ final class Version20241220130000 extends AbstractMigration
         -- the item itself!
         INSERT INTO item (`id`, `name`, `description`, `image`, `use_actions`, `tool_id`, `food_id`, `fertilizer`, `plant_id`, `hat_id`, `fuel`, `recycle_value`, `enchants_id`, `spice_id`, `treasure_id`, `is_bug`, `hollow_earth_tile_card_id`, `cannot_be_thrown_out`, `museum_points`) VALUES (1426,"Peat-seeking Claymore",NULL,"tool/sword/laser-guided-and-winged-peat","[[\"Go! Seek peat!\",\"seekingClaymore\\/#\\/seekPeat\"],[\"Retune\",\"seekingClaymore\\/#\\/tune\"]]",488,NULL,0,NULL,NULL,0,22,146,NULL,NULL,0,NULL,0,30) ON DUPLICATE KEY UPDATE `id` = `id`;
         EOSQL);
+
+        // Gooplin
+        $this->addSql(<<<EOSQL
+        INSERT INTO `pet_species` (`id`, `name`, `image`, `description`, `hand_x`, `hand_y`, `hand_angle`, `flip_x`, `hand_behind`, `available_from_pet_shelter`, `pregnancy_style`, `egg_image`, `hat_x`, `hat_y`, `hat_angle`, `available_from_breeding`, `sheds_id`, `family`, `name_sort`, `physical_description`) VALUES (110, 'Gooplin', 'slime/gooplin', 'The EFSA and FDA are still reviewing the Gooplin\'s suitability for human consumption.\r\n\r\nPlease don\'t eat your Gooplin.\r\n\r\nYet.', '0.415', '0.7', '-46', '0', '1', '1', '1', NULL, '0.47', '0.34', '0', '1', '29', 'slime', 'Gooplin', 'A large, bell-shaped, semi-translucent slime.')
+        ON DUPLICATE KEY UPDATE `id` = `id`;
+        EOSQL);
+
     }
 
     public function down(Schema $schema): void
