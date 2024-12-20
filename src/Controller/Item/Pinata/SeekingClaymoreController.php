@@ -46,6 +46,7 @@ class SeekingClaymoreController extends AbstractController
                 'Wheat-seeking Claymore',
                 'Beat-seeking Claymore',
                 'Sheet-seeking Claymore',
+                'Peat-seeking Claymore'
             ],
             fn($itemName) => $inventory->getItem()->getName() !== $itemName
         );
@@ -300,7 +301,32 @@ class SeekingClaymoreController extends AbstractController
         return self::generateResponse($responseService, $bucket, $items);
     }
 
+    #[Route("/{inventory}/seekPeat", methods: ["POST"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    public function seekPeat(
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
+        EntityManagerInterface $em, IRandom $rng
+    )
+    {
+        /** @var User $user */
+        $user = $this->getUser();
 
+        ItemControllerHelpers::validateInventory($user, $inventory, 'seekingClaymore/#/seekPeat');
+        ItemControllerHelpers::validateLocationSpace($inventory, $em);
+
+        $location = $inventory->getLocation();
+
+        $bucket = self::getBucketOrThrow($em, $user, $location);
+
+        $items = [ 'Whole Bucket-worth of Peat' ];
+
+        self::receiveItems($inventoryService, $inventory, $items);
+
+        $em->remove($inventory);
+        $em->flush();
+
+        return self::generateResponse($responseService, $bucket, $items);
+    }
 
     private static function getBucketOrThrow(EntityManagerInterface $em, User $user, string $location): Inventory
     {
