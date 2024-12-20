@@ -158,14 +158,17 @@ class SmithingService
             if($this->houseSimService->hasInventory('Tri-color Scissors'))
                 $possibilities[] = new ActivityCallback($this->createPapersBane(...), $weight);
 
+            if($this->houseSimService->hasInventory('Nail File'))
+                $possibilities[] = new ActivityCallback($this->createCrazyHotNailFile(...), $weight);
+
             if($this->houseSimService->hasInventory('Warping Wand'))
-                $possibilities[] = new ActivityCallback($this->createRedWarpingWand(...), 10);
+                $possibilities[] = new ActivityCallback($this->createRedWarpingWand(...), $weight);
 
             if($this->houseSimService->hasInventory('Dragonstick'))
-                $possibilities[] = new ActivityCallback($this->createDragonbreath(...), 10);
+                $possibilities[] = new ActivityCallback($this->createDragonbreath(...), $weight);
 
             if($this->houseSimService->hasInventory('Cooking Buddy'))
-                $possibilities[] = new ActivityCallback($this->createCookingWithFire(...), 10);
+                $possibilities[] = new ActivityCallback($this->createCookingWithFire(...), $weight);
         }
 
         if($this->houseSimService->hasInventory('Silver Bar'))
@@ -367,6 +370,75 @@ class SmithingService
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+        }
+        else
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make Paper\'s Bane, but almost burned themselves on the Firestone...')
+                ->setIcon('icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::SMITH, false);
+        }
+
+        return $activityLog;
+    }
+
+    public function createCrazyHotNailFile(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->rng->rngNextInt(1, 20 + max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($roll >= 30)
+        {
+            $this->houseSimService->getState()->loseItem('Nail File', 1);
+            $this->houseSimService->getState()->loseItem('Firestone', 1);
+
+            $pet->increaseEsteem(6);
+
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% infused Nail File with the eternal heat of Firestone... and had plenty of Firestone left over!')
+                ->setIcon('items/tool/nail-fire-crazy-hot')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 30)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
+            ;
+            $this->inventoryService->petCollectsItem('Crazy-hot Nail File', $pet, $pet->getName() . ' made this by infusing a Nail File with the eternal heat of Firestone!', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 5, [ PetSkillEnum::CRAFTS ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+
+        }
+        else if($roll >= 20)
+        {
+            $this->houseSimService->getState()->loseItem('Nail File', 1);
+            $this->houseSimService->getState()->loseItem('Firestone', 1);
+
+            $pet->increaseEsteem(4);
+
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% infused a Nail File with the eternal heat of Firestone!')
+                ->setIcon('items/tool/nail-fire-crazy-hot')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
+            ;
+            $this->inventoryService->petCollectsItem('Crazy-hot Nail File', $pet, $pet->getName() . ' made this by infusing a Nail File with the eternal heat of Firestone!', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+        }
+        else if($roll === 1)
+        {
+            $this->houseSimService->getState()->loseItem('Nail File', 1);
+
+            $pet->increaseEsteem(-4);
+
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried infusing a Nail File with the eternal heat of Firestone, but the Nail File was completely obliterated!')
+                ->setIcon('icons/activity-logs/confused')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::SMITH, false);
         }
         else
         {
