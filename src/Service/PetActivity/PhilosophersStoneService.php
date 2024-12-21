@@ -26,7 +26,6 @@ class PhilosophersStoneService
 {
     public function __construct(
         private readonly IRandom $rng,
-        private readonly PetQuestRepository $petQuestRepository,
         private readonly InventoryService $inventoryService,
         private readonly EntityManagerInterface $em,
         private readonly PetExperienceService $petExperienceService
