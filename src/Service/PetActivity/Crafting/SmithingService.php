@@ -393,7 +393,6 @@ class SmithingService
         if($roll >= 30)
         {
             $this->houseSimService->getState()->loseItem('Nail File', 1);
-            $this->houseSimService->getState()->loseItem('Firestone', 1);
 
             $pet->increaseEsteem(6);
 
