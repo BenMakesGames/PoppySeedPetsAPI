@@ -18,7 +18,7 @@ final class Version20241221075500 extends AbstractMigration
     {
         // Ichthyastra
         $this->addSql(<<<EOSQL
-        INSERT INTO `merit` (`id`, `name`, `description`) VALUES (60, 'Ichthyastra', 'A third of the fish Fish that %pet.name% acquires will have a random spice applied, however %pet.name% can never again seek the Vesica Hydrargyrum.')
+        INSERT INTO `merit` (`id`, `name`, `description`) VALUES (60, 'Ichthyastra', 'A third of the Fish that %pet.name% acquires will have a random spice applied, however %pet.name% can never again seek the Vesica Hydrargyrum.')
         ON DUPLICATE KEY UPDATE `id` = `id`;
         EOSQL);
 
