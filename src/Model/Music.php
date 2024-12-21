@@ -453,5 +453,8 @@ class Music
 
         // Transformations, by Maduk
         'Someway, somehow... think I\'ve seen it before. Someway, somehow... think I\'ve seen it before...',
+
+        // Wild Wild Life, by Talking Heads
+        'I\'m wearing... a fur pajamas. I ride a... hot potato. It\'s tickling... my fancy. Speak up! I can\'t hear you.',
     ];
 }
