@@ -368,6 +368,9 @@ class SmithingService
             ;
             $this->inventoryService->petCollectsItem('Paper\'s Bane', $pet, $pet->getName() . ' made this by infusing Tri-color Scissors with the eternal heat of Firestone!', $activityLog);
 
+            if($pet->hasMerit(MeritEnum::METATRON_S_TOUCH))
+                $this->inventoryService->petCollectsItem('Rock', $pet, 'This was left over after ' . $pet->getName() . ' worked with Firestone.', $activityLog);
+
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
         }
@@ -421,6 +424,9 @@ class SmithingService
             ;
             $this->inventoryService->petCollectsItem('Crazy-hot Nail File', $pet, $pet->getName() . ' made this by infusing a Nail File with the eternal heat of Firestone!', $activityLog);
 
+            if($pet->hasMerit(MeritEnum::METATRON_S_TOUCH))
+                $this->inventoryService->petCollectsItem('Rock', $pet, 'This was left over after ' . $pet->getName() . ' worked with Firestone.', $activityLog);
+
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
         }
@@ -471,6 +477,9 @@ class SmithingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
             ;
             $this->inventoryService->petCollectsItem('Red Warping Wand', $pet, $pet->getName() . ' made this by infusing a Warping Wand with the eternal heat of Firestone!', $activityLog);
+
+            if($pet->hasMerit(MeritEnum::METATRON_S_TOUCH))
+                $this->inventoryService->petCollectsItem('Rock', $pet, 'This was left over after ' . $pet->getName() . ' worked with Firestone.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
@@ -1057,6 +1066,9 @@ class SmithingService
             ;
             $this->inventoryService->petCollectsItem('Antipode', $pet, $pet->getName() . ' created this by hammering Everice and Firestone into an Iron Sword!', $activityLog);
 
+            if($pet->hasMerit(MeritEnum::METATRON_S_TOUCH))
+                $this->inventoryService->petCollectsItem('Rock', $pet, 'This was left over after ' . $pet->getName() . ' worked with Firestone.', $activityLog);
+
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ], $activityLog);
         }
         else
@@ -1407,6 +1419,9 @@ class SmithingService
             ;
             $this->inventoryService->petCollectsItem('Dragonbreath', $pet, $pet->getName() . ' made this by infusing a Dragonstick with the eternal heat of Firestone!', $activityLog);
 
+            if($pet->hasMerit(MeritEnum::METATRON_S_TOUCH))
+                $this->inventoryService->petCollectsItem('Rock', $pet, 'This was left over after ' . $pet->getName() . ' worked with Firestone.', $activityLog);
+
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
         }
@@ -1442,6 +1457,10 @@ class SmithingService
                 ]))
             ;
             $this->inventoryService->petCollectsItem('Cooking... with Fire', $pet, $pet->getName() . ' created this by setting a Cooking Buddy on fire.', $activityLog);
+
+            if($pet->hasMerit(MeritEnum::METATRON_S_TOUCH))
+                $this->inventoryService->petCollectsItem('Rock', $pet, 'This was left over after ' . $pet->getName() . ' worked with Firestone.', $activityLog);
+
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
         }
         else

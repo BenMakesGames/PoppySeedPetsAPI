@@ -33,7 +33,7 @@ class InventoryService
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly ResponseService $responseService,
-        private readonly IRandom $squirrel3,
+        private readonly IRandom $rng,
         private readonly EatingService $eatingService,
         private readonly HouseSimService $houseSimService,
         private readonly Clock $clock
@@ -175,7 +175,20 @@ class InventoryService
         $item = $this->getItemWithChanceForLuckyTransformation($item);
 
         if($pet->hasStatusEffect(StatusEffectEnum::HOT_TO_THE_TOUCH))
-            $spice = (!$spice || $this->squirrel3->rngNextInt(1, 4) == 4) ? SpiceRepository::findOneByName($this->em, 'Spicy') : $spice;
+            $spice = (!$spice || $this->rng->rngNextInt(1, 4) == 4) ? SpiceRepository::findOneByName($this->em, 'Spicy') : $spice;
+
+        if(!$spice && $item->getName() === 'Fish' && $pet->hasMerit(MeritEnum::ICHTHYASTRA) && $this->rng->rngNextInt(1, 3) === 1)
+        {
+            $spice = SpiceRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
+                'Cosmic',
+                'Feseekh',
+                'Lunar',
+                'Nectarous',
+                'of Deathly Heat',
+                'Starry',
+                'with Flavors Unknown',
+            ]));
+        }
 
         $cancelGather = false;
         $replacementItemNames = [];
@@ -218,7 +231,7 @@ class InventoryService
         if($pet->getTool())
         {
             if($pet->getTool()->getSpice())
-                $extraItemSpice = (!$spice || $this->squirrel3->rngNextBool()) ? $pet->getTool()->getSpice() : $spice;
+                $extraItemSpice = (!$spice || $this->rng->rngNextBool()) ? $pet->getTool()->getSpice() : $spice;
             else
                 $extraItemSpice = $spice;
 
@@ -389,21 +402,18 @@ class InventoryService
             $this->responseService->setReloadInventory();
         }
 
-        if($pet->hasStatusEffect(StatusEffectEnum::FRUIT_CLOBBERING) && $item->hasItemGroup('Fresh Fruit'))
+        if($pet->hasMerit(MeritEnum::LIGHTNING_REINS) && $item->getName() === 'Lightning in a Bottle')
         {
-            $pectin = ItemRepository::findOneByName($this->em, 'Pectin');
+            $pectin = ItemRepository::findOneByName($this->em, 'Quintessence');
 
             $extraItem = (new Inventory())
                 ->setOwner($pet->getOwner())
                 ->setCreatedBy($pet->getOwner())
                 ->setItem($pectin)
-                ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' while ' . StatusEffectEnum::FRUIT_CLOBBERING . '.')
+                ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with its Lightning Reins.')
                 ->setLocation(LocationEnum::HOME)
-                ->setSpice($extraItemSpice)
                 ->setEnchantment($bonus)
             ;
-
-            $this->applySeasonalSpiceToNewItem($extraItem);
 
             if(!$this->houseSimService->getState()->addInventory($extraItem))
                 $this->em->persist($extraItem);
@@ -458,7 +468,7 @@ class InventoryService
             return null;
         }
 
-        if($item->getFood() !== null && count($pet->getLunchboxItems()) === 0 && $this->squirrel3->rngNextInt(1, 20) < 10 - $pet->getFood() - $pet->getJunk() / 2)
+        if($item->getFood() !== null && count($pet->getLunchboxItems()) === 0 && $this->rng->rngNextInt(1, 20) < 10 - $pet->getFood() - $pet->getJunk() / 2)
         {
             if($this->eatingService->doEat($pet, new FoodWithSpice($item, $spice), $activityLog))
                 return null;
@@ -489,7 +499,7 @@ class InventoryService
 
     private function applySeasonalSpiceToNewItem(Inventory $i): Inventory
     {
-        if($i->getSpice() && $this->squirrel3->rngNextBool())
+        if($i->getSpice() && $this->rng->rngNextBool())
             return $i;
 
         if($i->getItem()->getName() === 'Worms' && DateFunctions::getFullMoonName($this->clock->now) === 'Worm')
@@ -539,7 +549,7 @@ class InventoryService
             return null;
 
         if($bugName === null)
-            $bugName = $this->squirrel3->rngNextFromArray([ 'Spider', 'Centipede', 'Cockroach', 'Line of Ants', 'Fruit Fly', 'Stink Bug', 'Moth' ]);
+            $bugName = $this->rng->rngNextFromArray([ 'Spider', 'Centipede', 'Cockroach', 'Line of Ants', 'Fruit Fly', 'Stink Bug', 'Moth' ]);
 
         $bug = ItemRepository::findOneByName($this->em, $bugName);
 
@@ -548,7 +558,7 @@ class InventoryService
 
         for($i = 0; $i < $bugs; $i++)
         {
-            $location = (!$toolAttractsBugs && $pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Basement) && $this->squirrel3->rngNextInt(1, 4) === 1)
+            $location = (!$toolAttractsBugs && $pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Basement) && $this->rng->rngNextInt(1, 4) === 1)
                 ? LocationEnum::BASEMENT
                 : LocationEnum::HOME
             ;
@@ -569,7 +579,7 @@ class InventoryService
     {
         $itemIsString = is_string($item);
 
-        if($this->squirrel3->rngNextInt(1, 200) === 1)
+        if($this->rng->rngNextInt(1, 200) === 1)
         {
             $itemName = $itemIsString ? $item : $item->getName();
 

@@ -78,6 +78,12 @@ final class MeritInfo
         MeritEnum::WONDROUS_PERCEPTION,
         MeritEnum::WONDROUS_INTELLIGENCE,
 
+        // from seeking the Philosopher's Stone
+        MeritEnum::METATRON_S_TOUCH,
+        MeritEnum::ICHTHYASTRA,
+        MeritEnum::MANXOME,
+        MeritEnum::LIGHTNING_REINS,
+
         // saga jellings
         MeritEnum::SAGA_SAGA,
         MeritEnum::AFFECTIONLESS,

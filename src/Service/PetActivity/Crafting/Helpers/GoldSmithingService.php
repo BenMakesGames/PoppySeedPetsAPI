@@ -635,6 +635,9 @@ class GoldSmithingService
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->inventoryService->petCollectsItem('No Whisk, No Reward', $pet, $pet->getName() . ' smithed this with the magic heat of a Firestone!', $activityLog);
+
+            if($pet->hasMerit(MeritEnum::METATRON_S_TOUCH))
+                $this->inventoryService->petCollectsItem('Rock', $pet, 'This was left over after ' . $pet->getName() . ' worked with Firestone.', $activityLog);
         }
         else
         {

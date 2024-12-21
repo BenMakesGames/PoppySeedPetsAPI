@@ -11,6 +11,7 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\EquipmentFunctions;
 use App\Functions\ItemRepository;
+use App\Functions\MeritRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
@@ -58,9 +59,9 @@ class PhilosophersStoneService
             $skill = 10 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getBrawl(false)->getTotal();
         }
 
-        $gotTheThing = $this->petQuestRepository->findOrCreate($pet, 'Got Metatron\'s Fire', 0);
+        $gotTheThing = $pet->hasMerit(MeritEnum::METATRON_S_TOUCH);
 
-        $monster = $gotTheThing->getValue() == 0 ? 'Lava Giant' : 'Lava Giant\'s Spirit';
+        $monster = !$gotTheThing ? 'Lava Giant' : 'Lava Giant\'s Spirit';
 
         if($skill < 20)
         {
@@ -86,7 +87,7 @@ class PhilosophersStoneService
                     : ActivityHelpers::PetName($pet) . ' took on the ' . $monster . ' near the island\'s volcano, and deflected its attacks before delivering a fatal blow'
                 ;
 
-                if($gotTheThing->getValue() == 1)
+                if($gotTheThing)
                 {
                     $activityLogMessage .= '. The spirit evaporated, leaving behind Quintessence, and Liquid-hot Magma.';
 
@@ -104,7 +105,7 @@ class PhilosophersStoneService
                 {
                     $activityLogMessage .= ' that shattered ' . ActivityHelpers::PetName($pet) . '\'s ' . $pet->getTool()->getFullItemName() . ' in a flash of light and gust of hot wind! When the dust settled, all that remained of the giant was Metatron\'s Fire!';
 
-                    $gotTheThing->setValue(1);
+                    $pet->addMerit(MeritRepository::findOneByName($this->em, MeritEnum::METATRON_S_TOUCH));
 
                     $activityLog = PetActivityLogFactory::createUnreadLog($this->em,
                         $pet,
@@ -161,7 +162,7 @@ class PhilosophersStoneService
 
         $skill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getArcana()->getTotal();
 
-        $gotTheThing = $this->petQuestRepository->findOrCreate($pet, 'Got Vesica Hydrargyrum', 0);
+        $gotTheThing = $pet->hasMerit(MeritEnum::ICHTHYASTRA);
 
         if(!$pet->hasMerit(MeritEnum::NATURAL_CHANNEL))
         {
@@ -197,7 +198,7 @@ class PhilosophersStoneService
             {
                 $activityLogMessage = 'The Ceremony of Fire lead ' . ActivityHelpers::PetName($pet) . ' to an ice cave in the frozen quag in the Umbra, and used their Ceremony of Fire to melt the huge Everice icicles that stood in their way.';
 
-                if($gotTheThing->getValue() == 1)
+                if($gotTheThing)
                 {
                     $activityLogMessage .= '. The Ceremony of Fire made short work of the icicles, freeing the Quintessence locked inside.';
 
@@ -211,7 +212,7 @@ class PhilosophersStoneService
                 {
                     $activityLogMessage .= ' They reached the heart of the cave, where a strange jewel was encased in pure Everice. The Ceremony of Fire\'s magic had to be completely spent to melt through it, but in the end, ' . ActivityHelpers::PetName($pet) . ' retrieved the jewel: a Vesica Hydrargyrum!';
 
-                    $gotTheThing->setValue(1);
+                    $pet->addMerit(MeritRepository::findOneByName($this->em, MeritEnum::ICHTHYASTRA));
 
                     $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $activityLogMessage);
 
@@ -261,9 +262,9 @@ class PhilosophersStoneService
 
         $skill = 10 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl(true)->getTotal();
 
-        $gotTheThing = $this->petQuestRepository->findOrCreate($pet, 'Got Earth\'s Egg', 0);
+        $gotTheThing = $pet->hasMerit(MeritEnum::MANXOME);
 
-        $aMonsterType = $gotTheThing->getValue() == 0 ? 'the Manxome' : $this->rng->rngNextFromArray([
+        $aMonsterType = !$gotTheThing ? 'the Manxome' : $this->rng->rngNextFromArray([
             'a Burbling',
             'an Uffish',
             'a Whiffling'
@@ -300,7 +301,7 @@ class PhilosophersStoneService
 
                     $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY);
 
-                    $gotTheThing->setValue(1);
+                    $pet->addMerit(MeritRepository::findOneByName($this->em, MeritEnum::MANXOME));
 
                     $pet->increaseEsteem(12);
 
@@ -351,9 +352,9 @@ class PhilosophersStoneService
         // go to top of volcano, and split a bolt of lightning in two
         $pet = $petWithSkills->getPet();
 
-        $gotTheThing = $this->petQuestRepository->findOrCreate($pet, 'Got Merkaba of Air', 0);
+        $gotTheThing = $pet->hasMerit(MeritEnum::LIGHTNING_REINS);
 
-        if($gotTheThing->getValue() == 1)
+        if($gotTheThing)
             return null;
 
         $changes = new PetChanges($pet);
@@ -376,7 +377,7 @@ class PhilosophersStoneService
 
         $pet->getTool()->setEnchantment(null);
 
-        $gotTheThing->setValue(1);
+        $pet->addMerit(MeritRepository::findOneByName($this->em, MeritEnum::LIGHTNING_REINS));
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY)

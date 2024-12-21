@@ -40,6 +40,12 @@ final class MeritEnum
     public const BIGGER_LUNCHBOX = 'Bigger Lunchbox';
     public const BLUSH_OF_LIFE = 'Blush of Life';
 
+    // obtained by seeking the Philosopher's Stone
+    public const METATRON_S_TOUCH = 'Metatron\'s Touch';
+    public const ICHTHYASTRA = 'Ichthyastra';
+    public const MANXOME = 'Manxome';
+    public const LIGHTNING_REINS = 'Lightning Reins';
+
     // obtained through house time spent
     public const MIND_OVER_MATTER = 'Mind Over Matter';
     public const MATTER_OVER_MIND = 'Matter Over Mind';
