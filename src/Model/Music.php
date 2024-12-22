@@ -44,6 +44,7 @@ class Music
         // Sonic (the Hedgehog)
         'Rollin\' around at the speed of sou-ound... got places to go - gotta\' follow my rain-bow!',
         'Moooonliiight all around. Shaaadooows on the ground. Will there ever be an eeend? Forever running from this lunacyyy...',
+        'We can show the world what we can do. You are next to me, and I\'m next to you. Pushing on through until the battle\'s wooooon...',
 
         // Beck, Timebomb
         'We\'re going sideways! Highways! Riding on an elevator - cold just like an alligator - now my baby\'s out of date!',
