@@ -131,6 +131,7 @@ final class RecipeRepository
         [ 'name' => 'Chocolate Chip Muffins I', 'ingredients' => '12:1,13:1,14:1,16:1,65:1,109:1,325:1', 'makes' => '428:3' ],
         [ 'name' => 'Chocolate Chip Muffins II', 'ingredients' => '12:1,14:1,16:1,65:1,109:1,113:1,325:1', 'makes' => '428:3' ],
         [ 'name' => 'Chocolate Cream Pie', 'ingredients' => '12:1,13:1,14:1,16:1,65:1,116:1,196:1', 'makes' => '222:4' ],
+        [ 'name' => 'Chocolate Cream Pie (with Tofu)', 'ingredients' => '12:1,116:1,196:1,494:1', 'makes' => '222:3' ],
         [ 'name' => 'Chocolate Ice Cream Sammy', 'ingredients' => '110:1,315:1', 'makes' => '808:2' ],
         [ 'name' => 'Chocolate Ice Cream', 'ingredients' => '12:1,13:1,14:1,116:1', 'makes' => '315:2' ],
         [ 'name' => 'Chocolate Lava Cake', 'ingredients' => '12:1,14:1,16:1,65:1,325:1', 'makes' => '959:3' ],

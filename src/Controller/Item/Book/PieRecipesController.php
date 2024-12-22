@@ -29,6 +29,7 @@ class PieRecipesController extends AbstractController
             'Blackberry Pie',
             'Blueberry Pie',
             'Chocolate Cream Pie',
+            'Chocolate Cream Pie (with Tofu)',
             'Flan Pâtissier',
             'Slice of Pumpkin Pie',
             'Red Pie',
@@ -70,7 +71,7 @@ I was once told "there as many types of pie filling as there are people who have
 * Wheat Flour
 * Sugar
 
-#### Chocolate Cream
+#### Chocolate Cream (traditional)
 
 * Cocoa Powder
 * Sugar
@@ -78,6 +79,12 @@ I was once told "there as many types of pie filling as there are people who have
 * Creamy Milk
 * Butter (no one said this was going to be good for you; it is beautiful, though)
 * Wheat Flour
+
+#### Chocolate Cream (using Tofu)
+
+* Cocoa Powder
+* Sugar
+* Tofu
 
 #### Flan Pâtissier
 
