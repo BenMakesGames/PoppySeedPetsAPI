@@ -89,6 +89,7 @@ final class RecipeRepository
         [ 'name' => 'Brownie with Orange Marmalade', 'ingredients' => '183:1,243:1', 'makes' => '389:1' ],
         [ 'name' => 'Brownie', 'ingredients' => '12:1,14:1,16:1,65:1,109:1,116:1', 'makes' => '243:3' ],
         [ 'name' => 'Bruschetta', 'ingredients' => '112:1,133:1,195:1', 'makes' => '1240:2' ],
+        [ 'name' => 'Bûche De Noël', 'ingredients' => '12:1,14:1,16:1,116:1,121:1,737:1', 'makes' => '1427:2' ],
         [ 'name' => 'Butter', 'ingredients' => '13:1', 'makes' => '65:1' ],
         [ 'name' => 'Buttered Popcorn A', 'ingredients' => '65:1,299:1', 'makes' => '300:1' ],
         [ 'name' => 'Buttered Popcorn B', 'ingredients' => '24:1,65:1,195:1', 'makes' => '300:1' ],

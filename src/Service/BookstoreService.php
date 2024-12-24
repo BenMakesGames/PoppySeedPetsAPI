@@ -299,6 +299,9 @@ class BookstoreService
         if($this->renamingScrollAvailable($user))
             $bookPrices['Renaming Scroll'] = $this->getRenamingScrollCost($user);
 
+        if(CalendarFunctions::isStockingStuffingSeason($this->clock->now))
+            $bookPrices['Bûche De Noël Recipe'] = 10;
+
         ksort($bookPrices);
 
         return $bookPrices;
