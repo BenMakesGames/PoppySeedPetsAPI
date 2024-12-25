@@ -42,7 +42,7 @@ class BucheDeNoelRecipeController extends AbstractController
 * Wheat Flour
 * Cocoa Powder
 * Sugar
-* Gelatin
+* Pectin
 * Goodberries');
     }
 }

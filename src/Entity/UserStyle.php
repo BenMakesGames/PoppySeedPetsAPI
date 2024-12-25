@@ -14,7 +14,6 @@ class UserStyle
 
     const PROPERTIES = [
         'backgroundColor',
-        'petInfoBackgroundColor',
         'speechBubbleBackgroundColor',
         'textColor',
         'primaryColor',
@@ -49,10 +48,6 @@ class UserStyle
     #[Groups(["myStyle", "publicStyle"])]
     #[ORM\Column(type: 'string', length: 6)]
     private $backgroundColor;
-
-    #[Groups(["myStyle", "publicStyle"])]
-    #[ORM\Column(type: 'string', length: 6)]
-    private $petInfoBackgroundColor;
 
     #[Groups(["myStyle", "publicStyle"])]
     #[ORM\Column(type: 'string', length: 6)]
@@ -147,18 +142,6 @@ class UserStyle
     public function setBackgroundColor(string $backgroundColor): self
     {
         $this->backgroundColor = $backgroundColor;
-
-        return $this;
-    }
-
-    public function getPetInfoBackgroundColor(): ?string
-    {
-        return $this->petInfoBackgroundColor;
-    }
-
-    public function setPetInfoBackgroundColor(string $petInfoBackgroundColor): self
-    {
-        $this->petInfoBackgroundColor = $petInfoBackgroundColor;
 
         return $this;
     }
