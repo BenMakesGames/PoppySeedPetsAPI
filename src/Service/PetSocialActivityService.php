@@ -9,7 +9,6 @@ use App\Enum\HolidayEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityLogTagEnum;
-use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SocialTimeWantEnum;
 use App\Enum\SpiritCompanionStarEnum;
@@ -36,8 +35,7 @@ class PetSocialActivityService
         private readonly HoliService $holiService,
         private readonly PetRelationshipRepository $petRelationshipRepository,
         private readonly PregnancyService $pregnancyService,
-        private readonly AwaOdoriService $awaOdoriService,
-        private readonly PerformanceProfiler $performanceProfiler
+        private readonly AwaOdoriService $awaOdoriService
     )
     {
     }
@@ -128,11 +126,7 @@ class PetSocialActivityService
 
     public function recomputeFriendRatings(Pet $pet)
     {
-        $time = microtime(true);
-
         $friends = $this->petRelationshipRepository->getFriends($pet);
-
-        $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - Fetch Friends', microtime(true) - $time);
 
         if(count($friends) == 0)
             return;

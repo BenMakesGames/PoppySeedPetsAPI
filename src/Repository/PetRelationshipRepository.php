@@ -5,8 +5,6 @@ use App\Entity\Pet;
 use App\Entity\PetRelationship;
 use App\Enum\RelationshipEnum;
 use App\Enum\StatusEffectEnum;
-use App\Functions\ArrayFunctions;
-use App\Service\PerformanceProfiler;
 use App\Service\PetExperienceService;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -21,8 +19,7 @@ use Doctrine\Persistence\ManagerRegistry;
 class PetRelationshipRepository extends ServiceEntityRepository
 {
     public function __construct(
-        ManagerRegistry $registry,
-        private readonly PerformanceProfiler $performanceProfiler
+        ManagerRegistry $registry
     )
     {
         parent::__construct($registry, PetRelationship::class);
@@ -34,8 +31,6 @@ class PetRelationshipRepository extends ServiceEntityRepository
     public function getRelationshipsToHangOutWith(Pet $pet): array
     {
         $maxFriendsToConsider = $pet->getMaximumFriends();
-
-        $time = microtime(true);
 
         $qb = $this->createQueryBuilder('r')
             ->leftJoin('r.pet', 'pet')
@@ -54,8 +49,6 @@ class PetRelationshipRepository extends ServiceEntityRepository
         ;
 
         $friends = $qb->getQuery()->execute();
-
-        $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - SQL query', microtime(true) - $time);
 
         if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
         {
