@@ -4,7 +4,6 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\BirdBathBirdEnum;
-use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
