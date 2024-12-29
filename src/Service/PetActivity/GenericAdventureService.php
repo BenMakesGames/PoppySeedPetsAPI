@@ -318,32 +318,22 @@ class GenericAdventureService
         if($this->hattierService->userHasUnlocked($pet->getOwner(), $partyEnchantment))
             return null;
 
-        $givenAHat = '';
-
-        if(!$pet->getHat())
-        {
-            $givenAHat = ', and a Paper Boat was placed on their head';
-            $paperHat = $this->inventoryService->petCollectsItem('Paper Boat', $pet, $pet->getName() . ' received this for their birthday from a Tell Samarzhoustian representative.', null)
-                ->setLocation(LocationEnum::WARDROBE)
-            ;
-
-            $pet->setHat($paperHat);
-
-            $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Tell Samarzhoustia', 'Your pet received a Paper Boat from a Tell Samarzhoustian representative.');
-        }
-
-        $message = 'While walking along a riverbank, ' . ActivityHelpers::PetName($pet) . ' was showered with confetti' . $givenAHat . '! A fish (apparently a representative from Tell Samarazhoustia) wished them a happy birthday... it\'s a little late, but still nice...? It would have been nicer if the fish didn\'t also remind ' . ActivityHelpers::PetName($pet) . ' to visit the Trader often...';
+        $message = 'While walking along a riverbank, ' . ActivityHelpers::PetName($pet) . ' was showered with confetti! A fish (apparently a representative from Tell Samarazhoustia) wished them a happy birthday... it\'s a little late, but still nice...? It would have been nicer if the fish didn\'t also remind ' . ActivityHelpers::PetName($pet) . ' to visit the Trader often...';
 
         $activityLog = $this->hattierService->petMaybeUnlockAura(
             $pet,
             $partyEnchantment,
             $message,
             $message,
-            ActivityHelpers::PetName($pet) . '\'s got so much confetti on them, they were finding bits of confetti on their body all day...'
+            'As a birthday surprise, a fish showered ' . ActivityHelpers::PetName($pet) . ' with confetti. They were finding bits of confetti on their body all day...'
         );
 
         if($activityLog)
+        {
             $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Special Event', 'Birthday' ]));
+
+            $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Tell Samarzhoustia', 'Your pet received a Paper Boat from a Tell Samarzhoustian representative.');
+        }
 
         return $activityLog;
     }

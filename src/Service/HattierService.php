@@ -170,6 +170,8 @@ class HattierService
 
         $cacheKey = $this->getAuraUnlockedCacheKey($user, $enchantment);
 
+        $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY);
+
         $this->userAurasPerRequestCache[$cacheKey] = $unlockedAura;
 
         return $unlockedAura;
