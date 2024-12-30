@@ -463,5 +463,8 @@ class Music
 
         // Makeba
         'Ooo-ee! Makeba, Makeba ma qué bella, can I get a "ooo-ee!" Makeba, makes my body dance for yoouu.',
+
+        // We Are One, by Rameses B
+        'COME to me; don\'t be shy, I want LOVE, truly. Something that\'ll make SENSE to me. RUSH upon me and SAY something - BREAK something.',
     ];
 }
