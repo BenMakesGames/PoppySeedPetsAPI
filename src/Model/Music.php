@@ -457,5 +457,11 @@ class Music
 
         // Wild Wild Life, by Talking Heads
         'I\'m wearing... a fur pajamas. I ride a... hot potato. It\'s tickling... my fancy. Speak up! I can\'t hear you.',
+
+        // Starscapes, by TwoThirds & Feint
+        'Hard to saaaaaaaaaaaaaaaaaaaaaaaave... hard to sa-a, a a-a, a a-a, a a-a, a a-a, a a-a, a a-a, a a-a...',
+
+        // Makeba
+        'Ooo-ee! Makeba, Makeba ma qué bella, can I get a "ooo-ee!" Makeba, makes my body dance for yoouu.',
     ];
 }
