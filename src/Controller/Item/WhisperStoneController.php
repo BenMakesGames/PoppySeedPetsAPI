@@ -2,11 +2,13 @@
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\KnownRecipes;
 use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Functions\ItemRepository;
 use App\Functions\RecipeRepository;
 use App\Model\ItemQuantity;
+use App\Service\CookingService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -23,7 +25,7 @@ class WhisperStoneController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
-        UserStatsService $userStatsRepository
+        UserStatsService $userStatsRepository, CookingService $cookingService
     )
     {
         /** @var User $user */
@@ -58,20 +60,25 @@ class WhisperStoneController extends AbstractController
 
         $stat = $userStatsRepository->incrementStat($user, 'Listened to a Whisper Stone');
 
-        if($stat->getValue() === 1)
-            $message .= 'Wait, aren\'t Whisper Stones supposed to reveal dark secrets from the spirit world?';
-        else
+        if($user->getCookingBuddy())
         {
-            $message .= $rng->rngNextFromArray([
-                'Thanks, rock!',
-                'This Whisper Stone seems to have knowledge within a very specific domain.',
-                'Might be worth trying sometime?',
-                'Two recipes with one stone!',
-                'Whisper Stones are often said to sound creepy, but this one seemed nice enough.',
-                'Then its blue glow subsides, leaving you with an ordinary chunk of Striped Microcline.',
-                'Whose voice is that, anyway? Is it the rock\'s?',
-            ]);
+            $learnedSomethingNew = $cookingService->learnRecipe($user, $recipes[0]['name']);
+            $learnedSomethingNew = $cookingService->learnRecipe($user, $recipes[1]['name']) || $learnedSomethingNew;
+
+            if($learnedSomethingNew)
+                $message .= "\"I heard that,\" your Cooking Buddy whispers back. (It seems like it learned something new!";
+            else
+                $message .= "\"I know,\" your Cooking Buddy whispers back. (I guess it already knew those recipes!";
+
+            if($stat->getValue() === 1)
+                $message .= ' ';
         }
+
+        if($stat->getValue() === 1)
+            $message .= 'But wait: aren\'t Whisper Stones supposed to reveal dark secrets from the spirit world?';
+
+        if($user->getCookingBuddy())
+            $message .= ')';
 
         $em->flush();
 
