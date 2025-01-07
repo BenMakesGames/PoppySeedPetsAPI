@@ -68,7 +68,7 @@ class WhisperStoneController extends AbstractController
             if($learnedSomethingNew)
                 $message .= "\"I heard that,\" your Cooking Buddy whispers back. (It seems like it learned something new!";
             else
-                $message .= "\"I know,\" your Cooking Buddy whispers back. (I guess it already knew those recipes!";
+                $message .= "\"I know,\" your Cooking Buddy whispers back. \"I know.\" (I guess it already knew those recipes!";
 
             if($stat->getValue() === 1)
                 $message .= ' ';
