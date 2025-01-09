@@ -657,6 +657,37 @@ class TraderService
             );
         }
 
+        if(CalendarFunctions::isPSPBirthday($this->clock->now))
+        {
+            $presentColors = [
+                'Purple PSP B-day Present',
+                'Red PSP B-day Present',
+                'Yellow PSP B-day Present',
+            ];
+
+            foreach($presentColors as $fromPresent)
+            {
+                foreach($presentColors as $toPresent)
+                {
+                    if($toPresent == $fromPresent) continue;
+
+                    $offers[] = TraderOffer::createTradeOffer(
+                        [
+                            TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, $fromPresent), 1),
+                            TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Black Baabble'), 1)
+                        ],
+                        [
+                            TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, $toPresent), 1),
+                        ],
+                        'Thanks for the baabble! Those satyr dice just aren\'t for me, you know?',
+                        $user,
+                        $quantities,
+                        true
+                    );
+                }
+            }
+        }
+
         if(CalendarFunctions::isValentinesOrAdjacent($this->clock->now))
         {
             $offers[] = TraderOffer::createTradeOffer(
