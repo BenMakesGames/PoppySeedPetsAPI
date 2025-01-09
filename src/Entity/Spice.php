@@ -19,11 +19,11 @@ class Spice
     #[ORM\JoinColumn(nullable: false)]
     private $effects;
 
-    #[Groups(["myInventory", "marketItem", "itemEncyclopedia", "myPet", "dragonTreasure", "greenhouseFertilizer", "fireplaceFuel"])]
+    #[Groups(["myInventory", "marketItem", "itemEncyclopedia", "myPet", "dragonTreasure", "greenhouseFertilizer", "fireplaceFuel", "fireplaceMantle"])]
     #[ORM\Column(type: 'string', length: 20)]
     private $name;
 
-    #[Groups(["myInventory", "marketItem", "itemEncyclopedia", "myPet", "dragonTreasure", "greenhouseFertilizer", "fireplaceFuel"])]
+    #[Groups(["myInventory", "marketItem", "itemEncyclopedia", "myPet", "dragonTreasure", "greenhouseFertilizer", "fireplaceFuel", "fireplaceMantle"])]
     #[ORM\Column(type: 'boolean')]
     private $isSuffix;
 

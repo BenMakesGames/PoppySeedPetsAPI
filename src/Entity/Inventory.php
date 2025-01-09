@@ -68,7 +68,7 @@ class Inventory
     #[ORM\OneToOne(targetEntity: 'App\Entity\LunchboxItem', mappedBy: 'inventoryItem', cascade: ['remove'])]
     private $lunchboxItem;
 
-    #[ORM\ManyToOne(targetEntity: 'App\Entity\Enchantment')]
+    #[ORM\ManyToOne(targetEntity: Enchantment::class)]
     #[Groups(["myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", 'houseSitterPet', "fireplaceMantle", "dragonTreasure", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"])]
     private $enchantment;
 
