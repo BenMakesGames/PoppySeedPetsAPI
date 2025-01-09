@@ -447,7 +447,7 @@ class SmithingService
         }
         else
         {
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to make Paper\'s Bane, but almost burned themselves on the Firestone...')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to super-heat a Nail File with some Firestone, but almost burned themselves! They decided to take a break...')
                 ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
             ;
@@ -472,7 +472,6 @@ class SmithingService
             $pet->increaseEsteem(6);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% infused a Warping Wand with the eternal heat of Firestone!')
-                ->setIcon('items/tool/scissors/papersbane')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 25)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
             ;
