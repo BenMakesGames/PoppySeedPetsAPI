@@ -52,7 +52,7 @@ class ComputedPetSkills
             ($this->pet->hasMerit(MeritEnum::MOON_BOUND) ? DateFunctions::moonStrength(new \DateTimeImmutable()) : 0) +
             ($this->pet->hasMerit(MeritEnum::ETERNAL) ? 1 : 0) +
             ($this->pet->hasMerit(MeritEnum::WONDROUS_STAMINA) ? 2 : 0) +
-            (($this->pet->hasMerit(MeritEnum::MANXOME) && $this->pet->getSkills()->getDexterity() < $this->pet->getSkills()->getStamina()) ? 0 : 1)
+            (($this->pet->hasMerit(MeritEnum::MANXOME) && $this->pet->getSkills()->getDexterity() >= $this->pet->getSkills()->getStamina()) ? 1 : 0)
         ;
 
         $skill->statusEffects =
