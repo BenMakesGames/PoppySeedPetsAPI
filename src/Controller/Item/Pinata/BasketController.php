@@ -98,7 +98,7 @@ class BasketController extends AbstractController
 
         $em->flush();
 
-        return $responseService->itemActionSuccess('You emptied the Fruit Basket, receiving Apricot Preserves, Bluberries, and a Naner. (You keep the Fabric Mâché Basket as well, of course.)', [ 'itemDeleted' => true ]);
+        return $responseService->itemActionSuccess('You emptied the Fruit Basket, receiving Apricot Preserves, Blueberries, and a Naner. (You keep the Fabric Mâché Basket as well, of course.)', [ 'itemDeleted' => true ]);
     }
 
     #[Route("/flower/{inventory}/loot", methods: ["POST"])]

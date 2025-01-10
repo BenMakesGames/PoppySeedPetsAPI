@@ -12,9 +12,11 @@ use App\Functions\MeritRepository;
 use App\Functions\PetColorFunctions;
 use App\Functions\UserQuestRepository;
 use App\Repository\PetRepository;
+use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
+use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -108,7 +110,8 @@ class EggController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function hatchWeirdBlueEgg(
         Inventory $inventory, ResponseService $responseService,
-        EntityManagerInterface $em, PetFactory $petFactory, IRandom $squirrel3
+        EntityManagerInterface $em, PetFactory $petFactory, IRandom $squirrel3,
+        InventoryService $inventoryService
     )
     {
         /** @var User $user */
@@ -129,56 +132,68 @@ class EggController extends AbstractController
         $increasedPetLimitWithEgg = UserQuestRepository::findOrCreate($em, $user, 'Increased Pet Limit with Weird, Blue Egg', false);
         $increasedPetLimitWithMetalBox = UserQuestRepository::findOrCreate($em, $user, 'Increased Pet Limit with Metal Box', false);
 
-        $message = "Whoa! A weird creature popped out! It kind of looks like a monkey, but without arms. Also: a glowing tail. (Also: I feel like monkeys don't hatch from eggs?)";
+        $getAPet = (!$increasedPetLimitWithEgg->getValue() && !$increasedPetLimitWithMetalBox->getValue())
+            || $squirrel3->rngNextInt(1, 3) === 1;
 
         $em->remove($inventory);
 
-        if(!$increasedPetLimitWithEgg->getValue() && !$increasedPetLimitWithMetalBox->getValue())
+        if($getAPet)
         {
-            $user->increaseMaxPets(1);
-            $increasedPetLimitWithEgg->setValue(true);
+            $message = "Whoa! A weird creature popped out! It kind of looks like a monkey, but without arms. Also: a glowing tail. (Also: I feel like monkeys don't hatch from eggs?)";
 
-            $message .= "\n\nAlso, your maximum pet limit at home has been increased by one!? Sure, why not! (But just this once!)";
+            if(!$increasedPetLimitWithEgg->getValue() && !$increasedPetLimitWithMetalBox->getValue())
+            {
+                $user->increaseMaxPets(1);
+                $increasedPetLimitWithEgg->setValue(true);
+
+                $message .= "\n\nAlso, your maximum pet limit at home has been increased by one!? Sure, why not! (But just this once!)";
+            }
+
+            $message .= "\n\nAnyway, it's super cute, and... really seems to like you! In fact, it's already named itself after you??";
+
+            $monkeyName = $squirrel3->rngNextFromArray([
+                'Climbing',
+                'Fuzzy',
+                'Howling',
+                'Monkey',
+                'Naner',
+                'Poppy',
+                'Stinky',
+                'Tree',
+            ]) . ' ' . $user->getName();
+
+            $newPet = $petFactory->createPet(
+                $user, $monkeyName, $starMonkey, '', '', FlavorEnum::getRandomValue($squirrel3), MeritRepository::getRandomStartingMerit($em, $squirrel3)
+            );
+
+            $newPet
+                ->increaseLove(10)
+                ->increaseSafety(10)
+                ->increaseEsteem(10)
+                ->increaseFood(-8)
+                ->setScale($squirrel3->rngNextInt(80, 120))
+            ;
+
+            $numberOfPetsAtHome = PetRepository::getNumberAtHome($em, $user);
+
+            if($numberOfPetsAtHome >= $user->getMaxPets())
+            {
+                $newPet->setLocation(PetLocationEnum::DAYCARE);
+                $message .= "\n\nBut, you know, your house is full, so into the daycare it goes, I guess!";
+            }
+
+            PetColorFunctions::recolorPet($squirrel3, $newPet);
+
+            $responseService->setReloadPets();
         }
-
-        $message .= "\n\nAnyway, it's super cute, and... really seems to like you! In fact, it's already named itself after you??";
-
-        $monkeyName = $squirrel3->rngNextFromArray([
-            'Climbing',
-            'Fuzzy',
-            'Howling',
-            'Monkey',
-            'Naner',
-            'Poppy',
-            'Stinky',
-            'Tree',
-        ]) . ' ' . $user->getName();
-
-        $newPet = $petFactory->createPet(
-            $user, $monkeyName, $starMonkey, '', '', FlavorEnum::getRandomValue($squirrel3), MeritRepository::getRandomStartingMerit($em, $squirrel3)
-        );
-
-        $newPet
-            ->increaseLove(10)
-            ->increaseSafety(10)
-            ->increaseEsteem(10)
-            ->increaseFood(-8)
-            ->setScale($squirrel3->rngNextInt(80, 120))
-        ;
-
-        $numberOfPetsAtHome = PetRepository::getNumberAtHome($em, $user);
-
-        if($numberOfPetsAtHome >= $user->getMaxPets())
+        else
         {
-            $newPet->setLocation(PetLocationEnum::DAYCARE);
-            $message .= "\n\nBut, you know, your house is full, so into the daycare it goes, I guess!";
-        }
+            $message = "Whoa! A weird creat-- er, wait... that's just a scroll! The egg contained... a scroll??";
 
-        PetColorFunctions::recolorPet($squirrel3, $newPet);
+            $inventoryService->receiveItem('Scroll of the Star Monkey', $user, $user, $user->getName() . ' found this in a Weird, Blue Egg! (What a weird, blue place to find a scroll!)', $inventory->getLocation(), $inventory->getLockedToOwner());
+        }
 
         $em->flush();
-
-        $responseService->setReloadPets(true);
 
         return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
@@ -187,7 +202,8 @@ class EggController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openMetalBox(
         Inventory $inventory, ResponseService $responseService,
-        EntityManagerInterface $em, PetFactory $petFactory, IRandom $squirrel3
+        EntityManagerInterface $em, PetFactory $petFactory, IRandom $squirrel3,
+        InventoryService $inventoryService, TransactionService $transactionService
     )
     {
         /** @var User $user */
@@ -208,58 +224,73 @@ class EggController extends AbstractController
         $increasedPetLimitWithEgg = UserQuestRepository::findOrCreate($em, $user, 'Increased Pet Limit with Weird, Blue Egg', false);
         $increasedPetLimitWithMetalBox = UserQuestRepository::findOrCreate($em, $user, 'Increased Pet Limit with Metal Box', false);
 
-        $message = "Whoa! A weird creature popped out! It's some kinda' robot! But without arms?";
+        $getAPet = (!$increasedPetLimitWithEgg->getValue() && !$increasedPetLimitWithMetalBox->getValue())
+            || $squirrel3->rngNextInt(1, 3) === 1;
 
         $em->remove($inventory);
 
-        if(!$increasedPetLimitWithEgg->getValue() && !$increasedPetLimitWithMetalBox->getValue())
+        if($getAPet)
         {
-            $user->increaseMaxPets(1);
-            $increasedPetLimitWithMetalBox->setValue(true);
+            $message = "Whoa! A weird creature popped out! It's some kinda' robot! But without arms?";
 
-            $message .= "\n\n(Also, your maximum pet limit at home has been increased by one! But just this once!)";
+            if(!$increasedPetLimitWithEgg->getValue() && !$increasedPetLimitWithMetalBox->getValue())
+            {
+                $user->increaseMaxPets(1);
+                $increasedPetLimitWithMetalBox->setValue(true);
+
+                $message .= "\n\n(Also, your maximum pet limit at home has been increased by one! But just this once!)";
+            }
+
+            $message .= "\n\nAnyway, it's dashing around like it's excited to be here; it really seems to like you! In fact, it's already named itself after you??";
+
+            $newPet = $petFactory->createPet(
+                $user, '', $grabber, '', '', FlavorEnum::getRandomValue($squirrel3), MeritRepository::getRandomStartingMerit($em, $squirrel3)
+            );
+
+            PetColorFunctions::recolorPet($squirrel3, $newPet, 0.2);
+
+            $robotName = 'Metal ' . $user->getName() . ' ' . $squirrel3->rngNextFromArray([
+                '2.0',
+                'Beta',
+                'Mk 2',
+                '#' . $newPet->getColorA(),
+                'X',
+                '',
+                'RC1',
+                'SP2'
+            ]);
+
+            $newPet->setName(trim($robotName));
+
+            $newPet
+                ->increaseLove(10)
+                ->increaseSafety(10)
+                ->increaseEsteem(10)
+                ->increaseFood(-8)
+                ->setScale($squirrel3->rngNextInt(80, 120))
+            ;
+
+            $numberOfPetsAtHome = PetRepository::getNumberAtHome($em, $user);
+
+            if($numberOfPetsAtHome >= $user->getMaxPets())
+            {
+                $newPet->setLocation(PetLocationEnum::DAYCARE);
+                $message .= "\n\nBut, you know, your house is full, so into the daycare it goes, I guess!";
+            }
+
+            $responseService->setReloadPets();
         }
-
-        $message .= "\n\nAnyway, it's dashing around like it's excited to be here; it really seems to like you! In fact, it's already named itself after you??";
-
-        $newPet = $petFactory->createPet(
-            $user, '', $grabber, '', '', FlavorEnum::getRandomValue($squirrel3), MeritRepository::getRandomStartingMerit($em, $squirrel3)
-        );
-
-        PetColorFunctions::recolorPet($squirrel3, $newPet, 0.2);
-
-        $robotName = 'Metal ' . $user->getName() . ' ' . $squirrel3->rngNextFromArray([
-            '2.0',
-            'Beta',
-            'Mk 2',
-            '#' . $newPet->getColorA(),
-            'X',
-            '',
-            'RC1',
-            'SP2'
-        ]);
-
-        $newPet->setName(trim($robotName));
-
-        $newPet
-            ->increaseLove(10)
-            ->increaseSafety(10)
-            ->increaseEsteem(10)
-            ->increaseFood(-8)
-            ->setScale($squirrel3->rngNextInt(80, 120))
-        ;
-
-        $numberOfPetsAtHome = PetRepository::getNumberAtHome($em, $user);
-
-        if($numberOfPetsAtHome >= $user->getMaxPets())
+        else
         {
-            $newPet->setLocation(PetLocationEnum::DAYCARE);
-            $message .= "\n\nBut, you know, your house is full, so into the daycare it goes, I guess!";
+            $message = "You punch the box, causing a leaf, a mushroom, a flower, and 100 moneys worth of coins come out! (That's one way to open a box, I guess...)";
+
+            $inventoryService->receiveItem('Magic Leaf', $user, $user, $user->getName() . ' found this in a Metal Box!', $inventory->getLocation(), $inventory->getLockedToOwner());
+            $inventoryService->receiveItem('Toadstool', $user, $user, $user->getName() . ' found this in a Metal Box!', $inventory->getLocation(), $inventory->getLockedToOwner());
+            $inventoryService->receiveItem('Sunflower', $user, $user, $user->getName() . ' found this in a Metal Box!', $inventory->getLocation(), $inventory->getLockedToOwner());
+            $transactionService->getMoney($user, 100, 'You found this in a Metal Box!');
         }
 
         $em->flush();
-
-        $responseService->setReloadPets(true);
 
         return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
     }
