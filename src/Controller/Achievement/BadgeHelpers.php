@@ -383,6 +383,11 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Tile: Wild Herbs & Vegetables'), 1);
                 break;
 
+            case BadgeEnum::TEACH_COOKING_BUDDY_700:
+                $progress = [ 'target' => 700, 'current' => self::getStatTotal($user, [ UserStatEnum::RECIPES_LEARNED_BY_COOKING_BUDDY ], $em, $cache) ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Etalocŏhc'), 5);
+                break;
+
 
             case BadgeEnum::DEFEATED_SUMMONED_MONSTER_1:
                 $progress = [ 'target' => 1, 'current' => self::getStatTotal($user, [ 'Won Against Something... Unfriendly' ], $em, $cache) ];
@@ -860,6 +865,11 @@ final class BadgeHelpers
             case BadgeEnum::ACHIEVEMENTS_140:
                 $progress = [ 'target' => 140, 'current' => self::getStatTotal($user, [ UserStatEnum::ACHIEVEMENTS_CLAIMED ], $em, $cache) ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Chocolate Hammer'), 1);
+                break;
+
+            case BadgeEnum::ACHIEVEMENTS_150:
+                $progress = [ 'target' => 150, 'current' => self::getStatTotal($user, [ UserStatEnum::ACHIEVEMENTS_CLAIMED ], $em, $cache) ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Scroll of Chocolate'), 1);
                 break;
 
             default:

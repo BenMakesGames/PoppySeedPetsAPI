@@ -143,6 +143,7 @@ final class BadgeEnum
     public const TEACH_COOKING_BUDDY_400 = 'CookingBuddyRecipes400';
     public const TEACH_COOKING_BUDDY_500 = 'CookingBuddyRecipes500';
     public const TEACH_COOKING_BUDDY_600 = 'CookingBuddyRecipes600';
+    public const TEACH_COOKING_BUDDY_700 = 'CookingBuddyRecipes700';
 
     public const FIELD_GUIDE_10 = 'FieldGuide10';
     public const FIELD_GUIDE_20 = 'FieldGuide20';
@@ -187,4 +188,5 @@ final class BadgeEnum
     public const ACHIEVEMENTS_120 = 'Achievements120';
     public const ACHIEVEMENTS_130 = 'Achievements130';
     public const ACHIEVEMENTS_140 = 'Achievements140';
+    public const ACHIEVEMENTS_150 = 'Achievements150';
 }
