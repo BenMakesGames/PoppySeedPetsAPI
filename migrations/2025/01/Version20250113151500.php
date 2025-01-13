@@ -92,6 +92,11 @@ final class Version20250113151500 extends AbstractMigration
         INSERT INTO item_grammar (`id`, `item_id`, `article`) VALUES (1519,1434,"an") ON DUPLICATE KEY UPDATE `id` = `id`;
         EOSQL);
 
+        // Odd Little Hammer's odd little gathering effect
+        $this->addSql(<<<EOSQL
+        UPDATE `item_tool` SET `when_gather_id` = 142, `when_gather_also_gather_id` = 180 WHERE `item_tool`.`id` = 491; 
+        EOSQL);
+
         // Strawberry-covered Naner
         $this->addSql(<<<EOSQL
         -- tool effect
