@@ -11,6 +11,7 @@ use App\Entity\ItemHat;
 use App\Entity\ItemTool;
 use App\Enum\FlavorEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\ArrayFunctions;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Question\Question;
@@ -275,12 +276,40 @@ class UpsertItemCommand extends PoppySeedPetsCommand
 
     private function groups(Item $item)
     {
+        $suggestedItemGroups = [];
+
+        if($item->getFood())
+        {
+            $suggestedItemGroups[] = 'Cooking';
+            if($item->getFood()->getGrantedSkill())
+                $suggestedItemGroups[] = 'Skill Food';
+        }
+        if(mb_strpos('Choco', $item->getName()) >= 0 && mb_strpos('choco', $item->getImage()) >= 0) $suggestedItemGroups[] = 'Chocolate';
+        if(mb_strpos('Pizza', $item->getName()) >= 0 && mb_strpos('pizza', $item->getImage()) >= 0) $suggestedItemGroups[] = 'Za';
+        if(mb_strpos('Chees', $item->getName()) >= 0 && mb_strpos('chees', $item->getImage()) >= 0) $suggestedItemGroups[] = 'Cheese';
+        if(mb_strpos('Key', $item->getName()) >= 0 && mb_strpos('key', $item->getImage()) >= 0) $suggestedItemGroups[] = 'Key';
+        if(mb_strpos('Blood', $item->getName()) >= 0 && mb_strpos('blood', $item->getImage()) >= 0) $suggestedItemGroups[] = 'Bloody';
+        if(mb_strpos('fruit', $item->getImage()) >= 0) $suggestedItemGroups[] = 'Fresh Fruit';
+        if(mb_strpos('Soup', $item->getName()) >= 0 && mb_strpos('soup', $item->getImage()) >= 0) $suggestedItemGroups[] = 'Soup';
+        if(mb_strpos('wand', $item->getImage()) >= 0) $suggestedItemGroups[] = 'Wand';
+        if(mb_strpos('sword', $item->getImage()) >= 0) $suggestedItemGroups[] = 'Sword';
+        if(mb_strpos('spear', $item->getImage()) >= 0) $suggestedItemGroups[] = 'Spear';
+        if(mb_strpos('Bucket', $item->getName()) >= 0 && mb_strpos('bucket', $item->getImage()) >= 0) $suggestedItemGroups[] = 'Bucket';
+        if(mb_strpos('Book', $item->getName()) >= 0 && mb_strpos('book', $item->getImage()) >= 0) $suggestedItemGroups[] = 'Book';
+        if(mb_strpos('music', $item->getImage()) >= 0 || mb_strpos('instrument', $item->getImage()) >= 0) $suggestedItemGroups[] = 'Musical Instrument';
+
+        if(count($suggestedItemGroups) > 0)
+        {
+            sort($suggestedItemGroups);
+            $this->output->writeln('Are any of these item groups appropriate? ' . implode(', ', $suggestedItemGroups));
+        }
+
         while(true)
         {
-            $itemGroup = $this->askString('Add to an item group (~) ', null);
+            $itemGroup = $this->askString('Add to an item group', null);
 
             if(!$itemGroup)
-                return;
+                break;
 
             $itemGroup = $this->em->getRepository(ItemGroup::class)->findOneBy([ 'name' => $itemGroup ]);
 
@@ -292,5 +321,8 @@ class UpsertItemCommand extends PoppySeedPetsCommand
 
             $item->addItemGroup($itemGroup);
         }
+
+        if(ArrayFunctions::any($item->getItemGroups(), fn(ItemGroup $group) => $group->getName() === 'Chocolate'))
+            $this->output->writeln('HEY, LISTEN: should an Etalocŏhc recipe be added for this item?');
     }
 }
