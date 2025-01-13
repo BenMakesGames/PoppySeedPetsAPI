@@ -628,10 +628,10 @@ class BoxController extends AbstractController
         $listenedToJukebox = UserQuestRepository::findOrCreate($em, $user, 'Listened to Jukebox', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
 
         if($today === $listenedToJukebox->getValue())
-            return $responseService->itemActionSuccess('You already listened to the Jukebox today. Everyone knows that Jukeboxes can only be listened to once per day.');
+            return $responseService->itemActionSuccess('You already listened to the Jukebox today. (Everyone knows that Jukeboxes can only be listened to once per day! Everyone!)');
 
-        if($inventory->getLocation() !== LocationEnum::HOME)
-            return $responseService->itemActionSuccess('This game doesn\'t have sound, so there wouldn\'t be much sense in playing the Jukebox for yourself. Try playing it at home, where your pets can hear. (It\'s not that there\'s no sound in Poppy Seed Pets, it\'s just that it\'s not manifested in the game interface. (Is this making sense?))');
+        if($inventory->getLocation() !== LocationEnum::HOME && $inventory->getLocation() !== LocationEnum::MANTLE)
+            return $responseService->itemActionSuccess('For maximum effect, the Jukebox should be played somewhere your pets can hear it!');
 
         $listenedToJukebox->setValue($today);
 
