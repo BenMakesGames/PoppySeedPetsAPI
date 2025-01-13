@@ -868,6 +868,24 @@ class TraderService
             }
         }
 
+        if(self::isEtalocohcDay($this->clock->now))
+        {
+            $cost = self::getEtalocohcCost($this->clock->now);
+
+            $offers[] = TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createMoney($cost),
+                    TraderOfferCostOrYield::createRecyclingPoints($cost)
+                ],
+                [
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Etalocŏhc'), 1),
+                ],
+                'I happened to get my hands on a few of these today; thought you might find them interesting.',
+                $user,
+                $quantities,
+            );
+        }
+
         $uniqueOffers = $this->getSpecialOfferItemsAndPrices(self::NUMBER_OF_DAILY_SPECIAL_OFFERS - count($offers));
 
         foreach($uniqueOffers as $uniqueOffer)
@@ -1537,5 +1555,25 @@ class TraderService
         self::recolorTrader($rng, $trader);
 
         return $trader;
+    }
+
+    public static function isEtalocohcDay(\DateTimeImmutable $date): bool
+    {
+        $n = $date->format('Ymd');
+
+        $n = ($n * 31337) ^ ($n >> 3);
+        $n = ($n * 48611) ^ ($n << 7);
+
+        return abs($n) % 6 == 0;
+    }
+
+    public static function getEtalocohcCost(\DateTimeImmutable $date): int
+    {
+        $n = $date->format('mYd');
+
+        $n = ($n * 32411) ^ ($n >> 3);
+        $n = ($n * 47059) ^ ($n << 7);
+
+        return 20 + (abs($n) % 7) * 5;
     }
 }
