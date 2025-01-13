@@ -64,6 +64,11 @@ final class Version20250113151500 extends AbstractMigration
         INSERT IGNORE INTO item_group_item (item_group_id, item_id) VALUES (46, 1432);
         EOSQL);
 
+        // description for De-chocolated Meringue:
+        $this->addSql(<<<EOSQL
+        UPDATE `item` SET `description` = 'At last: your lifelong quest to discover what\'s left of a Chocolate Meringue after magically evicting all the chocolate has come to an end.' WHERE `item`.`id` = 1432; 
+        EOSQL);
+
         // Thaumatoxic Cookies
         $this->addSql(<<<EOSQL
         -- the item itself!
