@@ -6,11 +6,13 @@ use App\Entity\Pet;
 use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SpiritCompanionStarEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Model\ParkEvent\TriDChessParticipant;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
@@ -299,6 +301,9 @@ class TriDChessService implements ParkEventInterface
 
             if($trophyItem)
                 $this->inventoryService->petCollectsItem($trophyItem, $participant->pet, $comment, $log);
+
+            if($participant->isWinner)
+                PetBadgeHelpers::awardBadge($this->em, $participant->pet, PetBadgeEnum::FIRST_PLACE_CHESS, $log);
 
             $this->petExperienceService->gainExp(
                 $participant->pet,

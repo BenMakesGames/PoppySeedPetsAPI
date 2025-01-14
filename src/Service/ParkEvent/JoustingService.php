@@ -6,11 +6,13 @@ use App\Entity\Pet;
 use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Model\ParkEvent\JoustingClashResult;
 use App\Model\ParkEvent\JoustingParticipant;
 use App\Model\ParkEvent\JoustingTeam;
@@ -444,6 +446,9 @@ class JoustingService implements ParkEventInterface
 
         if($trophyItem)
             $this->inventoryService->petCollectsItem($trophyItem, $pet, $comment, $log);
+
+        if($team->wins === $this->round)
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FIRST_PLACE_JOUSTING, $log);
 
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ], $log);
 

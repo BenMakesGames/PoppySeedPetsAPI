@@ -6,10 +6,12 @@ use App\Entity\Pet;
 use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Model\ParkEvent\KinBallParticipant;
 use App\Model\ParkEvent\KinBallTeam;
 use App\Model\PetChanges;
@@ -230,6 +232,9 @@ class KinBallService implements ParkEventInterface
 
                 if($trophyItem)
                     $this->inventoryService->petCollectsItem($trophyItem, $participant->pet, $comment, $log);
+
+                if($participant->isWinner)
+                    PetBadgeHelpers::awardBadge($this->em, $participant->pet, PetBadgeEnum::FIRST_PLACE_KIN_BALL, $log);
 
                 $this->petExperienceService->gainExp(
                     $participant->pet,

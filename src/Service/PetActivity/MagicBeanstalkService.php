@@ -6,6 +6,7 @@ use App\Entity\PetActivityLog;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
@@ -13,6 +14,7 @@ use App\Functions\DateFunctions;
 use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Service\Clock;
@@ -516,7 +518,8 @@ class MagicBeanstalkService
             $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::GATHER, false);
         }
 
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::CLIMB_TO_TOP_OF_BEANSTALK, $activityLog);
+
         return $activityLog;
     }
-
 }

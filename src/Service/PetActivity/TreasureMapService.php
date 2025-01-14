@@ -501,6 +501,8 @@ class TreasureMapService
 
             if(array_key_exists('locked', $trade) && $trade['locked'])
                 $inventoryItem->setLockedToOwner(true);
+
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::MET_THE_FLUFFMONGER, $activityLog);
         }
         else
         {
