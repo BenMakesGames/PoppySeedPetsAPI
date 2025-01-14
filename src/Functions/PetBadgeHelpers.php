@@ -46,7 +46,7 @@ final class PetBadgeHelpers
         PetBadgeEnum::MET_THE_FLUFFMONGER => 'On their way out, the Fluffmonger gives %pet.name% the Very Fluffy badge.',
         PetBadgeEnum::OUTSMARTED_A_THIEVING_MAGPIE => 'Such a good civil servant! %pet.name% receives the Magpie Masher badge.',
         PetBadgeEnum::FOUND_CETGUELIS_TREASURE => 'And %pet.name% didn\'t just get a treasure, they got the Treasure Hunter badge!',
-        PetBadgeEnum::HAD_A_BABY => 'And guess what: a pet that has a baby has a Baby badge!',
+        PetBadgeEnum::HAD_A_BABY => 'And guess what: a pet that has a baby has a Baby-maker badge!',
 
         PetBadgeEnum::CLIMB_TO_TOP_OF_BEANSTALK => 'Such climb! Very high! %pet.name% gets the Castle in the Clouds badge!',
         PetBadgeEnum::SING_WITH_WHALES => 'Beautiful! %pet.name% received the Songs of the Deep badge.',
