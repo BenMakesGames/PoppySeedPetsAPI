@@ -271,6 +271,12 @@ class Pet
     #[Groups(['myPet', 'petActivityLogs'])]
     private $wereform;
 
+    /**
+     * @var Collection<int, PetBadge>
+     */
+    #[ORM\OneToMany(mappedBy: 'pet', targetEntity: PetBadge::class, orphanRemoval: true)]
+    private Collection $badges;
+
     public function __construct()
     {
         $squirrel3 = new Squirrel3();
@@ -304,6 +310,7 @@ class Pet
         $this->assignActivityPersonality($squirrel3);
 
         $this->lunchboxIndex = $squirrel3->rngNextInt(0, 13);
+        $this->badges = new ArrayCollection();
     }
 
     public function assignActivityPersonality(IRandom $rng)
@@ -1810,5 +1817,35 @@ class Pet
                 ])
                 ->toArray()
         );
+    }
+
+    /**
+     * @return Collection<int, PetBadge>
+     */
+    public function getBadges(): Collection
+    {
+        return $this->badges;
+    }
+
+    public function addBadge(PetBadge $badge): static
+    {
+        if (!$this->badges->contains($badge)) {
+            $this->badges->add($badge);
+            $badge->setPet($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBadge(PetBadge $badge): static
+    {
+        if ($this->badges->removeElement($badge)) {
+            // set the owning side to null (unless already changed)
+            if ($badge->getPet() === $this) {
+                $badge->setPet(null);
+            }
+        }
+
+        return $this;
     }
 }
