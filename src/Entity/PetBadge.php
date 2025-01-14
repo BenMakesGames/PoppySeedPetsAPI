@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity()]
 #[ORM\Index(name: 'badge_idx', columns: ['badge'])]
@@ -18,10 +19,17 @@ class PetBadge
     private ?Pet $pet = null;
 
     #[ORM\Column(length: 40)]
+    #[Groups(['myPet', 'petPublicProfile'])]
     private ?string $badge = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $dateAcquired = null;
+    #[Groups(['myPet'])]
+    private ?\DateTimeImmutable $dateAcquired;
+
+    public function __construct()
+    {
+        $this->dateAcquired = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -55,12 +63,5 @@ class PetBadge
     public function getDateAcquired(): ?\DateTimeImmutable
     {
         return $this->dateAcquired;
-    }
-
-    public function setDateAcquired(\DateTimeImmutable $dateAcquired): static
-    {
-        $this->dateAcquired = $dateAcquired;
-
-        return $this;
     }
 }

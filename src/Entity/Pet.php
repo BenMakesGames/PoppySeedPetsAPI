@@ -274,6 +274,7 @@ class Pet
     /**
      * @var Collection<int, PetBadge>
      */
+    #[Groups(['myPet', 'petPublicProfile'])]
     #[ORM\OneToMany(mappedBy: 'pet', targetEntity: PetBadge::class, orphanRemoval: true)]
     private Collection $badges;
 
