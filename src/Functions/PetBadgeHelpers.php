@@ -45,6 +45,7 @@ final class PetBadgeHelpers
         PetBadgeEnum::CREATED_SENTIENT_BEETLE => 'Crimes against nature? More like... it\'d be criminal not to get a badge for that! %pet.name% received the Mad Scientist badge!',
         PetBadgeEnum::MET_THE_FLUFFMONGER => 'On their way out, the Fluffmonger gives %pet.name% the Very Fluffy badge.',
         PetBadgeEnum::OUTSMARTED_A_THIEVING_MAGPIE => 'Such a good civil servant! %pet.name% receives the Magpie Masher badge.',
+        PetBadgeEnum::DECEIVED_A_VAMPIRE => 'Deceiving masters of deceit?! That definitely deserves a badge! %pet.name% received the Vampire Deceiver badge!',
         PetBadgeEnum::FOUND_CETGUELIS_TREASURE => 'And %pet.name% didn\'t just get a treasure, they got the Treasure Hunter badge!',
         PetBadgeEnum::HAD_A_BABY => 'And guess what: a pet that has a baby has a Baby-maker badge!',
 
@@ -58,5 +59,6 @@ final class PetBadgeHelpers
 
         PetBadgeEnum::DEFEATED_NOETALAS_WING => '%pet.name% received the Noetala\'s Wing badge! Well deserved!',
         PetBadgeEnum::DEFEATED_CRYSTALLINE_ENTITY => 'An enterprising pet such as %pet.name% deserves every thread of this Data & Lore badge!',
+        PetBadgeEnum::DEFEATED_BIVUS_RELEASE => 'It\'s not every day you witness an angel create a supernova... or defeat said supernova! %pet.name% received the Supernova Survivor badge.',
     ];
 }
