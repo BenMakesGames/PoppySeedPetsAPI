@@ -2,6 +2,7 @@
 namespace App\Model;
 
 use App\Enum\Enum;
+use App\Enum\PetBadgeEnum;
 
 class SummoningScrollMonster
 {
@@ -13,6 +14,7 @@ class SummoningScrollMonster
     public array $minorRewards;
 
     public ?string $element = null;
+    public ?string $petBadge = null;
     public ?string $fieldGuideEntry = null;
 
     public static function CreateDragon(): SummoningScrollMonster
@@ -89,6 +91,7 @@ class SummoningScrollMonster
         $monster->majorReward = 'Forgetting Scroll';
         $monster->minorRewards = [ 'Fiberglass', 'Gypsum' ];
         $monster->element = SummoningScrollMonsterElementEnum::ELECTRICITY;
+        $monster->petBadge = PetBadgeEnum::DEFEATED_CRYSTALLINE_ENTITY;
 
         return $monster;
     }

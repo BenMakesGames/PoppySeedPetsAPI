@@ -4,12 +4,14 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Entity\User;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\StatusEffectHelpers;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
@@ -109,6 +111,8 @@ class NoetalaAdventureService
                     ->setChanges($petChanges[$pet->getId()]->compare($pet))
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting' ]))
                 ;
+
+                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DEFEATED_NOETALAS_WING, $log);
 
                 $i = ($i + 1) % count($rewards);
             }

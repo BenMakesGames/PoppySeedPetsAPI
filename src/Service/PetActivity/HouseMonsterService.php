@@ -9,6 +9,7 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Model\PetChanges;
 use App\Model\SummoningScrollMonster;
 use App\Model\SummoningScrollMonsterElementEnum;
@@ -210,6 +211,9 @@ class HouseMonsterService
             $activityLog
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags))
                 ->setChanges($changes);
+
+            if($monster->petBadge && $won)
+                PetBadgeHelpers::awardBadge($this->em, $pet, $monster->petBadge, $activityLog);
         }
 
         return $result;

@@ -55,5 +55,8 @@ final class PetBadgeHelpers
         PetBadgeEnum::FOUND_VESICA_HYDRARGYRUM => 'A legendary accomplishment, to be sure! %pet.name% receives the Mercurial badge.',
         PetBadgeEnum::FOUND_EARTHS_EGG => 'A legendary accomplishment, to be sure! %pet.name% receives the Most Egg badge.',
         PetBadgeEnum::FOUND_MERKABA_OF_AIR => 'A legendary accomplishment, to be sure! %pet.name% receives the Zephyrous badge.',
+
+        PetBadgeEnum::DEFEATED_NOETALAS_WING => '%pet.name% received the Noetala\'s Wing badge! Well deserved!',
+        PetBadgeEnum::DEFEATED_CRYSTALLINE_ENTITY => 'An enterprising pet such as %pet.name% deserves every thread of this Data & Lore badge!',
     ];
 }
