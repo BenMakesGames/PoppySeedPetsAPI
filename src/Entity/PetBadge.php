@@ -23,7 +23,7 @@ class PetBadge
     private ?string $badge = null;
 
     #[ORM\Column]
-    #[Groups(['myPet'])]
+    #[Groups(['myPet', 'petPublicProfile'])]
     private ?\DateTimeImmutable $dateAcquired;
 
     public function __construct()
