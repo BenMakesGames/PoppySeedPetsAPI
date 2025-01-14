@@ -6,13 +6,16 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
+use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
 use App\Functions\DragonHelpers;
 use App\Functions\EnchantmentRepository;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\PlayerLogFactory;
 use App\Functions\SpiceRepository;
 use App\Service\PetActivity\TreasureMapService;
@@ -230,7 +233,9 @@ class DragonService
                 $totalMoneys = (int)$dragon->getEarnings();
                 $dragon->addEarnings(-$totalMoneys);
 
-                $this->transactionService->getMoney($user, $totalMoneys, 'Earned by ' . $helper->getName() . ' by investing some of your Dragon\'s wealth.', [ 'Dragon Den' ]);
+                $this->transactionService->getMoney($user, $totalMoneys, 'Earned by ' . $helper->getName() . ' by investing some of your dragon\'s wealth.', [ 'Dragon Den' ]);
+
+                PetBadgeHelpers::awardBadgeAndLog($this->em, $helper, PetBadgeEnum::WAS_AN_ACCOUNTANT, ActivityHelpers::PetName($helper) . ' made money for your dragon through skilled investing.');
             }
 
             if($dragon->getByproductProgress() >= 100)

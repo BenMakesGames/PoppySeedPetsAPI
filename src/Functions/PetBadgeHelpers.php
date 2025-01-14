@@ -37,6 +37,33 @@ final class PetBadgeHelpers
         ;
     }
 
+    public static function awardBadgeAndLog(EntityManagerInterface $em, Pet $pet, string $badgeName, string $logMessage): ?PetActivityLog
+    {
+        if(!PetBadgeEnum::isAValue($badgeName))
+            throw new EnumInvalidValueException(PetBadgeEnum::class, $badgeName);
+
+        // if pet already has this badge, gtfo
+        if($pet->getBadges()->exists(fn(PetBadge $b) => $b->getBadge() === $badgeName))
+            return null;
+
+        $newBadge = (new PetBadge())
+            ->setBadge($badgeName)
+            ->setPet($pet);
+
+        $em->persist($newBadge);
+
+        $pet->addBadge($newBadge);
+
+        $log = PetActivityLogFactory::createUnreadLog($em, $pet, $logMessage . ' ' . str_replace('%pet.name%', ActivityHelpers::PetName($pet), self::BADGE_HURRAHS[$badgeName]))
+            ->addTag(PetActivityLogTagHelpers::findOneByName($em, PetActivityLogTagEnum::Badge))
+            ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_YIELDING_PET_BADGE)
+        ;
+
+        $em->persist($log);
+
+        return $log;
+    }
+
     private const BADGE_HURRAHS = [
         PetBadgeEnum::COMPLETED_HEART_DIMENSION => 'Also: A Suburb to the Brain - that\'s the name of the badge that %pet.name% just got!',
         PetBadgeEnum::FIRST_PLACE_CHESS => 'For demonstrating such chess prowess, %pet.name% received the Chess Master badge!',
@@ -48,6 +75,7 @@ final class PetBadgeHelpers
         PetBadgeEnum::DECEIVED_A_VAMPIRE => 'Deceiving masters of deceit?! That definitely deserves a badge! %pet.name% received the Vampire Deceiver badge!',
         PetBadgeEnum::FOUND_CETGUELIS_TREASURE => 'And %pet.name% didn\'t just get a treasure, they got the Treasure Hunter badge!',
         PetBadgeEnum::HAD_A_BABY => 'And guess what: a pet that has a baby has a Baby-maker badge!',
+        PetBadgeEnum::WAS_AN_ACCOUNTANT => 'Being an accountant is fun! Incidentally, that\'s also the name of the badge %pet.name% just earned!',
 
         PetBadgeEnum::CLIMB_TO_TOP_OF_BEANSTALK => 'Such climb! Very high! %pet.name% gets the Castle in the Clouds badge!',
         PetBadgeEnum::SING_WITH_WHALES => 'Beautiful! %pet.name% received the Songs of the Deep badge.',
