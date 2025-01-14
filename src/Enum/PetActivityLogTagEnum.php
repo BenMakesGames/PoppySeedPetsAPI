@@ -84,6 +84,7 @@ class PetActivityLogTagEnum
     public const Gourmand = 'Gourmand';
     public const Relationship_Change = 'Relationship Change';
     public const Whale = 'Whales';
+    public const Badge = 'Badge!';
 
     public const Rain = 'Rain';
 
