@@ -13,6 +13,7 @@ final class PetBadgeEnum
     public const CREATED_SENTIENT_BEETLE = 'createdSentientBeetle';
     public const MET_THE_FLUFFMONGER = 'fluffmonger'; // TODO: create graphic
     public const OUTSMARTED_A_THIEVING_MAGPIE = 'outsmartedAThievingMagpie';
+    public const DECEIVED_A_VAMPIRE = 'deceivedAVampire';
     public const FOUND_CETGUELIS_TREASURE = 'foundCetguelisTreasure';
     public const HAD_A_BABY = 'parent'; // TODO: create graphic
 

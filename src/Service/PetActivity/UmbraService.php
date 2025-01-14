@@ -9,6 +9,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SpiritCompanionStarEnum;
 use App\Enum\StatusEffectEnum;
@@ -20,6 +21,7 @@ use App\Functions\ItemRepository;
 use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\SpiceRepository;
 use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
@@ -807,7 +809,57 @@ class UmbraService
 
         $umbraCheck = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getExploreUmbraBonus()->getTotal());
 
-        if($umbraCheck >= 12)
+        if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
+        {
+            $loot = $this->squirrel3->rngNextFromArray([ 'Blood Wine', 'Linens and Things' ]);
+
+            $pet->increaseEsteem(2);
+
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle that was apparently home to vampires! Fortunately, the vampires mistook ' . $pet->getName() . '\'s vampiric bite for true vampirism, and welcomed them as kin. ' . $pet->getName() . ' stole a few items while none of the vampires were looking, and fled the castle as soon as they could!')
+                ->setIcon('icons/status-effect/bite-vampire')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
+
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' stole this from a vampire castle.', $activityLog);
+
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DECEIVED_A_VAMPIRE, $activityLog);
+        }
+        else if($pet->getTool() && $pet->getTool()->isGrayscaling())
+        {
+            $loot = $this->squirrel3->rngNextFromArray([ 'Blood Wine', 'Linens and Things' ]);
+
+            $pet->increaseEsteem(2);
+
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle that was apparently home to vampires! Fortunately, the vampires mistook ' . $pet->getName() . '\'s monochromatic appearance as vampirism, and welcomed them as kin. ' . $pet->getName() . ' stole a few items while none of the vampires were looking, and fled the castle as soon as they could!')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
+
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' stole this from a vampire castle.', $activityLog);
+
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DECEIVED_A_VAMPIRE, $activityLog);
+        }
+        else if($pet->hasStatusEffect(StatusEffectEnum::CORDIAL))
+        {
+            $loot = $this->squirrel3->rngNextFromArray([ 'Blood Wine', 'Linens and Things' ]);
+
+            $pet->increaseEsteem(2);
+
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle that was apparently home to vampires! Fortunately, the vampires were completely taken by ' . $pet->getName() . '\'s cordiality, and they all had a simply _wonderful_ time! ' . $pet->getName() . ' received a few gifts from the vampires, then found some excuse to leave...')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
+
+            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' stole this from a vampire castle.', $activityLog);
+        }
+        else if($umbraCheck >= 12)
         {
             // realize it's vampires; chance to steal
             $stealthCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal());
@@ -839,52 +891,6 @@ class UmbraService
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::ARCANA ], $activityLog);
             }
-        }
-        else if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
-        {
-            $loot = $this->squirrel3->rngNextFromArray([ 'Blood Wine', 'Linens and Things' ]);
-
-            $pet->increaseEsteem(2);
-
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle that was apparently home to vampires! Fortunately, the vampires mistook ' . $pet->getName() . '\'s vampiric bite for true vampirism, and welcomed them as kin. ' . $pet->getName() . ' stole a few items while none of the vampires were looking, and fled the castle as soon as they could!')
-                ->setIcon('icons/status-effect/bite-vampire')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
-            ;
-
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-
-            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' stole this from a vampire castle.', $activityLog);
-        }
-        else if($pet->getTool() && $pet->getTool()->isGrayscaling())
-        {
-            $loot = $this->squirrel3->rngNextFromArray([ 'Blood Wine', 'Linens and Things' ]);
-
-            $pet->increaseEsteem(2);
-
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle that was apparently home to vampires! Fortunately, the vampires mistook ' . $pet->getName() . '\'s monochromatic appearance as vampirism, and welcomed them as kin. ' . $pet->getName() . ' stole a few items while none of the vampires were looking, and fled the castle as soon as they could!')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
-            ;
-
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-
-            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' stole this from a vampire castle.', $activityLog);
-        }
-        else if($pet->hasStatusEffect(StatusEffectEnum::CORDIAL))
-        {
-            $loot = $this->squirrel3->rngNextFromArray([ 'Blood Wine', 'Linens and Things' ]);
-
-            $pet->increaseEsteem(2);
-
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon a castle that was apparently home to vampires! Fortunately, the vampires were completely taken by ' . $pet->getName() . '\'s cordiality, and they all had a simply _wonderful_ time! ' . $pet->getName() . ' received a few gifts from the vampires, then found some excuse to leave...')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
-            ;
-
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-
-            $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' stole this from a vampire castle.', $activityLog);
         }
         else
         {

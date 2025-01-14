@@ -8,12 +8,14 @@ use App\Entity\UserQuest;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\AdventureMath;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\StatusEffectHelpers;
 use App\Functions\UserQuestRepository;
 use App\Model\ComputedPetSkills;
@@ -186,6 +188,7 @@ class ChocolateMansion
         $icon = '';
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl(false)->getTotal());
         $extraInterestingness = 0;
+        $deceivedTheVampire = false;
 
         if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
         {
@@ -203,6 +206,8 @@ class ChocolateMansion
 
             $description .= 'Fortunately, %pet:' . $pet->getId() . '.name%\'s vampire bite tricked the vampire into thinking they were the same sort of creatures! After apologizing, the vampire offered %pet:' . $pet->getId() . '.name% ' . $item->getNameWithArticle() . '. They accepted, and left as quickly as seemed polite.';
             $extraInterestingness = PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY;
+
+            $deceivedTheVampire = true;
         }
         else if($pet->getTool() && $pet->getTool()->isGrayscaling())
         {
@@ -219,6 +224,8 @@ class ChocolateMansion
 
             $description .= 'Fortunately, %pet:' . $pet->getId() . '.name%\'s pale color tricked the vampire into thinking they were the same sort of creatures. After apologizing, the vampire offered %pet:' . $pet->getId() . '.name% ' . $item->getNameWithArticle() . '. They accepted, and left as quickly as seemed polite.';
             $extraInterestingness = PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY;
+
+            $deceivedTheVampire = true;
         }
         else if($pet->hasStatusEffect(StatusEffectEnum::CORDIAL))
         {
@@ -292,6 +299,9 @@ class ChocolateMansion
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' got this from a vampire in the cellar of le Manoir de Chocolat.', $activityLog);
 
         $this->petExperienceService->gainExp($pet, $expAmount, $expStats, $activityLog);
+
+        if($deceivedTheVampire)
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DECEIVED_A_VAMPIRE, $activityLog);
 
         return $activityLog;
     }
