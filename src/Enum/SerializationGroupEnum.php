@@ -14,7 +14,6 @@ final class SerializationGroupEnum
     public const PET_ACTIVITY_LOGS = 'petActivityLogs';
     public const PET_ACTIVITY_LOGS_AND_PUBLIC_PET = 'petActivityLogAndPublicPet';
     public const PET_PUBLIC_PROFILE = 'petPublicProfile';
-    public const HOUSE_SITTER_PET = 'houseSitterPet';
     public const FILTER_RESULTS = 'filterResults';
     public const ITEM_ENCYCLOPEDIA = 'itemEncyclopedia';
     public const PET_ENCYCLOPEDIA = 'petEncyclopedia';

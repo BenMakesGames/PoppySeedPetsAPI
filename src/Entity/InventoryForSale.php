@@ -20,7 +20,7 @@ class InventoryForSale
     private ?Inventory $inventory = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
-    #[Groups(["myInventory", "fireplaceFuel", "myGreenhouse", "myPet", 'houseSitterPet', "dragonTreasure", "myHollowEarthTiles"])]
+    #[Groups(["myInventory", "fireplaceFuel", "myGreenhouse", "myPet", "dragonTreasure", "myHollowEarthTiles"])]
     private $sellPrice;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]

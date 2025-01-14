@@ -23,7 +23,7 @@ class ComputedPetSkills
 
     /// ATTRIBUTES
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getStrength(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
@@ -43,7 +43,7 @@ class ComputedPetSkills
         return $skill;
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getStamina(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
@@ -63,7 +63,7 @@ class ComputedPetSkills
         return $skill;
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getDexterity(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
@@ -80,7 +80,7 @@ class ComputedPetSkills
         return $skill;
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getIntelligence(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
@@ -99,7 +99,7 @@ class ComputedPetSkills
         return $skill;
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getPerception(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
@@ -121,7 +121,7 @@ class ComputedPetSkills
 
     // SKILLS
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getNature(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
@@ -137,7 +137,7 @@ class ComputedPetSkills
         return $skill;
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getBrawl($allowRanged = true): TotalPetSkill
     {
         $skill = new TotalPetSkill();
@@ -157,7 +157,7 @@ class ComputedPetSkills
         return $skill;
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getStealth(): TotalPetSkill
     {
         $hasNoShadowOrReflection = $this->pet->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION);
@@ -184,7 +184,7 @@ class ComputedPetSkills
         return $skill;
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getCrafts(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
@@ -199,7 +199,7 @@ class ComputedPetSkills
         return $skill;
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getArcana(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
@@ -217,7 +217,7 @@ class ComputedPetSkills
         return $skill;
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getMusic(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
@@ -231,7 +231,7 @@ class ComputedPetSkills
         return $skill;
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getScience(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
@@ -249,7 +249,7 @@ class ComputedPetSkills
 
     // ACTIVITY BONUSES
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getFishingBonus(): TotalPetSkill
     {
         // no bonus for the casting no reflection merit; we grant that bonus elsewhere
@@ -259,7 +259,7 @@ class ComputedPetSkills
         return $skill;
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getSmithingBonus(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
@@ -269,7 +269,7 @@ class ComputedPetSkills
         return $skill;
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getGatheringBonus(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
@@ -278,7 +278,7 @@ class ComputedPetSkills
         return $skill;
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getClimbingBonus(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
@@ -292,7 +292,7 @@ class ComputedPetSkills
         return $skill;
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getExploreUmbraBonus(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
@@ -304,7 +304,7 @@ class ComputedPetSkills
         return $skill;
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getMagicBindingBonus(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
@@ -314,7 +314,7 @@ class ComputedPetSkills
 
     // MISC EFFECTS
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getCanSeeInTheDark(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
@@ -324,7 +324,7 @@ class ComputedPetSkills
         return $skill;
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getHasProtectionFromHeat(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
@@ -336,7 +336,7 @@ class ComputedPetSkills
         return $skill;
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getHasProtectionFromElectricity(): TotalPetSkill
     {
         $skill = new TotalPetSkill();

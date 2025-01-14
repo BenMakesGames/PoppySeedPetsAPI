@@ -23,7 +23,7 @@ class PetHouseTime
     private $pet;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     private $activityTime = 59;
 
     #[ORM\Column(type: 'integer')]

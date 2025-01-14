@@ -19,7 +19,7 @@ class LunchboxItem
 
     #[ORM\OneToOne(targetEntity: Inventory::class, inversedBy: 'lunchboxItem')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     private $inventoryItem;
 
     public function getId(): ?int

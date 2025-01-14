@@ -45,11 +45,11 @@ class SpiritCompanion
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[Groups(["myPet", 'houseSitterPet', "spiritCompanionPublicProfile", "petSpiritAncestor"])]
+    #[Groups(["myPet", "spiritCompanionPublicProfile", "petSpiritAncestor"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $name;
 
-    #[Groups(["myPet", 'houseSitterPet', "parkEvent", "hollowEarth", "petPublicProfile", "petGroupDetails", "spiritCompanionPublicProfile", "helperPet", "petSpiritAncestor"])]
+    #[Groups(["myPet", "parkEvent", "hollowEarth", "petPublicProfile", "petGroupDetails", "spiritCompanionPublicProfile", "helperPet", "petSpiritAncestor"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $image;
 
@@ -57,7 +57,7 @@ class SpiritCompanion
     #[ORM\OneToOne(targetEntity: Pet::class, mappedBy: 'spiritCompanion')]
     private $pet;
 
-    #[Groups(["myPet", 'houseSitterPet', "spiritCompanionPublicProfile"])]
+    #[Groups(["myPet", "spiritCompanionPublicProfile"])]
     #[ORM\Column(type: 'string', length: 40)]
     private $star;
 

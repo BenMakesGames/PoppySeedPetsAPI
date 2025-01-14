@@ -36,7 +36,7 @@ class Pet
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups([SerializationGroupEnum::MY_PET, 'houseSitterPet', 'userPublicProfile', 'petPublicProfile', 'myInventory', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'spiritCompanionPublicProfile', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet'])]
+    #[Groups([SerializationGroupEnum::MY_PET, 'userPublicProfile', 'petPublicProfile', 'myInventory', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'spiritCompanionPublicProfile', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet'])]
     private $id;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'pets')]
@@ -44,7 +44,7 @@ class Pet
     private $owner;
 
     #[ORM\Column(type: 'string', length: 40)]
-    #[Groups([SerializationGroupEnum::MY_PET, 'houseSitterPet', 'userPublicProfile', 'petPublicProfile', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'spiritCompanionPublicProfile', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet'])]
+    #[Groups([SerializationGroupEnum::MY_PET, 'userPublicProfile', 'petPublicProfile', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'spiritCompanionPublicProfile', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet'])]
     private $name;
 
     #[ORM\Column(type: 'integer')]
@@ -81,7 +81,7 @@ class Pet
     private $alcohol = 0;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups([SerializationGroupEnum::MY_PET, 'houseSitterPet', 'petPublicProfile'])]
+    #[Groups([SerializationGroupEnum::MY_PET, 'petPublicProfile'])]
     private $birthDate;
 
     #[ORM\Column(type: 'integer')]
@@ -96,12 +96,12 @@ class Pet
 
     #[ORM\ManyToOne(targetEntity: PetSpecies::class)]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups([SerializationGroupEnum::MY_PET, 'houseSitterPet', 'userPublicProfile', 'petPublicProfile', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet', 'petActivityLogs'])]
+    #[Groups([SerializationGroupEnum::MY_PET, 'userPublicProfile', 'petPublicProfile', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet', 'petActivityLogs'])]
     private $species;
 
     #[ORM\OneToOne(targetEntity: Inventory::class, inversedBy: 'holder')]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
-    #[Groups([SerializationGroupEnum::MY_PET, 'houseSitterPet', 'userPublicProfile', 'petPublicProfile', 'hollowEarth', 'petGroupDetails', 'helperPet'])]
+    #[Groups([SerializationGroupEnum::MY_PET, 'userPublicProfile', 'petPublicProfile', 'hollowEarth', 'petGroupDetails', 'helperPet'])]
     private $tool;
 
     #[ORM\Column(type: 'string', length: 20)]
@@ -115,16 +115,16 @@ class Pet
     private $affectionPoints = 0;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups([SerializationGroupEnum::MY_PET, 'houseSitterPet'])]
+    #[Groups([SerializationGroupEnum::MY_PET])]
     private $affectionLevel = 0;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups([SerializationGroupEnum::MY_PET, 'houseSitterPet'])]
+    #[Groups([SerializationGroupEnum::MY_PET])]
     private $affectionRewardsClaimed = 0;
 
     #[ORM\OneToOne(targetEntity: SpiritCompanion::class, inversedBy: 'pet', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
-    #[Groups([SerializationGroupEnum::MY_PET, 'houseSitterPet', 'parkEvent', 'hollowEarth', 'petPublicProfile', 'petGroupDetails', 'helperPet'])]
+    #[Groups([SerializationGroupEnum::MY_PET, 'parkEvent', 'hollowEarth', 'petPublicProfile', 'petGroupDetails', 'helperPet'])]
     private $spiritCompanion;
 
     #[ORM\Column(type: 'date_immutable', nullable: true)]
@@ -158,7 +158,7 @@ class Pet
 
     #[ORM\OneToOne(targetEntity: PetBaby::class, inversedBy: 'parent', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
-    #[Groups([SerializationGroupEnum::MY_PET, 'houseSitterPet', 'userPublicProfile', 'petPublicProfile', 'petFriend', 'petGroupDetails', 'helperPet'])]
+    #[Groups([SerializationGroupEnum::MY_PET, 'userPublicProfile', 'petPublicProfile', 'petFriend', 'petGroupDetails', 'helperPet'])]
     private $pregnancy;
 
     #[ORM\ManyToOne(inversedBy: 'motheredPets', targetEntity: Pet::class)]
@@ -177,20 +177,20 @@ class Pet
     private $spiritDad;
 
     #[ORM\ManyToMany(targetEntity: Merit::class)]
-    #[Groups([SerializationGroupEnum::MY_PET, 'houseSitterPet', 'userPublicProfile', 'petPublicProfile', 'petGroupDetails', 'parkEvent', 'petFriend', 'hollowEarth', 'petActivityLogAndPublicPet', 'helperPet'])]
+    #[Groups([SerializationGroupEnum::MY_PET, 'userPublicProfile', 'petPublicProfile', 'petGroupDetails', 'parkEvent', 'petFriend', 'hollowEarth', 'petActivityLogAndPublicPet', 'helperPet'])]
     private $merits;
 
     #[ORM\Column(type: 'boolean')]
-    #[Groups([SerializationGroupEnum::MY_PET, 'houseSitterPet'])]
+    #[Groups([SerializationGroupEnum::MY_PET])]
     private $isFertile = false;
 
     #[ORM\OneToOne(targetEntity: Inventory::class, inversedBy: 'wearer')]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
-    #[Groups([SerializationGroupEnum::MY_PET, 'houseSitterPet', 'userPublicProfile', 'petPublicProfile', 'hollowEarth', 'petGroupDetails', 'helperPet'])]
+    #[Groups([SerializationGroupEnum::MY_PET, 'userPublicProfile', 'petPublicProfile', 'hollowEarth', 'petGroupDetails', 'helperPet'])]
     private $hat;
 
     #[ORM\Column(type: 'string', length: 30)]
-    #[Groups([SerializationGroupEnum::MY_PET, 'houseSitterPet', 'petPublicProfile'])]
+    #[Groups([SerializationGroupEnum::MY_PET, 'petPublicProfile'])]
     private $costume = '';
 
     #[ORM\OneToOne(mappedBy: 'pet', targetEntity: PetActivityStats::class, cascade: ['persist', 'remove'])]
@@ -223,18 +223,18 @@ class Pet
     private $affectionAdventures = 0;
 
     #[ORM\OneToMany(mappedBy: 'pet', targetEntity: LunchboxItem::class)]
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     private $lunchboxItems;
 
     #[ORM\Column(type: 'smallint')]
     private $bonusMaximumFriends;
 
     #[ORM\Column(type: 'smallint')]
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     private $selfReflectionPoint = 0;
 
     #[ORM\OneToOne(targetEntity: PetHouseTime::class, mappedBy: 'pet', cascade: ['persist', 'remove'])]
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     private $houseTime;
 
     /**
@@ -264,11 +264,11 @@ class Pet
     private $renamingCharges = 0;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     private $lunchboxIndex;
 
     #[ORM\Column(type: 'smallint')]
-    #[Groups(['myPet', 'houseSitterPet', 'petActivityLogs'])]
+    #[Groups(['myPet', 'petActivityLogs'])]
     private $wereform;
 
     public function __construct()
@@ -525,7 +525,7 @@ class Pet
     }
 
     #[SerializedName('colorA')]
-    #[Groups(['myPet', 'houseSitterPet', 'userPublicProfile', 'petPublicProfile', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet', 'petActivityLogs', 'petActivityLogs'])]
+    #[Groups(['myPet', 'userPublicProfile', 'petPublicProfile', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet', 'petActivityLogs', 'petActivityLogs'])]
     public function getPerceivedColorA(): string
     {
         if($this->hasStatusEffect(StatusEffectEnum::INVISIBLE))
@@ -541,7 +541,7 @@ class Pet
     }
 
     #[SerializedName('colorB')]
-    #[Groups(['myPet', 'houseSitterPet', 'userPublicProfile', 'petPublicProfile', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet', 'petActivityLogs'])]
+    #[Groups(['myPet', 'userPublicProfile', 'petPublicProfile', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet', 'petActivityLogs'])]
     public function getPerceivedColorB(): string
     {
         if($this->hasStatusEffect(StatusEffectEnum::INVISIBLE))
@@ -673,7 +673,7 @@ class Pet
             return $this->getEsteem() / -$this->getMinEsteem();
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getNeeds()
     {
         $needs = [
@@ -771,7 +771,7 @@ class Pet
             return 'depressed';
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getAlcoholLevel(): string
     {
         if($this->getAlcohol() > 16)
@@ -784,7 +784,7 @@ class Pet
             return 'none';
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getHallucinogenLevel(): string
     {
         if($this->getPsychedelic() > 16)
@@ -797,7 +797,7 @@ class Pet
             return 'none';
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getPoisonLevel(): string
     {
         if($this->getPoison() > 16)
@@ -835,7 +835,7 @@ class Pet
         return $this;
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getCanInteract(): bool
     {
         return $this->getLastInteracted() < (new \DateTimeImmutable())->modify('-4 hours');
@@ -859,7 +859,7 @@ class Pet
         return $this;
     }
 
-    #[Groups(['myPet', 'houseSitterPet', 'petPublicProfile'])]
+    #[Groups(['myPet', 'petPublicProfile'])]
     public function getLevel(): int
     {
         return $this->getSkills()->getTotal();
@@ -1034,7 +1034,7 @@ class Pet
         return $this;
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getHasRelationships(): bool
     {
         return count($this->petRelationships) > 0;
@@ -1147,13 +1147,13 @@ class Pet
         return $this->getStatusEffect($statusEffect) !== null;
     }
 
-    #[Groups(['myPet', 'houseSitterPet', 'petActivityLogs'])]
+    #[Groups(['myPet', 'petActivityLogs'])]
     public function getStatuses(): array
     {
         return array_values(array_map(fn(StatusEffect $se) => $se->getStatus(), $this->statusEffects->toArray()));
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getCanPickTalent(): ?string
     {
         if($this->getSkills()->getTalent() === null)
@@ -1439,7 +1439,7 @@ class Pet
         return $this;
     }
 
-    #[Groups(['petPublicProfile', 'myPet', 'houseSitterPet'])]
+    #[Groups(['petPublicProfile', 'myPet'])]
     public function getMaximumFriends(): int
     {
         if($this->extroverted <= -1)
@@ -1537,7 +1537,7 @@ class Pet
         return $this;
     }
 
-    #[Groups(['myPet', 'houseSitterPet'])]
+    #[Groups(['myPet'])]
     public function getFlavor(): string
     {
         if($this->revealedFavoriteFlavor > 0)
@@ -1648,7 +1648,7 @@ class Pet
     }
 
     #[SerializedName('scale')]
-    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
+    #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
     public function getPerceivedScale(): int
     {
         if(!$this->getMom())
@@ -1660,7 +1660,7 @@ class Pet
     }
 
     #[SerializedName('skills')]
-    #[Groups(["myPet", 'houseSitterPet'])]
+    #[Groups(["myPet"])]
     public function getComputedSkills(): ComputedPetSkills
     {
         return new ComputedPetSkills($this);
@@ -1689,7 +1689,7 @@ class Pet
     }
 
     #[SerializedName('craving')]
-    #[Groups(["myPet", 'houseSitterPet'])]
+    #[Groups(["myPet"])]
     public function getSerializedCraving(): ?string
     {
         if(!$this->getCraving() || $this->getCraving()->isSatisfied())

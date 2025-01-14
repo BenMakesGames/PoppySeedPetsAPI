@@ -17,11 +17,11 @@ class PetSpecies
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[Groups(["myPet", 'houseSitterPet', "petEncyclopedia", "petShelterPet", "zoologistCatalog", "typeahead"])]
+    #[Groups(["myPet", "petEncyclopedia", "petShelterPet", "zoologistCatalog", "typeahead"])]
     #[ORM\Column(type: 'string', length: 40, unique: true)]
     private $name;
 
-    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petEncyclopedia", "petPublicProfile", "petShelterPet", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "petActivityLogAndPublicPet", "helperPet", "zoologistCatalog", "typeahead", 'petActivityLogs'])]
+    #[Groups(["myPet", "userPublicProfile", "petEncyclopedia", "petPublicProfile", "petShelterPet", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "petActivityLogAndPublicPet", "helperPet", "zoologistCatalog", "typeahead", 'petActivityLogs'])]
     #[ORM\Column(type: 'string', length: 40)]
     private $image;
 
@@ -29,47 +29,47 @@ class PetSpecies
     #[ORM\Column(type: 'text')]
     private $description;
 
-    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
+    #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
     #[ORM\Column(type: 'float')]
     private $handX;
 
-    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
+    #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
     #[ORM\Column(type: 'float')]
     private $handY;
 
-    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
+    #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
     #[ORM\Column(type: 'float')]
     private $handAngle;
 
-    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petEncyclopedia", "petFriend", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
+    #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petEncyclopedia", "petFriend", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
     #[ORM\Column(type: 'boolean')]
     private $flipX;
 
-    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
+    #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
     #[ORM\Column(type: 'boolean')]
     private $handBehind;
 
-    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petEncyclopedia"])]
+    #[Groups(["myPet", "userPublicProfile", "petEncyclopedia"])]
     #[ORM\Column(type: 'boolean')]
     private $availableFromPetShelter;
 
-    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "petEncyclopedia", "petFriend", "petGroupDetails", "parkEvent", "helperPet"])]
+    #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "petEncyclopedia", "petFriend", "petGroupDetails", "parkEvent", "helperPet"])]
     #[ORM\Column(type: 'integer')]
     private $pregnancyStyle;
 
-    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "petEncyclopedia", "petFriend", "petGroupDetails", "parkEvent", "helperPet"])]
+    #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "petEncyclopedia", "petFriend", "petGroupDetails", "parkEvent", "helperPet"])]
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $eggImage;
 
-    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
+    #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
     #[ORM\Column(type: 'float')]
     private $hatX;
 
-    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
+    #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
     #[ORM\Column(type: 'float')]
     private $hatY;
 
-    #[Groups(["myPet", 'houseSitterPet', "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
+    #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
     #[ORM\Column(type: 'float')]
     private $hatAngle;
 
@@ -82,7 +82,7 @@ class PetSpecies
     #[ORM\JoinColumn(nullable: false)]
     private $sheds;
 
-    #[Groups(["myPet", 'houseSitterPet', "petEncyclopedia", "zoologistCatalog"])]
+    #[Groups(["myPet", "petEncyclopedia", "zoologistCatalog"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $family;
 
