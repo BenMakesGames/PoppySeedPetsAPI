@@ -105,7 +105,7 @@ class SummoningScrollMonster
         $monster->majorReward = 'Collimated Lance';
         $monster->minorRewards = [ 'Photon', 'Gravitational Waves' ];
         $monster->element = SummoningScrollMonsterElementEnum::FIRE;
-
+        $monster->petBadge = PetBadgeEnum::DEFEATED_BIVUS_RELEASE;
         $monster->fieldGuideEntry = 'Bivu';
 
         return $monster;

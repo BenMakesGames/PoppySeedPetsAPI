@@ -25,5 +25,6 @@ final class PetBadgeEnum
     public const FOUND_MERKABA_OF_AIR = 'foundMerkabaOfAir'; // TODO: create graphic
 
     public const DEFEATED_NOETALAS_WING = 'defeatedNoetalasWing'; // TODO: create graphic
-    public const DEFEATED_CRYSTALLINE_ENTITY = 'defeatedCrystallineEntity'; // TODO: code & graphic
+    public const DEFEATED_CRYSTALLINE_ENTITY = 'defeatedCrystallineEntity'; // TODO: graphic
+    public const DEFEATED_BIVUS_RELEASE = 'defeatedBivusRelease'; // TODO: graphic
 }
