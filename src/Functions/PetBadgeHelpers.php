@@ -4,7 +4,6 @@ namespace App\Functions;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Entity\PetActivityLogTag;
 use App\Entity\PetBadge;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\PetActivityLogInterestingnessEnum;

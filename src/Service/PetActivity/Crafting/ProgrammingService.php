@@ -9,6 +9,7 @@ use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\RelationshipEnum;
@@ -19,6 +20,7 @@ use App\Functions\EnchantmentRepository;
 use App\Functions\MeritRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\PetColorFunctions;
 use App\Functions\StatusEffectHelpers;
 use App\Model\ActivityCallback;
@@ -1489,6 +1491,8 @@ class ProgrammingService
             ;
             $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::SCIENCE ], $activityLog);
             $this->inventoryService->petCollectsItem('Sentient Beetle', $pet, $pet->getName() . ' gave this beetle sentience by uploading an AI into its brain.', $activityLog);
+
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::CREATED_SENTIENT_BEETLE, $activityLog);
         }
         else
         {

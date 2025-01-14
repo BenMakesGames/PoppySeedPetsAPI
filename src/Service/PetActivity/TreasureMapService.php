@@ -119,6 +119,8 @@ class TreasureMapService
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
 
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::OUTSMARTED_A_THIEVING_MAGPIE, $activityLog);
+
         $activityLog->setChanges($changes->compare($pet));
 
         if(AdventureMath::petAttractsBug($this->rng, $pet, 20))

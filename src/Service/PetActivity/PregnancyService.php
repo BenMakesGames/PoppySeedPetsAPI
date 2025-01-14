@@ -9,11 +9,13 @@ use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\MeritRepository;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\PetColorFunctions;
 use App\Functions\UserQuestRepository;
 use App\Model\PetShelterPet;
@@ -246,6 +248,8 @@ class PregnancyService
             else
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gave birth to ' . $describeBabies . '!', '');
         }
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::HAD_A_BABY, $activityLog);
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::GAVE_BIRTH)
