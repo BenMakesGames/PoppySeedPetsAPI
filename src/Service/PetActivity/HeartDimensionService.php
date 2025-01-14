@@ -5,6 +5,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
@@ -13,6 +14,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\EquipmentFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -339,10 +341,14 @@ class HeartDimensionService
 
         EquipmentFunctions::unequipPet($pet);
 
-        return PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
+        $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
             ->setIcon('icons/activity-logs/heart-dimension')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Heart Dimension' ]))
         ;
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::COMPLETED_HEART_DIMENSION, $log);
+
+        return $log;
     }
 
     private function randomAdventure(Pet $pet): PetActivityLog

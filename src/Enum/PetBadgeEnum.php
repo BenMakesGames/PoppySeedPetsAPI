@@ -6,7 +6,7 @@ final class PetBadgeEnum
 {
     use Enum;
 
-    public const COMPLETED_HEART_DIMENSION = 'completedHeartDimension'; // TODO: code it; create graphic
+    public const COMPLETED_HEART_DIMENSION = 'completedHeartDimension'; // TODO: create graphic
     public const FIRST_PLACE_CHESS = 'chessWinner'; // TODO: code it; create graphic
     public const FIRST_PLACE_JOUSTING = 'joustingWinner'; // TODO: code it; create graphic
     public const FIRST_PLACE_KIN_BALL = 'kinBallWinner'; // TODO: code it; create graphic
