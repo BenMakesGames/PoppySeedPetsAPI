@@ -8,7 +8,7 @@ final class PetBadgeEnum
 
     public const COMPLETED_HEART_DIMENSION = 'completedHeartDimension';
     public const FIRST_PLACE_CHESS = 'chessWinner';
-    public const FIRST_PLACE_JOUSTING = 'joustingWinner'; // TODO: create graphic
+    public const FIRST_PLACE_JOUSTING = 'joustingWinner'; // TODO: create graphic (gold fleur-de-lit on purple background?)
     public const FIRST_PLACE_KIN_BALL = 'kinBallWinner'; // TODO: create graphic
     public const CREATED_SENTIENT_BEETLE = 'createdSentientBeetle';
     public const MET_THE_FLUFFMONGER = 'fluffmonger'; // TODO: create graphic
@@ -21,6 +21,6 @@ final class PetBadgeEnum
 
     public const FOUND_METATRONS_FIRE = 'foundMetatronsFire';
     public const FOUND_VESICA_HYDRARGYRUM = 'foundVesicaHydrargyrum'; // TODO: create graphic
-    public const FOUND_EARTHS_EGG = 'foundEarthsEgg'; // TODO: create graphic
+    public const FOUND_EARTHS_EGG = 'foundEarthsEgg';
     public const FOUND_MERKABA_OF_AIR = 'foundMerkabaOfAir'; // TODO: create graphic
 }
