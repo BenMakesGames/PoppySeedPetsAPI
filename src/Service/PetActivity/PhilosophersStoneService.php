@@ -7,6 +7,7 @@ use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\EquipmentFunctions;
@@ -14,9 +15,9 @@ use App\Functions\ItemRepository;
 use App\Functions\MeritRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
-use App\Repository\PetQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -119,6 +120,8 @@ class PhilosophersStoneService
                     $pet->setTool(null);
 
                     $this->inventoryService->petCollectsItem('Metatron\'s Fire', $pet, $pet->getName() . ' found this after defeating the Lava Giant!', $activityLog);
+
+                    PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FOUND_METATRONS_FIRE, $activityLog);
                 }
             }
             else
@@ -223,6 +226,8 @@ class PhilosophersStoneService
 
                     $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this from the ice cave in the frozen quag in the Umbra.', $activityLog);
                     $this->inventoryService->petCollectsItem('Vesica Hydrargyrum', $pet, $pet->getName() . ' found this in the heart of the ice cave in the frozen quag in the Umbra!', $activityLog);
+
+                    PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FOUND_VESICA_HYDRARGYRUM, $activityLog);
                 }
             }
             else
@@ -308,6 +313,8 @@ class PhilosophersStoneService
                     $pet->setTool(null);
 
                     $this->inventoryService->petCollectsItem('Earth\'s Egg', $pet, $pet->getName() . ' got this from ' . $aMonsterType . ' Jabberwock!', $activityLog);
+
+                    PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FOUND_EARTHS_EGG, $activityLog);
                 }
                 else
                 {
@@ -373,6 +380,8 @@ class PhilosophersStoneService
         $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::SCIENCE ], $activityLog);
 
         $this->inventoryService->petCollectsItem('Merkaba of Air', $pet, $pet->getName() . ' got this by splitting a bolt of lightning in two!', $activityLog);
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FOUND_MERKABA_OF_AIR, $activityLog);
 
         $pet->getTool()->setEnchantment(null);
 

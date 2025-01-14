@@ -19,7 +19,7 @@ final class PetBadgeEnum
     public const CLIMB_TO_TOP_OF_BEANSTALK = 'summitBeanstalk'; // TODO: code it; create graphic
     public const SING_WITH_WHALES = 'singWithWhales'; // TODO: create graphic
 
-    public const FOUND_METATONS_FIRE = 'foundMetatonsFire'; // TODO: code it; create graphic
+    public const FOUND_METATRONS_FIRE = 'foundMetatronsFire'; // TODO: code it; create graphic
     public const FOUND_VESICA_HYDRARGYRUM = 'foundVesicaHydrargyrum'; // TODO: code it; create graphic
     public const FOUND_EARTHS_EGG = 'foundEarthsEgg'; // TODO: code it; create graphic
     public const FOUND_MERKABA_OF_AIR = 'foundMerkabaOfAir'; // TODO: code it; create graphic
