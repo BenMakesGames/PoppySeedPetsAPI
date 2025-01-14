@@ -17,7 +17,7 @@ final class PetBadgeEnum
     public const HAD_A_BABY = 'parent'; // TODO: create graphic
 
     public const CLIMB_TO_TOP_OF_BEANSTALK = 'summitBeanstalk';
-    public const SING_WITH_WHALES = 'singWithWhales'; // TODO: create graphic
+    public const SING_WITH_WHALES = 'singWithWhales';
 
     public const FOUND_METATRONS_FIRE = 'foundMetatronsFire';
     public const FOUND_VESICA_HYDRARGYRUM = 'foundVesicaHydrargyrum'; // TODO: create graphic
