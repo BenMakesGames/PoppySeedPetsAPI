@@ -7,9 +7,9 @@ final class PetBadgeEnum
     use Enum;
 
     public const COMPLETED_HEART_DIMENSION = 'completedHeartDimension'; // TODO: create graphic
-    public const FIRST_PLACE_CHESS = 'chessWinner'; // TODO: code it; create graphic
-    public const FIRST_PLACE_JOUSTING = 'joustingWinner'; // TODO: code it; create graphic
-    public const FIRST_PLACE_KIN_BALL = 'kinBallWinner'; // TODO: code it; create graphic
+    public const FIRST_PLACE_CHESS = 'chessWinner'; // TODO: create graphic
+    public const FIRST_PLACE_JOUSTING = 'joustingWinner'; // TODO: create graphic
+    public const FIRST_PLACE_KIN_BALL = 'kinBallWinner'; // TODO: create graphic
     public const CREATED_SENTIENT_BEETLE = 'createdSentientBeetle'; // TODO: create graphic
     public const MET_THE_FLUFFMONGER = 'fluffmonger'; // TODO: create graphic
     public const OUTSMARTED_A_THIEVING_MAGPIE = 'outsmartedAThievingMagpie'; // TODO: create graphic
