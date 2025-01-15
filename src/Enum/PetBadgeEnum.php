@@ -11,7 +11,7 @@ final class PetBadgeEnum
     public const FIRST_PLACE_JOUSTING = 'joustingWinner';
     public const FIRST_PLACE_KIN_BALL = 'kinBallWinner';
     public const CREATED_SENTIENT_BEETLE = 'createdSentientBeetle';
-    public const MET_THE_FLUFFMONGER = 'fluffmonger'; // TODO: create graphic
+    public const MET_THE_FLUFFMONGER = 'fluffmonger';
     public const OUTSMARTED_A_THIEVING_MAGPIE = 'outsmartedAThievingMagpie';
     public const DECEIVED_A_VAMPIRE = 'deceivedAVampire';
     public const FOUND_CETGUELIS_TREASURE = 'foundCetguelisTreasure';
