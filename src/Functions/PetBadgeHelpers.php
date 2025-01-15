@@ -85,7 +85,7 @@ final class PetBadgeHelpers
         PetBadgeEnum::FOUND_EARTHS_EGG => 'A legendary accomplishment, to be sure! %pet.name% receives the Most Egg badge.',
         PetBadgeEnum::FOUND_MERKABA_OF_AIR => 'A legendary accomplishment, to be sure! %pet.name% receives the Zephyrous badge.',
 
-        PetBadgeEnum::DEFEATED_NOETALAS_WING => '%pet.name% received the Noetala\'s Wing badge! Well deserved!',
+        PetBadgeEnum::DEFEATED_NOETALAS_WING => '%pet.name% has definitely gained the attention of Noetala... and gained the She Watches badge! (Pros and cons?)',
         PetBadgeEnum::DEFEATED_CRYSTALLINE_ENTITY => 'An enterprising pet such as %pet.name% deserves every thread of this Data & Lore badge!',
         PetBadgeEnum::DEFEATED_BIVUS_RELEASE => 'It\'s not every day you witness an angel create a supernova... or defeat said supernova! %pet.name% received the Supernova Survivor badge.',
     ];
