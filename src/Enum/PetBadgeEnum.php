@@ -8,14 +8,14 @@ final class PetBadgeEnum
 
     public const COMPLETED_HEART_DIMENSION = 'completedHeartDimension';
     public const FIRST_PLACE_CHESS = 'chessWinner';
-    public const FIRST_PLACE_JOUSTING = 'joustingWinner'; // TODO: create graphic (gold fleur-de-lit on purple background?)
+    public const FIRST_PLACE_JOUSTING = 'joustingWinner';
     public const FIRST_PLACE_KIN_BALL = 'kinBallWinner'; // TODO: create graphic
     public const CREATED_SENTIENT_BEETLE = 'createdSentientBeetle';
     public const MET_THE_FLUFFMONGER = 'fluffmonger'; // TODO: create graphic
     public const OUTSMARTED_A_THIEVING_MAGPIE = 'outsmartedAThievingMagpie';
     public const DECEIVED_A_VAMPIRE = 'deceivedAVampire'; // TODO: create graphic
     public const FOUND_CETGUELIS_TREASURE = 'foundCetguelisTreasure';
-    public const HAD_A_BABY = 'parent'; // TODO: create graphic
+    public const HAD_A_BABY = 'parent';
     public const WAS_AN_ACCOUNTANT = 'increasedADragonsHoard'; // TODO: create graphic
 
     public const CLIMB_TO_TOP_OF_BEANSTALK = 'summitBeanstalk';
@@ -28,5 +28,5 @@ final class PetBadgeEnum
 
     public const DEFEATED_NOETALAS_WING = 'defeatedNoetalasWing'; // TODO: create graphic
     public const DEFEATED_CRYSTALLINE_ENTITY = 'defeatedCrystallineEntity'; // TODO: graphic
-    public const DEFEATED_BIVUS_RELEASE = 'defeatedBivusRelease'; // TODO: graphic
+    public const DEFEATED_BIVUS_RELEASE = 'defeatedBivusRelease';
 }
