@@ -126,7 +126,7 @@ class ClaimRewardsController extends AbstractController
 
             if($fireplace->getHelper())
             {
-                PetBadgeHelpers::awardBadgeAndLog($em, $fireplace->getHelper(), PetBadgeEnum::WAS_A_CHIMNEY_SWEEP, ActivityHelpers::PetName($fireplace->getHelper()) . ' helped clean up, afterwards.');
+                PetBadgeHelpers::awardBadgeAndLog($em, $fireplace->getHelper(), PetBadgeEnum::WAS_A_CHIMNEY_SWEEP, ActivityHelpers::PetName($fireplace->getHelper()) . ' helped clean up after the fireplace gnomes.');
             }
         }
 
