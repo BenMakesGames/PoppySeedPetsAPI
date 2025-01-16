@@ -3,12 +3,15 @@ namespace App\Controller\Fireplace;
 
 use App\Entity\User;
 use App\Enum\LocationEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
+use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\PlayerLogFactory;
 use App\Functions\UserQuestRepository;
 use App\Service\InventoryService;
@@ -120,6 +123,11 @@ class ClaimRewardsController extends AbstractController
             $responseService->addFlashMessage($gnomishMessage . ' (You received a Gnome\'s Favor!)');
 
             PlayerLogFactory::create($em, $user, $gnomishMessage . ' (You received a Gnome\'s Favor!)', [ 'Fireplace' ]);
+
+            if($fireplace->getHelper())
+            {
+                PetBadgeHelpers::awardBadgeAndLog($em, $fireplace->getHelper(), PetBadgeEnum::WAS_A_CHIMNEY_SWEEP, ActivityHelpers::PetName($fireplace->getHelper()) . ' helped clean up, afterwards.');
+            }
         }
 
         $em->flush();
