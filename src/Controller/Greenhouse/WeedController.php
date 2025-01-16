@@ -5,6 +5,7 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetBadgeEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
@@ -12,6 +13,7 @@ use App\Functions\CalendarFunctions;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\PlayerLogFactory;
 use App\Functions\UserQuestRepository;
 use App\Model\PetChanges;
@@ -167,6 +169,9 @@ class WeedController extends AbstractController
                 ->setChanges($changes->compare($helper))
                 ->addTags(PetActivityLogTagHelpers::findByNames($em, [ 'Add-on Assistance', 'Greenhouse' ]))
             ;
+
+            if($extraItem === 'Scales')
+                PetBadgeHelpers::awardBadge($em, $helper, PetBadgeEnum::GREENHOUSE_FISHER, $activityLogEntry);
         }
 
         $message .= ' ' . $squirrel3->rngNextFromArray([ 'Noice!', 'Yoink!', '👍', '👌', 'Neat-o!', 'Okey dokey!' ]);
