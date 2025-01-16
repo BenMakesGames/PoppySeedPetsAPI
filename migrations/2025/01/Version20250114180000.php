@@ -60,6 +60,13 @@ final class Version20250114180000 extends AbstractMigration
           ) AS p
         EOSQL);
 
+        // pets whose favorite flavor has been revealed get that badge:
+        $this->addSql(<<<EOSQL
+        INSERT INTO pet_badge (pet_id, badge, date_acquired)
+        SELECT id AS pet_id, 'revealedFavoriteFlavor' AS badge, NOW() AS date_acquired
+        FROM pet WHERE revealed_favorite_flavor>0
+        EOSQL);
+
         // pets that already completed the heart dimension get that badge:
         $this->addSql(<<<EOSQL
         INSERT INTO pet_badge (pet_id, badge, date_acquired)

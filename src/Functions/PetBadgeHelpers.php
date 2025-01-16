@@ -37,13 +37,13 @@ final class PetBadgeHelpers
         ;
     }
 
-    public static function awardBadgeAndLog(EntityManagerInterface $em, Pet $pet, string $badgeName, string $logMessage): ?PetActivityLog
+    public static function awardBadgeAndLog(EntityManagerInterface $em, Pet $pet, string $badgeName, string $logMessage, bool $alreadyRead = false): ?PetActivityLog
     {
         if(!PetBadgeEnum::isAValue($badgeName))
             throw new EnumInvalidValueException(PetBadgeEnum::class, $badgeName);
 
         // if pet already has this badge, gtfo
-        if($pet->getBadges()->exists(fn(PetBadge $b) => $b->getBadge() === $badgeName))
+        if($pet->getBadges()->exists(fn(int $i, PetBadge $b) => $b->getBadge() === $badgeName))
             return null;
 
         $newBadge = (new PetBadge())
@@ -54,17 +54,24 @@ final class PetBadgeHelpers
 
         $pet->addBadge($newBadge);
 
-        $log = PetActivityLogFactory::createUnreadLog($em, $pet, $logMessage . ' ' . str_replace('%pet.name%', ActivityHelpers::PetName($pet), self::BADGE_HURRAHS[$badgeName]))
-            ->addTag(PetActivityLogTagHelpers::findOneByName($em, PetActivityLogTagEnum::Badge))
-            ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_YIELDING_PET_BADGE)
-        ;
-
-        $em->persist($log);
-
-        return $log;
+        if($alreadyRead)
+        {
+            return PetActivityLogFactory::createReadLog($em, $pet, $logMessage . ' ' . str_replace('%pet.name%', ActivityHelpers::PetName($pet), self::BADGE_HURRAHS[$badgeName]))
+                ->addTag(PetActivityLogTagHelpers::findOneByName($em, PetActivityLogTagEnum::Badge))
+                ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_YIELDING_PET_BADGE)
+            ;
+        }
+        else
+        {
+            return PetActivityLogFactory::createUnreadLog($em, $pet, $logMessage . ' ' . str_replace('%pet.name%', ActivityHelpers::PetName($pet), self::BADGE_HURRAHS[$badgeName]))
+                ->addTag(PetActivityLogTagHelpers::findOneByName($em, PetActivityLogTagEnum::Badge))
+                ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_YIELDING_PET_BADGE)
+            ;
+        }
     }
 
     private const BADGE_HURRAHS = [
+        PetBadgeEnum::REVEALED_FAVORITE_FLAVOR => '(Also, there\'s a badge for that: Flavor Yesknown, and %pet.name% just got it!)',
         PetBadgeEnum::COMPLETED_HEART_DIMENSION => 'Also: A Suburb to the Brain - that\'s the name of the badge that %pet.name% just got!',
         PetBadgeEnum::FIRST_PLACE_CHESS => 'For demonstrating such chess prowess, %pet.name% received the Chess Master badge!',
         PetBadgeEnum::FIRST_PLACE_JOUSTING => 'For demonstrating such jousting prowess, %pet.name% received the Mount and Blade badge!',

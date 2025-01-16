@@ -6,10 +6,12 @@ use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -63,8 +65,9 @@ class GuessFavoriteFlavorController extends AbstractController
             ;
             $inventoryService->receiveItem('Heartstone', $user, $user, $user->getName() . ' received this from ' . $pet->getName() . ' for knowing their favorite flavor: ' . $pet->getFavoriteFlavor() . '!', LocationEnum::HOME);
             $responseService->setReloadInventory();
-            $responseService->addFlashMessage('A Heartstone materializes in front of ' . $pet->getName() . '\'s body, and floats into your hands!');
             $data = $pet;
+
+            PetBadgeHelpers::awardBadgeAndLog($em, $pet, PetBadgeEnum::REVEALED_FAVORITE_FLAVOR, $user->getName() . ' correctly guessed ' . $pet->getName() . '\'s favorite flavor! A Heartstone materialized in front of their body, and floated into ' . $user->getName() . '\'s hands!');
         }
         else
         {
