@@ -5,12 +5,14 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\MeritRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -55,6 +57,8 @@ class SagaSagaService
         ;
 
         $this->inventoryService->petCollectsItem('Skill Scroll: ' . $skill, $pet, $pet->getName() . ' was transformed into this scroll!', $log);
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PRODUCED_A_SKILL_SCROLL, $log);
 
         $pet
             ->removeMerit(MeritRepository::findOneByName($this->em, MeritEnum::SAGA_SAGA))
