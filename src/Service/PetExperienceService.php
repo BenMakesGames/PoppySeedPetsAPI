@@ -8,6 +8,7 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
@@ -16,6 +17,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\UserQuestRepository;
 use App\Functions\UserUnlockedFeatureHelpers;
 use Doctrine\ORM\EntityManagerInterface;
@@ -95,6 +97,8 @@ class PetExperienceService
 
                 $newItem = $this->inventoryService->petCollectsItem('Skill Scroll: ' . $statToLevel, $pet, $pet->getName() . ', a ' . $statToLevel . '-master, produced this scroll.', $activityLog);
                 $newItem->setLockedToOwner(true);
+
+                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PRODUCED_A_SKILL_SCROLL, $activityLog);
             }
             else
             {

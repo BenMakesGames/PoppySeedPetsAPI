@@ -79,6 +79,7 @@ final class PetBadgeHelpers
 
         PetBadgeEnum::CLIMB_TO_TOP_OF_BEANSTALK => 'Such climb! Very high! %pet.name% gets the Castle in the Clouds badge!',
         PetBadgeEnum::SING_WITH_WHALES => 'Beautiful! %pet.name% received the Songs of the Deep badge.',
+        PetBadgeEnum::PRODUCED_A_SKILL_SCROLL => '(Dang! That\'s a hard one! %pet.name% FOR SURE gets the Skill Scribe badge!)',
 
         PetBadgeEnum::FOUND_METATRONS_FIRE => 'A legendary accomplishment, to be sure! %pet.name% receives the Radiant badge.',
         PetBadgeEnum::FOUND_VESICA_HYDRARGYRUM => 'A legendary accomplishment, to be sure! %pet.name% receives the Mercurial badge.',

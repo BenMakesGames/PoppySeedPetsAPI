@@ -24,6 +24,7 @@ final class PetBadgeEnum
     public const HAD_A_BABY = 'parent';
     public const CLIMB_TO_TOP_OF_BEANSTALK = 'summitBeanstalk';
     public const SING_WITH_WHALES = 'singWithWhales';
+    public const PRODUCED_A_SKILL_SCROLL = 'producedASkillScroll';
 
     // add-on helper activities
     public const WAS_AN_ACCOUNTANT = 'increasedADragonsHoard';
