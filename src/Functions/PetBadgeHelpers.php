@@ -75,7 +75,7 @@ final class PetBadgeHelpers
 
         PetBadgeEnum::WAS_AN_ACCOUNTANT => 'Accounting is FUN! :D (Incidentally, that\'s also the name of the badge %pet.name% just earned!)',
         PetBadgeEnum::WAS_A_CHIMNEY_SWEEP => 'With gnomes and with smoke all billered and curled, your pet got a badge: Chimney Sweep World.',
-        //PetBadgeEnum::GREENHOUSE_FISHER => '', // TODO!
+        PetBadgeEnum::GREENHOUSE_FISHER => 'Dang greenhouse fish - makin\' a mess! Why, it\'s enough to make someone give a pet the Greenhouse Fishin\' badge, it is!',
 
         PetBadgeEnum::CLIMB_TO_TOP_OF_BEANSTALK => 'Such climb! Very high! %pet.name% gets the Castle in the Clouds badge!',
         PetBadgeEnum::SING_WITH_WHALES => 'Beautiful! %pet.name% received the Songs of the Deep badge.',
