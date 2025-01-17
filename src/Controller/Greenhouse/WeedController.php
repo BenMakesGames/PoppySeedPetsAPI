@@ -100,7 +100,7 @@ class WeedController extends AbstractController
 
             if($hasWaterPlots)
             {
-                $basicItems[] = 'Scales';
+                $basicItems[] = 'Scales'; // greenhouse fishin' badge (below) is awarded for finding this
             }
 
             if($isRaining)
