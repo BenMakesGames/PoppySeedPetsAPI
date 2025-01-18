@@ -136,6 +136,15 @@ final class ArrayFunctions
         return self::list_nice($list, $separator, $lastSeparator);
     }
 
+    public static function list_nice_sorted(iterable $strings, string $separator = ', ', string $lastSeparator = ', and '): string
+    {
+        $list = iterator_to_array($strings);
+        sort($list);
+
+        return self::list_nice($list, $separator, $lastSeparator);
+    }
+
+
     /**
      * @param string[] $strings
      */

@@ -315,7 +315,7 @@ class IcyMoonService
             else
                 $period = '.';
 
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found an entrance to the core of an Icy Moon! It was dark inside, but thanks to their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ' they found some ' . ArrayFunctions::list_nice($loot) . $period)
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found an entrance to the core of an Icy Moon! It was dark inside, but thanks to their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ' they found some ' . ArrayFunctions::list_nice_sorted($loot) . $period)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Location_Icy_Moon,
                     PetActivityLogTagEnum::Gathering,

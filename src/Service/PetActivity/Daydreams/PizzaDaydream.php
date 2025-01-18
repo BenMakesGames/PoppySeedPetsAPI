@@ -151,7 +151,7 @@ class PizzaDaydream
 
         if($pet->hasMerit(MeritEnum::GOURMAND))
         {
-            $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' daydreamed they were exploring a planet made of pizza. They stayed for a while, ate (a true Gourmand!), and picked up various toppings: ' . ArrayFunctions::list_nice($loot) . '. When they snapped back to reality, they had everything they picked up in the daydream!')
+            $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' daydreamed they were exploring a planet made of pizza. They stayed for a while, ate (a true Gourmand!), and picked up various toppings: ' . ArrayFunctions::list_nice_sorted($loot) . '. When they snapped back to reality, they had everything they picked up in the daydream!')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gourmand', 'Eating' ]));
 
             $pet->increaseFood(8);
@@ -160,7 +160,7 @@ class PizzaDaydream
         {
             $quantityDescription = count($loot) === 1 ? 'a topping' : 'some toppings';
 
-            $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' daydreamed they were exploring a planet made of pizza. While they explored, they picked up ' . $quantityDescription . ': ' . ArrayFunctions::list_nice($loot) . '. When they snapped back to reality, they had everything they picked up in the daydream!');
+            $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' daydreamed they were exploring a planet made of pizza. While they explored, they picked up ' . $quantityDescription . ': ' . ArrayFunctions::list_nice_sorted($loot) . '. When they snapped back to reality, they had everything they picked up in the daydream!');
         }
 
         foreach($loot as $itemName)

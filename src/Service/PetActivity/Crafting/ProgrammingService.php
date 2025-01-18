@@ -1692,7 +1692,7 @@ class ProgrammingService
             ];
 
             $pet->increaseEsteem(3);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% hacked a Macintosh, and got its ' . ArrayFunctions::list_nice($loot) . '.', '')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% hacked a Macintosh, and got its ' . ArrayFunctions::list_nice_sorted($loot) . '.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;

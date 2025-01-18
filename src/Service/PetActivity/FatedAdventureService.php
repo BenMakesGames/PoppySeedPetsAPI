@@ -131,8 +131,6 @@ class FatedAdventureService
                 'Pavé aux Noix', 'Qabrêk Splàdj', 'Regular-sized Pumpkin', 'Thicc Mints', 'Scroll of Fruit',
             ], 8);
 
-            sort($loot);
-
             foreach($loot as $item)
                 $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' found this in a mysterious puzzle room beneath the town, and in so doing fulfilled their delicious fate.', $log);
 
@@ -190,8 +188,6 @@ class FatedAdventureService
 
             $loot[] = 'Gold Bar';
             $loot[] = 'Curious Cutlass';
-
-            sort($loot);
 
             foreach($loot as $item)
             {

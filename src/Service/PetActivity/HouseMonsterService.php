@@ -106,7 +106,7 @@ class HouseMonsterService
             foreach($monster->minorRewards as $r)
                 $loot[] = $r;
 
-            $result .= ArrayFunctions::list_nice($petNames) . ' easily ' . (count($petsAtHome) === 1 ? 'dispatches' : 'dispatch') . ' the monster, taking its ' . ArrayFunctions::list_nice($loot) . '.';
+            $result .= ArrayFunctions::list_nice($petNames) . ' easily ' . (count($petsAtHome) === 1 ? 'dispatches' : 'dispatch') . ' the monster, taking its ' . ArrayFunctions::list_nice_sorted($loot) . '.';
 
             $exp = 5;
             $won = true;
@@ -116,7 +116,7 @@ class HouseMonsterService
             $loot[] = $monster->majorReward;
             $loot[] = $this->squirrel3->rngNextFromArray($monster->minorRewards);
 
-            $result .= ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'beats' : 'beat') . ' the monster back, and were rewarded with ' . ArrayFunctions::list_nice($loot) . '!';
+            $result .= ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'beats' : 'beat') . ' the monster back, and were rewarded with ' . ArrayFunctions::list_nice_sorted($loot) . '!';
 
             $exp = 5;
             $won = true;
@@ -131,16 +131,16 @@ class HouseMonsterService
             {
                 $loot[] = $monster->majorReward;
 
-                $result .= 'It was a tough fight, and ' . ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'was' : 'were') . ' exhausted and about to give up when ' . $petWithFairyGodmother->getName() . '\'s Fairy Godmother flew in and dazzled the beast with flashy magic, distracting it long enough for your ' . (count($petsAtHome) === 1 ? 'pet' : 'pets') . ' to turn the fight in their favor, and collect ' . ArrayFunctions::list_nice($loot) . '!';
+                $result .= 'It was a tough fight, and ' . ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'was' : 'were') . ' exhausted and about to give up when ' . $petWithFairyGodmother->getName() . '\'s Fairy Godmother flew in and dazzled the beast with flashy magic, distracting it long enough for your ' . (count($petsAtHome) === 1 ? 'pet' : 'pets') . ' to turn the fight in their favor, and collect ' . ArrayFunctions::list_nice_sorted($loot) . '!';
             }
             else
-                $result .= ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'was' : 'were') . ' completely outmatched! At least they managed to ' . $grab. ' ' . ArrayFunctions::list_nice($loot) . '...';
+                $result .= ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'was' : 'were') . ' completely outmatched! At least they managed to ' . $grab. ' ' . ArrayFunctions::list_nice_sorted($loot) . '...';
 
             $exp = 2;
         }
         else
         {
-            $result .= ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'fights' : 'fight') . ' their hardest, but ' . (count($petsAtHome) === 1 ? 'is' : 'are') . ' unable to defeat it! They were able to ' . $grab. ' ' . ArrayFunctions::list_nice($loot) . ', at least!';
+            $result .= ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'fights' : 'fight') . ' their hardest, but ' . (count($petsAtHome) === 1 ? 'is' : 'are') . ' unable to defeat it! They were able to ' . $grab. ' ' . ArrayFunctions::list_nice_sorted($loot) . ', at least!';
 
             $exp = 3;
             $won = false;

@@ -399,7 +399,7 @@ class TreasureMapService
 
         $skillTrained = $location == $magicLocation ? PetSkillEnum::ARCANA : PetSkillEnum::NATURE;
 
-        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% followed a Fruit Fly on a String to ' . $location . ', and retrieved ' . ArrayFunctions::list_nice($loot) . ' after setting the fly free.')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% followed a Fruit Fly on a String to ' . $location . ', and retrieved ' . ArrayFunctions::list_nice_sorted($loot) . ' after setting the fly free.')
             ->setIcon('items/bug/fly-fruit')
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))

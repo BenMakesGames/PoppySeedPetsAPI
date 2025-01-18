@@ -780,7 +780,7 @@ class UmbraService
             if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15)
                 $loot[] = 'Fluff';
 
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon Noetala\'s giant cocoon. They snuck around inside for a bit, and made off with ' . ArrayFunctions::list_nice($loot) . '.')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon Noetala\'s giant cocoon. They snuck around inside for a bit, and made off with ' . ArrayFunctions::list_nice_sorted($loot) . '.')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::The_Umbra,
@@ -1063,7 +1063,7 @@ class UmbraService
                 ->increaseEsteem(3)
                 ->increaseSafety(3)
             ;
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered an Abandondero! It whipped out a laser gun, but ' . $pet->getName() . ' ' . $defeated . ', defeated it, and claimed its ' . ArrayFunctions::list_nice($prizes) . '!')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered an Abandondero! It whipped out a laser gun, but ' . $pet->getName() . ' ' . $defeated . ', defeated it, and claimed its ' . ArrayFunctions::list_nice_sorted($prizes) . '!')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Fighting' ]))
             ;
@@ -1110,7 +1110,7 @@ class UmbraService
                     $loot[] = 'Quintessence';
 
                 $pet->increaseEsteem($this->squirrel3->rngNextInt(1, 2));
-                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a Cursed Garden, but while looking for food, was attacked by an Angry Spirit. ' . $pet->getName() . ' defeated the Angry Spirit, and took its ' . ArrayFunctions::list_nice($loot) . '.')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a Cursed Garden, but while looking for food, was attacked by an Angry Spirit. ' . $pet->getName() . ' defeated the Angry Spirit, and took its ' . ArrayFunctions::list_nice_sorted($loot) . '.')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Stealth', 'Fighting' ]))
                 ;
                 $didWhat = 'defeated an Angry Spirit in the Umbra, and got this';
@@ -1139,7 +1139,7 @@ class UmbraService
             if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getExploreUmbraBonus()->getTotal()) >= 25)
                 $loot[] = $this->squirrel3->rngNextFromArray([ 'Nutmeg', 'Eggplant', 'Silica Grounds' ]);
 
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a Cursed Garden, and harvested ' . ArrayFunctions::list_nice($loot) . '.')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a Cursed Garden, and harvested ' . ArrayFunctions::list_nice_sorted($loot) . '.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Stealth', 'Gathering' ]))
             ;
 

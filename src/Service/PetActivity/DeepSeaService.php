@@ -431,7 +431,7 @@ class DeepSeaService
                 $this->rng->rngNextFromArray([ 'Scales', 'Silica Grounds', 'Rock' ]),
             ];
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine (and their ' . ActivityHelpers::SourceOfLight($petWithSkills) . '), and found a submarine volcano! They looked around for a little while and scooped up some ' . ArrayFunctions::list_nice($loot) . ' before surfacing.', 'items/tool/submarine')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine (and their ' . ActivityHelpers::SourceOfLight($petWithSkills) . '), and found a submarine volcano! They looked around for a little while and scooped up some ' . ArrayFunctions::list_nice_sorted($loot) . ' before surfacing.', 'items/tool/submarine')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Gathering', 'Dark' ]))
             ;
 
@@ -535,7 +535,7 @@ class DeepSeaService
 
             $fleetDiscovery = '%pet:' . $pet->getId() . '.name% explored the ocean using the Submarine, and found a sunken ship!';
 
-            $activityLog = $this->responseService->createActivityLog($pet, $fleetDiscovery . ' Inside was ' . ArrayFunctions::list_nice($loot) . $andMore, 'items/tool/submarine')
+            $activityLog = $this->responseService->createActivityLog($pet, $fleetDiscovery . ' Inside was ' . ArrayFunctions::list_nice_sorted($loot) . $andMore, 'items/tool/submarine')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Gathering' ]))
             ;
 

@@ -171,7 +171,7 @@ class FoodFightDaydream
         $log = PetActivityLogFactory::createUnreadLog(
             $this->em,
             $petWithSkills->getPet(),
-            ActivityHelpers::PetName($pet) . ' daydreamed they were trekking through a treacherous canyon, battling pudding beasts and caramel creatures that lurked in the shadows! When they snapped back to reality, they were holding ' . ArrayFunctions::list_nice($loot) . '!');
+            ActivityHelpers::PetName($pet) . ' daydreamed they were trekking through a treacherous canyon, battling pudding beasts and caramel creatures that lurked in the shadows! When they snapped back to reality, they were holding ' . ArrayFunctions::list_nice_sorted($loot) . '!');
 
         foreach($loot as $itemName)
             $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in a daydream.', $log);

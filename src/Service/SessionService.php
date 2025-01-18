@@ -10,14 +10,13 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class SessionService
 {
-    private EntityManagerInterface $em;
-    private TokenStorageInterface $tokenStorage;
     private ?string $currentSessionId;
 
-    public function __construct(TokenStorageInterface $tokenStorage, EntityManagerInterface $em)
+    public function __construct(
+        private readonly TokenStorageInterface $tokenStorage,
+        private readonly EntityManagerInterface $em
+    )
     {
-        $this->tokenStorage = $tokenStorage;
-        $this->em = $em;
     }
 
     public function generateSessionId(): string

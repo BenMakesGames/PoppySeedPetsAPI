@@ -496,7 +496,7 @@ class MagicBeanstalkService
             if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal()) >= 20)
                 $loot[] = $this->squirrel3->rngNextFromArray($possibleLoot);
 
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk all the way to the clouds, and found a huge castle! They explored it for a little while, eventually making off with ' . ArrayFunctions::list_nice($loot) . '!')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% climbed %user:' . $pet->getOwner()->getId() . '.name\'s% magic bean-stalk all the way to the clouds, and found a huge castle! They explored it for a little while, eventually making off with ' . ArrayFunctions::list_nice_sorted($loot) . '!')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic Beanstalk', 'Stealth' ]))
             ;
 

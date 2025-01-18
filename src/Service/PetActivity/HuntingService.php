@@ -1563,7 +1563,7 @@ class HuntingService
                 $this->squirrel3->rngNextFromArray($possibleLoot),
             ];
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out hunting, and encountered an Egg Salad Monstrosity! After a grueling (and sticky) battle, ' . $pet->getName() . ' won, and claimed its ' . ArrayFunctions::list_nice($loot) . '!', '')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out hunting, and encountered an Egg Salad Monstrosity! After a grueling (and sticky) battle, ' . $pet->getName() . ' won, and claimed its ' . ArrayFunctions::list_nice_sorted($loot) . '!', '')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Hunting' ]))
             ;
 

@@ -157,13 +157,13 @@ class MonthlyStoryAdventureService
         {
             if($text != '') $text .= "\n\n";
 
-            $text .= "(The pets roll for loot, and get a {$roll}! After adding their skill points, you award them " . ArrayFunctions::list_nice($loot) . '.)';
+            $text .= "(The pets roll for loot, and get a {$roll}! After adding their skill points, you award them " . ArrayFunctions::list_nice_sorted($loot) . '.)';
         }
         else if(count($loot) > 0)
         {
             if($text != '') $text .= "\n\n";
 
-            $text .= "(You award your pets " . ArrayFunctions::list_nice($loot) . '!)';
+            $text .= "(You award your pets " . ArrayFunctions::list_nice_sorted($loot) . '!)';
         }
 
         if($step->getAura())
@@ -321,7 +321,7 @@ class MonthlyStoryAdventureService
         if($text != '') $text .= "\n\n";
 
         if(count($loot) > 0)
-            $text .= "(You award your pets " . ArrayFunctions::list_nice($loot) . ", and a {$plushy} named {$recruitName} to represent the new recruit!)";
+            $text .= "(You award your pets " . ArrayFunctions::list_nice_sorted($loot) . ", and a {$plushy} named {$recruitName} to represent the new recruit!)";
         else
             $text .= "(You award your pets a {$plushy} named {$recruitName} to represent the new recruit!)";
 

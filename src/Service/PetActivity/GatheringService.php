@@ -625,7 +625,7 @@ class GatheringService
                     $loot[] = $this->rng->rngNextFromArray([ 'Feathers', 'Talon' ]);
 
                 $pet->increaseEsteem($this->rng->rngNextInt(1, 2));
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to a Sandy Beach, but while looking around, was attacked by a Giant Seagull. ' . $pet->getName() . ' defeated the Giant Seagull, and took its ' . ArrayFunctions::list_nice($loot) . '.', '')
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to a Sandy Beach, but while looking around, was attacked by a Giant Seagull. ' . $pet->getName() . ' defeated the Giant Seagull, and took its ' . ArrayFunctions::list_nice_sorted($loot) . '.', '')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Stealth', 'Fighting' ]))
                 ;
                 $didWhat = 'defeated a Giant Seagull at the Beach, and got this';
@@ -668,7 +668,7 @@ class GatheringService
                 $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' found this on a Sandy Beach.');
                 $lootList = $loot;
                 $lootList[] = $moneys . '~~m~~';
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to a Sandy Beach, and stole ' . ArrayFunctions::list_nice($lootList) . ' while the seagulls weren\'t paying attention.', '')
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to a Sandy Beach, and stole ' . ArrayFunctions::list_nice_sorted($lootList) . ' while the seagulls weren\'t paying attention.', '')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Stealth', 'Moneys' ]))
                 ;
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::NATURE ], $activityLog);
@@ -676,7 +676,7 @@ class GatheringService
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to a Sandy Beach, and stole ' . ArrayFunctions::list_nice($loot) . ' while the seagulls weren\'t paying attention.', '')
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to a Sandy Beach, and stole ' . ArrayFunctions::list_nice_sorted($loot) . ' while the seagulls weren\'t paying attention.', '')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Stealth' ]))
                 ;
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::NATURE ], $activityLog);
@@ -731,7 +731,7 @@ class GatheringService
                     $loot[] = 'Talon';
 
                 $pet->increaseEsteem($this->rng->rngNextInt(1, 2));
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found an Overgrown Garden, but while looking for food, was attacked by an Angry Mole. ' . $pet->getName() . ' defeated the Angry Mole, and took its ' . ArrayFunctions::list_nice($loot) . '.', 'icons/activity-logs/overgrown-garden')
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found an Overgrown Garden, but while looking for food, was attacked by an Angry Mole. ' . $pet->getName() . ' defeated the Angry Mole, and took its ' . ArrayFunctions::list_nice_sorted($loot) . '.', 'icons/activity-logs/overgrown-garden')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Stealth', 'Fighting' ]))
                 ;
                 $didWhat = 'defeated an Angry Mole in an Overgrown Garden, and got this';
@@ -771,7 +771,7 @@ class GatheringService
             else if($this->rng->rngNextInt(1, 100) == 1)
                 $loot[] = 'Honeydont';
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% snuck into an Overgrown Garden, and harvested ' . ArrayFunctions::list_nice($loot) . '.', 'icons/activity-logs/overgrown-garden')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% snuck into an Overgrown Garden, and harvested ' . ArrayFunctions::list_nice_sorted($loot) . '.', 'icons/activity-logs/overgrown-garden')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Stealth' ]))
             ;
 
@@ -969,8 +969,6 @@ class GatheringService
                 $loot[] = 'Silver Ore';
         }
 
-        sort($loot);
-
         if(count($loot) === 0)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% entered the island\'s Micro-jungle, but couldn\'t find anything.', 'icons/activity-logs/confused')
@@ -980,7 +978,7 @@ class GatheringService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% entered the island\'s Micro-jungle, and got ' . ArrayFunctions::list_nice($loot) . '.', '')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% entered the island\'s Micro-jungle, and got ' . ArrayFunctions::list_nice_sorted($loot) . '.', '')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
 
@@ -1038,9 +1036,9 @@ class GatheringService
                 $loot[] = 'Melowatern';
 
             if($petWithSkills->getClimbingBonus()->getTotal() > 0)
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to the Wild Hedgemaze. It turns out mazes are way easier when you can just climb over the walls! ' . $pet->getName() . ' found ' . ArrayFunctions::list_nice($loot) . '.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to the Wild Hedgemaze. It turns out mazes are way easier when you can just climb over the walls! ' . $pet->getName() . ' found ' . ArrayFunctions::list_nice_sorted($loot) . '.', '');
             else
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to the Wild Hedgemaze. It turns out mazes are way easier with a perfect memory! ' . $pet->getName() . ' found ' . ArrayFunctions::list_nice($loot) . '.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to the Wild Hedgemaze. It turns out mazes are way easier with a perfect memory! ' . $pet->getName() . ' found ' . ArrayFunctions::list_nice_sorted($loot) . '.', '');
 
             $tags = [ 'Gathering' ];
 
@@ -1081,7 +1079,7 @@ class GatheringService
                     $loot[] = $this->rng->rngNextFromArray($possibleLoot);
 
                 $pet->increaseEsteem($this->rng->rngNextInt(2, 3));
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% got lost in a Wild Hedgemaze, and ran into a Hedgemaze Sphinx. ' . $pet->getName() . ' was able to solve its riddle, and kept exploring, coming away with ' . ArrayFunctions::list_nice($loot) . '.', '')
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% got lost in a Wild Hedgemaze, and ran into a Hedgemaze Sphinx. ' . $pet->getName() . ' was able to solve its riddle, and kept exploring, coming away with ' . ArrayFunctions::list_nice_sorted($loot) . '.', '')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
                 ;
 
@@ -1117,7 +1115,7 @@ class GatheringService
             else if($this->rng->rngNextInt(1, 100) == 1)
                 $loot[] = 'Melowatern';
 
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered through a Wild Hedgemaze, and found ' . ArrayFunctions::list_nice($loot) . '.', '');
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wandered through a Wild Hedgemaze, and found ' . ArrayFunctions::list_nice_sorted($loot) . '.', '');
 
             $tags = [ 'Gathering' ];
 
@@ -1223,16 +1221,16 @@ class GatheringService
 
                 if($eideticMemory)
                 {
-                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored a huge cave, perfectly memorizing its layout as they went, and found ' . ArrayFunctions::list_nice($loot) . '.', '')
+                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored a huge cave, perfectly memorizing its layout as they went, and found ' . ArrayFunctions::list_nice_sorted($loot) . '.', '')
                         ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
                     ;
                 }
                 else
-                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored a huge cave, and found ' . ArrayFunctions::list_nice($loot) . '.', '');
+                    $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored a huge cave, and found ' . ArrayFunctions::list_nice_sorted($loot) . '.', '');
             }
             else
             {
-                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a huge cave! It was too dark to explore very far, but they found ' . ArrayFunctions::list_nice($loot) . ' near the entrance.', '');
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a huge cave! It was too dark to explore very far, but they found ' . ArrayFunctions::list_nice_sorted($loot) . ' near the entrance.', '');
             }
 
             if($this->rng->rngNextInt(1, 2000) < $petWithSkills->getPerception()->getTotal())
@@ -1401,9 +1399,7 @@ class GatheringService
         }
         else
         {
-            sort($loot);
-
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored deep in the island\'s Micro-jungle, and found a ruined settlement. They looked around for a while, and scavenged up ' . ArrayFunctions::list_nice($loot) . '.', '')
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored deep in the island\'s Micro-jungle, and found a ruined settlement. They looked around for a while, and scavenged up ' . ArrayFunctions::list_nice_sorted($loot) . '.', '')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
 

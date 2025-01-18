@@ -276,7 +276,7 @@ class DragonService
         $itemNames = array_map(fn($goodie) => $goodie['item'], $goodies);
         sort($itemNames);
 
-        $message = $dragon->getName() . ' thanks you for your gift, and gives you ' . ArrayFunctions::list_nice($itemNames) . ' in exchange';
+        $message = $dragon->getName() . ' thanks you for your gift, and gives you ' . ArrayFunctions::list_nice_sorted($itemNames) . ' in exchange';
 
         if($totalMoneys > 0)
         {

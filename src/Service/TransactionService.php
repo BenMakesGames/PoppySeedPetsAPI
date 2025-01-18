@@ -10,7 +10,8 @@ use Doctrine\ORM\EntityManagerInterface;
 class TransactionService
 {
     public function __construct(
-        private readonly EntityManagerInterface $em, private readonly UserStatsService $userStatsRepository
+        private readonly EntityManagerInterface $em,
+        private readonly UserStatsService $userStatsRepository
     )
     {
     }
