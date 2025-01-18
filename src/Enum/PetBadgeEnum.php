@@ -25,6 +25,7 @@ final class PetBadgeEnum
     public const CLIMB_TO_TOP_OF_BEANSTALK = 'summitBeanstalk';
     public const SING_WITH_WHALES = 'singWithWhales';
     public const PRODUCED_A_SKILL_SCROLL = 'producedASkillScroll';
+    public const PULLED_AN_ITEM_FROM_A_DREAM = 'pulledAnItemFromADream';
 
     // add-on helper activities
     public const WAS_AN_ACCOUNTANT = 'increasedADragonsHoard';
@@ -41,4 +42,10 @@ final class PetBadgeEnum
     public const DEFEATED_NOETALAS_WING = 'defeatedNoetalasWing';
     public const DEFEATED_CRYSTALLINE_ENTITY = 'defeatedCrystallineEntity';
     public const DEFEATED_BIVUS_RELEASE = 'defeatedBivusRelease';
+
+    public const LEVEL_20 = 'level20';
+    public const LEVEL_40 = 'level40';
+    public const LEVEL_60 = 'level60';
+    public const LEVEL_80 = 'level80';
+    public const LEVEL_100 = 'level100';
 }

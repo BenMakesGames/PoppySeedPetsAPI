@@ -112,8 +112,13 @@ class PetExperienceService
                 }
             }
 
-            if($pet->getLevel() == 50)
-                $this->unlockLevel50Style($pet);
+            if($pet->getLevel() == 20) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::LEVEL_20, $activityLog);
+            if($pet->getLevel() == 40) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::LEVEL_40, $activityLog);
+            if($pet->getLevel() == 50) $this->unlockLevel50Style($pet);
+            if($pet->getLevel() == 60) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::LEVEL_60, $activityLog);
+            if($pet->getLevel() == 80) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::LEVEL_80, $activityLog);
+            if($pet->getLevel() == 100) PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::LEVEL_100, $activityLog);
+
         }
 
         if($activityLog && $levelUp)

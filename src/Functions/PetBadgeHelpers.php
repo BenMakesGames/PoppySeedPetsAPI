@@ -63,23 +63,25 @@ final class PetBadgeHelpers
     private const BADGE_HURRAHS = [
         PetBadgeEnum::REVEALED_FAVORITE_FLAVOR => '(Also, there\'s a badge for that: Flavor YESknown!, and %pet.name% just got it!)',
         PetBadgeEnum::COMPLETED_HEART_DIMENSION => 'Also: A Suburb to the Brain - that\'s the name of the badge that %pet.name% just got!',
+
         PetBadgeEnum::FIRST_PLACE_CHESS => 'For demonstrating such chess prowess, %pet.name% received the Chess Master badge!',
         PetBadgeEnum::FIRST_PLACE_JOUSTING => 'For demonstrating such jousting prowess, %pet.name% received the Mount and Blade badge!',
         PetBadgeEnum::FIRST_PLACE_KIN_BALL => 'For demonstrating such kin-ball prowess, %pet.name% received the Expert Kin-baller badge!',
+
         PetBadgeEnum::CREATED_SENTIENT_BEETLE => 'Crimes against nature? More like... it\'d be criminal not to get a badge for that! %pet.name% received the Mad Scientist badge!',
         PetBadgeEnum::MET_THE_FLUFFMONGER => 'On their way out, the Fluffmonger gives %pet.name% the Very Fluffy badge.',
         PetBadgeEnum::OUTSMARTED_A_THIEVING_MAGPIE => 'Such a good civil servant! %pet.name% receives the Magpie Masher badge.',
         PetBadgeEnum::DECEIVED_A_VAMPIRE => 'Deceiving masters of deceit?! That definitely deserves a badge! %pet.name% received the Vampire Deceiver badge!',
         PetBadgeEnum::FOUND_CETGUELIS_TREASURE => 'And %pet.name% didn\'t just get a treasure, they got the Treasure Hunter badge!',
         PetBadgeEnum::HAD_A_BABY => 'And guess what: a pet that has a baby has a Baby-maker badge!',
+        PetBadgeEnum::CLIMB_TO_TOP_OF_BEANSTALK => 'Such climb! Very high! %pet.name% gets the Castle in the Clouds badge!',
+        PetBadgeEnum::SING_WITH_WHALES => 'Beautiful! %pet.name% received the Songs of the Deep badge.',
+        PetBadgeEnum::PRODUCED_A_SKILL_SCROLL => '(Dang! That\'s a hard one! %pet.name% FOR SURE gets the Skill Scribe badge!)',
+        PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM => 'Pulling an item out of a hat is one thing, but pulling one out of a dream?! %pet.name% DEFINITELY gets the Oneirokinetic badge for that!',
 
         PetBadgeEnum::WAS_AN_ACCOUNTANT => 'Accounting is FUN! :D (Incidentally, that\'s also the name of the badge %pet.name% just earned!)',
         PetBadgeEnum::WAS_A_CHIMNEY_SWEEP => 'With gnomes and with smoke all billered and curled, your pet got a badge: Chimney Sweep World.',
         PetBadgeEnum::GREENHOUSE_FISHER => 'Dang greenhouse fish - makin\' a mess! Why, it\'s enough to make someone give a pet the Greenhouse Fishin\' badge, it is!',
-
-        PetBadgeEnum::CLIMB_TO_TOP_OF_BEANSTALK => 'Such climb! Very high! %pet.name% gets the Castle in the Clouds badge!',
-        PetBadgeEnum::SING_WITH_WHALES => 'Beautiful! %pet.name% received the Songs of the Deep badge.',
-        PetBadgeEnum::PRODUCED_A_SKILL_SCROLL => '(Dang! That\'s a hard one! %pet.name% FOR SURE gets the Skill Scribe badge!)',
 
         PetBadgeEnum::FOUND_METATRONS_FIRE => 'A legendary accomplishment, to be sure! %pet.name% receives the Radiant badge.',
         PetBadgeEnum::FOUND_VESICA_HYDRARGYRUM => 'A legendary accomplishment, to be sure! %pet.name% receives the Mercurial badge.',
@@ -89,5 +91,11 @@ final class PetBadgeHelpers
         PetBadgeEnum::DEFEATED_NOETALAS_WING => '%pet.name% has definitely gained the attention of Noetala... and gained the She Watches badge! (Pros and cons?)',
         PetBadgeEnum::DEFEATED_CRYSTALLINE_ENTITY => 'An enterprising pet such as %pet.name% deserves every thread of this Data & Lore badge!',
         PetBadgeEnum::DEFEATED_BIVUS_RELEASE => 'It\'s not every day you witness an angel create a supernova... or defeat said supernova! %pet.name% received the Supernova Survivor badge.',
+
+        PetBadgeEnum::LEVEL_20 => 'Level 20! %pet.name% is now a level 20 pet! %pet.name% gets the Level 20 badge!',
+        PetBadgeEnum::LEVEL_40 => 'Level 40! %pet.name% is now a level 40 pet! %pet.name% gets the Level 40 baadge!! :)',
+        PetBadgeEnum::LEVEL_60 => 'Level 60! %pet.name% is now a level 60 pet! %pet.name% gets the Level 60 baaadge!!! :P',
+        PetBadgeEnum::LEVEL_80 => 'Level 80! %pet.name% is now a level 80 pet! %pet.name% gets the Level 80 baaaadge!!!! :D',
+        PetBadgeEnum::LEVEL_100 => 'Level 100! %pet.name% is now a level 100 pet! %pet.name% gets the Level 100 baaaaadge!!!1! :O',
     ];
 }
