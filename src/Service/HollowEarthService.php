@@ -13,6 +13,7 @@ use App\Entity\User;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\HollowEarthMoveDirectionEnum;
 use App\Enum\HollowEarthRequiredActionEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
@@ -20,6 +21,7 @@ use App\Functions\HollowEarthTileRepository;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\StatusEffectHelpers;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\PetChanges;
@@ -220,6 +222,9 @@ class HollowEarthService
 
         if($player->getChosenPet() === null)
             throw new \InvalidArgumentException('A pet must be selected to lead the party.');
+
+        if($player->getCurrentTile()->getCard()->getId())
+            PetBadgeHelpers::awardBadgeAndLog($this->em, $player->getChosenPet(), PetBadgeEnum::GO, null);
 
         $nextTile = $player->getCurrentTile();
 
