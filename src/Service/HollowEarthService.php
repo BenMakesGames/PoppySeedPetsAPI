@@ -223,15 +223,15 @@ class HollowEarthService
         if($player->getChosenPet() === null)
             throw new \InvalidArgumentException('A pet must be selected to lead the party.');
 
-        if($player->getCurrentTile()->getCard()->getId())
-            PetBadgeHelpers::awardBadgeAndLog($this->em, $player->getChosenPet(), PetBadgeEnum::GO, null);
-
         $nextTile = $player->getCurrentTile();
 
         $movesRemaining = $player->getMovesRemaining();
 
         while($player->getMovesRemaining() > 0 && $player->getCurrentAction() === null)
         {
+            if($player->getCurrentTile()?->getCard()?->getId() === 1)
+                PetBadgeHelpers::awardBadgeAndLog($this->em, $player->getChosenPet(), PetBadgeEnum::GO, null);
+
             $nextTile = $this->getNextTile($player);
 
             $player->decreaseMovesRemaining();
