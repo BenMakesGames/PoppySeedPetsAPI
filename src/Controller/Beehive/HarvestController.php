@@ -5,6 +5,7 @@ use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
@@ -12,6 +13,7 @@ use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\SpiceRepository;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
@@ -86,14 +88,14 @@ class HarvestController extends AbstractController
 
                     $extraItem1 = PetAssistantService::getExtraItem($rng, $gathering,
                         [ 'Tea Leaves', 'Blueberries', 'Blackberries', 'Grandparoot', 'Orange', 'Red' ],
-                        [ 'Onion', 'Paper', 'Naner', 'Iron Ore' ],
+                        [ 'Onion', 'Paper', 'Naner', /* Naner is used for badge, below */ 'Iron Ore' ],
                         [ 'Gypsum', 'Mixed Nuts', 'Apricot', 'Silver Ore', ],
                         [ 'Gold Ore', 'Liquid-hot Magma' ]
                     );
 
                     $extraItem2 = PetAssistantService::getExtraItem($rng, $gathering,
                         [ 'Agrimony', 'Blueberries', 'Blackberries', 'Orange', 'Red' ],
-                        [ 'Onion', 'Tomato', 'Naner', 'Sunflower' ],
+                        [ 'Onion', 'Tomato', 'Naner', /* Naner is used for badge, below */ 'Sunflower' ],
                         [ 'Mint', 'Mixed Nuts', 'Apricot', 'Melowatern', ],
                         [ 'Goodberries', 'Iris' ]
                     );
@@ -102,6 +104,9 @@ class HarvestController extends AbstractController
 
                     $inventoryService->petCollectsItem($extraItem1, $helper, $helper->getName() . ' helped ' . $user->getName() . '\'s bees gathered this.', $activityLog);
                     $inventoryService->petCollectsItem($extraItem2, $helper, $helper->getName() . ' helped ' . $user->getName() . '\'s bees gathered this.', $activityLog);
+
+                    if($extraItem1 === 'Naner' || $extraItem2 === 'Naner')
+                        PetBadgeHelpers::awardBadge($em, $helper, PetBadgeEnum::BEE_NANA, $activityLog);
                 }
                 else
                 {
@@ -119,7 +124,7 @@ class HarvestController extends AbstractController
                     {
                         $extraItem = PetAssistantService::getExtraItem($rng, $gathering,
                             [ 'Tea Leaves', 'Blueberries', 'Blackberries', 'Grandparoot', 'Orange', 'Red' ],
-                            [ 'Onion', 'Paper', 'Naner', 'Iron Ore' ],
+                            [ 'Onion', 'Paper', 'Naner', /* Naner is used for badge, below */ 'Iron Ore' ],
                             [ 'Gypsum', 'Mixed Nuts', 'Apricot', 'Silver Ore', ],
                             [ 'Gold Ore', 'Liquid-hot Magma' ],
                         );
@@ -141,6 +146,9 @@ class HarvestController extends AbstractController
                     $activityLog = PetActivityLogFactory::createUnreadLog($em, $helper, ActivityHelpers::PetName($helper) . ' helped ' . $user->getName() . '\'s bees while they were out ' . $verb . 'ing, and collected ' . $extraItem . '.');
 
                     $inventoryService->petCollectsItem($extraItem, $helper, $helper->getName() . ' helped ' . $user->getName() . '\'s bees ' . $verb . ' this.', $activityLog);
+
+                    if($extraItem === 'Naner')
+                        PetBadgeHelpers::awardBadge($em, $helper, PetBadgeEnum::BEE_NANA, $activityLog);
                 }
 
                 $activityLog

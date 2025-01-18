@@ -34,6 +34,7 @@ final class PetBadgeEnum
     public const WAS_AN_ACCOUNTANT = 'increasedADragonsHoard';
     public const WAS_A_CHIMNEY_SWEEP = 'sweptTheChimneyOfGnomes';
     public const GREENHOUSE_FISHER = 'fishedInTheGreenhouse';
+    public const BEE_NANA = 'beeNana';
 
     // the quest for the philosopher's stone
     public const FOUND_METATRONS_FIRE = 'foundMetatronsFire';
