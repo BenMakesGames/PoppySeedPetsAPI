@@ -6,11 +6,13 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\GatheringHolidayEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\AdventureMath;
 use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\UserQuestRepository;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -164,6 +166,8 @@ class GatheringHolidayAdventureService
                     ->setLockedToOwner($egg !== 'Blue Plastic Egg')
                 ;
             }
+
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FOUND_A_PLASTIC_EGG, $activityLog);
         }
         else if($holiday === GatheringHolidayEnum::SAINT_PATRICKS)
         {

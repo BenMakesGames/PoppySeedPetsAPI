@@ -104,5 +104,7 @@ final class PetBadgeHelpers
         PetBadgeEnum::LEVEL_60 => 'Level 60! %pet.name% is now a level 60 pet! %pet.name% gets the Level 60 baaadge!!! :P',
         PetBadgeEnum::LEVEL_80 => 'Level 80! %pet.name% is now a level 80 pet! %pet.name% gets the Level 80 baaaadge!!!! :D',
         PetBadgeEnum::LEVEL_100 => 'Level 100! %pet.name% is now a level 100 pet! %pet.name% gets the Level 100 baaaaadge!!!1! :O',
+
+        PetBadgeEnum::FOUND_A_PLASTIC_EGG => 'Those things aren\'t edible. And speaking of, neither is the Incredible, Inedible Egg badge %pet.name% just earned!',
     ];
 }

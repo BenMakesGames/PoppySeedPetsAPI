@@ -45,9 +45,13 @@ final class PetBadgeEnum
     public const DEFEATED_CRYSTALLINE_ENTITY = 'defeatedCrystallineEntity';
     public const DEFEATED_BIVUS_RELEASE = 'defeatedBivusRelease';
 
+    // levels
     public const LEVEL_20 = 'level20';
     public const LEVEL_40 = 'level40';
     public const LEVEL_60 = 'level60';
     public const LEVEL_80 = 'level80';
     public const LEVEL_100 = 'level100';
+
+    // holiday events
+    public const FOUND_A_PLASTIC_EGG = 'foundAPlasticEgg';
 }
