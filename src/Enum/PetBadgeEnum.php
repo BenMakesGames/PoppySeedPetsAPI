@@ -28,6 +28,7 @@ final class PetBadgeEnum
     public const PRODUCED_A_SKILL_SCROLL = 'producedASkillScroll';
     public const PULLED_AN_ITEM_FROM_A_DREAM = 'pulledAnItemFromADream';
     public const GO = 'go';
+    public const VISITED_THE_BURNT_FOREST = 'visitedTheBurntForest';
 
     // add-on helper activities
     public const WAS_AN_ACCOUNTANT = 'increasedADragonsHoard';

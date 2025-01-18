@@ -85,6 +85,7 @@ final class PetBadgeHelpers
         PetBadgeEnum::PRODUCED_A_SKILL_SCROLL => '(Dang! That\'s a hard one! %pet.name% FOR SURE gets the Skill Scribe badge!)',
         PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM => 'Pulling an item out of a hat is one thing, but pulling one out of a dream?! %pet.name% DEFINITELY gets the Oneirokinetic badge for that!',
         PetBadgeEnum::GO => 'Let\'s goooooooo! (%pet.name% gets the Go badge!)',
+        PetBadgeEnum::VISITED_THE_BURNT_FOREST => '%pet.name% received the The Burnt Forest badge for visiting this oft-forgotten corner of the Umbra.',
 
         PetBadgeEnum::WAS_AN_ACCOUNTANT => 'Accounting is FUN! :D (Incidentally, that\'s also the name of the badge %pet.name% just earned!)',
         PetBadgeEnum::WAS_A_CHIMNEY_SWEEP => '🎵 With gnomes and with smoke all billered and curled, your pet got a badge: Chimney Sweep World! 🎵',

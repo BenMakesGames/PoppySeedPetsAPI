@@ -6,6 +6,7 @@ use App\Entity\PetActivityLog;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
@@ -13,6 +14,7 @@ use App\Functions\EnchantmentRepository;
 use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\StatusEffectHelpers;
 use App\Functions\UserQuestRepository;
 use App\Model\ComputedPetSkills;
@@ -96,6 +98,8 @@ class BurntForestService
             $activityLog->setChanges($changes->compare($pet));
 
             $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Burnt Forest', ActivityHelpers::PetName($pet) . ' used their ' . $pet->getTool()->getFullItemName() . ' to visit the Burnt Forest.');
+
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::VISITED_THE_BURNT_FOREST, $activityLog);
         }
     }
 
