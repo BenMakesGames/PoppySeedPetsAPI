@@ -226,11 +226,11 @@ class HollowEarthService
         $nextTile = $player->getCurrentTile();
 
         $movesRemaining = $player->getMovesRemaining();
+        $leftGoTile = false;
 
         while($player->getMovesRemaining() > 0 && $player->getCurrentAction() === null)
         {
-            if($player->getCurrentTile()?->getCard()?->getId() === 1)
-                PetBadgeHelpers::awardBadgeAndLog($this->em, $player->getChosenPet(), PetBadgeEnum::GO, null);
+            $leftGoTile = $leftGoTile || ($player->getCurrentTile()?->getCard()?->getId() === 1);
 
             $nextTile = $this->getNextTile($player);
 
@@ -249,6 +249,9 @@ class HollowEarthService
         ;
 
         $this->userStatsRepository->incrementStat($player->getUser(), UserStatEnum::HOLLOW_EARTH_SPACES_MOVED, $movesRemaining - $player->getMovesRemaining());
+
+        if($leftGoTile)
+            PetBadgeHelpers::awardBadgeAndLog($this->em, $player->getChosenPet(), PetBadgeEnum::GO, null);
     }
 
     private function getNextTile(HollowEarthPlayer $player): HollowEarthTile
