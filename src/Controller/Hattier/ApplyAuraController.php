@@ -4,11 +4,13 @@ namespace App\Controller\Hattier;
 use App\Entity\Pet;
 use App\Entity\User;
 use App\Entity\UserUnlockedAura;
+use App\Enum\PetBadgeEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
+use App\Functions\PetBadgeHelpers;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -72,6 +74,8 @@ class ApplyAuraController extends AbstractController
             $transactionService->spendRecyclingPoints($user, 100, 'Bought the ' . $unlockedAura->getAura()->getAura()->getName() . ' style from the Hattier.', [ 'Hattier' ]);
 
         $pet->getHat()->setEnchantment($unlockedAura->getAura());
+
+        PetBadgeHelpers::awardBadgeAndLog($em, $pet, PetBadgeEnum::TRIED_ON_A_NEW_STYLE, null);
 
         $em->flush();
 

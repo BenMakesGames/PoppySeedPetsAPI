@@ -9,6 +9,7 @@ final class PetBadgeEnum
     // affection!
     public const REVEALED_FAVORITE_FLAVOR = 'revealedFavoriteFlavor';
     public const COMPLETED_HEART_DIMENSION = 'completedHeartDimension';
+    public const TRIED_ON_A_NEW_STYLE = 'triedOnANewStyle';
 
     // park events
     public const FIRST_PLACE_CHESS = 'chessWinner';
