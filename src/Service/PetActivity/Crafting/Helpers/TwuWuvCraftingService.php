@@ -18,27 +18,16 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class TwuWuvCraftingService
 {
-    private PetExperienceService $petExperienceService;
-    private InventoryService $inventoryService;
-    private CoinSmithingService $coinSmithingService;
-    private SilverSmithingService $silverSmithingService;
-    private IRandom $squirrel3;
-    private HouseSimService $houseSimService;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        PetExperienceService $petExperienceService, InventoryService $inventoryService,
-        CoinSmithingService $coinSmithingService, HouseSimService $houseSimService,
-        SilverSmithingService $silverSmithingService, IRandom $squirrel3, EntityManagerInterface $em
+        private readonly PetExperienceService $petExperienceService,
+        private readonly InventoryService $inventoryService,
+        private readonly CoinSmithingService $coinSmithingService,
+        private readonly HouseSimService $houseSimService,
+        private readonly SilverSmithingService $silverSmithingService,
+        private readonly IRandom $squirrel3,
+        private readonly EntityManagerInterface $em
     )
     {
-        $this->petExperienceService = $petExperienceService;
-        $this->inventoryService = $inventoryService;
-        $this->coinSmithingService = $coinSmithingService;
-        $this->silverSmithingService = $silverSmithingService;
-        $this->squirrel3 = $squirrel3;
-        $this->houseSimService = $houseSimService;
-        $this->em = $em;
     }
 
     public function createWedBawwoon(ComputedPetSkills $petWithSkills): PetActivityLog

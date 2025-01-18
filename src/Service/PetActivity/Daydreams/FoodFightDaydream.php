@@ -6,11 +6,13 @@ use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
@@ -20,20 +22,13 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class FoodFightDaydream
 {
-    private IRandom $rng;
-    private EntityManagerInterface $em;
-    private InventoryService $inventoryService;
-    private PetExperienceService $petExperienceService;
-
     public function __construct(
-        IRandom $rng, EntityManagerInterface $em, InventoryService $inventoryService,
-        PetExperienceService $petExperienceService
+        private readonly IRandom $rng,
+        private readonly EntityManagerInterface $em,
+        private readonly InventoryService $inventoryService,
+        private readonly PetExperienceService $petExperienceService
     )
     {
-        $this->rng = $rng;
-        $this->em = $em;
-        $this->inventoryService = $inventoryService;
-        $this->petExperienceService = $petExperienceService;
     }
 
     public function doAdventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -78,6 +73,8 @@ class FoodFightDaydream
 
             $this->inventoryService->petCollectsItem('Chocolate Bar', $pet, 'The remains of a chocolate dragon which ' . $pet->getName() . ' ate in a daydream.', $log);
 
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
+
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $log);
 
             return $log;
@@ -114,6 +111,8 @@ class FoodFightDaydream
                     break;
             }
 
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
+
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $log);
             $pet->increaseEsteem(4);
 
@@ -129,6 +128,8 @@ class FoodFightDaydream
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $log);
 
             $this->inventoryService->petCollectsItem('Chocolate Bar', $pet, 'A piece of a chocolate dragon than fell on ' . $pet->getName() . ' in a daydream.', $log);
+
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
 
             return $log;
         }
@@ -148,6 +149,8 @@ class FoodFightDaydream
 
         if($this->rng->rngNextBool())
             $this->inventoryService->petCollectsItem('Sugar', $pet, $pet->getName() . ' got covered by this in a daydream.', $log);
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $log);
 
@@ -173,6 +176,8 @@ class FoodFightDaydream
         foreach($loot as $itemName)
             $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this in a daydream.', $log);
 
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
+
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $log);
 
         return $log;
@@ -189,6 +194,8 @@ class FoodFightDaydream
 
         $this->inventoryService->petCollectsItem('Pickled Veggie Slices', $pet, $pet->getName() . ' found this in a daydream.', $log);
         $this->inventoryService->petCollectsItem('Pickled Veggie Slices', $pet, $pet->getName() . ' found this in a daydream.', $log);
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
 
         return $log;
     }

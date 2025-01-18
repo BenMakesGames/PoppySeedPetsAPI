@@ -8,9 +8,11 @@ use App\Entity\PetSpecies;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Functions\GrammarFunctions;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Repository\DreamRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -136,10 +138,14 @@ class DreamingService
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
-        return $this->responseService->createActivityLog($pet, $eventDescription, '')
+        $log = $this->responseService->createActivityLog($pet, $eventDescription, '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Dream' ]))
         ;
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
+
+        return $log;
     }
 
     public function generateReplacementsDictionary(Item $item, Pet $pet, PetSpecies $species): array

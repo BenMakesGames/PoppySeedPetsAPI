@@ -8,12 +8,14 @@ use App\Entity\PetRelationship;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -80,6 +82,8 @@ class PizzaDaydream
 
         $this->inventoryService->petCollectsItem('Pizza Box', $pet, $pet->getName() . ' had this delivered to them in a daydream!', $petLog);
 
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $petLog);
+
         // do the stuff for the daydreamed-about pet:
         if($pet->getOwner()->getId() !== $otherPet->getOwner()->getId())
         {
@@ -104,6 +108,8 @@ class PizzaDaydream
         $petLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' daydreamed they ordered a pizza. They couldn\'t quite see the pets that delivered it, but ' . ActivityHelpers::PetName($pet) . ' could tell it was their parents, and they were humming a familiar tune. When they snapped back to reality, they had a Pizza Box!');
 
         $this->inventoryService->petCollectsItem('Pizza Box', $pet, $pet->getName() . ' had this delivered to them in a daydream!', $petLog);
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $petLog);
 
         return $petLog;
     }
@@ -160,6 +166,8 @@ class PizzaDaydream
         foreach($loot as $itemName)
             $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' pulled this from the surface of a pizza planet they daydreamed about...', $log);
 
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
+
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::NATURE ], $log);
 
         return $log;
@@ -172,6 +180,8 @@ class PizzaDaydream
         $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' daydreamed they rode on a mozzarella cloud, raining grated parmesan over enchanted forests of pineapple and ham trees. When they snapped back to reality, they were covered in Cheesy Flakes!');
 
         $this->inventoryService->petCollectsItem('Cheesy Flakes', $pet, $pet->getName() . ' pulled this from the surface of a pizza planet they daydreamed about...', $log);
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
 
         return $log;
     }

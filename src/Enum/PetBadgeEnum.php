@@ -27,6 +27,7 @@ final class PetBadgeEnum
     public const SING_WITH_WHALES = 'singWithWhales';
     public const PRODUCED_A_SKILL_SCROLL = 'producedASkillScroll';
     public const PULLED_AN_ITEM_FROM_A_DREAM = 'pulledAnItemFromADream';
+    public const GO = 'go';
 
     // add-on helper activities
     public const WAS_AN_ACCOUNTANT = 'increasedADragonsHoard';

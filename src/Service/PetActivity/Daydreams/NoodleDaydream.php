@@ -5,10 +5,12 @@ namespace App\Service\PetActivity\Daydreams;
 use App\Entity\PetActivityLog;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\SpiceRepository;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -19,20 +21,13 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class NoodleDaydream
 {
-    private EntityManagerInterface $em;
-    private IRandom $rng;
-    private PetExperienceService $petExperienceService;
-    private InventoryService $inventoryService;
-
     public function __construct(
-        EntityManagerInterface $em, IRandom $rng, PetExperienceService $petExperienceService,
-        InventoryService $inventoryService
+        private readonly EntityManagerInterface $em,
+        private readonly IRandom $rng,
+        private readonly PetExperienceService $petExperienceService,
+        private readonly InventoryService $inventoryService
     )
     {
-        $this->em = $em;
-        $this->rng = $rng;
-        $this->petExperienceService = $petExperienceService;
-        $this->inventoryService = $inventoryService;
     }
 
     public function doAdventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -71,6 +66,8 @@ class NoodleDaydream
         );
 
         $this->inventoryService->petCollectsItem('Farmer\'s Scroll', $pet, $pet->getName() . ' received this after watching a puppet show in a daydream.', $log);
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
 
         return $log;
     }
@@ -120,6 +117,8 @@ class NoodleDaydream
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $log);
         }
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
 
         return $log;
     }

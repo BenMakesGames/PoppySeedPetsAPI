@@ -25,7 +25,6 @@ class PlasticPrinterService
 {
     public function __construct(
         private readonly InventoryService $inventoryService,
-        private readonly ResponseService $responseService,
         private readonly PetExperienceService $petExperienceService,
         private readonly IRandom $squirrel3,
         private readonly HouseSimService $houseSimService,

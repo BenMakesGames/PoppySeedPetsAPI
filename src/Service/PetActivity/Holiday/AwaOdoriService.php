@@ -16,17 +16,12 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class AwaOdoriService
 {
-    private IRandom $rng;
-    private EntityManagerInterface $em;
-    private PetExperienceService $petExperienceService;
-
     public function __construct(
-        IRandom $rng, EntityManagerInterface $em, PetExperienceService $petExperienceService
+        private readonly IRandom $rng,
+        private readonly EntityManagerInterface $em,
+        private readonly PetExperienceService $petExperienceService
     )
     {
-        $this->rng = $rng;
-        $this->em = $em;
-        $this->petExperienceService = $petExperienceService;
     }
 
     public function adventure(Pet $pet): ?PetActivityLog

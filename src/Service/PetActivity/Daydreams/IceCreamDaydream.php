@@ -5,11 +5,13 @@ use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -20,20 +22,13 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class IceCreamDaydream
 {
-    private IRandom $rng;
-    private EntityManagerInterface $em;
-    private InventoryService $inventoryService;
-    private PetExperienceService $petExperienceService;
-
     public function __construct(
-        IRandom $rng, EntityManagerInterface $em, InventoryService $inventoryService,
-        PetExperienceService $petExperienceService
+        private readonly IRandom $rng,
+        private readonly EntityManagerInterface $em,
+        private readonly InventoryService $inventoryService,
+        private readonly PetExperienceService $petExperienceService
     )
     {
-        $this->rng = $rng;
-        $this->em = $em;
-        $this->inventoryService = $inventoryService;
-        $this->petExperienceService = $petExperienceService;
     }
 
     public function doAdventure(ComputedPetSkills $petWithSkills): PetActivityLog
@@ -87,6 +82,8 @@ class IceCreamDaydream
 
         $this->inventoryService->petCollectsItem('Neapolitan Ice Cream', $pet, $pet->getName() . ' found this in a daydream.', $log);
 
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
+
         return $log;
     }
 
@@ -104,6 +101,8 @@ class IceCreamDaydream
                 ActivityHelpers::PetName($pet) . ' daydreamed they were surfing on a wave of mint chocolate ice cream, dodging pieces of cookies as they went. They caught one of the cookies just before it hit their face, then snapped back to reality!');
 
             $this->inventoryService->petCollectsItem('Mini Chocolate Chip Cookies', $pet, $pet->getName() . ' found this in a daydream.', $log);
+
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $log);
 
@@ -160,6 +159,8 @@ class IceCreamDaydream
             ActivityHelpers::PetName($pet) . ' daydreamed they discovered crystal caverns where the stalactites dripped flavors unknown to the modern world. They bottled some up before snapping back to reality...');
 
         $this->inventoryService->petCollectsItem('Mystery Syrup', $pet, $pet->getName() . ' found this in a daydream.', $log);
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
 
         return $log;
     }

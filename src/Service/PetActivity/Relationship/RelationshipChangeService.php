@@ -15,17 +15,12 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class RelationshipChangeService
 {
-    private LoveService $loveService;
-    private IRandom $squirrel3;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        LoveService $loveService, IRandom $squirrel3, EntityManagerInterface $em
+        private readonly LoveService $loveService,
+        private readonly IRandom $squirrel3,
+        private readonly EntityManagerInterface $em
     )
     {
-        $this->loveService = $loveService;
-        $this->squirrel3 = $squirrel3;
-        $this->em = $em;
     }
 
     /**

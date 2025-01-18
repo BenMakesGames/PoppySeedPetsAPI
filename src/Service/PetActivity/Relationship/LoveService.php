@@ -13,13 +13,11 @@ use App\Service\PetActivity\PregnancyService;
 
 class LoveService
 {
-    private PregnancyService $pregnancyService;
-    private IRandom $squirrel3;
-
-    public function __construct(PregnancyService $pregnancyService, IRandom $squirrel3)
+    public function __construct(
+        private readonly PregnancyService $pregnancyService,
+        private readonly IRandom $squirrel3
+    )
     {
-        $this->pregnancyService = $pregnancyService;
-        $this->squirrel3 = $squirrel3;
     }
 
     public function expressLove(PetRelationship $givingPet, PetRelationship $receivingPet)
