@@ -55,4 +55,5 @@ final class PetBadgeEnum
 
     // holiday events
     public const FOUND_A_PLASTIC_EGG = 'foundAPlasticEgg';
+    public const FOUND_ONE_CLOVER_LEAF = 'foundOneCloverLeaf';
 }

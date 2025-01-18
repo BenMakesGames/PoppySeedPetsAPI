@@ -167,7 +167,8 @@ class GatheringHolidayAdventureService
                 ;
             }
 
-            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FOUND_A_PLASTIC_EGG, $activityLog);
+            if($numItems > 0)
+                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FOUND_A_PLASTIC_EGG, $activityLog);
         }
         else if($holiday === GatheringHolidayEnum::SAINT_PATRICKS)
         {
@@ -175,15 +176,18 @@ class GatheringHolidayAdventureService
             {
                 $item = $this->inventoryService->petCollectsItem('1-leaf Clover', $pet, $pet->getName() . ' found this ' . $where . '!', $activityLog);
 
-                // it might get eaten immediately
+                // it might have been insta-eaten, so check that it exists, first:
                 if($item) $item->setLockedToOwner(true);
             }
+
+            if($numItems > 0)
+                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FOUND_ONE_CLOVER_LEAF, $activityLog);
         }
         else if($holiday === GatheringHolidayEnum::LUNAR_NEW_YEAR)
         {
             for($i = 0; $i < $numItems; $i++)
             {
-                $item = $this->inventoryService->petCollectsItem('Red Envelope', $pet, $pet->getName() . ' found this ' . $where . '!', $activityLog)
+                $this->inventoryService->petCollectsItem('Red Envelope', $pet, $pet->getName() . ' found this ' . $where . '!', $activityLog)
                     ->setLockedToOwner(true);
             }
         }
