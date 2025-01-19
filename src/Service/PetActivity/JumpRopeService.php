@@ -2,14 +2,17 @@
 namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
+use App\Entity\PetBadge;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
@@ -54,8 +57,15 @@ class JumpRopeService
             ->setChanges($changes->compare($pet))
         ;
 
-        if(AdventureMath::petAttractsBug($this->rng, $pet, 75))
-            $this->inventoryService->petAttractsRandomBug($pet);
+        $bugChance = $pet->getBadges()->exists(Fn(int $i, PetBadge $p) => $p->getBadge() === PetBadgeEnum::JUMPED_ROPE_WITH_A_BUG)
+            ? 75
+            : 6;
+
+        if(AdventureMath::petAttractsBug($this->rng, $pet, $bugChance))
+        {
+            if($this->inventoryService->petAttractsRandomBug($pet))
+                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::JUMPED_ROPE_WITH_A_BUG, $activityLog);
+        }
 
         return $activityLog;
     }
