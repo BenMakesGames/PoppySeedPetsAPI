@@ -21,8 +21,8 @@ class ItemFilterService
     public const PAGE_SIZE = 20;
 
     private readonly ObjectRepository $repository;
-    private $user;
-    private $useResultCache;
+    private ?User $user;
+    private bool $useResultCache;
 
     public function __construct(ManagerRegistry $doctrine)
     {
@@ -51,6 +51,7 @@ class ItemFilterService
                 'isFuel' => [ $this, 'filterIsFuel' ],
                 'isFertilizer' => [ $this, 'filterIsFertilizer' ],
                 'isTreasure' => [ $this, 'filterIsTreasure' ],
+                'isRecyclable' => [ $this, 'filterIsRecyclable' ],
             ],
             [
                 'nameExactMatch'
@@ -207,7 +208,7 @@ class ItemFilterService
 
     public function filterHasDonated(QueryBuilder $qb, $value)
     {
-        if($this->user === null)
+        if(!$this->user)
             return;
 
         if(!in_array('donations', $qb->getAllAliases()))
@@ -258,6 +259,14 @@ class ItemFilterService
             $qb->andWhere('i.treasure IS NULL');
         else
             $qb->andWhere('i.treasure IS NOT NULL');
+    }
+
+    public function filterIsRecyclable(QueryBuilder $qb, $value)
+    {
+        if(strtolower($value) === 'false' || !$value)
+            $qb->andWhere('i.recycleValue = 0');
+        else
+            $qb->andWhere('i.recycleValue > 0');
     }
 
     function applyResultCache(Query $qb, string $cacheKey): AbstractQuery

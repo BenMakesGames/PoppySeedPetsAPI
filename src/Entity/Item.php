@@ -9,6 +9,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Table]
 #[ORM\Index(name: 'fertilizer_idx', columns: ['fertilizer'])]
+#[ORM\Index(name: 'fuel_idx', columns: ['fuel'])]
 #[ORM\Entity]
 class Item
 {
