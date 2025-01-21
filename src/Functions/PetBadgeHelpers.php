@@ -19,7 +19,7 @@ final class PetBadgeHelpers
             throw new EnumInvalidValueException(PetBadgeEnum::class, $badgeName);
 
         // if pet already has this badge, gtfo
-        if($pet->getBadges()->exists(fn(PetBadge $b) => $b->getBadge() === $badgeName))
+        if($pet->getBadges()->exists(fn(int $i, PetBadge $b) => $b->getBadge() === $badgeName))
             return;
 
         $newBadge = (new PetBadge())

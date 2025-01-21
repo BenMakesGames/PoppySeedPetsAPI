@@ -332,6 +332,8 @@ class PetActivityService
                 {
                     $namesOfItemsEaten[] = $food->name;
 
+                    $pet->removeLunchboxItem($itemToEat);
+
                     $this->em->remove($itemToEat);
                     $this->em->remove($itemToEat->getInventoryItem());
 
