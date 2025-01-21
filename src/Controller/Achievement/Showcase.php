@@ -32,12 +32,15 @@ final class Showcase extends AbstractController
         $achievers = SimpleDb::createReadOnlyConnection()
             ->query(
                 <<<EOSQL
-                    SELECT COUNT(user_badge.id) AS achievementCount, user.id, user.name, user.icon
-                    FROM user_badge
-                    LEFT JOIN user ON user_badge.user_id = user.id
-                    GROUP BY user_badge.user_id
-                    ORDER BY achievementCount DESC
-                    LIMIT ?,?
+                    SELECT t.achievementCount, user.id, user.name, user.icon
+                    FROM (
+                        SELECT user_id, COUNT(id) as achievementCount
+                        FROM user_badge
+                        GROUP BY user_id
+                        ORDER BY achievementCount DESC
+                        LIMIT ?,?
+                    ) t
+                    JOIN user ON user.id = t.user_id
                 EOSQL,
                 [ $page * self::PAGE_SIZE, self::PAGE_SIZE ]
             )
