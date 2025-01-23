@@ -90,6 +90,7 @@ final class PetBadgeHelpers
         PetBadgeEnum::WRANGLED_WITH_INFINITIES => 'When it comes to infinities, you win some, and you lose some. In this case, %pet.name% definitely wins a badge, at any rate: the Infinity Wrangler badge!',
         PetBadgeEnum::EXPLORED_AN_ICY_MOON => 'One small step for a pet... \'s badge collection - %pet.name% got the Icy Moon Explorer badge!',
         PetBadgeEnum::MET_A_FAMOUS_VIDEO_GAME_CHARACTER => '(That name sounds familiar... someone famous, maybe?) %pet.name% received the Internet Famous badge.',
+        PetBadgeEnum::MINTED_MONEYS => 'When life gives you lemons, just mint your own money! %pet.name% gets the Mint (the Moneys Kind) badge.',
 
         PetBadgeEnum::WAS_AN_ACCOUNTANT => 'Accounting is FUN! :D (Incidentally, that\'s also the name of the badge %pet.name% just earned!)',
         PetBadgeEnum::WAS_A_CHIMNEY_SWEEP => '🎵 With gnomes and with smoke all billered and curled, your pet got a badge: Chimney Sweep World! 🎵',

@@ -4,8 +4,10 @@ namespace App\Service\PetActivity\Crafting\Helpers;
 use App\Entity\Item;
 use App\Entity\PetActivityLog;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Model\ComputedPetSkills;
 use App\Service\HouseSimService;
 use App\Service\IRandom;
@@ -61,6 +63,8 @@ class CoinSmithingService
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(75, 90), PetActivityStatEnum::SMITH, true);
 
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::MINTED_MONEYS, $activityLog);
+
         return $activityLog;
     }
 
@@ -80,6 +84,8 @@ class CoinSmithingService
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(75, 90), PetActivityStatEnum::SMITH, true);
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::MINTED_MONEYS, $activityLog);
 
         return $activityLog;
     }
