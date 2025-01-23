@@ -3,8 +3,11 @@ namespace App\Controller\Pet;
 
 use App\Entity\Pet;
 use App\Entity\User;
+use App\Enum\PetBadgeEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPPetNotFoundException;
+use App\Functions\ActivityHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\ProfanityFilterFunctions;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -41,6 +44,8 @@ class CostumeController extends AbstractController
             $costume = \mb_substr($costume, 0, 30);
 
         $pet->setCostume($costume);
+
+        PetBadgeHelpers::awardBadgeAndLog($em, $pet, PetBadgeEnum::WAS_GIVEN_A_COSTUME_NAME, ActivityHelpers::UserName($user) . ' gave ' . ActivityHelpers::PetName($pet) . '\'s Halloween costume a name.');
 
         $em->flush();
 

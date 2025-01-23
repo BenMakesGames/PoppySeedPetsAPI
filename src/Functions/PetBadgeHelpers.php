@@ -118,6 +118,7 @@ final class PetBadgeHelpers
         PetBadgeEnum::FOUND_A_PLASTIC_EGG => 'Those things aren\'t edible. And speaking of, neither is the Incredible, Inedible Egg badge %pet.name% just earned!',
         PetBadgeEnum::FOUND_ONE_CLOVER_LEAF => 'Just one leaf? Eh, still: %pet.name% should probably get a badge for that. But only be a 1-leaf 4-leaf Clover badge!',
         PetBadgeEnum::DEFEATED_A_TURKEY_KING => 'Down with the monarchy! %pet.name% receives the Turkicide badge for their heroism!',
-        PetBadgeEnum::WUVWY => 'Such handiwork is definitely deserving of the Wuwvy badge!'
+        PetBadgeEnum::WUVWY => 'Such handiwork is definitely deserving of the Wuwvy badge!',
+        PetBadgeEnum::WAS_GIVEN_A_COSTUME_NAME => '%pet.name% received the Dressed for the Occasion badge.',
     ];
 }
