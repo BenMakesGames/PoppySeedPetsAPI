@@ -1080,6 +1080,8 @@ class ProgrammingService
 
         $activityLog = $this->responseService->createActivityLog($pet, $impDiscovery . ' %pet:' . $pet->getId() . '.name% ran away until the imp finally gave up and returned to the strange dimension from whence it came.', 'icons/activity-logs/confused');
 
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::WRANGLED_WITH_INFINITIES, $activityLog);
+
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, false);
 

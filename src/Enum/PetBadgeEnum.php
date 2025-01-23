@@ -30,6 +30,7 @@ final class PetBadgeEnum
     public const GO = 'go';
     public const VISITED_THE_BURNT_FOREST = 'visitedTheBurntForest';
     public const JUMPED_ROPE_WITH_A_BUG = 'jumpedRopeWithABug';
+    public const WRANGLED_WITH_INFINITIES = 'wrangledWithInfinities';
 
     // add-on helper activities
     public const WAS_AN_ACCOUNTANT = 'increasedADragonsHoard';
