@@ -63,4 +63,5 @@ final class PetBadgeEnum
     public const FOUND_A_PLASTIC_EGG = 'foundAPlasticEgg';
     public const FOUND_ONE_CLOVER_LEAF = 'foundOneCloverLeaf';
     public const DEFEATED_A_TURKEY_KING = 'defeatedATurkeyKing';
+    public const WUVWY = 'wuvwy';
 }

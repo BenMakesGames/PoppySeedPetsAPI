@@ -5,10 +5,12 @@ use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Model\ComputedPetSkills;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
@@ -48,6 +50,7 @@ class TwuWuvCraftingService
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' made this with the power of Twu Wuv!', $activityLog);
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::WUVWY, $activityLog);
         }
         else
         {
@@ -111,6 +114,7 @@ class TwuWuvCraftingService
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
             $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' forged this with the power of Twu Wuv!', $activityLog);
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::WUVWY, $activityLog);
             return $activityLog;
         }
         else
