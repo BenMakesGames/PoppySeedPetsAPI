@@ -9,10 +9,12 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\PlayerLogFactory;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
@@ -136,10 +138,12 @@ class PetCleaningSelfService
 
         $this->petExperienceService->spendTime($pet, 5, PetActivityStatEnum::OTHER, null);
 
-        PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% eats the ' . $itemOnBody . ' off their body in no time flat! (Ah~! A true Gourmand!)')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% eats the ' . $itemOnBody . ' off their body in no time flat! (Ah~! A true Gourmand!)')
             ->setChanges($changes->compare($pet))
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating', 'Gourmand' ]))
         ;
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::POOPED_SHED_OR_BATHED, $activityLog);
     }
 
     /**
@@ -149,6 +153,8 @@ class PetCleaningSelfService
     {
         $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% spends some time cleaning the ' . $itemOnBody . ' off their body. The rain made it go much faster!');
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::POOPED_SHED_OR_BATHED, $activityLog);
 
         $this->inventoryService->petCollectsItem($itemOnBody, $pet, $pet->getName() . ' cleaned this off their body with the help of the rain...', $activityLog);
 
@@ -164,6 +170,8 @@ class PetCleaningSelfService
     {
         $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% spends some time cleaning the ' . $itemOnBody . ' off their body...');
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::POOPED_SHED_OR_BATHED, $activityLog);
 
         $this->inventoryService->petCollectsItem($itemOnBody, $pet, $pet->getName() . ' cleaned this off their body...', $activityLog);
 

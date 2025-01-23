@@ -5,7 +5,10 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetBadgeEnum;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -27,15 +30,18 @@ class PoopingService
     {
         $this->inventoryService->receiveItem($pet->getSpecies()->getSheds(), $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' shed this.', LocationEnum::HOME);
 
-        $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% shed some ' . $pet->getSpecies()->getSheds()->getName() . '.', '')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% shed some ' . $pet->getSpecies()->getSheds()->getName() . '.')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Shedding']))
             ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
         ;
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::POOPED_OR_SHED, $activityLog);
     }
 
     public function poopDarkMatter(Pet $pet): PetActivityLog
     {
-        $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name%, um, _created_ some Dark Matter.', 'items/element/dark-matter')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name%, um, _created_ some Dark Matter.')
+            ->setIcon('items/element/dark-matter')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Pooping']))
             ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
         ;
@@ -53,6 +59,8 @@ class PoopingService
         {
             $this->inventoryService->petCollectsItem('Dark Matter', $pet, $pet->getName() . ' pooped this.', $activityLog);
         }
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::POOPED_OR_SHED, $activityLog);
 
         return $activityLog;
     }

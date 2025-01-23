@@ -464,11 +464,11 @@ class Inventory
         ;
     }
 
-    public function increasesPooping(): bool
+    public function increasesPooping(): int
     {
         return
-            ($this->getItem()->getTool() && $this->getItem()->getTool()->getIncreasesPooping()) ||
-            ($this->getEnchantment() && $this->getEnchantment()->getEffects()->getIncreasesPooping())
+            (($this->getItem()->getTool() && $this->getItem()->getTool()->getIncreasesPooping()) ? 1 : 0) +
+            (($this->getEnchantment() && $this->getEnchantment()->getEffects()->getIncreasesPooping()) ? 1 : 0)
         ;
     }
 

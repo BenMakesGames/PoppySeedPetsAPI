@@ -1066,7 +1066,7 @@ class PetActivityService
         if($pet->hasMerit(MeritEnum::BLACK_HOLE_TUM) && $this->rng->rngNextInt(1, 180) === 1)
             return true;
 
-        if($pet->getTool() && $pet->getTool()->increasesPooping() && $this->rng->rngNextInt(1, 180) === 1)
+        if($pet->getTool() && $this->rng->rngNextInt(1, 180) <= $pet->getTool()->increasesPooping())
             return true;
 
         return false;
