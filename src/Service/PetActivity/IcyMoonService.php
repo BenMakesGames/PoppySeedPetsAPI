@@ -10,6 +10,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
@@ -18,6 +19,7 @@ use App\Functions\ItemRepository;
 use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\SpiceRepository;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -64,6 +66,8 @@ class IcyMoonService
         };
 
         $activityLog->setChanges($changes->compare($pet));
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::EXPLORED_AN_ICY_MOON, $activityLog);
 
         return $activityLog;
     }

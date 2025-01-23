@@ -88,6 +88,7 @@ final class PetBadgeHelpers
         PetBadgeEnum::VISITED_THE_BURNT_FOREST => '%pet.name% received the The Burnt Forest badge for visiting this oft-forgotten corner of the Umbra.',
         PetBadgeEnum::JUMPED_ROPE_WITH_A_BUG => 'Adorable! Jump rope with a bug! %pet.name% received the Grasshopper badge.',
         PetBadgeEnum::WRANGLED_WITH_INFINITIES => 'When it comes to infinities, you win some, and you lose some. In this case, %pet.name% definitely wins a badge, at any rate: the Infinity Wrangler badge!',
+        PetBadgeEnum::EXPLORED_AN_ICY_MOON => 'One small step for a pet... \'s badge collection - %pet.name% got the Icy Moon Explorer badge!',
 
         PetBadgeEnum::WAS_AN_ACCOUNTANT => 'Accounting is FUN! :D (Incidentally, that\'s also the name of the badge %pet.name% just earned!)',
         PetBadgeEnum::WAS_A_CHIMNEY_SWEEP => '🎵 With gnomes and with smoke all billered and curled, your pet got a badge: Chimney Sweep World! 🎵',
