@@ -96,6 +96,7 @@ final class PetBadgeHelpers
         PetBadgeEnum::WAS_AN_ACCOUNTANT => 'Accounting is FUN! :D (Incidentally, that\'s also the name of the badge %pet.name% just earned!)',
         PetBadgeEnum::WAS_A_CHIMNEY_SWEEP => '🎵 With gnomes and with smoke all billered and curled, your pet got a badge: Chimney Sweep World! 🎵',
         PetBadgeEnum::GREENHOUSE_FISHER => 'Dang greenhouse fish - makin\' a mess! Why, it\'s enough to make someone give a pet the Greenhouse Fishin\' badge, it is!',
+        PetBadgeEnum::BEE_NANA => 'Nana\'d a Naner with the bees?? %pet.name% is given the Bee Naner badge.',
 
         PetBadgeEnum::FOUND_METATRONS_FIRE => 'A legendary accomplishment, to be sure! %pet.name% receives the Radiant badge.',
         PetBadgeEnum::FOUND_VESICA_HYDRARGYRUM => 'A legendary accomplishment, to be sure! %pet.name% receives the Mercurial badge.',
