@@ -9,11 +9,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route("/petBadges")]
+#[Route("/achievement")]
 final class PetBadges extends AbstractController
 {
     /**
-     * @Route("", methods={"GET"})
+     * @Route("/petBadges", methods={"GET"})
      */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getPetBadges(ResponseService $responseService)
@@ -24,10 +24,11 @@ final class PetBadges extends AbstractController
         $badges = SimpleDb::createReadOnlyConnection()
             ->query(
                 <<<EOSQL
-                    SELECT COUNT(pet_badge_id) AS pets, MIN(pet_badge.claimed_on) AS claimedOn
+                    SELECT COUNT(pet_badge.id) AS pets, MIN(pet_badge.date_acquired) AS firstAchievedOn, pet_badge.badge
                     FROM pet_badge
                     LEFT JOIN pet ON pet.id = pet_badge.pet_id
                     WHERE pet.owner_id = ?
+                    GROUP BY pet_badge.badge
                 EOSQL,
                 [ $user->getId() ]
             )
@@ -41,7 +42,7 @@ final class PetBadges extends AbstractController
             $resultIndexByBadge[$badge] = count($results);
             $results[] = [
                 'badge' => $badge,
-                'firstClaimedOn' => null,
+                'firstAchievedOn' => null,
                 'pets' => 0
             ];
         }
@@ -50,7 +51,7 @@ final class PetBadges extends AbstractController
         {
             $results[$resultIndexByBadge[$badge['badge']]] = [
                 'badge' => $badge['badge'],
-                'firstClaimedOn' => $badge['claimedOn'],
+                'firstAchievedOn' => $badge['firstAchievedOn'],
                 'pets' => $badge['pets']
             ];
         }
