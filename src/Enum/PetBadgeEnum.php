@@ -37,6 +37,7 @@ final class PetBadgeEnum
     public const RETURNED_A_SHIRIKODAMA = 'returnedAShirikodama';
     public const DEFEATED_A_WERECREATURE_WITH_SILVER = 'defeatedAWerecreatureWithSilver';
     public const POOPED_SHED_OR_BATHED = 'poopedShedOrBathed';
+    public const FISHED_AT_THE_ISLE_OF_RETREATING_TEETH = 'fishedAtTheIsleOfRetreatingTeeth';
 
     // add-on helper activities
     public const WAS_AN_ACCOUNTANT = 'increasedADragonsHoard';

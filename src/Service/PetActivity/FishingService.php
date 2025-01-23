@@ -8,6 +8,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
@@ -16,6 +17,7 @@ use App\Functions\ItemRepository;
 use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\UserQuestRepository;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
@@ -822,8 +824,8 @@ class FishingService
         $alsoGetFishBones = $this->rng->rngNextBool();
 
         $message = $alsoGetFishBones
-            ? '%pet:' . $pet->getId() . '.name% went fishing at The Isle of Retreating Teeth, but only caught Fish _Bones_! They grabbed some Talo-- er, I mean, Teeth, too.'
-            : '%pet:' . $pet->getId() . '.name% went fishing at The Isle of Retreating Teeth. They weren\'t able to catch anything, but they did grab some Talo-- er, I mean, Teeth.'
+            ? '%pet:' . $pet->getId() . '.name% went fishing at The Isle of Retreating Teeth, but only caught Fish _Bones_! Including some Talo-- er, I mean, teeth. Fish teeth.'
+            : '%pet:' . $pet->getId() . '.name% went fishing at The Isle of Retreating Teeth. They weren\'t able to catch anything, but they did grab some Talo-- er, I mean, teeth. Fish teeth.'
         ;
 
         $activityLog = $this->responseService->createActivityLog($pet, $message, '')
@@ -836,6 +838,8 @@ class FishingService
 
         if($alsoGetFishBones)
             $this->inventoryService->petCollectsItem('Fish Bones', $pet, $pet->getName() . ' got this from The Isle of Retreating Teeth.', $activityLog);
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FISHED_AT_THE_ISLE_OF_RETREATING_TEETH, $activityLog);
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
 

@@ -94,6 +94,7 @@ final class PetBadgeHelpers
         PetBadgeEnum::RETURNED_A_SHIRIKODAMA => 'There isn\'t a shirikodama postal service to give %pet.name% the Shirikodama Courier badge, but they get it anyway. Somehow. Don\'t worry about it.',
         PetBadgeEnum::DEFEATED_A_WERECREATURE_WITH_SILVER => 'For super-effective use of silver against a werecreature, %pet.name% received the Type-advantaged badge.',
         PetBadgeEnum::POOPED_SHED_OR_BATHED => 'Life - so messy! %pet.name% got the Definitely Alive badge.',
+        PetBadgeEnum::FISHED_AT_THE_ISLE_OF_RETREATING_TEETH => 'Fascinating place! Fascinating enough to warrant the Fish Teeth badge!',
 
         PetBadgeEnum::WAS_AN_ACCOUNTANT => 'Accounting is FUN! :D (Incidentally, that\'s also the name of the badge %pet.name% just earned!)',
         PetBadgeEnum::WAS_A_CHIMNEY_SWEEP => '🎵 With gnomes and with smoke all billered and curled, your pet got a badge: Chimney Sweep World! 🎵',
