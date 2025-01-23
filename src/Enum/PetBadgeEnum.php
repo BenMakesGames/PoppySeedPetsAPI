@@ -32,6 +32,7 @@ final class PetBadgeEnum
     public const JUMPED_ROPE_WITH_A_BUG = 'jumpedRopeWithABug';
     public const WRANGLED_WITH_INFINITIES = 'wrangledWithInfinities';
     public const EXPLORED_AN_ICY_MOON = 'exploredAnIcyMoon';
+    public const MET_A_FAMOUS_VIDEO_GAME_CHARACTER = 'metAFamousVideoGameCharacter';
 
     // add-on helper activities
     public const WAS_AN_ACCOUNTANT = 'increasedADragonsHoard';

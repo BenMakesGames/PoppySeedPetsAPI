@@ -6,11 +6,14 @@ use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
+use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Repository\PetQuestRepository;
@@ -292,13 +295,16 @@ class Protocol7Service
 
         $petQuest->setValue($now->modify('+' . $this->rng->rngNextInt(20, 40) . ' days')->format('Y-m-d'));
 
-        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'In Project-E, ' . '%pet:' . $pet->getId() . '.name% ran into a girl named ' . $name . ', who handed %pet:' . $pet->getId() . '.name% a Black Bow.')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'In Project-E, ' . ActivityHelpers::PetName($pet) . ' ran into a girl named ' . $name . ', who handed ' . ActivityHelpers::PetName($pet) . ' a Black Bow.')
             ->setIcon('items/hat/bow-black')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
         ;
         $this->inventoryService->petCollectsItem('Black Bow', $pet, $pet->getName() . ' received this from a girl named ' . $name . ' in Project-E.', $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::MET_A_FAMOUS_VIDEO_GAME_CHARACTER, $activityLog);
+
         return $activityLog;
     }
 
