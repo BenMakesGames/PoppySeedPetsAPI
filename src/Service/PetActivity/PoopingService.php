@@ -19,7 +19,6 @@ class PoopingService
 {
     public function __construct(
         private readonly InventoryService $inventoryService,
-        private readonly ResponseService $responseService,
         private readonly IRandom $rng,
         private readonly EntityManagerInterface $em
     )
