@@ -39,6 +39,7 @@ final class PetBadgeEnum
     public const POOPED_SHED_OR_BATHED = 'poopedShedOrBathed';
     public const FISHED_AT_THE_ISLE_OF_RETREATING_TEETH = 'fishedAtTheIsleOfRetreatingTeeth';
     public const EXTRACT_QUINT_FROM_COOKIES = 'extractQuintFromCookies';
+    public const STRUGGLED_WITH_A_3D_PRINTER = 'struggledWithA3DPrinter';
 
     // add-on helper activities
     public const WAS_AN_ACCOUNTANT = 'increasedADragonsHoard';
