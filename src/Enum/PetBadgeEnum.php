@@ -35,6 +35,7 @@ final class PetBadgeEnum
     public const MET_A_FAMOUS_VIDEO_GAME_CHARACTER = 'metAFamousVideoGameCharacter';
     public const MINTED_MONEYS = 'mintedMoneys';
     public const RETURNED_A_SHIRIKODAMA = 'returnedAShirikodama';
+    public const DEFEATED_A_WERECREATURE_WITH_SILVER = 'defeatedAWerecreatureWithSilver';
 
     // add-on helper activities
     public const WAS_AN_ACCOUNTANT = 'increasedADragonsHoard';

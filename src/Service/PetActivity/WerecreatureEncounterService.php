@@ -4,10 +4,12 @@ namespace App\Service\PetActivity;
 use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\StatusEffectHelpers;
 use App\Model\ComputedPetSkills;
 use App\Service\InventoryService;
@@ -56,6 +58,8 @@ class WerecreatureEncounterService
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, array_merge($tags, [ 'Werecreature', 'Fighting' ])))
                 ;
 
+                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DEFEATED_A_WERECREATURE_WITH_SILVER, $activityLog);
+
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
 
@@ -87,6 +91,8 @@ class WerecreatureEncounterService
                 $activityLog = $this->responseService->createActivityLog($pet, $message, '')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, array_merge($tags, [ 'Werecreature', 'Fighting' ])))
                 ;
+
+                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DEFEATED_A_WERECREATURE_WITH_SILVER, $activityLog);
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
@@ -151,5 +157,4 @@ class WerecreatureEncounterService
             return $activityLog;
         }
     }
-
 }
