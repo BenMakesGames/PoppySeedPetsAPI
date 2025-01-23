@@ -5,11 +5,13 @@ namespace App\Service\PetActivity;
 use App\Entity\PetActivityLog;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\PlayerLogFactory;
 use App\Functions\UserFunctions;
 use App\Model\ComputedPetSkills;
@@ -113,6 +115,7 @@ class KappaService
             $pet->increaseLove(4)->increaseEsteem(4);
             $this->petExperienceService->gainAffection($pet, 2);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::RETURNED_A_SHIRIKODAMA, $activityLog);
 
             $this->userStatsRepository->incrementStat($owner, UserStatEnum::PETTED_A_PET, 1);
 
@@ -139,6 +142,7 @@ class KappaService
             $pet->increaseLove(4)->increaseEsteem(4);
             $this->petExperienceService->gainAffection($pet, 2);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::RETURNED_A_SHIRIKODAMA, $activityLog);
 
             $this->userStatsRepository->incrementStat($owner, UserStatEnum::PETTED_A_PET, 1);
 

@@ -91,6 +91,7 @@ final class PetBadgeHelpers
         PetBadgeEnum::EXPLORED_AN_ICY_MOON => 'One small step for a pet... \'s badge collection - %pet.name% got the Icy Moon Explorer badge!',
         PetBadgeEnum::MET_A_FAMOUS_VIDEO_GAME_CHARACTER => '(That name sounds familiar... someone famous, maybe?) %pet.name% received the Internet Famous badge.',
         PetBadgeEnum::MINTED_MONEYS => 'When life gives you lemons, just mint your own money! %pet.name% gets the Mint (the Moneys Kind) badge.',
+        PetBadgeEnum::RETURNED_A_SHIRIKODAMA => 'There isn\'t a shirikodama postal service to give %pet.name% the Shirikodama Courier badge, but they get it anyway. Somehow. Don\'t worry about it.',
 
         PetBadgeEnum::WAS_AN_ACCOUNTANT => 'Accounting is FUN! :D (Incidentally, that\'s also the name of the badge %pet.name% just earned!)',
         PetBadgeEnum::WAS_A_CHIMNEY_SWEEP => '🎵 With gnomes and with smoke all billered and curled, your pet got a badge: Chimney Sweep World! 🎵',
