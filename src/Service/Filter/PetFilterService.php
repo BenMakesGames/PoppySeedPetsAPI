@@ -2,6 +2,7 @@
 namespace App\Service\Filter;
 
 use App\Entity\Pet;
+use App\Enum\PetBadgeEnum;
 use App\Functions\StringFunctions;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -26,14 +27,15 @@ class PetFilterService
                 'id' => [ 'p.id' => 'asc' ],
             ],
             [
-                'name' => [ $this, 'filterName' ],
-                'species' => [ $this, 'filterSpecies' ],
-                'owner' => [ $this, 'filterOwner' ],
-                'location' => [ $this, 'filterLocation' ],
-                'guild' => [ $this, 'filterGuild' ],
-                'merit' => [ $this, 'filterMerit' ],
-                'toolOrHat' => [ $this, 'filterToolOrHat' ],
-                'isPregnant' => [ $this, 'filterIsPregnant' ],
+                'name' => $this->filterName(...),
+                'species' => $this->filterSpecies(...),
+                'owner' => $this->filterOwner(...),
+                'location' => $this->filterLocation(...),
+                'guild' => $this->filterGuild(...),
+                'merit' => $this->filterMerit(...),
+                'toolOrHat' => $this->filterToolOrHat(...),
+                'isPregnant' => $this->filterIsPregnant(...),
+                'badge' => $this->filterBadge(...),
             ],
             [
                 'nameExactMatch'
@@ -130,6 +132,17 @@ class PetFilterService
             $qb->andWhere('p.pregnancy IS NULL');
         else
             $qb->andWhere('p.pregnancy IS NOT NULL');
+    }
+
+    public function filterBadge(QueryBuilder $qb, $value)
+    {
+        if(!in_array('badges', $qb->getAllAliases()))
+            $qb->leftJoin('p.badges', 'badges');
+
+        $qb
+            ->andWhere('badges.badge=:badgeName')
+            ->setParameter('badgeName', $value)
+        ;
     }
 
     public function filterToolOrHat(QueryBuilder $qb, $value)
