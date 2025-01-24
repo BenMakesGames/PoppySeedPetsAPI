@@ -62,6 +62,7 @@ class WeedController extends AbstractController
             $itemName = $squirrel3->rngNextFromArray([ 'Dandelion', 'Crooked Stick', 'Crooked Stick' ]);
 
         $foundItem = $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this while weeding their Greenhouse.', LocationEnum::HOME);
+        $foundItem2 = null;
 
         if($greenhouse->isHasFishStatue())
         {
@@ -170,7 +171,7 @@ class WeedController extends AbstractController
                 ->addTags(PetActivityLogTagHelpers::findByNames($em, [ 'Add-on Assistance', 'Greenhouse' ]))
             ;
 
-            if($extraItem === 'Scales')
+            if($extraItem === 'Scales' || $foundItem2 === 'Scales' || $foundItem2 === 'Freshly-squeezed Fish Oil')
                 PetBadgeHelpers::awardBadge($em, $helper, PetBadgeEnum::GREENHOUSE_FISHER, $activityLogEntry);
         }
 
