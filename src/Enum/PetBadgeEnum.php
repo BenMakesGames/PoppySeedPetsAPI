@@ -42,6 +42,7 @@ final class PetBadgeEnum
     public const STRUGGLED_WITH_A_3D_PRINTER = 'struggledWithA3DPrinter';
     public const EMPTIED_THEIR_LUNCHBOX = 'emptiedTheirLunchbox';
     public const CRAFTED_WITH_A_FULL_HOUSE = 'craftedWithAFullHouse';
+    public const CLIMBED_THE_TOWER_OF_TRIALS = 'climbedTheTowerOfTrials';
 
     // add-on helper activities
     public const WAS_AN_ACCOUNTANT = 'increasedADragonsHoard';

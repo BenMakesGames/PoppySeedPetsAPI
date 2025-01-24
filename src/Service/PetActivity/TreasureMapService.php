@@ -232,6 +232,8 @@ class TreasureMapService
             $this->inventoryService->petCollectsItem('Tower Chest', $pet, $pet->getName() . ' got this by defeating the 100th floor of the Tower of Trials!', $activityLog);
             $this->em->remove($pet->getTool());
             $pet->setTool(null);
+
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::CLIMBED_THE_TOWER_OF_TRIALS, $activityLog);
         }
 
         $this->petExperienceService->spendTime($pet, 20 + floor($floor / 1.8), PetActivityStatEnum::OTHER, null);
