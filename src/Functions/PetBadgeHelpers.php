@@ -97,6 +97,7 @@ final class PetBadgeHelpers
         PetBadgeEnum::FISHED_AT_THE_ISLE_OF_RETREATING_TEETH => 'Fascinating place! Fascinating enough to warrant the Fish Teeth badge!',
         PetBadgeEnum::EXTRACT_QUINT_FROM_COOKIES => 'This is one of the very few times a pet might be said to cook food, and deserving of the Quintessential Cooking badge!',
         PetBadgeEnum::STRUGGLED_WITH_A_3D_PRINTER => 'So frustrating! Perhaps receiving the More Dimensions, More Problems badge will make %pet.name% feel a little better?',
+        PetBadgeEnum::EMPTIED_THEIR_LUNCHBOX => '(I guess there could be a badge for that? Sure, why not: %pet.name% got the Om-nom-nom badge!)',
 
         PetBadgeEnum::WAS_AN_ACCOUNTANT => 'Accounting is FUN! :D (Incidentally, that\'s also the name of the badge %pet.name% just earned!)',
         PetBadgeEnum::WAS_A_CHIMNEY_SWEEP => '🎵 With gnomes and with smoke all billered and curled, your pet got a badge: Chimney Sweep World! 🎵',

@@ -13,6 +13,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
@@ -23,6 +24,7 @@ use App\Functions\ColorFunctions;
 use App\Functions\InventoryModifierFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Functions\StatusEffectHelpers;
 use App\Functions\UserQuestRepository;
 use App\Model\ComputedPetSkills;
@@ -247,9 +249,11 @@ class PetActivityService
 
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
 
-                PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% threw up :(')
+                $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% threw up :(')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Sick ]))
                     ->setChanges($changes->compare($pet));
+
+                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::POOPED_SHED_OR_BATHED, $log);
 
                 return;
             }
@@ -361,11 +365,13 @@ class PetActivityService
             if($itemsLeftInLunchbox === 0)
                 $message .= ' Their lunchbox is now empty!';
 
-            PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
+            $lunchboxLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
                 ->setIcon('icons/activity-logs/lunchbox')
                 ->setChanges($petChanges->compare($pet))
                 ->addInterestingness($itemsLeftInLunchbox === 0 ? PetActivityLogInterestingnessEnum::LUNCHBOX_EMPTY : 1)
             ;
+
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::EMPTIED_THEIR_LUNCHBOX, $lunchboxLog);
         }
 
         if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
