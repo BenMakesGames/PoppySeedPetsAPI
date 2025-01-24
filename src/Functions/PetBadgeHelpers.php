@@ -69,6 +69,7 @@ final class PetBadgeHelpers
         PetBadgeEnum::REVEALED_FAVORITE_FLAVOR => '(Also, there\'s a badge for that: Flavor YESknown!, and %pet.name% just got it!)',
         PetBadgeEnum::COMPLETED_HEART_DIMENSION => 'Also: A Suburb to the Brain - that\'s the name of the badge that %pet.name% just got!',
         PetBadgeEnum::TRIED_ON_A_NEW_STYLE => 'Check out those new, um, digs? Also: that new badge?! Yeah, I dunno if you knew, but %pet.name% just got the Fashionista badge.',
+        PetBadgeEnum::HAD_A_FOOD_CRAVING_SATISFIED => 'So satisfying, %pet.name% got the Satisfaction badge.',
 
         PetBadgeEnum::FIRST_PLACE_CHESS => 'For demonstrating such chess prowess, %pet.name% received the Chess Master badge!',
         PetBadgeEnum::FIRST_PLACE_JOUSTING => 'For demonstrating such jousting prowess, %pet.name% received the Mount and Blade badge!',
