@@ -41,6 +41,7 @@ final class PetBadgeEnum
     public const EXTRACT_QUINT_FROM_COOKIES = 'extractQuintFromCookies';
     public const STRUGGLED_WITH_A_3D_PRINTER = 'struggledWithA3DPrinter';
     public const EMPTIED_THEIR_LUNCHBOX = 'emptiedTheirLunchbox';
+    public const CRAFTED_WITH_A_FULL_HOUSE = 'craftedWithAFullHouse';
 
     // add-on helper activities
     public const WAS_AN_ACCOUNTANT = 'increasedADragonsHoard';

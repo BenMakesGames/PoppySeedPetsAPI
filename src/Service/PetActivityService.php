@@ -480,6 +480,8 @@ class PetActivityService
                 $activityLog = $do[0]->adventure($petWithSkills, $do[1]);
                 $activityLog->setEntry($description . ' ' . $activityLog->getEntry());
 
+                PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::CRAFTED_WITH_A_FULL_HOUSE, $activityLog);
+
                 if($activityLog->getChanges()->containsLevelUp())
                     $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Level-up' ]));
             }
