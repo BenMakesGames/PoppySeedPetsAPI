@@ -173,6 +173,9 @@ class ChocolateMansion
         foreach($loot as $item)
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' got this from a spectre in the attic of le Manoir de Chocolat.', $activityLog);
 
+        if(in_array('Chocolate Feather Bonnet', $loot))
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FOUND_A_CHOCOLATE_FEATHER_BONNET, $activityLog);
+
         $this->petExperienceService->gainExp($pet, $expAmount, $expStats, $activityLog);
 
         return $activityLog;

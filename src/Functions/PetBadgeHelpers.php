@@ -100,6 +100,7 @@ final class PetBadgeHelpers
         PetBadgeEnum::EMPTIED_THEIR_LUNCHBOX => '(I guess there could be a badge for that? Sure, why not: %pet.name% got the Om-nom-nom badge!)',
         PetBadgeEnum::CRAFTED_WITH_A_FULL_HOUSE => 'Hopefully that cleared up some space? For their efforts, %pet.name% got the Under Pressure badge.',
         PetBadgeEnum::CLIMBED_THE_TOWER_OF_TRIALS => 'And getting to the very tippy top of the Tower of Trials absolutely warrants an award of the Tower-toppler badge! Let it be so!',
+        PetBadgeEnum::FOUND_A_CHOCOLATE_FEATHER_BONNET => 'For finding a Chocolate Feather Bonnet in a Chocolate Mansion by using a Chocolate Key, %pet.name% gets the Chocolate Riddles badge. ... ... Chocolate.',
 
         PetBadgeEnum::WAS_AN_ACCOUNTANT => 'Accounting is FUN! :D (Incidentally, that\'s also the name of the badge %pet.name% just earned!)',
         PetBadgeEnum::WAS_A_CHIMNEY_SWEEP => '🎵 With gnomes and with smoke all billered and curled, your pet got a badge: Chimney Sweep World! 🎵',

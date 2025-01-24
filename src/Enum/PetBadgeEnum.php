@@ -43,6 +43,7 @@ final class PetBadgeEnum
     public const EMPTIED_THEIR_LUNCHBOX = 'emptiedTheirLunchbox';
     public const CRAFTED_WITH_A_FULL_HOUSE = 'craftedWithAFullHouse';
     public const CLIMBED_THE_TOWER_OF_TRIALS = 'climbedTheTowerOfTrials';
+    public const FOUND_A_CHOCOLATE_FEATHER_BONNET = 'foundAChocolateFeatherBonnet';
 
     // add-on helper activities
     public const WAS_AN_ACCOUNTANT = 'increasedADragonsHoard';
