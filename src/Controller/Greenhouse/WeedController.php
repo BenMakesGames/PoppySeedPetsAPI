@@ -68,7 +68,12 @@ class WeedController extends AbstractController
         {
             $possibleItem2s = CalendarFunctions::isSaintPatricksDay($clock->now)
                 ? [ '1-leaf Clover', '2-leaf Clover' ]
-                : [ 'Algae', 'Scales', 'Freshly-squeezed Fish Oil', 'Silica Grounds' ]
+                : [
+                    'Algae',
+                    'Scales',
+                    'Freshly-squeezed Fish Oil', // greenhouse fishin' badge (below) is awarded for finding this
+                    'Silica Grounds'
+                ]
             ;
 
             $foundItem2 = $inventoryService->receiveItem($squirrel3->rngNextFromArray($possibleItem2s), $user, $user, $user->getName() . ' found this while cleaning their Fish Statue.', LocationEnum::HOME);
