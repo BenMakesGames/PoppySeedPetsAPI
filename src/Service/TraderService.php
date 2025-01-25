@@ -688,6 +688,34 @@ class TraderService
             }
         }
 
+        if(CalendarFunctions::isSnakeDay($this->clock->now))
+        {
+            $offers[] = TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createMoney(5000),
+                ],
+                [
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Headsnake'), 1),
+                ],
+                'All proceeds go to sea snake preservation charities. (They were nearly hunted to extinction is Tell Samarazhoustia, you know!)',
+                $user,
+                $quantities,
+                true
+            );
+            $offers[] = TraderOffer::createTradeOffer(
+                [
+                    TraderOfferCostOrYield::createRecyclingPoints(2500),
+                ],
+                [
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Headsnake'), 1),
+                ],
+                'All proceeds go to sea snake preservation charities. (They were nearly hunted to extinction is Tell Samarazhoustia, you know!)',
+                $user,
+                $quantities,
+                true
+            );
+        }
+
         if(CalendarFunctions::isValentinesOrAdjacent($this->clock->now))
         {
             $offers[] = TraderOffer::createTradeOffer(

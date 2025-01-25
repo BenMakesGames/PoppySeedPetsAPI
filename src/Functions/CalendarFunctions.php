@@ -224,6 +224,11 @@ final class CalendarFunctions
         return $monthAndDay >= 703 && $monthAndDay <= 705;
     }
 
+    public static function isSnakeDay(\DateTimeImmutable $dt): bool
+    {
+        return $dt->format('nd') === '716';
+    }
+
     public static function isEarthDay(\DateTimeInterface $dt): bool
     {
         $monthAndDay = (int)$dt->format('nd');
@@ -396,6 +401,9 @@ final class CalendarFunctions
 
         if(self::isJuly4th($dt))
             $events[] = HolidayEnum::FOURTH_OF_JULY;
+
+        if(self::isSnakeDay($dt))
+            $events[] = HolidayEnum::SNAKE_DAY;
 
         if(self::isBastilleDay($dt))
             $events[] = HolidayEnum::BASTILLE_DAY;

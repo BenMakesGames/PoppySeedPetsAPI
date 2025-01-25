@@ -15,6 +15,7 @@ class HolidayEnum
     public const EARTH_DAY = 'Earth Day';
     public const EASTER = 'Easter';
     public const FOURTH_OF_JULY = '4th of July';
+    public const SNAKE_DAY = 'Snake Day';
     public const HALLOWEEN = 'Halloween';
     public const HANUKKAH = 'Hanukkah';
     public const HOLI = 'Holi';
