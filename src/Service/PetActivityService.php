@@ -42,6 +42,7 @@ use App\Service\PetActivity\Crafting\ProgrammingService;
 use App\Service\PetActivity\Crafting\SmithingService;
 use App\Service\PetActivity\CraftingService;
 use App\Service\PetActivity\DeepSeaService;
+use App\Service\PetActivity\DokiDokiService;
 use App\Service\PetActivity\DreamingAndDaydreamingService;
 use App\Service\PetActivity\EatingService;
 use App\Service\PetActivity\FatedAdventureService;
@@ -114,7 +115,8 @@ class PetActivityService
         private readonly FatedAdventureService $fatedAdventureService,
         private readonly PetCleaningSelfService $petCleaningSelfService,
         private readonly CachingMeritAdventureService $cachingMeritAdventureService,
-        private readonly JumpRopeService $jumpRopeService
+        private readonly JumpRopeService $jumpRopeService,
+        private readonly DokiDokiService $dokiDokiService
     )
     {
     }
@@ -749,6 +751,14 @@ class PetActivityService
                 if($this->rng->rngNextInt(1, 4) == 1)
                 {
                     $this->jumpRopeService->adventure($petWithSkills);
+                    return true;
+                }
+                break;
+
+            case 'Large Radish':
+                if($this->rng->rngNextInt(1, 10) == 1)
+                {
+                    $this->dokiDokiService->adventure($petWithSkills);
                     return true;
                 }
                 break;
