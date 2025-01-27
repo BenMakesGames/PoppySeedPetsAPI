@@ -337,8 +337,14 @@ class MagicBindingService
         if($this->houseSimService->hasInventory('Magic Smoke'))
             $possibilities[] = new ActivityCallback($this->magicSmokeToQuint(...), $magicSmokeWeight);
 
-        if($this->houseSimService->hasInventory('Witch\'s Broom') && $this->houseSimService->hasInventory('Wood\'s Metal'))
-            $possibilities[] = new ActivityCallback($this->createSnickerblade(...), 8);
+        if($this->houseSimService->hasInventory('Witch\'s Broom'))
+        {
+            if($this->houseSimService->hasInventory('Wood\'s Metal'))
+                $possibilities[] = new ActivityCallback($this->createSnickerblade(...), 8);
+
+            if($this->houseSimService->hasInventory('Evil Feather Duster'))
+                $possibilities[] = new ActivityCallback($this->createWickedBroom(...), 8);
+        }
 
         if($this->houseSimService->hasInventory('Tiny Black Hole') && $this->houseSimService->hasInventory('Mericarp'))
             $possibilities[] = new ActivityCallback($this->createSunlessMericarp(...), 8);
@@ -379,6 +385,40 @@ class MagicBindingService
                 ]))
             ;
             $this->inventoryService->petCollectsItem('Snickerblade', $pet, $pet->getName() . ' bound this.', $activityLog);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
+        }
+
+        return $activityLog;
+    }
+
+    public function createWickedBroom(ComputedPetSkills  $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+
+        if($umbraCheck < 23)
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to replace a Witch\'s Broom\'s bristles with those of an Evil Feather Duster, but the two objects seemed to naturally repel one another!')
+                ->setIcon('icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+        }
+        else // success!
+        {
+            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->houseSimService->getState()->loseItem('Witch\'s Broom', 1);
+            $this->houseSimService->getState()->loseItem('Evil Feather Duster', 1);
+            $pet->increaseEsteem($this->squirrel3->rngNextInt(3, 6));
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% replaced a Witch\'s Broom\'s bristles with those of an Evil Feather Duster, creating a Wicked Broom!')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Magic_binding,
+                    PetActivityLogTagEnum::Location_At_Home,
+                ]))
+            ;
+            $this->inventoryService->petCollectsItem('Wicked Broom', $pet, $pet->getName() . ' bound this.', $activityLog);
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
         }
 
