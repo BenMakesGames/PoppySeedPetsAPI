@@ -7,6 +7,7 @@ final class RecipeRepository
     public const RECIPES = [
         [ 'name' => '"Chicken" Noodle Soup (with Fish)', 'ingredients' => '30:1,33:1,262:1', 'makes' => '323:2' ],
         [ 'name' => '"Chicken" Noodle Soup (with Tofu)', 'ingredients' => '30:1,262:1,494:1', 'makes' => '323:2' ],
+        [ 'name' => '"Chicken" Noodle Soup (with Turkey)', 'ingredients' => '30:1,262:1,342:1', 'makes' => '323:4' ],
         [ 'name' => '1-leaf Clover', 'ingredients' => '536:1,1129:1', 'makes' => '978:1' ],
         [ 'name' => '15-bean Soup (x3)', 'ingredients' => '170:15', 'makes' => '173:12' ],
         [ 'name' => '15-bean Soup', 'ingredients' => '170:5', 'makes' => '173:4' ],

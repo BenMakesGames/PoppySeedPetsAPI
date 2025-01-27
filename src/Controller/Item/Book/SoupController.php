@@ -27,6 +27,8 @@ class SoupController extends AbstractController
         $message = $cookingService->showRecipeNamesToCookingBuddy($user, [
             '15-bean Soup',
             '"Chicken" Noodle Soup (with Fish)',
+            '"Chicken" Noodle Soup (with Tofu)',
+            '"Chicken" Noodle Soup (with Turkey)',
             'Cullen Skink (A)',
             'Cullen Skink (B)',
             'Dashi',
@@ -65,7 +67,7 @@ IF YOU HAPPEN TO STOR-- \*HACK; CoUgh; wheeze\* to store your Beans in threes, f
 * Mirepoix
 * Noodles
 
-Also good with Fish, instead of chicken.
+Also good with Fish, Tofu, or turkey.
 
 #### Cullen Skink
 
