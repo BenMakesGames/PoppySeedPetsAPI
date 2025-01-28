@@ -125,7 +125,7 @@ class LostInTownService
         else
         {
             $items = [
-                $this->rng->rngNextFromArray([ 'Black Scarf', 'Cool Sunglasses', 'Gaming Box' ]),
+                $this->rng->rngNextFromArray([ 'Black Scarf', 'Cool Sunglasses', 'Gaming Box', 'Password' ]),
                 $this->rng->rngNextFromArray([ 'Glowing Protojelly', 'Green Egg', 'Thaumatoxic Cookies', 'Magic Smoke' ]),
                 $this->rng->rngNextFromArray([ 'Diffie-H Key', 'Gold Keyblade', 'Rusty Blunderbuss', 'Yellow Can-opener' ]),
             ];
