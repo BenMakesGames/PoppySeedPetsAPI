@@ -1292,7 +1292,8 @@ class HuntingService
 
             $recipe = $this->squirrel3->rngNextFromArray([
                 'Stroganoff Recipe',
-                'Bananananers Foster Recipe'
+                'Bananananers Foster Recipe',
+                'Carrot Wine Recipe',
             ]);
 
             if($this->squirrel3->rngNextInt(1, 10) === 1 && $pet->hasMerit(MeritEnum::LUCKY))

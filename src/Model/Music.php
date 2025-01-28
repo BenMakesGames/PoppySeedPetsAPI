@@ -455,6 +455,9 @@ class Music
         // Transformations, by Maduk
         'Someway, somehow... think I\'ve seen it before. Someway, somehow... think I\'ve seen it before...',
 
+        // Eli Eli (Maduk Remix), by Misun
+        'Ah and I miss it, and I kiss it, and I try, and I hold it \'till it falls into the ocean or the sky-y-y...',
+
         // Wild Wild Life, by Talking Heads
         'I\'m wearing... a fur pajamas. I ride a... hot potato. It\'s tickling... my fancy. Speak up! I can\'t hear you.',
 

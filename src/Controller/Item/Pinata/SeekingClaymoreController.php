@@ -269,6 +269,7 @@ class SeekingClaymoreController extends AbstractController
             [ 'Paper', 'Paper', 'Paper', 'White Cloth' ],
             $rng->rngNextSubsetFromArray([
                 'Bananananers Foster Recipe', 'Cobbler Recipe', 'Gochujang Recipe',
+                'Carrot Wine Recipe',
                 'Spirit Polymorph Potion Recipe', 'Stroganoff Recipe', 'Welcome Note',
 
                 'Paper',

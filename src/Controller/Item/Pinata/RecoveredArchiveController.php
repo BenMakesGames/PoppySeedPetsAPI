@@ -46,6 +46,7 @@ class RecoveredArchiveController extends AbstractController
             'Bulbun Plushy',
             'Canned Food',
             'Captain\'s Log',
+            'Carrot Wine Recipe',
             'Chocolate Bar',
             'Cobbler Recipe',
             'Compass',

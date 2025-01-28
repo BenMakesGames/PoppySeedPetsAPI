@@ -114,6 +114,8 @@ final class RecipeRepository
         [ 'name' => 'Carrot Juice, and Pectin', 'ingredients' => '6:1', 'makes' => '121:2,681:1' ],
         [ 'name' => 'Carrot PB&J', 'ingredients' => '112:1,512:1,1072:1', 'makes' => '1073:2' ],
         [ 'name' => 'Carrot Preserves', 'ingredients' => '6:1,12:1,121:1', 'makes' => '1072:2' ],
+        [ 'name' => 'Carrot Wine (A)', 'ingredients' => '6:1,10:1,12:1,111:1,1205:1', 'makes' => '1440:4' ],
+        [ 'name' => 'Carrot Wine (B)', 'ingredients' => '10:1,12:1,111:1,681:1,1205:1', 'makes' => '1440:4' ],
         [ 'name' => 'Castella Cake', 'ingredients' => '12:1,13:1,14:1,16:1,423:1', 'makes' => '1147:3' ],
         [ 'name' => 'Century Egg', 'ingredients' => '10:1,14:1,17:1,49:1,119:1', 'makes' => '226:3' ],
         [ 'name' => 'Cetgueli\'s Treasure Map', 'ingredients' => '96:4', 'makes' => '100:1' ],
