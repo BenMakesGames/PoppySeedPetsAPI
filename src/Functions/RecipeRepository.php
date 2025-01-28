@@ -439,6 +439,7 @@ final class RecipeRepository
         [ 'name' => 'Melt Upside-down Silver Colander', 'ingredients' => '353:1,902:1', 'makes' => '91:1' ],
         [ 'name' => 'Melt Warping Wand', 'ingredients' => '353:1,769:1', 'makes' => '91:1,142:2' ],
         [ 'name' => 'Melt Whisk', 'ingredients' => '353:1,964:1', 'makes' => '89:1' ],
+        [ 'name' => 'Melt Woher Cuán Nani-nani', 'ingredients' => '353:1,1439:1', 'makes' => '89:1' ],
         [ 'name' => 'Melt Yellow Scissors', 'ingredients' => '234:1,353:1', 'makes' => '89:1' ],
         [ 'name' => 'Meringues', 'ingredients' => '12:1,14:1,62:1', 'makes' => '115:2' ],
         [ 'name' => 'Mighty Fried Bananas', 'ingredients' => '4:1,12:1,16:1', 'makes' => '178:1' ],

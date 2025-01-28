@@ -17,7 +17,6 @@ use App\Functions\SpiceRepository;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
 use App\Model\IActivityCallback;
-use App\Model\ItemQuantity;
 use App\Model\PetChanges;
 use App\Service\HouseSimService;
 use App\Service\InventoryService;
@@ -26,7 +25,6 @@ use App\Service\PetActivity\Crafting\EventLanternService;
 use App\Service\PetActivity\Crafting\Helpers\StickCraftingService;
 use App\Service\PetActivity\Crafting\Helpers\TwuWuvCraftingService;
 use App\Service\PetExperienceService;
-use App\Service\ResponseService;
 use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -229,6 +227,9 @@ class CraftingService
 
         if($this->houseSimService->hasInventory('Gypsum') && $this->houseSimService->hasInventory('Green Dye'))
             $possibilities[] = new ActivityCallback($this->createGypsumDragon(...), 9);
+
+        if($this->houseSimService->hasInventory('No Right Turns') && $this->houseSimService->hasInventory('Green Dye'))
+            $possibilities[] = new ActivityCallback($this->createWoherCuanNaniNani(...), 9);
 
         if($this->houseSimService->hasInventory('Bownaner') && $this->houseSimService->hasInventory('Carrot'))
             $possibilities[] = new ActivityCallback($this->createEatYourFruitsAndVeggies(...), 10);
@@ -2299,6 +2300,24 @@ class CraftingService
             ]))
         ;
         $this->inventoryService->petCollectsItem('Painted Boomerang', $pet, $pet->getName() . ' painted this, using Quinacridone Magenta Dye.', $activityLog);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
+        return $activityLog;
+    }
+
+    private function createWoherCuanNaniNani(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 90), PetActivityStatEnum::CRAFT, true);
+        $this->houseSimService->getState()->loseItem('No Right Turns', 1);
+        $this->houseSimService->getState()->loseItem('Green Dye', 1);
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% painted over a No Right Turns sign to make their own... _unique_ sign.')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                PetActivityLogTagEnum::Painting,
+                PetActivityLogTagEnum::Location_At_Home,
+            ]))
+        ;
+        $this->inventoryService->petCollectsItem('Woher Cuán Nani-nani', $pet, $pet->getName() . ' painted this.', $activityLog);
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
         return $activityLog;
     }

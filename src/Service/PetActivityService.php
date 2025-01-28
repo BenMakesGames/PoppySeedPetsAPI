@@ -58,6 +58,7 @@ use App\Service\PetActivity\IcyMoonService;
 use App\Service\PetActivity\JumpRopeService;
 use App\Service\PetActivity\KappaService;
 use App\Service\PetActivity\LetterService;
+use App\Service\PetActivity\LostInTownService;
 use App\Service\PetActivity\MagicBeanstalkService;
 use App\Service\PetActivity\PetCleaningSelfService;
 use App\Service\PetActivity\PetSummonedAwayService;
@@ -116,7 +117,8 @@ class PetActivityService
         private readonly PetCleaningSelfService $petCleaningSelfService,
         private readonly CachingMeritAdventureService $cachingMeritAdventureService,
         private readonly JumpRopeService $jumpRopeService,
-        private readonly DokiDokiService $dokiDokiService
+        private readonly DokiDokiService $dokiDokiService,
+        private readonly LostInTownService $lostInTownService
     )
     {
     }
@@ -762,6 +764,10 @@ class PetActivityService
                     return true;
                 }
                 break;
+
+            case 'Woher Cuán Nani-nani':
+                $this->lostInTownService->adventure($petWithSkills);
+                return true;
         }
 
         if($pet->getTool()->getEnchantment())
