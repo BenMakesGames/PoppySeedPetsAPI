@@ -11,9 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class ComputedPetSkills
 {
-    private Pet $pet;
-
-    public function __construct(Pet $pet)
+    public function __construct(private readonly Pet $pet)
     {
         $this->pet = $pet;
     }

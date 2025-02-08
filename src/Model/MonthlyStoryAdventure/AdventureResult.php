@@ -5,12 +5,10 @@ namespace App\Model\MonthlyStoryAdventure;
 
 class AdventureResult
 {
-    public string $text;
-    public array $loot;
-
-    public function __construct(string $text, array $loot)
+    public function __construct(
+        public readonly string $text,
+        public readonly array $loot
+    )
     {
-        $this->text = $text;
-        $this->loot = $loot;
     }
 }
