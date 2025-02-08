@@ -210,7 +210,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
                 $fraction = $totalPercent / 100;
 
                 foreach($yield->getItems() as $item)
-                    $item->setPercentChance(round($item->getPercentChance() / $fraction));
+                    $item->setPercentChance((int)round($item->getPercentChance() / $fraction));
             }
             else if($yieldIndex === $index)
             {

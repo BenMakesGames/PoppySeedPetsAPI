@@ -44,12 +44,12 @@ class PetSpeciesFilterService
         return $this->repository->createQueryBuilder('s');
     }
 
-    public function setUser(?User $user)
+    public function setUser(?User $user): void
     {
         $this->user = $user;
     }
 
-    public function filterHasPet(QueryBuilder $qb, $value)
+    public function filterHasPet(QueryBuilder $qb, $value): void
     {
         if(!$this->user || $value === null)
             return;
@@ -62,7 +62,7 @@ class PetSpeciesFilterService
         $qb->setParameter('user', $this->user);
     }
 
-    public function filterHasDiscovered(QueryBuilder $qb, $value)
+    public function filterHasDiscovered(QueryBuilder $qb, $value): void
     {
         if(!$this->user || $value === null)
             return;
@@ -75,7 +75,7 @@ class PetSpeciesFilterService
         $qb->setParameter('user', $this->user);
     }
 
-    public function filterName(QueryBuilder $qb, $value)
+    public function filterName(QueryBuilder $qb, $value): void
     {
         if(!$value)
             return;
@@ -86,7 +86,7 @@ class PetSpeciesFilterService
         ;
     }
 
-    public function filterFamily(QueryBuilder $qb, $value)
+    public function filterFamily(QueryBuilder $qb, $value): void
     {
         $qb
             ->andWhere('s.family=:family')

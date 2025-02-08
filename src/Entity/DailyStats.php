@@ -426,9 +426,6 @@ class DailyStats
         return $this->unlockedTrader3Day;
     }
 
-    /**
-     * @param int|null $unlockedTrader3Day
-     */
     public function setUnlockedTrader3Day(?int $unlockedTrader3Day): self
     {
         $this->unlockedTrader3Day = $unlockedTrader3Day;
@@ -443,9 +440,6 @@ class DailyStats
         return $this->unlockedTrader7Day;
     }
 
-    /**
-     * @param int|null $unlockedTrader7Day
-     */
     public function setUnlockedTrader7Day(?int $unlockedTrader7Day): self
     {
         $this->unlockedTrader7Day = $unlockedTrader7Day;
@@ -460,9 +454,6 @@ class DailyStats
         return $this->unlockedTrader28Day;
     }
 
-    /**
-     * @param int|null $unlockedTrader28Day
-     */
     public function setUnlockedTrader28Day(?int $unlockedTrader28Day): self
     {
         $this->unlockedTrader28Day = $unlockedTrader28Day;
@@ -477,9 +468,6 @@ class DailyStats
         return $this->unlockedTraderLifetime;
     }
 
-    /**
-     * @param int|null $unlockedTraderLifetime
-     */
     public function setUnlockedTraderLifetime(?int $unlockedTraderLifetime): self
     {
         $this->unlockedTraderLifetime = $unlockedTraderLifetime;
@@ -494,9 +482,6 @@ class DailyStats
         return $this->unlockedFireplaceLifetime;
     }
 
-    /**
-     * @param int|null $unlockedFireplaceLifetime
-     */
     public function setUnlockedFireplaceLifetime(?int $unlockedFireplaceLifetime): self
     {
         $this->unlockedFireplaceLifetime = $unlockedFireplaceLifetime;
@@ -511,9 +496,6 @@ class DailyStats
         return $this->unlockedGreenhouse1Day;
     }
 
-    /**
-     * @param int|null $unlockedGreenhouse1Day
-     */
     public function setUnlockedGreenhouse1Day(?int $unlockedGreenhouse1Day): self
     {
         $this->unlockedGreenhouse1Day = $unlockedGreenhouse1Day;
@@ -528,9 +510,6 @@ class DailyStats
         return $this->unlockedGreenhouse3Day;
     }
 
-    /**
-     * @param int|null $unlockedGreenhouse3Day
-     */
     public function setUnlockedGreenhouse3Day(?int $unlockedGreenhouse3Day): self
     {
         $this->unlockedGreenhouse3Day = $unlockedGreenhouse3Day;
@@ -545,9 +524,6 @@ class DailyStats
         return $this->unlockedGreenhouse7Day;
     }
 
-    /**
-     * @param int|null $unlockedGreenhouse7Day
-     */
     public function setUnlockedGreenhouse7Day(?int $unlockedGreenhouse7Day): self
     {
         $this->unlockedGreenhouse7Day = $unlockedGreenhouse7Day;
@@ -562,9 +538,6 @@ class DailyStats
         return $this->unlockedGreenhouse28Day;
     }
 
-    /**
-     * @param int|null $unlockedGreenhouse28Day
-     */
     public function setUnlockedGreenhouse28Day(?int $unlockedGreenhouse28Day): self
     {
         $this->unlockedGreenhouse28Day = $unlockedGreenhouse28Day;
@@ -579,9 +552,6 @@ class DailyStats
         return $this->unlockedGreenhouseLifetime;
     }
 
-    /**
-     * @param int|null $unlockedGreenhouseLifetime
-     */
     public function setUnlockedGreenhouseLifetime(?int $unlockedGreenhouseLifetime): self
     {
         $this->unlockedGreenhouseLifetime = $unlockedGreenhouseLifetime;
@@ -596,9 +566,6 @@ class DailyStats
         return $this->unlockedBeehive1Day;
     }
 
-    /**
-     * @param int|null $unlockedBeehive1Day
-     */
     public function setUnlockedBeehive1Day(?int $unlockedBeehive1Day): self
     {
         $this->unlockedBeehive1Day = $unlockedBeehive1Day;
@@ -613,9 +580,6 @@ class DailyStats
         return $this->unlockedBeehive3Day;
     }
 
-    /**
-     * @param int|null $unlockedBeehive3Day
-     */
     public function setUnlockedBeehive3Day(?int $unlockedBeehive3Day): self
     {
         $this->unlockedBeehive3Day = $unlockedBeehive3Day;
@@ -630,9 +594,6 @@ class DailyStats
         return $this->unlockedBeehive7Day;
     }
 
-    /**
-     * @param int|null $unlockedBeehive7Day
-     */
     public function setUnlockedBeehive7Day(?int $unlockedBeehive7Day): self
     {
         $this->unlockedBeehive7Day = $unlockedBeehive7Day;
@@ -647,9 +608,6 @@ class DailyStats
         return $this->unlockedBeehive28Day;
     }
 
-    /**
-     * @param int|null $unlockedBeehive28Day
-     */
     public function setUnlockedBeehive28Day(?int $unlockedBeehive28Day): self
     {
         $this->unlockedBeehive28Day = $unlockedBeehive28Day;
@@ -664,9 +622,6 @@ class DailyStats
         return $this->unlockedBeehiveLifetime;
     }
 
-    /**
-     * @param int|null $unlockedBeehiveLifetime
-     */
     public function setUnlockedBeehiveLifetime(?int $unlockedBeehiveLifetime): self
     {
         $this->unlockedBeehiveLifetime = $unlockedBeehiveLifetime;
@@ -681,9 +636,6 @@ class DailyStats
         return $this->unlockedPortal1Day;
     }
 
-    /**
-     * @param int|null $unlockedPortal1Day
-     */
     public function setUnlockedPortal1Day(?int $unlockedPortal1Day): self
     {
         $this->unlockedPortal1Day = $unlockedPortal1Day;
@@ -698,9 +650,6 @@ class DailyStats
         return $this->unlockedPortal3Day;
     }
 
-    /**
-     * @param int|null $unlockedPortal3Day
-     */
     public function setUnlockedPortal3Day(?int $unlockedPortal3Day): self
     {
         $this->unlockedPortal3Day = $unlockedPortal3Day;
@@ -715,9 +664,6 @@ class DailyStats
         return $this->unlockedPortal7Day;
     }
 
-    /**
-     * @param int|null $unlockedPortal7Day
-     */
     public function setUnlockedPortal7Day(?int $unlockedPortal7Day): self
     {
         $this->unlockedPortal7Day = $unlockedPortal7Day;
@@ -732,9 +678,6 @@ class DailyStats
         return $this->unlockedPortal28Day;
     }
 
-    /**
-     * @param int|null $unlockedPortal28Day
-     */
     public function setUnlockedPortal28Day(?int $unlockedPortal28Day): self
     {
         $this->unlockedPortal28Day = $unlockedPortal28Day;
@@ -749,9 +692,6 @@ class DailyStats
         return $this->unlockedPortalLifetime;
     }
 
-    /**
-     * @param int|null $unlockedPortalLifetime
-     */
     public function setUnlockedPortalLifetime(?int $unlockedPortalLifetime): self
     {
         $this->unlockedPortalLifetime = $unlockedPortalLifetime;

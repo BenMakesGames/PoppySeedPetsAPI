@@ -23,7 +23,6 @@ class PlazaService
     }
 
     /**
-     * @param User $user
      * @return AvailableHolidayBox[]
      */
     public function getAvailableHolidayBoxes(User $user): array

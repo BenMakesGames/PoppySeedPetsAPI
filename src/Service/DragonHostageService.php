@@ -31,7 +31,7 @@ class DragonHostageService
 
         return (new DragonHostage())
             ->setType($type)
-            ->setAppearance(1) // later, make more appearances: $this->rng->rngNextInt(1, 3)
+            ->setAppearance('1') // later, make more appearances: $this->rng->rngNextInt(1, 3)
             ->setColorA($crownColor)
             ->setColorB($creatureColor)
             ->setName($name)

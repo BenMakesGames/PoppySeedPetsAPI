@@ -26,25 +26,22 @@ class Filterer
         $this->filterWithoutCallbackMap = $filtersWithoutCallbacks;
     }
 
-    public function setPageSize(int $pageSize)
+    public function setPageSize(int $pageSize): void
     {
         $this->pageSize = $pageSize;
     }
 
-    public function addDefaultFilter(string $key, $value)
+    public function addDefaultFilter(string $key, $value): void
     {
         $this->defaultFilters[$key] = $value;
     }
 
-    public function addRequiredFilter(string $key, $value)
+    public function addRequiredFilter(string $key, $value): void
     {
         $this->requiredFilters[$key] = $value;
     }
 
-    /**
-     * @param FilterService $filterService
-     */
-    public function filter($filterService, ParameterBag $params): FilterResults
+    public function filter(FilterService $filterService, ParameterBag $params): FilterResults
     {
         // sanitize parameters:
 

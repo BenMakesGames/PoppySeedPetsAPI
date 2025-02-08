@@ -42,7 +42,7 @@ class PregnancyService
     {
     }
 
-    public function getPregnant(Pet $pet1, Pet $pet2)
+    public function getPregnant(Pet $pet1, Pet $pet2): void
     {
         if ($pet1->getIsFertile() && $pet1->hasMerit(MeritEnum::VOLAGAMY) && !$pet1->getPregnancy())
             $this->createPregnancy($pet1, $pet2);
@@ -51,7 +51,7 @@ class PregnancyService
             $this->createPregnancy($pet2, $pet1);
     }
 
-    private function createPregnancy(Pet $mother, Pet $father)
+    private function createPregnancy(Pet $mother, Pet $father): void
     {
         $r = $this->squirrel3->rngNextInt(1, 100);
 
@@ -84,7 +84,7 @@ class PregnancyService
         $this->em->persist($petPregnancy);
     }
 
-    public function getPregnantViaSpiritCompanion(Pet $mother)
+    public function getPregnantViaSpiritCompanion(Pet $mother): void
     {
         if(!$mother->getSpiritCompanion())
             throw new \Exception("Spirit companion not found! This is a bug! Ben has been notified...");
@@ -125,10 +125,7 @@ class PregnancyService
         return $this->squirrel3->rngNextFromArray($species);
     }
 
-    /**
-     * @param Pet $pet
-     */
-    public function giveBirth(Pet $pet)
+    public function giveBirth(Pet $pet): void
     {
         $user = $pet->getOwner();
         $pregnancy = $pet->getPregnancy();
@@ -369,7 +366,7 @@ class PregnancyService
      * @param Pet $mother
      * @param Pet $father
      */
-    private function createParentalRelationships(Pet $baby, Pet $mother, ?Pet $father)
+    private function createParentalRelationships(Pet $baby, Pet $mother, ?Pet $father): void
     {
         $petWithMother = (new PetRelationship())
             ->setRelationship($mother)

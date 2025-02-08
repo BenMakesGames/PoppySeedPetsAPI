@@ -20,10 +20,7 @@ class FieldGuideService
     {
     }
 
-    /**
-     * @param string|FieldGuideEntry $entry
-     */
-    public function maybeUnlock(User $user, $entry, string $unlockComment)
+    public function maybeUnlock(User $user, string|FieldGuideEntry $entry, string $unlockComment): void
     {
         if(is_string($entry))
             $entry = $this->em->getRepository(FieldGuideEntry::class)->findOneBy([ 'name' => $entry ]);
@@ -46,10 +43,7 @@ class FieldGuideService
             $this->responseService->addFlashMessage($message);
     }
 
-    /**
-     * @param string|FieldGuideEntry $entry
-     */
-    public function hasUnlocked(User $user, $entry): bool
+    public function hasUnlocked(User $user, string|FieldGuideEntry $entry): bool
     {
         if(is_string($entry))
             $entry = $this->em->getRepository(FieldGuideEntry::class)->findOneBy([ 'name' => $entry ]);

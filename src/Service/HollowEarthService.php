@@ -188,8 +188,6 @@ class HollowEarthService
     }
 
     /**
-     * @param HollowEarthPlayer $player
-     * @param int $id
      * @throws EnumInvalidValueException
      */
     public function moveTo(HollowEarthPlayer $player, int $id): void
@@ -214,7 +212,6 @@ class HollowEarthService
     }
 
     /**
-     * @param HollowEarthPlayer $player
      * @throws EnumInvalidValueException
      */
     public function advancePlayer(HollowEarthPlayer $player): void
@@ -278,8 +275,6 @@ class HollowEarthService
     }
 
     /**
-     * @param HollowEarthPlayer $player
-     * @param HollowEarthTile $tile
      * @throws EnumInvalidValueException
      */
     private function enterTile(HollowEarthPlayer $player, HollowEarthTile $tile): void
@@ -342,8 +337,6 @@ class HollowEarthService
     }
 
     /**
-     * @param HollowEarthPlayer $player
-     * @param array $event
      * @throws EnumInvalidValueException
      */
     public function doImmediateEvent(HollowEarthPlayer $player, array $event): void

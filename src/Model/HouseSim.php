@@ -27,7 +27,7 @@ class HouseSim implements IHouseSim
     /**
      * @param Inventory[] $inventory
      */
-    private function setInventory(array $inventory)
+    private function setInventory(array $inventory): void
     {
         $this->inventory = $inventory;
 
@@ -39,7 +39,7 @@ class HouseSim implements IHouseSim
     /**
      * @param Inventory[] $inventory
      */
-    private function addInventoryToItemQuantities(array $inventory)
+    private function addInventoryToItemQuantities(array $inventory): void
     {
         foreach($inventory as $i)
         {
@@ -57,9 +57,6 @@ class HouseSim implements IHouseSim
         return count($this->inventory);
     }
 
-    /**
-     * @param HouseSimRecipe $recipe
-     */
     public function hasInventory(HouseSimRecipe $recipe): bool
     {
         foreach($recipe->ingredients as $ingredient)
@@ -136,10 +133,7 @@ class HouseSim implements IHouseSim
         return $itemToRemove->getItem()->getName();
     }
 
-    /**
-     * @param Item|string $item
-     */
-    public function loseItem($item, $quantity = 1)
+    public function loseItem(Item|string $item, int $quantity = 1): void
     {
         if(!is_string($item))
             $item = $item->getName();

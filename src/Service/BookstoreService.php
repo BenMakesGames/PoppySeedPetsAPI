@@ -360,7 +360,6 @@ class BookstoreService
     }
 
     /**
-     * @param User $user
      * @return array|array[]
      */
     public function getBooks(User $user): array
@@ -371,7 +370,6 @@ class BookstoreService
     }
 
     /**
-     * @param array $bookPrices
      * @return array|array[]
      */
     private function serializeShopInventory(array $inventory): array

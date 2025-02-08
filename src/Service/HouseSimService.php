@@ -29,7 +29,7 @@ class HouseSimService
         $this->houseState = new NoHouseSim();
     }
 
-    public function begin(EntityManagerInterface $em, User $user)
+    public function begin(EntityManagerInterface $em, User $user): void
     {
         $time = microtime(true);
 
@@ -44,7 +44,7 @@ class HouseSimService
         $this->petIdsThatRanSocialTime = [];
     }
 
-    public function end(EntityManagerInterface $em)
+    public function end(EntityManagerInterface $em): void
     {
         $toRemove = $this->houseState->getInventoryToRemove();
         $toPersist = $this->houseState->getInventoryToPersist();
@@ -58,7 +58,7 @@ class HouseSimService
         $this->houseState = new NoHouseSim();
     }
 
-    public function getState()
+    public function getState(): IHouseSim
     {
         return $this->houseState;
     }
@@ -79,7 +79,7 @@ class HouseSimService
         return $this->getState()->hasInventory(new HouseSimRecipe([ $ingredient ]));
     }
 
-    public function setPetHasRunSocialTime(Pet $pet)
+    public function setPetHasRunSocialTime(Pet $pet): void
     {
         $this->petIdsThatRanSocialTime[] = $pet->getId();
     }

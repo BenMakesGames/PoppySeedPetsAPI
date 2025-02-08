@@ -43,7 +43,7 @@ class HeartDimensionService
         return $pet->getAffectionAdventures() < $pet->getAffectionLevel();
     }
 
-    public function chanceOfHeartDimensionAdventure(Pet $pet): bool
+    public function chanceOfHeartDimensionAdventure(Pet $pet): int
     {
         if($pet->getAffectionAdventures() + 1 < 6)
             return 80;

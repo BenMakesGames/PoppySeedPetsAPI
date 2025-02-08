@@ -12,10 +12,7 @@ interface IHouseSim
     public function getInventoryCount(): int;
     public function hasInventory(HouseSimRecipe $recipe): bool;
 
-    /**
-     * @param Item|string $item
-     */
-    public function loseItem($item, $quantity = 1);
+    public function loseItem(Item|string $item, int $quantity = 1);
 
     /**
      * @param Item[]|string[] $items

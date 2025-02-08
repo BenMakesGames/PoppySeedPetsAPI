@@ -331,7 +331,7 @@ class SeekingClaymoreController extends AbstractController
         return self::generateResponse($responseService, $bucket, $items);
     }
 
-    private static function getBucketOrThrow(EntityManagerInterface $em, User $user, string $location): Inventory
+    private static function getBucketOrThrow(EntityManagerInterface $em, User $user, int $location): Inventory
     {
         $bucket = InventoryRepository::findAnyOneFromItemGroup($em, $user, 'Bucket', [ $location ]);
 

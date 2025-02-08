@@ -16,23 +16,23 @@ class ItemHat
 
     #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"])]
     #[ORM\Column(type: 'float')]
-    private $headX = 0;
+    private float $headX = 0;
 
     #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"])]
     #[ORM\Column(type: 'float')]
-    private $headY = 0;
+    private float $headY = 0;
 
     #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"])]
     #[ORM\Column(type: 'float')]
-    private $headAngle = 0;
+    private float $headAngle = 0;
 
     #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"])]
     #[ORM\Column(type: 'float')]
-    private $headScale = 0;
+    private float $headScale = 0;
 
     #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet"])]
     #[ORM\Column(type: 'boolean')]
-    private $headAngleFixed = 0;
+    private bool $headAngleFixed = false;
 
     #[ORM\OneToOne(targetEntity: Item::class, mappedBy: 'hat')]
     private $item;
@@ -90,7 +90,7 @@ class ItemHat
         return $this;
     }
 
-    public function getHeadAngleFixed(): ?bool
+    public function getHeadAngleFixed(): bool
     {
         return $this->headAngleFixed;
     }

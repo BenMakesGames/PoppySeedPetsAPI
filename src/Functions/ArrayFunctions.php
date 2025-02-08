@@ -40,7 +40,7 @@ final class ArrayFunctions
         return true;
     }
 
-    public static function unique(iterable $array, callable $delegate)
+    public static function unique(iterable $array, callable $delegate): array
     {
         $result = [];
 
@@ -58,7 +58,7 @@ final class ArrayFunctions
     /**
      * @return mixed|null
      */
-    public static function find_one(iterable $array, callable $delegate)
+    public static function find_one(iterable $array, callable $delegate): mixed
     {
         foreach($array as $item)
         {
@@ -69,10 +69,7 @@ final class ArrayFunctions
         return null;
     }
 
-    /**
-     * @return array
-     */
-    public static function find_n(iterable $array, callable $delegate, int $quantity)
+    public static function find_n(iterable $array, callable $delegate, int $quantity): array
     {
         $results = [];
 
@@ -177,7 +174,7 @@ final class ArrayFunctions
         return $list;
     }
 
-    public static function sum(array $values, callable $getter)
+    public static function sum(array $values, callable $getter): mixed
     {
         return array_reduce(
             $values,
@@ -186,7 +183,7 @@ final class ArrayFunctions
         );
     }
 
-    public static function average(array $values, callable $getter)
+    public static function average(array $values, callable $getter): float
     {
         return ArrayFunctions::sum($values, $getter) / count($values);
     }
@@ -244,7 +241,7 @@ final class ArrayFunctions
      *
      * @return array All items in $values that do not appear in $toExclude; the $getter is used to compare items.
      */
-    public static function except(array $values, array $toExclude, callable $getter)
+    public static function except(array $values, array $toExclude, callable $getter): array
     {
         $filteredValues = [];
         $excludeValues = array_map(fn($v) => $getter($v), $toExclude);

@@ -76,7 +76,7 @@ abstract class PoppySeedPetsCommand extends Command
         return $this->ask($question);
     }
 
-    protected function askBool(string $prompt, int $defaultValue): int
+    protected function askBool(string $prompt, bool $defaultValue): bool
     {
         return $this->confirm($prompt, $defaultValue);
     }

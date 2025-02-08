@@ -74,11 +74,7 @@ final class SimpleStatement
         $this->statement = $statement;
     }
 
-    /**
-     * @param string|callable $classNameOrMappingFunction
-     * @return array
-     */
-    public function mapResults($classNameOrMappingFunction): array
+    public function mapResults(string|callable $classNameOrMappingFunction): array
     {
         if(is_callable($classNameOrMappingFunction))
             return $this->statement->fetchAll(\PDO::FETCH_FUNC, $classNameOrMappingFunction);

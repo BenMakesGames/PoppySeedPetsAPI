@@ -23,10 +23,7 @@ class MuseumService
 
     private $donatedItemsThisRequest = [];
 
-    /**
-     * @param string|number|Item $item
-     */
-    public function forceDonateItem(User $user, $item, ?string $comment, ?User $createdBy = null): bool
+    public function forceDonateItem(User $user, string|number|Item $item, ?string $comment, ?User $createdBy = null): bool
     {
         if(is_string($item))
             $item = ItemRepository::findOneByName($this->em, $item);

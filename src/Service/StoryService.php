@@ -281,7 +281,6 @@ class StoryService
     }
 
     /**
-     * @param int $newStep
      * @throws \Exception
      */
     private function setStep(int $newStep): void

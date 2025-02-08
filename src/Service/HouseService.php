@@ -30,7 +30,7 @@ class HouseService
     {
     }
 
-    public function needsToBeRun(User $user)
+    public function needsToBeRun(User $user): bool
     {
         $query = $this->em->getRepository(Pet::class)->createQueryBuilder('p')
             ->select('p.id')
@@ -54,7 +54,7 @@ class HouseService
         return $this->cache->getItem('User #' . $user->getId() . ' - Running House Hours');
     }
 
-    public function run(User $user)
+    public function run(User $user): void
     {
         $item = $this->getHouseRunLock($user);
 
@@ -168,7 +168,7 @@ class HouseService
         return $petsRemaining;
     }
 
-    private function petCanRunSocialTime(Pet $pet)
+    private function petCanRunSocialTime(Pet $pet): bool
     {
         return
             $pet->getHouseTime()->getSocialEnergy() >= PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT &&

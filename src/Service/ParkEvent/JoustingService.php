@@ -61,7 +61,7 @@ class JoustingService implements ParkEventInterface
         return $petCount === 16 || $petCount === 32;
     }
 
-    public function getPetSkill(Pet $pet)
+    public function getPetSkill(Pet $pet): float
     {
         return $pet->getSkills()->getStrength() * 3 + $pet->getSkills()->getStamina() * 2 + $pet->getSkills()->getDexterity() + $pet->getSkills()->getBrawl() / 2;
     }
@@ -128,7 +128,7 @@ class JoustingService implements ParkEventInterface
         return $parkEvent;
     }
 
-    private function doRound()
+    private function doRound(): void
     {
         $this->results .= 'Round ' . $this->round . "\n---\n\n";
 
@@ -374,7 +374,7 @@ class JoustingService implements ParkEventInterface
         return $description;
     }
 
-    private function awardExp()
+    private function awardExp(): void
     {
         $affectionTotal = 0;
 
@@ -401,7 +401,7 @@ class JoustingService implements ParkEventInterface
         }
     }
 
-    private function rewardPet(JoustingTeam $team, Pet $pet, Pet $teamMate, int $firstPlaceMoneys, int $secondPlaceMoneys)
+    private function rewardPet(JoustingTeam $team, Pet $pet, Pet $teamMate, int $firstPlaceMoneys, int $secondPlaceMoneys): void
     {
         $changes = new PetChanges($pet);
 

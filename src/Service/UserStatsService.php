@@ -18,7 +18,7 @@ class UserStatsService
     {
     }
 
-    private static function getCacheKey(User $user, string $statName)
+    private static function getCacheKey(User $user, string $statName): string
     {
         return 'UserStats:' . $user->getId() . '-' . $statName;
     }

@@ -250,7 +250,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
             $hat->setHeadScale($this->askFloat('Hat scale', $hat->getHeadScale()));
             $hat->setHeadX($this->askFloat('Head X', $hat->getHeadX()));
             $hat->setHeadY($this->askFloat('Head Y', $hat->getHeadY()));
-            $hat->setHeadAngle($this->askInt('Hat angle', $hat->getHeadAngle()));
+            $hat->setHeadAngle($this->askFloat('Hat angle', $hat->getHeadAngle()));
             $hat->setHeadAngleFixed($this->confirm('Hat angle fixed?', $hat->getHeadAngleFixed()));
         }
         else

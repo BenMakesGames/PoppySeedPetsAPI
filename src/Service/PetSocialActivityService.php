@@ -530,8 +530,6 @@ class PetSocialActivityService
     }
 
     /**
-     * @param PetRelationship $pet
-     * @param PetRelationship $friend
      * @throws EnumInvalidValueException
      */
     private function hangOutWithOtherPet(PetRelationship $pet, PetRelationship $friend)

@@ -130,6 +130,6 @@ class SellController extends AbstractController
 
     private static function getInventoryKey(Inventory $inventory): string
     {
-        return $inventory->getItem()->getId();
+        return (string)$inventory->getItem()->getId();
     }
 }

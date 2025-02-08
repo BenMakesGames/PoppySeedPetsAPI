@@ -48,7 +48,7 @@ class CoinSmithingService
         return $activityLog;
     }
 
-    public function makeSilverCoins(ComputedPetSkills $petWithSkills, Item $triedToMake)
+    public function makeSilverCoins(ComputedPetSkills $petWithSkills, Item $triedToMake): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 
@@ -70,7 +70,7 @@ class CoinSmithingService
         return $activityLog;
     }
 
-    public function makeGoldCoins(ComputedPetSkills $petWithSkills, Item $triedToMake)
+    public function makeGoldCoins(ComputedPetSkills $petWithSkills, Item $triedToMake): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 

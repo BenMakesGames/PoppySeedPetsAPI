@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\Greenhouse;
 
 use App\Entity\Pet;
+use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Service\GreenhouseService;
 use App\Service\PetAssistantService;
@@ -22,6 +23,7 @@ class AssignHelperController extends AbstractController
         Pet $pet, ResponseService $responseService, EntityManagerInterface $em, GreenhouseService $greenhouseService
     )
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         PetAssistantService::helpGreenhouse($user, $pet);

@@ -43,6 +43,10 @@ class InventoryRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+     * @param int[] $locationsToCheck
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public static function findAnyOneFromItemGroup(EntityManagerInterface $em, User $owner, string $itemGroupName, array $locationsToCheck = Inventory::CONSUMABLE_LOCATIONS): ?Inventory
     {
         return $em->getRepository(Inventory::class)->createQueryBuilder('i')

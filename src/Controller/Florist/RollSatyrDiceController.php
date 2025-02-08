@@ -100,7 +100,7 @@ class RollSatyrDiceController extends AbstractController
         }
 
         $dayOfTheWeek = strtolower($clock->now->format('l'));
-        $dayOfTheWeekCoin = self::dayOfTheWeekCoin($clock->now->format('w'));
+        $dayOfTheWeekCoin = self::dayOfTheWeekCoin((int)$clock->now->format('w'));
 
         if($r1 === 0) $items[] = $dayOfTheWeekCoin;
         if($r2 === 0) $items[] = $dayOfTheWeekCoin;

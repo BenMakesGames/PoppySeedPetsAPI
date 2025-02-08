@@ -215,7 +215,7 @@ class AdoptionService
                     'whoa!',
                     'ooooh!',
                     'omg!',
-                ][RandomFunctions::squirrel3Noise($i, $this->clock->now->format('YNmd')) % 5];
+                ][RandomFunctions::squirrel3Noise($i, (int)$this->clock->now->format('YNmd')) % 5];
             }
             else
                 $pet->species = $squirrel3->rngNextFromArray($allSpecies);
@@ -241,12 +241,12 @@ class AdoptionService
         return RandomFunctions::squirrel3Noise($year, $month) % $daysThisMonth + 1;
     }
 
-    public static function isRarePetDay(\DateTimeImmutable $dt)
+    public static function isRarePetDay(\DateTimeImmutable $dt): bool
     {
         return count(self::getRarePetIndicies($dt)) > 0;
     }
 
-    public static function getRarePetIndicies(\DateTimeImmutable $dt)
+    public static function getRarePetIndicies(\DateTimeImmutable $dt): array
     {
         $rarePetDayOfMonth = self::getRarePetDayForMonth($dt);
 

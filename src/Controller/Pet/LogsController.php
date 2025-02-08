@@ -58,13 +58,13 @@ class LogsController extends AbstractController
 
     private static function findLogsForPetByDate(EntityManagerInterface $em, Pet $pet, int $year, int $month): array
     {
-        $firstDayOfMonth = $year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-01';
+        $firstDayOfMonth = $year . '-' . str_pad((string)$month, 2, '0', STR_PAD_LEFT) . '-01';
 
         // ... >_>
         if($month == 12)
             $firstDayOfNextMonth = ($year + 1) . '-01-01';
         else
-            $firstDayOfNextMonth = $year . '-' . str_pad($month + 1, 2, '0', STR_PAD_LEFT) . '-01';
+            $firstDayOfNextMonth = $year . '-' . str_pad((string)($month + 1), 2, '0', STR_PAD_LEFT) . '-01';
 
         // TODO: replace with SimpleDb access
         $qb = $em->getRepository(PetActivityLog::class)->createQueryBuilder('l')

@@ -17,6 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: 'App\Repository\InventoryRepository')]
 class Inventory
 {
+    /** @var int[] */
     public const CONSUMABLE_LOCATIONS = [
         LocationEnum::HOME,
         LocationEnum::BASEMENT

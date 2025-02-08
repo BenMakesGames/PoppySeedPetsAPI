@@ -19,10 +19,7 @@ class NoHouseSim implements IHouseSim
         NoHouseSim::throwException();
     }
 
-    /**
-     * @param Item|string $item
-     */
-    public function loseItem($item, $quantity = 1)
+    public function loseItem(Item|string $item, int $quantity = 1)
     {
         NoHouseSim::throwException();
     }

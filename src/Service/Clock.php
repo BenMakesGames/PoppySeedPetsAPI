@@ -12,7 +12,7 @@ class Clock
         $this->now = new \DateTimeImmutable();
     }
 
-    public function getMonthAndDay()
+    public function getMonthAndDay(): int
     {
         return (int)$this->now->format('nd');
     }

@@ -83,9 +83,7 @@ class DragonService
     }
 
     /**
-     * @param Dragon $dragon
      * @param int[] $itemIds
-     * @return string
      */
     public function giveTreasures(User $user, array $itemIds): string
     {
