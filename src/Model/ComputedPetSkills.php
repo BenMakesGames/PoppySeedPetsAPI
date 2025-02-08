@@ -13,7 +13,6 @@ class ComputedPetSkills
 {
     public function __construct(private readonly Pet $pet)
     {
-        $this->pet = $pet;
     }
 
     public function getPet(): Pet
