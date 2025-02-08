@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
@@ -263,7 +265,7 @@ class GatheringHolidayAdventureService
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% was attacked by some kind of ' . $adjective . ', fish-rabbit hybrid thing! ' . $pet->getName() . ' couldn\'t land a single attack, and ran away!');
 
-            $this->petExperienceService->gainExp($pet, ceil($level / 2), [ PetSkillEnum::BRAWL ], $activityLog);
+            $this->petExperienceService->gainExp($pet, (int)ceil($level / 2), [ PetSkillEnum::BRAWL ], $activityLog);
 
             return $activityLog;
         }

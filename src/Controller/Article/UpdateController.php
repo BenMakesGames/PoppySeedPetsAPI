@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Article;
 
 use App\Annotations\DoesNotRequireHouseHours;
@@ -28,9 +30,9 @@ class UpdateController extends AdminController
     {
         $this->adminIPsOnly($request);
 
-        $title = trim($request->request->get('title', ''));
-        $body = trim($request->request->get('body', ''));
-        $imageUrl = trim($request->request->get('imageUrl', ''));
+        $title = trim($request->request->getString('title'));
+        $body = trim($request->request->getString('body'));
+        $imageUrl = trim($request->request->getString('imageUrl'));
 
         if($title === '' || $body === '')
             throw new PSPFormValidationException('title and body are both required.');

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service\PetActivity\Crafting;
 
 use App\Entity\PetActivityLog;
@@ -129,7 +131,7 @@ class SmithingService
                 $possibilities[] = new ActivityCallback($this->ironSmithingService->createGrapplingHook(...), 10);
 
             if($this->houseSimService->hasInventory('Dark Matter'))
-                $possibilities[] = new ActivityCallback($this->ironSmithingService->createHeavyTool(...), $petWithSkills->getStrength()->getTotal() >= 3 ? $weight : ceil($weight / 2));
+                $possibilities[] = new ActivityCallback($this->ironSmithingService->createHeavyTool(...), $petWithSkills->getStrength()->getTotal() >= 3 ? $weight : (int)ceil($weight / 2));
 
             if($this->houseSimService->hasInventory('Mirror'))
                 $possibilities[] = new ActivityCallback($this->ironSmithingService->createMirrorShield(...), $weight);
@@ -214,7 +216,7 @@ class SmithingService
         {
             $possibilities[] = new ActivityCallback($this->goldSmithingService->createGoldKey(...), $weight);
 
-            $possibilities[] = new ActivityCallback($this->goldSmithingService->createGoldTuningFork(...), ceil($weight / 2));
+            $possibilities[] = new ActivityCallback($this->goldSmithingService->createGoldTuningFork(...), (int)ceil($weight / 2));
 
             if($this->houseSimService->hasInventory('Mericarp'))
                 $possibilities[] = new ActivityCallback($this->goldSmithingService->createGildedMericarp(...), 10);

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\CookingBuddy;
 
 use App\Entity\Inventory;
@@ -65,7 +67,7 @@ class GetKnownRecipes extends AbstractController
         }
 
         $unfilteredTotal = count($knownRecipes);
-        $pageCount = ceil($unfilteredTotal / 20);
+        $pageCount = (int)ceil($unfilteredTotal / 20);
 
         $page = max(0, min($request->query->getInt('page', 0), $pageCount));
 

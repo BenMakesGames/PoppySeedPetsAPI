@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
@@ -45,7 +47,7 @@ class DeepSeaService
     public function adventure(ComputedPetSkills $petWithSkills): ?PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $maxSkill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2);
+        $maxSkill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - (int)ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2);
 
         $maxSkill = NumberFunctions::clamp($maxSkill, 1, 18);
 
@@ -131,7 +133,7 @@ class DeepSeaService
     private function foundSandOrSeaweed(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - (int)ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
         if($roll >= 10)
         {
@@ -183,7 +185,7 @@ class DeepSeaService
     private function fishedJellyFish(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - (int)ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
         if($roll >= 12)
         {
@@ -232,7 +234,7 @@ class DeepSeaService
     private function exploredReef(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - (int)ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
         if($roll >= 13)
         {
@@ -278,7 +280,7 @@ class DeepSeaService
     private function fishedHexactinellid(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - (int)ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
         if($petWithSkills->getCanSeeInTheDark()->getTotal() <= 0)
         {
@@ -326,7 +328,7 @@ class DeepSeaService
 
         $pet->increaseFood(-1);
 
-        $roll = $this->rng->rngNextInt(1, 20 + max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getDexterity()->getTotal()) + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
+        $roll = $this->rng->rngNextInt(1, 20 + max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getDexterity()->getTotal()) + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - (int)ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
         if($roll >= 16)
         {
@@ -420,7 +422,7 @@ class DeepSeaService
             ;
         }
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() - (int)ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
         if($roll >= 17)
         {
@@ -479,7 +481,7 @@ class DeepSeaService
     private function findSunkenShip(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() - (int)ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2));
 
         if($roll >= 18)
         {

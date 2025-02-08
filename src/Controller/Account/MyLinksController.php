@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Controller\Account;
 
@@ -61,7 +62,7 @@ class MyLinksController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $website = trim($request->request->get('website'));
+        $website = trim($request->request->getString('website'));
         $nameOrId = trim($request->request->get('nameOrId'));
         $visibility = trim($request->request->get('visibility'));
 

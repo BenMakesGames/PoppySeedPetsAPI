@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Account;
 
 use App\Entity\User;
@@ -29,8 +31,8 @@ class LogInController extends AbstractController
         EntityManagerInterface $em, ResponseService $responseService
     )
     {
-        $email = $request->request->get('email');
-        $password = $request->request->get('passphrase');
+        $email = $request->request->getString('email');
+        $password = $request->request->getString('passphrase');
         $sessionHours = $request->request->getBoolean('rememberMe') ? (7 * 24) : 1;
 
         if(!$email || !$password)

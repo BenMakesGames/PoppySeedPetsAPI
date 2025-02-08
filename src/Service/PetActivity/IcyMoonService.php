@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
@@ -46,7 +48,7 @@ class IcyMoonService
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $maxSkill = 5 + ceil(($petWithSkills->getStamina()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal()) / 2) - $pet->getAlcohol();
+        $maxSkill = 5 + (int)ceil(($petWithSkills->getStamina()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal()) / 2) - $pet->getAlcohol();
 
         $maxSkill = NumberFunctions::clamp($maxSkill, 1, 15);
 

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
@@ -38,7 +40,7 @@ class MagicBeanstalkService
     public function adventure(ComputedPetSkills $petWithSkills)
     {
         $pet = $petWithSkills->getPet();
-        $maxSkill = 10 + floor(($petWithSkills->getStrength()->getTotal() + $petWithSkills->getStamina()->getTotal()) * 1.5) + ceil($petWithSkills->getNature()->getTotal() / 2) + $petWithSkills->getClimbingBonus()->getTotal() - $pet->getAlcohol() * 2;
+        $maxSkill = 10 + (int)floor(($petWithSkills->getStrength()->getTotal() + $petWithSkills->getStamina()->getTotal()) * 1.5) + (int)ceil($petWithSkills->getNature()->getTotal() / 2) + $petWithSkills->getClimbingBonus()->getTotal() - $pet->getAlcohol() * 2;
 
         $maxSkill = NumberFunctions::clamp($maxSkill, 1, 21);
 

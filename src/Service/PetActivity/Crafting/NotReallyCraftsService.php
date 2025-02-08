@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service\PetActivity\Crafting;
 
 use App\Entity\PetActivityLog;

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service\Filter;
 
 use App\Exceptions\PSPFormValidationException;
@@ -94,7 +96,7 @@ class Filterer
         $paginator = new Paginator($qb->getQuery());
 
         $numResults = count($paginator);
-        $lastPage = ceil($numResults / $this->pageSize);
+        $lastPage = (int)ceil($numResults / $this->pageSize);
 
         if($page < -$lastPage)
             $page = 0;

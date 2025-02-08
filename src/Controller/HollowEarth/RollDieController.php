@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\HollowEarth;
 
 use App\Entity\User;
@@ -44,7 +46,7 @@ class RollDieController extends AbstractController
         if($player->getCurrentAction() !== null || $player->getMovesRemaining() > 0)
             throw new PSPInvalidOperationException('Cannot roll a die at this time...');
 
-        $itemName = $request->request->get('die', '');
+        $itemName = $request->request->getString('die');
 
         if(!array_key_exists($itemName, HollowEarthService::DICE_ITEMS))
             throw new PSPFormValidationException('You must specify a die to roll.');

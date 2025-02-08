@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Controller\Item\ChooseAPet;
 
@@ -47,9 +48,9 @@ class Molly extends AbstractController
         $petChanges = new PetChanges($pet);
         $skills = $pet->getComputedSkills();
 
-        $quantity = 2 + floor(($skills->getNature()->getTotal() + $skills->getDexterity()->getTotal()) / 3);
+        $quantity = 2 + (int)floor(($skills->getNature()->getTotal() + $skills->getDexterity()->getTotal()) / 3);
 
-        $milkQuantity = $quantity < 4 ? 1 : $rng->rngNextInt(1, floor($quantity / 2));
+        $milkQuantity = $quantity < 4 ? 1 : $rng->rngNextInt(1, (int)floor($quantity / 2));
         $fluffQuantity = max(1, $quantity - $milkQuantity);
 
         $loot = [];

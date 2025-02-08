@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Account;
 
 use App\Entity\PetSpecies;
@@ -37,14 +39,14 @@ class RegisterController extends AbstractController
     )
     {
         $theme = $request->request->all('theme');
-        $petName = ProfanityFilterFunctions::filter(trim($request->request->get('petName')));
-        $petImage = $request->request->get('petImage');
+        $petName = ProfanityFilterFunctions::filter(trim($request->request->getString('petName')));
+        $petImage = $request->request->getString('petImage');
         $petColorA = $request->request->get('petColorA');
         $petColorB = $request->request->get('petColorB');
 
-        $name = ProfanityFilterFunctions::filter(trim($request->request->get('playerName')));
-        $email = $request->request->get('playerEmail');
-        $passPhrase = $request->request->get('playerPassphrase');
+        $name = ProfanityFilterFunctions::filter(trim($request->request->getString('playerName')));
+        $email = $request->request->getString('playerEmail');
+        $passPhrase = $request->request->getString('playerPassphrase');
 
         if($email === '')
             throw new PSPFormValidationException('Email address is required.');

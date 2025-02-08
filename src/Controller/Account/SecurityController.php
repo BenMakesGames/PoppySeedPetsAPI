@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Account;
 
 use App\Entity\PassphraseResetRequest;
@@ -35,10 +37,10 @@ class SecurityController extends AbstractController
         $user = $this->getUser();
         $oldEmail = $user->getEmail();
 
-        if(!$passwordEncoder->isPasswordValid($user, $request->request->get('confirmPassphrase')))
+        if(!$passwordEncoder->isPasswordValid($user, $request->request->getString('confirmPassphrase')))
             throw new AccessDeniedHttpException('Passphrase is not correct.');
 
-        $newEmail = trim($request->request->get('newEmail'));
+        $newEmail = trim($request->request->getString('newEmail'));
 
         if($newEmail === '' || !filter_var($newEmail, FILTER_VALIDATE_EMAIL))
             throw new PSPFormValidationException('Email address is not valid.');
@@ -81,10 +83,10 @@ class SecurityController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if(!$passwordEncoder->isPasswordValid($user, $request->request->get('confirmPassphrase')))
+        if(!$passwordEncoder->isPasswordValid($user, $request->request->getString('confirmPassphrase')))
             throw new AccessDeniedHttpException('Passphrase is not correct.');
 
-        $newPassphrase = trim($request->request->get('newPassphrase'));
+        $newPassphrase = trim($request->request->getString('newPassphrase'));
 
         if(\mb_strlen($newPassphrase) < 10)
             throw new PSPFormValidationException('Passphrase must be at least 10 characters long.');
@@ -112,7 +114,7 @@ class SecurityController extends AbstractController
         PassphraseResetService $passphraseResetService
     )
     {
-        $email = trim($request->request->get('email', ''));
+        $email = trim($request->request->getString('email'));
 
         if($email === '')
             throw new PSPFormValidationException('E-mail address is required.');
@@ -139,7 +141,7 @@ class SecurityController extends AbstractController
         ResponseService $responseService
     )
     {
-        $passphrase = trim($request->request->get('passphrase', ''));
+        $passphrase = trim($request->request->getString('passphrase'));
 
         if(\mb_strlen($passphrase) < 10)
             throw new PSPFormValidationException('Passphrase must be at least 10 characters long. (Pro tip: try using an actual phrase, or short sentence!)');

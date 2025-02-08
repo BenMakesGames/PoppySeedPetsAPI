@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Zoologist;
 
 use App\Entity\Pet;
@@ -30,7 +32,7 @@ class ReplaceSpeciesController extends AbstractController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Zoologist))
             throw new PSPNotUnlockedException('Zoologist');
 
-        $petId = $request->request->get('petId', 0);
+        $petId = $request->request->getInt('petId');
 
         if($petId <= 0)
             throw new PSPFormValidationException('No pets were selected.');

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Functions;
 
 // code from http://www.david-greve.de/luach-code/jewish-php.html, with several modifications for the purposes of
@@ -62,16 +64,16 @@ class JewishCalendarFunctions
      */
     public static function getJewishDate(\DateTimeInterface $dt): array
     {
-        $jdCurrent = gregoriantojd($dt->format('m'), $dt->format('d'), $dt->format('Y'));
+        $jdCurrent = gregoriantojd((int)$dt->format('m'), (int)$dt->format('d'), (int)$dt->format('Y'));
         $jewishDate = jdtojewish($jdCurrent);
         list($jewishMonth, $jewishDay, $jewishYear) = explode('/', $jewishDate);
 
-        return [ $jewishYear, $jewishMonth, $jewishDay ];
+        return [ (int)$jewishYear, (int)$jewishMonth, (int)$jewishDay ];
     }
 
     public static function isHanukkah(\DateTimeInterface $dt)
     {
-        $jdCurrent = gregoriantojd($dt->format('m'), $dt->format('d'), $dt->format('Y'));
+        $jdCurrent = gregoriantojd((int)$dt->format('m'), (int)$dt->format('d'), (int)$dt->format('Y'));
         list($jewishYear, $jewishMonth, $jewishDay) = self::getJewishDate($dt);
 
         $hanukkahStart = jewishtojd(self::KISLEV, 25, $jewishYear);
@@ -86,7 +88,7 @@ class JewishCalendarFunctions
     {
         $result = [];
 
-        $jdCurrent = gregoriantojd($dt->format('m'), $dt->format('d'), $dt->format('Y'));
+        $jdCurrent = gregoriantojd((int)$dt->format('m'), (int)$dt->format('d'), (int)$dt->format('Y'));
 
         list($jewishYear, $jewishMonth, $jewishDay) = self::getJewishDate($dt);
 

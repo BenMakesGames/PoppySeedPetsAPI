@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
@@ -48,7 +50,7 @@ class FishingService
     public function adventure(ComputedPetSkills $petWithSkills)
     {
         $pet = $petWithSkills->getPet();
-        $maxSkill = 5 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2);
+        $maxSkill = 5 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - (int)ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2);
 
         $maxSkill = NumberFunctions::clamp($maxSkill, 1, 21);
 

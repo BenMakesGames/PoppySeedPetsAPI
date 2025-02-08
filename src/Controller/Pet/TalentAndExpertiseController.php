@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
@@ -33,7 +35,7 @@ class TalentAndExpertiseController extends AbstractController
         if($pet->getCanPickTalent() !== 'talent')
             throw new PSPInvalidOperationException('This pet is not ready to have a talent picked.');
 
-        $talent = $request->request->get('talent', '');
+        $talent = $request->request->getString('talent');
 
         if(!in_array($talent, [ MeritEnum::MIND_OVER_MATTER, MeritEnum::MATTER_OVER_MIND, MeritEnum::MODERATION ]))
             throw new PSPFormValidationException('You gotta\' choose one of the talents!');
@@ -98,7 +100,7 @@ class TalentAndExpertiseController extends AbstractController
         if($pet->getCanPickTalent() !== 'expertise')
             throw new PSPInvalidOperationException('This pet is not ready to have a talent picked.');
 
-        $expertise = $request->request->get('expertise', '');
+        $expertise = $request->request->getString('expertise');
 
         if(!in_array($expertise, [ MeritEnum::FORCE_OF_WILL, MeritEnum::FORCE_OF_NATURE, MeritEnum::BALANCE ]))
             throw new PSPFormValidationException('You gotta\' choose one of the talents!');

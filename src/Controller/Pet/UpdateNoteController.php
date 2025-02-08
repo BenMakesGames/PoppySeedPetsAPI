@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
@@ -27,7 +29,7 @@ class UpdateNoteController extends AbstractController
         if($pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
 
-        $note = trim($request->request->get('note', ''));
+        $note = trim($request->request->getString('note'));
 
         if(\mb_strlen($note) > 1000)
             throw new PSPFormValidationException('Note cannot be longer than 1000 characters.');

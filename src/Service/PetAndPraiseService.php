@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\Pet;
@@ -38,20 +40,20 @@ class PetAndPraiseService
         $hours = min(48, $diff->h + $diff->days * 24);
 
         $affection = (int)($hours / 4);
-        $gain = ceil($hours / 2.5) + 3;
+        $gain = (int)ceil($hours / 2.5) + 3;
 
         $safetyBonus = 0;
         $esteemBonus = 0;
 
         if($pet->getSafety() > $pet->getEsteem())
         {
-            $safetyBonus -= floor($gain / 4);
-            $esteemBonus += floor($gain / 4);
+            $safetyBonus -= (int)floor($gain / 4);
+            $esteemBonus += (int)floor($gain / 4);
         }
         else if($pet->getEsteem() > $pet->getSafety())
         {
-            $safetyBonus += floor($gain / 4);
-            $esteemBonus -= floor($gain / 4);
+            $safetyBonus += (int)floor($gain / 4);
+            $esteemBonus -= (int)floor($gain / 4);
         }
 
         $pet->increaseSafety($gain + $safetyBonus);

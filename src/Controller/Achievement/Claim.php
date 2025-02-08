@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Achievement;
 
 use App\Entity\User;
@@ -36,7 +38,7 @@ final class Claim extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $badge = trim($request->request->get('achievement'));
+        $badge = trim($request->request->getString('achievement'));
 
         if(!$badge || !BadgeEnum::isAValue($badge))
             throw new PSPFormValidationException('Which achievement?');

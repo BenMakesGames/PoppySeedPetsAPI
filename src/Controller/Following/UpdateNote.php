@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Following;
 
 use App\Entity\User;
@@ -35,7 +37,7 @@ class UpdateNote extends AbstractController
         if(!$followingRecord)
             throw new PSPNotFoundException('You\'re not following that person...');
 
-        $note = $request->request->get('note');
+        $note = $request->request->getString('note');
 
         if($note && \mb_strlen($note) > 255)
             throw new PSPFormValidationException('Note may not be longer than 255 characters. Sorry :(');

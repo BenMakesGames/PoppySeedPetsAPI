@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\Item;
@@ -78,7 +80,7 @@ class MuseumService
                 'item' => $group->getItems()->toArray()
             ]);
 
-            $requiredToUnlock = ceil(count($group->getItems()) / 2);
+            $requiredToUnlock = (int)ceil(count($group->getItems()) / 2);
 
             $forSale = [];
 

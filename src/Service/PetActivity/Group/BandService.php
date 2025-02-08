@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service\PetActivity\Group;
 
 use App\Entity\PetGroup;
@@ -210,7 +212,7 @@ class BandService
 
     public function receiveRoyalties(PetGroup $group)
     {
-        $moneys = $this->squirrel3->rngNextInt(1, 3) + floor(
+        $moneys = $this->squirrel3->rngNextInt(1, 3) + (int)floor(
             sqrt($group->getNumberOfProducts() * 10) / count($group->getMembers())
         );
 
@@ -258,7 +260,7 @@ class BandService
                 $soothingVoiceValue--;
             }
 
-            $expGainPerPet[$pet->getId()] = max(1, floor($roll / 5));
+            $expGainPerPet[$pet->getId()] = max(1, (int)floor($roll / 5));
 
             $skill += $roll;
         }

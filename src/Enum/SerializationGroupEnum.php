@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Enum;
 
 // each SerializationGroup has a corresponding model class in the front-end

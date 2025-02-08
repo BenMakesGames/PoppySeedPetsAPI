@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Museum;
 
 use App\Entity\User;
@@ -41,7 +43,7 @@ class TopDonorsController extends AbstractController
         $paginator = new Paginator($qb);
 
         $resultCount = $paginator->count();
-        $lastPage = ceil($resultCount / 20);
+        $lastPage = (int)ceil($resultCount / 20);
         $page = $request->query->getInt('page', 0);
 
         if($page < 0)

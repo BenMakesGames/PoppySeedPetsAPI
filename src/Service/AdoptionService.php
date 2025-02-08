@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\Pet;
@@ -38,10 +40,10 @@ class AdoptionService
         $petsAdopted = $this->getPetsAdopted($user);
 
         if($petsAdopted == 0)
-            $fee = ceil($fee / 2);
+            $fee = (int)ceil($fee / 2);
 
         if(CalendarFunctions::isBlackFriday($this->clock->now) || CalendarFunctions::isCyberMonday($this->clock->now))
-            $fee = ceil($fee / 10) * 5;
+            $fee = (int)ceil($fee / 10) * 5;
 
         return $fee;
     }
@@ -252,11 +254,11 @@ class AdoptionService
 
         $rarePetIndicies = [];
 
-        if(RandomFunctions::squirrel3Noise(591, $dt->format('NmYd')) % 100 === 1)
-            $rarePetIndicies[] = RandomFunctions::squirrel3Noise(1002, $dt->format('1YmNd')) % $numPets;
+        if(RandomFunctions::squirrel3Noise(591, (int)$dt->format('NmYd')) % 100 === 1)
+            $rarePetIndicies[] = RandomFunctions::squirrel3Noise(1002, (int)$dt->format('1YmNd')) % $numPets;
 
         if($rarePetDayOfMonth == $dt->format('j'))
-            $rarePetIndicies[] = RandomFunctions::squirrel3Noise(314159, $dt->format('YdmN')) % $numPets;
+            $rarePetIndicies[] = RandomFunctions::squirrel3Noise(314159, (int)$dt->format('YdmN')) % $numPets;
 
         return array_values(array_unique($rarePetIndicies));
     }
@@ -270,7 +272,7 @@ class AdoptionService
 
         // PSP Thanksgiving overlaps Black Friday, but for pet adoption purposes, we want Black Friday to win out:
         if(CalendarFunctions::isBlackFriday($this->clock->now) || CalendarFunctions::isCyberMonday($this->clock->now))
-            return ceil($totalPets / 2);
+            return (int)ceil($totalPets / 2);
 
         if(CalendarFunctions::isThanksgiving($this->clock->now))
             return $squirrel3->rngNextInt(1, 2);
@@ -283,7 +285,7 @@ class AdoptionService
 
         // winter solstice, more or less
         if($monthDay === 1221 || $monthDay === 1222)
-            return ceil($totalPets / 2);
+            return (int)ceil($totalPets / 2);
 
         // Christmas colors
         if($monthDay >= 1223 && $monthDay <= 1225)

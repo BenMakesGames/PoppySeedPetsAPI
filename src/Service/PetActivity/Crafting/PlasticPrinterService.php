@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service\PetActivity\Crafting;
 
 use App\Entity\Pet;
@@ -280,7 +282,7 @@ class PlasticPrinterService
         $skill =
             $petWithSkills->getIntelligence()->getTotal() +
             $petWithSkills->getDexterity()->getTotal() +
-            floor(($petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal()) / 2)
+            (int)floor(($petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal()) / 2)
         ;
 
         $roll = $this->squirrel3->rngNextInt(1, 20 + $skill);

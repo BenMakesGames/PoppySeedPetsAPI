@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Pet;
@@ -22,7 +24,7 @@ class ParkController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function changePetParkEventType(Pet $pet, Request $request, EntityManagerInterface $em, ResponseService $responseService)
     {
-        $parkEventType = trim($request->request->get('parkEventType', ''));
+        $parkEventType = trim($request->request->getString('parkEventType'));
 
         if($parkEventType === '') $parkEventType = null;
 

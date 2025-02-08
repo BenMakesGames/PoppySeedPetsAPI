@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Service;
 
@@ -264,7 +265,7 @@ class MonthlyStoryAdventureService
         $loot = $this->getAdventureLoot(
             $step,
             $pets,
-            fn(ComputedPetSkills $pet) => ceil(($pet->getStrength()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getBrawl()->getTotal(),
+            fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getBrawl()->getTotal(),
             $roll,
             'Monster Box',
             [ 'Feathers', 'Fluff', 'Talon', 'Scales', 'Egg', 'Fish' ]
@@ -285,7 +286,7 @@ class MonthlyStoryAdventureService
         $loot = $this->getAdventureLoot(
             $step,
             $pets,
-            fn(ComputedPetSkills $pet) => ceil(($pet->getStrength()->getTotal() + $pet->getStamina()->getTotal()) / 2) + $pet->getNature()->getTotal() + $pet->getGatheringBonus()->getTotal(),
+            fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getStamina()->getTotal()) / 2) + $pet->getNature()->getTotal() + $pet->getGatheringBonus()->getTotal(),
             $roll,
             'Gold Ore',
             [ 'Gold Ore', 'Gold Ore', 'Silver Ore', 'Iron Ore' ]
@@ -369,7 +370,7 @@ class MonthlyStoryAdventureService
         $loot = $this->getAdventureLoot(
             $step,
             $pets,
-            fn(ComputedPetSkills $pet) => ceil(($pet->getStrength()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getBrawl()->getTotal(),
+            fn(ComputedPetSkills $pet) => (int)ceil(($pet->getStrength()->getTotal() + $pet->getDexterity()->getTotal()) / 2) + $pet->getBrawl()->getTotal(),
             $roll,
             'Monster Box',
             [ 'Feathers', 'Fluff', 'Talon', 'Scales', 'Egg' ]

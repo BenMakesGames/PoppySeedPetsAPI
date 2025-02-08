@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\Inventory;
@@ -62,7 +64,7 @@ class StoryService
 
         if($request->has('choice'))
         {
-            $choice = trim($request->get('choice', ''));
+            $choice = trim($request->getString('choice'));
 
             if($choice === '')
                 throw new PSPFormValidationException('You didn\'t choose a choice!');

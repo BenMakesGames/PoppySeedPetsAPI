@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\HollowEarthPlayer;
@@ -515,11 +517,11 @@ class HollowEarthService
     private static function computeMaxQuantity(HollowEarthPlayer $player, int $jade, int $incense, int $salt, int $amber, int $fruit): int
     {
         return min(
-            $jade == 0 ? 100 : floor($player->getJade() / $jade),
-            $incense == 0 ? 100 : floor($player->getIncense() / $incense),
-            $salt == 0 ? 100 : floor($player->getSalt() / $salt),
-            $amber == 0 ? 100 : floor($player->getAmber() / $amber),
-            $fruit == 0 ? 100 : floor($player->getFruit() / $fruit),
+            $jade == 0 ? 100 : (int)floor($player->getJade() / $jade),
+            $incense == 0 ? 100 : (int)floor($player->getIncense() / $incense),
+            $salt == 0 ? 100 : (int)floor($player->getSalt() / $salt),
+            $amber == 0 ? 100 : (int)floor($player->getAmber() / $amber),
+            $fruit == 0 ? 100 : (int)floor($player->getFruit() / $fruit),
         );
     }
 

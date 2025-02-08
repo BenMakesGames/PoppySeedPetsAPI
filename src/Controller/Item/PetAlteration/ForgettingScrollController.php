@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
@@ -80,7 +82,7 @@ class ForgettingScrollController extends AbstractController
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
 
-        $meritName = $request->request->get('merit', '');
+        $meritName = $request->request->getString('merit');
         $merit = MeritRepository::findOneByName($em, $meritName);
 
         if(!$pet->hasMerit($merit->getName()))
@@ -159,7 +161,7 @@ class ForgettingScrollController extends AbstractController
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
 
-        $skill = $request->request->get('skill', '');
+        $skill = $request->request->getString('skill');
 
         if(!PetSkillEnum::isAValue($skill))
             throw new PSPFormValidationException('You gotta\' select a skill to forget!');

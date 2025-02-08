@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Item\Scroll;
 
 use App\Controller\Item\ItemControllerHelpers;
@@ -73,7 +75,7 @@ class SummoningSomethingFriendlyController extends AbstractController
                 else
                 {
                     $daysInTheWild = (new \DateTimeImmutable())->diff($pet->getLastInteracted())->days;
-                    $percentChanceOfTransformation = min(10, floor($daysInTheWild / 14));
+                    $percentChanceOfTransformation = min(10, (int)floor($daysInTheWild / 14));
 
                     if($squirrel3->rngNextInt(1, 100) <= $percentChanceOfTransformation)
                     {

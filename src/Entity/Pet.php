@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -419,7 +420,7 @@ class Pet
 
         if($this->getFood() + $this->getAlcohol() < 0) $divisor++;
 
-        $amount = floor($amount / $divisor);
+        $amount = (int)floor($amount / $divisor);
 
         if($amount == 0) return $this;
 
@@ -453,7 +454,7 @@ class Pet
         if($this->getFood() + $this->getAlcohol() < 0) $divisor++;
         if($this->getSafety() + $this->getAlcohol() < 0) $divisor++;
 
-        $amount = floor($amount / $divisor);
+        $amount = (int)floor($amount / $divisor);
 
         if($amount == 0) return $this;
 
@@ -488,7 +489,7 @@ class Pet
         if($this->getSafety() + $this->getAlcohol() < 0) $divisor++;
         if($this->getLove() + $this->getAlcohol() < 0) $divisor++;
 
-        $amount = floor($amount / $divisor);
+        $amount = (int)floor($amount / $divisor);
 
         if($amount == 0) return $this;
 
@@ -1664,7 +1665,7 @@ class Pet
 
         $factor = min(14, (new \DateTimeImmutable())->diff($this->getBirthDate())->days) / 14 * 0.5 + 0.5;
 
-        return round($this->getScale() * $factor);
+        return (int)round($this->getScale() * $factor);
     }
 
     #[SerializedName('skills')]

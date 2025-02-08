@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Following;
 
 use App\Entity\User;
@@ -31,7 +33,7 @@ class FollowController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         $followingId = $request->request->getInt('following');
-        $note = $request->request->get('note');
+        $note = $request->request->getString('note');
 
         if($followingId === $user->getId())
             throw new PSPInvalidOperationException('You can\'t follow yourself! That\'s so RANDOM! You\'re so RANDOM!');

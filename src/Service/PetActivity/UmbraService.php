@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service\PetActivity;
 
 use App\Entity\Dragon;
@@ -155,7 +157,7 @@ class UmbraService
 
     private function foundNothing(Pet $pet, int $roll): PetActivityLog
     {
-        $exp = ceil($roll / 10);
+        $exp = (int)ceil($roll / 10);
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% crossed into the Umbra, but the Storm was too harsh; %pet:' . $pet->getId() . '.name% retreated before finding anything.')
             ->setIcon('icons/activity-logs/confused')

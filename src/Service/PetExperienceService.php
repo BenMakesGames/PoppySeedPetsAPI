@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\Pet;
@@ -64,7 +66,7 @@ class PetExperienceService
 
         $divideBy += 2 * $pet->getAlcohol() / $pet->getStomachSize();
 
-        $exp = round($exp / $divideBy);
+        $exp = (int)round($exp / $divideBy);
 
         if($exp == 0) return false;
 
@@ -167,19 +169,19 @@ class PetExperienceService
     public function spendSocialEnergy(Pet $pet, int $energy)
     {
         if($pet->hasStatusEffect(StatusEffectEnum::EXTRA_EXTROVERTED) || $pet->hasStatusEffect(StatusEffectEnum::MOONSTRUCK))
-            $energy = ceil($energy / 2);
+            $energy = (int)ceil($energy / 2);
 
         if($this->squirrel3->rngNextInt(1, 10) === 1)
         {
             // smallish chance to consume WAY less energy. this was added to help jiggle pets out of a situation where
             // two pets owned by the same account are always offset in social energy such that they're never able to hang
             // out with each other.
-            $energy = $this->squirrel3->rngNextInt(ceil($energy / 4), ceil($energy * 3 / 4));
+            $energy = $this->squirrel3->rngNextInt((int)ceil($energy / 4), (int)ceil($energy * 3 / 4));
         }
         else
         {
             // always add a LITTLE random jiggle, though:
-            $energy = $this->squirrel3->rngNextInt(ceil($energy * 8 / 10), ceil($energy * 12 / 10));
+            $energy = $this->squirrel3->rngNextInt((int)ceil($energy * 8 / 10), (int)ceil($energy * 12 / 10));
         }
 
         // tool modifiers (if any)
@@ -194,7 +196,7 @@ class PetExperienceService
         else if($pet->getExtroverted() > 0)
             $socialEnergyModifier -= 20;
 
-        $energy = round($energy * (100 + $socialEnergyModifier) / 100);
+        $energy = (int)round($energy * (100 + $socialEnergyModifier) / 100);
 
         if($energy < 0)
             throw new \Exception('Somehow, the game tried to spend negative social energy. This is bad, and Ben should fix it.');
@@ -231,7 +233,7 @@ class PetExperienceService
             {
                 if($statusEffects[$i]->getStatus() === StatusEffectEnum::CAFFEINATED)
                 {
-                    $newTotal = ceil($statusEffects[$i]->getTotalDuration() / 2);
+                    $newTotal = (int)ceil($statusEffects[$i]->getTotalDuration() / 2);
                     $statusEffects[$i]
                         ->setStatus(StatusEffectEnum::TIRED)
                         ->setTimeRemaining($statusEffects[$i]->getTimeRemaining() + $newTotal)
@@ -259,7 +261,7 @@ class PetExperienceService
         if($pet->getFood() + $pet->getAlcohol() < 0) $divideBy++;
         if($pet->getSafety() + $pet->getAlcohol() < 0) $divideBy++;
 
-        $points = ceil($points / $divideBy);
+        $points = (int)ceil($points / $divideBy);
 
         if($points == 0) return;
 

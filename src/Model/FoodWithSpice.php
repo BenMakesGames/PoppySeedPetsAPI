@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Model;
 
 use App\Entity\Item;
@@ -18,7 +20,7 @@ class FoodWithSpice
     public int $caffeine;
     public int $psychedelic;
     public $randomFlavor;
-    public bool $containsTentacles;
+    public int $containsTentacles;
     /** @var BonusItemChance[] */ public array $bonusItems = [];
     public $grantedSkills = [];
     public $grantedStatusEffects = [];

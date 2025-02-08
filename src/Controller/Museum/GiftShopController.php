@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Museum;
 
 use App\Entity\User;
@@ -47,8 +49,8 @@ class GiftShopController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $categoryName = $request->request->get('category', '');
-        $itemName = $request->request->get('item', '');
+        $categoryName = $request->request->getString('category');
+        $itemName = $request->request->getString('item');
 
         if(!$categoryName || !$itemName)
             throw new PSPNotFoundException('That item couldn\'t be found... reload and try again.');

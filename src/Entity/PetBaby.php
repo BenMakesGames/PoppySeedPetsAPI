@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -172,7 +173,7 @@ class PetBaby
 
         $interval = min(
             count($messages) - 1,
-            floor($this->getGrowth() / self::PREGNANCY_INTERVAL)
+            (int)floor($this->getGrowth() / self::PREGNANCY_INTERVAL)
         );
 
         return $messages[$interval];

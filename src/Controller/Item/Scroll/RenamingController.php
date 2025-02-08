@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Item\Scroll;
 
 use App\Controller\Item\ItemControllerHelpers;
@@ -43,7 +45,7 @@ class RenamingController extends AbstractController
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
 
-        PetRenamingHelpers::renamePet($em, $pet, $request->request->get('name', ''));
+        PetRenamingHelpers::renamePet($em, $pet, $request->request->getString('name'));
 
         $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
@@ -75,7 +77,7 @@ class RenamingController extends AbstractController
         if(!$pet->getSpiritCompanion())
             throw new PSPNotFoundException('That pet does not have a spirit companion.');
 
-        PetRenamingHelpers::renameSpiritCompanion($em, $pet->getSpiritCompanion(), $request->request->get('name', ''));
+        PetRenamingHelpers::renameSpiritCompanion($em, $pet->getSpiritCompanion(), $request->request->getString('name'));
 
         $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
@@ -103,7 +105,7 @@ class RenamingController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'renamingScroll');
 
-        $newName = ProfanityFilterFunctions::filter(trim($request->request->get('name', '')));
+        $newName = ProfanityFilterFunctions::filter(trim($request->request->getString('name')));
 
         if($newName === $user->getName())
             throw new PSPInvalidOperationException('That\'s already your name! (What a waste of the scroll that would be...)');

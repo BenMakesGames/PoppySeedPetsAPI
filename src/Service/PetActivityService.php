@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\GreenhousePlant;
@@ -239,14 +241,14 @@ class PetActivityService
             {
                 $changes = new PetChanges($pet);
 
-                $safetyVom = ceil($pet->getPoison() / 4);
+                $safetyVom = (int)ceil($pet->getPoison() / 4);
 
-                $pet->increasePoison(-$this->rng->rngNextInt( ceil($pet->getPoison() / 4), ceil($pet->getPoison() * 3 / 4)));
-                if($pet->getAlcohol() > 0) $pet->increaseAlcohol(-$this->rng->rngNextInt(1, ceil($pet->getAlcohol() / 2)));
-                if($pet->getPsychedelic() > 0) $pet->increasePsychedelic(-$this->rng->rngNextInt(1, ceil($pet->getPsychedelic() / 2)));
-                if($pet->getCaffeine() > 0) $pet->increaseFood(-$this->rng->rngNextInt(1, ceil($pet->getCaffeine() / 2)));
-                if($pet->getJunk() > 0) $pet->increaseJunk(-$this->rng->rngNextInt(1, ceil($pet->getJunk() / 2)));
-                if($pet->getFood() > 0) $pet->increaseFood(-$this->rng->rngNextInt(1, ceil($pet->getFood() / 2)));
+                $pet->increasePoison(-$this->rng->rngNextInt((int)ceil($pet->getPoison() / 4), (int)ceil($pet->getPoison() * 3 / 4)));
+                if($pet->getAlcohol() > 0) $pet->increaseAlcohol(-$this->rng->rngNextInt(1, (int)ceil($pet->getAlcohol() / 2)));
+                if($pet->getPsychedelic() > 0) $pet->increasePsychedelic(-$this->rng->rngNextInt(1, (int)ceil($pet->getPsychedelic() / 2)));
+                if($pet->getCaffeine() > 0) $pet->increaseFood(-$this->rng->rngNextInt(1, (int)ceil($pet->getCaffeine() / 2)));
+                if($pet->getJunk() > 0) $pet->increaseJunk(-$this->rng->rngNextInt(1, (int)ceil($pet->getJunk() / 2)));
+                if($pet->getFood() > 0) $pet->increaseFood(-$this->rng->rngNextInt(1, (int)ceil($pet->getFood() / 2)));
 
                 $pet->increaseSafety(-$this->rng->rngNextInt(1, $safetyVom));
                 $pet->increaseEsteem(-$this->rng->rngNextInt(1, $safetyVom));
@@ -824,7 +826,7 @@ class PetActivityService
         else
             $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateIcyMoonDesire(ComputedPetSkills $petWithSkills): int
@@ -845,7 +847,7 @@ class PetActivityService
         else
             $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(0, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100) * 3 / 4));
+        return max(0, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100) * 3 / 4));
     }
 
     public function generateSubmarineDesire(ComputedPetSkills $petWithSkills): int
@@ -866,7 +868,7 @@ class PetActivityService
         else
             $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateMonsterHuntingDesire(ComputedPetSkills $petWithSkills): int
@@ -883,7 +885,7 @@ class PetActivityService
         else
             $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateCraftingDesire(ComputedPetSkills $petWithSkills): int
@@ -904,7 +906,7 @@ class PetActivityService
         else
             $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateMagicBindingDesire(ComputedPetSkills $petWithSkills): int
@@ -925,7 +927,7 @@ class PetActivityService
         else
             $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateSmithingDesire(ComputedPetSkills $petWithSkills): int
@@ -946,7 +948,7 @@ class PetActivityService
         else
             $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateExploreUmbraDesire(ComputedPetSkills $petWithSkills): int
@@ -968,13 +970,13 @@ class PetActivityService
         )
         {
             if($pet->getPsychedelic() > $pet->getMaxPsychedelic() / 2)
-                return ceil($desire * $pet->getPsychedelic() * 2 / $pet->getMaxPsychedelic());
+                return (int)ceil($desire * $pet->getPsychedelic() * 2 / $pet->getMaxPsychedelic());
             else
                 return $desire;
         }
         else if($pet->getPsychedelic() > 0)
         {
-            return ceil($desire * $pet->getPsychedelic() * 2 / $pet->getMaxPsychedelic());
+            return (int)ceil($desire * $pet->getPsychedelic() * 2 / $pet->getMaxPsychedelic());
         }
         else
             return 0;
@@ -1002,7 +1004,7 @@ class PetActivityService
         else
             $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateClimbingBeanstalkDesire(ComputedPetSkills $petWithSkills): int
@@ -1019,7 +1021,7 @@ class PetActivityService
         else
             $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateHackingDesire(ComputedPetSkills $petWithSkills): int
@@ -1040,7 +1042,7 @@ class PetActivityService
         else
             $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     public function generateProgrammingDesire(ComputedPetSkills $petWithSkills): int
@@ -1061,7 +1063,7 @@ class PetActivityService
         else
             $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     public function generatePlasticPrintingDesire(ComputedPetSkills $petWithSkills): int
@@ -1071,7 +1073,7 @@ class PetActivityService
         if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
             return 0;
 
-        $desire = $petWithSkills->getIntelligence()->getTotal() + ceil(($petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal()) / 2);
+        $desire = $petWithSkills->getIntelligence()->getTotal() + (int)ceil(($petWithSkills->getScience()->getTotal() + $petWithSkills->getCrafts()->getTotal()) / 2);
 
         // when a pet is equipped, the equipment bonus counts twice for affecting a pet's desires
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
@@ -1082,7 +1084,7 @@ class PetActivityService
         else
             $desire += $this->rng->rngNextInt(1, 4);
 
-        return max(1, round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
+        return max(1, (int)round($desire * (1 + $this->rng->rngNextInt(-10, 10) / 100)));
     }
 
     private function poop(Pet $pet): bool

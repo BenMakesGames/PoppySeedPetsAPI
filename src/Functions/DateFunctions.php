@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Functions;
 
 use App\Enum\MoonPhaseEnum;
@@ -83,7 +85,7 @@ final class DateFunctions
         $IP = ($JD - 2451550.1) / self::MOON_CYCLE_LENGTH;
 
         // normalize IP
-        $IP -= floor($IP);
+        $IP -= (int)floor($IP);
         if($IP < 0)
             $IP++;
 
@@ -184,11 +186,11 @@ final class DateFunctions
         $year = (int)$dt->format('Y');
         $month = (int)$dt->format('n');
         $day = (int)$dt->format('j');
-        $YY = $year - floor((12 - $month) / 10);
+        $YY = $year - (int)floor((12 - $month) / 10);
         $MM = ($month + 9) % 12;
-        $K1 = floor(365.25 * ($YY + 4712));
-        $K2 = floor(30.6 * $MM + .5);
-        $K3 = floor(floor(($YY / 100) + 49) * .75) - 38;
+        $K1 = (int)floor(365.25 * ($YY + 4712));
+        $K2 = (int)floor(30.6 * $MM + .5);
+        $K3 = (int)floor(floor(($YY / 100) + 49) * .75) - 38;
 
         $JD = $K1 + $K2 + $day + 59;
         if($JD > 2299160)

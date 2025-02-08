@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service\PetActivity\Group;
 
 use App\Entity\Enchantment;
@@ -102,7 +104,7 @@ class AstronomyClubService
 
             $roll = $this->rng->rngNextInt(1, 10 + $petWithSkills->getScience()->getTotal());
 
-            $expGainPerPet[$pet->getId()] = max(1, floor($roll / 5));
+            $expGainPerPet[$pet->getId()] = max(1, (int)floor($roll / 5));
 
             $skill += $roll;
         }

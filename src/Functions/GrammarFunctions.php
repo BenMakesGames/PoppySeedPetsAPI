@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Functions;
 
 // logic taken from https://github.com/Kaivosukeltaja/php-indefinite-article/blob/master/IndefiniteArticle.class.php

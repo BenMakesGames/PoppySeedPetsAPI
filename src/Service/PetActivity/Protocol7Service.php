@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
@@ -123,7 +125,7 @@ class Protocol7Service
         else if($pet->isInGuild(GuildEnum::TIMES_ARROW))
             return $this->doTimesArrow($petWithSkills);
 
-        $exp = ceil($roll / 10);
+        $exp = (int)ceil($roll / 10);
 
         if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY) || $this->rng->rngNextInt(1, 3) === 1)
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Project-E, but got distracted playing a minigame!', 'icons/activity-logs/confused');

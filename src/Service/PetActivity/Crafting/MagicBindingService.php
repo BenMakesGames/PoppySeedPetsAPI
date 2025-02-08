@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service\PetActivity\Crafting;
 
 use App\Entity\PetActivityLog;
@@ -660,7 +662,7 @@ class MagicBindingService
     public function magicSmokeToQuint(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + floor(($petWithSkills->getArcana()->getTotal() + $petWithSkills->getScience()->getTotal()) / 2) + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + (int)floor(($petWithSkills->getArcana()->getTotal() + $petWithSkills->getScience()->getTotal()) / 2) + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck <= 2)
         {
@@ -1272,7 +1274,7 @@ class MagicBindingService
     public function createDancingSword(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getPerception()->getTotal(), ceil($petWithSkills->getMusic()->getTotal() / 4)) + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $umbraCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + max($petWithSkills->getPerception()->getTotal(), (int)ceil($petWithSkills->getMusic()->getTotal() / 4)) + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($umbraCheck === 1)
         {
@@ -2178,7 +2180,7 @@ class MagicBindingService
     public function createKokopelli(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $skillCheck = $this->squirrel3->rngNextInt(1, 20 + ceil(($petWithSkills->getArcana()->getTotal() + $petWithSkills->getMusic()->getTotal()) / 2) + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $skillCheck = $this->squirrel3->rngNextInt(1, 20 + (int)ceil(($petWithSkills->getArcana()->getTotal() + $petWithSkills->getMusic()->getTotal()) / 2) + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($skillCheck < 22)
         {
@@ -2267,7 +2269,7 @@ class MagicBindingService
     public function createAmbrotypicSolvent(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $skillCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + ceil($petWithSkills->getScience()->getTotal() / 2) + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $skillCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + (int)ceil($petWithSkills->getScience()->getTotal() / 2) + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($pet->hasMerit(MeritEnum::SILVERBLOOD))
             $skillCheck += 5;
@@ -2409,7 +2411,7 @@ class MagicBindingService
     public function createLotusjar(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + floor(($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getPerception()->getTotal()) / 2) + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + (int)floor(($petWithSkills->getDexterity()->getTotal() + $petWithSkills->getPerception()->getTotal()) / 2) + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
 
         if($roll >= 24)
         {

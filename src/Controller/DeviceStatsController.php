@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Annotations\DoesNotRequireHouseHours;
@@ -24,11 +26,11 @@ class DeviceStatsController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $userAgent = trim($request->request->get('userAgent', ''));
-        $language = trim($request->request->get('language', ''));
-        $touchPoints = (int)trim($request->request->get('touchPoints', 0));
-        $windowWidth = (int)trim($request->request->get('windowWidth', 0));
-        $screenWidth = (int)trim($request->request->get('screenWidth', 0));
+        $userAgent = trim($request->request->getString('userAgent'));
+        $language = trim($request->request->getString('language'));
+        $touchPoints = $request->request->getInt('touchPoints');
+        $windowWidth = $request->request->getInt('windowWidth');
+        $screenWidth = $request->request->getInt('screenWidth');
 
         if($userAgent && $language && $windowWidth && $screenWidth)
         {

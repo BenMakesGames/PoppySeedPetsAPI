@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Functions;
 
 use App\Entity\Pet;
@@ -60,7 +62,7 @@ final class ColorFunctions
             $m = $l + $l - $v;
             $sv = ($v - $m ) / $v;
             $h *= 6.0;
-            $sextant = floor($h);
+            $sextant = (int)floor($h);
             $fract = $h - $sextant;
             $vsf = $v * $sv * $fract;
             $mid1 = $m + $vsf;

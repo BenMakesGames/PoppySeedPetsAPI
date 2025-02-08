@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -174,9 +175,9 @@ class PetRelationship
         if($this->wantsDifferentRelationship())
         {
             if($this->pet->hasMerit(MeritEnum::INTROSPECTIVE))
-                $this->timeUntilChange -= ceil(3 * $multiplier);
+                $this->timeUntilChange -= (int)ceil(3 * $multiplier);
             else
-                $this->timeUntilChange -= ceil(2 * $multiplier);
+                $this->timeUntilChange -= (int)ceil(2 * $multiplier);
         }
 
         return $this;

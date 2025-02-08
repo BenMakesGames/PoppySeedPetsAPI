@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service\ParkEvent;
 
 use App\Entity\ParkEvent;
@@ -382,10 +384,10 @@ class JoustingService implements ParkEventInterface
         $affectionAverage = $affectionTotal / (count($this->participants) << 1);
 
         $firstPlaceMoneys = 2 * count($this->participants) - $this->squirrel3->rngNextInt(0, 8); // base prize
-        $firstPlaceMoneys += ceil($affectionAverage); // affection bonus
-        $firstPlaceMoneys = ceil($firstPlaceMoneys / 2); // divide by two, because two pets share the prize
+        $firstPlaceMoneys += (int)ceil($affectionAverage); // affection bonus
+        $firstPlaceMoneys = (int)ceil($firstPlaceMoneys / 2); // divide by two, because two pets share the prize
 
-        $secondPlaceMoneys = ceil($firstPlaceMoneys * 3 / 4);
+        $secondPlaceMoneys = (int)ceil($firstPlaceMoneys * 3 / 4);
 
         $this->results .= '**' . $this->winners[0]->getTeamName() . ' wins the tournament, and ' . $firstPlaceMoneys . '~~m~~!**' . "<br>\n";
 

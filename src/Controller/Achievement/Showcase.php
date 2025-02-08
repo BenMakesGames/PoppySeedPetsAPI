@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Achievement;
 
 use App\Entity\User;
@@ -25,7 +27,7 @@ final class Showcase extends AbstractController
 
         $totalCount = $db->query('SELECT COUNT(DISTINCT(user_id)) FROM user_badge')->getSingleValue();
 
-        $totalPages = ceil($totalCount / self::PAGE_SIZE);
+        $totalPages = (int)ceil($totalCount / self::PAGE_SIZE);
 
         $page = min($request->query->getInt('page', 0), $totalPages - 1);
 

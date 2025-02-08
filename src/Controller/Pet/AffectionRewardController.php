@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Pet;
 
 use App\Entity\Merit;
@@ -64,7 +66,7 @@ class AffectionRewardController extends AbstractController
         if($pet->getAffectionRewardsClaimed() >= $pet->getAffectionLevel())
             throw new PSPInvalidOperationException('You\'ll have to raise ' . $pet->getName() . '\'s affection, first.');
 
-        $meritName = $request->request->get('merit');
+        $meritName = $request->request->getString('merit');
 
         $availableMerits = $em->getRepository(Merit::class)->findBy([ 'name' => MeritFunctions::getAvailableMerits($pet) ]);
 

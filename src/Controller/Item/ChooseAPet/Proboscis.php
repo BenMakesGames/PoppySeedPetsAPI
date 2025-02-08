@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Controller\Item\ChooseAPet;
 
@@ -46,7 +47,7 @@ class Proboscis extends AbstractController
         $petChanges = new PetChanges($pet);
         $skills = $pet->getComputedSkills();
 
-        $sugarQuantity = 2 + floor(($skills->getNature()->getTotal() + $skills->getDexterity()->getTotal()) / 2);
+        $sugarQuantity = 2 + (int)floor(($skills->getNature()->getTotal() + $skills->getDexterity()->getTotal()) / 2);
         $honeyCombQuantity = 0;
 
         if($sugarQuantity >= 4)

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Command;
 
@@ -271,7 +272,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
         $item->setRecycleValue($this->askInt('Recycle Value', $item->getRecycleValue()));
 
         // museum points must be asked for AFTER recycle value:
-        $item->setMuseumPoints($this->askInt('Museum Points', $item->getMuseumPoints() ?? max(1, floor($item->getRecycleValue() / 5) * 10)));
+        $item->setMuseumPoints($this->askInt('Museum Points', $item->getMuseumPoints() ?? max(1, (int)floor($item->getRecycleValue() / 5) * 10)));
     }
 
     private function groups(Item $item)

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
@@ -313,7 +315,7 @@ class PregnancyService
         else
         {
             $n1Offset = $this->squirrel3->rngNextInt(
-                max(0, ceil(\mb_strlen($n1) / 2) - 2),
+                max(0, (int)ceil(\mb_strlen($n1) / 2) - 2),
                 min(\mb_strlen($n1) - 1, (\mb_strlen($n1) / 2) + 2)
             );
 
@@ -330,7 +332,7 @@ class PregnancyService
         else
         {
             $n2Offset = $this->squirrel3->rngNextInt(
-                max(0, ceil(\mb_strlen($n2) / 2) - 2),
+                max(0, (int)ceil(\mb_strlen($n2) / 2) - 2),
                 min(\mb_strlen($n2) - 1, (\mb_strlen($n2) / 2) + 2)
             );
 

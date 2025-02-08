@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service\ParkEvent;
 
 use App\Entity\ParkEvent;
@@ -246,9 +248,9 @@ class TriDChessService implements ParkEventInterface
         $affectionAverage = ArrayFunctions::average($this->participants, fn(TriDChessParticipant $p) => $p->pet->getAffectionLevel());
 
         $firstPlaceMoneys = 2 * count($this->participants) - $this->squirrel3->rngNextInt(0, 8); // base prize
-        $firstPlaceMoneys += ceil($affectionAverage); // affection bonus
+        $firstPlaceMoneys += (int)ceil($affectionAverage); // affection bonus
 
-        $secondPlaceMoneys = ceil($firstPlaceMoneys * 3 / 4);
+        $secondPlaceMoneys = (int)ceil($firstPlaceMoneys * 3 / 4);
 
         $this->results .= '**' . $this->winners[0]->pet->getName() . ' wins the tournament, and ' . $firstPlaceMoneys . '~~m~~!**' . "<br>\n";
 

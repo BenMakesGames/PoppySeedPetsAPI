@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Functions;
 
 use App\Enum\HolidayEnum;
@@ -254,7 +256,7 @@ final class CalendarFunctions
 
     public static function isHanukkah(\DateTimeInterface $dt): bool
     {
-        $jdCurrent = gregoriantojd($dt->format('m'), $dt->format('d'), $dt->format('Y'));
+        $jdCurrent = gregoriantojd((int)$dt->format('m'), (int)$dt->format('d'), (int)$dt->format('Y'));
         [$jewishYear, $jewishMonth, $jewishDay] = JewishCalendarFunctions::getJewishDate($dt);
 
         $hanukkahStart = jewishtojd(JewishCalendarFunctions::KISLEV, 25, $jewishYear);
@@ -273,7 +275,7 @@ final class CalendarFunctions
     {
         // I don't love this way of doing it, but it works for easter (whose celebrations never span two years)
         // "z" is "the day of the year", do we can test the date that way, ignoring time
-        $easter = (int)\DateTimeImmutable::createFromFormat('U', easter_date((int)$dt->format('Y')))->format('z');
+        $easter = (int)\DateTimeImmutable::createFromFormat('U', (string)easter_date((int)$dt->format('Y')))->format('z');
         $now = (int)$dt->format('z');
 
         if($now > $easter)

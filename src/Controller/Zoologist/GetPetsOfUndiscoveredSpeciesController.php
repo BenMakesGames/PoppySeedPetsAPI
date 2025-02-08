@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Zoologist;
 
 use App\Entity\User;
@@ -84,7 +86,7 @@ class GetPetsOfUndiscoveredSpeciesController extends AbstractController
 
         $results->page = $page;
         $results->pageSize = 20;
-        $results->pageCount = ceil($resultCount / 20);
+        $results->pageCount = (int)ceil($resultCount / 20);
         $results->resultCount = $resultCount;
         $results->results = $pets;
 

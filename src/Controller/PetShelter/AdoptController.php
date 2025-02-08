@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\PetShelter;
 
 use App\Entity\Inventory;
@@ -60,7 +62,7 @@ class AdoptController extends AbstractController
         if($user->getMoneys() < $costToAdopt)
             throw new PSPNotEnoughCurrencyException($costToAdopt . '~~m~~', $user->getMoneys() . '~~m~~');
 
-        $petName = ProfanityFilterFunctions::filter(trim($request->request->get('name', '')));
+        $petName = ProfanityFilterFunctions::filter(trim($request->request->getString('name')));
 
         if(\mb_strlen($petName) < 1 || \mb_strlen($petName) > 30)
             throw new PSPFormValidationException('Pet name must be between 1 and 30 characters long.');

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Model;
 
 use App\Entity\Pet;
@@ -208,7 +210,7 @@ class ComputedPetSkills
         $skill->merits = ($this->pet->hasMerit(MeritEnum::LUMINARY_ESSENCE) ? 1 : 0);
         $skill->statusEffects =
             ($this->pet->hasStatusEffect(StatusEffectEnum::HEX_HEXED) ? 6 - $this->pet->getSkills()->getArcana() : 0) +
-            ceil($this->pet->getPsychedelic() * 5 / $this->pet->getMaxPsychedelic()) +
+            (int)ceil($this->pet->getPsychedelic() * 5 / $this->pet->getMaxPsychedelic()) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::OUT_OF_THIS_WORLD) ? 1 : 0) +
             ($this->pet->hasStatusEffect(StatusEffectEnum::MOONSTRUCK) ? 10 : 0) +
             ($this->pet->getSkills()->getArcana() < 10 && $this->pet->hasStatusEffect(StatusEffectEnum::FOCUSED_ARCANA) ? 3 : 0)

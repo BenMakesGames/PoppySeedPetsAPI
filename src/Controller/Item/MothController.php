@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
@@ -138,7 +140,7 @@ class MothController extends AbstractController
             }
         }
 
-        $gotLove = $rng->rngNextInt(1, 100) <= ceil($percentChanceOfGreatSuccess);
+        $gotLove = $rng->rngNextInt(1, 100) <= (int)ceil($percentChanceOfGreatSuccess);
 
         if($gotLove)
             $items[] = 'Chang\'e\'s Love';

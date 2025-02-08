@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service\PetActivity\Relationship;
 
 use App\Entity\Pet;
@@ -485,10 +487,10 @@ class RelationshipChangeService
         else
         {
             if($p1->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
-                $chanceP1ChangesMind = ceil($chanceP1ChangesMind / 4);
+                $chanceP1ChangesMind = (int)ceil($chanceP1ChangesMind / 4);
 
             if($p2->getPet()->hasMerit(MeritEnum::INTROSPECTIVE))
-                $chanceP2ChangesMind = ceil($chanceP2ChangesMind / 4);
+                $chanceP2ChangesMind = (int)ceil($chanceP2ChangesMind / 4);
         }
 
         $r = $this->squirrel3->rngNextInt(1, 100);

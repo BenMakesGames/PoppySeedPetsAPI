@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Command;
 
@@ -71,7 +72,7 @@ class CreateMonstersOfTheWeekCommand extends Command
             $add = random_int(-1, 1);
             $communityLevelWeight = random_int(572500, 622500) / 1000000; // from 0.5725 to 0.6225 (spread of 0.05, or 5%, around 60%)
 
-            $level = ceil(
+            $level = (int)ceil(
                 $previousMonsterOfType->getLevel() * (1 - $communityLevelWeight) +
                 $communityPerformanceLevel * $communityLevelWeight
             ) + $add;

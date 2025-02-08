@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
@@ -171,7 +173,7 @@ class TreasureMapService
 
         $skill = 2 * ($petWithSkills->getBrawl()->getTotal() * 2 + $petWithSkills->getStamina()->getTotal() * 2 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() + $pet->getLevel());
 
-        $floor = $this->rng->rngNextInt(max(1, ceil($skill / 2)), 20 + $skill);
+        $floor = $this->rng->rngNextInt(max(1, (int)ceil($skill / 2)), 20 + $skill);
         $floor = NumberFunctions::clamp($floor, 1, 100);
 
         $keybladeName = $pet->getTool()->getItem()->getName();
@@ -236,7 +238,7 @@ class TreasureMapService
             PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::CLIMBED_THE_TOWER_OF_TRIALS, $activityLog);
         }
 
-        $this->petExperienceService->spendTime($pet, 20 + floor($floor / 1.8), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, 20 + (int)floor($floor / 1.8), PetActivityStatEnum::OTHER, null);
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY + $floor)

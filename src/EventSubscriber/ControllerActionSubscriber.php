@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\EventSubscriber;
 
 use App\Annotations\DoesNotRequireHouseHours;
@@ -59,7 +61,7 @@ class ControllerActionSubscriber implements EventSubscriberInterface
         if(!$user)
             return;
 
-        $defaultLimiter = $this->defaultRateLimiterFactory->create($user->getId());
+        $defaultLimiter = $this->defaultRateLimiterFactory->create((string)$user->getId());
 
         $defaultLimiter->reserve(1, 15)->wait();
     }

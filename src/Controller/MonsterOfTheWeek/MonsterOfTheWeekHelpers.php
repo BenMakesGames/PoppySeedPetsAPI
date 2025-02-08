@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Controller\MonsterOfTheWeek;
 
@@ -39,7 +40,7 @@ final class MonsterOfTheWeekHelpers
     {
         $highValue = self::getBasePrizeValues($monster)[2];
 
-        return max(1, ceil($communityContribution / $highValue));
+        return max(1, (int)ceil($communityContribution / $highValue));
     }
 
     public static function getSpiritNameWithArticle(string $monster): string
@@ -139,7 +140,7 @@ final class MonsterOfTheWeekHelpers
         if(!$item->getHat() || $item->getName() === 'Anniversary Poppy Seed* Muffin')
             return 0;
 
-        $points = $item->getRecycleValue() + ceil($item->getMuseumPoints() * 1.5) - 1;
+        $points = $item->getRecycleValue() + (int)ceil($item->getMuseumPoints() * 1.5) - 1;
 
         if(str_ends_with($item->getName(), 'Baabble'))
             $points += 10;
@@ -154,7 +155,7 @@ final class MonsterOfTheWeekHelpers
         if(!$item->hasItemGroup('Key') && $item->getName() !== 'Password')
             return 0;
 
-        $points = 2 + floor($item->getRecycleValue() / 3);
+        $points = 2 + (int)floor($item->getRecycleValue() / 3);
 
         if($item->getTool() && $item->getTool()->getLeadsToAdventure())
             $points += 3;

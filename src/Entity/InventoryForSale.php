@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -77,6 +78,6 @@ class InventoryForSale
 
     public static function calculateBuyPrice(int $sellPrice): int
     {
-        return ceil($sellPrice * 1.02);
+        return (int)ceil($sellPrice * 1.02);
     }
 }

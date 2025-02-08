@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Service\ParkEvent;
 
 use App\Entity\ParkEvent;
@@ -193,9 +195,9 @@ class KinBallService implements ParkEventInterface
         $winningTeamIndex = $this->getGameWinningTeam();
 
         $firstPlaceMoneys = 2 * 12 - $this->squirrel3->rngNextInt(0, 8); // * 12, because there are 12 players
-        $firstPlaceMoneys += ceil($affectionTotal / 12); // affection bonus
-        $firstPlaceMoneys += floor($firstPlaceMoneys * 3 / 4); // usually there's a second-place prize; not in Kin-Ball!
-        $firstPlaceMoneys = ceil($firstPlaceMoneys / 4); // the prize is shared by all four members of the team
+        $firstPlaceMoneys += (int)ceil($affectionTotal / 12); // affection bonus
+        $firstPlaceMoneys += (int)floor($firstPlaceMoneys * 3 / 4); // usually there's a second-place prize; not in Kin-Ball!
+        $firstPlaceMoneys = (int)ceil($firstPlaceMoneys / 4); // the prize is shared by all four members of the team
 
         foreach($this->teams as $teamIndex=>$team)
         {

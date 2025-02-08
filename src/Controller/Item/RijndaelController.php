@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
@@ -24,7 +26,7 @@ class RijndaelController extends AbstractController
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'rijndael');
 
-        $searchForId = $request->request->get('itemId');
+        $searchForId = $request->request->getInt('itemId');
 
         if(!$searchForId)
             throw new PSPFormValidationException('An item to search for must be selected!');
