@@ -7,15 +7,15 @@ use App\Entity\Pet;
 
 class PetChanges
 {
-    public $food;
-    public $safety;
-    public $love;
-    public $esteem;
-    public $exp;
-    public $level;
-    public $affection;
-    public $affectionLevel;
-    public $scrollLevel;
+    public int $food;
+    public int $safety;
+    public int $love;
+    public int $esteem;
+    public int $exp;
+    public int $level;
+    public int $affection;
+    public int $affectionLevel;
+    public ?int $scrollLevel;
 
     public function __construct(Pet $pet)
     {
@@ -59,5 +59,4 @@ class PetChanges
 
         return $summary;
     }
-
 }
