@@ -95,7 +95,7 @@ final class GrammarFunctions
 
         for($i = 0; $i < $wordLength; $i++)
         {
-            $newWord .= substr($word, $i, 1);
+            $newWord .= mb_substr($word, $i, 1);
 
             if(
                 $isVowel(mb_substr($wordLower, $i, 1)) &&
