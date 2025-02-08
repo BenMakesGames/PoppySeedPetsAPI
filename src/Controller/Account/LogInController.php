@@ -21,7 +21,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Annotations\DoesNotRequireHouseHours;
 
 #[Route("/account")]
-class LogInController extends AbstractController
+final class LogInController extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()
