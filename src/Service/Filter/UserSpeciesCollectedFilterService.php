@@ -29,7 +29,7 @@ class UserSpeciesCollectedFilterService
                 'id' => [ 'species.id' => 'asc' ],
             ],
             [
-                'user' => [ $this, 'filterUser' ],
+                'user' => $this->filterUser(...),
             ]
         );
     }

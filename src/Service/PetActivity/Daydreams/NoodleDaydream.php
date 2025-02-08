@@ -37,10 +37,10 @@ class NoodleDaydream
         $changes = new PetChanges($pet);
 
         $adventures = [
-            [ $this, 'doNoodleKraken' ],
-            [ $this, 'doGoldenLifeNoodles' ],
-            [ $this, 'doNoodlePuppetShow' ],
-            [ $this, 'doTarzan' ],
+            $this->doNoodleKraken(...),
+            $this->doGoldenLifeNoodles(...),
+            $this->doNoodlePuppetShow(...),
+            $this->doTarzan(...),
         ];
 
         $log = $this->rng->rngNextFromArray($adventures)($petWithSkills);

@@ -38,10 +38,10 @@ class FoodFightDaydream
         $changes = new PetChanges($pet);
 
         $adventures = [
-            [ $this, 'doChocolateDragon' ],
-            [ $this, 'doCombatOnPowderedSugarBeach' ],
-            [ $this, 'doPuddingBeastsInCustardCanyon' ],
-            [ $this, 'doVegetableWarriors' ],
+            $this->doChocolateDragon(...),
+            $this->doCombatOnPowderedSugarBeach(...),
+            $this->doPuddingBeastsInCustardCanyon(...),
+            $this->doVegetableWarriors(...),
         ];
 
         $log = $this->rng->rngNextFromArray($adventures)($petWithSkills);

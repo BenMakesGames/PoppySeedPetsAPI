@@ -27,8 +27,8 @@ class UserActivityLogsFilterService
                 'id' => [ 'l.id' => 'desc' ], // first one is the default
             ],
             [
-                'tags' => [ $this, 'filterTags' ],
-                'user' => [ $this, 'filterUser' ],
+                'tags' => $this->filterTags(...),
+                'user' => $this->filterUser(...),
             ]
         );
     }

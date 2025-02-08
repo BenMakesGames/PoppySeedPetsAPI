@@ -33,7 +33,7 @@ class UserStyleFilter
                 'user' => [ 'themeOwner.name' => 'asc', 's.id' => 'desc' ], // first one is the default
             ],
             [
-                'following' => [ $this, 'filterFollowing' ],
+                'following' => $this->filterFollowing(...),
             ]
         );
     }

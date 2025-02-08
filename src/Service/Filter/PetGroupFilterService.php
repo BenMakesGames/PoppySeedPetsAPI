@@ -30,9 +30,9 @@ class PetGroupFilterService
                 'name' => [ 'g.name' => 'asc' ],
             ],
             [
-                'type' => [ $this, 'filterType' ],
-                'withPetsOwnedBy' => [ $this, 'filterWithPetsOwnedBy' ],
-                'name' => [ $this, 'filterName' ],
+                'type' => $this->filterType(...),
+                'withPetsOwnedBy' => $this->filterWithPetsOwnedBy(...),
+                'name' => $this->filterName(...),
             ]
         );
     }

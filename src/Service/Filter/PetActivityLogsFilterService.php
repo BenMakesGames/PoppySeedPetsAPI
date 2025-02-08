@@ -29,10 +29,10 @@ class PetActivityLogsFilterService
                 'interestingness' => [ 'l.interestingness' => 'desc' ],
             ],
             [
-                'pet' => [ $this, 'filterPet' ],
-                'date' => [ $this, 'filterDate' ],
-                'user' => [ $this, 'filterUser' ],
-                'tags' => [ $this, 'filterTags' ],
+                'pet' => $this->filterPet(...),
+                'date' => $this->filterDate(...),
+                'user' => $this->filterUser(...),
+                'tags' => $this->filterTags(...),
             ]
         );
     }

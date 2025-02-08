@@ -27,7 +27,7 @@ class GuildMemberFilterService
                 'id' => [ 'p.id' => 'asc' ],
             ],
             [
-                'guild' => [ $this, 'filterGuild' ],
+                'guild' => $this->filterGuild(...),
             ]
         );
     }

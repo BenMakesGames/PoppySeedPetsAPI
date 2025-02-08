@@ -27,7 +27,7 @@ class PetRelationshipFilterService
                 'commitment' => [ 'r.commitment' => 'desc' ],
             ],
             [
-                'pet' => [ $this, 'filterPet' ],
+                'pet' => $this->filterPet(...),
             ]
         );
     }

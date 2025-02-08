@@ -27,7 +27,7 @@ class UserLetterFilterService
                 'receivedon' => [ 'l.receivedOn' => 'desc' ], // first one is the default
             ],
             [
-                'user' => [ $this, 'filterUser' ],
+                'user' => $this->filterUser(...),
             ]
         );
     }

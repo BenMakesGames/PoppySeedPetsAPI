@@ -36,9 +36,9 @@ class UserFilterService
                 'id' => [ 'u.id' => 'asc' ],
             ],
             [
-                'name' => [ $this, 'filterName' ],
-                'followedBy' => [ $this, 'filterFollowedBy' ],
-                'following' => [ $this, 'filterFollowing' ],
+                'name' => $this->filterName(...),
+                'followedBy' => $this->filterFollowedBy(...),
+                'following' => $this->filterFollowing(...),
             ]
         );
     }

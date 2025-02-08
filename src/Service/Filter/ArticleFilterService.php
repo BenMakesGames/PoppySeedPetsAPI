@@ -27,7 +27,7 @@ class ArticleFilterService
                 'createdon' => [ 'a.createdOn' => 'desc' ], // first one is the default
             ],
             [
-                'designGoal' => [ $this, 'filterDesignGoal' ],
+                'designGoal' => $this->filterDesignGoal(...),
             ]
         );
     }

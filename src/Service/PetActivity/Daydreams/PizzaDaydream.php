@@ -44,10 +44,10 @@ class PizzaDaydream
         $changes = new PetChanges($pet);
 
         $adventures = [
-            [ $this, 'doPizzaDelivery' ],
-            [ $this, 'doExplorePizzaPlanet' ],
-            [ $this, 'doMozzarellaCloud' ],
-            [ $this, 'doBubblegumSauce' ],
+            $this->doPizzaDelivery(...),
+            $this->doExplorePizzaPlanet(...),
+            $this->doMozzarellaCloud(...),
+            $this->doBubblegumSauce(...),
         ];
 
         $log = $this->rng->rngNextFromArray($adventures)($petWithSkills);

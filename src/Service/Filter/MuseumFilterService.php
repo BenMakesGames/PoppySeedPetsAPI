@@ -28,7 +28,7 @@ class MuseumFilterService
                 'itemname' => [ 'item.name' => 'asc' ],
             ],
             [
-                'user' => [ $this, 'filterUser' ],
+                'user' => $this->filterUser(...),
             ]
         );
     }

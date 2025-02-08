@@ -39,11 +39,11 @@ class IceCreamDaydream
         $changes = new PetChanges($pet);
 
         $adventures = [
-            [ $this, 'doCityOfFrozenIceCream' ],
-            [ $this, 'doMintChocolateSurfing' ],
-            [ $this, 'doShapeIceCreamLandscapes' ],
-            [ $this, 'doFlavorfulStalactites' ],
-            [ $this, 'doGelatoFortuneTeller' ],
+            $this->doCityOfFrozenIceCream(...),
+            $this->doMintChocolateSurfing(...),
+            $this->doShapeIceCreamLandscapes(...),
+            $this->doFlavorfulStalactites(...),
+            $this->doGelatoFortuneTeller(...),
         ];
 
         $log = $this->rng->rngNextFromArray($adventures)($petWithSkills);

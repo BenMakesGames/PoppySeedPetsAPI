@@ -31,10 +31,10 @@ class PetSpeciesFilterService
                 'id' => [ 's.id' => 'asc' ],
             ],
             [
-                'name' => [ $this, 'filterName' ],
-                'family' => [ $this, 'filterFamily' ],
-                'hasPet' => [ $this, 'filterHasPet' ],
-                'hasDiscovered' => [ $this, 'filterHasDiscovered' ],
+                'name' => $this->filterName(...),
+                'family' => $this->filterFamily(...),
+                'hasPet' => $this->filterHasPet(...),
+                'hasDiscovered' => $this->filterHasDiscovered(...),
             ]
         );
     }
