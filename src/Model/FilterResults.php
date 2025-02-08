@@ -2,49 +2,35 @@
 declare(strict_types=1);
 
 namespace App\Model;
-use Symfony\Component\Serializer\Annotation\Groups;
+
+use Symfony\Component\Serializer\Attribute\Groups;
 
 class FilterResults
 {
-    /**
-     * @var int
-     * @Groups({"filterResults"})
-     */
-    public $pageSize;
+    #[Groups(['filterResults'])]
+    public int $pageSize;
 
-    /**
-     * @var int
-     * @Groups({"filterResults"})
-     */
-    public $pageCount;
+    #[Groups(['filterResults'])]
+    public int $pageCount;
 
-    /**
-     * @var int
-     * @Groups({"filterResults"})
-     */
-    public $page;
+    #[Groups(['filterResults'])]
+    public int $page;
 
-    /**
-     * @var int
-     * @Groups({"filterResults"})
-     */
-    public $resultCount;
+    #[Groups(['filterResults'])]
+    public int $resultCount;
 
-    /**
-     * @var int
-     * @Groups({"filterResults"})
-     */
-    public $unfilteredTotal;
+    #[Groups(['filterResults'])]
+    public int $unfilteredTotal;
 
     /**
      * @var array[]
-     * @Groups({"filterResults"})
      */
+    #[Groups(['filterResults'])]
     public $results;
 
     /**
      * @var array[]|null
-     * @Groups({"queryAdmin"})
      */
+    #[Groups(['queryAdmin'])]
     public $query;
 }
