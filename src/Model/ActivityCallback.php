@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-class ActivityCallback implements IActivityCallback
+final class ActivityCallback implements IActivityCallback
 {
     /** @var callable */ public $callable;
     public int $weight;

@@ -24,13 +24,13 @@ class JoustingTeam
         return $this->rider->getName() . '/' . $this->mount->getName();
     }
 
-    public function randomizeRoles(IRandom $squirrel3)
+    public function randomizeRoles(IRandom $squirrel3): void
     {
         if($squirrel3->rngNextBool())
             $this->switchRoles();
     }
 
-    public function switchRoles()
+    public function switchRoles(): void
     {
         $previousRider = $this->rider;
         $this->rider = $this->mount;

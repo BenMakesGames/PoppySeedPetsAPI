@@ -20,7 +20,7 @@ class TriDChessParticipant implements ParkEventParticipant
         $this->skill = self::getSkill($pet);
     }
 
-    public static function getSkill(Pet $pet)
+    public static function getSkill(Pet $pet): int
     {
         $skill = 1 + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getScience();
 

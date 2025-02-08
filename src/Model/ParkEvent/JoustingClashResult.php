@@ -6,21 +6,21 @@ namespace App\Model\ParkEvent;
 use App\Service\IRandom;
 use App\Service\Squirrel3;
 
-class JoustingClashResult
+final class JoustingClashResult
 {
-    /** @var JoustingTeam */ public $team1;
-    /** @var JoustingTeam */ public $team2;
+    public JoustingTeam $team1;
+    public JoustingTeam $team2;
 
-    public $rider1Hit = false;
-    public $rider2Hit = false;
+    public bool $rider1Hit = false;
+    public bool $rider2Hit = false;
 
-    public $rider1BrokeLance = false;
-    public $rider1DismountedRider2 = false;
-    public $rider1StumbledMount2 = false;
-    public $rider2BrokeLance = false;
-    public $rider2DismountedRider1 = false;
-    public $rider2StumbledMount1 = false;
-    public $boringClash = false;
+    public bool $rider1BrokeLance = false;
+    public bool $rider1DismountedRider2 = false;
+    public bool $rider1StumbledMount2 = false;
+    public bool $rider2BrokeLance = false;
+    public bool $rider2DismountedRider1 = false;
+    public bool $rider2StumbledMount1 = false;
+    public bool $boringClash = false;
 
     public function __construct(IRandom $rng, JoustingTeam $team1, JoustingTeam $team2)
     {
