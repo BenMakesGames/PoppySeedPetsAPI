@@ -3,31 +3,26 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
-class WeatherForecastData
+final class WeatherForecastData
 {
-    /**
-     * @var \DateTimeImmutable
-     * @Groups({"weather"})
-     */
-    public $date;
+    #[Groups(["weather"])]
+    public \DateTimeImmutable $date;
 
-    /**
-     * @var string[]
-     * @Groups({"weather"})
-     */
-    public $holidays;
+    /** @var string[] */
+    #[Groups(["weather"])]
+    public array $holidays;
 
-    public $minTemperature;
-    public $maxTemperature;
-    public $avgTemperature;
-    public $minClouds;
-    public $maxClouds;
-    public $avgClouds;
-    public $minRainfall;
-    public $maxRainfall;
-    public $avgRainfall;
+    public float $minTemperature;
+    public float $maxTemperature;
+    public float $avgTemperature;
+    public float $minClouds;
+    public float $maxClouds;
+    public float $avgClouds;
+    public float $minRainfall;
+    public float $maxRainfall;
+    public float $avgRainfall;
 
     #[Groups(["weather"])]
     public function getMinTemperature(): float

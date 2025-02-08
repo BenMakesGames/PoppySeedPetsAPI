@@ -5,45 +5,29 @@ namespace App\Model;
 
 use App\Entity\User;
 use App\Enum\CostOrYieldTypeEnum;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 class TraderOffer
 {
-    /**
-     * @var string
-     * @Groups({"traderOffer"})
-     */
-    public $id;
+    #[Groups(['traderOffer'])]
+    public string $id;
 
-    /**
-     * @var TraderOfferCostOrYield[]
-     * @Groups({"traderOffer"})
-     */
-    public $cost;
+    /** @var TraderOfferCostOrYield[] */
+    #[Groups(['traderOffer'])]
+    public array $cost;
 
-    /**
-     * @var TraderOfferCostOrYield[]
-     * @Groups({"traderOffer"})
-     */
-    public $yield;
+    /** @var TraderOfferCostOrYield[] */
+    #[Groups(['traderOffer'])]
+    public array $yield;
 
-    /**
-     * @var string
-     * @Groups({"traderOffer"})
-     */
-    public $comment;
+    #[Groups(['traderOffer'])]
+    public string $comment;
 
-    /**
-     * @var int
-     * @Groups({"traderOffer"})
-     */
-    public $canMakeExchange;
+    #[Groups(['traderOffer'])]
+    public int $canMakeExchange;
 
-    /**
-     * @var bool
-     * @Groups({"traderOffer"})
-     */
-    public $lockedToAccount;
+    #[Groups(['traderOffer'])]
+    public bool $lockedToAccount;
 
     public static function createTradeOffer(
         array $cost, array $yield, string $comment, User $user, array $inventoryQuantitiesByNameAtLocation, bool $lockedToAccount = false

@@ -5,7 +5,7 @@ namespace App\Model;
 
 use App\Enum\EnumInvalidValueException;
 use App\Enum\HolidayEnum;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 class WeatherData
 {
@@ -13,17 +13,14 @@ class WeatherData
      * @var string[]
      */
     #[Groups(['weather'])]
-    public $holidays;
+    public array $holidays;
 
     public $temperature;
     public $clouds;
     public $rainfall;
 
-    /**
-     * @var bool
-     */
     #[Groups(['weather'])]
-    public $isNight;
+    public bool $isNight;
 
     #[Groups(['weather'])]
     public function getTemperature(): float

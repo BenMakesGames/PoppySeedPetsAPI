@@ -7,8 +7,8 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
 use App\Enum\RelationshipEnum;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 #[ORM\Table]
 #[ORM\Index(name: 'commitment_idx', columns: ['commitment'])]
@@ -234,10 +234,8 @@ class PetRelationship
         return $this;
     }
 
-    /**
-     * @Groups({"petFriend"})
-     * @SerializedName("metDescription")
-     */
+    #[Groups(['petFriend'])]
+    #[SerializedName('metDescription')]
     public function getFormattedMetDescription()
     {
         return str_replace(

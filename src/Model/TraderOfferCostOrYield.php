@@ -5,29 +5,20 @@ namespace App\Model;
 
 use App\Entity\Item;
 use App\Enum\CostOrYieldTypeEnum;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 class TraderOfferCostOrYield
 {
-    /**
-     * @var string
-     * @Groups({"traderOffer"})
-     */
-    public $type;
+    #[Groups(['traderOffer'])]
+    public string $type;
 
-    /**
-     * @var Item|null
-     * @Groups({"traderOffer"})
-     */
-    public $item;
+    #[Groups(['traderOffer'])]
+    public ?Item $item;
 
-    /**
-     * @var int
-     * @Groups({"traderOffer"})
-     */
-    public $quantity;
+    #[Groups(['traderOffer'])]
+    public int $quantity;
 
-    public static function createItem(Item $item, int $quantity)
+    public static function createItem(Item $item, int $quantity): TraderOfferCostOrYield
     {
         $costOrYield = new TraderOfferCostOrYield();
 
@@ -38,7 +29,7 @@ class TraderOfferCostOrYield
         return $costOrYield;
     }
 
-    public static function createMoney(int $quantity)
+    public static function createMoney(int $quantity): TraderOfferCostOrYield
     {
         $costOrYield = new TraderOfferCostOrYield();
 
@@ -49,7 +40,7 @@ class TraderOfferCostOrYield
         return $costOrYield;
     }
 
-    public static function createRecyclingPoints(int $quantity)
+    public static function createRecyclingPoints(int $quantity): TraderOfferCostOrYield
     {
         $costOrYield = new TraderOfferCostOrYield();
 

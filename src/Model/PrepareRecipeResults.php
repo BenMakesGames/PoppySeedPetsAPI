@@ -5,17 +5,15 @@ namespace App\Model;
 
 use App\Entity\Inventory;
 
-class PrepareRecipeResults
+final class PrepareRecipeResults
 {
     /** @var Inventory[] */
-    public $inventory;
+    public array $inventory;
 
     /** @var ItemQuantity[] */
-    public $quantities;
+    public array $quantities;
 
-    /** @var array */
-    public $recipe;
+    public array $recipe;
 
-    /** @var int */
-    public $location;
+    public int $location;
 }

@@ -3,27 +3,18 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 class UserMenuItem
 {
-    /**
-     * @var string
-     * @Groups({"myMenu"})
-     */
-    public $location;
+    #[Groups(['myMenu'])]
+    public string $location;
 
-    /**
-     * @var bool
-     * @Groups({"myMenu"})
-     */
-    public $isNew;
+    #[Groups(['myMenu'])]
+    public bool $isNew;
 
-    /**
-     * @var int
-     * @Groups({"myMenu"})
-     */
-    public $sortOrder;
+    #[Groups(['myMenu'])]
+    public int $sortOrder;
 
     public function __construct(string $location, int $sortOrder, ?\DateTimeImmutable $unlockDate)
     {

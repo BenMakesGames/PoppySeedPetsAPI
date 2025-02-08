@@ -7,7 +7,7 @@ use App\Entity\Pet;
 use App\Enum\MeritEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\DateFunctions;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 class ComputedPetSkills
 {

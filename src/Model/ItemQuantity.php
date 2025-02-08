@@ -4,21 +4,15 @@ declare(strict_types=1);
 namespace App\Model;
 
 use App\Entity\Item;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 class ItemQuantity
 {
-    /**
-     * @var Item
-     * @Groups({"myInventory", "knownRecipe"})
-     */
-    public $item;
+    #[Groups(['myInventory', 'knownRecipe'])]
+    public Item $item;
 
-    /**
-     * @var int
-     * @Groups({"myInventory", "knownRecipe"})
-     */
-    public $quantity;
+    #[Groups(['myInventory', 'knownRecipe'])]
+    public int $quantity;
 
     /**
      * @param ItemQuantity[] $quantities

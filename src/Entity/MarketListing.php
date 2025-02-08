@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Table]
 #[ORM\UniqueConstraint(name: 'market_listing_unique', columns: ['item_id'])]
@@ -16,18 +16,14 @@ class MarketListing
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @Groups("marketItem")
-     */
+    #[Groups(['marketItem'])]
     #[ORM\ManyToOne(targetEntity: Item::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $item;
 
-    /**
-     * @Groups("marketItem")
-     */
+    #[Groups(['marketItem'])]
     #[ORM\Column(type: 'integer', nullable: true)]
-    private $minimumSellPrice;
+    private ?int $minimumSellPrice;
 
     public function getId(): ?int
     {

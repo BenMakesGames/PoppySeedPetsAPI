@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Table]
 #[ORM\Index(name: 'workers_idx', columns: ['workers'])]
@@ -23,40 +23,40 @@ class Beehive
 
     #[Groups(["myBeehive"])]
     #[ORM\Column(type: 'integer')]
-    private $workers = 250;
+    private int $workers = 250;
 
     #[Groups(["myBeehive"])]
     #[ORM\Column(type: 'string', length: 40)]
-    private $queenName;
+    private string $queenName;
 
     #[Groups(["myBeehive"])]
     #[ORM\Column(type: 'integer')]
-    private $flowerPower = 0;
+    private int $flowerPower = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $royalJellyProgress = 0;
+    private int $royalJellyProgress = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $honeycombProgress = 0;
+    private int $honeycombProgress = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $miscProgress = 0;
+    private int $miscProgress = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $interactionPower = 48;
+    private int $interactionPower = 48;
 
     /**
-     * @Groups({"myBeehive"})
      * @var Item
      */
+    #[Groups(['myBeehive'])]
     #[ORM\ManyToOne(targetEntity: Item::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $requestedItem;
 
     /**
-     * @Groups({"myBeehive"})
      * @var Item
      */
+    #[Groups(['myBeehive'])]
     #[ORM\ManyToOne(targetEntity: Item::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $alternateRequestedItem;

@@ -6,8 +6,8 @@ namespace App\Entity;
 use App\Enum\FlavorEnum;
 use App\Enum\PetSkillEnum;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 #[ORM\Table]
 #[ORM\Index(name: 'is_candy_idx', columns: ['is_candy'])]
@@ -528,10 +528,8 @@ class ItemFood
         return $this;
     }
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia"})
-     * @SerializedName("candy")
-     */
+    #[Groups(['myInventory', 'itemEncyclopedia'])]
+    #[SerializedName('candy')]
     public function getIsCandy(): ?bool
     {
         return $this->isCandy;
@@ -573,10 +571,8 @@ class ItemFood
         return $this;
     }
 
-    /**
-     * @Groups({"myInventory", "itemEncyclopedia"})
-     * @SerializedName("leftovers")
-     */
+    #[Groups(['myInventory', 'itemEncyclopedia'])]
+    #[SerializedName('leftovers')]
     public function getLeftoversName(): ?string
     {
         return $this->leftovers === null ? null : $this->getLeftovers()->getName();

@@ -4,45 +4,28 @@ declare(strict_types=1);
 namespace App\Model;
 
 use App\Entity\StorySection;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 class StoryStep
 {
-    /**
-     * @var string
-     * @Groups({"story"})
-     */
-    public $storyTitle;
+    #[Groups(['story'])]
+    public string $storyTitle;
 
-    /**
-     * @var string
-     * @Groups({"story"})
-     */
-    public $style;
+    #[Groups(['story'])]
+    public string $style;
 
-    /**
-     * @var string
-     * @Groups({"story"})
-     */
-    public $background;
+    #[Groups(['story'])]
+    public string $background;
 
-    /**
-     * @var string
-     * @Groups({"story"})
-     */
-    public $image;
+    #[Groups(['story'])]
+    public string $image;
 
-    /**
-     * @var string
-     * @Groups({"story"})
-     */
-    public $content;
+    #[Groups(['story'])]
+    public string $content;
 
-    /**
-     * @var StoryStepChoice[]
-     * @Groups({"story"})
-     */
-    public $choices = [];
+    /** @var StoryStepChoice[] */
+    #[Groups(['story'])]
+    public array $choices = [];
 
     public static function createFromStorySection(StorySection $s): StoryStep
     {

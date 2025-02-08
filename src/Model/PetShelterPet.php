@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace App\Model;
 
 use App\Entity\PetSpecies;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
-class PetShelterPet
+final class PetShelterPet
 {
     public const PET_NAMES = [
         'Aalina', 'Aaron', 'Abrahil', 'Addy', 'Aedoc', 'Aelfric', 'Aimery', 'Alain', 'Alda', 'Aldreda', 'Aldus',
@@ -152,45 +152,24 @@ class PetShelterPet
         '猪' => [ 'Pig', 'Zhū' ],
     ];
 
-    /**
-     * @var int
-     * @Groups({"petShelterPet"})
-     */
-    public $id;
+    #[Groups(['petShelterPet'])]
+    public int $id;
 
-    /**
-     * @var string
-     * @Groups({"petShelterPet"})
-     */
-    public $name;
+    #[Groups(['petShelterPet'])]
+    public string $name;
 
-    /**
-     * @var PetSpecies
-     * @Groups({"petShelterPet"})
-     */
-    public $species;
+    #[Groups(['petShelterPet'])]
+    public PetSpecies $species;
 
-    /**
-     * @var string
-     * @Groups({"petShelterPet"})
-     */
-    public $colorA;
+    #[Groups(['petShelterPet'])]
+    public string $colorA;
 
-    /**
-     * @var string
-     * @Groups({"petShelterPet"})
-     */
-    public $colorB;
+    #[Groups(['petShelterPet'])]
+    public string $colorB;
 
-    /**
-     * @var string
-     * @Groups({"petShelterPet"})
-     */
-    public $label;
+    #[Groups(['petShelterPet'])]
+    public string $label;
 
-    /**
-     * @var int
-     * @Groups({"petShelterPet"})
-     */
-    public $scale;
+    #[Groups(['petShelterPet'])]
+    public int $scale;
 }

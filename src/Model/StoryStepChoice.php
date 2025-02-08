@@ -3,25 +3,16 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 class StoryStepChoice
 {
-    /**
-     * @var string
-     * @Groups({"story"})
-     */
-    public $text;
+    #[Groups(['story'])]
+    public string $text;
 
-    /**
-     * @var bool
-     * @Groups({"story"})
-     */
-    public $enabled;
+    #[Groups(['story'])]
+    public bool $enabled;
 
-    /**
-     * @var bool
-     * @Groups({"story"})
-     */
-    public $exitOnSelect;
+    #[Groups(['story'])]
+    public bool $exitOnSelect;
 }
