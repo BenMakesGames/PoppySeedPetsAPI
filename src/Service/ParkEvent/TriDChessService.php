@@ -26,7 +26,7 @@ use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 
-class TriDChessService implements ParkEventInterface
+final class TriDChessService implements ParkEventInterface
 {
     public const CHESS_PIECES = [
         'a pawn', 'a rook', 'a knight', 'a bishop', 'the queen', 'the king',
@@ -120,7 +120,7 @@ class TriDChessService implements ParkEventInterface
         return $parkEvent;
     }
 
-    private function doRound()
+    private function doRound(): void
     {
         $this->results .= 'Round ' . $this->round . "\n---\n\n";
 
@@ -150,7 +150,7 @@ class TriDChessService implements ParkEventInterface
         $this->winners = $winners;
     }
 
-    private function doMatch(TriDChessParticipant $p1, TriDChessParticipant $p2)
+    private function doMatch(TriDChessParticipant $p1, TriDChessParticipant $p2): int
     {
         $this->results .= $p1->pet->getName() . ' vs ' . $p2->pet->getName() . "\n";
 
@@ -213,7 +213,7 @@ class TriDChessService implements ParkEventInterface
             throw new \Exception('Neither player lost?? This is a terrible programming error.');
     }
 
-    private function doPlay(TriDChessParticipant $participant, int $healthAdvantage, int $move)
+    private function doPlay(TriDChessParticipant $participant, int $healthAdvantage, int $move): int
     {
         $bonus = 0;
 
@@ -235,7 +235,7 @@ class TriDChessService implements ParkEventInterface
             }
         }
 
-        $lowerBounds = min(ceil($participant->skill / 2), $participant->skill + $healthAdvantage - 1);
+        $lowerBounds = min((int)ceil($participant->skill / 2), $participant->skill + $healthAdvantage - 1);
 
         $damage = $this->squirrel3->rngNextInt($lowerBounds, $participant->skill + $healthAdvantage);
 
@@ -243,7 +243,7 @@ class TriDChessService implements ParkEventInterface
     }
 
 
-    private function awardExp()
+    private function awardExp(): void
     {
         $affectionAverage = ArrayFunctions::average($this->participants, fn(TriDChessParticipant $p) => $p->pet->getAffectionLevel());
 
@@ -262,6 +262,7 @@ class TriDChessService implements ParkEventInterface
 
             $wins = $this->wins[$participant->pet->getId()];
             $trophyItem = null;
+            $comment = null;
 
             if($wins === $this->round)
             {
@@ -301,7 +302,7 @@ class TriDChessService implements ParkEventInterface
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Park Event', 'Tri-D Chess' ]))
             ;
 
-            if($trophyItem)
+            if($trophyItem && $comment)
                 $this->inventoryService->petCollectsItem($trophyItem, $participant->pet, $comment, $log);
 
             if($participant->isWinner)
