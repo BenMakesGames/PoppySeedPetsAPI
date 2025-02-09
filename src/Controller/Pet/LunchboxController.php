@@ -14,16 +14,14 @@ use App\Exceptions\PSPPetNotFoundException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/pet")]
 class LunchboxController extends AbstractController
 {
-    /**
-     * @Route("/{pet}/putInLunchbox/{inventory}", methods={"POST"}, requirements={"pet"="\d+", "inventory"="\d+"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/{pet}/putInLunchbox/{inventory}", methods: ["POST"], requirements: ["pet" => "\d+", "inventory" => "\d+"])]
     public function putFoodInLunchbox(
         Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
@@ -69,10 +67,8 @@ class LunchboxController extends AbstractController
         return $responseService->success();
     }
 
-    /**
-     * @Route("/{pet}/takeOutOfLunchbox/{inventory}", methods={"POST"}, requirements={"pet"="\d+", "inventory"="\d+"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/{pet}/takeOutOfLunchbox/{inventory}", methods: ["POST"], requirements: ["pet" => "\d+", "inventory" => "\d+"])]
     public function takeFoodOutOfLunchbox(
         Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )

@@ -16,7 +16,7 @@ use App\Service\Typeahead\PetTypeaheadService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/pet")]
@@ -66,9 +66,7 @@ class GetController extends AbstractController
         return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
     }
 
-    /**
-     * @Route("/{pet}", methods={"GET"}, requirements={"pet"="\d+"})
-     */
+    #[Route("/{pet}", methods: ["GET"], requirements: ["pet" => "\d+"])]
     public function profile(Pet $pet, ResponseService $responseService)
     {
         return $responseService->success($pet, [ SerializationGroupEnum::PET_PUBLIC_PROFILE ]);

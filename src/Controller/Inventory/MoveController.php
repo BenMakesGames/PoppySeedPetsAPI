@@ -15,16 +15,14 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/inventory")]
 class MoveController extends AbstractController
 {
-    /**
-     * @Route("/moveTo/{location}", methods={"POST"}, requirements={"location"="\d+"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/moveTo/{location}", methods: ["POST"], requirements: ["location" => "\d+"])]
     public function moveInventory(
         int $location, Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
         EntityManagerInterface $em

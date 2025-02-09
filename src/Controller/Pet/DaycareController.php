@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Pet;
 
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\PetLocationEnum;
@@ -17,9 +18,8 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Annotations\DoesNotRequireHouseHours;
 
 #[Route("/pet")]
 class DaycareController extends AbstractController
@@ -44,11 +44,9 @@ class DaycareController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/daycare/arrange", methods={"POST"})
-     * @DoesNotRequireHouseHours()
-     */
+    #[DoesNotRequireHouseHours]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/daycare/arrange", methods: ["POST"])]
     public function arrangePets(
         ResponseService $responseService, Request $request, EntityManagerInterface $em
     )

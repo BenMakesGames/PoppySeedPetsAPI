@@ -10,16 +10,14 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/marketBid")]
 class DeleteBidController extends AbstractController
 {
-    /**
-     * @Route("/{bidId}", methods={"DELETE"}, requirements={"bidId"="\d+"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/{bidId}", methods: ["DELETE"], requirements: ["bidId" => "\d+"])]
     public function deleteBid(
         int $bidId, ResponseService $responseService, TransactionService $transactionService,
         MarketBidRepository $marketBidRepository, EntityManagerInterface $em

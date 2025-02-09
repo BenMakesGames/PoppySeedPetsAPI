@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Following;
 
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\User;
 use App\Entity\UserFollowing;
 use App\Exceptions\PSPFormValidationException;
@@ -11,18 +12,15 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Annotations\DoesNotRequireHouseHours;
 
 #[Route("/following")]
 class UpdateNote extends AbstractController
 {
-    /**
-     * @DoesNotRequireHouseHours()
-     * @Route("/{following}", methods={"POST"})
-     */
+    #[DoesNotRequireHouseHours]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/{following}", methods: ["POST"])]
     public function handle(
         User $following, Request $request, ResponseService $responseService, EntityManagerInterface $em
     )

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Article;
 
-use App\Annotations\DoesNotRequireHouseHours;
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Controller\AdminController;
 use App\Entity\Article;
 use App\Entity\DesignGoal;
@@ -13,15 +13,13 @@ use App\Functions\DesignGoalRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/article")]
 class UpdateController extends AdminController
 {
-    /**
-     * @DoesNotRequireHouseHours()
-     */
+    #[DoesNotRequireHouseHours]
     #[Route("/{article}", methods: ["POST"], requirements: ["article" => "\d+"])]
     #[IsGranted("ROLE_ADMIN")]
     public function handle(

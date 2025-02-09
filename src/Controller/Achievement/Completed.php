@@ -7,15 +7,13 @@ use App\Entity\User;
 use App\Functions\SimpleDb;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/achievement")]
 final class Completed extends AbstractController
 {
-    /**
-     * @Route("", methods={"GET"})
-     */
+    #[Route("", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getCompleted(ResponseService $responseService)
     {

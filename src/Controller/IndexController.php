@@ -3,17 +3,15 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Annotations\DoesNotRequireHouseHours;
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("")]
 class IndexController extends AbstractController
 {
-    /**
-     * @DoesNotRequireHouseHours()
-     */
+    #[DoesNotRequireHouseHours]
     #[Route("/about")]
     public function about(ResponseService $responseService)
     {

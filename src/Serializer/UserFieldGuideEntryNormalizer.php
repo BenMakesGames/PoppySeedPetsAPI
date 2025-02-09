@@ -5,32 +5,30 @@ namespace App\Serializer;
 
 use App\Entity\UserFieldGuideEntry;
 use App\Service\CommentFormatter;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class UserFieldGuideEntryNormalizer implements NormalizerInterface
 {
-    private $normalizer;
-    private $commentFormatter;
-
     public function __construct(
-        ObjectNormalizer $normalizer, CommentFormatter $commentFormatter
+        #[Autowire(service: 'serializer.normalizer.object')]
+        private readonly NormalizerInterface $normalizer,
+
+        private readonly CommentFormatter $commentFormatter,
     )
     {
-        $this->normalizer = $normalizer;
-        $this->commentFormatter = $commentFormatter;
     }
 
     /**
-     * @param UserFieldGuideEntry $object
+     * @param UserFieldGuideEntry $data
      */
-    public function normalize($object, string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null
+    public function normalize($data, string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null
     {
-        $data = $this->normalizer->normalize($object, $format, $context);
+        $normalizedData = $this->normalizer->normalize($data, $format, $context);
 
-        $data['comment'] = $this->commentFormatter->format($data['comment']);
+        $normalizedData['comment'] = $this->commentFormatter->format($normalizedData['comment']);
 
-        return $data;
+        return $normalizedData;
     }
 
     public function supportsNormalization($data, string $format = null, array $context = []): bool

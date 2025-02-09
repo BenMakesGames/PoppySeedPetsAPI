@@ -3,21 +3,19 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Annotations\DoesNotRequireHouseHours;
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\DesignGoal;
 use App\Enum\SerializationGroupEnum;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/designGoal")]
 class DesignGoalController extends AbstractController
 {
+    #[DoesNotRequireHouseHours]
     #[Route("", methods: ["GET"])]
-    /**
-     * @DoesNotRequireHouseHours()
-     */
     public function getAll(EntityManagerInterface $em, ResponseService $responseService)
     {
         return $responseService->success(
@@ -26,10 +24,8 @@ class DesignGoalController extends AbstractController
         );
     }
 
+    #[DoesNotRequireHouseHours]
     #[Route("/{designGoal}", methods: ["GET"])]
-    /**
-     * @DoesNotRequireHouseHours()
-     */
     public function getDetails(DesignGoal $designGoal, ResponseService $responseService)
     {
         return $responseService->success([

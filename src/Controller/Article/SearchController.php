@@ -3,25 +3,21 @@ declare(strict_types=1);
 
 namespace App\Controller\Article;
 
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\ArticleFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use App\Annotations\DoesNotRequireHouseHours;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
-* @Route("/article")
-*/
+#[Route("/article")]
 class SearchController extends AbstractController
 {
-    /**
-     * @DoesNotRequireHouseHours()
-     * @Route("", methods={"GET"})
-     */
+    #[Route("", methods: ["GET"])]
+    #[DoesNotRequireHouseHours]
     public function handle(
         Request $request, ResponseService $responseService, ArticleFilterService $articleFilterService,
         EntityManagerInterface $em

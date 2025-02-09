@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Account;
 
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
@@ -17,15 +18,11 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Annotations\DoesNotRequireHouseHours;
 
 #[Route("/account")]
 final class LogInController extends AbstractController
 {
-    /**
-     * @DoesNotRequireHouseHours()
-     */
+    #[DoesNotRequireHouseHours]
     #[Route("/logIn", methods: ["POST"])]
     public function logIn(
         #[MapRequestPayload] LogInRequest $logInRequest, Request $request,

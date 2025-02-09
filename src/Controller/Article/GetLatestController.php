@@ -3,25 +3,20 @@ declare(strict_types=1);
 
 namespace App\Controller\Article;
 
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\Article;
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Annotations\DoesNotRequireHouseHours;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Routing\Attribute\Route;
 
-/**
-* @Route("/article")
-*/
+#[Route("/article")]
 class GetLatestController extends AbstractController
 {
-    /**
-     * @DoesNotRequireHouseHours()
-     * @Route("/latest", methods={"GET"})
-     */
+    #[DoesNotRequireHouseHours]
+    #[Route("/latest", methods: ["GET"])]
     public function getLatest(
         ResponseService $responseService, EntityManagerInterface $em
     )

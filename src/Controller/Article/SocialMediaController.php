@@ -3,25 +3,21 @@ declare(strict_types=1);
 
 namespace App\Controller\Article;
 
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Controller\AdminController;
 use App\Entity\Article;
 use App\Service\RedditService;
 use App\Service\ResponseService;
 use Symfony\Component\HttpFoundation\Request;
-use App\Annotations\DoesNotRequireHouseHours;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
-* @Route("/article")
-*/
+#[Route("/article")]
 class SocialMediaController extends AdminController
 {
-    /**
-     * @DoesNotRequireHouseHours()
-     * @Route("/{article}/reddit", methods={"POST"}, requirements={"article"="\d+"})
-     */
+    #[DoesNotRequireHouseHours]
     #[IsGranted("ROLE_ADMIN")]
+    #[Route("/{article}/reddit", methods: ["POST"], requirements: ["article" => "\d+"])]
     public function redditArticle(
         Article $article, ResponseService $responseService, RedditService $redditService, Request $request
     )

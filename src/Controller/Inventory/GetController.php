@@ -14,7 +14,7 @@ use App\Service\ResponseService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/inventory")]
@@ -36,10 +36,8 @@ class GetController extends AbstractController
         return $responseService->success($inventory, [ SerializationGroupEnum::MY_INVENTORY ]);
     }
 
-    /**
-     * @Route("/my/{location}", methods={"GET"}, requirements={"location"="\d+"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/my/{location}", methods: ["GET"], requirements: ["location" => "\d+"])]
     public function getMyInventory(
         Request $request, ResponseService $responseService, InventoryFilterService $inventoryFilterService,
         int $location

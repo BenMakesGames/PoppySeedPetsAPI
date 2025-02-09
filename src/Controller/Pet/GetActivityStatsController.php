@@ -10,16 +10,14 @@ use App\Exceptions\PSPPetNotFoundException;
 use App\Service\PetActivityStatsService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/pet")]
 class GetActivityStatsController extends AbstractController
 {
-    /**
-     * @Route("/{pet}/activityStats", methods={"GET"}, requirements={"pet"="\d+"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("{pet}/activityStats", methods: ["GET"], requirements: ["pet" => "\d+"])]
     public function activityStats(
         Pet $pet, ResponseService $responseService
     )

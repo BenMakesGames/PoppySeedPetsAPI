@@ -12,16 +12,14 @@ use App\Service\Filter\MuseumFilterService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/museum")]
 class UserStatsController extends AbstractController
 {
-    /**
-     * @Route("/{user}/items", methods={"GET"}, requirements={"user"="\d+"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/{user}/items", methods: ["GET"], requirements: ["user" => "\d+"])]
     public function userDonatedItems(
         User $user,
         Request $request, ResponseService $responseService, MuseumFilterService $museumFilterService
@@ -38,10 +36,8 @@ class UserStatsController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/{user}/nonItems", methods={"GET"}, requirements={"user"="\d+"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/{user}/nonItems", methods: ["GET"], requirements: ["user" => "\d+"])]
     public function userNonDonatedItems(
         User $user,
         Request $request, ResponseService $responseService, ItemFilterService $itemFilterService
@@ -58,10 +54,8 @@ class UserStatsController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/{user}/itemCount", methods={"GET"}, requirements={"user"="\d+"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/{user}/itemCount", methods: ["GET"], requirements: ["user" => "\d+"])]
     public function userItemCount(
         User $user,
         Request $request, ResponseService $responseService, MuseumFilterService $museumFilterService

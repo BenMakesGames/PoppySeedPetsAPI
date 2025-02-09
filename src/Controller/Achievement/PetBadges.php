@@ -8,16 +8,14 @@ use App\Enum\PetBadgeEnum;
 use App\Functions\SimpleDb;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/achievement")]
 final class PetBadges extends AbstractController
 {
-    /**
-     * @Route("/petBadges", methods={"GET"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/petBadges", methods: ["GET"])]
     public function getPetBadges(ResponseService $responseService)
     {
         /** @var User $user */

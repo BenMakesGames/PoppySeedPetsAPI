@@ -12,16 +12,14 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/pet")]
 class SetFertilityController extends AbstractController
 {
-    /**
-     * @Route("/{pet}/setFertility", methods={"PATCH"}, requirements={"pet"="\d+"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/{pet}/setFertility", methods: ["PATCH"], requirements: ["pet" => "\d+"])]
     public function setPetFertility(
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
     )

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Patreon;
 
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\UserSubscription;
 use App\Enum\PatreonTierEnum;
 use App\Exceptions\PSPFormValidationException;
@@ -10,17 +11,13 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Annotations\DoesNotRequireHouseHours;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/patreon")]
 class LiveUpdatesController extends AbstractController
 {
-    /**
-     * @Route("/liveUpdates", methods={"POST"})
-     * @DoesNotRequireHouseHours()
-     */
+    #[DoesNotRequireHouseHours]
+    #[Route("/liveUpdates", methods: ["POST"])]
     public function connectPatreonAccount(
         Request $request, ResponseService $responseService, EntityManagerInterface $em
     )
@@ -65,7 +62,7 @@ class LiveUpdatesController extends AbstractController
         return $responseService->success();
     }
 
-    private static function upsertPledge(int $patronId, int $rewardId, EntityManagerInterface $em)
+    private static function upsertPledge(int $patronId, int $rewardId, EntityManagerInterface $em): void
     {
         $userSubscription = $em->getRepository(UserSubscription::class)->findOneBy([
             'patreonUserId' => $patronId
@@ -86,7 +83,7 @@ class LiveUpdatesController extends AbstractController
         ;
     }
 
-    private static function deletePledge(int $patronId, EntityManagerInterface $em)
+    private static function deletePledge(int $patronId, EntityManagerInterface $em): void
     {
         $userSubscription = $em->getRepository(UserSubscription::class)->findOneBy([
             'patreonUserId' => $patronId

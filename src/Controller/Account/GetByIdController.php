@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Account;
 
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\User;
@@ -17,18 +18,14 @@ use App\Functions\UserStyleFunctions;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Annotations\DoesNotRequireHouseHours;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 #[Route("/account")]
 class GetByIdController extends AbstractController
 {
-    /**
-     * @DoesNotRequireHouseHours()
-     * @Route("/{user}", methods={"GET"}, requirements={"user"="\d+"})
-     */
+    #[DoesNotRequireHouseHours]
+    #[Route("/{user}", methods: ["GET"], requirements: ["user" => "\d+"])]
     public function getProfile(
         User $user, ResponseService $responseService, NormalizerInterface $normalizer, EntityManagerInterface $em
     )
@@ -93,10 +90,8 @@ class GetByIdController extends AbstractController
         ], $links);
     }
 
-    /**
-     * @DoesNotRequireHouseHours()
-     * @Route("/{user}/minimal", methods={"GET"}, requirements={"user"="\d+"})
-     */
+    #[DoesNotRequireHouseHours]
+    #[Route("/{user}/minimal", methods: ["GET"], requirements: ["user" => "\d+"])]
     public function getProfileMinimal(User $user, ResponseService $responseService)
     {
         return $responseService->success($user, [ SerializationGroupEnum::USER_PUBLIC_PROFILE ]);

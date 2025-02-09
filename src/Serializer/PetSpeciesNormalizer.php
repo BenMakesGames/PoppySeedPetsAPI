@@ -6,31 +6,33 @@ namespace App\Serializer;
 use App\Entity\PetSpecies;
 use App\Enum\SerializationGroupEnum;
 use App\Repository\PetRepository;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class PetSpeciesNormalizer implements NormalizerInterface
 {
     public function __construct(
+        #[Autowire(service: 'serializer.normalizer.object')]
+        private readonly NormalizerInterface $normalizer,
+
         private readonly PetRepository $petRepository,
-        private readonly ObjectNormalizer $normalizer
     )
     {
     }
 
     /**
-     * @param PetSpecies $object
+     * @param PetSpecies $data
      */
-    public function normalize($object, string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null
+    public function normalize($data, string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null
     {
-        $data = $this->normalizer->normalize($object, $format, $context);
+        $normalizedData = $this->normalizer->normalize($data, $format, $context);
 
         if(in_array(SerializationGroupEnum::PET_ENCYCLOPEDIA, $context['groups']))
         {
-            $data['numberOfPets'] = $this->petRepository->getNumberHavingSpecies($object);
+            $normalizedData['numberOfPets'] = $this->petRepository->getNumberHavingSpecies($data);
         }
 
-        return $data;
+        return $normalizedData;
     }
 
     public function supportsNormalization($data, string $format = null, array $context = []): bool

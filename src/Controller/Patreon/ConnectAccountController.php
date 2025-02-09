@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Patreon;
 
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\User;
 use App\Entity\UserSubscription;
 use App\Exceptions\PSPFormValidationException;
@@ -10,17 +11,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Annotations\DoesNotRequireHouseHours;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/patreon")]
 class ConnectAccountController extends AbstractController
 {
-    /**
-     * @Route("/connectAccount", methods={"GET"})
-     * @DoesNotRequireHouseHours()
-     */
+    #[DoesNotRequireHouseHours]
+    #[Route("/connectAccount", methods: ["GET"])]
     public function connectPatreonAccount(
         Request $request, EntityManagerInterface $em
     )

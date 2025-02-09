@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Account;
 
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\PetSpecies;
 use App\Entity\User;
 use App\Entity\UserStyle;
@@ -21,17 +22,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Annotations\DoesNotRequireHouseHours;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/account")]
 class RegisterController extends AbstractController
 {
-    /**
-     * @DoesNotRequireHouseHours()
-     * @Route("/register", methods={"POST"})
-     */
+    #[DoesNotRequireHouseHours]
+    #[Route("/register", methods: ["POST"])]
     public function register(
         Request $request, EntityManagerInterface $em, ResponseService $responseService, SessionService $sessionService,
         UserPasswordHasherInterface $userPasswordEncoder, InventoryService $inventoryService, PetFactory $petFactory,

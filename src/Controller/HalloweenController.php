@@ -27,17 +27,15 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 #[Route("/halloween")]
 class HalloweenController extends AbstractController
 {
-    /**
-     * @Route(methods={"GET"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("", methods: ["GET"])]
     public function getNextTrickOrTreater(
         HalloweenService $halloweenService, ResponseService $responseService, Clock $clock
     )

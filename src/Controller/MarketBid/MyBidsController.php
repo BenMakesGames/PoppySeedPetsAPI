@@ -10,15 +10,13 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\MarketBidRepository;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/marketBid")]
 class MyBidsController extends AbstractController
 {
-    /**
-     * @Route("", methods={"GET"})
-     */
+    #[Route("", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getMyBids(ResponseService $responseService, MarketBidRepository $marketBidRepository)
     {

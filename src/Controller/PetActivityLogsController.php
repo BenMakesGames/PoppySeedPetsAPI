@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Annotations\DoesNotRequireHouseHours;
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\PetActivityLogTag;
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
@@ -13,15 +13,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/petActivityLogs")]
 class PetActivityLogsController extends AbstractController
 {
-    /**
-     * @Route("", methods={"GET"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("", methods: ["GET"])]
     public function history(
         Request $request, ResponseService $responseService, PetActivityLogsFilterService $petActivityLogsFilterService
     )
@@ -36,9 +34,7 @@ class PetActivityLogsController extends AbstractController
         return $responseService->success($logs, [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::PET_ACTIVITY_LOGS_AND_PUBLIC_PET ]);
     }
 
-    /**
-     * @DoesNotRequireHouseHours()
-     */
+    #[DoesNotRequireHouseHours]
     #[Route("/getAllTags", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getAllTags(ResponseService $responseService, EntityManagerInterface $em)

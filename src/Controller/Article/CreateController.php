@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Article;
 
-use App\Annotations\DoesNotRequireHouseHours;
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Controller\AdminController;
 use App\Entity\Article;
 use App\Exceptions\PSPFormValidationException;
@@ -11,15 +11,13 @@ use App\Functions\DesignGoalRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/article")]
 class CreateController extends AdminController
 {
-    /**
-     * @DoesNotRequireHouseHours()
-     */
+    #[DoesNotRequireHouseHours]
     #[Route("", methods: ["POST"])]
     #[IsGranted("ROLE_ADMIN")]
     public function createNew(

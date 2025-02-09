@@ -27,7 +27,7 @@ use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/item/bug")]
@@ -271,9 +271,9 @@ class BugController extends AbstractController
     }
 
     /**
-     * @Route("/{inventory}/talkToQueen", methods={"POST"})
      * @throws \Exception
      */
+    #[Route("/{inventory}/talkToQueen", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function talkToQueen(
         Inventory $inventory, StoryService $storyService, Request $request,

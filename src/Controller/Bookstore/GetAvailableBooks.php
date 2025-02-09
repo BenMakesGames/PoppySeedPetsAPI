@@ -11,16 +11,14 @@ use App\Service\BookstoreService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 // allows player to buy books; inventory grows based on various criteria
 
 #[Route("/bookstore")]
 class GetAvailableBooks extends AbstractController
 {
-    /**
-     * @Route("", methods={"GET"})
-     */
+    #[Route("", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getAvailableBooks(
         BookstoreService $bookstoreService, ResponseService $responseService

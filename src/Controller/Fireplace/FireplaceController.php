@@ -14,19 +14,17 @@ use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 #[Route("/fireplace")]
 class FireplaceController extends AbstractController
 {
-    /**
-     * @Route("", methods={"GET"})
-     */
+    #[Route("", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getFireplace(
-        InventoryRepository $inventoryRepository, ResponseService $responseService, EntityManagerInterface $em,
+        ResponseService $responseService, EntityManagerInterface $em,
         NormalizerInterface $normalizer
     )
     {
@@ -36,7 +34,7 @@ class FireplaceController extends AbstractController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace) || !$user->getFireplace())
             throw new PSPNotUnlockedException('Fireplace');
 
-        $mantle = $inventoryRepository->findBy([
+        $mantle = $em->getRepository(Inventory::class)->findBy([
             'owner' => $user,
             'location' => LocationEnum::MANTLE
         ]);
@@ -97,9 +95,7 @@ class FireplaceController extends AbstractController
         return $responseService->success($food, [ SerializationGroupEnum::MY_INVENTORY ]);
     }
 
-    /**
-     * @Route("/mantle/{user}", methods={"GET"}, requirements={"user"="\d+"})
-     */
+    #[Route("/mantle/{user}", methods: ["GET"], requirements: [ "user" => "\d+" ])]
     public function getMantle(User $user, InventoryRepository $inventoryRepository, ResponseService $responseService)
     {
         $inventory = $inventoryRepository->findBy([

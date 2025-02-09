@@ -3,22 +3,18 @@ declare(strict_types=1);
 
 namespace App\Controller\PetSpecies;
 
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Service\ResponseService;
 use App\Service\Typeahead\PetSpeciesTypeaheadService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Annotations\DoesNotRequireHouseHours;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/petSpecies")]
 class TypeaheadController extends AbstractController
 {
-
-    /**
-     * @Route("/typeahead", methods={"GET"})
-     * @DoesNotRequireHouseHours()
-     */
+    #[DoesNotRequireHouseHours]
+    #[Route("/typeahead", methods: ["GET"])]
     public function typeaheadSearch(
         Request $request, ResponseService $responseService, PetSpeciesTypeaheadService $petSpeciesTypeaheadService
     )

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\House;
 
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\User;
@@ -14,19 +15,16 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use App\Annotations\DoesNotRequireHouseHours;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/house")]
 class RunHoursController extends AbstractController
 {
-    /**
-     * @DoesNotRequireHouseHours()
-     * @Route("/runHours", methods={"POST"})
-     */
+    #[DoesNotRequireHouseHours]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/runHours", methods: ["POST"])]
     public function runHours(
         ResponseService $responseService, HouseService $houseService, EntityManagerInterface $em, LoggerInterface $logger,
         NormalizerInterface $normalizer

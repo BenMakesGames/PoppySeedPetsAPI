@@ -3,22 +3,20 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Annotations\DoesNotRequireHouseHours;
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\DeviceStats;
 use App\Entity\User;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/deviceStats")]
 class DeviceStatsController extends AbstractController
 {
-    /**
-     * @DoesNotRequireHouseHours()
-     */
+    #[DoesNotRequireHouseHours]
     #[Route("", methods: ["PUT"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function about(ResponseService $responseService, Request $request, EntityManagerInterface $em)

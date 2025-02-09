@@ -20,16 +20,14 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/pet")]
 class PetAndFeedController extends AbstractController
 {
-    /**
-     * @Route("/{pet}/pet", methods={"POST"}, requirements={"pet"="\d+"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/{pet}/pet", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function pet(
         Pet $pet, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
         PetAndPraiseService $petAndPraiseService
@@ -56,10 +54,8 @@ class PetAndFeedController extends AbstractController
             return $responseService->success([ 'pet' => $pet ], [ SerializationGroupEnum::MY_PET ]);
     }
 
-    /**
-     * @Route("/{pet}/feed", methods={"POST"}, requirements={"pet"="\d+"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/{pet}/feed", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function feed(
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
         EatingService $eatingService

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\PetSpecies;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPNotFoundException;
@@ -16,15 +17,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use App\Annotations\DoesNotRequireHouseHours;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/encyclopedia")]
 class EncyclopediaController extends AbstractController
 {
-    /**
-     * @DoesNotRequireHouseHours()
-     */
+    #[DoesNotRequireHouseHours]
     #[Route("/typeahead/item", methods: ["GET"])]
     public function typeaheadSearch(
         Request $request, ResponseService $responseService, ItemTypeaheadService $itemTypeaheadService
@@ -35,9 +33,7 @@ class EncyclopediaController extends AbstractController
         return $responseService->success($suggestions, [ SerializationGroupEnum::ITEM_TYPEAHEAD ]);
     }
 
-    /**
-     * @DoesNotRequireHouseHours()
-     */
+    #[DoesNotRequireHouseHours]
     #[Route("/item", methods: ["GET"])]
     public function itemSearch(Request $request, ItemFilterService $itemFilterService, ResponseService $responseService)
     {
@@ -49,9 +45,7 @@ class EncyclopediaController extends AbstractController
         );
     }
 
-    /**
-     * @DoesNotRequireHouseHours()
-     */
+    #[DoesNotRequireHouseHours]
     #[Route("/item/{itemName}", methods: ["GET"])]
     public function getItemByName(string $itemName, EntityManagerInterface $em, ResponseService $responseService)
     {
@@ -67,9 +61,7 @@ class EncyclopediaController extends AbstractController
         }
     }
 
-    /**
-     * @DoesNotRequireHouseHours()
-     */
+    #[DoesNotRequireHouseHours]
     #[Route("/species", methods: ["GET"])]
     public function speciesSearch(Request $request, PetSpeciesFilterService $petSpeciesFilterService, ResponseService $responseService)
     {
@@ -81,9 +73,7 @@ class EncyclopediaController extends AbstractController
         );
     }
 
-    /**
-     * @DoesNotRequireHouseHours()
-     */
+    #[DoesNotRequireHouseHours]
     #[Route("/speciesByFamily/{familyName}", methods: ["GET"])]
     public function speciesByFamily(string $familyName,
         ManagerRegistry $doctrine,
@@ -103,9 +93,7 @@ class EncyclopediaController extends AbstractController
         );
     }
 
-    /**
-     * @DoesNotRequireHouseHours()
-     */
+    #[DoesNotRequireHouseHours]
     #[Route("/species/{speciesName}", methods: ["GET"])]
     public function getSpeciesByName(string $speciesName, EntityManagerInterface $em, ResponseService $responseService)
     {
@@ -117,9 +105,7 @@ class EncyclopediaController extends AbstractController
         return $responseService->success($species, [ SerializationGroupEnum::PET_ENCYCLOPEDIA ]);
     }
 
-    /**
-     * @DoesNotRequireHouseHours()
-     */
+    #[DoesNotRequireHouseHours]
     #[Route("/merit", methods: ["GET"])]
     public function getMerits(
         ResponseService $responseService, MeritFilterService $meritFilterService, Request $request
@@ -130,5 +116,4 @@ class EncyclopediaController extends AbstractController
             [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MERIT_ENCYCLOPEDIA ]
         );
     }
-
 }

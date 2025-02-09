@@ -3,24 +3,22 @@ declare(strict_types=1);
 
 namespace App\Controller\Following;
 
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\User;
 use App\Entity\UserFollowing;
 use App\Exceptions\PSPNotFoundException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Annotations\DoesNotRequireHouseHours;
 
 #[Route("/following")]
 class UnFollowController extends AbstractController
 {
-    /**
-     * @DoesNotRequireHouseHours()
-     * @Route("/{following}", methods={"DELETE"})
-     */
+    #[DoesNotRequireHouseHours]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/{following}", methods: ["DELETE"])]
     public function handle(
         User $following, ResponseService $responseService, EntityManagerInterface $em
     )

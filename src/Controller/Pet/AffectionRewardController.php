@@ -23,16 +23,14 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/pet")]
 class AffectionRewardController extends AbstractController
 {
-    /**
-     * @Route("/{pet}/availableMerits", methods={"GET"}, requirements={"pet"="\d+"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/{pet}/availableMerits", methods: ["GET"], requirements: ["pet" => "\d+"])]
     public function getAvailableMerits(Pet $pet, ResponseService $responseService, EntityManagerInterface $em)
     {
         /** @var User $user */
@@ -46,10 +44,8 @@ class AffectionRewardController extends AbstractController
         return $responseService->success($merits, [ SerializationGroupEnum::AVAILABLE_MERITS ]);
     }
 
-    /**
-     * @Route("/{pet}/chooseAffectionReward/merit", methods={"POST"}, requirements={"pet"="\d+"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/{pet}/chooseAffectionReward/merit", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function chooseAffectionRewardMerit(
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
     )
@@ -107,10 +103,8 @@ class AffectionRewardController extends AbstractController
         return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
     }
 
-    /**
-     * @Route("/{pet}/chooseAffectionReward/skill", methods={"POST"}, requirements={"pet"="\d+"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/{pet}/chooseAffectionReward/skill", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function chooseAffectionRewardSkill(
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
     )

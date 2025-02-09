@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Account;
 
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\UserStyleFunctions;
@@ -10,16 +11,13 @@ use App\Service\PerformanceProfiler;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Annotations\DoesNotRequireHouseHours;
 
 #[Route("/account")]
 class GetAccountController extends AbstractController
 {
-    /**
-     * @DoesNotRequireHouseHours()
-     */
+    #[DoesNotRequireHouseHours]
     #[Route("", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getAccount(

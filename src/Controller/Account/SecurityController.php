@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Account;
 
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\PassphraseResetRequest;
 use App\Entity\User;
 use App\Exceptions\PSPFormValidationException;
@@ -16,18 +17,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Annotations\DoesNotRequireHouseHours;
 
 #[Route("/account")]
 class SecurityController extends AbstractController
 {
-    /**
-     * @DoesNotRequireHouseHours()
-     * @Route("/updateEmail", methods={"POST"})
-     */
+    #[DoesNotRequireHouseHours]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/updateEmail", methods: ["POST"])]
     public function updateEmail(
         Request $request, ResponseService $responseService, UserPasswordHasherInterface $passwordEncoder,
         EntityManagerInterface $em
@@ -70,11 +68,9 @@ class SecurityController extends AbstractController
         return $responseService->success();
     }
 
-    /**
-     * @DoesNotRequireHouseHours()
-     * @Route("/updatePassphrase", methods={"POST"})
-     */
+    #[DoesNotRequireHouseHours]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/updatePassphrase", methods: ["POST"])]
     public function updatePassphrase(
         Request $request, ResponseService $responseService, UserPasswordHasherInterface $passwordEncoder,
         EntityManagerInterface $em
@@ -105,10 +101,8 @@ class SecurityController extends AbstractController
         return $responseService->success();
     }
 
-    /**
-     * @DoesNotRequireHouseHours()
-     * @Route("/requestPassphraseReset", methods={"POST"})
-     */
+    #[DoesNotRequireHouseHours]
+    #[Route("/requestPassphraseReset", methods: ["POST"])]
     public function requestPassphraseReset(
         Request $request, EntityManagerInterface $em, ResponseService $responseService,
         PassphraseResetService $passphraseResetService
@@ -132,10 +126,8 @@ class SecurityController extends AbstractController
         return $responseService->success();
     }
 
-    /**
-     * @DoesNotRequireHouseHours()
-     * @Route("/requestPassphraseReset/{code}", methods={"POST"})
-     */
+    #[DoesNotRequireHouseHours]
+    #[Route("/requestPassphraseReset/{code}", methods: ["POST"])]
     public function resetPassphrase(
         string $code, Request $request, UserPasswordHasherInterface $userPasswordEncoder, EntityManagerInterface $em,
         ResponseService $responseService

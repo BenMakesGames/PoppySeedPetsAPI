@@ -19,7 +19,7 @@ use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/cookingBuddy')]
@@ -31,10 +31,8 @@ class PrepareRecipeFromMemory extends AbstractController
         LocationEnum::MANTLE
     ];
 
-    /**
-     * @Route("/prepare/{knownRecipe}/{quantity}", methods={"POST"}, requirements={"quantity"="\d+"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/prepare/{knownRecipe}/{quantity}", methods: ["POST"], requirements: ["quantity" => "\d+"])]
     public function prepareRecipeFromMemory(
         KnownRecipes $knownRecipe, ResponseService $responseService, EntityManagerInterface $em,
         UserStatsService $userStatsRepository, CookingService $cookingService, Request $request, int $quantity = 1

@@ -25,6 +25,11 @@ final class Version20250209165000 extends AbstractMigration
         $this->addSql(<<<EOSQL
         UPDATE `item` SET `description` = '\"what if a dawn of a doom of a dream<br>\r\nbites this universe in two,<br>\r\npeels forever out of his grave<br>\r\nand sprinkles nowhere with me and you?\"<br>\r\n~ e.e. cummings' WHERE `item`.`id` = 1082;  
         EOSQL);
+
+        // deleting old data migration which implemented the now-deleted ContainerAwareInterface
+        $this->addSql(<<<EOSQL
+        DELETE FROM doctrine_migration_versions WHERE `doctrine_migration_versions`.`version` = 'DoctrineMigrations\Version20191018181048'
+        EOSQL);
     }
 
     public function down(Schema $schema): void

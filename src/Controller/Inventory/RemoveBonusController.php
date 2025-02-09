@@ -9,16 +9,14 @@ use App\Exceptions\PSPNotFoundException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/inventory")]
 class RemoveBonusController extends AbstractController
 {
-    /**
-     * @Route("/{inventory}/removeBonus", methods={"PATCH"}, requirements={"inventory"="\d+"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/{inventory}/removeBonus", methods: ["PATCH"], requirements: ["inventory" => "\d+"])]
     public function removeBonus(Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em)
     {
         /** @var User $user */

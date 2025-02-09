@@ -25,7 +25,7 @@ use App\Service\Typeahead\PetRelationshipTypeaheadService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/pet")]
@@ -90,10 +90,8 @@ class SelfReflectionController extends AbstractController
         return $responseService->success($data, [ SerializationGroupEnum::PET_GUILD, SerializationGroupEnum::PET_PUBLIC_PROFILE ]);
     }
 
-    /**
-     * @Route("/{pet}/selfReflection/changeGuild", methods={"POST"}, requirements={"pet"="\d+"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/{pet}/selfReflection/changeGuild", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function changeGuild(
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
     )
@@ -143,10 +141,8 @@ class SelfReflectionController extends AbstractController
         return $responseService->success($pet, [ SerializationGroupEnum::MY_PET ]);
     }
 
-    /**
-     * @Route("/{pet}/selfReflection/reconcile", methods={"POST"}, requirements={"pet"="\d+"})
-     */
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    #[Route("/{pet}/selfReflection/reconcile", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function reconcileWithAnotherPet(
         Pet $pet, Request $request, ResponseService $responseService, PetRelationshipRepository $petRelationshipRepository,
         EntityManagerInterface $em, IRandom $squirrel3

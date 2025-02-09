@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
-use App\Annotations\DoesNotRequireHouseHours;
+use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\User;
 use App\Exceptions\PSPHoursMustBeRun;
 use App\Service\HouseService;
-use Doctrine\Common\Annotations\Reader;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -26,23 +25,15 @@ class ControllerActionSubscriber implements EventSubscriberInterface
         ];
     }
 
-    private Security $security;
-    private HouseService $houseService;
-    private Reader $annotationReader;
-    private RateLimiterFactory $defaultRateLimiterFactory;
-
     public function __construct(
-        Security $security, HouseService $houseService, Reader $annotationReader,
-        RateLimiterFactory $pspDefaultLimiter
+        private readonly Security $security,
+        private readonly HouseService $houseService,
+        private readonly RateLimiterFactory $pspDefaultLimiter
     )
     {
-        $this->security = $security;
-        $this->houseService = $houseService;
-        $this->annotationReader = $annotationReader;
-        $this->defaultRateLimiterFactory = $pspDefaultLimiter;
     }
 
-    public function beforeFilter(ControllerEvent $event)
+    public function beforeFilter(ControllerEvent $event): void
     {
         if(is_array($event->getController()))
         {
@@ -61,7 +52,7 @@ class ControllerActionSubscriber implements EventSubscriberInterface
         if(!$user)
             return;
 
-        $defaultLimiter = $this->defaultRateLimiterFactory->create((string)$user->getId());
+        $defaultLimiter = $this->pspDefaultLimiter->create((string)$user->getId());
 
         $defaultLimiter->reserve(1, 15)->wait();
     }
@@ -70,7 +61,7 @@ class ControllerActionSubscriber implements EventSubscriberInterface
     {
         $controllerAction = $event->getController();
         $method = new \ReflectionMethod(get_class($controllerAction[0]), $controllerAction[1]);
-        $doesNotRequireHouseHours = $this->annotationReader->getMethodAnnotation($method, DoesNotRequireHouseHours::class);
+        $doesNotRequireHouseHours = $method->getAttributes(DoesNotRequireHouseHours::class);
 
         if($doesNotRequireHouseHours)
             return;
@@ -96,7 +87,7 @@ class ControllerActionSubscriber implements EventSubscriberInterface
     {
         $request = $event->getRequest();
 
-        if ($request->getContentType() != 'json' || !$request->getContent())
+        if ($request->getContentTypeFormat() != 'json' || !$request->getContent())
             return;
 
         $data = json_decode($request->getContent(), true);
