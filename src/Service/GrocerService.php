@@ -126,7 +126,7 @@ class GrocerService
         return [
             'special' => $special,
             'moneysCost' => $itemData[1],
-            'recyclingCost' => ceil($itemData[1] / 2),
+            'recyclingCost' => (int)ceil($itemData[1] / 2),
             'item' => [
                 'name' => $item->getName(),
                 'image' => $item->getImage()
