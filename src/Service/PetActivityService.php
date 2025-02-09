@@ -987,7 +987,7 @@ class PetActivityService
         $umbraDesire = $this->generateExploreUmbraDesire($petWithSkills);
         $brawlDesire = $this->generateMonsterHuntingDesire($petWithSkills);
 
-        return max($umbraDesire, $brawlDesire) * 3 / 4 + min($umbraDesire, $brawlDesire) / 4;
+        return (int)(max($umbraDesire, $brawlDesire) * 3 / 4 + min($umbraDesire, $brawlDesire) / 4);
     }
 
     public function generateGatheringDesire(ComputedPetSkills $petWithSkills): int
