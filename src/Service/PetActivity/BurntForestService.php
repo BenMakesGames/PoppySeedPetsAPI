@@ -44,7 +44,18 @@ class BurntForestService
     public function adventure(ComputedPetSkills $petWithSkills)
     {
         $pet = $petWithSkills->getPet();
-        $maxSkill = 10 + ($petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getArcana()->getTotal()) / 2 - $pet->getAlcohol() + $petWithSkills->getExploreUmbraBonus()->getTotal();
+        $maxSkill = 10
+            + (int)(
+                (
+                    $petWithSkills->getStrength()->getTotal()
+                    + $petWithSkills->getBrawl()->getTotal()
+                    + $petWithSkills->getIntelligence()->getTotal()
+                    + $petWithSkills->getArcana()->getTotal()
+                ) / 2
+            )
+            - $pet->getAlcohol()
+            + $petWithSkills->getExploreUmbraBonus()->getTotal()
+        ;
 
         $maxSkill = NumberFunctions::clamp($maxSkill, 1, 15);
 

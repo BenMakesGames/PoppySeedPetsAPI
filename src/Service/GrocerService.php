@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\CalendarFunctions;
 use App\Functions\DateFunctions;
 use App\Functions\ItemRepository;
@@ -78,7 +79,7 @@ class GrocerService
         return [ 'Wheat Flour', 4 ];
     }
 
-    public function getInventory()
+    public function getInventory(): array
     {
         $today = new \DateTimeImmutable();
         $day = (int)$today->format('Y') * 370 + (int)$today->format('z');
@@ -90,6 +91,9 @@ class GrocerService
         );
     }
 
+    /**
+     * @throws PSPNotFoundException
+     */
     private function computeInventory(int $day): array
     {
         $inventory = [];
@@ -119,7 +123,10 @@ class GrocerService
         return $inventory;
     }
 
-    private function createInventoryData($itemData, bool $special)
+    /**
+     * @throws PSPNotFoundException
+     */
+    private function createInventoryData($itemData, bool $special): array
     {
         $item = ItemRepository::findOneByName($this->em, $itemData[0]);
 
