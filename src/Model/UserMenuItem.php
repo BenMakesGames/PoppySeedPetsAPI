@@ -16,7 +16,7 @@ class UserMenuItem
     #[Groups(['myMenu'])]
     public int $sortOrder;
 
-    public function __construct(string $location, int|bool $sortOrder, ?\DateTimeImmutable $unlockDate)
+    public function __construct(string $location, int|false $sortOrder, ?\DateTimeImmutable $unlockDate)
     {
         $this->location = $location;
         $this->sortOrder = $sortOrder === false ? 0 : $sortOrder;
