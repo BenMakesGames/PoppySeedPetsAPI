@@ -156,7 +156,8 @@ class WeedController extends AbstractController
                     'Rice Flower',
                     'Viscaria',
                     'Wheat Flower',
-                    'Witch-hazel'
+                    'Witch-hazel',
+                    'Merigold',
                 ];
 
                 if($hasWaterPlots)

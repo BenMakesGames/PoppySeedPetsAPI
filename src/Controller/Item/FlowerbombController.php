@@ -54,6 +54,7 @@ class FlowerbombController extends AbstractController
                 'Witch-hazel',
                 'Wheat Flower',
                 'Rice Flower',
+                'Merigold',
             ]
         ;
 

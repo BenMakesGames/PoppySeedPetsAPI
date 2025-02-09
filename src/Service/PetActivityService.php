@@ -1149,7 +1149,7 @@ class PetActivityService
             'Book of Flowers', 'Witch-hazel', 'Blackberry Wine',
             'Piece of Cetgueli\'s Map', 'World\'s Best Sugar Cookie', 'Champignon',
             'Scroll of Fruit', 'Bag of Beans', 'Secret Seashell', 'Trout Yogurt',
-            'Sand Dollar', 'Sunflower', 'Sunflower', 'Sunflower',
+            'Sand Dollar', 'Sunflower', 'Sunflower', 'Merigold',
             'Magic Hourglass', 'Brownie', 'Flower Basket', 'Fish Stew',
             'Slice of Pumpkin Pie', 'Mysterious Seed', 'Decorated Flute',
             'Laufabrauð', 'Fisherman\'s Pie', 'Magic Smoke', 'Wings', 'Wings', 'Wings',

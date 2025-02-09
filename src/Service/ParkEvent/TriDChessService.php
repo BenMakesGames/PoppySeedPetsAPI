@@ -26,7 +26,7 @@ use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 
-final class TriDChessService implements ParkEventInterface
+class TriDChessService implements ParkEventInterface
 {
     public const CHESS_PIECES = [
         'a pawn', 'a rook', 'a knight', 'a bishop', 'the queen', 'the king',

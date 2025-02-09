@@ -9,7 +9,7 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\PetActivityStatEnum;
 use Doctrine\ORM\EntityManagerInterface;
 
-final class PetActivityStatsService
+class PetActivityStatsService
 {
     public const STATS_THAT_CANT_FAIL = [
         PetActivityStatEnum::PARK_EVENT,

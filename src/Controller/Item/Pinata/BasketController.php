@@ -129,6 +129,7 @@ class BasketController extends AbstractController
             'Sunflower',
             'Red Clover',
             'Purple Violet',
+            'Merigold',
         ];
 
         $items = [];
