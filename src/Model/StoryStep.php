@@ -18,7 +18,7 @@ class StoryStep
     public string $background;
 
     #[Groups(['story'])]
-    public string $image;
+    public ?string $image;
 
     #[Groups(['story'])]
     public string $content;
