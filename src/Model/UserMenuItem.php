@@ -16,10 +16,10 @@ class UserMenuItem
     #[Groups(['myMenu'])]
     public int $sortOrder;
 
-    public function __construct(string $location, int $sortOrder, ?\DateTimeImmutable $unlockDate)
+    public function __construct(string $location, int|bool $sortOrder, ?\DateTimeImmutable $unlockDate)
     {
         $this->location = $location;
-        $this->sortOrder = $sortOrder;
+        $this->sortOrder = $sortOrder === false ? 0 : $sortOrder;
         $this->isNew = $unlockDate >= (new \DateTimeImmutable())->modify('-4 hours');
     }
 }
