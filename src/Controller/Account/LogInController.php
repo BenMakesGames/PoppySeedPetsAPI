@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Annotations\DoesNotRequireHouseHours;
 
@@ -25,8 +25,8 @@ final class LogInController extends AbstractController
 {
     /**
      * @DoesNotRequireHouseHours()
-     * @Route("/logIn", methods={"POST"})
      */
+    #[Route("/logIn", methods: ["POST"])]
     public function logIn(
         #[MapRequestPayload] LogInRequest $logInRequest, Request $request,
         UserPasswordHasherInterface $userPasswordEncoder, SessionService $sessionService,
