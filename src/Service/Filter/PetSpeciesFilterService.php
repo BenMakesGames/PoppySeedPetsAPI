@@ -97,6 +97,9 @@ class PetSpeciesFilterService
 
     function applyResultCache(Query $qb, string $cacheKey): Query
     {
-        return $qb->enableResultCache(24 * 60 * 60, CacheHelpers::getCacheItemName(self::class . '_' . $cacheKey));
+        return $qb->enableResultCache(
+            24 * 60 * 60,
+            CacheHelpers::getCacheItemName(self::class . '_' . $cacheKey)
+        );
     }
 }
