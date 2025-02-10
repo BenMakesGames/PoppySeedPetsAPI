@@ -5,6 +5,7 @@ namespace App\Service\Filter;
 
 use App\Entity\PetSpecies;
 use App\Entity\User;
+use App\Functions\CacheHelpers;
 use App\Functions\StringFunctions;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -96,6 +97,6 @@ class PetSpeciesFilterService
 
     function applyResultCache(Query $qb, string $cacheKey): Query
     {
-        return $qb;
+        return $qb->enableResultCache(24 * 60 * 60, CacheHelpers::getCacheItemName(self::class . '_' . $cacheKey));
     }
 }
