@@ -1,15 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Repository;
+namespace App\Functions;
 
 use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\PetLocationEnum;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
-class PetRepository extends ServiceEntityRepository
+final class PetRepository
 {
     public static function getNumberAtHome(EntityManagerInterface $em, User $user): int
     {

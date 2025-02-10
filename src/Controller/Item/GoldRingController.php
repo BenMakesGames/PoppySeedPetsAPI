@@ -13,7 +13,7 @@ use App\Functions\EnchantmentRepository;
 use App\Functions\ItemRepository;
 use App\Functions\MeritRepository;
 use App\Functions\PetColorFunctions;
-use App\Repository\PetRepository;
+use App\Functions\PetRepository;
 use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\IRandom;

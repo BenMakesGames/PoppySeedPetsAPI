@@ -12,7 +12,7 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\DragonHelpers;
 use App\Functions\DragonRepository;
-use App\Repository\PetRepository;
+use App\Functions\PetRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetAssistantService

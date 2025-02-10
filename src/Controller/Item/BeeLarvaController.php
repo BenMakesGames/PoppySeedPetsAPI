@@ -11,7 +11,7 @@ use App\Enum\PetLocationEnum;
 use App\Functions\ItemRepository;
 use App\Functions\MeritRepository;
 use App\Functions\PetColorFunctions;
-use App\Repository\PetRepository;
+use App\Functions\PetRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetFactory;

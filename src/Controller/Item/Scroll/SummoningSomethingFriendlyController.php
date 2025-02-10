@@ -13,7 +13,7 @@ use App\Enum\UserStatEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\GrammarFunctions;
 use App\Functions\PetActivityLogFactory;
-use App\Repository\PetRepository;
+use App\Functions\PetRepository;
 use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;

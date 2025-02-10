@@ -5,8 +5,8 @@ namespace App\Controller\PetShelter;
 
 use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
+use App\Functions\PetRepository;
 use App\Functions\UserQuestRepository;
-use App\Repository\PetRepository;
 use App\Service\AdoptionService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;

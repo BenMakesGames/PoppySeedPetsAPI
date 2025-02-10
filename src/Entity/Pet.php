@@ -17,7 +17,6 @@ use App\Functions\ArrayFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
-use App\Repository\PetRepository;
 use App\Service\IRandom;
 use App\Service\Squirrel3;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -26,7 +25,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
-#[ORM\Entity(repositoryClass: PetRepository::class)]
+#[ORM\Entity()]
 #[ORM\Index(columns: ['park_event_type'], name: 'park_event_type_idx')]
 #[ORM\Index(columns: ['park_event_order'], name: 'park_event_order_idx')]
 #[ORM\Index(columns: ['location'], name: 'location_idx')]

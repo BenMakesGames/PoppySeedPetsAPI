@@ -20,12 +20,12 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\MeritRepository;
+use App\Functions\PetRepository;
 use App\Functions\PlayerLogFactory;
 use App\Functions\SpiceRepository;
 use App\Functions\UserQuestRepository;
 use App\Model\MeritInfo;
 use App\Repository\InventoryRepository;
-use App\Repository\PetRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
