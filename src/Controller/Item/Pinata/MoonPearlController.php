@@ -12,7 +12,6 @@ use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\PetActivityLogFactory;
-use App\Repository\PetRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -29,7 +28,7 @@ class MoonPearlController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function smash(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, PetRepository $petRepository, PetExperienceService $petExperienceService,
+        EntityManagerInterface $em, PetExperienceService $petExperienceService,
         IRandom $squirrel3
     )
     {
@@ -45,7 +44,7 @@ class MoonPearlController extends AbstractController
         $inventoryService->receiveItem('Moon Dust', $user, $user, 'The contents of a Moon Pearl which was shattered by ' . $user->getName() . '.', $location);
 
         /** @var Pet[] $helper */
-        $availableHelpers = $petRepository->findBy([
+        $availableHelpers = $em->getRepository(Pet::class)->findBy([
             'owner' => $user->getId(),
             'location' => PetLocationEnum::HOME
         ]);

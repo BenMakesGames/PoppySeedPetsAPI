@@ -4,20 +4,20 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Entity\Pet;
-use App\Repository\PetRepository;
 use App\Service\PetGroupService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class FindPetsUnhappyInAGroupCommand extends Command
 {
-    private $petRepository;
-    private $petGroupService;
+    private EntityManagerInterface $em;
+    private PetGroupService $petGroupService;
 
-    public function __construct(PetRepository $petRepository, PetGroupService $petGroupService)
+    public function __construct(EntityManagerInterface $em, PetGroupService $petGroupService)
     {
-        $this->petRepository = $petRepository;
+        $this->em = $em;
         $this->petGroupService = $petGroupService;
 
         parent::__construct();
@@ -34,7 +34,7 @@ class FindPetsUnhappyInAGroupCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var Pet[] $pets */
-        $pets = $this->petRepository->createQueryBuilder('p')
+        $pets = $this->em->getRepository(Pet::class)->createQueryBuilder('p')
             ->join('p.groups', 'g')
             ->andWhere('g IS NOT NULL')
             ->getQuery()

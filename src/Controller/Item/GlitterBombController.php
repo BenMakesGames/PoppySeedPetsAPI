@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\StatusEffectHelpers;
-use App\Repository\PetRepository;
 use App\Service\HotPotatoService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
@@ -24,7 +24,7 @@ class GlitterBombController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function toss(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        PetRepository $petRepository, IRandom $squirrel3, HotPotatoService $hotPotatoService
+        IRandom $squirrel3, HotPotatoService $hotPotatoService
     )
     {
         /** @var User $user */
@@ -34,7 +34,7 @@ class GlitterBombController extends AbstractController
 
         if($squirrel3->rngNextInt(1, 5) === 1)
         {
-            $pets = $petRepository->findBy([
+            $pets = $em->getRepository(Pet::class)->findBy([
                 'owner' => $user,
                 'location' => PetLocationEnum::HOME
             ]);

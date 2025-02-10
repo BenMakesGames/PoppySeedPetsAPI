@@ -5,6 +5,7 @@ namespace App\Controller\Item\Scroll;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPFormValidationException;
@@ -14,7 +15,6 @@ use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetRenamingHelpers;
 use App\Functions\ProfanityFilterFunctions;
-use App\Repository\PetRepository;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use App\Service\UserStatsService;
@@ -31,7 +31,7 @@ class RenamingController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function readRenamingScroll(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, UserStatsService $userStatsRepository
+        UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -40,7 +40,7 @@ class RenamingController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'renamingScroll');
 
         $petId = $request->request->getInt('pet', 0);
-        $pet = $petRepository->find($petId);
+        $pet = $em->getRepository(Pet::class)->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
@@ -60,7 +60,7 @@ class RenamingController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function renameSpiritCompanion(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, UserStatsService $userStatsRepository
+        UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -69,7 +69,7 @@ class RenamingController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'renamingScroll');
 
         $petId = $request->request->getInt('pet', 0);
-        $pet = $petRepository->find($petId);
+        $pet = $em->getRepository(Pet::class)->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();

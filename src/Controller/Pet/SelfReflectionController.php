@@ -17,7 +17,6 @@ use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetActivityLogFactory;
 use App\Repository\PetRelationshipRepository;
-use App\Repository\PetRepository;
 use App\Service\IRandom;
 use App\Service\PetRelationshipService;
 use App\Service\ResponseService;
@@ -239,7 +238,7 @@ class SelfReflectionController extends AbstractController
     #[Route("/typeahead/troubledRelationships", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function troubledRelationshipsTypeaheadSearch(
-        Request $request, ResponseService $responseService, PetRepository $petRepository,
+        Request $request, ResponseService $responseService, EntityManagerInterface $em,
         PetRelationshipTypeaheadService $petRelationshipTypeaheadService, PetRelationshipService $petRelationshipService
     )
     {
@@ -251,7 +250,7 @@ class SelfReflectionController extends AbstractController
         if($petId <= 0)
             throw new PSPFormValidationException('You gotta\' choose a pet!');
 
-        $pet = $petRepository->find($petId);
+        $pet = $em->getRepository(Pet::class)->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();

@@ -9,7 +9,6 @@ use App\Entity\Pet;
 use App\Entity\User;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
-use App\Repository\PetRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -60,7 +59,7 @@ class WonderlandTeaController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function serveTremendousTea(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, IRandom $squirrel3
+        IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -69,7 +68,7 @@ class WonderlandTeaController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'tremendousTea');
 
         $petId = $request->request->getInt('pet', 0);
-        $pet = $petRepository->find($petId);
+        $pet = $em->getRepository(Pet::class)->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
@@ -94,8 +93,7 @@ class WonderlandTeaController extends AbstractController
     #[Route("/totallyTea/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function serveTotallyTea(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
     )
     {
         /** @var User $user */
@@ -104,7 +102,7 @@ class WonderlandTeaController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'totallyTea');
 
         $petId = $request->request->getInt('pet', 0);
-        $pet = $petRepository->find($petId);
+        $pet = $em->getRepository(Pet::class)->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();

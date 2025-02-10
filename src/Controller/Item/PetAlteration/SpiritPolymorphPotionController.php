@@ -5,11 +5,11 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\SpiritCompanion;
 use App\Entity\User;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
-use App\Repository\PetRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,7 +25,7 @@ class SpiritPolymorphPotionController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function drink(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository, IRandom $squirrel3
+        IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -34,7 +34,7 @@ class SpiritPolymorphPotionController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'spiritPolymorphPotion');
 
         $petId = $request->request->getInt('pet', 0);
-        $pet = $petRepository->find($petId);
+        $pet = $em->getRepository(Pet::class)->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();

@@ -19,7 +19,6 @@ use App\Functions\MeritFunctions;
 use App\Functions\MeritRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Model\MeritInfo;
-use App\Repository\PetRepository;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,7 +33,7 @@ class ForgettingScrollController extends AbstractController
     #[Route("/{inventory}/forgettableThings", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getForgettableThings(
-        Inventory $inventory, ResponseService $responseService, Request $request, PetRepository $petRepository
+        Inventory $inventory, ResponseService $responseService, Request $request, EntityManagerInterface $em,
     )
     {
         $user = $this->getUser();
@@ -42,7 +41,7 @@ class ForgettingScrollController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'forgettingScroll');
 
         $petId = $request->query->getInt('pet', 0);
-        $pet = $petRepository->find($petId);
+        $pet = $em->getRepository(Pet::class)->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();

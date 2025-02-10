@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Model\SummoningScrollMonster;
-use App\Repository\PetRepository;
 use App\Service\PetActivity\HouseMonsterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,7 +21,7 @@ class EvilSentientBeetleController extends AbstractController
     #[Route("/{inventory}/defeat", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function summonSomethingUnfriendly(
-        Inventory $inventory, ResponseService $responseService, PetRepository $petRepository,
+        Inventory $inventory, ResponseService $responseService,
         EntityManagerInterface $em, HouseMonsterService $houseMonsterService
     )
     {
@@ -32,7 +32,7 @@ class EvilSentientBeetleController extends AbstractController
 
         $em->remove($inventory);
 
-        $petsAtHome = $petRepository->findBy([
+        $petsAtHome = $em->getRepository(Pet::class)->findBy([
             'owner' => $user,
             'location' => PetLocationEnum::HOME
         ]);

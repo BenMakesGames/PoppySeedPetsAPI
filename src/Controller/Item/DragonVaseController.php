@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -21,7 +22,6 @@ use App\Functions\InventoryModifierFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\UserQuestRepository;
 use App\Model\PetChanges;
-use App\Repository\PetRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -39,7 +39,7 @@ class DragonVaseController extends AbstractController
     #[Route("/{inventory}/smash", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function smash(
-        Inventory $inventory, ResponseService $responseService, IRandom $rng, PetRepository $petRepository,
+        Inventory $inventory, ResponseService $responseService, IRandom $rng,
         PetExperienceService $petExperienceService, InventoryService $inventoryService,
         EntityManagerInterface $em
     )
@@ -49,7 +49,7 @@ class DragonVaseController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'dragonVase/#/smash');
 
-        $petsAtHome = $petRepository->findBy([
+        $petsAtHome = $em->getRepository(Pet::class)->findBy([
             'owner' => $user,
             'location' => PetLocationEnum::HOME
         ]);

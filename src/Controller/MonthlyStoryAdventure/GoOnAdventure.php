@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\MonthlyStoryAdventure;
 
 use App\Entity\MonthlyStoryAdventureStep;
+use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
@@ -12,7 +13,6 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\UserQuestRepository;
-use App\Repository\PetRepository;
 use App\Service\InventoryService;
 use App\Service\MonthlyStoryAdventureService;
 use App\Service\ResponseService;
@@ -31,7 +31,6 @@ class GoOnAdventure extends AbstractController
         Request $request,
         MonthlyStoryAdventureStep $step,
         MonthlyStoryAdventureService $adventureService,
-        PetRepository $petRepository,
         EntityManagerInterface $em,
         ResponseService $responseService
     )
@@ -69,7 +68,7 @@ class GoOnAdventure extends AbstractController
                 throw new PSPFormValidationException("Between {$step->getMinPets()} and {$step->getMaxPets()} pets must go.");
         }
 
-        $pets = $petRepository->findBy([
+        $pets = $em->getRepository(Pet::class)->findBy([
             'owner' => $user,
             'id' => $petIds
         ]);

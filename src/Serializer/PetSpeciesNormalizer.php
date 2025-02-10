@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace App\Serializer;
 
+use App\Entity\Pet;
 use App\Entity\PetSpecies;
 use App\Enum\SerializationGroupEnum;
-use App\Repository\PetRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -15,7 +16,7 @@ class PetSpeciesNormalizer implements NormalizerInterface
         #[Autowire(service: 'serializer.normalizer.object')]
         private readonly NormalizerInterface $normalizer,
 
-        private readonly PetRepository $petRepository,
+        private readonly EntityManagerInterface $em,
     )
     {
     }
@@ -29,10 +30,21 @@ class PetSpeciesNormalizer implements NormalizerInterface
 
         if(in_array(SerializationGroupEnum::PET_ENCYCLOPEDIA, $context['groups']))
         {
-            $normalizedData['numberOfPets'] = $this->petRepository->getNumberHavingSpecies($data);
+            $normalizedData['numberOfPets'] = self::getNumberHavingSpecies($this->em, $data);
         }
 
         return $normalizedData;
+    }
+
+    public static function getNumberHavingSpecies(EntityManagerInterface $em, PetSpecies $petSpecies): int
+    {
+        return (int)$em->getRepository(Pet::class)->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->andWhere('p.species=:species')
+            ->setParameter('species', $petSpecies)
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
     }
 
     public function supportsNormalization($data, string $format = null, array $context = []): bool

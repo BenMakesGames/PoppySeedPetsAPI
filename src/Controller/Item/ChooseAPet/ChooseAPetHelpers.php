@@ -6,9 +6,7 @@ namespace App\Controller\Item\ChooseAPet;
 use App\Entity\Pet;
 use App\Entity\User;
 use App\Exceptions\PSPPetNotFoundException;
-use App\Repository\PetRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 
 final class ChooseAPetHelpers

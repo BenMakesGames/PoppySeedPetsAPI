@@ -14,7 +14,6 @@ use App\Functions\EquipmentFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
 use App\Model\PetShelterPet;
-use App\Repository\PetRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,7 +31,7 @@ class ReleaseController extends AbstractController
     #[Route("/{pet}/release", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function releasePet(
         Pet $pet, Request $request, ResponseService $responseService, UserPasswordHasherInterface $passwordEncoder,
-        EntityManagerInterface $em, PetRepository $petRepository, IRandom $rng
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -44,7 +43,7 @@ class ReleaseController extends AbstractController
         if($pet->getLocation() !== PetLocationEnum::DAYCARE && $pet->getLocation() !== PetLocationEnum::HOME)
             throw new PSPInvalidOperationException('Only pets at home, or in the daycare, may be released to the wilds.');
 
-        $petCount = $petRepository->getTotalOwned($user);
+        $petCount = self::getTotalPetsOwned($em, $user);
 
         if($petCount === 1)
             throw new PSPInvalidOperationException('You can\'t release your very last pet! That would be FOOLISH!');
@@ -90,5 +89,16 @@ class ReleaseController extends AbstractController
         $em->flush();
 
         return $responseService->success();
+    }
+
+    private static function getTotalPetsOwned(EntityManagerInterface $em, User $user): int
+    {
+        return (int)$em->getRepository(Pet::class)->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->andWhere('p.owner=:owner')
+            ->setParameter('owner', $user->getId())
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
     }
 }

@@ -18,7 +18,6 @@ use App\Functions\PetColorFunctions;
 use App\Functions\UserQuestRepository;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Repository\InventoryRepository;
-use App\Repository\PetRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
@@ -117,8 +116,7 @@ class HouseFairyController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryRepository $inventoryRepository, UserStatsService $userStatsRepository, IRandom $squirrel3,
-        PetRepository $petRepository
+        InventoryRepository $inventoryRepository, UserStatsService $userStatsRepository, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -133,7 +131,7 @@ class HouseFairyController extends AbstractController
             );
         }
 
-        $petsAtHome = $petRepository->findBy([
+        $petsAtHome = $em->getRepository(Pet::class)->findBy([
             'owner' => $user,
             'location' => PetLocationEnum::HOME
         ]);

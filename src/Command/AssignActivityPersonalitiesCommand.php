@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Entity\Pet;
-use App\Repository\PetRepository;
 use App\Service\IRandom;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -16,12 +15,10 @@ class AssignActivityPersonalitiesCommand extends Command
     public const BATCH_SIZE = 200;
 
     private EntityManagerInterface $em;
-    private PetRepository $petRepository;
     private IRandom $rng;
 
-    public function __construct(PetRepository $petRepository, EntityManagerInterface $em, IRandom $squirrel3)
+    public function __construct(EntityManagerInterface $em, IRandom $squirrel3)
     {
-        $this->petRepository = $petRepository;
         $this->em = $em;
         $this->rng = $squirrel3;
 
@@ -69,7 +66,7 @@ class AssignActivityPersonalitiesCommand extends Command
      */
     private function getPetsWithoutActivityPersonalities(): array
     {
-        return $this->petRepository->findBy([ 'activityPersonality' => 0 ], null, self::BATCH_SIZE);
+        return $this->em->getRepository(Pet::class)->findBy([ 'activityPersonality' => 0 ], null, self::BATCH_SIZE);
     }
 
 }

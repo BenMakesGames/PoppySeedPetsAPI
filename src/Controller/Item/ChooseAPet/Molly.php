@@ -11,7 +11,6 @@ use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
-use App\Repository\PetRepository;
 use App\Service\CommentFormatter;
 use App\Service\InventoryService;
 use App\Service\IRandom;

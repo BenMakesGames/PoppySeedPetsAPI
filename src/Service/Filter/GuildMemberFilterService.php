@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace App\Service\Filter;
 
-use App\Repository\PetRepository;
+use App\Entity\Pet;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -16,9 +17,9 @@ class GuildMemberFilterService
 
     private readonly EntityRepository $repository;
 
-    public function __construct(PetRepository $petRepository)
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->repository = $petRepository;
+        $this->repository = $em->getRepository(Pet::class);
 
         $this->filterer = new Filterer(
             self::PAGE_SIZE,

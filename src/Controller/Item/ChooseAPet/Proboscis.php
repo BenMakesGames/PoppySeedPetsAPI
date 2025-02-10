@@ -10,7 +10,6 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
-use App\Repository\PetRepository;
 use App\Service\CommentFormatter;
 use App\Service\InventoryService;
 use App\Service\IRandom;

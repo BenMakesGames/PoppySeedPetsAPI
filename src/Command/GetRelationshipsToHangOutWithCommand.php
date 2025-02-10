@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\Pet;
 use App\Repository\PetRelationshipRepository;
-use App\Repository\PetRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,14 +14,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GetRelationshipsToHangOutWithCommand extends Command
 {
     private PetRelationshipRepository $petRelationshipRepository;
-    private PetRepository $petRepository;
+    private EntityManagerInterface $em;
 
     public function __construct(
-        PetRelationshipRepository $petRelationshipRepository, PetRepository $petRepository
+        PetRelationshipRepository $petRelationshipRepository, EntityManagerInterface $em
     )
     {
         $this->petRelationshipRepository = $petRelationshipRepository;
-        $this->petRepository = $petRepository;
+        $this->em = $em;
 
         parent::__construct();
     }
@@ -41,7 +42,7 @@ class GetRelationshipsToHangOutWithCommand extends Command
         if($petId <= 0)
             throw new \InvalidArgumentException('pet must be an ID (greater than 0).');
 
-        $pet = $this->petRepository->find($petId);
+        $pet = $this->em->getRepository(Pet::class)->find($petId);
 
         if(!$pet)
             throw new \InvalidArgumentException('pet #' . $petId . ' does not exist.');

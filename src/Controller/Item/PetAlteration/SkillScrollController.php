@@ -5,13 +5,13 @@ namespace App\Controller\Item\PetAlteration;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
+use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\PetSkillEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetActivityLogFactory;
-use App\Repository\PetRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,75 +26,68 @@ class SkillScrollController extends AbstractController
     #[Route("/brawlSkillScroll/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseBrawl(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
     )
     {
-        return $this->doSkillScroll($inventory, $request, $em, $petRepository, $responseService, PetSkillEnum::BRAWL);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::BRAWL);
     }
 
     #[Route("/craftsSkillScroll/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseCrafts(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
     )
     {
-        return $this->doSkillScroll($inventory, $request, $em, $petRepository, $responseService, PetSkillEnum::CRAFTS);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::CRAFTS);
     }
 
     #[Route("/musicSkillScroll/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseMusic(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
     )
     {
-        return $this->doSkillScroll($inventory, $request, $em, $petRepository, $responseService, PetSkillEnum::MUSIC);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::MUSIC);
     }
 
     #[Route("/natureSkillScroll/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseNature(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
     )
     {
-        return $this->doSkillScroll($inventory, $request, $em, $petRepository, $responseService, PetSkillEnum::NATURE);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::NATURE);
     }
 
     #[Route("/scienceSkillScroll/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseScience(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
     )
     {
-        return $this->doSkillScroll($inventory, $request, $em, $petRepository, $responseService, PetSkillEnum::SCIENCE);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::SCIENCE);
     }
 
     #[Route("/stealthSkillScroll/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseStealth(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
     )
     {
-        return $this->doSkillScroll($inventory, $request, $em, $petRepository, $responseService, PetSkillEnum::STEALTH);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::STEALTH);
     }
 
     #[Route("/arcanaSkillScroll/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseArcana(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetRepository $petRepository
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
     )
     {
-        return $this->doSkillScroll($inventory, $request, $em, $petRepository, $responseService, PetSkillEnum::ARCANA);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::ARCANA);
     }
 
     private function doSkillScroll(
-        Inventory $inventory, Request $request, EntityManagerInterface $em, PetRepository $petRepository, ResponseService $responseService, string $skill
+        Inventory $inventory, Request $request, EntityManagerInterface $em, ResponseService $responseService, string $skill
     ): JsonResponse
     {
         /** @var User $user */
@@ -106,7 +99,7 @@ class SkillScrollController extends AbstractController
             throw new PSPFormValidationException('Not a valid skill.');
 
         $petId = $request->request->getInt('pet', 0);
-        $pet = $petRepository->find($petId);
+        $pet = $em->getRepository(Pet::class)->find($petId);
 
         if(!$pet || $pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();

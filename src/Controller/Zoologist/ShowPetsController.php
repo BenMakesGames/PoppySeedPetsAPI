@@ -12,7 +12,6 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\GrammarFunctions;
-use App\Repository\PetRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
@@ -28,7 +27,7 @@ class ShowPetsController extends AbstractController
     #[Route("/showPets", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function showPets(
-        EntityManagerInterface $em, Request $request, PetRepository $petRepository,
+        EntityManagerInterface $em, Request $request,
         UserStatsService $userStatsRepository, ResponseService $responseService, IRandom $rng
     )
     {
@@ -46,7 +45,7 @@ class ShowPetsController extends AbstractController
         if(count($petIds) > 20)
             throw new PSPFormValidationException('Please select no more than 20 pets.');
 
-        $pets = $petRepository->findBy([
+        $pets = $em->getRepository(Pet::class)->findBy([
             'id' => $petIds,
             'owner' => $user->getId()
         ]);

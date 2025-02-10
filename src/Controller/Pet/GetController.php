@@ -7,12 +7,11 @@ use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
-use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
-use App\Repository\PetRepository;
 use App\Service\Filter\PetFilterService;
 use App\Service\ResponseService;
 use App\Service\Typeahead\PetTypeaheadService;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,12 +49,12 @@ class GetController extends AbstractController
 
     #[Route("/my/{id}", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getMyPet(ResponseService $responseService, PetRepository $petRepository, int $id)
+    public function getMyPet(ResponseService $responseService, EntityManagerInterface $em, int $id)
     {
         /** @var User $user */
         $user = $this->getUser();
 
-        $pet = $petRepository->findOneBy([
+        $pet = $em->getRepository(Pet::class)->findOneBy([
             'id' => $id,
             'owner' => $user->getId(),
         ]);

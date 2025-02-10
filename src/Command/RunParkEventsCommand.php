@@ -6,9 +6,10 @@ namespace App\Command;
 use App\Entity\ParkEvent;
 use App\Entity\Pet;
 use App\Enum\ParkEventTypeEnum;
+use App\Enum\PetLocationEnum;
+use App\Enum\StatusEffectEnum;
 use App\Model\ParkEvent\KinBallParticipant;
 use App\Model\ParkEvent\TriDChessParticipant;
-use App\Repository\PetRepository;
 use App\Service\IRandom;
 use App\Service\ParkEvent\JoustingService;
 use App\Service\ParkEvent\KinBallService;
@@ -23,7 +24,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class RunParkEventsCommand extends Command
 {
     private KinBallService $kinBallService;
-    private PetRepository $petRepository;
     private EntityManagerInterface $em;
     private TriDChessService $triDChessService;
     private JoustingService $joustingService;
@@ -31,13 +31,12 @@ class RunParkEventsCommand extends Command
     private IRandom $squirrel3;
 
     public function __construct(
-        KinBallService $kinBallService, PetRepository $petRepository, EntityManagerInterface $em,
+        KinBallService $kinBallService, EntityManagerInterface $em,
         TriDChessService $triDChessService, JoustingService $joustingService, LoggerInterface $logger,
         IRandom $squirrel3
     )
     {
         $this->kinBallService = $kinBallService;
-        $this->petRepository = $petRepository;
         $this->em = $em;
         $this->triDChessService = $triDChessService;
         $this->joustingService = $joustingService;
@@ -112,7 +111,7 @@ class RunParkEventsCommand extends Command
     {
         $idealNumberOfPets = 12;
 
-        $pets = $this->petRepository->findPetsEligibleForParkEvent(ParkEventTypeEnum::KIN_BALL, $idealNumberOfPets * 3);
+        $pets = self::findPetsEligibleForParkEvent($this->em, ParkEventTypeEnum::KIN_BALL, $idealNumberOfPets * 3);
 
         $pets = $this->sliceSimilarLevel($pets, $idealNumberOfPets, function(Pet $a, Pet $b) {
             return KinBallParticipant::getSkill($a) <=> KinBallParticipant::getSkill($b);
@@ -134,7 +133,7 @@ class RunParkEventsCommand extends Command
     {
         $idealNumberOfPets = $this->squirrel3->rngNextFromArray([ 8, 16, 16 ]);
 
-        $pets = $this->petRepository->findPetsEligibleForParkEvent(ParkEventTypeEnum::TRI_D_CHESS, $idealNumberOfPets * 3);
+        $pets = self::findPetsEligibleForParkEvent($this->em, ParkEventTypeEnum::TRI_D_CHESS, $idealNumberOfPets * 3);
 
         $pets = $this->sliceSimilarLevel($pets, $idealNumberOfPets, function(Pet $a, Pet $b) {
             return TriDChessParticipant::getSkill($a) <=> TriDChessParticipant::getSkill($b);
@@ -159,7 +158,7 @@ class RunParkEventsCommand extends Command
     {
         $idealNumberOfPets = $this->squirrel3->rngNextFromArray([ 16, 16, 32 ]);
 
-        $pets = $this->petRepository->findPetsEligibleForParkEvent(ParkEventTypeEnum::JOUSTING, $idealNumberOfPets * 3);
+        $pets = self::findPetsEligibleForParkEvent($this->em, ParkEventTypeEnum::JOUSTING, $idealNumberOfPets * 3);
 
         $pets = $this->sliceSimilarLevel($pets, $idealNumberOfPets, function(Pet $a, Pet $b) {
             return $this->joustingService->getPetSkill($a) <=> $this->joustingService->getPetSkill($b);
@@ -195,5 +194,32 @@ class RunParkEventsCommand extends Command
         $offset = $this->squirrel3->rngNextInt(1, 2) === 1 ? 0 : count($pets) - $numberWanted;
 
         return array_slice($pets, $offset, $numberWanted);
+    }
+
+    /**
+     * @return Pet[]
+     */
+    public static function findPetsEligibleForParkEvent(EntityManagerInterface $em, string $eventType, int $number): array
+    {
+        $today = new \DateTimeImmutable();
+
+        $pets = $em->getRepository(Pet::class)->createQueryBuilder('p')
+            //->join('p.skills', 's')
+            ->leftJoin('p.statusEffects', 'statusEffects')
+            ->andWhere('p.parkEventType=:eventType')
+            ->andWhere('(p.lastParkEvent<:today OR p.lastParkEvent IS NULL)')
+            ->andWhere('p.location=:home')
+            ->andWhere('p.lastInteracted>=:twoDaysAgo')
+            ->orderBy('p.parkEventOrder', 'ASC')
+            ->setMaxResults($number)
+            ->setParameter('eventType', $eventType)
+            ->setParameter('home', PetLocationEnum::HOME)
+            ->setParameter('today', $today->format('Y-m-d'))
+            ->setParameter('twoDaysAgo', $today->modify('-48 hours')->format('Y-m-d H:i:s'))
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return array_values(array_filter($pets, fn(Pet $pet) => !$pet->hasStatusEffect(StatusEffectEnum::WEREFORM)));
     }
 }
