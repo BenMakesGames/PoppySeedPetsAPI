@@ -60,11 +60,11 @@ class CalculateDailyStatsCommand extends Command
             ->setNumberOfPlayers28Day($monthAverages['total_users'])
             ->setNumberOfPlayersLifetime($lifeTimeAverages['total_users'])
 
-            ->setTotalMoneys1Day($oneDayAverages['total_moneys'])
-            ->setTotalMoneys3Day($threeDayAverages['total_moneys'])
-            ->setTotalMoneys7Day($weekAverages['total_moneys'])
-            ->setTotalMoneys28Day($monthAverages['total_moneys'])
-            ->setTotalMoneysLifetime($lifeTimeAverages['total_moneys'])
+            ->setTotalMoneys1Day((int)$oneDayAverages['total_moneys'])
+            ->setTotalMoneys3Day((int)$threeDayAverages['total_moneys'])
+            ->setTotalMoneys7Day((int)$weekAverages['total_moneys'])
+            ->setTotalMoneys28Day((int)$monthAverages['total_moneys'])
+            ->setTotalMoneysLifetime((int)$lifeTimeAverages['total_moneys'])
 
             ->setNewPlayers1Day($oneDayNewPlayers['new_users'])
             ->setNewPlayers3Day($threeDayNewPlayers['new_users'])
