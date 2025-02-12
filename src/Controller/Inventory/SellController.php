@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace App\Controller\Inventory;
 
 use App\Entity\Inventory;
+use App\Entity\Item;
 use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
-use App\Repository\InventoryRepository;
 use App\Service\MarketService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,8 +25,7 @@ class SellController extends AbstractController
     #[Route("/sell", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function setSellPrice(
-        ResponseService $responseService, Request $request, EntityManagerInterface $em, MarketService $marketService,
-        InventoryRepository $inventoryRepository
+        ResponseService $responseService, Request $request, EntityManagerInterface $em, MarketService $marketService
     )
     {
         /** @var User $user */
@@ -40,13 +39,13 @@ class SellController extends AbstractController
         if(count($itemIds) === 0)
             throw new PSPFormValidationException('You must select at least one item!');
 
-        $price = $request->request->getInt('price', 0);
+        $price = (int)($request->request->get('price') ?? 0);
 
         if($price > $user->getMaxSellPrice())
             throw new PSPInvalidOperationException('You cannot list items for more than ' . $user->getMaxSellPrice() . ' moneys. See the Market Manager to see if you can increase this limit!');
 
         /** @var Inventory[] $inventory */
-        $inventory = $inventoryRepository->createQueryBuilder('i')
+        $inventory = $em->getRepository(Inventory::class)->createQueryBuilder('i')
             ->leftJoin('i.holder', 'holder')
             ->leftJoin('i.wearer', 'wearer')
             ->leftJoin('i.lunchboxItem', 'lunchboxItem')
@@ -65,6 +64,7 @@ class SellController extends AbstractController
         if(count($inventory) !== count($itemIds))
             throw new PSPNotFoundException('One or more of the selected items do not exist! Maybe reload and try again??');
 
+        /** @var Item[] $inventoryToUpdateMinimumPriceFor */
         $inventoryToUpdateMinimumPriceFor = [];
 
         // if you're UNlisting items... EASY: do that:
@@ -77,14 +77,7 @@ class SellController extends AbstractController
                     $em->remove($i->getForSale());
                     $i->setForSale(null);
 
-                    $key = self::getInventoryKey($i);
-
-                    if(!array_key_exists($key, $inventoryToUpdateMinimumPriceFor))
-                    {
-                        $inventoryToUpdateMinimumPriceFor[$key] = [
-                            'item' => $i->getItem(),
-                        ];
-                    }
+                    $inventoryToUpdateMinimumPriceFor[$i->getItem()->getId()] = $i->getItem();
                 }
             }
         }
@@ -103,14 +96,7 @@ class SellController extends AbstractController
                 }
                 else
                 {
-                    $key = self::getInventoryKey($i);
-
-                    if(!array_key_exists($key, $inventoryToUpdateMinimumPriceFor))
-                    {
-                        $inventoryToUpdateMinimumPriceFor[$key] = [
-                            'item' => $i->getItem(),
-                        ];
-                    }
+                    $inventoryToUpdateMinimumPriceFor[$i->getItem()->getId()] = $i->getItem();
                 }
             }
 
@@ -121,15 +107,10 @@ class SellController extends AbstractController
         $em->flush();
 
         foreach($inventoryToUpdateMinimumPriceFor as $i)
-            $marketService->updateLowestPriceForItem($i['item']);
+            $marketService->updateLowestPriceForItem($i);
 
         $em->flush();
 
         return $responseService->success();
-    }
-
-    private static function getInventoryKey(Inventory $inventory): string
-    {
-        return (string)$inventory->getItem()->getId();
     }
 }
