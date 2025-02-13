@@ -49,7 +49,7 @@ class MoondialBlueprintController extends AbstractController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse))
             return $responseService->error(400, [ 'You need a Greenhouse to build a Moondial!' ]);
 
-        if($user->getGreenhouse()->getHasBirdBath())
+        if($user->getGreenhouse()->hasMoondial())
             return $responseService->error(200, [ 'Your Greenhouse already has a Moondial!' ]);
 
         $pet = BlueprintHelpers::getPet($em, $user, $request);

@@ -43,37 +43,47 @@ class MoonPearlController extends AbstractController
         $inventoryService->receiveItem('Moon Dust', $user, $user, 'The contents of a Moon Pearl which was shattered by ' . $user->getName() . '.', $location);
         $inventoryService->receiveItem('Moon Dust', $user, $user, 'The contents of a Moon Pearl which was shattered by ' . $user->getName() . '.', $location);
 
-        /** @var Pet[] $helper */
-        $availableHelpers = $em->getRepository(Pet::class)->findBy([
-            'owner' => $user->getId(),
-            'location' => PetLocationEnum::HOME
-        ]);
-
-        $message = 'You shatter the Moon Pearl, yielding a couple lumps of Moon Dust, and some Silica Grounds.';
         $reloadPets = false;
 
-        if(count($availableHelpers) > 0)
+        if($squirrel3->rngNextInt(1, 20) === 1 && $user->getGreenhouse() && $user->getGreenhouse()->getMaxDarkPlants() > 0)
         {
-            /** @var Pet $helper */
-            $helper = $squirrel3->rngNextFromArray($availableHelpers);
+            $message = 'You shatter the Moon Pearl, yielding a couple lumps of Moon Dust, some Silica Grounds, AND WHAT\'S THIS? A Moondial Blueprint?!';
 
-            $helperWithSkills = $helper->getComputedSkills();
-            $skill = 20 + $helperWithSkills->getArcana()->getTotal() + $helperWithSkills->getIntelligence()->getTotal() + $helperWithSkills->getDexterity()->getTotal();
+            $inventoryService->receiveItem('Moondial Blueprint', $user, $user, 'Found inside a Moon Pearl which was shattered by ' . $user->getName() . '.', $location);
+        }
+        else
+        {
+            $message = 'You shatter the Moon Pearl, yielding a couple lumps of Moon Dust, and some Silica Grounds.';
 
-            if($squirrel3->rngNextInt(1, $skill) >= 16)
+            /** @var Pet[] $helper */
+            $availableHelpers = $em->getRepository(Pet::class)->findBy([
+                'owner' => $user->getId(),
+                'location' => PetLocationEnum::HOME
+            ]);
+
+            if(count($availableHelpers) > 0)
             {
-                $activityLog = PetActivityLogFactory::createUnreadLog($em, $helper, ActivityHelpers::UserName($user, true) . ' shattered a moon pearl; ' . ActivityHelpers::PetName($helper) . ' gathered up some of its Quintessence before it could evaporate away!');
+                /** @var Pet $helper */
+                $helper = $squirrel3->rngNextFromArray($availableHelpers);
 
-                $inventoryService->petCollectsItem('Quintessence', $helper, $helper->getName() . ' caught this as it escaped from a shattered Moon Pearl.', $activityLog);
+                $helperWithSkills = $helper->getComputedSkills();
+                $skill = 20 + $helperWithSkills->getArcana()->getTotal() + $helperWithSkills->getIntelligence()->getTotal() + $helperWithSkills->getDexterity()->getTotal();
 
-                $petExperienceService->gainExp($helper, 2, [ PetSkillEnum::ARCANA ], $activityLog);
+                if($squirrel3->rngNextInt(1, $skill) >= 16)
+                {
+                    $activityLog = PetActivityLogFactory::createUnreadLog($em, $helper, ActivityHelpers::UserName($user, true) . ' shattered a moon pearl; ' . ActivityHelpers::PetName($helper) . ' gathered up some of its Quintessence before it could evaporate away!');
 
-                $message = 'You shatter the Moon Pearl, yielding a couple lumps of Moon Dust, and some Silica Grounds, and ' . $helper->getName() . ' gathers up the Quintessence before it evaporates away.';
+                    $inventoryService->petCollectsItem('Quintessence', $helper, $helper->getName() . ' caught this as it escaped from a shattered Moon Pearl.', $activityLog);
 
-                if($location !== LocationEnum::HOME)
-                    $message .= ' (' . $helper->getName() . ' placed the items they got in the house... that\'s just where pets put the stuff they get, you know!)';
+                    $petExperienceService->gainExp($helper, 2, [ PetSkillEnum::ARCANA ], $activityLog);
 
-                $reloadPets = true;
+                    $message = 'You shatter the Moon Pearl, yielding a couple lumps of Moon Dust, and some Silica Grounds, and ' . $helper->getName() . ' gathers up the Quintessence before it evaporates away.';
+
+                    if($location !== LocationEnum::HOME)
+                        $message .= ' (' . $helper->getName() . ' placed the items they got in the house... that\'s just where pets put the stuff they get, you know!)';
+
+                    $reloadPets = true;
+                }
             }
         }
 
