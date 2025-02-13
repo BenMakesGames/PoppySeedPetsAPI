@@ -52,7 +52,7 @@ class FishStatueBlueprintController extends AbstractController
         if($user->getGreenhouse()->isHasFishStatue())
             return $responseService->error(200, [ 'Your Greenhouse already has a Fish State!' ]);
 
-        $pet = BlueprintHelpers::getPet($em, $this->getUser(), $request);
+        $pet = BlueprintHelpers::getPet($em, $user, $request);
 
         $threeDeePrinterId = ItemRepository::getIdByName($em, '3D Printer');
 

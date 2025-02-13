@@ -52,7 +52,7 @@ class BirdBathBlueprintController extends AbstractController
         if($user->getGreenhouse()->getHasBirdBath())
             return $responseService->error(200, [ 'Your Greenhouse already has a Bird Bath!' ]);
 
-        $pet = BlueprintHelpers::getPet($em, $this->getUser(), $request);
+        $pet = BlueprintHelpers::getPet($em, $user, $request);
 
         $ironBar = InventoryRepository::findOneToConsume($em, $user, 'Iron Bar');
 

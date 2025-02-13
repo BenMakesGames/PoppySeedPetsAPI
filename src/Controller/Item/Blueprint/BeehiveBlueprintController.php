@@ -61,7 +61,7 @@ class BeehiveBlueprintController extends AbstractController
             throw new PSPInvalidOperationException('Goodness! It\'s so small! You\'ll need a magnifying glass of some kind...');
         }
 
-        $pet = BlueprintHelpers::getPet($em, $this->getUser(), $request);
+        $pet = BlueprintHelpers::getPet($em, $user, $request);
 
         $em->remove($inventory);
 

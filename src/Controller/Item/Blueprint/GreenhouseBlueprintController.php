@@ -51,7 +51,7 @@ class GreenhouseBlueprintController extends AbstractController
             throw new PSPInvalidOperationException('You\'ve already claimed a plot in the Greenhouse.');
         }
 
-        $pet = BlueprintHelpers::getPet($em, $this->getUser(), $request);
+        $pet = BlueprintHelpers::getPet($em, $user, $request);
 
         $greenhouse = new Greenhouse();
 

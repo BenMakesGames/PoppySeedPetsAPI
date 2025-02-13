@@ -49,7 +49,7 @@ class BasementBlueprintController extends AbstractController
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
             return $responseService->itemActionSuccess('You\'ve already got a Basement!');
 
-        $pet = BlueprintHelpers::getPet($em, $this->getUser(), $request);
+        $pet = BlueprintHelpers::getPet($em, $user, $request);
 
         UserUnlockedFeatureHelpers::create($em, $user, UnlockableFeatureEnum::Basement);
 

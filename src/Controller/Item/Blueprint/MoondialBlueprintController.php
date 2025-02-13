@@ -52,7 +52,7 @@ class MoondialBlueprintController extends AbstractController
         if($user->getGreenhouse()->getHasBirdBath())
             return $responseService->error(200, [ 'Your Greenhouse already has a Moondial!' ]);
 
-        $pet = BlueprintHelpers::getPet($em, $this->getUser(), $request);
+        $pet = BlueprintHelpers::getPet($em, $user, $request);
 
         $blackonite = InventoryRepository::findOneToConsume($em, $user, 'Blackonite');
         $rock = InventoryRepository::findOneToConsume($em, $user, 'Rock');
