@@ -71,7 +71,7 @@ class PlayController extends AbstractController
             switch($action['type'])
             {
                 case HollowEarthActionTypeEnum::PAY_ITEM:
-                    $this->continueActingPayItem($action, $player, $request->request, $hollowEarthService, $inventoryRepository, $em);
+                    $this->continueActingPayItem($action, $player, $request->request, $hollowEarthService, $em);
                     break;
 
                 case HollowEarthActionTypeEnum::PAY_MONEY:
@@ -79,7 +79,7 @@ class PlayController extends AbstractController
                     break;
 
                 case HollowEarthActionTypeEnum::PAY_ITEM_AND_MONEY:
-                    $this->continueActingPayItemAndMoney($action, $player, $request->request, $hollowEarthService, $inventoryRepository, $em, $transactionService);
+                    $this->continueActingPayItemAndMoney($action, $player, $request->request, $hollowEarthService, $em, $transactionService);
                     break;
 
                 case HollowEarthActionTypeEnum::PET_CHALLENGE:
