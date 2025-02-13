@@ -2,7 +2,7 @@
     "type": "project",
     "license": "proprietary",
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "ext-calendar": "*",
         "ext-ctype": "*",
         "ext-curl": "*",
@@ -50,7 +50,8 @@
         "symfony/css-selector": "*",
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "*",
-        "symfony/stopwatch": "*"
+        "symfony/stopwatch": "*",
+        "vimeo/psalm": "^6.5"
     },
     "config": {
         "preferred-install": {
