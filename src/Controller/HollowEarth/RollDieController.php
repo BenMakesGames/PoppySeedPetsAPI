@@ -27,9 +27,8 @@ class RollDieController extends AbstractController
     #[Route("/roll", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function rollDie(
-        ResponseService $responseService, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        HollowEarthService $hollowEarthService, Request $request, InventoryService $inventoryService,
-        IRandom $squirrel3
+        ResponseService $responseService, EntityManagerInterface $em, HollowEarthService $hollowEarthService,
+        Request $request, InventoryService $inventoryService, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -51,7 +50,7 @@ class RollDieController extends AbstractController
         if(!array_key_exists($itemName, HollowEarthService::DICE_ITEMS))
             throw new PSPFormValidationException('You must specify a die to roll.');
 
-        $inventory = $inventoryRepository->findOneToConsume($user, $itemName);
+        $inventory = InventoryRepository::findOneToConsume($em, $user, $itemName);
 
         if(!$inventory)
             throw new PSPNotFoundException('You do not have a ' . $itemName . '!');

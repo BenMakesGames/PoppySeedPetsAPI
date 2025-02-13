@@ -66,6 +66,10 @@ class Greenhouse
     #[ORM\Column(type: 'boolean')]
     private $hasFishStatue = false;
 
+    #[Groups(["myGreenhouse"])]
+    #[ORM\Column]
+    private bool $hasMoondial = false;
+
     public function __construct()
     {
         $this->setComposterBonusCountdown();
@@ -251,6 +255,18 @@ class Greenhouse
     public function setHasFishStatue(bool $hasFishStatue): self
     {
         $this->hasFishStatue = $hasFishStatue;
+
+        return $this;
+    }
+
+    public function hasMoondial(): bool
+    {
+        return $this->hasMoondial;
+    }
+
+    public function setHasMoondial(bool $hasMoondial): static
+    {
+        $this->hasMoondial = $hasMoondial;
 
         return $this;
     }

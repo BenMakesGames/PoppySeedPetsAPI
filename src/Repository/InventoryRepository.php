@@ -27,9 +27,9 @@ class InventoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Inventory::class);
     }
 
-    public function findOneToConsume(User $owner, string $itemName): ?Inventory
+    public static function findOneToConsume(EntityManagerInterface $em, User $owner, string $itemName): ?Inventory
     {
-        return $this->createQueryBuilder('i')
+        return $em->getRepository(Inventory::class)->createQueryBuilder('i')
             ->andWhere('i.owner=:user')
             ->andWhere('i.location IN (:consumableLocations)')
             ->leftJoin('i.item', 'item')

@@ -2,7 +2,7 @@
 
 ## Install & Configure
 
-### PHP
+### PHP (Linux instructions)
 
 Install the following linux packages:
 * php8.3

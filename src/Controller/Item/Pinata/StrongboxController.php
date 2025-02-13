@@ -25,7 +25,7 @@ class StrongboxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openLittleStrongbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
+        UserStatsService $userStatsRepository, EntityManagerInterface $em,
         TransactionService $transactionService
     )
     {
@@ -35,7 +35,7 @@ class StrongboxController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/little-strongbox/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $key = $inventoryRepository->findOneToConsume($user, 'Iron Key');
+        $key = InventoryRepository::findOneToConsume($em, $user, 'Iron Key');
 
         if(!$key)
             throw new PSPNotFoundException('You need an Iron Key to do that.');
@@ -75,8 +75,7 @@ class StrongboxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openVeryStrongbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        TransactionService $transactionService
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
     )
     {
         /** @var User $user */
@@ -85,7 +84,7 @@ class StrongboxController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/very-strongbox/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $key = $inventoryRepository->findOneToConsume($user, 'Silver Key');
+        $key = InventoryRepository::findOneToConsume($em, $user, 'Silver Key');
 
         if(!$key)
             throw new PSPNotFoundException('You need a Silver Key to do that.');
@@ -135,7 +134,7 @@ class StrongboxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openOutrageouslyStrongbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository
+        UserStatsService $userStatsRepository, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -144,7 +143,7 @@ class StrongboxController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/outrageously-strongbox/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $key = $inventoryRepository->findOneToConsume($user, 'Gold Key');
+        $key = InventoryRepository::findOneToConsume($em, $user, 'Gold Key');
 
         if(!$key)
             throw new PSPNotFoundException('You need a Gold Key to do that.');

@@ -27,7 +27,7 @@ class WrinkledClothController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function ironWrinkledCloth(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository
+        UserStatsService $userStatsRepository, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -36,7 +36,7 @@ class WrinkledClothController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'wrinkledCloth/#/iron');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $ironBar = $inventoryRepository->findOneToConsume($user, 'Iron Bar');
+        $ironBar = InventoryRepository::findOneToConsume($em, $user, 'Iron Bar');
 
         if(!$ironBar)
             throw new PSPNotFoundException('You\'ll need an Iron (... Bar) to do that!');

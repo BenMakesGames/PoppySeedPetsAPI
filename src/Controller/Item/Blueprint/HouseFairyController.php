@@ -116,7 +116,7 @@ class HouseFairyController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryRepository $inventoryRepository, UserStatsService $userStatsRepository, IRandom $squirrel3
+        UserStatsService $userStatsRepository, IRandom $squirrel3
     )
     {
         /** @var User $user */
@@ -144,7 +144,7 @@ class HouseFairyController extends AbstractController
         }
         else
         {
-            $quint = $inventoryRepository->findOneToConsume($user, 'Quintessence');
+            $quint = InventoryRepository::findOneToConsume($em, $user, 'Quintessence');
 
             if($quint === null)
             {

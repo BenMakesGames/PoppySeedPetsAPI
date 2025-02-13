@@ -25,8 +25,8 @@ class CryptocurrencyWalletController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
-        InventoryRepository $inventoryRepository, UserStatsService $userStatsRepository,
-        TransactionService $transactionService, InventoryService $inventoryService
+        UserStatsService $userStatsRepository, TransactionService $transactionService,
+        InventoryService $inventoryService
     )
     {
         /** @var User $user */
@@ -34,7 +34,7 @@ class CryptocurrencyWalletController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'cryptocurrencyWallet/#/unlock');
 
-        $key = $inventoryRepository->findOneToConsume($user, 'Password');
+        $key = InventoryRepository::findOneToConsume($em, $user, 'Password');
 
         if(!$key)
             throw new PSPNotFoundException('It\'s locked! (It\'s got a little lock on it, and everything!) You\'ll need a Password to open it...');

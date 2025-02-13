@@ -133,7 +133,7 @@ class PlayController extends AbstractController
 
     private function continueActingPayItem(
         array $action, HollowEarthPlayer $player, ParameterBag $params, HollowEarthService $hollowEarthService,
-        InventoryRepository $inventoryRepository, EntityManagerInterface $em
+        EntityManagerInterface $em
     )
     {
         if(!$params->has('payUp'))
@@ -143,7 +143,7 @@ class PlayController extends AbstractController
 
         if($payUp)
         {
-            $itemToPay = $inventoryRepository->findOneToConsume($player->getUser(), $action['item']);
+            $itemToPay = InventoryRepository::findOneToConsume($em, $player->getUser(), $action['item']);
 
             if(!$itemToPay)
                 throw new PSPNotFoundException('You do not have a ' . $action['item'] . '...');
@@ -170,7 +170,7 @@ class PlayController extends AbstractController
 
     private function continueActingPayItemAndMoney(
         array $action, HollowEarthPlayer $player, ParameterBag $params, HollowEarthService $hollowEarthService,
-        InventoryRepository $inventoryRepository, EntityManagerInterface $em, TransactionService $transactionService
+        EntityManagerInterface $em, TransactionService $transactionService
     )
     {
         if(!$params->has('payUp'))
@@ -180,7 +180,7 @@ class PlayController extends AbstractController
 
         if($payUp)
         {
-            $itemToPay = $inventoryRepository->findOneToConsume($player->getUser(), $action['item']);
+            $itemToPay = InventoryRepository::findOneToConsume($em, $player->getUser(), $action['item']);
 
             if(!$itemToPay)
                 throw new PSPNotFoundException('You do not have a ' . $action['item'] . '...');

@@ -13,7 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ItemControllerHelpers
 {
-    public static function validateInventory(?User $user, Inventory $inventory, string $action)
+    public static function validateInventory(?User $user, Inventory $inventory, string $action): void
     {
         if(!$user || $user->getId() !== $inventory->getOwner()->getId())
             throw new PSPNotFoundException('That item does not exist.');
@@ -29,7 +29,10 @@ class ItemControllerHelpers
             throw new PSPInvalidOperationException('To do this, the item must be in your house, Basement, or Fireplace mantle.');
     }
 
-    public static function validateLocationSpace(Inventory $inventory, EntityManagerInterface $em)
+    /**
+     * @throws PSPInvalidOperationException
+     */
+    public static function validateLocationSpace(Inventory $inventory, EntityManagerInterface $em): void
     {
         if($inventory->getLocation() === LocationEnum::HOME)
             self::validateHouseSpace($inventory, $em);
@@ -41,7 +44,7 @@ class ItemControllerHelpers
             throw new PSPInvalidOperationException('To do this, the item must be in your house, Basement, or Fireplace mantle.');
     }
 
-    private static function validateHouseSpace(Inventory $inventory, EntityManagerInterface $em)
+    private static function validateHouseSpace(Inventory $inventory, EntityManagerInterface $em): void
     {
         $itemsInHouse = InventoryService::countTotalInventory($em, $inventory->getOwner(), LocationEnum::HOME);
 
@@ -59,7 +62,7 @@ class ItemControllerHelpers
         }
     }
 
-    private static function validateBasementSpace(Inventory $inventory, EntityManagerInterface $em)
+    private static function validateBasementSpace(Inventory $inventory, EntityManagerInterface $em): void
     {
         $itemsInHouse = InventoryService::countTotalInventory($em, $inventory->getOwner(), LocationEnum::BASEMENT);
 
@@ -67,7 +70,7 @@ class ItemControllerHelpers
             throw new PSPInvalidOperationException('Your basement is already stuffed! You\'ll need to clear some space, or move the ' . $inventory->getItem()->getName() . ' somewhere else before trying again.');
     }
 
-    private static function validateMantleSpace(Inventory $inventory, EntityManagerInterface $em)
+    private static function validateMantleSpace(Inventory $inventory, EntityManagerInterface $em): void
     {
         $itemsInHouse = InventoryService::countTotalInventory($em, $inventory->getOwner(), LocationEnum::MANTLE);
 

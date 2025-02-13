@@ -25,8 +25,7 @@ class TripleChestController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openWithIronKey(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        TransactionService $transactionService
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
     )
     {
         /** @var User $user */
@@ -35,7 +34,7 @@ class TripleChestController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'tripleChest/#/openWithIronKey');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $key = $inventoryRepository->findOneToConsume($user, 'Iron Key');
+        $key = InventoryRepository::findOneToConsume($em, $user, 'Iron Key');
 
         if(!$key)
             throw new PSPNotFoundException('You need an Iron Key to do that.');
@@ -80,8 +79,7 @@ class TripleChestController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openWithSilverKey(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        TransactionService $transactionService
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
     )
     {
         /** @var User $user */
@@ -90,7 +88,7 @@ class TripleChestController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'tripleChest/#/openWithIronKey');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $key = $inventoryRepository->findOneToConsume($user, 'Silver Key');
+        $key = InventoryRepository::findOneToConsume($em, $user, 'Silver Key');
 
         if(!$key)
             throw new PSPNotFoundException('You need a Silver Key to do that.');
@@ -135,7 +133,7 @@ class TripleChestController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openWithGoldKey(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository
+        UserStatsService $userStatsRepository, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -144,7 +142,7 @@ class TripleChestController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'tripleChest/#/openWithIronKey');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $key = $inventoryRepository->findOneToConsume($user, 'Gold Key');
+        $key = InventoryRepository::findOneToConsume($em, $user, 'Gold Key');
 
         if(!$key)
             throw new PSPNotFoundException('You need a Gold Key to do that.');
