@@ -981,7 +981,7 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openGoldChest(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, InventoryRepository $inventoryRepository
+        UserStatsService $userStatsRepository, EntityManagerInterface $em
     )
     {
         /** @var User $user */
@@ -990,7 +990,7 @@ class BoxController extends AbstractController
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/goldChest/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $key = $inventoryRepository->findOneToConsume($user, 'Gold Key');
+        $key = InventoryRepository::findOneToConsume($em, $user, 'Gold Key');
 
         if(!$key)
             throw new PSPNotFoundException('You need a Gold Key to unlock a Gold Chest!');
