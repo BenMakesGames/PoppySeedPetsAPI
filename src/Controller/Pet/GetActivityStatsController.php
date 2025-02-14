@@ -17,7 +17,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class GetActivityStatsController extends AbstractController
 {
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    #[Route("{pet}/activityStats", methods: ["GET"], requirements: ["pet" => "\d+"])]
+    #[Route("/{pet}/activityStats", methods: ["GET"], requirements: ["pet" => "\d+"])]
     public function activityStats(
         Pet $pet, ResponseService $responseService
     )
