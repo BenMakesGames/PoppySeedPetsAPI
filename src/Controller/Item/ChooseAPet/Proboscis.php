@@ -51,7 +51,7 @@ class Proboscis extends AbstractController
 
         if($sugarQuantity >= 4)
         {
-            $honeyCombQuantity = $rng->rngNextInt(0, $sugarQuantity / 2 - 1);
+            $honeyCombQuantity = $rng->rngNextInt(0, (int)($sugarQuantity / 2) - 1);
             $sugarQuantity -= $honeyCombQuantity * 2;
         }
 

@@ -113,7 +113,7 @@ class Caerbannog
                 }
             }
 
-            $pet->increaseEsteem(ceil($exp / 2) * 2);
+            $pet->increaseEsteem((int)ceil($exp / 2) * 2);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $petName . ' went to the Caerbannog Cave, and encountered one of the terrifying creatures living there! ' . $petName . ' proved victorious, returning home with ' . ArrayFunctions::list_nice_sorted($loot) . '!')
                 ->setIcon('items/key/carrot')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting' ]))
