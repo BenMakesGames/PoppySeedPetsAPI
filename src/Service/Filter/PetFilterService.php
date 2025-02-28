@@ -29,7 +29,7 @@ class PetFilterService
                 'id' => [ 'p.id' => 'asc' ],
                 'level' => [ 'skills.level' => 'desc', 'p.name' => 'asc' ],
                 'name' => [ 'p.name' => 'asc', 'p.id' => 'asc' ],
-                'lastInteraction' => [ 'p.lastInteractionDate' => 'desc' ],
+                'lastInteraction' => [ 'p.lastInteracted' => 'desc' ],
             ],
             [
                 'name' => $this->filterName(...),
