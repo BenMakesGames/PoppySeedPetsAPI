@@ -17,7 +17,7 @@ class GlobalStatsController extends AbstractController
     public function getToday(EntityManagerInterface $em, ResponseService $responseService)
     {
         return $responseService->success(
-            $em->getRepository(DailyStats::class)->findOneBy([], [ 'id' => 'desc' ]),
+            $em->getRepository(DailyStats::class)->findBy([], [ 'id' => 'desc' ], 30),
             [ SerializationGroupEnum::GLOBAL_STATS ]
         );
     }
