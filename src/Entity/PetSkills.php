@@ -5,62 +5,74 @@ namespace App\Entity;
 
 use App\Service\Squirrel3;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: 'App\Repository\PetSkillsRepository')]
+#[ORM\Index(columns: ['level'], name: 'level_idx')]
 class PetSkills
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private int $id;
 
     #[ORM\Column(type: 'integer')]
-    private $strength = 0;
+    private int $strength = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $dexterity = 0;
+    private int $dexterity = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $intelligence = 0;
+    private int $intelligence = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $perception = 0;
+    private int $perception = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $stealth = 0;
+    private int $stealth = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $stamina = 0;
+    private int $stamina = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $nature = 0;
+    private int $nature = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $brawl = 0;
+    private int $brawl = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $arcana = 0;
+    private int $arcana = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $crafts = 0;
+    private int $crafts = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $music = 0;
+    private int $music = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $science = 0;
+    private int $science = 0;
 
     #[ORM\OneToOne(targetEntity: Pet::class, mappedBy: 'skills')]
-    private $pet;
+    private ?Pet $pet = null;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private $talent;
+    private ?\DateTimeImmutable $talent;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private $expertise;
+    private ?\DateTimeImmutable $expertise;
 
     #[ORM\Column(type: 'integer')]
-    private $scrollLevels = 0;
+    private int $scrollLevels = 0;
+
+    #[ORM\Column(
+        type: 'integer',
+        insertable: false,
+        updatable: false,
+        columnDefinition: 'INT GENERATED ALWAYS AS (stealth + nature + brawl + arcana + crafts + music + science) STORED',
+        generated: 'ALWAYS'
+    )]
+    #[Groups(['myPet', 'petPublicProfile'])]
+    private int $level;
 
     public function __construct()
     {
@@ -82,11 +94,9 @@ class PetSkills
         return $this->id;
     }
 
-    public function getTotal(): int
+    public function getLevel(): int
     {
-        return
-            $this->nature + $this->brawl + $this->arcana + $this->stealth + $this->crafts + $this->music + $this->science
-        ;
+        return $this->level;
     }
 
     public function getStat(string $statName): int
@@ -103,7 +113,9 @@ class PetSkills
             throw new \InvalidArgumentException('Unknown stat "' . $statName . '".');
 
         if($this->{$statName} < 20)
+        {
             $this->{$statName}++;
+        }
 
         return $this;
     }
@@ -114,7 +126,9 @@ class PetSkills
             throw new \InvalidArgumentException('Unknown stat "' . $statName . '".');
 
         if($this->{$statName} > 0)
+        {
             $this->{$statName}--;
+        }
 
         return $this;
     }

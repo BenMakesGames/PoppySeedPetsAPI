@@ -27,6 +27,9 @@ class PetFilterService
             self::PAGE_SIZE,
             [
                 'id' => [ 'p.id' => 'asc' ],
+                'level' => [ 'skills.level' => 'desc', 'p.name' => 'asc' ],
+                'name' => [ 'p.name' => 'asc', 'p.id' => 'asc' ],
+                'lastInteraction' => [ 'p.lastInteractionDate' => 'desc' ],
             ],
             [
                 'name' => $this->filterName(...),
@@ -47,7 +50,8 @@ class PetFilterService
 
     public function createQueryBuilder(): QueryBuilder
     {
-        return $this->repository->createQueryBuilder('p');
+        return $this->repository->createQueryBuilder('p')
+            ->join('p.skills', 'skills');
     }
 
     public function filterName(QueryBuilder $qb, $value, $filters)

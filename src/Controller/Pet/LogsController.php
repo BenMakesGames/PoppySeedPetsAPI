@@ -17,8 +17,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use League\Csv\Writer;
-use App\Service\CommentFormatter;
 
 #[Route("/pet")]
 class LogsController extends AbstractController
@@ -104,44 +102,5 @@ class LogsController extends AbstractController
             $petActivityLogsFilterService->getResults($request->query),
             [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::PET_ACTIVITY_LOGS ]
         );
-    }
-
-    #[DoesNotRequireHouseHours]
-    #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    #[Route("/{pet}/logs/download", methods: ["GET"], requirements: ["pet" => "\d+"])]
-    public function downloadLogs(
-        Pet $pet, ResponseService $responseService, PetActivityLogsFilterService $petActivityLogsFilterService,
-        Request $request, CommentFormatter $commentFormatter
-    )
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        if($user->getId() !== $pet->getOwner()->getId())
-            throw new PSPPetNotFoundException();
-
-        $petActivityLogsFilterService->addRequiredFilter('pet', $pet->getId());
-        $petActivityLogsFilterService->setPageSize(1000); // Increase page size for downloads
-
-        $filterResults = $petActivityLogsFilterService->getResults($request->query);
-
-        $csv = Writer::createFromString();
-        $csv->setDelimiter(',');
-        $csv->insertOne(['Log ID', 'Date', 'Message', 'Tags']); // Header row
-
-        foreach ($filterResults->results as $log) {
-            $csv->insertOne([
-                $log->getId(),
-                $log->getCreatedOn()->format('Y-m-d H:i:s'),
-                $commentFormatter->format($log->getEntry()),
-                implode(';', array_map(fn($tag) => $tag->getTitle(), $log->getTags()->toArray()))
-            ]);
-        }
-
-        $response = new \Symfony\Component\HttpFoundation\Response($csv->toString());
-        $response->headers->set('Content-Type', 'text/csv; charset=UTF-8');
-        $response->headers->set('Content-Disposition', 'attachment; filename="' . $pet->getName() . '_logs.csv"');
-
-        return $response;
     }
 }

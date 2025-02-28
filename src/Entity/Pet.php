@@ -870,7 +870,7 @@ class Pet
     #[Groups(['myPet', 'petPublicProfile'])]
     public function getLevel(): int
     {
-        return $this->getSkills()->getTotal();
+        return $this->getSkills()->getLevel();
     }
 
     public function getExperienceToLevel(): int
