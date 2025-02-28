@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Functions\JsonResponseFactory;
 
 class ResponseService
 {
@@ -106,13 +107,7 @@ class ResponseService
         if($this->reloadInventory) $responseData['reloadInventory'] = true;
         if($this->reloadPets) $responseData['reloadPets'] = true;
 
-        $json = $this->serializer->serialize($responseData, 'json', [
-            'json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS,
-        ]);
-
-        $response = new JsonResponse($json, Response::HTTP_OK, [], true);
-
-        return $response;
+        return JsonResponseFactory::create($this->serializer, $responseData, $groups);
     }
 
     /**
@@ -155,16 +150,9 @@ class ResponseService
             'errors' => $messages,
         ];
 
-        $groups = [];
-
         $this->injectUserData($responseData);
 
-        $json = $this->serializer->serialize($responseData, 'json', [
-            'json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS,
-            'groups' => $groups,
-        ]);
-
-        return new JsonResponse($json, $httpResponse, [], true);
+        return JsonResponseFactory::create($this->serializer, $responseData, [], $httpResponse);
     }
 
     /**

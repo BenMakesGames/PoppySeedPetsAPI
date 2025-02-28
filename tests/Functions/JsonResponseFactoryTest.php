@@ -1,0 +1,60 @@
+<?php
+declare(strict_types=1);
+
+namespace Functions;
+
+use App\Functions\JsonResponseFactory;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
+
+class JsonResponseFactoryTest extends TestCase
+{
+    private Serializer $serializer;
+
+    protected function setUp(): void
+    {
+        $encoders = [new JsonEncoder()];
+        $normalizers = [new ObjectNormalizer()];
+        $this->serializer = new Serializer($normalizers, $encoders);
+    }
+
+    public function testHandlesUtf8Properly(): void
+    {
+        // Test data with various UTF-8 edge cases
+        $testData = [
+            'normalText' => 'Hello World',
+            'emoji' => '👋🌍',
+            'specialChars' => 'é è ñ',
+            'malformedUtf8' => "Test\xC3\x28", // Invalid UTF-8 sequence
+            'mixedEncoding' => mb_convert_encoding('Hello ñ World', 'ISO-8859-1', 'UTF-8')
+        ];
+
+        $response = JsonResponseFactory::create($this->serializer, $testData);
+        
+        // Get the response content
+        $content = $response->getContent();
+        
+        // Assert that the response is valid JSON
+        $this->assertJson($content);
+        
+        // Decode the JSON
+        $decodedContent = json_decode($content, true);
+        
+        // Verify all our test data made it through
+        $this->assertArrayHasKey('normalText', $decodedContent);
+        $this->assertArrayHasKey('emoji', $decodedContent);
+        $this->assertArrayHasKey('specialChars', $decodedContent);
+        $this->assertArrayHasKey('malformedUtf8', $decodedContent);
+        $this->assertArrayHasKey('mixedEncoding', $decodedContent);
+        
+        // Verify the content is correct
+        $this->assertEquals('Hello World', $decodedContent['normalText']);
+        $this->assertEquals('👋🌍', $decodedContent['emoji']);
+        $this->assertEquals('é è ñ', $decodedContent['specialChars']);
+        
+        // The malformed UTF-8 should be replaced with the Unicode replacement character (�)
+        $this->assertStringContainsString('�', $decodedContent['malformedUtf8']);
+    }
+} 
