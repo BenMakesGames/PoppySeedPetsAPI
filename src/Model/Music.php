@@ -471,5 +471,8 @@ class Music
 
         // We Are One, by Rameses B
         'COME to me; don\'t be shy, I want LOVE, truly. Something that\'ll make SENSE to me. RUSH upon me and SAY something - BREAK something.',
+
+        // A Little Something for the Weekend, Franc Moody
+        'The key to life ... Divine inspiration ... Stimulation ... The true purpose ... A little pick me up!',
     ];
 }
