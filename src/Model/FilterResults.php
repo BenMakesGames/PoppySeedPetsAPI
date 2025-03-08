@@ -27,10 +27,4 @@ class FilterResults
      */
     #[Groups(['filterResults'])]
     public $results;
-
-    /**
-     * @var array[]|null
-     */
-    #[Groups(['queryAdmin'])]
-    public $query;
 }

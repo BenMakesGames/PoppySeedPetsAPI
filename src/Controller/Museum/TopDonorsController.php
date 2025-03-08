@@ -62,7 +62,6 @@ class TopDonorsController extends AbstractController
         $results->pageCount = $lastPage;
         $results->resultCount = $resultCount;
         $results->results = $paginator->getQuery()->execute();
-        $results->query = [ 'sql ' => $paginator->getQuery()->getSQL(), 'parameters' => $paginator->getQuery()->getParameters()->toArray() ];
 
         return $responseService->success($results, [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MUSEUM ]);
     }

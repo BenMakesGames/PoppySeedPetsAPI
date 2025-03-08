@@ -129,11 +129,6 @@ class Filterer
         foreach($paginator->getQuery()->getParameters() as $parameter)
             $parameters[$parameter->getName()] = $parameter->getValue();
 
-        $results->query = [
-            'sql' => $paginator->getQuery()->getSQL(),
-            'parameters' => $parameters
-        ];
-
         return $results;
     }
 
