@@ -474,5 +474,11 @@ class Music
 
         // A Little Something for the Weekend, Franc Moody
         'The key to life ... Divine inspiration ... Stimulation ... The true purpose ... A little pick me up!',
+
+        // Put a Banana in your Ear
+        'Puuut aaa bananaaa in your eeeaaarrr! (A banana in my ear?) Put a ripe banana right into your favorite ear!',
+
+        // Abracadabra, by Lady Gaga
+        'Abracadabra, amor-oo-nana! Abracadabra, morta-oo-gaga!',
     ];
 }
