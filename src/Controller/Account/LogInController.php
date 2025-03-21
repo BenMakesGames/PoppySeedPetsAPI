@@ -45,7 +45,7 @@ final class LogInController extends AbstractController
 
         $user = $session->getUser();
 
-        $loginFromPath = parse_url($request->server->getString('HTTP_REFERER', '/'), PHP_URL_PATH);
+        $loginFromPath = parse_url($request->server->getString('HTTP_REFERER', 'https://poppyseedpets.com/'), PHP_URL_PATH);
 
         if($loginFromPath === '/')
         {
