@@ -6,7 +6,6 @@ use App\Entity\HollowEarthTileCard;
 use App\Entity\Item;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use function PHPUnit\Framework\assertFalse;
 use function PHPUnit\Framework\assertTrue;
 
 /**
@@ -14,9 +13,11 @@ use function PHPUnit\Framework\assertTrue;
  * which are typed by hand. It's easy to make a typo. This test double-checks that adventure JSON
  * is valid.
  */
-
 class ValidateHollowEarthAdventuresTest extends KernelTestCase
 {
+    /**
+     * @group requiresDatabase
+     */
     public function testHollowEarthAdventuresAreValid()
     {
         self::bootKernel();

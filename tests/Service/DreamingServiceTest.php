@@ -6,7 +6,6 @@ use App\Entity\Item;
 use App\Entity\Pet;
 use App\Entity\PetSpecies;
 use App\Service\PetActivity\DreamingService;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use function PHPUnit\Framework\assertFalse;
@@ -17,6 +16,9 @@ use function PHPUnit\Framework\assertFalse;
  */
 class DreamingServiceTest extends KernelTestCase
 {
+    /**
+     * @group requiresDatabase
+     */
     public function testDreamDescriptions()
     {
         self::bootKernel();
