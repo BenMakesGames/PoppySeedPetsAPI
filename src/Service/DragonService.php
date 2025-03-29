@@ -26,7 +26,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class DragonService
 {
     // currently sums to 75
-    private const SILVER_GOODIES = [
+    private const SilverGoodies = [
         [ 'weight' => 30, 'item' => 'Liquid-hot Magma' ], // 40%
         [ 'weight' => 15, 'item' => 'Quintessence' ], // 20%
         [ 'weight' => 15, 'item' => 'Charcoal' ], // 20%
@@ -38,7 +38,7 @@ class DragonService
     ];
 
     // currently sums to 100 - handy!
-    private const GOLD_GOODIES = [
+    private const GoldGoodies = [
         [ 'weight' => 20, 'item' => 'Liquid-hot Magma' ], // 20%
         [ 'weight' => 20, 'item' => 'Tiny Scroll of Resources' ],
         [ 'weight' => 10, 'item' => 'Dark Matter' ],
@@ -53,7 +53,7 @@ class DragonService
     ];
 
     // currently sums to 75
-    private const GEM_GOODIES = [
+    private const GemGoodies = [
         [ 'weight' => 20, 'item' => 'Scroll of Resources' ], // 26.6%
         [ 'weight' => 10, 'item' => 'Liquid-hot Magma' ], // 13.3%
         [ 'weight' => 10, 'item' => 'Firestone' ],
@@ -130,9 +130,9 @@ class DragonService
 
         $this->userStatsRepository->incrementStat($user, UserStatEnum::TREASURES_GIVEN_TO_DRAGON_HOARD, count($items));
 
-        $silverGoodies = self::SILVER_GOODIES;
-        $goldGoodies = self::GOLD_GOODIES;
-        $gemGoodies = self::GEM_GOODIES;
+        $silverGoodies = self::SilverGoodies;
+        $goldGoodies = self::GoldGoodies;
+        $gemGoodies = self::GemGoodies;
 
         if(CalendarFunctions::isValentinesOrAdjacent($this->clock->now))
         {
@@ -302,7 +302,7 @@ class DragonService
         return $message;
     }
 
-    private function unlockWhiteDiamondHattierStyle(User $user)
+    private function unlockWhiteDiamondHattierStyle(User $user): void
     {
         $enchantment = EnchantmentRepository::findOneByName($this->em, 'with White Diamonds');
 
@@ -313,7 +313,7 @@ class DragonService
         $this->responseService->addFlashMessage('50 whole gems! Your dragon bestows an aura of White Diamonds upon you and your pets! (You can find it at the Hattier\'s!) Oh: and 100 recycling points! Dang! Nice!');
     }
 
-    private function unlockBlackDiamondHattierStyle(User $user)
+    private function unlockBlackDiamondHattierStyle(User $user): void
     {
         $enchantment = EnchantmentRepository::findOneByName($this->em, 'with Black Diamonds');
 
@@ -324,7 +324,7 @@ class DragonService
         $this->responseService->addFlashMessage('100 entire gems! Your dragon bestows an aura of Black Diamonds upon you and your pets! (You can find it at the Hattier\'s!) Oh: and 100 recycling points! Wow! Super!');
     }
 
-    private function unlockLoadedHattierStyle(User $user)
+    private function unlockLoadedHattierStyle(User $user): void
     {
         $enchantment = EnchantmentRepository::findOneByName($this->em, 'Loaded');
 

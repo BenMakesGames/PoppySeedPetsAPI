@@ -23,17 +23,12 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 
 class SessionAuthenticator extends AbstractAuthenticator
 {
-    private EntityManagerInterface $em;
-    private ResponseService $responseService;
-    private SessionService $sessionService;
-
     public function __construct(
-        EntityManagerInterface $em, ResponseService $responseService, SessionService $sessionService
+        private readonly EntityManagerInterface $em,
+        private readonly ResponseService $responseService,
+        private readonly SessionService $sessionService
     )
     {
-        $this->em = $em;
-        $this->responseService = $responseService;
-        $this->sessionService = $sessionService;
     }
 
     public function supports(Request $request): bool

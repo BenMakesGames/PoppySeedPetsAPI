@@ -17,7 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PetFactory
 {
-    private const SENTINEL_NAMES = [
+    private const SentinelNames = [
         'Sentinel',
         'Homunculus',
         'Golem',
@@ -103,7 +103,7 @@ class PetFactory
         ;
 
         $name = $petSpecies->getName() === 'Sentinel'
-            ? $this->squirrel3->rngNextFromArray(self::SENTINEL_NAMES)
+            ? $this->squirrel3->rngNextFromArray(self::SentinelNames)
             : $this->squirrel3->rngNextFromArray(PetShelterPet::PetNames)
         ;
 

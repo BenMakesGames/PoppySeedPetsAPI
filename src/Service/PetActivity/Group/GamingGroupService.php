@@ -33,7 +33,7 @@ class GamingGroupService
     {
     }
 
-    private const DICTIONARY = [
+    private const Dictionary = [
         'adjective' => [
             'Lucky', 'Feisty', 'Wild', 'Random', 'Strategic', 'Secret', 'Winning', 'High-scoring', 'Plastic',
             'Cardboard', 'Digital', 'Elusive', 'Nat-20', 'Full-motion', 'Real-time', 'Grid-based', '360',
@@ -61,7 +61,7 @@ class GamingGroupService
         ]
     ];
 
-    private const GROUP_NAME_PATTERNS = [
+    private const GroupNamePatterns = [
         '%noun% of the? %periodicity%/%adjective%/%nounjective% %nouns%',
         '%periodicity% %adjective% %noun%/%nouns%',
         'the? %adjective% %nounjective%? %nouns%/%noun%',
@@ -74,7 +74,7 @@ class GamingGroupService
 
     public function generateGroupName(): string
     {
-        return GroupNameGenerator::generateName($this->squirrel3, self::GROUP_NAME_PATTERNS, self::DICTIONARY, 60);
+        return GroupNameGenerator::generateName($this->squirrel3, self::GroupNamePatterns, self::Dictionary, 60);
     }
 
     private function rollSkill(Pet $pet, array $skills): int
@@ -94,22 +94,22 @@ class GamingGroupService
         return $this->squirrel3->rngNextInt(1, 20 + $total);
     }
 
-    private const NAME_SCRAWLFUL_2 = 'Scrawlful 2';
+    private const NameScrawlful2 = 'Scrawlful 2';
 
-    private const TYPE_FIGHTING = 'fighting';
-    private const TYPE_RHYTHM = 'rhythm';
-    private const TYPE_BOARD = 'board';
-    private const TYPE_PARTY = 'party';
-    private const TYPE_TTRPG = 'TTRPG';
-    private const TYPE_LARPING = 'LARPing';
+    private const TypeFighting = 'fighting';
+    private const TypeRhythm = 'rhythm';
+    private const TypeBoard = 'board';
+    private const TypeParty = 'party';
+    private const TypeTTRPG = 'TTRPG';
+    private const TypeLARPing = 'LARPing';
 
     public function meet(PetGroup $group)
     {
-        $partyGameName = $this->squirrel3->rngNextFromArray([ 'Reds to Reds', self::NAME_SCRAWLFUL_2, 'Mixit', 'One-night Werecreature' ]);
+        $partyGameName = $this->squirrel3->rngNextFromArray([ 'Reds to Reds', self::NameScrawlful2, 'Mixit', 'One-night Werecreature' ]);
 
         $game = $this->squirrel3->rngNextFromArray([
             [
-                'type' => self::TYPE_FIGHTING,
+                'type' => self::TypeFighting,
                 'name' => $this->squirrel3->rngNextFromArray([ 'Hyper Smash Sisters', 'Spiritcalibur II' ]),
                 'winWith' => [ 'dexterity', 'perception', 'intelligence' ],
                 'exp' => null,
@@ -118,7 +118,7 @@ class GamingGroupService
                 'lootEnchantments' => [ null ],
             ],
             [
-                'type' => self::TYPE_RHYTHM,
+                'type' => self::TypeRhythm,
                 'name' => $this->squirrel3->rngNextFromArray([ 'Dance Dance Uprising', 'Guitar Champion' ]),
                 'winWith' => null,
                 'exp' => [ PetSkillEnum::MUSIC ],
@@ -127,7 +127,7 @@ class GamingGroupService
                 'lootEnchantments' => [ null ],
             ],
             [
-                'type' => self::TYPE_BOARD,
+                'type' => self::TypeBoard,
                 'name' => $this->squirrel3->rngNextFromArray([ 'Settlers of Hollow Earth', 'Galaxy Hauler' ]),
                 'winWith' => [ 'luck' ],
                 'exp' => null,
@@ -136,7 +136,7 @@ class GamingGroupService
                 'lootEnchantments' => [ null ],
             ],
             [
-                'type' => self::TYPE_BOARD,
+                'type' => self::TypeBoard,
                 'name' => $this->squirrel3->rngNextFromArray([ 'Naner Farmer', 'Spice Magnate', 'Terraforming Ganymede', 'Gemstone Alchemist' ]),
                 'winWith' => [ 'intelligence' ],
                 'exp' => null,
@@ -145,16 +145,16 @@ class GamingGroupService
                 'lootEnchantments' => [ null ],
             ],
             [
-                'type' => self::TYPE_PARTY,
+                'type' => self::TypeParty,
                 'name' => $partyGameName,
                 'winWith' => [ 'extroversion', 'luck' ],
-                'exp' => ($partyGameName === self::NAME_SCRAWLFUL_2) ? [ PetSkillEnum::CRAFTS ] : null,
+                'exp' => ($partyGameName === self::NameScrawlful2) ? [ PetSkillEnum::CRAFTS ] : null,
                 'possibleLoot' => null,
                 'lootMessage' => null,
                 'lootEnchantments' => [ null ],
             ],
             [
-                'type' => self::TYPE_TTRPG,
+                'type' => self::TypeTTRPG,
                 'name' => 'Keeps and Colossi',
                 'winWith' => null,
                 'exp' => null,
@@ -163,7 +163,7 @@ class GamingGroupService
                 'lootEnchantments' => [ null ],
             ],
             [
-                'type' => self::TYPE_LARPING,
+                'type' => self::TypeLARPing,
                 'name' => 'LARPing',
                 'winWith' => null,
                 'exp' => [ PetSkillEnum::STEALTH, PetSkillEnum::CRAFTS ],
@@ -177,20 +177,20 @@ class GamingGroupService
 
         switch($game['type'])
         {
-            case self::TYPE_PARTY:
-            case self::TYPE_FIGHTING:
+            case self::TypeParty:
+            case self::TypeFighting:
                 $message .= 'played a few rounds of ' . $game['name'];
                 break;
-            case self::TYPE_RHYTHM:
+            case self::TypeRhythm:
                 $message .= 'played some ' . $game['name'];
                 break;
-            case self::TYPE_BOARD:
+            case self::TypeBoard:
                 $message .= 'played a game of ' . $game['name'];
                 break;
-            case self::TYPE_TTRPG:
+            case self::TypeTTRPG:
                 $message .= 'played a ' . $game['name'] . ' one-shot';
                 break;
-            case self::TYPE_LARPING:
+            case self::TypeLARPing:
                 $message .= 'LARPed in the woods';
                 break;
         }
@@ -219,7 +219,7 @@ class GamingGroupService
 
             if($member->getId() === $highestPerformer)
             {
-                if($game['type'] === self::TYPE_BOARD)
+                if($game['type'] === self::TypeBoard)
                     $messageTemplate .= '.. and won!';
                 else
                     $messageTemplate .= ' They won most of the games!';
@@ -280,7 +280,7 @@ class GamingGroupService
         $group->setLastMetOn();
     }
 
-    private function formatMessage(string $template, Pet $member, PetGroup $group)
+    private function formatMessage(string $template, Pet $member, PetGroup $group): string
     {
         return str_replace(
             [

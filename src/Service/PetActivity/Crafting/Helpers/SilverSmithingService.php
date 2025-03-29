@@ -21,27 +21,16 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class SilverSmithingService
 {
-    private PetExperienceService $petExperienceService;
-    private InventoryService $inventoryService;
-    private ResponseService $responseService;
-    private CoinSmithingService $coinSmithingService;
-    private IRandom $squirrel3;
-    private HouseSimService $houseSimService;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        PetExperienceService $petExperienceService, InventoryService $inventoryService, ResponseService $responseService,
-        CoinSmithingService $coinSmithingService, IRandom $squirrel3, HouseSimService $houseSimService,
-        EntityManagerInterface $em
+        private readonly PetExperienceService $petExperienceService,
+        private readonly InventoryService $inventoryService,
+        private readonly ResponseService $responseService,
+        private readonly CoinSmithingService $coinSmithingService,
+        private readonly IRandom $squirrel3,
+        private readonly HouseSimService $houseSimService,
+        private readonly EntityManagerInterface $em
     )
     {
-        $this->petExperienceService = $petExperienceService;
-        $this->inventoryService = $inventoryService;
-        $this->responseService = $responseService;
-        $this->coinSmithingService = $coinSmithingService;
-        $this->squirrel3 = $squirrel3;
-        $this->houseSimService = $houseSimService;
-        $this->em = $em;
     }
 
     public function spillSilver(ComputedPetSkills $petWithSkills, Item $triedToMake): PetActivityLog

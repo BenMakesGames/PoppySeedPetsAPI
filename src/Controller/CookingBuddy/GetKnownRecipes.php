@@ -25,7 +25,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/cookingBuddy')]
 class GetKnownRecipes extends AbstractController
 {
-    private const ALLOWED_LOCATIONS = [
+    private const AllowedLocations = [
         LocationEnum::HOME,
         LocationEnum::BASEMENT,
         LocationEnum::MANTLE
@@ -46,7 +46,7 @@ class GetKnownRecipes extends AbstractController
 
         $location = $request->query->getInt('location');
 
-        if(!in_array($location, self::ALLOWED_LOCATIONS))
+        if(!in_array($location, self::AllowedLocations))
             throw new PSPInvalidOperationException('Cooking Buddies are only usable on the house, Basement, or Fireplace Mantle.');
 
         $filters = $request->query->all('filter');

@@ -27,7 +27,7 @@ class TestGroupNamesCommand extends PoppySeedPetsCommand
         ;
     }
 
-    private const GROUP_TYPES_BY_NAME = [
+    private const GroupTypesByName = [
         'band' => PetGroupTypeEnum::BAND,
         'astronomy' => PetGroupTypeEnum::ASTRONOMY,
         'gaming' => PetGroupTypeEnum::GAMING
@@ -37,13 +37,13 @@ class TestGroupNamesCommand extends PoppySeedPetsCommand
     {
         $argument = $this->input->getArgument('group-type');
 
-        if(!array_key_exists($argument, self::GROUP_TYPES_BY_NAME))
+        if(!array_key_exists($argument, self::GroupTypesByName))
         {
             $this->output->writeln('Group type must be one of "astronomy", "band", or "gaming".');
             return self::FAILURE;
         }
 
-        $groupType = self::GROUP_TYPES_BY_NAME[$argument];
+        $groupType = self::GroupTypesByName[$argument];
 
         for($i = 0; $i < 20; $i++)
             $this->output->writeln($this->petGroupService->generateName($groupType));

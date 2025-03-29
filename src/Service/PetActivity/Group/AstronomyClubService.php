@@ -41,7 +41,7 @@ class AstronomyClubService
     {
     }
 
-    private const DICTIONARY = [
+    private const Dictionary = [
         'prefix' => [
             'the First', 'the Last', 'the Second', 'the Final'
         ],
@@ -72,7 +72,7 @@ class AstronomyClubService
         ]
     ];
 
-    private const GROUP_NAME_PATTERNS = [
+    private const GroupNamePatterns = [
         '%prefix%/the %adjective%/%color% %noun% %suffix%',
         '%prefix%/the %number% %adjective%? %nouns% %suffix%',
         'the? %adjective% %color%? %noun%/%nouns%',
@@ -80,14 +80,14 @@ class AstronomyClubService
         '%color%/%adjective% %nouns% and %color%/%adjective% %nouns%',
     ];
 
-    private const MAX_SKILL_ROLL = 85;
+    private const MaxSkillRoll = 85;
 
     public function generateGroupName(): string
     {
-        return GroupNameGenerator::generateName($this->rng, self::GROUP_NAME_PATTERNS, self::DICTIONARY, 60);
+        return GroupNameGenerator::generateName($this->rng, self::GroupNamePatterns, self::Dictionary, 60);
     }
 
-    public function meet(PetGroup $group)
+    public function meet(PetGroup $group): void
     {
         $activityLogsPerPet = [];
         $expGainPerPet = [];
@@ -137,7 +137,7 @@ class AstronomyClubService
         else if($group->getProgress() >= 100)
         {
             // we're expecting a very-maximum of 30 * 5 = 150. this will be exceptionally unlikely, however
-            $max = min(self::MAX_SKILL_ROLL, $group->getSkillRollTotal());
+            $max = min(self::MaxSkillRoll, $group->getSkillRollTotal());
             $reward = $this->rng->rngNextInt(0, $max);
 
             $group
@@ -261,7 +261,7 @@ class AstronomyClubService
         $group->setLastMetOn();
     }
 
-    private function maybeUnlockAuraAfterMakingDiscovery(Pet $pet, PetActivityLog $activityLog, Enchantment $enchantment, string $discoveredItemDescription, string $groupName)
+    private function maybeUnlockAuraAfterMakingDiscovery(Pet $pet, PetActivityLog $activityLog, Enchantment $enchantment, string $discoveredItemDescription, string $groupName): void
     {
         if(!$pet->hasMerit(MeritEnum::BEHATTED) || $this->hattierService->userHasUnlocked($pet->getOwner(), $enchantment))
             return;
@@ -276,7 +276,7 @@ class AstronomyClubService
         );
     }
 
-    private function formatMessage(string $template, Pet $member, PetGroup $group, string $findings)
+    private function formatMessage(string $template, Pet $member, PetGroup $group, string $findings): string
     {
         return str_replace(
             [

@@ -34,7 +34,7 @@ class BandService
     {
     }
 
-    private const ADJECTIVE_LIST = [
+    private const AdjectiveList = [
         'Ace', 'Average', 'Above-average', 'Adult', 'Angry', 'Arctic', 'Apologetic', 'Atomic',
         'Born-again', 'Big', 'Baby', 'Brilliant', 'Bad', 'Big City', 'Blue', 'Bold', 'Birthday', 'Bleeding', 'Bubbly',
         'Curious', 'Celestial', 'Careful', 'Chattering', 'Cute',
@@ -62,7 +62,7 @@ class BandService
         'Willing', 'Wandering', 'Wonderful', 'Wet', 'Weird', 'Wavering',
     ];
 
-    private const NOUN_LIST = [
+    private const NounList = [
         'Ace', 'Age', 'Act', 'Arcade', 'Alphabet', 'Army', 'Addiction',
         'Baby', 'Blade', 'Boulder', 'Bank', 'Blossom', 'Bookkeeper', 'Bumblebee', 'Butter',
         'Castle', 'Cat', 'Cereal', 'Chain', 'Chemical', 'Circle', 'Circus', 'Clown', 'Country', 'Crawlspace', 'Cream', 'Cure',
@@ -88,7 +88,7 @@ class BandService
         'War', 'Wallflower', 'Wind', 'Window', 'Wizard',
     ];
 
-    private const PLURAL_NOUN_LIST = [
+    private const PluralNounList = [
         'Aliens', 'Accords', 'Acts', 'Ashes', 'Arms and Legs', 'Acres', 'Armies',
         'Bananas', 'Boys and Girls', 'Blades', 'Blossoms',
         'Children', 'Chemicals', 'Chains', 'Circles', 'Clowns', 'Cups', 'Circles', 'Countries', 'Clues', 'Crawlies',
@@ -112,7 +112,7 @@ class BandService
         'Wars', 'Words', 'Winds', 'Walls', 'Wallflowers',
     ];
 
-    private const NUMBER_LIST = [
+    private const NumberList = [
         'Two',
         '7',
         '33',
@@ -128,7 +128,7 @@ class BandService
         'All',
     ];
 
-    private const GROUP_NAME_PATTERNS = [
+    private const GroupNamePatterns = [
         'the? %noun% %nouns%',
         'the/my/your/our? %adjective%? %noun% %nouns%',
         'the? %adjective%? %noun% %nouns%',
@@ -148,25 +148,25 @@ class BandService
         '%adjective% and %adjective%',
     ];
 
-    private const DICTIONARY = [
-        'noun' => self::NOUN_LIST,
-        'nouns' => self::PLURAL_NOUN_LIST,
-        'adjective' => self::ADJECTIVE_LIST,
-        'number' => self::NUMBER_LIST,
+    private const Dictionary = [
+        'noun' => self::NounList,
+        'nouns' => self::PluralNounList,
+        'adjective' => self::AdjectiveList,
+        'number' => self::NumberList,
     ];
 
     public function generateGroupName(): string
     {
-        return GroupNameGenerator::generateName($this->squirrel3, self::GROUP_NAME_PATTERNS, self::DICTIONARY, 60);
+        return GroupNameGenerator::generateName($this->squirrel3, self::GroupNamePatterns, self::Dictionary, 60);
     }
 
-    private const BAND_ACTIVITY_SENTIMENT_MESSAGES = [
+    private const BandActivitySentimentMessages = [
         'It was fun!',
         'It was a good session!',
         'It was a little stressful, but they made good progress!',
     ];
 
-    public function meet(PetGroup $group)
+    public function meet(PetGroup $group): void
     {
         if($group->getNumberOfProducts() > 0 && $this->squirrel3->rngNextInt(1, 10) === 1)
         {
@@ -183,18 +183,18 @@ class BandService
         $group->setLastMetOn();
     }
 
-    private const FAN_MAIL_FEELS = [
+    private const FanMailFeels = [
         'delighted!', 'touched.', 'very proud.',
         'ecstatic!', 'moved.'
     ];
 
-    public function receiveFanMail(PetGroup $group)
+    public function receiveFanMail(PetGroup $group): void
     {
         foreach($group->getMembers() as $pet)
         {
             $changes = new PetChanges($pet);
 
-            $feels = self::FAN_MAIL_FEELS[($pet->getId() * 89) % count(self::FAN_MAIL_FEELS)];
+            $feels = self::FanMailFeels[($pet->getId() * 89) % count(self::FanMailFeels)];
 
             $pet
                 ->increaseEsteem($this->squirrel3->rngNextInt(6, 12))
@@ -210,7 +210,7 @@ class BandService
         }
     }
 
-    public function receiveRoyalties(PetGroup $group)
+    public function receiveRoyalties(PetGroup $group): void
     {
         $moneys = $this->squirrel3->rngNextInt(1, 3) + (int)floor(
             sqrt($group->getNumberOfProducts() * 10) / count($group->getMembers())
@@ -236,7 +236,7 @@ class BandService
     /**
      * @throws EnumInvalidValueException
      */
-    public function produceAlbum(PetGroup $group)
+    public function produceAlbum(PetGroup $group): void
     {
         $activityLogsPerPet = [];
         $expGainPerPet = [];
@@ -318,7 +318,7 @@ class BandService
                 else if($sentiment === 1)
                     $member->increaseEsteem($this->squirrel3->rngNextInt(2, 6));
 
-                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $member->getName() . ' jammed with ' . $group->getName() . '. ' . self::BAND_ACTIVITY_SENTIMENT_MESSAGES[$sentiment])
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $member->getName() . ' jammed with ' . $group->getName() . '. ' . self::BandActivitySentimentMessages[$sentiment])
                     ->setIcon(self::ActivityIcon)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
