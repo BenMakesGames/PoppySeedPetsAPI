@@ -32,7 +32,7 @@ final class Version20190724202334 extends AbstractMigration
         parent::postUp($schema);
 
         $squirrel3 = new Squirrel3();
-        $companions = $this->connection->fetchAll('SELECT id FROM spirit_companion');
+        $companions = $this->connection->fetchAllAssociative('SELECT id FROM spirit_companion');
 
         foreach($companions as $companion)
         {

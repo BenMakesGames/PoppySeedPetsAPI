@@ -32,7 +32,7 @@ final class Version20190719194309 extends AbstractMigration
     {
         parent::postUp($schema);
 
-        $foodItems = $this->connection->fetchAll('SELECT * FROM item WHERE item.old_food!=:phpNull', [ 'phpNull' => 'N;' ]);
+        $foodItems = $this->connection->fetchAllAssociative('SELECT * FROM item WHERE item.old_food!=:phpNull', [ 'phpNull' => 'N;' ]);
 
         foreach($foodItems as $foodItem)
         {
