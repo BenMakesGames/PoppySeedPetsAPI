@@ -13,6 +13,9 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class ValidateMonsterOfTheWeekPrizesTest extends KernelTestCase
 {
+    /**
+     * @group requiresDatabase
+     */
     public function testMonsterOfTheWeekPrizesAreValid()
     {
         self::bootKernel();
