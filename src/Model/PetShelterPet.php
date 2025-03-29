@@ -32,7 +32,7 @@ final class PetShelterPet
 
         'Ibb', 'Idzi', 'Ingot', 'Ink', 'Iron', 'Isle', 'Ismo',
 
-        'Jadviga', 'Jehanne', 'Jocosa', 'Josse', 'Jurian', 'Juniper',
+        'Jadviga', 'Jehanne', 'Jocosa', 'Josse', 'Juniper', 'Jurian',
 
         'Kaija', 'Kain', 'Kale', 'Karma', 'Kazimir', 'Kima', 'Kinborough', 'Kint', 'Kirik', 'Klara', 'Kryspin', 'Kukka',
 
@@ -44,17 +44,17 @@ final class PetShelterPet
 
         'Nascimbene', 'Nate', 'Newt', 'Nicholina', 'Nilus', 'Noe', 'Noll', 'Nuño',
 
-        'Onfroi', 'Orchid', 'Oregano', 'Origami', 'Owen', 'Oswyn',
+        'Onfroi', 'Orchid', 'Oregano', 'Origami', 'Oswyn', 'Owen',
 
-        'Paperclip', 'Perkhta', 'Poppy', 'Pesczek', 'Pridbjørn', 'Pyry',
+        'Paperclip', 'Perkhta', 'Pesczek', 'Poppy', 'Pridbjørn', 'Pyry',
 
-        'Radomil', 'Raven', 'Regina', 'Reina', 'Rihanna', 'Rimoete', 'Rocatos', 'Roger', 'Rostislav', 'Rosehip', 'Rozalia', 'Rum', 'Runne', 'Ryd',
+        'Radomil', 'Raven', 'Regina', 'Reina', 'Rihanna', 'Rimoete', 'Rocatos', 'Roger', 'Rosehip', 'Rostislav', 'Rozalia', 'Rum', 'Runne', 'Ryd',
 
-        'Saewine', 'Sancha', 'Sandivoi', 'Schmitty', 'Sisu', 'Seppo', 'Skenfrith', 'Sulimir', 'Sunnifa', 'Sybil',
+        'Saewine', 'Sancha', 'Sandivoi', 'Schmitty', 'Seppo', 'Sisu', 'Skenfrith', 'Sulimir', 'Sunnifa', 'Sybil',
 
-        'Taki', 'Talan', 'Tede', 'Temüjin', 'Tephaine', 'Theodore', 'Tetris', 'Tiecia', 'Timur', 'Tomila', 'Toregene', 'Trenewydd', 'Tuli',
+        'Taki', 'Talan', 'Tede', 'Temüjin', 'Tephaine', 'Tetris', 'Theodore', 'Tiecia', 'Timur', 'Tomila', 'Toregene', 'Trenewydd', 'Tuli',
 
-        'Ulla', 'Úna', 'Umami', 'Umbra', 'Unit', 'Usk',
+        'Ulla', 'Umami', 'Umbra', 'Úna', 'Unit', 'Usk',
 
         'Vasilii', 'Venceslaus', 'Vesi', 'Vine', 'Vitseslav', 'Vivka',
 
@@ -64,7 +64,7 @@ final class PetShelterPet
 
         'Yaromir', 'Yrian', 'Ysabeau', 'Ystradewel',
 
-        'Zofija', 'Zen', 'Zuan', 'Zygmunt'
+        'Zen', 'Zofija', 'Zuan', 'Zygmunt'
     ];
 
     public static function generatePirateName(\DateTimeImmutable $dt, int $index)
