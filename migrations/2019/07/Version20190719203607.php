@@ -32,7 +32,7 @@ final class Version20190719203607 extends AbstractMigration
         parent::postUp($schema);
 
         $squirrel3 = new Squirrel3();
-        $pets = $this->connection->fetchAll('SELECT id FROM pet');
+        $pets = $this->connection->fetchAllAssociative('SELECT id FROM pet');
 
         foreach($pets as $pet)
         {
