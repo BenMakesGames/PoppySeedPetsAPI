@@ -28,7 +28,7 @@ final class PetShelterPet
         'Galine', 'Garnier', 'Garsea', 'Gene', 'Gennoveus', 'Genoveva', 'Geoffroi', 'Gidie', 'Giliana', 'Godelive', 'Gomes',
         'Gosse', 'Gregory', 'Gubin', 'Guiscard', 'Gwennan',
 
-        'Hamon', 'Hamon', 'Hippu', 'Honey', 'Hopcyn', 'Hunfrid',
+        'Hamon', 'Hippu', 'Honey', 'Hopcyn', 'Hunfrid',
 
         'Ibb', 'Idzi', 'Ingot', 'Ink', 'Iron', 'Isle', 'Ismo',
 

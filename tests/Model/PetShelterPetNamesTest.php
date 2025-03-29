@@ -13,29 +13,26 @@ class PetShelterPetNamesTest extends TestCase
 {
     public function testPetNamesAreUnique()
     {
-        $uniquePetNames = array_unique(PetShelterPet::PetNames);
-        $duplicatePetNames = array_diff(PetShelterPet::PetNames, $uniquePetNames);
+        // TODO: it'd be nice to tell the user which name(s) are duplicates.
+        $petNames = PetShelterPet::PetNames;
 
-        self::assertEmpty(
-            $duplicatePetNames,
-            "The following pet names are not unique: " . implode(", ", $duplicatePetNames)
-        );
+        $uniquePetNames = array_unique($petNames);
+
+        self::assertCount(count($petNames), $uniquePetNames, "There are duplicate pet names.");
     }
 
     public function testPetNamesAreInAlphabeticalOrder()
     {
+        $collator = \Collator::create('en_US');
+
         for($i = 0; $i < count(PetShelterPet::PetNames) - 1; $i++)
         {
             $petName = PetShelterPet::PetNames[$i];
             $nextPetName = PetShelterPet::PetNames[$i + 1];
 
-            // if you know a better way to do this, please make this better :P
-            $normalizedPetName = str_replace('\'', '', iconv('UTF-8', 'ASCII//TRANSLIT', $petName));
-            $normalizedNextPetName = str_replace('\'', '', iconv('UTF-8', 'ASCII//TRANSLIT', $nextPetName));
-
             self::assertTrue(
-                $normalizedPetName <= $normalizedNextPetName,
-                "The pet names are not in alphabetical order: \"{$petName}\" (\"{$normalizedPetName}\") should be after \"{$nextPetName}\" (\"{$normalizedNextPetName}\")."
+                $collator->compare($petName, $nextPetName) < 0,
+                "The pet names are not in alphabetical order: \"{$petName}\" should be after \"{$nextPetName}\"."
             );
         }
     }
