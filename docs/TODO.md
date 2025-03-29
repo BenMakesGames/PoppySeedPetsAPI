@@ -9,6 +9,7 @@ PHP:
 
 Potential alternatives:
 * C#
+  * Via https://www.peachpie.io/, maybe? 
 * I'm open to other strongly-typed, compiled, OO languages with strong web frameworks and ORMs
 
 An iterative approach to moving away from PHP is required; this is not something that can be done all at once.
