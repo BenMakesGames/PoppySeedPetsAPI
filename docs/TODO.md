@@ -59,3 +59,9 @@ Potential solutions:
 * ???
 
 As this is a performance issue, solutions must be measured and compared. Use the `PerformanceProfiler` service to take stats, which are sent to AWS CloudWatch. 
+
+### Problem: the PetActivityService has, like, a bajillion dependencies
+
+That's _kind_ of to be expected, because of what a big deal pets are in Poppy Seed Pets, but it's a _little_ bananas.
+
+If PSP moves away from "pets do whatever they want every hour, and instead players send them to do things," that would solve this problem, but there are surely other ways to solve it, too.
