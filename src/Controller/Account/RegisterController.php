@@ -81,8 +81,11 @@ class RegisterController extends AbstractController
         if(!StringFunctions::isISO88591($name))
             throw new PSPFormValidationException('Your name contains some mighty-strange characters! (Please limit yourself to the "Extended ASCII" character set.)');
 
-        if(\mb_strlen($passPhrase) < 10)
-            throw new PSPFormValidationException('Pass phrase must be at least 10 characters long.');
+        if(\mb_strlen($passPhrase) < User::MinPassphraseLength)
+            throw new PSPFormValidationException('Pass phrase must be at least ' . User::MinPassphraseLength . ' characters long. (Pro tip: try using an actual phrase, or short sentence!)');
+
+        if(\mb_strlen($passPhrase) > User::MaxPassphraseLength)
+            throw new PSPFormValidationException('Pass phrase must not exceed ' . User::MaxPassphraseLength . ' characters.');
 
         $existingUser = $em->getRepository(User::class)->findOneBy([ 'email' => $email ]);
 
