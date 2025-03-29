@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\StringFunctions;
+use App\Security\CryptographicFunctions;
 use App\Service\IRandom;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -42,9 +43,6 @@ class ResetPassphraseCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $terminalCharacters = 'ABCDEFGHJKLMNPQRTUVWXY346789abdeghnq';
-        $allCharacters = $terminalCharacters . '%&?-=#';
-
         $email = trim($input->getArgument('email'));
 
         if($email === '')
@@ -55,11 +53,7 @@ class ResetPassphraseCommand extends Command
         if(!$user)
             throw new PSPNotFoundException('There is no user with that e-mail address.');
 
-        $password =
-            $terminalCharacters[$this->squirrel3->rngNextInt(0, strlen($terminalCharacters) - 1)] .
-            StringFunctions::randomString($allCharacters, $this->squirrel3->rngNextInt(8, 12)) .
-            $terminalCharacters[$this->squirrel3->rngNextInt(0, strlen($terminalCharacters) - 1)]
-        ;
+        $password = CryptographicFunctions::generateSecureRandomString(16);
 
         $user->setPassword($this->passwordEncoder->hashPassword($user, $password));
 
