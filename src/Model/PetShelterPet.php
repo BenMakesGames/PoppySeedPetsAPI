@@ -12,7 +12,7 @@ final class PetShelterPet
         'Aalina', 'Aaron', 'Abrahil', 'Addy', 'Aedoc', 'Aelfric', 'Aimery', 'Alain', 'Alda', 'Aldreda', 'Aldus',
         'Alienora', 'Aliette', 'Amée', 'Amis', 'Amphelise', 'Arlotto', 'Artaca', 'Auberi', 'Aureliana',
 
-        'Batu', 'Belka', 'Ben', 'Berislav', 'Bezzhen', 'Biedeluue', 'Blicze', 'Bogdan', 'Bogdana', 'Bogumir', 'Borscht', 'Bradan',
+        'Batu', 'Belka', 'Berislav', 'Bezzhen', 'Biedeluue', 'Blicze', 'Bogdan', 'Bogdana', 'Bogumir', 'Borscht', 'Bradan',
         'Bratomil',
 
         'Cat', 'Cateline', 'Ceinguled', 'Ceri', 'Ceslinus', 'Chedomir', 'Christien', 'Clement', 'Coilean', 'Col', 'Cookie', 'Cynbel',
@@ -44,7 +44,7 @@ final class PetShelterPet
 
         'Nascimbene', 'Nate', 'Newt', 'Nicholina', 'Nilus', 'Noe', 'Noll', 'Nuño',
 
-        'Onfroi', 'Orchid', 'Oregano', 'Origami', 'Oswyn', 'Owen',
+        'Onfroi', 'Orchid', 'Oregano', 'Origami', 'Owen', 'Oswyn',
 
         'Paperclip', 'Perkhta', 'Poppy', 'Pesczek', 'Pridbjørn', 'Pyry',
 
