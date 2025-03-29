@@ -13,17 +13,70 @@ Potential alternatives:
 
 An iterative approach to moving away from PHP is required; this is not something that can be done all at once.
 
+### Problem: related code is scattered all over the file system
+
+Symfony really likes to encourage you to scattered related code in unrelated places. These should be addressed:
+
+#### Serialization groups (& serializers)
+
+Symfony has a feature called "serialization groups" which feel cool and convenient at first, but get worse the bigger your app gets.  Using them scatters and mixes entity response mapping all over the entity classes.
+
+All serialization groups should be removed and replaced with explicit response mapping to endpoint-specific response DTOs.
+
+#### Repository classes
+
+Repositories encourage you to put all your queries in one place, resulting in large classes containing unrelated code.
+
+Poppy Seed Pets has almost entirely gotten away from using Doctrine repository classes! 🎉
+
+But a few remain.
+
+Either:
+1. Bring single-use queries into the actual service that uses them
+   * DRY is great, but don't overdo it - the exact same query in TWO WHOLE PLACES is probably fine, too
+2. Create a new class for actually-shared queries (service, or static class)
+
+#### Services are not co-located with their controllers
+
+Default Symfony configuration says "all services go in `Services/`; all controllers go in `Controllers/`".
+
+Like how repositories encourage throwing all your unrelated queries together, Symfony also encourages you to throw all your unrelated services and controllers together.
+
+A more "vertical slice" approach would be better.
+
+Instead of the Symfony default of:
+
+* `Controllers/`
+  * `PetController1.php`
+  * `PetController2.php`
+  * `PlayerController1.php`
+  * `PlayerController2.php`
+* `Services/`
+  * `PetService.php`
+  * `PlayerService.php`
+
+We would like to organize code like:
+ 
+* `Pet/`
+  * `PetController1.php`
+  * `PetController2.php`
+  * `PetService.php`
+* `Player/`
+  * `PlayerController1.php`
+  * `PlayerController2.php`
+  * `PlayerService.php`
+
+Possible solutions:
+ 
+* Use Symfony bundles
+* Maybe there's some slick `config.yaml` or attribute stuff?
+* Don't use Symfony at all (related to move off PHP)
+
 ### Problem: fake enums
 
 Poppy Seed Pets was created before PHP introduced enums, so it has fake enums. We should replace all those.
 
 Because some enum values are stored in the DB, this problem can't be solved with a quick search-and-replace; each enum must be considered individually.
-
-### Problem: "serialization groups"
-
-Symfony has this thing called "serialization groups" which seem cool at first, but are worse the bigger your app gets.
-
-All serialization groups should be removed and replaced with explicit response mapping to endpoint-specific response DTOs.
 
 ### Problem: big API responses
 
@@ -40,15 +93,20 @@ Search for `#[MapRequestPayload]`.
 
 PSP should be doing more of that.
 
+Request and response DTOs should live in the same file as the controller that uses them.
+
+99+% of request and response DTOs should not be shared between controller endpoints.
+
 More info: https://symfony.com/blog/new-in-symfony-6-3-mapping-request-data-to-typed-objects
 
-### Problem: very few automated tests to speak of
+### Problem: too few automated tests, probably
 
 Especially if lots of people become interested in contributing, automated tests will be increasingly important.
 
 * 100% code coverage is a harmful goal
 * it's okay to make an automated test for the purposes of a refactor and then throw it away afterward
 * lasting automated tests must not make refactoring more difficult (do not test implementation details, for example)
+* all automated tests must have a JUSTIFICATION for existence, explaining the dev pain point they solve - see existing tests for examples
 
 ### Problem: the database is sad when players run hours, which in turn makes players sad (slow server)
 
