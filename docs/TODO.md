@@ -65,3 +65,22 @@ As this is a performance issue, solutions must be measured and compared. Use the
 That's _kind_ of to be expected, because of what a big deal pets are in Poppy Seed Pets, but it's a _little_ bananas.
 
 If PSP moves away from "pets do whatever they want every hour, and instead players send them to do things," that would solve this problem, but there are surely other ways to solve it, too.
+
+### Problem: not containerized
+
+You might see some docker-related stuff lying around. None of it is done or fully works.
+
+If you could finish that up, that'd be rad.
+
+Of course, they're less useful without an automated build & deploy pipeline.
+
+### Problem: no automated build & deploy pipeline
+
+Deploys are currently done like this:
+1. log into the one and only web server that hosts Poppy Seed Pets
+2. put the server into maintenance mode (by editing the `.env.local` file)
+3. run `bin/deploy`
+   * this performs a `git pull`, `composer install`, runs DB migrations, clears caches, and some other stuff
+4. take the server out of maintenance mode
+
+Of course, an actual deployment pipeline would be rad.
