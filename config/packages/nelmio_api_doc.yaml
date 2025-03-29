@@ -1,0 +1,9 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: Poppy Seed Pets API
+            description: Poppy Seed Pets API
+            version: 1.0.0
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/[^_] # Accepts routes under /api except /api/doc
