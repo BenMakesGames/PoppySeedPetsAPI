@@ -48,5 +48,5 @@ Depending on how deep you're going, you might also need to be familiar with:
 
 Refer to:
 1. [Installing and Running](Installing%20and%20Running.md) for information on how to run Poppy Seed Pets locally
-2. [Fork a repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) on GitHub Docs
-3. [Creating a pull request from a fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) on GitHub Docs
+2. [Fork a repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) (on GitHub Docs)
+3. [Creating a pull request from a fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) (on GitHub Docs)
