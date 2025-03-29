@@ -9,6 +9,10 @@ use App\Repository\DreamRepository;
 use App\Service\PetActivity\DreamingService;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
+/**
+ * JUSTIFICATION: All recipes must have a unique set of ingredients. There's a lot of recipes in the game,
+ * so it's easy to accidentally create a "new" recipe that actually duplicates an existing one.
+ */
 class DuplicateRecipeTest extends KernelTestCase
 {
     public function testDreamDescriptions()

@@ -5,6 +5,10 @@ namespace Service;
 use App\Functions\CalendarFunctions;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
+/**
+ * JUSTIFICATION: Easter math is historically complicated. PHP actually added built-in methods for
+ * computing Easter, which PSP now uses, so deleting this test would not be unreasonable.
+ */
 class IsEasterTest extends KernelTestCase
 {
     public function testIsEaster()

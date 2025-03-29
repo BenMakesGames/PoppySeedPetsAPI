@@ -9,6 +9,11 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
+/**
+ * JUSTIFICATION: This test ensures that the JsonResponseFactory ACTUALLY handles UTF-8 encoding properly.
+ * When the API has choked on someone's unicode-containing pet name, it's been hard to debug, while making
+ * the game completely unplayable for that player.
+ */
 class JsonResponseFactoryTest extends TestCase
 {
     private Serializer $serializer;

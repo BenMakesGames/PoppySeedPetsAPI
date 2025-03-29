@@ -8,6 +8,9 @@ use App\Enum\MonsterOfTheWeekEnum;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
+/**
+ * JUSTIFICATION: The Monster of the Week prizes are hand-typed; it'd be easy to typo one.
+ */
 class ValidateMonsterOfTheWeekPrizesTest extends KernelTestCase
 {
     public function testMonsterOfTheWeekPrizesAreValid()

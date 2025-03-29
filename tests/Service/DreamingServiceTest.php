@@ -1,5 +1,5 @@
 <?php
-namespace App\Tests\Service;
+namespace Service;
 
 use App\Entity\Item;
 use App\Entity\Pet;
@@ -9,6 +9,10 @@ use App\Service\PetActivity\DreamingService;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use function PHPUnit\Framework\assertFalse;
 
+/**
+ * JUSTIFICATION: It's easy to accidentally write a dream madlib with incorrect %placeholder%s.
+ * This test makes sure you don't do that.
+ */
 class DreamingServiceTest extends KernelTestCase
 {
     public function testDreamDescriptions()

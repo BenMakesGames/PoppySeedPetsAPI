@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Service;
+namespace Service;
 
 use App\Entity\HollowEarthTileCard;
 use App\Entity\Item;
@@ -8,6 +8,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use function PHPUnit\Framework\assertFalse;
 use function PHPUnit\Framework\assertTrue;
+
+/**
+ * JUSTIFICATION: The JSON structure for adventures is easy to mess up, especially item names,
+ * which are typed by hand. It's easy to make a typo. This test double-checks that adventure JSON
+ * is valid.
+ */
 
 class ValidateHollowEarthAdventuresTest extends KernelTestCase
 {
