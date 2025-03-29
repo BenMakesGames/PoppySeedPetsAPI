@@ -11,23 +11,23 @@ Potential alternatives:
 * C#
 * I'm open to other strongly-typed, compiled, OO languages with strong web frameworks and ORMs
 
-An iterative approach to moving away from PHP is required; this is not something that should be done all at once.
+An iterative approach to moving away from PHP is required; this is not something that can be done all at once.
 
 ### Problem: fake enums
 
 Poppy Seed Pets was created before PHP introduced enums, so it has fake enums. We should replace all those.
 
-Careful-careful about any enums whose values are stored in the database. This problem can't be solved with a quick search-and-replace; each enum must be considered individually.
+Because some enum values are stored in the DB, this problem can't be solved with a quick search-and-replace; each enum must be considered individually.
 
 ### Problem: "serialization groups"
 
 Symfony has this thing called "serialization groups" which seem cool at first, but are worse the bigger your app gets.
 
-All serialization groups should be removed and replaced with explicit response mapping.
+All serialization groups should be removed and replaced with explicit response mapping to endpoint-specific response DTOs.
 
 ### Problem: big API responses
 
-All API responses include full user & weather data. This should be broken up for a couple reasons:
+All API responses include full user & weather data. This should be broken up for a couple of reasons:
 
 1. overall performance
 2. to facilitate moving off of PHP (easier to write a new API if the responses have to do less)
