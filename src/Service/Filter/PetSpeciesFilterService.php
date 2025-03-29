@@ -16,7 +16,7 @@ class PetSpeciesFilterService
 {
     use FilterService;
 
-    public const PAGE_SIZE = 20;
+    public const PageSize = 20;
 
     private EntityRepository $repository;
     private ?User $user;
@@ -26,7 +26,7 @@ class PetSpeciesFilterService
         $this->repository = $em->getRepository(PetSpecies::class);
 
         $this->filterer = new Filterer(
-            self::PAGE_SIZE,
+            self::PageSize,
             [
                 'name' => [ 's.nameSort' => 'asc' ], // first one is the default
                 'id' => [ 's.id' => 'asc' ],

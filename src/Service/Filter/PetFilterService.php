@@ -15,7 +15,7 @@ class PetFilterService
 {
     use FilterService;
 
-    public const PAGE_SIZE = 12;
+    public const PageSize = 12;
 
     private ObjectRepository $repository;
 
@@ -24,7 +24,7 @@ class PetFilterService
         $this->repository = $doctrine->getRepository(Pet::class, 'readonly');
 
         $this->filterer = new Filterer(
-            self::PAGE_SIZE,
+            self::PageSize,
             [
                 'id' => [ 'p.id' => 'asc' ],
                 'level' => [ 'skills.level' => 'desc', 'p.name' => 'asc' ],
@@ -56,7 +56,7 @@ class PetFilterService
 
     public function filterName(QueryBuilder $qb, $value, $filters)
     {
-        $name = trim($value);
+        $name = mb_trim($value);
 
         if(!$name) return;
 

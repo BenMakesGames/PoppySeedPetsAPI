@@ -82,7 +82,7 @@ class SecurityController extends AbstractController
         if(!$passwordEncoder->isPasswordValid($user, $request->request->getString('confirmPassphrase')))
             throw new AccessDeniedHttpException('Passphrase is not correct.');
 
-        $newPassphrase = trim($request->request->getString('newPassphrase'));
+        $newPassphrase = mb_trim($request->request->getString('newPassphrase'));
 
         if(\mb_strlen($newPassphrase) < 10)
             throw new PSPFormValidationException('Passphrase must be at least 10 characters long.');
@@ -133,7 +133,7 @@ class SecurityController extends AbstractController
         ResponseService $responseService
     )
     {
-        $passphrase = trim($request->request->getString('passphrase'));
+        $passphrase = mb_trim($request->request->getString('passphrase'));
 
         if(\mb_strlen($passphrase) < 10)
             throw new PSPFormValidationException('Passphrase must be at least 10 characters long. (Pro tip: try using an actual phrase, or short sentence!)');

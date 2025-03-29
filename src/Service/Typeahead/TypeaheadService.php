@@ -20,7 +20,7 @@ abstract class TypeaheadService
 
     public function search(string $fieldToSearch, string $searchString, int $maxResults = 5): array
     {
-        $search = trim($searchString);
+        $search = mb_trim($searchString);
 
         if($search === '')
             throw new PSPFormValidationException('Search text is missing...');

@@ -17,7 +17,7 @@ class MarketFilterService
 {
     use FilterService;
 
-    public const PAGE_SIZE = 20;
+    public const PageSize = 20;
 
     private ?User $user;
 
@@ -28,7 +28,7 @@ class MarketFilterService
         $this->repository = $doctrine->getRepository(MarketListing::class, 'readonly');
 
         $this->filterer = new Filterer(
-            self::PAGE_SIZE,
+            self::PageSize,
             [
                 'name' => [ 'item.name' => 'asc' ], // first one is the default
             ],
@@ -70,7 +70,7 @@ class MarketFilterService
 
     public function filterName(QueryBuilder $qb, $value, $filters)
     {
-        $name = trim($value);
+        $name = mb_trim($value);
 
         if(!$name) return;
 

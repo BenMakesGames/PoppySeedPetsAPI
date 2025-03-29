@@ -222,7 +222,7 @@ class Inventory
 
     public function addComment(string $comment): self
     {
-        $this->comments[] = trim($comment);
+        $this->comments[] = mb_trim($comment);
 
         return $this;
     }

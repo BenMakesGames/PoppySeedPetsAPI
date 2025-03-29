@@ -13,7 +13,7 @@ class GuildMemberFilterService
 {
     use FilterService;
 
-    public const PAGE_SIZE = 12;
+    public const PageSize = 12;
 
     private readonly EntityRepository $repository;
 
@@ -22,7 +22,7 @@ class GuildMemberFilterService
         $this->repository = $em->getRepository(Pet::class);
 
         $this->filterer = new Filterer(
-            self::PAGE_SIZE,
+            self::PageSize,
             [
                 'rank' => [ 'guildMembership.level' => 'desc', 'guildMembership.joinedOn' => 'asc' ],
                 'id' => [ 'p.id' => 'asc' ],

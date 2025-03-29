@@ -13,7 +13,7 @@ class MuseumFilterService
 {
     use FilterService;
 
-    public const PAGE_SIZE = 20;
+    public const PageSize = 20;
 
     private EntityRepository $repository;
 
@@ -22,7 +22,7 @@ class MuseumFilterService
         $this->repository = $em->getRepository(MuseumItem::class);
 
         $this->filterer = new Filterer(
-            self::PAGE_SIZE,
+            self::PageSize,
             [
                 'donatedon' => [ 'm.donatedOn' => 'desc', 'item.name' => 'asc' ], // first one is the default
                 'itemname' => [ 'item.name' => 'asc' ],

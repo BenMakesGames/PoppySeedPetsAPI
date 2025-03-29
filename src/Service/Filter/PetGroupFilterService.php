@@ -14,7 +14,7 @@ class PetGroupFilterService
 {
     use FilterService;
 
-    public const PAGE_SIZE = 20;
+    public const PageSize = 20;
 
     private EntityRepository $repository;
 
@@ -23,7 +23,7 @@ class PetGroupFilterService
         $this->repository = $em->getRepository(PetGroup::class);
 
         $this->filterer = new Filterer(
-            self::PAGE_SIZE,
+            self::PageSize,
             [
                 'lastmeton' => [ 'g.lastMetOn' => 'desc' ], // first one is the default
                 'createdon' => [ 'g.createdOn' => 'desc' ],

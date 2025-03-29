@@ -20,7 +20,7 @@ class ItemFilterService
 {
     use FilterService;
 
-    public const PAGE_SIZE = 20;
+    public const PageSize = 20;
 
     private readonly ObjectRepository $repository;
     private ?User $user;
@@ -32,7 +32,7 @@ class ItemFilterService
         $this->useResultCache = true;
 
         $this->filterer = new Filterer(
-            self::PAGE_SIZE,
+            self::PageSize,
             [
                 'name' => [ 'i.name' => 'asc' ], // first one is the default
                 'id' => [ 'i.id' => 'asc' ],
@@ -73,7 +73,7 @@ class ItemFilterService
 
     public function filterName(QueryBuilder $qb, $value, $filters)
     {
-        $name = trim($value);
+        $name = mb_trim($value);
 
         if(!$name) return;
 

@@ -14,7 +14,7 @@ class ParkEventHistoryFilterService
 {
     use FilterService;
 
-    public const PAGE_SIZE = 20;
+    public const PageSize = 20;
 
     private ?User $user;
     private EntityRepository $repository;
@@ -24,7 +24,7 @@ class ParkEventHistoryFilterService
         $this->repository = $em->getRepository(ParkEvent::class);
 
         $this->filterer = new Filterer(
-            self::PAGE_SIZE,
+            self::PageSize,
             [
                 'id' => [ 'e.id' => 'desc' ], // first one is the default
             ],

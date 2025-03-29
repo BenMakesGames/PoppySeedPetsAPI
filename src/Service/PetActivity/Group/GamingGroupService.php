@@ -21,7 +21,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class GamingGroupService
 {
-    public const ACTIVITY_ICON = 'groups/gaming';
+    public const ActivityIcon = 'groups/gaming';
 
     public function __construct(
         private readonly PetExperienceService $petExperienceService,
@@ -240,7 +240,7 @@ class GamingGroupService
                 $member->increaseEsteem($this->squirrel3->rngNextInt(3, 6));
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $this->formatMessage($messageTemplate, $member, $group))
-                ->setIcon(self::ACTIVITY_ICON)
+                ->setIcon(self::ActivityIcon)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Gaming Group' ]))
             ;

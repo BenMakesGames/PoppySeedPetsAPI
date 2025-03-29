@@ -35,7 +35,7 @@ class DreamingService
     {
     }
 
-    private const LOCATIONS = [
+    private const Locations = [
         'in a mall',
         'on a mountain path',
         'in some ruins',
@@ -63,7 +63,7 @@ class DreamingService
         'in a dilapidated arena',
     ];
 
-    private const WANDERING_WORDS = [
+    private const WanderingWords = [
         'wandering',
         'running',
         'searching for something',
@@ -76,7 +76,7 @@ class DreamingService
         'eating %a_food%'
     ];
 
-    public const RANDOM_PLURAL_STUFF = [
+    public const RandomPluralStuff = [
         'bolts of silk', 'piles of treasure', 'boxes of %item%', 'people',
         'piles of snow', 'cobwebs', 'those ball pit balls', 'ringing phones',
         'piles of cotton candy (either the candy, or the pet; it wasn\'t clear)',
@@ -152,7 +152,7 @@ class DreamingService
 
     public function generateReplacementsDictionary(Item $item, Pet $pet, PetSpecies $species): array
     {
-        $locations = $this->rng->rngNextSubsetFromArray(self::LOCATIONS, 2);
+        $locations = $this->rng->rngNextSubsetFromArray(self::Locations, 2);
 
         $monsters = [
             [ 'a' => 'a goblin', 'the' => 'the goblin' ],
@@ -175,7 +175,7 @@ class DreamingService
             '%location2%' => $locations[1],
             '%Location1%' => ucfirst($locations[0]),
             '%Location2%' => ucfirst($locations[1]),
-            '%wandering%' => $this->rng->rngNextFromArray(self::WANDERING_WORDS),
+            '%wandering%' => $this->rng->rngNextFromArray(self::WanderingWords),
             '%species%' => $species->getName(),
             '%a_species%' => GrammarFunctions::indefiniteArticle($species->getName()) . ' ' . $species->getName(),
             '%adverb%' => $this->rng->rngNextFromArray([ 'hesitantly', 'eagerly', 'grumpily', 'apathetically' ]),
@@ -196,7 +196,7 @@ class DreamingService
             '%a_wandering_monster%' => $monsters[1]['a'],
             '%a_pet_or_monster%' => $petOrMonsterIsPet ? 'a %pet_adjective% %species%' : '%a_monster%',
             '%A_pet_or_monster%' => $petOrMonsterIsPet ? 'A %pet_adjective% %species%' : '%A_monster%',
-            '%plural_stuff%' => $this->rng->rngNextFromArray(self::RANDOM_PLURAL_STUFF),
+            '%plural_stuff%' => $this->rng->rngNextFromArray(self::RandomPluralStuff),
         ];
     }
 

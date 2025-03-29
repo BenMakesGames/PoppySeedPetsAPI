@@ -33,7 +33,7 @@ class CostumeController extends AbstractController
         if($pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
 
-        $costume = trim($request->request->get('costume'));
+        $costume = mb_trim($request->request->get('costume'));
 
         if(\mb_strlen($costume) > 30)
             throw new PSPFormValidationException('Costume description cannot be longer than 30 characters.');

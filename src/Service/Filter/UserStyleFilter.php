@@ -14,7 +14,7 @@ class UserStyleFilter
 {
     use FilterService;
 
-    public const PAGE_SIZE = 12;
+    public const PageSize = 12;
 
     /**
      * @var User
@@ -28,7 +28,7 @@ class UserStyleFilter
         $this->repository = $em->getRepository(UserStyle::class);
 
         $this->filterer = new Filterer(
-            self::PAGE_SIZE,
+            self::PageSize,
             [
                 'user' => [ 'themeOwner.name' => 'asc', 's.id' => 'desc' ], // first one is the default
             ],

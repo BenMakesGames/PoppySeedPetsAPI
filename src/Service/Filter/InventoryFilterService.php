@@ -17,7 +17,7 @@ class InventoryFilterService
 {
     use FilterService;
 
-    public const PAGE_SIZE = 100;
+    public const PageSize = 100;
 
     private readonly ObjectRepository $repository;
     private ?User $user;
@@ -27,7 +27,7 @@ class InventoryFilterService
         $this->repository = $doctrine->getRepository(Inventory::class, 'readonly');
 
         $this->filterer = new Filterer(
-            self::PAGE_SIZE,
+            self::PageSize,
             [
                 'itemname' => [ 'item.name' => 'asc' ], // first one is the default
             ],
@@ -86,7 +86,7 @@ class InventoryFilterService
 
     public function filterName(QueryBuilder $qb, $value, $filters): void
     {
-        $name = trim($value);
+        $name = mb_trim($value);
 
         if(!$name) return;
 

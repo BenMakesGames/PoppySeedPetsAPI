@@ -13,7 +13,7 @@ class MonthlyStoryAdventureFilterService
 {
     use FilterService;
 
-    public const PAGE_SIZE = 12;
+    public const PageSize = 12;
 
     private EntityRepository $repository;
 
@@ -22,7 +22,7 @@ class MonthlyStoryAdventureFilterService
         $this->repository = $em->getRepository(MonthlyStoryAdventure::class);
 
         $this->filterer = new Filterer(
-            self::PAGE_SIZE,
+            self::PageSize,
             [
                 'releasenumber' => [ 'a.releaseNumber' => 'desc' ], // first one is the default
             ],

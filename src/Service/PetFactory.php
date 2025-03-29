@@ -104,7 +104,7 @@ class PetFactory
 
         $name = $petSpecies->getName() === 'Sentinel'
             ? $this->squirrel3->rngNextFromArray(self::SENTINEL_NAMES)
-            : $this->squirrel3->rngNextFromArray(PetShelterPet::PET_NAMES)
+            : $this->squirrel3->rngNextFromArray(PetShelterPet::PetNames)
         ;
 
         $pet = $this->createPet(

@@ -8,7 +8,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 
 final class PetShelterPet
 {
-    public const PET_NAMES = [
+    public const PetNames = [
         'Aalina', 'Aaron', 'Abrahil', 'Addy', 'Aedoc', 'Aelfric', 'Aimery', 'Alain', 'Alda', 'Aldreda', 'Aldus',
         'Alienora', 'Aliette', 'Amée', 'Amis', 'Amphelise', 'Arlotto', 'Artaca', 'Auberi', 'Aureliana',
 

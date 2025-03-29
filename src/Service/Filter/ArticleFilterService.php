@@ -13,7 +13,7 @@ class ArticleFilterService
 {
     use FilterService;
 
-    public const PAGE_SIZE = 10;
+    public const PageSize = 10;
 
     private readonly EntityRepository $repository;
 
@@ -22,7 +22,7 @@ class ArticleFilterService
         $this->repository = $em->getRepository(Article::class);
 
         $this->filterer = new Filterer(
-            self::PAGE_SIZE,
+            self::PageSize,
             [
                 'createdon' => [ 'a.createdOn' => 'desc' ], // first one is the default
             ],

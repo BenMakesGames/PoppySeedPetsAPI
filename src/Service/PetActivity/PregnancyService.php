@@ -341,12 +341,12 @@ class PregnancyService
                 $n2Part = \mb_substr($n2, $n2Offset);
         }
 
-        $newName = trim($n1Part . $n2Part);
+        $newName = mb_trim($n1Part . $n2Part);
 
         $newName = preg_replace('/ +/', ' ', mb_strtolower($newName));
 
         if(PregnancyService::isForbiddenCombinedName($newName))
-            $newName = $this->squirrel3->rngNextFromArray(PetShelterPet::PET_NAMES);
+            $newName = $this->squirrel3->rngNextFromArray(PetShelterPet::PetNames);
 
         return mb_convert_case($newName, MB_CASE_TITLE);
     }

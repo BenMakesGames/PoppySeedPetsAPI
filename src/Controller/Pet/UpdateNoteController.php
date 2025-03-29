@@ -29,7 +29,7 @@ class UpdateNoteController extends AbstractController
         if($pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
 
-        $note = trim($request->request->getString('note'));
+        $note = mb_trim($request->request->getString('note'));
 
         if(\mb_strlen($note) > 1000)
             throw new PSPFormValidationException('Note cannot be longer than 1000 characters.');

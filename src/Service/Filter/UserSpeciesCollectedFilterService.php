@@ -13,7 +13,7 @@ class UserSpeciesCollectedFilterService
 {
     use FilterService;
 
-    public const PAGE_SIZE = 20;
+    public const PageSize = 20;
 
     private EntityRepository $repository;
 
@@ -22,7 +22,7 @@ class UserSpeciesCollectedFilterService
         $this->repository = $em->getRepository(UserSpeciesCollected::class);
 
         $this->filterer = new Filterer(
-            self::PAGE_SIZE,
+            self::PageSize,
             [
                 'discoveredon' => [ 'd.discoveredOn' => 'desc' ], // first one is the default
                 'speciesname' => [ 'species.nameSort' => 'asc' ],

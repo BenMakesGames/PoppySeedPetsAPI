@@ -104,7 +104,7 @@ class AdoptionService
             else if(CalendarFunctions::isPiDay($this->clock->now))
                 $name = $squirrel3->rngNextFromArray([ 'Pi',  'Pi', 'Pie', 'Pie', 'Pie', 'Pie', 'Pie', 'Cake' ]);
             else
-                $name = $squirrel3->rngNextFromArray(PetShelterPet::PET_NAMES);
+                $name = $squirrel3->rngNextFromArray(PetShelterPet::PetNames);
 
             if($i < $numSeasonalPets)
             {
@@ -344,7 +344,7 @@ class AdoptionService
             return PetShelterPet::PET_CHINESE_ZODIAC_NAMES[$this->chineseCalendarInfo->animal];
 
         if(CalendarFunctions::isSaintPatricksDay($this->clock->now))
-            return PetShelterPet::PET_NAMES;
+            return PetShelterPet::PetNames;
 
         throw new \Exception('Today is not a day for seasonal colors.');
     }

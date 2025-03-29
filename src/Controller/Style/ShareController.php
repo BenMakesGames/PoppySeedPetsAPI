@@ -26,7 +26,7 @@ class ShareController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        $name = trim($request->request->get('name'));
+        $name = mb_trim($request->request->get('name'));
 
         if(strlen($name) < 1 || strlen($name) > 15)
             throw new PSPFormValidationException('Name must be between 1 and 15 characters.');

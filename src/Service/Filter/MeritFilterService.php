@@ -13,7 +13,7 @@ class MeritFilterService
 {
     use FilterService;
 
-    public const PAGE_SIZE = 10;
+    public const PageSize = 10;
 
     private readonly EntityRepository $repository;
 
@@ -22,7 +22,7 @@ class MeritFilterService
         $this->repository = $em->getRepository(Merit::class);
 
         $this->filterer = new Filterer(
-            self::PAGE_SIZE,
+            self::PageSize,
             [
                 'name' => [ 'm.name' => 'asc' ], // first one is the default
             ],

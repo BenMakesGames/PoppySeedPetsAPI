@@ -14,7 +14,7 @@ class UserFilterService
 {
     use FilterService;
 
-    public const PAGE_SIZE = 20;
+    public const PageSize = 20;
 
     /**
      * @var User|null
@@ -28,7 +28,7 @@ class UserFilterService
         $this->repository = $em->getRepository(User::class);
 
         $this->filterer = new Filterer(
-            self::PAGE_SIZE,
+            self::PageSize,
             [
                 'lastactivity' => [ 'u.lastActivity' => 'desc' ], // first one is the default
                 'registeredon' => [ 'u.registeredOn' => 'asc' ],

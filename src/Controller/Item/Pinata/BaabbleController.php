@@ -18,18 +18,18 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/item/baabble")]
 class BaabbleController extends AbstractController
 {
-    private const LAME_SHIT = [
+    private const LameShit = [
         'Crooked Stick', 'Scales', 'Tea Leaves', 'Aging Powder', 'Fluff', 'Pointer', 'Creamy Milk', 'Silica Grounds',
     ];
 
-    private const OKAY_STUFF = [
+    private const OkayStuff = [
         'Crooked Stick',
         'Iron Ore',
         'Plastic', 'Plastic',
         'Glass', 'Paper', 'Talon', 'Feathers', 'Glue',
     ];
 
-    private const GOOD_STUFF = [
+    private const GoodStuff = [
         'Quintessence', 'Quintessence', 'Wings',
         'Iron Ore', 'Iron Ore', 'Iron Bar',
         'Silver Ore', 'Silver Ore',
@@ -37,13 +37,13 @@ class BaabbleController extends AbstractController
         'Dark Scales', 'Hash Table', 'Paper Bag', 'Finite State Machine', 'Fiberglass', 'Tiny Scroll of Resources'
     ];
 
-    private const WEIRD_STUFF = [
+    private const WeirdStuff = [
         'Really Big Leaf', 'Music Note', 'Bag of Beans', 'Crystal Ball', 'Linens and Things', 'Dark Matter',
         'Coriander Flower', 'Charcoal', 'Tentacle', 'XOR', 'Liquid-hot Magma', 'Quinacridone Magenta Dye', 'Gypsum',
         'Tiny Black Hole', 'Chocolate Bar',
     ];
 
-    private const RARE_STUFF = [
+    private const RareStuff = [
         'Blackonite', 'Everice', 'Striped Microcline', 'Firestone', 'Black Feathers',
         'Magic Smoke', 'Lightning in a Bottle',
     ];
@@ -72,15 +72,15 @@ class BaabbleController extends AbstractController
         $goodThings = $squirrel3->rngNextInt(0, 9);
 
         for($i = 0; $i < $lameThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::LAME_SHIT);
+            $items[] = $squirrel3->rngNextFromArray(self::LameShit);
 
         for($i = 0; $i < $okayThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::OKAY_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::OkayStuff);
 
         for($i = 0; $i < $goodThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::GOOD_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::GoodStuff);
 
-        $weirdItem = $squirrel3->rngNextFromArray(self::WEIRD_STUFF);
+        $weirdItem = $squirrel3->rngNextFromArray(self::WeirdStuff);
 
         $noteworthy = [ $squirrel3->rngNextFromArray($items), $weirdItem ];
 
@@ -125,18 +125,18 @@ class BaabbleController extends AbstractController
         $rareThings = 1;
 
         for($i = 0; $i < $lameThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::LAME_SHIT);
+            $items[] = $squirrel3->rngNextFromArray(self::LameShit);
 
         for($i = 0; $i < $okayThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::OKAY_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::OkayStuff);
 
         for($i = 0; $i < $goodThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::GOOD_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::GoodStuff);
 
         for($i = 0; $i < $rareThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::RARE_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::RareStuff);
 
-        $weirdItem = $squirrel3->rngNextFromArray(self::WEIRD_STUFF);
+        $weirdItem = $squirrel3->rngNextFromArray(self::WeirdStuff);
 
         $noteworthy = [ $squirrel3->rngNextFromArray($items), $weirdItem ];
 
@@ -182,19 +182,19 @@ class BaabbleController extends AbstractController
         $rareThings = $squirrel3->rngNextInt(1, 5);
 
         for($i = 0; $i < $lameThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::LAME_SHIT);
+            $items[] = $squirrel3->rngNextFromArray(self::LameShit);
 
         for($i = 0; $i < $okayThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::OKAY_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::OkayStuff);
 
         for($i = 0; $i < $goodThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::GOOD_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::GoodStuff);
 
         for($i = 0; $i < $weirdThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::WEIRD_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::WeirdStuff);
 
         for($i = 0; $i < $rareThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::RARE_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::RareStuff);
 
         $noteworthy = [ $squirrel3->rngNextFromArray($items), $squirrel3->rngNextFromArray($items) ];
 
@@ -241,19 +241,19 @@ class BaabbleController extends AbstractController
         $rareThings = $squirrel3->rngNextInt(3, 7);
 
         for($i = 0; $i < $lameThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::LAME_SHIT);
+            $items[] = $squirrel3->rngNextFromArray(self::LameShit);
 
         for($i = 0; $i < $okayThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::OKAY_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::OkayStuff);
 
         for($i = 0; $i < $goodThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::GOOD_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::GoodStuff);
 
         for($i = 0; $i < $weirdThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::WEIRD_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::WeirdStuff);
 
         for($i = 0; $i < $rareThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::RARE_STUFF);
+            $items[] = $squirrel3->rngNextFromArray(self::RareStuff);
 
         $noteworthy = [ $squirrel3->rngNextFromArray($items), $squirrel3->rngNextFromArray($items) ];
 

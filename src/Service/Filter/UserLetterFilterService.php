@@ -13,7 +13,7 @@ class UserLetterFilterService
 {
     use FilterService;
 
-    public const PAGE_SIZE = 20;
+    public const PageSize = 20;
 
     private readonly EntityRepository $repository;
 
@@ -22,7 +22,7 @@ class UserLetterFilterService
         $this->repository = $em->getRepository(UserLetter::class);
 
         $this->filterer = new Filterer(
-            self::PAGE_SIZE,
+            self::PageSize,
             [
                 'receivedon' => [ 'l.receivedOn' => 'desc' ], // first one is the default
             ],

@@ -13,7 +13,7 @@ class UserActivityLogsFilterService
 {
     use FilterService;
 
-    public const PAGE_SIZE = 20;
+    public const PageSize = 20;
 
     private EntityRepository $repository;
 
@@ -22,7 +22,7 @@ class UserActivityLogsFilterService
         $this->repository = $em->getRepository(UserActivityLog::class);
 
         $this->filterer = new Filterer(
-            self::PAGE_SIZE,
+            self::PageSize,
             [
                 'id' => [ 'l.id' => 'desc' ], // first one is the default
             ],

@@ -21,7 +21,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class BandService
 {
-    public const ACTIVITY_ICON = 'groups/band';
+    public const ActivityIcon = 'groups/band';
 
     public function __construct(
         private readonly EntityManagerInterface $em,
@@ -202,7 +202,7 @@ class BandService
             ;
 
             PetActivityLogFactory::createUnreadLog($this->em, $pet, $group->getName() . ' received some fan mail! %pet:' . $pet->getId() . '.name% was ' . $feels)
-                ->setIcon(self::ACTIVITY_ICON)
+                ->setIcon(self::ActivityIcon)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->setChanges($changes->compare($pet))
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Band' ]))
@@ -225,7 +225,7 @@ class BandService
             $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
 
             PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% got royalties from ' . $group->getName() . ' sales!')
-                ->setIcon(self::ACTIVITY_ICON)
+                ->setIcon(self::ActivityIcon)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->setChanges($changes->compare($pet))
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Band', 'Moneys' ]))
@@ -291,7 +291,7 @@ class BandService
                 $member->increaseEsteem($this->squirrel3->rngNextInt(8, 12));
 
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $group->getName() . ($this->squirrel3->rngNextInt(1, 5) === 1 ? ' finally' : '') . ' released a new ' . $item . '!')
-                    ->setIcon(self::ACTIVITY_ICON)
+                    ->setIcon(self::ActivityIcon)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Band' ]))
@@ -319,7 +319,7 @@ class BandService
                     $member->increaseEsteem($this->squirrel3->rngNextInt(2, 6));
 
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $member->getName() . ' jammed with ' . $group->getName() . '. ' . self::BAND_ACTIVITY_SENTIMENT_MESSAGES[$sentiment])
-                    ->setIcon(self::ACTIVITY_ICON)
+                    ->setIcon(self::ActivityIcon)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Band' ]))

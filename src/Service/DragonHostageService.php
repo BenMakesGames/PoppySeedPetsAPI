@@ -11,21 +11,19 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class DragonHostageService
 {
-    private IRandom $rng;
-    private EntityManagerInterface $em;
-
-    public function __construct(IRandom $rng, EntityManagerInterface $em)
+    public function __construct(
+        private readonly IRandom $rng,
+        private readonly EntityManagerInterface $em
+    )
     {
-        $this->rng = $rng;
-        $this->em = $em;
     }
 
     public function generateHostage(): DragonHostage
     {
         $type = $this->rng->rngNextFromArray(DragonHostageTypeEnum::getValues());
 
-        $crownColor = $this->rng->rngNextFromArray(self::CROWN_COLORS);
-        $creatureColor = $this->rng->rngNextFromArray(self::HOSTAGE_COLORS[$type]);
+        $crownColor = $this->rng->rngNextFromArray(self::CrownColors);
+        $creatureColor = $this->rng->rngNextFromArray(self::HostageColors[$type]);
         $name = $this->generateHostageName($type);
         $dialog = $this->generateHostageDialog();
 
@@ -41,12 +39,12 @@ class DragonHostageService
 
     public function generateHostageName(string $type): string
     {
-        return $this->rng->rngNextFromArray(self::HOSTAGE_NAMES[$type]);
+        return $this->rng->rngNextFromArray(self::HostageNames[$type]);
     }
 
     public function generateHostageDialog(): string
     {
-        $dialog = $this->rng->rngNextFromArray(self::HOSTAGE_DIALOG);
+        $dialog = $this->rng->rngNextFromArray(self::HostageDialog);
 
         $complaint = $this->rng->rngNextFromArray([ 'Outrageous! Unfathomable!', 'Fate is so cruel!', 'Is there no justice??' ]);
         $beautiful = $this->rng->rngNextFromArray([ 'beautiful', 'handsome', 'hot', 'dexterous' ]);
@@ -61,7 +59,7 @@ class DragonHostageService
 
     public function generateLoot(string $type): DragonHostageLoot
     {
-        $item = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray(self::HOSTAGE_LOOT[$type]));
+        $item = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray(self::HostageLoot[$type]));
 
         return new DragonHostageLoot(
             $item,
@@ -70,17 +68,17 @@ class DragonHostageService
         );
     }
 
-    private const HOSTAGE_COLORS = [
+    private const HostageColors = [
         DragonHostageTypeEnum::MAGPIE => [ '3d484f', '4e4642', '696969' ],
         DragonHostageTypeEnum::RACCOON => [ '' ],
         DragonHostageTypeEnum::SQUID => [ 'e59db9', 'e7d5b2' ],
     ];
 
-    private const CROWN_COLORS = [
+    private const CrownColors = [
         'a11b1b', '10a913', '7c1ae9', 'db28b2'
     ];
 
-    private const HOSTAGE_LOOT = [
+    private const HostageLoot = [
         DragonHostageTypeEnum::MAGPIE => [
             'Ruby Feather',
             'Black Feathers',
@@ -95,14 +93,14 @@ class DragonHostageService
         ]
     ];
 
-    private const HOSTAGE_DIALOG = [
+    private const HostageDialog = [
         'What\'s this? It appears I\'ve been captured by a %terrible% dragon! %Complaint!% \\*sobs unconvincingly\\*',
         'Oh, how I wish a %beautiful% knight would come and save me! I\'m in such terrible peril, after all!',
         'Help, oh help! A %terrible% dragon has taken me well and truly hostage! I\'m much too young and %beautiful% to die!',
         'Woe is me! Taken hostage in the prime of my life! %Complaint!% Where, oh where, is my %beautiful% knight??'
     ];
 
-    private const HOSTAGE_NAMES = [
+    private const HostageNames = [
         DragonHostageTypeEnum::MAGPIE => [
             'Acel', 'Adalicia', 'Adelaide', 'Adelynn', 'Adrianna', 'Aimee',
             'Alisanne', 'Aloin', 'Alyssandra', 'Amoux', 'Ancil', 'Angela',

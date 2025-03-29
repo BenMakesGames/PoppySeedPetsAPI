@@ -32,7 +32,7 @@ class SmilingWandController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'smilingWand');
 
-        $expressions = trim($request->request->getString('expressions', ''));
+        $expressions = mb_trim($request->request->getString('expressions', ''));
 
         if(!self::validExpressions($expressions))
             throw new PSPFormValidationException('You must select three different expressions.');

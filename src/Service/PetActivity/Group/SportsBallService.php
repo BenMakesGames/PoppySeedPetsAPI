@@ -21,7 +21,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class SportsBallService
 {
-    public const ACTIVITY_ICON = 'groups/sportsball';
+    public const ActivityIcon = 'groups/sportsball';
 
     public function __construct(
         private readonly PetExperienceService $petExperienceService,
@@ -33,7 +33,7 @@ class SportsBallService
     {
     }
 
-    private const DICTIONARY = [
+    private const Dictionary = [
         'adjective' => [
             'Lucky', 'Wild', 'Mad', 'Magic', 'Fierce', 'Feisty', 'Island', 'Jungle', 'Marvelous', 'Tough',
             'Amazing', 'Seaside', 'Umbral', 'Digital', 'Frost-born', 'Gorgeous', 'Midnight', 'Giant', 'Lightning',
@@ -49,11 +49,11 @@ class SportsBallService
         ],
     ];
 
-    private const GROUP_NAME_PATTERNS = [
+    private const GroupNamePatterns = [
         '%adjective% %nouns%',
     ];
 
-    private const POSSIBLE_LOOT = [
+    private const PossibleLoot = [
         'Green Sportsball Ball',
         'Orange Sportsball Ball',
         'Sportsball Pin',
@@ -62,7 +62,7 @@ class SportsBallService
 
     public function generateGroupName(): string
     {
-        return GroupNameGenerator::generateName($this->rng, self::GROUP_NAME_PATTERNS, self::DICTIONARY, 60);
+        return GroupNameGenerator::generateName($this->rng, self::GroupNamePatterns, self::Dictionary, 60);
     }
 
     private function rollSkill(Pet $pet): int
@@ -119,7 +119,7 @@ class SportsBallService
                 $member->increaseEsteem($this->rng->rngNextInt(3, 6));
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $this->formatMessage($messageTemplate, $member, $group))
-                ->setIcon(self::ACTIVITY_ICON)
+                ->setIcon(self::ActivityIcon)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Sportsball' ]))
             ;
@@ -132,7 +132,7 @@ class SportsBallService
 
             if($this->rng->rngNextInt(1, 10) === 1 && $member->getId() !== $lowestPerformer)
             {
-                $loot = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray(self::POSSIBLE_LOOT));
+                $loot = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray(self::PossibleLoot));
                 $activityLog->setEntry($activityLog->getEntry() . ' ' . $member->getName() . ' accidentally brought ' . $loot->getNameWithArticle() . ' home after the game. (Oops! (Oh well.))');
                 $this->inventoryService->petCollectsItem($loot, $member, $this->formatMessage($message, $member, $group), $activityLog);
             }

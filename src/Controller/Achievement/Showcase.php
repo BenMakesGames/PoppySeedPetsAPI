@@ -13,7 +13,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/achievement")]
 final class Showcase extends AbstractController
 {
-    private const PAGE_SIZE = 20;
+    private const PageSize = 20;
 
     #[Route("/showcase", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
@@ -25,7 +25,7 @@ final class Showcase extends AbstractController
 
         $totalCount = $db->query('SELECT COUNT(DISTINCT(user_id)) FROM user_badge')->getSingleValue();
 
-        $totalPages = (int)ceil($totalCount / self::PAGE_SIZE);
+        $totalPages = (int)ceil($totalCount / self::PageSize);
 
         $page = min($request->query->getInt('page', 0), $totalPages - 1);
 
@@ -42,7 +42,7 @@ final class Showcase extends AbstractController
                     ) t
                     JOIN user ON user.id = t.user_id
                 EOSQL,
-                [ $page * self::PAGE_SIZE, self::PAGE_SIZE ]
+                [ $page * self::PageSize, self::PageSize ]
             )
             ->mapResults(fn($achievementCount, $id, $name, $icon) => [
                 'achievementCount' => $achievementCount,
@@ -54,7 +54,7 @@ final class Showcase extends AbstractController
             ]);
 
         return $responseService->success([
-            'pageSize' => self::PAGE_SIZE,
+            'pageSize' => self::PageSize,
             'pageCount' => $totalPages,
             'page' => $page,
             'resultCount' => $totalCount,

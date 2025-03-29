@@ -13,7 +13,7 @@ class PetRelationshipFilterService
 {
     use FilterService;
 
-    public const PAGE_SIZE = 20;
+    public const PageSize = 20;
 
     private readonly ObjectRepository $repository;
 
@@ -22,7 +22,7 @@ class PetRelationshipFilterService
         $this->repository = $doctrine->getRepository(PetRelationship::class, 'readonly');
 
         $this->filterer = new Filterer(
-            self::PAGE_SIZE,
+            self::PageSize,
             [
                 'commitment' => [ 'r.commitment' => 'desc' ],
             ],

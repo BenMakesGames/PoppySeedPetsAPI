@@ -13,7 +13,7 @@ class SpiritCompanionFilterService
 {
     use FilterService;
 
-    public const PAGE_SIZE = 20;
+    public const PageSize = 20;
 
     private EntityRepository $repository;
 
@@ -22,7 +22,7 @@ class SpiritCompanionFilterService
         $this->repository = $em->getRepository(SpiritCompanion::class);
 
         $this->filterer = new Filterer(
-            self::PAGE_SIZE,
+            self::PageSize,
             [
                 'id' => [ 'p.id' => 'asc' ],
             ],
