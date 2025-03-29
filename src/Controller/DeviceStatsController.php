@@ -9,7 +9,7 @@ use App\Entity\User;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -19,26 +19,23 @@ class DeviceStatsController extends AbstractController
     #[DoesNotRequireHouseHours]
     #[Route("", methods: ["PUT"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function about(ResponseService $responseService, Request $request, EntityManagerInterface $em)
-    {
+    public function create(
+        ResponseService $responseService,
+        #[MapRequestPayload] DeviceStatsRequest $dto,
+        EntityManagerInterface $em
+    ) {
         /** @var User $user */
         $user = $this->getUser();
 
-        $userAgent = trim($request->request->getString('userAgent'));
-        $language = trim($request->request->getString('language'));
-        $touchPoints = $request->request->getInt('touchPoints');
-        $windowWidth = $request->request->getInt('windowWidth');
-        $screenWidth = $request->request->getInt('screenWidth');
-
-        if($userAgent && $language && $windowWidth && $screenWidth)
+        if($dto->userAgent && $dto->language && $dto->windowWidth && $dto->screenWidth)
         {
             $deviceStats = (new DeviceStats())
                 ->setUser($user)
-                ->setUserAgent($userAgent)
-                ->setLanguage($language)
-                ->setTouchPoints($touchPoints)
-                ->setWindowWidth($windowWidth)
-                ->setScreenWidth($screenWidth)
+                ->setUserAgent($dto->userAgent)
+                ->setLanguage($dto->language)
+                ->setTouchPoints($dto->touchPoints)
+                ->setWindowWidth($dto->windowWidth)
+                ->setScreenWidth($dto->screenWidth)
             ;
 
             $em->persist($deviceStats);
@@ -46,5 +43,18 @@ class DeviceStatsController extends AbstractController
         }
 
         return $responseService->success();
+    }
+}
+
+class DeviceStatsRequest
+{
+    public function __construct(
+        public readonly string $userAgent,
+        public readonly string $language,
+        public readonly int $touchPoints,
+        public readonly int $windowWidth,
+        public readonly int $screenWidth,
+    )
+    {
     }
 }
