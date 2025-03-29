@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Service\PetActivity;
 
+use App\Entity\Dream;
 use App\Entity\Item;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
@@ -15,7 +16,6 @@ use App\Functions\GrammarFunctions;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PetBadgeHelpers;
-use App\Repository\DreamRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
@@ -29,7 +29,6 @@ class DreamingService
         private readonly ResponseService $responseService,
         private readonly PetExperienceService $petExperienceService,
         private readonly IRandom $rng,
-        private readonly DreamRepository $dreamRepository,
         private readonly EntityManagerInterface $em
     )
     {
@@ -126,7 +125,7 @@ class DreamingService
         $itemName = $this->rng->rngNextFromArray($possibleItems);
         $item = ItemRepository::findOneByName($this->em, $itemName);
 
-        $dream = $this->dreamRepository->findRandom($this->rng);
+        $dream = $this->findRandomDream($this->rng);
 
         /** @var PetSpecies $species */
         $species = $this->rng->rngNextFromArray($this->em->getRepository(PetSpecies::class)->findAll());
@@ -148,6 +147,26 @@ class DreamingService
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
 
         return $log;
+    }
+
+    public function findRandomDream(IRandom $rng): Dream
+    {
+        $numberOfDreams = (int)$this->em->createQueryBuilder()
+            ->from(Dream::class, 'd')
+            ->select('COUNT(d.id)')
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+
+        $offset = $rng->rngNextInt(0, $numberOfDreams - 1);
+
+        return $this->em->createQueryBuilder()
+            ->from(Dream::class, 'd')
+            ->setFirstResult($offset)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleResult()
+        ;
     }
 
     public function generateReplacementsDictionary(Item $item, Pet $pet, PetSpecies $species): array
