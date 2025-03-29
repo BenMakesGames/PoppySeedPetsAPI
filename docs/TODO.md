@@ -34,6 +34,14 @@ All API responses include full user & weather data. This should be broken up for
 
 I'd like to change how weather is done, anyway, to make it just be "this is the weather today", which would make solving this problem easier.
 
+### Problem: Symfony added support for request DTOs a little bit ago, so PSP is still hardly using them
+
+Search for `#[MapRequestPayload]`.
+
+PSP should be doing more of that.
+
+More info: https://symfony.com/blog/new-in-symfony-6-3-mapping-request-data-to-typed-objects
+
 ### Problem: very few automated tests to speak of
 
 Especially if lots of people become interested in contributing, automated tests will be increasingly important.
