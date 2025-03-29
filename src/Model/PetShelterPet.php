@@ -12,59 +12,59 @@ final class PetShelterPet
         'Aalina', 'Aaron', 'Abrahil', 'Addy', 'Aedoc', 'Aelfric', 'Aimery', 'Alain', 'Alda', 'Aldreda', 'Aldus',
         'Alienora', 'Aliette', 'Amée', 'Amis', 'Amphelise', 'Arlotto', 'Artaca', 'Auberi', 'Aureliana',
 
-        'Batu', 'Belka', 'Berislav', 'Bezzhen', 'Biedeluue', 'Blicze', 'Bogdan', 'Bogdana', 'Bogumir', 'Bradan',
+        'Batu', 'Belka', 'Ben', 'Berislav', 'Bezzhen', 'Biedeluue', 'Blicze', 'Bogdan', 'Bogdana', 'Bogumir', 'Borscht', 'Bradan',
         'Bratomil',
 
-        'Cateline', 'Ceinguled', 'Ceri', 'Ceslinus', 'Chedomir', 'Christien', 'Clement', 'Coilean', 'Col', 'Cynbel',
+        'Cat', 'Cateline', 'Ceinguled', 'Ceri', 'Ceslinus', 'Chedomir', 'Christien', 'Clement', 'Coilean', 'Col', 'Cookie', 'Cynbel',
         'Cyra', 'Czestobor',
 
-        'Dagena', 'Dalibor', 'Denyw', 'Dicun', 'Disideri', 'Dmitrei', 'Dragomir', 'Dye',
+        'Dagena', 'Dalibor', 'Denyw', 'Dicun', 'Disideri', 'Dmitrei', 'Dog', 'Dragomir', 'Dye',
 
         'Eda', 'Eileve', 'Elena', 'Elis', 'Elric', 'Emilija', 'Enguerrand', 'Enim', 'Enynny', 'Erasmus', 'Estienne',
         'Eve',
 
-        'Felix', 'Fiora', 'Firmin', 'Fluri', 'Frotlildis',
+        'Felix', 'Fennel', 'Fiora', 'Firmin', 'Fluri', 'Frotlildis',
 
-        'Galine', 'Garnier', 'Garsea', 'Gennoveus', 'Genoveva', 'Geoffroi', 'Gidie', 'Giliana', 'Godelive', 'Gomes',
-        'Gosse', 'Gubin', 'Guiscard', 'Gwennan',
+        'Galine', 'Garnier', 'Garsea', 'Gene', 'Gennoveus', 'Genoveva', 'Geoffroi', 'Gidie', 'Giliana', 'Godelive', 'Gomes',
+        'Gosse', 'Gregory', 'Gubin', 'Guiscard', 'Gwennan',
 
-        'Hamon', 'Hamon', 'Hopcyn', 'Hunfrid',
+        'Hamon', 'Hamon', 'Hippu', 'Honey', 'Hopcyn', 'Hunfrid',
 
-        'Ibb', 'Idzi',
+        'Ibb', 'Idzi', 'Ingot', 'Ink', 'Iron', 'Isle', 'Ismo',
 
-        'Jadviga', 'Jehanne', 'Jocosa', 'Josse', 'Jurian',
+        'Jadviga', 'Jehanne', 'Jocosa', 'Josse', 'Jurian', 'Juniper',
 
-        'Kaija', 'Kain', 'Kazimir', 'Kima', 'Kinborough', 'Kint', 'Kirik', 'Klara', 'Kryspin',
+        'Kaija', 'Kain', 'Kale', 'Karma', 'Kazimir', 'Kima', 'Kinborough', 'Kint', 'Kirik', 'Klara', 'Kryspin', 'Kukka',
 
-        'Larkin', 'Leodhild', 'Leon', 'Levi', 'Lorencio', 'Lowri', 'Lucass', 'Ludmila',
+        'Larkin', 'Leodhild', 'Leon', 'Levi', 'Lorencio', 'Lowri', 'Lucass', 'Ludmila', 'Lumi',
 
         'Maccos', 'Maeldoi', 'Magdalena', 'Makrina', 'Malik', 'Margaret', 'Marsley', 'Masayasu', 'Mateline',
-        'Mathias', 'Matty', 'Maurifius', 'Meduil', 'Melita', 'Meoure', 'Merewen', 'Milian', 'Millicent', 'Mold',
+        'Mathias', 'Matty', 'Maurifius', 'Mayonnaise', 'Meduil', 'Melita', 'Meoure', 'Merewen', 'Milian', 'Millicent', 'Mold',
         'Molle', 'Montgomery', 'Morys', 'Muriel',
 
-        'Nascimbene', 'Newt', 'Nicholina', 'Nilus', 'Noe', 'Noll', 'Nuño',
+        'Nascimbene', 'Nate', 'Newt', 'Nicholina', 'Nilus', 'Noe', 'Noll', 'Nuño',
 
-        'Onfroi', 'Oswyn',
+        'Onfroi', 'Orchid', 'Oregano', 'Origami', 'Oswyn', 'Owen',
 
-        'Paperclip', 'Perkhta', 'Pesczek', 'Pridbjørn',
+        'Paperclip', 'Perkhta', 'Poppy', 'Pesczek', 'Pridbjørn', 'Pyry',
 
-        'Radomil', 'Raven', 'Regina', 'Reina', 'Rimoete', 'Rocatos', 'Rostislav', 'Rozalia', 'Rum', 'Runne', 'Ryd',
+        'Radomil', 'Raven', 'Regina', 'Reina', 'Rihanna', 'Rimoete', 'Rocatos', 'Roger', 'Rostislav', 'Rosehip', 'Rozalia', 'Rum', 'Runne', 'Ryd',
 
-        'Saewine', 'Sancha', 'Sandivoi', 'Skenfrith', 'Sulimir', 'Sunnifa', 'Sybil',
+        'Saewine', 'Sancha', 'Sandivoi', 'Schmitty', 'Sisu', 'Seppo', 'Skenfrith', 'Sulimir', 'Sunnifa', 'Sybil',
 
-        'Taki', 'Talan', 'Tede', 'Temüjin', 'Tephaine', 'Tetris', 'Tiecia', 'Timur', 'Tomila', 'Toregene', 'Trenewydd',
+        'Taki', 'Talan', 'Tede', 'Temüjin', 'Tephaine', 'Theodore', 'Tetris', 'Tiecia', 'Timur', 'Tomila', 'Toregene', 'Trenewydd', 'Tuli',
 
-        'Úna', 'Usk',
+        'Ulla', 'Úna', 'Umami', 'Umbra', 'Unit', 'Usk',
 
-        'Vasilii', 'Venceslaus', 'Vitseslav', 'Vivka',
+        'Vasilii', 'Venceslaus', 'Vesi', 'Vine', 'Vitseslav', 'Vivka',
 
-        'Wilkin', 'Wilmot', 'Wrexham', 'Wybert', 'Wymond',
+        'Wallace', 'Wilkin', 'Wilmot', 'Wrexham', 'Wybert', 'Wymond',
 
-        'Ximeno',
+        'Xanadu', 'Xi', 'Ximeno', 'Xoxo',
 
         'Yaromir', 'Yrian', 'Ysabeau', 'Ystradewel',
 
-        'Zofija', 'Zuan', 'Zygmunt'
+        'Zofija', 'Zen', 'Zuan', 'Zygmunt'
     ];
 
     public static function generatePirateName(\DateTimeImmutable $dt, int $index)
