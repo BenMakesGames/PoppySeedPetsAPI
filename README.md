@@ -6,3 +6,4 @@ Documentation can be found in the `docs/` directory. Notably:
 
 * [docs/Installing and Running.md](docs/Installing%20and%20Running.md)
 * [docs/TODO.md](docs/TODO.md)
+* [docs/Architecture Decisions.md](docs/Architecture%20Decisions.md)
