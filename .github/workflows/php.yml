@@ -23,5 +23,8 @@ jobs:
         extensions: intl, mbstring, calendar, ctype, curl, iconv, json, pdo
     - name: Install dependencies
       uses: php-actions/composer@v6
+      with:
+        php_version: 8.3
+        php_extensions: intl mbstring calendar ctype curl iconv json pdo
     - name: Test!
       uses: php-actions/phpunit@v3
