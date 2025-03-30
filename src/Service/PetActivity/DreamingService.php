@@ -151,8 +151,8 @@ class DreamingService
 
     public function findRandomDream(IRandom $rng): Dream
     {
-        $numberOfDreams = (int)$this->em->createQueryBuilder()
-            ->from(Dream::class, 'd')
+        $numberOfDreams = (int)$this->em->getRepository(Dream::class)
+            ->createQueryBuilder('d')
             ->select('COUNT(d.id)')
             ->getQuery()
             ->getSingleScalarResult()
@@ -160,8 +160,8 @@ class DreamingService
 
         $offset = $rng->rngNextInt(0, $numberOfDreams - 1);
 
-        return $this->em->createQueryBuilder()
-            ->from(Dream::class, 'd')
+        return $this->em->getRepository(Dream::class)
+            ->createQueryBuilder('d')
             ->setFirstResult($offset)
             ->setMaxResults(1)
             ->getQuery()
