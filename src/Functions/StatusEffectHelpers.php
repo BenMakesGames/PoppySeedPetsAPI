@@ -93,20 +93,20 @@ final class StatusEffectHelpers
             else
                 PetActivityLogFactory::createUnreadLog($em, $pet, '%pet:' . $pet->getId() . '.name% turned into a Werecreature!');
         }
-        else if(StringFunctions::startsWith($status, 'Focused ('))
+        else if(str_starts_with($status, 'Focused ('))
         {
             // the "Focused" family of status effects are mutually exclusive
             $statusEffectsToRemove = array_merge(
                 $statusEffectsToRemove,
-                array_filter($pet->getStatusEffects()->toArray(), fn(StatusEffect $se) => StringFunctions::startsWith($se->getStatus(), 'Focused (') && $se->getStatus() !== $status)
+                array_filter($pet->getStatusEffects()->toArray(), fn(StatusEffect $se) => str_starts_with($se->getStatus(), 'Focused (') && $se->getStatus() !== $status)
             );
         }
-        else if(StringFunctions::startsWith($status, 'Fated ('))
+        else if(str_starts_with($status, 'Fated ('))
         {
             // the "Fated" family of status effects are mutually exclusive
             $statusEffectsToRemove = array_merge(
                 $statusEffectsToRemove,
-                array_filter($pet->getStatusEffects()->toArray(), fn(StatusEffect $se) => StringFunctions::startsWith($se->getStatus(), 'Fated (') && $se->getStatus() !== $status)
+                array_filter($pet->getStatusEffects()->toArray(), fn(StatusEffect $se) => str_starts_with($se->getStatus(), 'Fated (') && $se->getStatus() !== $status)
             );
         }
 

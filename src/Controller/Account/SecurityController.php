@@ -84,8 +84,11 @@ class SecurityController extends AbstractController
 
         $newPassphrase = mb_trim($request->request->getString('newPassphrase'));
 
-        if(\mb_strlen($newPassphrase) < 10)
-            throw new PSPFormValidationException('Passphrase must be at least 10 characters long.');
+        if(\mb_strlen($newPassphrase) < User::MinPassphraseLength)
+            throw new PSPFormValidationException('Passphrase must be at least ' . User::MinPassphraseLength . ' characters long. (Pro tip: try using an actual phrase, or short sentence!)');
+
+        if(\mb_strlen($newPassphrase) > User::MaxPassphraseLength)
+            throw new PSPFormValidationException('Passphrase must not exceed ' . User::MaxPassphraseLength . ' characters.');
 
         $user->setPassword($passwordEncoder->hashPassword($user, $newPassphrase));
 
@@ -135,8 +138,11 @@ class SecurityController extends AbstractController
     {
         $passphrase = mb_trim($request->request->getString('passphrase'));
 
-        if(\mb_strlen($passphrase) < 10)
-            throw new PSPFormValidationException('Passphrase must be at least 10 characters long. (Pro tip: try using an actual phrase, or short sentence!)');
+        if(\mb_strlen($passphrase) < User::MinPassphraseLength)
+            throw new PSPFormValidationException('Passphrase must be at least ' . User::MinPassphraseLength . ' characters long. (Pro tip: try using an actual phrase, or short sentence!)');
+
+        if(\mb_strlen($passphrase) > User::MaxPassphraseLength)
+            throw new PSPFormValidationException('Passphrase must not exceed ' . User::MaxPassphraseLength . ' characters.');
 
         $resetRequest = $em->getRepository(PassphraseResetRequest::class)->findOneBy([ 'code' => $code ]);
 

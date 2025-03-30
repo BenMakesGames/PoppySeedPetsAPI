@@ -6,6 +6,7 @@ namespace App\Service;
 use App\Entity\User;
 use App\Entity\UserSession;
 use App\Functions\StringFunctions;
+use App\Security\CryptographicFunctions;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -25,7 +26,7 @@ class SessionService
     {
         do
         {
-            $sessionId = StringFunctions::randomLettersAndNumbers(40);
+            $sessionId = CryptographicFunctions::generateSecureRandomString(40);
         } while($this->sessionIdIsTaken($sessionId));
 
         return $sessionId;
