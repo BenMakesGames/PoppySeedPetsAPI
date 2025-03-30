@@ -23,7 +23,7 @@ final class CryptographicFunctions
         $allowedCharactersCount = strlen($allowedCharacters);
 
         for ($i = 0; $i < $length; $i++)
-            $result .= $allowedCharacters[\Sodium\randombytes_uniform($allowedCharactersCount)];
+            $result .= $allowedCharacters[random_int(0, $allowedCharactersCount - 1)];
 
         return $result;
     }
