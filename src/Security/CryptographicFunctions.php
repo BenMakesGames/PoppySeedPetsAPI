@@ -11,8 +11,7 @@ final class CryptographicFunctions
 {
     /**
      * Generates a cryptographically secure random string of specified length.
-     * Uses random_bytes() for the underlying random number generation.
-     * 
+     *
      * @param int $length The desired length of the random string
      * @param string $allowedCharacters The set of characters to use (default: alphanumeric)
      * @return string A random string of the specified length
