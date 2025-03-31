@@ -4,7 +4,8 @@ declare(strict_types=1);
 $finder = PhpCsFixer\Finder::create()
     ->in(dirname(__DIR__)) // up one dir
     ->exclude('vendor')
-    ->name('*.php');
+    ->name('*.php')
+;
 
 return (new PhpCsFixer\Config())
     ->setRules([

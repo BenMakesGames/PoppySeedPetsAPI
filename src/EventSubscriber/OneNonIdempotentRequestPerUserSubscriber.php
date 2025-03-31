@@ -35,14 +35,12 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
 
     private $user;
 
-    public function
-    __construct(
+    public function __construct(
         private readonly Security $security,
         private readonly CacheItemPoolInterface $cache
     )
     {
-
-        $this->security = $security;;
+        $this->security = $security;
         $this->cache = $cache;
     }
 
@@ -84,6 +82,4 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
 
         $this->cache->deleteItem('One POST #' . $this->user->getId());
     }
-
 }
-?>
