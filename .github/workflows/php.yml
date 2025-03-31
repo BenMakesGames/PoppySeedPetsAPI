@@ -22,7 +22,24 @@ jobs:
         with:
           config: .github/license-eye-config.yaml
 
-  test:
+  syntax-checks:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check syntax of changed PHP files
+      run: |
+        # Get list of changed PHP files in this PR
+        CHANGED_FILES=$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '\.php$' || true)
+        
+        # If no PHP files changed, we're done
+        if [ -z "$CHANGED_FILES" ]; then
+          echo "No PHP files changed in this PR."
+          exit 0
+        fi
+        
+        # Check syntax of each changed file
+        echo "$CHANGED_FILES" | xargs -n1 php -l
+
+  run-tests:
     runs-on: ubuntu-latest
 
     steps:
