@@ -1,0 +1,15 @@
+header:
+  license:
+    spdx-id: GPL-3.0-or-later
+    copyright-owner: Ben Hendel-Doying and contributors
+    copyright-year: "2019-2025"
+
+  paths:
+    - 'src/*/**/*.php'
+    - 'tests/*/**/*.php'
+    - 'migrations/**/*.php'
+
+  comment: on-failure
+
+  license-locations:
+    - COPYING

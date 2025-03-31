@@ -10,6 +10,20 @@ permissions:
   contents: read
 
 jobs:
+  license-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Check License Headers
+        uses: apache/skywalking-eyes@main
+        with:
+          config: .github/license-eye-config.yaml
+          log: info
+          token: ${{ secrets.GITHUB_TOKEN }}
+
   test:
     runs-on: ubuntu-latest
 
