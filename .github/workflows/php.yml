@@ -10,21 +10,27 @@ permissions:
   contents: read
 
 jobs:
-  license-check:
+  run-tests:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
-      - name: Check License Headers
-        uses: apache/skywalking-eyes/header@main
-        with:
-          config: .github/license-eye-config.yaml
-
-  syntax-checks:
-    runs-on: ubuntu-latest
     steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Check License Headers
+      uses: apache/skywalking-eyes/header@main
+      with:
+        config: .github/license-eye-config.yaml
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        extensions: intl, mbstring, calendar, ctype, curl, iconv, json, pdo
+        tools: composer, phpunit
+
     - name: Check syntax of changed PHP files
       run: |
         # Get list of changed PHP files in this PR
@@ -38,19 +44,6 @@ jobs:
         
         # Check syntax of each changed file
         echo "$CHANGED_FILES" | xargs -n1 php -l
-
-  run-tests:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.3'
-        extensions: intl, mbstring, calendar, ctype, curl, iconv, json, pdo
-        tools: composer, phpunit
 
     - name: Get composer cache directory
       id: composer-cache
