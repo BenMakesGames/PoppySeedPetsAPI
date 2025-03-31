@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\EventSubscriber;
 
 use App\Exceptions\PSPTooManyRequests;
@@ -27,8 +26,7 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
 {
     public static function getSubscribedEvents(): array
     {
-        return
-            [
+        return [
             KernelEvents::CONTROLLER => 'startRequest',
             KernelEvents::TERMINATE => 'terminateResponse',
             KernelEvents::EXCEPTION => 'exception',
@@ -40,12 +38,12 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
     public function
     __construct(
         private readonly Security $security,
-            private readonly CacheItemPoolInterface $cache
+        private readonly CacheItemPoolInterface $cache
     )
     {
 
         $this->security = $security;;
-        $this->cache    = $cache;
+        $this->cache = $cache;
     }
 
     public function startRequest (ControllerEvent $event)
