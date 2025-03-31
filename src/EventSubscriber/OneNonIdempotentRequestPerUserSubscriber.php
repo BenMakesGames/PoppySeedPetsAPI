@@ -27,7 +27,8 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
 {
     public static function getSubscribedEvents(): array
     {
-        return [
+        return
+            [
             KernelEvents::CONTROLLER => 'startRequest',
             KernelEvents::TERMINATE => 'terminateResponse',
             KernelEvents::EXCEPTION => 'exception',
@@ -36,13 +37,14 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
 
     private $user;
 
-    public function __construct(
+    public function
+    __construct(
         private readonly Security $security,
             private readonly CacheItemPoolInterface $cache
     )
     {
 
-        $this->security = $security;
+        $this->security = $security;;
         $this->cache    = $cache;
     }
 
