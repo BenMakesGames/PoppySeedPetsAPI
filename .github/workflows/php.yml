@@ -18,11 +18,9 @@ jobs:
           fetch-depth: 0
 
       - name: Check License Headers
-        uses: apache/skywalking-eyes@main
+        uses: apache/skywalking-eyes/header@main
         with:
           config: .github/license-eye-config.yaml
-          log: info
-          token: ${{ secrets.GITHUB_TOKEN }}
 
   test:
     runs-on: ubuntu-latest
