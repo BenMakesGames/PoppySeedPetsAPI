@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   run-tests:
@@ -85,5 +85,5 @@ jobs:
           echo "No changes to commit"
         else
           git commit -m "Apply PHP CS Fixer changes"
-          git push
+          git push origin HEAD:${{ github.head_ref }}
         fi
