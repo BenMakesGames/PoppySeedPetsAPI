@@ -34,7 +34,7 @@ jobs:
     - name: Get changed PHP files
       id: changed-files
       run: |
-        CHANGED_FILES=$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '\.php$' || true)
+        CHANGED_FILES=$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '\.php$' | tr '\n' ' ' || true)
         echo "files=$CHANGED_FILES" >> $GITHUB_OUTPUT
 
     - name: Check syntax of changed PHP files
