@@ -7,33 +7,47 @@ on:
     branches: [ "main" ]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  license-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Check License Headers
-        uses: apache/skywalking-eyes/header@main
-        with:
-          config: .github/license-eye-config.yaml
-
-  test:
+  run-tests:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Check License Headers
+      uses: apache/skywalking-eyes/header@main
+      with:
+        config: .github/license-eye-config.yaml
+
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.3'
         extensions: intl, mbstring, calendar, ctype, curl, iconv, json, pdo
         tools: composer, phpunit
+
+    - name: Get changed PHP files
+      id: changed-files
+      run: |
+        CHANGED_FILES=$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '\.php$' | tr '\n' ' ' || true)
+        echo "files=$CHANGED_FILES" >> $GITHUB_OUTPUT
+
+    - name: Check syntax of changed PHP files
+      if: steps.changed-files.outputs.files != ''
+      run: |
+        # If no PHP files changed, we're done
+        if [ -z "$CHANGED_FILES" ]; then
+          echo "No PHP files changed in this PR."
+          exit 0
+        fi
+        
+        # Check syntax of each changed file
+        echo "$CHANGED_FILES" | xargs -n1 php -l
 
     - name: Get composer cache directory
       id: composer-cache
@@ -54,3 +68,22 @@ jobs:
 
     - name: Test!
       run: vendor/bin/phpunit --exclude-group requiresDatabase
+
+    - name: Standardize PHP syntax
+      if: steps.changed-files.outputs.files != ''
+      run: |
+        echo "${{ steps.changed-files.outputs.files }}" | xargs vendor/bin/php-cs-fixer fix --config=.github/php-cs-fixer-config.php
+
+    - name: Commit changes
+      if: steps.changed-files.outputs.files != ''
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add -A
+
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Apply PHP CS Fixer changes"
+          git push origin HEAD:${{ github.head_ref }}
+        fi
