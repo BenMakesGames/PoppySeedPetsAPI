@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\EventSubscriber;
 
 use App\Exceptions\PSPTooManyRequests;
@@ -34,17 +33,20 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
         ];
     }
 
-    private $security;
-    private $cache;
     private $user;
 
-    public function __construct(Security $security, CacheItemPoolInterface $cache)
+    public function
+    __construct(
+        private readonly Security $security,
+        private readonly CacheItemPoolInterface $cache
+    )
     {
-        $this->security = $security;
+
+        $this->security = $security;;
         $this->cache = $cache;
     }
 
-    public function startRequest(ControllerEvent $event)
+    public function startRequest (ControllerEvent $event)
     {
         if(!$event->getRequest()->isMethodIdempotent())
             return;
@@ -54,9 +56,9 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
         if(!$this->user)
             return;
 
-        $item = $this->cache->getItem('One POST #' . $this->user->getId());
+        $item = $this->cache->getItem( 'One POST #' . $this->user->getId());
 
-        if($item->isHit())
+        if ($item->isHit())
         {
             $this->user = null;
             throw new PSPTooManyRequests();
@@ -73,10 +75,7 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
         $this->done();
     }
 
-    public function exception(ExceptionEvent $event)
-    {
-        $this->done();
-    }
+    public function exception(ExceptionEvent $event) { $this->done(); }
 
     private function done()
     {
@@ -85,4 +84,6 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
 
         $this->cache->deleteItem('One POST #' . $this->user->getId());
     }
+
 }
+?>
