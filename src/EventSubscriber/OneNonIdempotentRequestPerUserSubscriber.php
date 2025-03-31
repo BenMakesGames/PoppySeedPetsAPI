@@ -48,7 +48,7 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
         $this->cache    = $cache;
     }
 
-    public function startRequest(ControllerEvent $event)
+    public function startRequest (ControllerEvent $event)
     {
         if(!$event->getRequest()->isMethodIdempotent())
             return;
@@ -58,9 +58,9 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
         if(!$this->user)
             return;
 
-        $item = $this->cache->getItem('One POST #' . $this->user->getId());
+        $item = $this->cache->getItem( 'One POST #' . $this->user->getId());
 
-        if($item->isHit())
+        if ($item->isHit())
         {
             $this->user = null;
             throw new PSPTooManyRequests();
@@ -86,4 +86,6 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
 
         $this->cache->deleteItem('One POST #' . $this->user->getId());
     }
+
 }
+?>
