@@ -38,11 +38,12 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
 
     public function __construct(
         private readonly Security $security,
-        private readonly CacheItemPoolInterface $cache
+            private readonly CacheItemPoolInterface $cache
     )
     {
+
         $this->security = $security;
-        $this->cache = $cache;
+        $this->cache    = $cache;
     }
 
     public function startRequest(ControllerEvent $event)
@@ -74,10 +75,7 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
         $this->done();
     }
 
-    public function exception(ExceptionEvent $event)
-    {
-        $this->done();
-    }
+    public function exception(ExceptionEvent $event) { $this->done(); }
 
     private function done()
     {

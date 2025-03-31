@@ -31,11 +31,15 @@ jobs:
         extensions: intl, mbstring, calendar, ctype, curl, iconv, json, pdo
         tools: composer, phpunit
 
-    - name: Check syntax of changed PHP files
+    - name: Get changed PHP files
+      id: changed-files
       run: |
-        # Get list of changed PHP files in this PR
         CHANGED_FILES=$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '\.php$' || true)
-        
+        echo "files=$CHANGED_FILES" >> $GITHUB_OUTPUT
+
+    - name: Check syntax of changed PHP files
+      if: steps.changed-files.outputs.files != ''
+      run: |
         # If no PHP files changed, we're done
         if [ -z "$CHANGED_FILES" ]; then
           echo "No PHP files changed in this PR."
@@ -64,3 +68,22 @@ jobs:
 
     - name: Test!
       run: vendor/bin/phpunit --exclude-group requiresDatabase
+
+    - name: Standardize PHP syntax
+      if: steps.changed-files.outputs.files != ''
+      run: |
+        echo "${{ steps.changed-files.outputs.files }}" | xargs php-cs-fixer fix --config=.github/php-cs-fixer-config.php
+
+    - name: Commit changes
+      if: steps.changed-files.outputs.files != ''
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add -A
+
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Apply PHP CS Fixer changes"
+          git push
+        fi
