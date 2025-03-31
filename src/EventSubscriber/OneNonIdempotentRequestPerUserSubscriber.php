@@ -37,7 +37,7 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
     private $user;
 
     public function __construct(
-        privae readonly Security $security,
+        private readonly Security $security,
         private readonly CacheItemPoolInterface $cache
     )
     {
