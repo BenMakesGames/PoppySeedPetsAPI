@@ -84,7 +84,7 @@ class TreasureMapService
         }
         else
         {
-            $prize = 'Outrageously Strongbox';
+            $prize = 'Cetgueli\'s Treasure';
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% followed Cetgueli\'s Treasure Map, and found a ' . $prize . '! (Also, the map was lost, because video games.)')
                 ->setIcon('items/map/cetgueli')

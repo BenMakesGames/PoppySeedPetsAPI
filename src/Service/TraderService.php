@@ -519,14 +519,14 @@ class TraderService
                 $quantities
             ),
             TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($stickInsect, 14), TraderOfferCostOrYield::createRecyclingPoints(14) ],
-                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Hat Box'), 1) ],
+                [ TraderOfferCostOrYield::createItem($stickInsect, 12), TraderOfferCostOrYield::createRecyclingPoints(12) ],
+                [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Glowing Twelve-sided Die'), 1) ],
                 'Useful little fellas, these Stick Insects! Thanks a lot!',
                 $user,
                 $quantities
             ),
             TraderOffer::createTradeOffer(
-                [ TraderOfferCostOrYield::createItem($stickInsect, 18), TraderOfferCostOrYield::createRecyclingPoints(15) ],
+                [ TraderOfferCostOrYield::createItem($stickInsect, 17), TraderOfferCostOrYield::createRecyclingPoints(17) ],
                 [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Gold Chest'), 1) ],
                 'Useful little fellas, these Stick Insects! Thanks a lot!',
                 $user,
