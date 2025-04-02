@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
@@ -82,9 +81,8 @@ class TreasureMapService
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 90), PetActivityStatEnum::GATHER, false);
         }
-        else
-        {
-            $prize = 'Outrageously Strongbox';
+        else {
+            $prize = 'Cetgueli\'s Treasure';
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% followed Cetgueli\'s Treasure Map, and found a ' . $prize . '! (Also, the map was lost, because video games.)')
                 ->setIcon('items/map/cetgueli')
@@ -153,8 +151,7 @@ class TreasureMapService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
             ;
         }
-        else
-        {
+        else {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% allowed themselves to be carried off by the Winged Key, to Abundantia\'s Vault. Upon arriving, they had to wait in a long line for, like, 2 hours, during which time they filled out some exceptionally-tedious paperwork. At the end of it all, a tired-looking house fairy took the Winged Key, handed %pet:' . $pet->getId() . '.name% a scroll, and sent them on their way.')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
@@ -232,8 +229,7 @@ class TreasureMapService
                 ->increaseEsteem(3)
             ;
         }
-        else
-        {
+        else {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% took their ' . $keybladeName . ' to the Tower of Trials, and beat the 100th floor! They plunged the keyblade into the pedestal, unlocking the door to the treasure room, and claimed a Tower Chest!');
             $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::BRAWL ], $activityLog);
             $pet
@@ -333,7 +329,7 @@ class TreasureMapService
         ]);
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
-        
+
         $tags = [ 'Adventure!' ];
 
         if($pet->getSpiritCompanion() && $pet->getSpiritCompanion()->getStar() === SpiritCompanionStarEnum::SAGITTARIUS)
@@ -342,15 +338,14 @@ class TreasureMapService
             $tags[] = 'Spirit Companion';
             $pet->increaseLove(6);
         }
-        else
-        {
+        else {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made %user:' . $pet->getOwner()->getId() . '.name% ' . $food . ' with their ' . $pet->getTool()->getItem()->getName() . '. %user:' . $pet->getOwner()->getId() . '.Name% and %pet:' . $pet->getId() . '.name% pretended to eat it together. It was very good.');
             $pet->increaseLove(4);
         }
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ], $activityLog);
         $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags));
-        
+
         return $activityLog;
     }
 
@@ -457,6 +452,7 @@ class TreasureMapService
                 if($fluffTradedStat->getValue() >= $tradeCount)
                 {
                     $traded = UserQuestRepository::findOrCreate($this->em, $pet->getOwner(), 'Fluffmonger Trade #' . $tradeCount, false);
+
                     if(!$traded->getValue())
                     {
                         $traded->setValue(true);
@@ -519,8 +515,7 @@ class TreasureMapService
 
             PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::MET_THE_FLUFFMONGER, $activityLog);
         }
-        else
-        {
+        else {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited the Fluffmonger, but didn\'t have any Fluff to trade! They put the ' . $pet->getTool()->getItem()->getName() . ' down...');
 
             // didn't have fluff
@@ -539,7 +534,7 @@ class TreasureMapService
 
     public static function getFluffmongerFlavorFoods($flavor)
     {
-        return match($flavor)
+        return match ($flavor)
         {
             FlavorEnum::EARTHY => [ 'Fried Tomato', 'Matzah Bread', 'Smashed Potatoes' ],
             FlavorEnum::FRUITY => [ 'Fried Tomato', 'Naner Yogurt', 'Red' ],
@@ -574,7 +569,8 @@ class TreasureMapService
         $pet
             ->getTool()
             ->changeItem(ItemRepository::findOneByName($this->em, 'Toasted Marshmallow'))
-            ->addComment($pet->getName() . ' toasted this at the foot of the island\'s volcano!');
+            ->addComment($pet->getName() . ' toasted this at the foot of the island\'s volcano!')
+        ;
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
 

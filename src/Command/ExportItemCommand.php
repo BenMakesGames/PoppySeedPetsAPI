@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Command;
 
 use App\Entity\Enchantment;
@@ -56,7 +55,7 @@ class ExportItemCommand extends PoppySeedPetsCommand
         $item = ItemRepository::findOneByName($this->em, $name);
 
         echo "\n================================================================================\n";
-        echo str_repeat(' ', 40 - mb_strlen($item->getName()) / 2) . $item->getName() . "\n";
+        echo str_repeat(' ', 40 - (int)(mb_strlen($item->getName()) / 2)) . $item->getName() . "\n";
         echo "================================================================================\n";
 
         $groups = $item->getItemGroups();

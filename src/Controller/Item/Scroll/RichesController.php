@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Controller\Item\Scroll;
 
 use App\Controller\Item\ItemControllerHelpers;
@@ -50,7 +49,7 @@ class RichesController extends AbstractController
 
         $moneys = $rng->rngNextInt(30, 50);
 
-        $item = $rng->rngNextFromArray([ 'Little Strongbox', 'Bag of Beans' ]);
+        $item = $rng->rngNextFromArray([ 'Bag of Beans', 'Moon Pearl', 'Limestone' ]);
         $location = $inventory->getLocation();
 
         if($rng->rngNextInt(1, 10) === 1)
@@ -85,7 +84,7 @@ class RichesController extends AbstractController
 
         $moneys = $rng->rngNextInt(60, 100);
 
-        $item = $rng->rngNextFromArray([ 'Striped Microcline', 'Firestone', 'Moon Pearl', 'Blackonite' ]);
+        $item = $rng->rngNextFromArray([ 'Little Strongbox', 'Striped Microcline', 'Firestone', 'Blackonite' ]);
         $location = $inventory->getLocation();
 
         if($rng->rngNextInt(1, 10) === 1)
