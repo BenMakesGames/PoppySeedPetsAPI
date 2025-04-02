@@ -54,7 +54,8 @@ class RichesController extends AbstractController
 
         if($rng->rngNextInt(1, 10) === 1)
             $transactionService->getMoney($user, $moneys, 'Conjured by a Minor Scroll of Riches. (Hopefully not out of a bank, or dragon\'s hoard, or something...)');
-        else $transactionService->getMoney($user, $moneys, 'Conjured by a Minor Scroll of Riches.');
+        else
+            $transactionService->getMoney($user, $moneys, 'Conjured by a Minor Scroll of Riches.');
 
         $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
 
@@ -88,7 +89,8 @@ class RichesController extends AbstractController
 
         if($rng->rngNextInt(1, 10) === 1)
             $transactionService->getMoney($user, $moneys, 'Conjured by a Scroll of Major Riches. (Hopefully not out of a bank, or dragon\'s hoard, or something...)');
-        else $transactionService->getMoney($user, $moneys, 'Conjured by a Scroll of Major Riches.');
+        else
+            $transactionService->getMoney($user, $moneys, 'Conjured by a Scroll of Major Riches.');
 
         $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
 

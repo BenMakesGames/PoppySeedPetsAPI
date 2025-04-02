@@ -895,7 +895,8 @@ class TraderService
 
             if($this->clock->now->format('n') >= 10 || $this->clock->now->format('n') <= 3) // Oct - Mar
                 $masks = [ 'Ashen Yew', 'Crystalline', 'Gold Devil' ];
-            else $masks = [ 'Blue Magic', 'La Feuille', 'The Unicorn' ];
+            else
+                $masks = [ 'Blue Magic', 'La Feuille', 'The Unicorn' ];
 
             $payment = self::getCreepyMaskDayPayment((int)$this->clock->now->format('n'));
 
@@ -1508,7 +1509,8 @@ class TraderService
 
                     if($this->rng->rngNextInt(1, 50) === 1)
                         $this->transactionService->spendMoney($user, $cost->quantity * $quantity, 'Traded away at the Trader. (That\'s usually just called "buying", right?)', true, [ 'Trader' ]);
-                    else $this->transactionService->spendMoney($user, $cost->quantity * $quantity, 'Traded away at the Trader.', true, [ 'Trader' ]);
+                    else
+                        $this->transactionService->spendMoney($user, $cost->quantity * $quantity, 'Traded away at the Trader.', true, [ 'Trader' ]);
 
                     break;
 
@@ -1541,7 +1543,8 @@ class TraderService
                 case CostOrYieldTypeEnum::MONEY:
                     if($this->rng->rngNextInt(1, 50) === 1)
                         $this->transactionService->getMoney($user, $yield->quantity * $quantity, 'Traded for at the Trader. (That\'s usually just called "selling", right?)', [ 'Trader' ]);
-                    else $this->transactionService->getMoney($user, $yield->quantity * $quantity, 'Traded for at the Trader.', [ 'Trader' ]);
+                    else
+                        $this->transactionService->getMoney($user, $yield->quantity * $quantity, 'Traded for at the Trader.', [ 'Trader' ]);
 
                     break;
 
@@ -1580,7 +1583,8 @@ class TraderService
             {
                 if($h2 < 30)
                     $h2 = ($h2 - 40 + 256) % 256;
-                else $h2 = ($h2 + 20) % 256;
+                else
+                    $h2 = ($h2 + 20) % 256;
             }
             else if($h2 < $h1)
                 $h2 = ($h2 - 20 + 256) % 256;

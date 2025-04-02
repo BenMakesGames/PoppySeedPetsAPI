@@ -69,21 +69,25 @@ jobs:
     - name: Test!
       run: vendor/bin/phpunit --exclude-group requiresDatabase
 
-    - name: Standardize PHP syntax
-      if: steps.changed-files.outputs.files != ''
-      run: |
-        echo "${{ steps.changed-files.outputs.files }}" | xargs vendor/bin/php-cs-fixer fix --config=.github/php-cs-fixer-config.php
+    # commented this out, because it tries way too hard. I DON'T want strong opinions here;
+    # only to fix obviously-egregious problems, like 50 newlines in a row, or other such
+    # nonsense. where you put your curly braces is up to you.
 
-    - name: Commit changes
-      if: steps.changed-files.outputs.files != ''
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add -A
+    #- name: Standardize PHP syntax
+    #  if: steps.changed-files.outputs.files != ''
+    #  run: |
+    #    echo "${{ steps.changed-files.outputs.files }}" | xargs vendor/bin/php-cs-fixer fix --config=.github/php-cs-fixer-config.php
 
-        if git diff --staged --quiet; then
-          echo "No changes to commit"
-        else
-          git commit -m "Apply PHP CS Fixer changes"
-          git push origin HEAD:${{ github.head_ref }}
-        fi
+    #- name: Commit changes
+    #  if: steps.changed-files.outputs.files != ''
+    #  run: |
+    #    git config --local user.email "action@github.com"
+    #    git config --local user.name "GitHub Action"
+    #    git add -A
+    #
+    #    if git diff --staged --quiet; then
+    #      echo "No changes to commit"
+    #    else
+    #      git commit -m "Apply PHP CS Fixer changes"
+    #      git push origin HEAD:${{ github.head_ref }}
+    #    fi

@@ -127,7 +127,8 @@ class UmbraService
 
                     if($dragon)
                         $activityLog = $this->visitLibraryOfFire($petWithSkills);
-                    else $activityLog = $this->foundNothing($pet, $roll);
+                    else
+                        $activityLog = $this->foundNothing($pet, $roll);
                     break;
 
                 case 14:
@@ -468,7 +469,8 @@ class UmbraService
 
         if($pet->hasMerit(MeritEnum::LUCKY))
             $die = $this->squirrel3->rngNextFromArray([ 'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die', 'Glowing Ten-sided Die' ]);
-        else $die = $this->squirrel3->rngNextFromArray([ 'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die' ]);
+        else
+            $die = $this->squirrel3->rngNextFromArray([ 'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die' ]);
 
         if($pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 50) === 1)
         {
@@ -525,7 +527,8 @@ class UmbraService
             $prize = 'Blackonite';
         else if($this->squirrel3->rngNextInt(1, 50) === 1)
             $prize = 'Charcoal';
-        else $prize = $this->squirrel3->rngNextFromArray($prizes);
+        else
+            $prize = $this->squirrel3->rngNextFromArray($prizes);
 
         if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
         {
@@ -646,7 +649,8 @@ class UmbraService
 
                 if($this->squirrel3->rngNextInt(1, 10) === 1)
                     $prizes[] = 'Secret Seashell';
-                else $prizes[] = 'Seaweed';
+                else
+                    $prizes[] = 'Seaweed';
 
                 $fish = 'some horrible, writhing thing';
             }
@@ -655,7 +659,8 @@ class UmbraService
 
                 if($this->squirrel3->rngNextInt(1, 4) === 1)
                     $prizes[] = 'Music Note';
-                else $prizes[] = 'Creamy Milk';
+                else
+                    $prizes[] = 'Creamy Milk';
 
                 $fish = 'an oddly-beautiful, squirming mass';
             }
