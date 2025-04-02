@@ -40,8 +40,6 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
         private readonly CacheItemPoolInterface $cache
     )
     {
-        $this->security = $security;
-        $this->cache = $cache;
     }
 
     public function startRequest (ControllerEvent $event)
