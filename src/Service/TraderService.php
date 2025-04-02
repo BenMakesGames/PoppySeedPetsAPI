@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Service;
 
 use App\Entity\DailyMarketItemAverage;
@@ -163,40 +162,48 @@ class TraderService
 
         foreach($tradeGroups as $group)
         {
-            switch($group)
+            switch ($group)
             {
                 case TradeGroupEnum::METALS:
                     $title = 'Metals';
                     $trades = $this->getMetalOffers($user, $quantities);
                     break;
+
                 case TradeGroupEnum::DARK_THINGS:
                     $title = 'Umbral';
                     $trades = $this->getUmbralThingsOffers($user, $quantities);
                     break;
+
                 case TradeGroupEnum::CURIOSITIES:
                     $title = 'Curiosities';
                     $trades = $this->getCuriositiesOffers($user, $quantities);
                     break;
+
                 case TradeGroupEnum::PLUSHIES:
                     $title = 'Plushies';
                     $trades = $this->getPlushyOffers($user, $quantities);
                     break;
+
                 case TradeGroupEnum::HOLLOW_EARTH:
                     $title = 'Hollow Earth';
                     $trades = $this->getHollowEarthOffers($user, $quantities);
                     break;
+
                 case TradeGroupEnum::BLEACH:
                     $title = 'Bleach';
                     $trades = $this->getBleachOffers($user, $quantities);
                     break;
+
                 case TradeGroupEnum::DIGITAL:
                     $title = 'Digital';
                     $trades = $this->getDigitalOffers($user, $quantities);
                     break;
+
                 case TradeGroupEnum::BUGS:
                     $title = 'Bugs';
                     $trades = $this->getBugOffers($user, $quantities);
                     break;
+
                 case 3: // old "FOODS" group unlock
                 case 5: // old "BOX-BOX" group unlock
                     continue 2; // why "2"? see https://www.php.net/manual/en/control-structures.continue.php >_>
@@ -635,7 +642,8 @@ class TraderService
                 ->andWhere('a.item=:item')->setParameter('item', $uniqueOfferItem->getId())
                 ->andWhere('a.date >= :date')->setParameter('date', $this->clock->now->modify('-3 months'))
                 ->getQuery()
-                ->getSingleResult(AbstractQuery::HYDRATE_ARRAY);
+                ->getSingleResult(AbstractQuery::HYDRATE_ARRAY)
+            ;
 
             $computedValue = $uniqueOfferItem->getRecycleValue() * 1.3334 + $uniqueOfferItem->getMuseumPoints() * 0.5;
 
@@ -887,8 +895,7 @@ class TraderService
 
             if($this->clock->now->format('n') >= 10 || $this->clock->now->format('n') <= 3) // Oct - Mar
                 $masks = [ 'Ashen Yew', 'Crystalline', 'Gold Devil' ];
-            else
-                $masks = [ 'Blue Magic', 'La Feuille', 'The Unicorn' ];
+            else $masks = [ 'Blue Magic', 'La Feuille', 'The Unicorn' ];
 
             $payment = self::getCreepyMaskDayPayment((int)$this->clock->now->format('n'));
 
@@ -949,7 +956,7 @@ class TraderService
 
     public static function getCreepyMaskDayPayment(int $month): array
     {
-        return match($month)
+        return match ($month)
         {
             1 => [ 'Magic Pinecone', 1 ],
             2 => [ 'Wed Bawwoon', 1 ],
@@ -1448,7 +1455,7 @@ class TraderService
     {
         foreach($exchange->cost as $cost)
         {
-            switch($cost->type)
+            switch ($cost->type)
             {
                 case CostOrYieldTypeEnum::ITEM:
                     $quantity = InventoryService::countInventory($this->em, $user->getId(), $cost->item->getId(), $location);
@@ -1485,7 +1492,7 @@ class TraderService
     {
         foreach($exchange->cost as $cost)
         {
-            switch($cost->type)
+            switch ($cost->type)
             {
                 case CostOrYieldTypeEnum::ITEM:
                     $itemQuantity = $this->inventoryService->loseItem($user, $cost->item->getId(), $location, $cost->quantity * $quantity);
@@ -1501,8 +1508,7 @@ class TraderService
 
                     if($this->rng->rngNextInt(1, 50) === 1)
                         $this->transactionService->spendMoney($user, $cost->quantity * $quantity, 'Traded away at the Trader. (That\'s usually just called "buying", right?)', true, [ 'Trader' ]);
-                    else
-                        $this->transactionService->spendMoney($user, $cost->quantity * $quantity, 'Traded away at the Trader.', true, [ 'Trader' ]);
+                    else $this->transactionService->spendMoney($user, $cost->quantity * $quantity, 'Traded away at the Trader.', true, [ 'Trader' ]);
 
                     break;
 
@@ -1521,7 +1527,7 @@ class TraderService
 
         foreach($exchange->yield as $yield)
         {
-            switch($yield->type)
+            switch ($yield->type)
             {
                 case CostOrYieldTypeEnum::ITEM:
                     for($i = 0; $i < $yield->quantity * $quantity; $i++)
@@ -1535,8 +1541,7 @@ class TraderService
                 case CostOrYieldTypeEnum::MONEY:
                     if($this->rng->rngNextInt(1, 50) === 1)
                         $this->transactionService->getMoney($user, $yield->quantity * $quantity, 'Traded for at the Trader. (That\'s usually just called "selling", right?)', [ 'Trader' ]);
-                    else
-                        $this->transactionService->getMoney($user, $yield->quantity * $quantity, 'Traded for at the Trader.', [ 'Trader' ]);
+                    else $this->transactionService->getMoney($user, $yield->quantity * $quantity, 'Traded for at the Trader.', [ 'Trader' ]);
 
                     break;
 
@@ -1562,7 +1567,9 @@ class TraderService
         $l3 = $rng->rngNextInt($rng->rngNextInt(0, 40), $rng->rngNextInt(160, 255));
 
         if($h1 >= 30 && $h1 < 130) $h1 += 120;
+
         if($h2 >= 30 && $h2 < 130) $h2 += 120;
+
         if($h3 >= 60 && $h3 < 130) $h3 += 120;
 
         $h1h2TooClose = abs($h1 - $h2) <= 20;
@@ -1573,8 +1580,7 @@ class TraderService
             {
                 if($h2 < 30)
                     $h2 = ($h2 - 40 + 256) % 256;
-                else
-                    $h2 = ($h2 + 20) % 256;
+                else $h2 = ($h2 + 20) % 256;
             }
             else if($h2 < $h1)
                 $h2 = ($h2 - 20 + 256) % 256;
