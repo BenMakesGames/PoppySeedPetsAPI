@@ -520,7 +520,7 @@ class UmbraService
             'Silica Grounds', 'Quintessence', 'Aging Powder', 'Fluff'
         ];
 
-        if($this->squirrel3->rngNextInt(1, 100) === 1)
+        if($this->squirrel3->rngNextInt(1, 50) === 1)
             $prize = 'Forgetting Scroll';
         else if($this->squirrel3->rngNextInt(1, 50) === 1)
             $prize = 'Spirit Polymorph Potion Recipe';

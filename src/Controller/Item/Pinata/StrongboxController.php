@@ -53,27 +53,31 @@ class StrongboxController extends AbstractController
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
-        $moneys = $squirrel3->rngNextInt(10, $squirrel3->rngNextInt(20, $squirrel3->rngNextInt(50, $squirrel3->rngNextInt(100, 200)))); // averages 35?
+        $moneys = $squirrel3->rngNextInt(10, 40);
+
+        if($squirrel3->rngNextInt(1, 10) === 1)
+            $moneys *= 2;
 
         $transactionService->getMoney($user, $moneys, 'Found inside ' . $inventory->getItem()->getNameWithArticle() . '.');
 
         $possibleItems = [
-            'Silver Bar', 'Silver Bar',
-            'Gold Bar',
-            'Rusty Blunderbuss',
-            'Rusty Rapier',
+            'Seaweed',
+            'Silver Colander',
+            'Gold Tuning Fork',
+            '"Rustic" Magnifying Glass',
+            'Butterknife',
             'Blackberry Wine',
             'Fluff',
             'Glowing Six-sided Die',
         ];
+        shuffle($possibleItems);
 
-        $numItems = $squirrel3->rngNextInt(2, $squirrel3->rngNextInt(3, 4));
         $newInventory = [];
 
         $location = $inventory->getLocation();
 
-        for($i = 0; $i < $numItems; $i++)
-            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray($possibleItems), $user, $user, $comment, $location);
+        for($i = 0; $i < 3; $i++)
+            $newInventory[] = $inventoryService->receiveItem($possibleItems[$i], $user, $user, $comment, $location);
 
         $newInventory[] = $inventoryService->receiveItem('Piece of Cetgueli\'s Map', $user, $user, $comment, $location, $inventory->getLockedToOwner());
 
@@ -102,33 +106,19 @@ class StrongboxController extends AbstractController
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
-        $moneys = $squirrel3->rngNextInt(15, $squirrel3->rngNextInt(45, $squirrel3->rngNextInt(100, $squirrel3->rngNextInt(200, 300)))); // averages 50?
+        $moneys = $squirrel3->rngNextInt(20, 60);
+
+        if($squirrel3->rngNextInt(1, 10) === 1)
+            $moneys *= 2;
 
         $transactionService->getMoney($user, $moneys, 'Found inside ' . $inventory->getItem()->getNameWithArticle() . '.');
 
         $items = [
-            'Silver Bar',
-            'Gold Bar',
-            'Gold Bar',
-            'Glowing Six-sided Die',
+            $squirrel3->rngNextFromArray([ 'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die' ]),
+            $squirrel3->rngNextFromArray([ 'Rusty Blunderbuss', 'Rusty Rapier', 'Pepperbox' ]),
+            $squirrel3->rngNextFromArray([ 'Minor Scroll of Riches', 'Hourglass' ]),
+            $squirrel3->rngNextFromArray([ 'Scroll of Fruit', 'Scroll of the Sea', 'Gold Ring' ])
         ];
-
-        $items[] = $squirrel3->rngNextFromArray([
-            'Rusty Blunderbuss',
-            'Rusty Rapier',
-            'Pepperbox',
-        ]);
-
-        $items[] = $squirrel3->rngNextFromArray([
-            'Minor Scroll of Riches',
-            'Magic Hourglass',
-        ]);
-
-        $items[] = $squirrel3->rngNextFromArray([
-            'Scroll of Fruit',
-            'Scroll of the Sea',
-            'Forgetting Scroll',
-        ]);
 
         $newInventory = [];
         $location = $inventory->getLocation();
@@ -145,7 +135,7 @@ class StrongboxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openOutrageouslyStrongbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
     )
     {
         /** @var User $user */
@@ -161,17 +151,19 @@ class StrongboxController extends AbstractController
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
-        $items = [
-            'Very Strongbox',
-            'Major Scroll of Riches',
-            'Major Scroll of Riches',
-            'Dumbbell',
-        ];
+        $moneys = $squirrel3->rngNextInt(30, 80);
 
-        $items[] = $squirrel3->rngNextFromArray([
-            'Weird, Blue Egg',
-            'Unexpectedly-familiar Metal Box',
-        ]);
+        if($squirrel3->rngNextInt(1, 10) === 1)
+            $moneys *= 2;
+
+        $transactionService->getMoney($user, $moneys, 'Found inside ' . $inventory->getItem()->getNameWithArticle() . '.');
+
+        $items = [
+            $squirrel3->rngNextFromArray([ 'Major Scroll of Riches', 'Magic Hourglass' ]),
+            $squirrel3->rngNextFromArray([ 'Rusty Blunderbuss', 'Rusty Rapier', 'Password' ]),
+            $squirrel3->rngNextFromArray([ 'Spice Rack', 'Gold Telescope', 'Tile: Silver Vein' ]),
+            $squirrel3->rngNextFromArray([ 'Hat Box', 'Forgetting Scroll', 'Glowing Protojelly' ])
+        ];
 
         $newInventory = [];
         $location = $inventory->getLocation();
@@ -181,6 +173,6 @@ class StrongboxController extends AbstractController
 
         $em->remove($key);
 
-        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
+        return BoxHelpers::countRemoveFlushAndRespond('Opening the box revealed ' . $moneys . '~~m~~,', $userStatsRepository, $user, $inventory, $newInventory, $responseService, $em);
     }
 }
