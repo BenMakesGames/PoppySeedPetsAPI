@@ -12,14 +12,13 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller;
+namespace App\Controller\Halloween;
 
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityLogTagEnum;
-use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\CalendarFunctions;
@@ -27,7 +26,6 @@ use App\Functions\GrammarFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PlayerLogFactory;
-use App\Functions\UserQuestRepository;
 use App\Model\FoodWithSpice;
 use App\Service\Clock;
 use App\Service\FieldGuideService;
@@ -40,67 +38,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 #[Route("/halloween")]
-class HalloweenController extends AbstractController
+class GiveCandyToTrickOrTreaterController extends AbstractController
 {
-    #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    #[Route("", methods: ["GET"])]
-    public function getNextTrickOrTreater(
-        HalloweenService $halloweenService, ResponseService $responseService, Clock $clock
-    )
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        if(!CalendarFunctions::isHalloween($clock->now))
-            throw new PSPInvalidOperationException('It isn\'t Halloween!');
-
-        $nextTrickOrTreater = $halloweenService->getNextTrickOrTreater($user);
-
-        return $responseService->success($nextTrickOrTreater->getValue());
-    }
-
-    #[Route("/trickOrTreater", methods: ["GET"])]
-    #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getTrickOrTreater(
-        ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
-        NormalizerInterface $normalizer, Clock $clock
-    )
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        if(!CalendarFunctions::isHalloween($clock->now))
-            throw new PSPInvalidOperationException('It isn\'t Halloween!');
-
-        $nextTrickOrTreater = $halloweenService->getNextTrickOrTreater($user);
-
-        if((new \DateTimeImmutable())->format('Y-m-d H:i:s') < $nextTrickOrTreater->getValue())
-        {
-            return $responseService->success([
-                'trickOrTreater' => null,
-                'nextTrickOrTreater' => $nextTrickOrTreater->getValue(),
-                'totalCandyGiven' => UserQuestRepository::findOrCreate($em, $user, 'Trick-or-Treaters Treated', 0)->getValue()
-            ]);
-        }
-
-        $trickOrTreater = $halloweenService->getTrickOrTreater($user);
-
-        $em->flush();
-
-        if($trickOrTreater === null)
-            throw new PSPNotFoundException('No one else\'s pets are trick-or-treating right now! (Not many people must be playing :| TELL YOUR FRIENDS TO SIGN IN AND DRESS UP THEIR PETS!)');
-
-        return $responseService->success([
-            'trickOrTreater' => $normalizer->normalize($trickOrTreater, null, [ 'groups' => [ SerializationGroupEnum::PET_PUBLIC_PROFILE ] ]),
-            'nextTrickOrTreater' => $nextTrickOrTreater->getValue(),
-            'candy' => $normalizer->normalize($halloweenService->getCandy($user), null, [ 'groups' => [ SerializationGroupEnum::MY_INVENTORY ] ]),
-            'totalCandyGiven' => UserQuestRepository::findOrCreate($em, $user, 'Trick-or-Treaters Treated', 0)->getValue()
-        ]);
-    }
-
     #[Route("/trickOrTreater/giveCandy", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function giveCandy(
