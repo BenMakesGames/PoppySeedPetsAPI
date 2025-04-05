@@ -1,0 +1,20 @@
+{% extends '@!NelmioApiDoc/SwaggerUi/index.html.twig' %}
+
+{% block header_block %}
+{% endblock %}
+
+    {% block stylesheets %}
+        {{ parent() }}
+        <style>
+            body {
+                margin: 0;
+            }
+            #swagger-ui.api-platform .info .title {
+                color: #940;
+            }
+            #swagger-ui.api-platform .information-container.wrapper {
+                position: sticky;
+                top: 0;
+            }
+        </style>
+    {% endblock stylesheets %}
