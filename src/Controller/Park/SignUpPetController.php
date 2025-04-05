@@ -12,15 +12,13 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller;
+namespace App\Controller\Park;
 
 use App\Entity\Pet;
 use App\Entity\User;
 use App\Enum\ParkEventTypeEnum;
-use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPPetNotFoundException;
-use App\Service\Filter\ParkEventHistoryFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,7 +27,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/park")]
-class ParkController extends AbstractController
+class SignUpPetController extends AbstractController
 {
     #[Route("/signUpPet/{pet}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
@@ -53,22 +51,5 @@ class ParkController extends AbstractController
         $em->flush();
 
         return $responseService->success();
-    }
-
-    #[Route("/history", methods: ["GET"])]
-    #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getEventHistory(
-        Request $request, ResponseService $responseService, ParkEventHistoryFilterService $parkEventHistoryFilterService
-    )
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        $parkEventHistoryFilterService->setUser($user);
-
-        return $responseService->success(
-            $parkEventHistoryFilterService->getResults($request->query),
-            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::PARK_EVENT ]
-        );
     }
 }
