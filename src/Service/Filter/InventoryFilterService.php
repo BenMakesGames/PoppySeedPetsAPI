@@ -67,6 +67,11 @@ class InventoryFilterService
         );
     }
 
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
+    }
+
     public function setUser(User $user): void
     {
         $this->user = $user;

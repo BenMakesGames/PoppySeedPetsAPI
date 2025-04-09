@@ -25,13 +25,13 @@ class Filterer
     private $orderByMap;
     private $filterMap;
     private $filterWithoutCallbackMap;
-    private $pageSize;
-    private $defaultFilters = [];
-    private $requiredFilters = [];
+    private int $pageSize;
+    private array $defaultFilters = [];
+    private array $requiredFilters = [];
 
-    public function __construct(int $pageSize, array $orderByMap, array $filterCallbacks, array $filtersWithoutCallbacks = [])
+    public function __construct(int $defaultPageSize, array $orderByMap, array $filterCallbacks, array $filtersWithoutCallbacks = [])
     {
-        $this->pageSize = $pageSize;
+        $this->pageSize = $defaultPageSize;
         $this->orderByMap = $orderByMap;
         $this->filterMap = $filterCallbacks;
         $this->filterWithoutCallbackMap = $filtersWithoutCallbacks;
@@ -60,6 +60,12 @@ class Filterer
         // sanitize parameters:
 
         $page = $params->getInt('page', 0);
+
+        $pageSize = $params->getInt('pageSize', $this->pageSize);
+
+        if(in_array($pageSize, $filterService->allowedPageSizes()))
+            $this->setPageSize($pageSize);
+
         $orderBy = strtolower($params->getAlnum('orderBy'));
         $orderDir = strtolower($params->getAlpha('orderDir'));
 

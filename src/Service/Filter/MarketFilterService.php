@@ -262,4 +262,9 @@ class MarketFilterService
     {
         return $qb;
     }
+
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
+    }
 }

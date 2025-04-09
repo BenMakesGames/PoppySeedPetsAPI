@@ -23,6 +23,7 @@ class Merit
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(["meritEncyclopedia"])]
     private $id;
 
     #[Groups(["availableMerits", "myPet", "meritEncyclopedia", "userPublicProfile", "petPublicProfile", "petGroupDetails", "parkEvent", "petFriend", "hollowEarth", "petActivityLogAndPublicPet", "helperPet"])]

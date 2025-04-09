@@ -53,11 +53,6 @@ class PetActivityLogsFilterService
         return $this->repository->createQueryBuilder('l');
     }
 
-    public function setPageSize(int $pageSize): void
-    {
-        $this->filterer->setPageSize($pageSize);
-    }
-
     public function filterDate(QueryBuilder $qb, $value)
     {
         $date = \DateTimeImmutable::createFromFormat('Y-m-d', $value);
@@ -114,5 +109,10 @@ class PetActivityLogsFilterService
     function applyResultCache(Query $qb, string $cacheKey): Query
     {
         return $qb;
+    }
+
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
     }
 }

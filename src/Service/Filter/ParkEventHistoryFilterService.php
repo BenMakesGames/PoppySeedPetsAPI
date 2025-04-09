@@ -44,6 +44,11 @@ class ParkEventHistoryFilterService
         );
     }
 
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
+    }
+
     public function createQueryBuilder(): QueryBuilder
     {
         if(!$this->user) throw new \Exception('User not set.');

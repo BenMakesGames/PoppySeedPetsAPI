@@ -113,4 +113,9 @@ class PetSpeciesFilterService
             CacheHelpers::getCacheItemName(self::class . '_' . $cacheKey)
         );
     }
+
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
+    }
 }

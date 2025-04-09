@@ -63,4 +63,9 @@ class ArticleFilterService
     {
         return $qb; // TODO: enable caching, but clear the cache when an article is created or updated
     }
+
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
+    }
 }

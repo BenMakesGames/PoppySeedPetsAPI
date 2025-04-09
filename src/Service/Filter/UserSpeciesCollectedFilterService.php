@@ -45,6 +45,11 @@ class UserSpeciesCollectedFilterService
         );
     }
 
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
+    }
+
     public function createQueryBuilder(): QueryBuilder
     {
         return $this->repository->createQueryBuilder('d')

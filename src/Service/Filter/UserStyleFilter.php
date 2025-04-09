@@ -49,6 +49,11 @@ class UserStyleFilter
         );
     }
 
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
+    }
+
     public function setUser(User $user)
     {
         $this->user = $user;
