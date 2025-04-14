@@ -48,7 +48,7 @@ class Pet
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups([SerializationGroupEnum::MY_PET, 'userPublicProfile', 'petPublicProfile', 'myInventory', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'spiritCompanionPublicProfile', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet'])]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'pets')]
     #[Groups(['petPublicProfile', 'parkEvent'])]
@@ -59,47 +59,47 @@ class Pet
     private $name;
 
     #[ORM\Column(type: 'integer')]
-    private $food = 0;
+    private int $food = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $safety = 0;
+    private int $safety = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $love = 0;
+    private int $love = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $esteem = 0;
+    private int $esteem = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $experience = 0;
+    private int $experience = 0;
 
     #[ORM\Column(type: 'string', length: 6)]
     /**
      * uses custom serialization method, defined below
      */
-    private $colorA;
+    private string $colorA;
 
     #[ORM\Column(type: 'string', length: 6)]
     /**
      * uses custom serialization method, defined below
      */
-    private $colorB;
+    private string $colorB;
 
     #[ORM\Column(type: 'integer')]
-    private $junk = 0;
+    private int $junk = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $alcohol = 0;
+    private int $alcohol = 0;
 
     #[ORM\Column(type: 'datetime_immutable')]
     #[Groups([SerializationGroupEnum::MY_PET, 'petPublicProfile'])]
-    private $birthDate;
+    private \DateTimeImmutable $birthDate;
 
     #[ORM\Column(type: 'integer')]
-    private $stomachSize;
+    private int $stomachSize;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $lastInteracted;
+    private \DateTimeImmutable $lastInteracted;
 
     #[ORM\OneToOne(inversedBy: 'pet', targetEntity: PetSkills::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
@@ -116,53 +116,54 @@ class Pet
     private $tool;
 
     #[ORM\Column(type: 'string', length: 20)]
-    private $favoriteFlavor;
+    private string $favoriteFlavor;
 
     #[ORM\Column(type: 'text')]
     #[Groups([SerializationGroupEnum::MY_PET])]
-    private $note = '';
+    private string $note = '';
 
     #[ORM\Column(type: 'integer')]
-    private $affectionPoints = 0;
-
-    #[ORM\Column(type: 'integer')]
-    #[Groups([SerializationGroupEnum::MY_PET])]
-    private $affectionLevel = 0;
+    private int $affectionPoints = 0;
 
     #[ORM\Column(type: 'integer')]
     #[Groups([SerializationGroupEnum::MY_PET])]
-    private $affectionRewardsClaimed = 0;
+    private int $affectionLevel = 0;
+
+    #[ORM\Column(type: 'integer')]
+    #[Groups([SerializationGroupEnum::MY_PET])]
+    private int $affectionRewardsClaimed = 0;
 
     #[ORM\OneToOne(targetEntity: SpiritCompanion::class, inversedBy: 'pet', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
     #[Groups([SerializationGroupEnum::MY_PET, 'parkEvent', 'hollowEarth', 'petPublicProfile', 'petGroupDetails', 'helperPet'])]
-    private $spiritCompanion;
+    private ?SpiritCompanion $spiritCompanion = null;
 
     #[ORM\Column(type: 'date_immutable', nullable: true)]
     #[Groups([SerializationGroupEnum::MY_PET])]
-    private $lastParkEvent;
+    private ?\DateTimeImmutable $lastParkEvent = null;
 
     #[ORM\Column(type: 'string', length: 40, nullable: true)]
     #[Groups([SerializationGroupEnum::MY_PET])]
-    private $parkEventType;
+    private ?string $parkEventType = null;
 
+    /** @noinspection PhpPropertyOnlyWrittenInspection - it's read in cron job that runs park events */
     #[ORM\Column(type: 'integer')]
     private int $parkEventOrder = 0;
 
     #[ORM\OneToMany(mappedBy: 'pet', targetEntity: PetRelationship::class, orphanRemoval: true)]
-    private $petRelationships;
+    private Collection $petRelationships;
 
     #[ORM\Column(type: 'integer')]
-    private $caffeine = 0;
+    private int $caffeine = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $psychedelic = 0;
+    private int $psychedelic = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $poison = 0;
+    private int $poison = 0;
 
     #[ORM\OneToMany(targetEntity: StatusEffect::class, mappedBy: 'pet', orphanRemoval: true)]
-    private $statusEffects;
+    private Collection $statusEffects;
 
     #[ORM\Column(type: 'smallint')]
     private $sexDrive;
@@ -173,76 +174,76 @@ class Pet
     private $pregnancy;
 
     #[ORM\ManyToOne(inversedBy: 'motheredPets', targetEntity: Pet::class)]
-    private $mom;
+    private ?Pet $mom = null;
 
     #[ORM\OneToMany(mappedBy: 'mom', targetEntity: Pet::class)]
-    private $motheredPets;
+    private Collection $motheredPets;
 
     #[ORM\ManyToOne(inversedBy: 'fatheredPets', targetEntity: Pet::class)]
-    private $dad;
+    private ?Pet $dad = null;
 
     #[ORM\OneToMany(mappedBy: 'dad', targetEntity: Pet::class)]
-    private $fatheredPets;
+    private Collection $fatheredPets;
 
     #[ORM\ManyToOne(targetEntity: SpiritCompanion::class, inversedBy: 'fatheredPets')]
-    private $spiritDad;
+    private ?SpiritCompanion $spiritDad = null;
 
     #[ORM\ManyToMany(targetEntity: Merit::class)]
     #[Groups([SerializationGroupEnum::MY_PET, 'userPublicProfile', 'petPublicProfile', 'petGroupDetails', 'parkEvent', 'petFriend', 'hollowEarth', 'petActivityLogAndPublicPet', 'helperPet'])]
-    private $merits;
+    private Collection $merits;
 
     #[ORM\Column(type: 'boolean')]
     #[Groups([SerializationGroupEnum::MY_PET])]
-    private $isFertile = false;
+    private bool $isFertile = false;
 
     #[ORM\OneToOne(targetEntity: Inventory::class, inversedBy: 'wearer')]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
     #[Groups([SerializationGroupEnum::MY_PET, 'userPublicProfile', 'petPublicProfile', 'hollowEarth', 'petGroupDetails', 'helperPet'])]
-    private $hat;
+    private ?Inventory $hat = null;
 
     #[ORM\Column(type: 'string', length: 30)]
     #[Groups([SerializationGroupEnum::MY_PET, 'petPublicProfile'])]
-    private $costume = '';
+    private string $costume = '';
 
     #[ORM\OneToOne(mappedBy: 'pet', targetEntity: PetActivityStats::class, cascade: ['persist', 'remove'])]
     private $petActivityStats;
 
     #[ORM\ManyToMany(targetEntity: PetGroup::class, mappedBy: 'members')]
     #[Groups(['petPublicProfile'])]
-    private $groups;
+    private Collection $groups;
 
     #[ORM\Column(type: 'smallint')]
-    private $extroverted;
+    private int $extroverted;
 
     #[ORM\Column(type: 'string', length: 10)]
-    private $loveLanguage;
+    private string $loveLanguage;
 
     #[ORM\Column(type: 'boolean')]
-    private $isGrandparent = false;
+    private bool $isGrandparent = false;
 
     #[ORM\Column(type: 'boolean')]
-    private $claimedGrandparentMerit = false;
+    private bool $claimedGrandparentMerit = false;
 
     #[ORM\OneToOne(mappedBy: 'pet', targetEntity: GuildMembership::class, cascade: ['persist', 'remove'])]
     #[Groups(['petPublicProfile', 'guildMember'])]
     private $guildMembership;
 
     #[ORM\Column(type: 'integer')]
-    private $revealedFavoriteFlavor = 0;
+    private int $revealedFavoriteFlavor = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $affectionAdventures = 0;
+    private int $affectionAdventures = 0;
 
     #[ORM\OneToMany(mappedBy: 'pet', targetEntity: LunchboxItem::class)]
     #[Groups(['myPet'])]
     private $lunchboxItems;
 
     #[ORM\Column(type: 'smallint')]
-    private $bonusMaximumFriends;
+    private int $bonusMaximumFriends;
 
     #[ORM\Column(type: 'smallint')]
     #[Groups(['myPet'])]
-    private $selfReflectionPoint = 0;
+    private int $selfReflectionPoint = 0;
 
     #[ORM\OneToOne(targetEntity: PetHouseTime::class, mappedBy: 'pet', cascade: ['persist', 'remove'])]
     #[Groups(['myPet'])]
@@ -252,35 +253,35 @@ class Pet
      * uses custom serialization method, defined below
      */
     #[ORM\Column(type: 'smallint')]
-    private $scale = 100;
+    private int $scale = 100;
 
     #[ORM\OneToOne(targetEntity: PetCraving::class, mappedBy: 'pet', cascade: ['persist', 'remove'])]
-    private $craving;
+    private ?PetCraving $craving = null;
 
     #[ORM\Column(type: 'integer')]
-    private $activityPersonality;
+    private int $activityPersonality;
 
     #[ORM\Column(type: 'string', length: 20)]
     #[Groups(['myPetLocation'])]
-    private $location = PetLocationEnum::HOME;
+    private string $location = PetLocationEnum::HOME;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private $locationMoveDate;
+    private \DateTimeImmutable $locationMoveDate;
 
     #[ORM\Column(type: 'string', length: 3)]
-    private $affectionExpressions;
+    private string $affectionExpressions;
 
     #[ORM\Column(type: 'smallint')]
     #[Groups(['myPet'])]
-    private $renamingCharges = 0;
+    private int $renamingCharges = 0;
 
     #[ORM\Column(type: 'integer')]
     #[Groups(['myPet'])]
-    private $lunchboxIndex;
+    private int $lunchboxIndex;
 
     #[ORM\Column(type: 'smallint')]
     #[Groups(['myPet', 'petActivityLogs'])]
-    private $wereform;
+    private int $wereform;
 
     /**
      * @var Collection<int, PetBadge>
@@ -1844,18 +1845,6 @@ class Pet
         if (!$this->badges->contains($badge)) {
             $this->badges->add($badge);
             $badge->setPet($this);
-        }
-
-        return $this;
-    }
-
-    public function removeBadge(PetBadge $badge): static
-    {
-        if ($this->badges->removeElement($badge)) {
-            // set the owning side to null (unless already changed)
-            if ($badge->getPet() === $this) {
-                $badge->setPet(null);
-            }
         }
 
         return $this;

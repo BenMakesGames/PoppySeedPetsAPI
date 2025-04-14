@@ -25,7 +25,7 @@ class Survey
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[Groups(["surveySummary"])]
     #[ORM\Column(type: 'string', length: 255)]

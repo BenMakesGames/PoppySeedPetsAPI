@@ -24,7 +24,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity]
 class SpiritCompanion
 {
-    const NAMES = [
+    const array NAMES = [
         'Achak', 'Âme', 'Anda', 'Arima', 'Atma', 'Avira',
         'Cheveyo',
         'Drogo', 'Du\'an', 'Duša', 'Dvasia',
@@ -46,7 +46,7 @@ class SpiritCompanion
         'Ysbryd', 'Yūrei',
     ];
 
-    const IMAGES = [
+    const array IMAGES = [
         'blob', 'dino', 'erm', 'splat', 'jellyfish', 'sooty', 'cat-snake', 'haha', 'icicle', 'square',
         'rsuusd-bat', 'sea-monster', 'wtf'
     ];
@@ -55,29 +55,29 @@ class SpiritCompanion
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[Groups(["myPet", "spiritCompanionPublicProfile", "petSpiritAncestor"])]
     #[ORM\Column(type: 'string', length: 40)]
-    private $name;
+    private string $name;
 
     #[Groups(["myPet", "parkEvent", "hollowEarth", "petPublicProfile", "petGroupDetails", "spiritCompanionPublicProfile", "helperPet", "petSpiritAncestor"])]
     #[ORM\Column(type: 'string', length: 40)]
-    private $image;
+    private string $image;
 
     #[Groups(["spiritCompanionPublicProfile"])]
     #[ORM\OneToOne(targetEntity: Pet::class, mappedBy: 'spiritCompanion')]
-    private $pet;
+    private Pet $pet;
 
     #[Groups(["myPet", "spiritCompanionPublicProfile"])]
     #[ORM\Column(type: 'string', length: 40)]
-    private $star;
+    private string $star;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private $lastHangOut;
+    private \DateTimeImmutable $lastHangOut;
 
     #[ORM\OneToMany(targetEntity: Pet::class, mappedBy: 'spiritDad')]
-    private $fatheredPets;
+    private Collection $fatheredPets;
 
     public function __construct()
     {
@@ -105,7 +105,7 @@ class SpiritCompanion
         return $this;
     }
 
-    public function getImage(): ?string
+    public function getImage(): string
     {
         return $this->image;
     }
@@ -117,17 +117,17 @@ class SpiritCompanion
         return $this;
     }
 
-    public function getPet(): ?Pet
+    public function getPet(): Pet
     {
         return $this->pet;
     }
 
-    public function setPet(?Pet $pet): self
+    public function setPet(Pet $pet): self
     {
         $this->pet = $pet;
 
         // set (or unset) the owning side of the relation if necessary
-        $newSpiritCompanion = $pet === null ? null : $this;
+        $newSpiritCompanion = $this;
         if ($newSpiritCompanion !== $pet->getSpiritCompanion()) {
             $pet->setSpiritCompanion($newSpiritCompanion);
         }
@@ -140,7 +140,7 @@ class SpiritCompanion
         return $this->star;
     }
 
-    public function getLastHangOut(): ?\DateTimeImmutable
+    public function getLastHangOut(): \DateTimeImmutable
     {
         return $this->lastHangOut;
     }

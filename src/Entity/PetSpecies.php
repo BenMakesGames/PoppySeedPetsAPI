@@ -27,93 +27,93 @@ class PetSpecies
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[Groups(["myPet", "petEncyclopedia", "petShelterPet", "zoologistCatalog", "typeahead"])]
     #[ORM\Column(type: 'string', length: 40, unique: true)]
-    private $name;
+    private string $name;
 
     #[Groups(["myPet", "userPublicProfile", "petEncyclopedia", "petPublicProfile", "petShelterPet", "parkEvent", "petFriend", "hollowEarth", "petGroupDetails", "guildMember", "petActivityLogAndPublicPet", "helperPet", "zoologistCatalog", "typeahead", 'petActivityLogs'])]
     #[ORM\Column(type: 'string', length: 40)]
-    private $image;
+    private string $image;
 
     #[Groups(["petEncyclopedia"])]
     #[ORM\Column(type: 'text')]
-    private $description;
+    private string $description;
 
     #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
     #[ORM\Column(type: 'float')]
-    private $handX;
+    private float $handX;
 
     #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
     #[ORM\Column(type: 'float')]
-    private $handY;
+    private float $handY;
 
     #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
     #[ORM\Column(type: 'float')]
-    private $handAngle;
+    private float $handAngle;
 
     #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petEncyclopedia", "petFriend", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
     #[ORM\Column(type: 'boolean')]
-    private $flipX;
+    private bool $flipX;
 
     #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
     #[ORM\Column(type: 'boolean')]
-    private $handBehind;
+    private bool $handBehind;
 
     #[Groups(["myPet", "userPublicProfile", "petEncyclopedia"])]
     #[ORM\Column(type: 'boolean')]
-    private $availableFromPetShelter;
+    private bool $availableFromPetShelter;
 
     #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "petEncyclopedia", "petFriend", "petGroupDetails", "parkEvent", "helperPet"])]
     #[ORM\Column(type: 'integer')]
-    private $pregnancyStyle;
+    private int $pregnancyStyle;
 
     #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "petEncyclopedia", "petFriend", "petGroupDetails", "parkEvent", "helperPet"])]
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $eggImage;
+    private ?string $eggImage;
 
     #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
     #[ORM\Column(type: 'float')]
-    private $hatX;
+    private float $hatX;
 
     #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
     #[ORM\Column(type: 'float')]
-    private $hatY;
+    private float $hatY;
 
     #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
     #[ORM\Column(type: 'float')]
-    private $hatAngle;
+    private float $hatAngle;
 
     #[Groups(["petEncyclopedia"])]
     #[ORM\Column(type: 'boolean')]
-    private $availableFromBreeding;
+    private bool $availableFromBreeding;
 
     #[Groups(["zoologistCatalog"])]
     #[ORM\ManyToOne(targetEntity: Item::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $sheds;
+    private Item $sheds;
 
     #[Groups(["myPet", "petEncyclopedia", "zoologistCatalog"])]
     #[ORM\Column(type: 'string', length: 255)]
-    private $family;
+    private string $family;
 
     #[ORM\Column(type: 'string', length: 40)]
-    private $nameSort;
+    private string $nameSort;
 
     #[ORM\OneToMany(targetEntity: 'App\Entity\Pet', mappedBy: 'species')]
     private $pets;
 
     #[Groups(["petEncyclopedia"])]
     #[ORM\Column(type: 'text', nullable: true)]
-    private $physicalDescription;
+    private ?string $physicalDescription;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -125,7 +125,7 @@ class PetSpecies
         return $this;
     }
 
-    public function getImage(): ?string
+    public function getImage(): string
     {
         return $this->image;
     }
@@ -149,7 +149,7 @@ class PetSpecies
         return $this;
     }
 
-    public function getHandX(): ?float
+    public function getHandX(): float
     {
         return $this->handX;
     }
@@ -161,7 +161,7 @@ class PetSpecies
         return $this;
     }
 
-    public function getHandY(): ?float
+    public function getHandY(): float
     {
         return $this->handY;
     }
@@ -173,7 +173,7 @@ class PetSpecies
         return $this;
     }
 
-    public function getHandAngle(): ?float
+    public function getHandAngle(): float
     {
         return $this->handAngle;
     }
@@ -185,7 +185,7 @@ class PetSpecies
         return $this;
     }
 
-    public function getFlipX(): ?bool
+    public function getFlipX(): bool
     {
         return $this->flipX;
     }
@@ -197,7 +197,7 @@ class PetSpecies
         return $this;
     }
 
-    public function getHandBehind(): ?bool
+    public function getHandBehind(): bool
     {
         return $this->handBehind;
     }
@@ -209,7 +209,7 @@ class PetSpecies
         return $this;
     }
 
-    public function getAvailableFromPetShelter(): ?bool
+    public function getAvailableFromPetShelter(): bool
     {
         return $this->availableFromPetShelter;
     }
@@ -221,7 +221,7 @@ class PetSpecies
         return $this;
     }
 
-    public function getPregnancyStyle(): ?int
+    public function getPregnancyStyle(): int
     {
         return $this->pregnancyStyle;
     }
@@ -245,7 +245,7 @@ class PetSpecies
         return $this;
     }
 
-    public function getHatX(): ?float
+    public function getHatX(): float
     {
         return $this->hatX;
     }
@@ -257,7 +257,7 @@ class PetSpecies
         return $this;
     }
 
-    public function getHatY(): ?float
+    public function getHatY(): float
     {
         return $this->hatY;
     }
@@ -269,7 +269,7 @@ class PetSpecies
         return $this;
     }
 
-    public function getHatAngle(): ?float
+    public function getHatAngle(): float
     {
         return $this->hatAngle;
     }
@@ -281,7 +281,7 @@ class PetSpecies
         return $this;
     }
 
-    public function getAvailableFromBreeding(): ?bool
+    public function getAvailableFromBreeding(): bool
     {
         return $this->availableFromBreeding;
     }
@@ -304,7 +304,7 @@ class PetSpecies
         return $this->sheds;
     }
 
-    public function getFamily(): ?string
+    public function getFamily(): string
     {
         return $this->family;
     }
@@ -316,7 +316,7 @@ class PetSpecies
         return $this;
     }
 
-    public function getNameSort(): ?string
+    public function getNameSort(): string
     {
         return $this->nameSort;
     }

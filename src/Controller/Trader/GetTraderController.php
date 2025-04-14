@@ -50,9 +50,7 @@ class GetTraderController extends AbstractController
 
         if(!$trader)
         {
-            $trader = TraderService::generateTrader($rng)
-                ->setUser($user)
-            ;
+            $trader = TraderService::generateTrader($user, $rng);
 
             $em->persist($trader);
             $em->flush();

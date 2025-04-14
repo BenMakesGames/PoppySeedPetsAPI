@@ -29,20 +29,20 @@ class PetActivityLog
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[Groups(["petActivityLogAndPublicPet"])]
     #[ORM\ManyToOne(targetEntity: Pet::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $pet;
+    private Pet $pet;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'text')]
-    private $entry;
+    private string $entry;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'datetime_immutable')]
-    private $createdOn;
+    private \DateTimeImmutable $createdOn;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'object', nullable: true)]
@@ -50,7 +50,7 @@ class PetActivityLog
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'string', length: 100)]
-    private $icon = '';
+    private string $icon = '';
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'integer')]
@@ -58,18 +58,20 @@ class PetActivityLog
 
     #[Groups(["petActivityLogAndPublicPet"])]
     #[ORM\ManyToOne(targetEntity: Item::class)]
-    private $equippedItem;
+    private ?Item $equippedItem;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\ManyToMany(targetEntity: PetActivityLogTag::class)]
-    private $tags;
+    private Collection $tags;
 
     #[Groups(["petActivityLogAndPublicPet"])]
     #[ORM\OneToMany(mappedBy: 'log', targetEntity: PetActivityLogItem::class, orphanRemoval: true, cascade: ['persist'])]
     private Collection $createdItems;
 
-    public function __construct()
+    public function __construct(Pet $pet, string $entry)
     {
+        $this->pet = $pet;
+        $this->entry = $entry;
         $this->createdOn = new \DateTimeImmutable();
         $this->tags = new ArrayCollection();
         $this->createdItems = new ArrayCollection();

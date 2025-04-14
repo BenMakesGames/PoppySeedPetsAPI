@@ -25,7 +25,7 @@ class MarketListing
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[Groups(['marketItem'])]
     #[ORM\ManyToOne(targetEntity: Item::class)]

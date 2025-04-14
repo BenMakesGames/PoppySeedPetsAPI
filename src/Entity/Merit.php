@@ -24,15 +24,15 @@ class Merit
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups(["meritEncyclopedia"])]
-    private $id;
+    private ?int $id = null;
 
     #[Groups(["availableMerits", "myPet", "meritEncyclopedia", "userPublicProfile", "petPublicProfile", "petGroupDetails", "parkEvent", "petFriend", "hollowEarth", "petActivityLogAndPublicPet", "helperPet"])]
     #[ORM\Column(type: 'string', length: 30, unique: true)]
-    private $name;
+    private string $name;
 
     #[Groups(["availableMerits", "meritEncyclopedia"])]
     #[ORM\Column(type: 'string', length: 255)]
-    private $description;
+    private string $description;
 
     public function getId(): ?int
     {

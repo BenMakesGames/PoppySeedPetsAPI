@@ -23,57 +23,54 @@ class UserSession
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'userSessions')]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[ORM\Column(type: 'string', length: 40, unique: true)]
-    private $sessionId;
+    private string $sessionId;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $sessionExpiration;
+    private \DateTimeImmutable $sessionExpiration;
+
+    public function __construct(User $user, string $sessionId, int $hoursToExpiration)
+    {
+        $this->user = $user;
+        $this->sessionId = $sessionId;
+        $this->setSessionExpiration($hoursToExpiration);
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(User $user): self
     {
         $this->user = $user;
 
         return $this;
     }
 
-    public function getSessionId(): ?string
+    public function getSessionId(): string
     {
         return $this->sessionId;
     }
 
-    public function setSessionId(string $sessionId): self
-    {
-        $this->sessionId = $sessionId;
-
-        return $this;
-    }
-
-    public function getSessionExpiration(): ?\DateTimeImmutable
+    public function getSessionExpiration(): \DateTimeImmutable
     {
         return $this->sessionExpiration;
     }
 
-    public function setSessionExpiration(?int $sessionHours = null): self
+    public function setSessionExpiration(int $sessionHours): self
     {
-        if(!$sessionHours)
-            $sessionHours = $this->getUser()->getDefaultSessionLengthInHours();
-
         $sessionHours = NumberFunctions::clamp($sessionHours, 1, 7 * 24); // 1 hour to 1 week
 
         $this->sessionExpiration = (new \DateTimeImmutable())->modify('+' . $sessionHours . ' hours');

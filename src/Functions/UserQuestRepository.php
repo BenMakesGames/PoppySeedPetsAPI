@@ -53,11 +53,7 @@ class UserQuestRepository
 
             if(!$record)
             {
-                $record = (new UserQuest())
-                    ->setUser($user)
-                    ->setName($name)
-                    ->setValue($default)
-                ;
+                $record = new UserQuest(user: $user, name: $name, value: $default);
 
                 $em->persist($record);
             }

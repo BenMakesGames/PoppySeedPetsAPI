@@ -59,11 +59,7 @@ class SessionService
 
         $sessionId = $this->generateSessionId();
 
-        $userSession = (new UserSession())
-            ->setSessionId($sessionId)
-            ->setUser($user)
-            ->setSessionExpiration($hours)
-        ;
+        $userSession = new UserSession(user: $user, sessionId: $sessionId, hoursToExpiration: $hours);
 
         $this->em->persist($userSession);
 

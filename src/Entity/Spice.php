@@ -24,20 +24,20 @@ class Spice
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[Groups(["myInventory", "marketItem", "itemEncyclopedia"])]
     #[ORM\OneToOne(targetEntity: ItemFood::class, inversedBy: 'spice', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private $effects;
+    private ItemFood $effects;
 
     #[Groups(["myInventory", "marketItem", "itemEncyclopedia", "myPet", "dragonTreasure", "greenhouseFertilizer", "fireplaceFuel", "fireplaceMantle"])]
     #[ORM\Column(type: 'string', length: 20)]
-    private $name;
+    private string $name;
 
     #[Groups(["myInventory", "marketItem", "itemEncyclopedia", "myPet", "dragonTreasure", "greenhouseFertilizer", "fireplaceFuel", "fireplaceMantle"])]
     #[ORM\Column(type: 'boolean')]
-    private $isSuffix;
+    private bool $isSuffix;
 
     public function getId(): ?int
     {

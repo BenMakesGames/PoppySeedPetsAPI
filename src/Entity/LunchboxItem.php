@@ -23,7 +23,7 @@ class LunchboxItem
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Pet::class, inversedBy: 'lunchboxItems')]
     #[ORM\JoinColumn(nullable: false)]

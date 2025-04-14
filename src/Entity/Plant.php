@@ -25,45 +25,45 @@ class Plant
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 40)]
-    private $sproutImage;
+    private string $sproutImage;
 
     #[ORM\Column(type: 'string', length: 40)]
-    private $mediumImage;
+    private string $mediumImage;
 
     #[ORM\Column(type: 'string', length: 40)]
-    private $adultImage;
+    private string $adultImage;
 
     #[ORM\Column(type: 'string', length: 40)]
-    private $harvestableImage;
+    private string $harvestableImage;
 
     #[ORM\OneToOne(targetEntity: Item::class, mappedBy: 'plant')]
-    private $item;
+    private Item $item;
 
     #[ORM\Column(type: 'integer')]
-    private $timeToAdult;
+    private int $timeToAdult;
 
     #[ORM\Column(type: 'integer')]
-    private $timeToFruit;
+    private int $timeToFruit;
 
     #[Groups(["greenhousePlant"])]
     #[ORM\Column(type: 'string', length: 20)]
-    private $type = 'earth';
+    private string $type = 'earth';
 
     #[ORM\OneToMany(targetEntity: 'App\Entity\PlantYield', mappedBy: 'plant', orphanRemoval: true)]
     private $plantYields;
 
     #[Groups(["greenhousePlant"])]
     #[ORM\Column(type: 'string', length: 40, unique: true)]
-    private $name;
+    private string $name;
 
     #[ORM\ManyToOne(targetEntity: FieldGuideEntry::class)]
     private $fieldGuideEntry;
 
     #[ORM\Column(type: 'boolean')]
-    private $noPollinators;
+    private bool $noPollinators;
 
     public function __construct()
     {

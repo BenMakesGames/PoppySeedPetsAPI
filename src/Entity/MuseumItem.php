@@ -24,21 +24,21 @@ class MuseumItem
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[Groups(["museum"])]
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[Groups(["museum"])]
     #[ORM\ManyToOne(targetEntity: Item::class, inversedBy: 'museumDonations')]
     #[ORM\JoinColumn(nullable: false)]
-    private $item;
+    private Item $item;
 
     #[Groups(["museum"])]
     #[ORM\Column(type: 'datetime_immutable')]
-    private $donatedOn;
+    private \DateTimeImmutable $donatedOn;
 
     #[Groups(["museum"])]
     #[ORM\Column(type: 'json')]
@@ -46,10 +46,12 @@ class MuseumItem
 
     #[Groups(["museum"])]
     #[ORM\ManyToOne(targetEntity: User::class)]
-    private $createdBy;
+    private User $createdBy;
 
-    public function __construct()
+    public function __construct(User $user, Item $item)
     {
+        $this->user = $user;
+        $this->item = $item;
         $this->donatedOn = new \DateTimeImmutable();
     }
 
@@ -58,31 +60,17 @@ class MuseumItem
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    public function getItem(): ?Item
+    public function getItem(): Item
     {
         return $this->item;
     }
 
-    public function setItem(?Item $item): self
-    {
-        $this->item = $item;
-
-        return $this;
-    }
-
-    public function getDonatedOn(): ?\DateTimeImmutable
+    public function getDonatedOn(): \DateTimeImmutable
     {
         return $this->donatedOn;
     }
@@ -99,12 +87,12 @@ class MuseumItem
         return $this;
     }
 
-    public function getCreatedBy(): ?user
+    public function getCreatedBy(): ?User
     {
         return $this->createdBy;
     }
 
-    public function setCreatedBy(?user $createdBy): self
+    public function setCreatedBy(?User $createdBy): self
     {
         $this->createdBy = $createdBy;
 

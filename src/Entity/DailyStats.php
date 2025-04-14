@@ -23,7 +23,7 @@ class DailyStats
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
     #[Groups(['globalStats'])]

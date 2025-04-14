@@ -103,10 +103,7 @@ class RegisterController extends AbstractController
         if($existingUser)
             throw new PSPFormValidationException('Email address is already in use.');
 
-        $user = (new User())
-            ->setEmail($email)
-            ->setName($name)
-        ;
+        $user = new User(name: $name, email: $email);
 
         $user->setPassword($userPasswordEncoder->hashPassword($user, $passPhrase));
 

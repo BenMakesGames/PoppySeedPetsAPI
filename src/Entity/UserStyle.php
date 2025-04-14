@@ -22,9 +22,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity]
 class UserStyle
 {
-    public const CURRENT = 'Current';
+    public const string CURRENT = 'Current';
 
-    const PROPERTIES = [
+    const array PROPERTIES = [
         'backgroundColor',
         'speechBubbleBackgroundColor',
         'textColor',
@@ -46,7 +46,7 @@ class UserStyle
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[Groups(["publicStyle"])]
     #[ORM\ManyToOne(targetEntity: User::class)]

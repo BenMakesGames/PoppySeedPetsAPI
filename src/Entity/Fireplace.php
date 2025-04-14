@@ -42,7 +42,7 @@ class Fireplace
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'fireplace')]
     #[ORM\JoinColumn(nullable: false)]

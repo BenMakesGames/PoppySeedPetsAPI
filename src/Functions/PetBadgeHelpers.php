@@ -34,9 +34,7 @@ final class PetBadgeHelpers
         if($pet->getBadges()->exists(fn(int $i, PetBadge $b) => $b->getBadge() === $badgeName))
             return;
 
-        $newBadge = (new PetBadge())
-            ->setBadge($badgeName)
-            ->setPet($pet);
+        $newBadge = new PetBadge(pet: $pet, badge: $badgeName);
 
         $em->persist($newBadge);
 
@@ -58,9 +56,7 @@ final class PetBadgeHelpers
         if($pet->getBadges()->exists(fn(int $i, PetBadge $b) => $b->getBadge() === $badgeName))
             return null;
 
-        $newBadge = (new PetBadge())
-            ->setBadge($badgeName)
-            ->setPet($pet);
+        $newBadge = new PetBadge(pet: $pet, badge: $badgeName);
 
         $em->persist($newBadge);
 

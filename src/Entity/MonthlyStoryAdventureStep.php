@@ -27,7 +27,7 @@ class MonthlyStoryAdventureStep
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: MonthlyStoryAdventure::class, inversedBy: 'steps')]
     #[ORM\JoinColumn(nullable: false)]

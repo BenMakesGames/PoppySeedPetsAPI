@@ -155,11 +155,9 @@ class GrocerController extends AbstractController
             {
                 $item = ItemRepository::findOneByName($em, $itemName);
 
-                $newInventory = (new Inventory())
-                    ->setItem($item)
+                $newInventory = (new Inventory(owner: $user, item: $item))
                     ->setLocation($buyTo)
                     ->setLockedToOwner(true)
-                    ->setOwner($user)
                     ->addComment($user->getName() . ' bought this from the Grocery Store.')
                 ;
 

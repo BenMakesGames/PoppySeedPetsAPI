@@ -39,14 +39,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     /**
      * @var string
      */
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     #[Groups(['myAccount'])]
-    private $email;
+    private string $email;
 
     #[ORM\Column(type: 'json')]
     #[Groups(['myAccount'])]
@@ -56,37 +56,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column(type: 'string')]
-    private $password;
+    private string $password;
 
     #[Groups(["myAccount", "myInventory", "userPublicProfile", "article", "petPublicProfile", "museum", "parkEvent", "userTypeahead", "publicStyle", "myFollowers"])]
     #[ORM\Column(type: 'string', length: 40)]
-    private $name;
+    private string $name;
 
     #[Groups(["userPublicProfile", "myFollowers"])]
     #[ORM\Column(type: 'datetime_immutable')]
-    private $lastActivity;
+    private \DateTimeImmutable $lastActivity;
 
     #[ORM\OneToMany(targetEntity: Pet::class, mappedBy: 'owner', fetch: 'EXTRA_LAZY')]
-    private $pets;
+    private Collection $pets;
 
     #[Groups(["userPublicProfile"])]
     #[ORM\Column(type: 'datetime_immutable')]
-    private $registeredOn;
+    private \DateTimeImmutable $registeredOn;
 
     #[Groups(["myAccount"])]
     #[ORM\Column(type: 'date_immutable')]
-    private $lastAllowanceCollected;
+    private \DateTimeImmutable $lastAllowanceCollected;
 
     #[ORM\Column(type: 'boolean')]
-    private $isLocked = false;
+    private bool $isLocked = false;
 
     #[Groups(["myAccount"])]
     #[ORM\Column(type: 'integer')]
-    private $moneys = 0;
+    private int $moneys = 0;
 
     #[Groups(["myAccount"])]
     #[ORM\Column(type: 'integer')]
-    private $maxPets = 2;
+    private int $maxPets = 2;
 
     #[ORM\OneToMany(targetEntity: UserFollowing::class, mappedBy: 'user', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
     private $following;
@@ -99,11 +99,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Groups(["myAccount"])]
     #[ORM\Column(type: 'integer')]
-    private $defaultSessionLengthInHours = 72;
+    private int $defaultSessionLengthInHours = 72;
 
     #[Groups(["myAccount"])]
     #[ORM\Column(type: 'integer')]
-    private $maxSellPrice = 10;
+    private int $maxSellPrice = 10;
 
     #[ORM\OneToOne(targetEntity: 'App\Entity\PassphraseResetRequest', mappedBy: 'user', cascade: ['persist', 'remove'], fetch: 'EXTRA_LAZY')]
     private $passphraseResetRequest;
@@ -111,8 +111,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: 'App\Entity\GreenhousePlant', mappedBy: 'owner', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
     private $greenhousePlants;
 
-    #[ORM\OneToMany(targetEntity: 'App\Entity\UserSession', mappedBy: 'user', orphanRemoval: true)]
-    private $userSessions;
+    #[ORM\OneToMany(targetEntity: UserSession::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $userSessions;
 
     #[ORM\OneToOne(targetEntity: 'App\Entity\HollowEarthPlayer', mappedBy: 'user', cascade: ['persist', 'remove'], fetch: 'EXTRA_LAZY')]
     private $hollowEarthPlayer;
@@ -128,19 +128,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Groups(["myAccount"])]
     #[ORM\Column(type: 'integer')]
-    private $recyclePoints = 0;
+    private int $recyclePoints = 0;
 
     #[Groups(["myAccount"])]
     #[ORM\Column(type: 'smallint')]
-    private $unreadNews = 0;
+    private int $unreadNews = 0;
 
     #[Groups(["myAccount", "userPublicProfile", "petPublicProfile", "museum", "parkEvent", "publicStyle", "myFollowers"])]
     #[ORM\Column(type: 'string', length: 60, nullable: true)]
-    private $icon;
+    private ?string $icon = null;
 
     #[Groups(["myAccount"])]
     #[ORM\Column(type: 'smallint')]
-    private $maxMarketBids = 5;
+    private int $maxMarketBids = 5;
 
     #[ORM\OneToOne(targetEntity: UserMenuOrder::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     private $menuOrder;
@@ -149,17 +149,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $unlockedAuras;
 
     #[ORM\Column(type: 'integer')]
-    private $museumPoints = 0;
+    private int $museumPoints = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $museumPointsSpent = 0;
+    private int $museumPointsSpent = 0;
 
     #[Groups(["myAccount"])]
     #[ORM\Column(type: 'boolean')]
-    private $canAssignHelpers = false;
+    private bool $canAssignHelpers = false;
 
     #[ORM\Column(type: 'integer')]
-    private $fate;
+    private int $fate;
 
     #[Groups(["myAccount"])]
     #[ORM\OneToMany(targetEntity: UserUnlockedFeature::class, mappedBy: 'user', orphanRemoval: true)]
@@ -178,8 +178,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'owner', cascade: ['persist', 'remove'])]
     private ?CookingBuddy $cookingBuddy = null;
 
-    public function __construct()
+    public function __construct(string $name, string $email)
     {
+        $this->name = $name;
+        $this->email = $email;
+
         $this->pets = new ArrayCollection();
         $this->registeredOn = new \DateTimeImmutable();
         $this->lastAllowanceCollected = (new \DateTimeImmutable())->modify('-7 days');
@@ -494,29 +497,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->userSessions;
     }
 
-    public function addUserSession(UserSession $userSession): self
-    {
-        if (!$this->userSessions->contains($userSession)) {
-            $this->userSessions[] = $userSession;
-            $userSession->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUserSession(UserSession $userSession): self
-    {
-        if ($this->userSessions->contains($userSession)) {
-            $this->userSessions->removeElement($userSession);
-            // set the owning side to null (unless already changed)
-            if ($userSession->getUser() === $this) {
-                $userSession->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getHollowEarthPlayer(): ?HollowEarthPlayer
     {
         return $this->hollowEarthPlayer;
@@ -780,16 +760,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getBadges(): Collection
     {
         return $this->badges;
-    }
-
-    public function addBadge(UserBadge $badge): self
-    {
-        if (!$this->badges->contains($badge)) {
-            $this->badges[] = $badge;
-            $badge->setUser($this);
-        }
-
-        return $this;
     }
 
     public function getSubscription(): ?UserSubscription

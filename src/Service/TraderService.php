@@ -1597,11 +1597,9 @@ class TraderService
         ;
     }
 
-    public static function generateTrader(IRandom $rng): Trader
+    public static function generateTrader(User $user, IRandom $rng): Trader
     {
-        $trader = (new Trader())
-            ->setName($rng->rngNextFromArray(self::TRADER_NAMES))
-        ;
+        $trader = new Trader(user: $user, name: $rng->rngNextFromArray(self::TRADER_NAMES));
 
         self::recolorTrader($rng, $trader);
 
