@@ -28,37 +28,29 @@ class TradesUnlocked
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[ORM\Column(type: 'integer')]
-    private $trades;
+    private int $trades;
+
+    public function __construct(User $user, int $trades)
+    {
+        $this->user = $user;
+        $this->trades = $trades;
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    public function getTrades(): ?int
+    public function getTrades(): int
     {
         return $this->trades;
-    }
-
-    public function setTrades(int $trades): self
-    {
-        $this->trades = $trades;
-
-        return $this;
     }
 }

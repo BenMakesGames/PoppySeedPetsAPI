@@ -146,7 +146,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $menuOrder;
 
     #[ORM\OneToMany(targetEntity: UserUnlockedAura::class, mappedBy: 'user', orphanRemoval: true)]
-    private $unlockedAuras;
+    private Collection $unlockedAuras;
 
     #[ORM\Column(type: 'integer')]
     private int $museumPoints = 0;
