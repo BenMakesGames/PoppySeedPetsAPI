@@ -26,20 +26,23 @@ class UserFieldGuideEntry
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'fieldGuideEntries')]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[ORM\ManyToOne(targetEntity: FieldGuideEntry::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $entry;
+    private FieldGuideEntry $entry;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $discoveredOn;
+    private \DateTimeImmutable $discoveredOn;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $comment;
+    private string $comment;
 
-    public function __construct()
+    public function __construct(User $user, FieldGuideEntry $entry, string $comment)
     {
+        $this->user = $user;
+        $this->entry = $entry;
+        $this->comment = $comment;
         $this->discoveredOn = new \DateTimeImmutable();
     }
 
@@ -48,44 +51,23 @@ class UserFieldGuideEntry
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    public function getEntry(): ?FieldGuideEntry
+    public function getEntry(): FieldGuideEntry
     {
         return $this->entry;
     }
 
-    public function setEntry(?FieldGuideEntry $entry): self
-    {
-        $this->entry = $entry;
-
-        return $this;
-    }
-
-    public function getDiscoveredOn(): ?\DateTimeImmutable
+    public function getDiscoveredOn(): \DateTimeImmutable
     {
         return $this->discoveredOn;
     }
 
-    public function getComment(): ?string
+    public function getComment(): string
     {
         return $this->comment;
-    }
-
-    public function setComment(string $comment): self
-    {
-        $this->comment = $comment;
-
-        return $this;
     }
 }

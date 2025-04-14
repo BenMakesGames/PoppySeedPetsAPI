@@ -30,7 +30,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/item/boosterPack")]
 class BoosterPackController extends AbstractController
 {
-    private const SET_ITEM_GROUP_NAMES = [
+    private const array SET_ITEM_GROUP_NAMES = [
         'one' => 'Hollow Earth Booster Pack',
         'two' => 'Community Booster Pack',
     ];

@@ -24,7 +24,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/achievement")]
 final class Showcase extends AbstractController
 {
-    private const PageSize = 20;
+    private const int PageSize = 20;
 
     #[Route("/showcase", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]

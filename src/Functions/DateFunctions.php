@@ -18,9 +18,9 @@ use App\Enum\MoonPhaseEnum;
 
 final class DateFunctions
 {
-    public const MOON_CYCLE_LENGTH = 29.53058868;
+    public const float MOON_CYCLE_LENGTH = 29.53058868;
 
-    public const FULL_MOON_NAMES = [
+    public const array FULL_MOON_NAMES = [
         1 => 'Wolf',
         2 => 'Snow',
         3 => 'Worm',

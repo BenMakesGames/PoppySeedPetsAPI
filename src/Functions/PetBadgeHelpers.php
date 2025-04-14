@@ -73,7 +73,7 @@ final class PetBadgeHelpers
         ;
     }
 
-    private const BADGE_HURRAHS = [
+    private const array BADGE_HURRAHS = [
         PetBadgeEnum::REVEALED_FAVORITE_FLAVOR => '(Also, there\'s a badge for that: Flavor YESknown!, and %pet.name% just got it!)',
         PetBadgeEnum::COMPLETED_HEART_DIMENSION => 'Also: A Suburb to the Brain - that\'s the name of the badge that %pet.name% just got!',
         PetBadgeEnum::TRIED_ON_A_NEW_STYLE => 'Check out those new, um, digs? Also: that new badge?! Yeah, I dunno if you knew, but %pet.name% just got the Fashionista badge.',

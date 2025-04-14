@@ -39,9 +39,9 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class KinBallService implements ParkEventInterface
 {
-    public const ROUNDS_TO_WIN = 2;
-    public const TARGET_SCORE = 5;
-    public const CRITICAL_SCORE = 3;
+    public const int ROUNDS_TO_WIN = 2;
+    public const int TARGET_SCORE = 5;
+    public const int CRITICAL_SCORE = 3;
 
     /** @var KinBallTeam[] */
     private array $teams;

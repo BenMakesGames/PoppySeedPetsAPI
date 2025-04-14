@@ -42,9 +42,9 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class HollowEarthService
 {
-    public const LOST_IN_TIME_AND_SPACE_TILE_ID = 53;
+    public const int LOST_IN_TIME_AND_SPACE_TILE_ID = 53;
 
-    public const DICE_ITEMS = [
+    public const array DICE_ITEMS = [
         'One-sided Die' => 1,
         'Dreidel' => 4,
         'Glowing Four-sided Die' => 4,

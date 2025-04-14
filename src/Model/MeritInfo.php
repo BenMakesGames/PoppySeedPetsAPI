@@ -18,7 +18,7 @@ use App\Enum\MeritEnum;
 
 final class MeritInfo
 {
-    public const POSSIBLE_STARTING_MERITS = [
+    public const array POSSIBLE_STARTING_MERITS = [
         ...self::POSSIBLE_FIRST_PET_STARTING_MERITS,
 
         // has pros and cons, so doesn't feel appropriate for a first pet
@@ -30,7 +30,7 @@ final class MeritInfo
         MeritEnum::HYPERCHROMATIC,
     ];
 
-    public const POSSIBLE_FIRST_PET_STARTING_MERITS = [
+    public const array POSSIBLE_FIRST_PET_STARTING_MERITS = [
         MeritEnum::BURPS_MOTHS,
         MeritEnum::GOURMAND,
         MeritEnum::PREHENSILE_TONGUE,
@@ -44,7 +44,7 @@ final class MeritInfo
         MeritEnum::SILVERBLOOD,
     ];
 
-    public const AFFECTION_REWARDS = [
+    public const array AFFECTION_REWARDS = [
         // stat-based:
         MeritEnum::EIDETIC_MEMORY, // int >= 3
         MeritEnum::MOON_BOUND, // str >= 3
@@ -73,7 +73,7 @@ final class MeritInfo
         MeritEnum::VOLAGAMY, // age >= 14 days
     ];
 
-    public const FORGETTABLE_MERITS = [
+    public const array FORGETTABLE_MERITS = [
         // starting merits
         ...self::POSSIBLE_STARTING_MERITS,
 

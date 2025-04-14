@@ -16,12 +16,12 @@ namespace App\Enum;
 
 final class MoonPhaseEnum
 {
-    public const NEW_MOON = 'new moon';
-    public const WAXING_CRESCENT = 'waxing crescent';
-    public const FIRST_QUARTER = 'first quarter';
-    public const WAXING_GIBBOUS = 'waxing gibbous';
-    public const FULL_MOON = 'full moon';
-    public const WANING_GIBBOUS = 'waning gibbous';
-    public const LAST_QUARTER = 'last quarter';
-    public const WANING_CRESCENT = 'waning crescent';
+    public const string NEW_MOON = 'new moon';
+    public const string WAXING_CRESCENT = 'waxing crescent';
+    public const string FIRST_QUARTER = 'first quarter';
+    public const string WAXING_GIBBOUS = 'waxing gibbous';
+    public const string FULL_MOON = 'full moon';
+    public const string WANING_GIBBOUS = 'waning gibbous';
+    public const string LAST_QUARTER = 'last quarter';
+    public const string WANING_CRESCENT = 'waning crescent';
 }

@@ -18,17 +18,17 @@ final class FlavorEnum
 {
     use Enum;
 
-    const EARTHY = 'earthy';
-    const FRUITY = 'fruity';
-    const TANNIC = 'tannic';
-    const SPICY = 'spicy';
-    const CREAMY = 'creamy';
-    const MEATY = 'meaty';
-    const PLANTY = 'planty';
-    const FISHY = 'fishy';
-    const FLORAL = 'floral';
-    const FATTY = 'fatty';
-    const ONIONY = 'oniony';
-    const CHEMICALLY = 'chemically';
+    const string EARTHY = 'earthy';
+    const string FRUITY = 'fruity';
+    const string TANNIC = 'tannic';
+    const string SPICY = 'spicy';
+    const string CREAMY = 'creamy';
+    const string MEATY = 'meaty';
+    const string PLANTY = 'planty';
+    const string FISHY = 'fishy';
+    const string FLORAL = 'floral';
+    const string FATTY = 'fatty';
+    const string ONIONY = 'oniony';
+    const string CHEMICALLY = 'chemically';
 
 }

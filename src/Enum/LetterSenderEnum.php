@@ -18,8 +18,8 @@ class LetterSenderEnum
 {
     use Enum;
 
-    public const SHARUMINYINKA = 'Sharuminyinka';
-    public const KATICA = 'Katica';
-    public const HYSSOP = 'Hyssop';
-    public const MIA = 'Mia';
+    public const string SHARUMINYINKA = 'Sharuminyinka';
+    public const string KATICA = 'Katica';
+    public const string HYSSOP = 'Hyssop';
+    public const string MIA = 'Mia';
 }

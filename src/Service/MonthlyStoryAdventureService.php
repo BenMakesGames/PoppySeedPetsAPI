@@ -393,7 +393,7 @@ class MonthlyStoryAdventureService
     }
 
     // these names were copied from the StarKindred API code on 2022-08-28
-    private const STAR_KINDRED_NAMES = [
+    private const array STAR_KINDRED_NAMES = [
         "Adaddu-Shalum", // from textsynth.com, with a prompt for Babylonian and Assyrian names
         "Aho",
         "Akitu", // Babylonian New Year holiday

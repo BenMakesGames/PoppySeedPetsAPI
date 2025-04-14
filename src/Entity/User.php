@@ -398,19 +398,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeStat(UserStats $stat): self
-    {
-        if ($this->stats->contains($stat)) {
-            $this->stats->removeElement($stat);
-            // set the owning side to null (unless already changed)
-            if ($stat->getUser() === $this) {
-                $stat->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getDefaultSessionLengthInHours(): int
     {
         return $this->defaultSessionLengthInHours;

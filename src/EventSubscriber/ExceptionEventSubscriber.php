@@ -42,7 +42,7 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
     private ResponseService $responseService;
     private KernelInterface $kernel;
 
-    private const GenericErrorMessage = 'Hrm: something\'s gone awry. Reload and try again; if the problem persists, let Ben know, so he can fix it!';
+    private const string GenericErrorMessage = 'Hrm: something\'s gone awry. Reload and try again; if the problem persists, let Ben know, so he can fix it!';
 
     public function __construct(ResponseService $responseService, KernelInterface $kernel, LoggerInterface $logger)
     {

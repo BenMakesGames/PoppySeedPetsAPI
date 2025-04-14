@@ -53,9 +53,7 @@ class AddFavoriteTradeController extends AbstractController
 
         if(!$favorite)
         {
-            $favorite = new UserFavoriteTrade();
-            $favorite->setUser($user);
-            $favorite->setTrade($exchange->id);
+            $favorite = new UserFavoriteTrade(user: $user, trade: $exchange->id);
             $em->persist($favorite);
         }
 

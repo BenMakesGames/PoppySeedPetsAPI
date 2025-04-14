@@ -18,21 +18,21 @@ class UserLinkWebsiteEnum
 {
     use Enum;
 
-    public const CHICKEN_SMOOTHIE = 'ChickenSmoothie';
-    public const DEVIANT_ART = 'DeviantArt';
-    public const FLIGHT_RISING = 'FlightRising';
-    public const FUR_AFFINITY = 'FurAffinity';
-    public const GAIA_ONLINE = 'GaiaOnline';
-    public const GITHUB = 'GitHub';
-    public const GOATLINGS = 'Goatlings';
-    public const INSTAGRAM = 'Instagram';
-    public const LORWOLF = 'Lorwolf';
-    public const MASTODON = 'Mastodon';
-    public const NINTENDO = 'Nintendo';
-    public const PIXEL_CATS_END = 'PixelCatsEnd';
-    public const POPPY_SEED_PETS = 'PSP';
-    public const STEAM = 'Steam';
-    public const TUMBLR = 'Tumblr';
-    public const TWITCH = 'Twitch';
-    public const YOUTUBE = 'YouTube';
+    public const string CHICKEN_SMOOTHIE = 'ChickenSmoothie';
+    public const string DEVIANT_ART = 'DeviantArt';
+    public const string FLIGHT_RISING = 'FlightRising';
+    public const string FUR_AFFINITY = 'FurAffinity';
+    public const string GAIA_ONLINE = 'GaiaOnline';
+    public const string GITHUB = 'GitHub';
+    public const string GOATLINGS = 'Goatlings';
+    public const string INSTAGRAM = 'Instagram';
+    public const string LORWOLF = 'Lorwolf';
+    public const string MASTODON = 'Mastodon';
+    public const string NINTENDO = 'Nintendo';
+    public const string PIXEL_CATS_END = 'PixelCatsEnd';
+    public const string POPPY_SEED_PETS = 'PSP';
+    public const string STEAM = 'Steam';
+    public const string TUMBLR = 'Tumblr';
+    public const string TWITCH = 'Twitch';
+    public const string YOUTUBE = 'YouTube';
 }

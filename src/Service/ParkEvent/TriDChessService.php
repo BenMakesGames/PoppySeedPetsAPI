@@ -39,7 +39,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class TriDChessService implements ParkEventInterface
 {
-    public const CHESS_PIECES = [
+    public const array CHESS_PIECES = [
         'a pawn', 'a rook', 'a knight', 'a bishop', 'the queen', 'the king',
     ];
 

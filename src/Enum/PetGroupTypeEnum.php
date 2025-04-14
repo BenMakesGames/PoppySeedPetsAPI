@@ -18,8 +18,8 @@ class PetGroupTypeEnum
 {
     use Enum;
 
-    public const BAND = 1;
-    public const ASTRONOMY = 2;
-    public const GAMING = 3;
-    public const SPORTSBALL = 4;
+    public const int BAND = 1;
+    public const int ASTRONOMY = 2;
+    public const int GAMING = 3;
+    public const int SPORTSBALL = 4;
 }

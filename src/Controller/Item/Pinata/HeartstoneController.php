@@ -29,7 +29,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/item/heartstone")]
 class HeartstoneController extends AbstractController
 {
-    private const STAT_NAME = 'Transformed a Heartstone';
+    private const string STAT_NAME = 'Transformed a Heartstone';
 
     #[Route("/{inventory}/transform", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]

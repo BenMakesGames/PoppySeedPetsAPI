@@ -27,7 +27,7 @@ class PetSpeciesFilterService
 {
     use FilterService;
 
-    public const PageSize = 20;
+    public const int PageSize = 20;
 
     private EntityRepository $repository;
     private ?User $user;

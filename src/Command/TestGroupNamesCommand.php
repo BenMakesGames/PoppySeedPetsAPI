@@ -38,7 +38,7 @@ class TestGroupNamesCommand extends PoppySeedPetsCommand
         ;
     }
 
-    private const GroupTypesByName = [
+    private const array GroupTypesByName = [
         'band' => PetGroupTypeEnum::BAND,
         'astronomy' => PetGroupTypeEnum::ASTRONOMY,
         'gaming' => PetGroupTypeEnum::GAMING

@@ -40,15 +40,12 @@ class SaveCurrentController extends AbstractController
 
         if(!$style)
         {
-            $style = (new UserStyle())
-                ->setUser($user)
-                ->setName(UserStyle::CURRENT)
-            ;
+            $style = new UserStyle(user: $user, name: UserStyle::Current);
 
             $em->persist($style);
         }
 
-        foreach(UserStyle::PROPERTIES as $property)
+        foreach(UserStyle::Properties as $property)
         {
             $color = $request->request->get($property);
 

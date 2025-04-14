@@ -24,7 +24,7 @@ class ArticleFilterService
 {
     use FilterService;
 
-    public const PageSize = 10;
+    public const int PageSize = 10;
 
     private readonly EntityRepository $repository;
 

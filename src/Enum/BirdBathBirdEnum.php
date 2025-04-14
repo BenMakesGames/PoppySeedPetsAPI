@@ -18,7 +18,7 @@ class BirdBathBirdEnum
 {
     use Enum;
 
-    public const OWL = 'owl';
-    public const RAVEN = 'raven';
-    public const TOUCAN = 'toucan';
+    public const string OWL = 'owl';
+    public const string RAVEN = 'raven';
+    public const string TOUCAN = 'toucan';
 }

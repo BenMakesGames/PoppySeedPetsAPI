@@ -16,7 +16,7 @@ namespace App\Functions;
 
 final class RecipeRepository
 {
-    public const RECIPES = [
+    public const array RECIPES = [
         [ 'name' => '"Chicken" Noodle Soup (with Fish)', 'ingredients' => '30:1,33:1,262:1', 'makes' => '323:2' ],
         [ 'name' => '"Chicken" Noodle Soup (with Tofu)', 'ingredients' => '30:1,262:1,494:1', 'makes' => '323:2' ],
         [ 'name' => '"Chicken" Noodle Soup (with Turkey)', 'ingredients' => '30:1,262:1,342:1', 'makes' => '323:4' ],

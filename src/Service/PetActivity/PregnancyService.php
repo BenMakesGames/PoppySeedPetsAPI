@@ -287,7 +287,7 @@ class PregnancyService
         $this->userStatsRepository->incrementStat($user, UserStatEnum::PETS_BIRTHED);
     }
 
-    private const CANONICALIZED_FORBIDDEN_COMBINED_NAMES = [
+    private const array CANONICALIZED_FORBIDDEN_COMBINED_NAMES = [
         'beaner',
         'chink',
         'con', // coon

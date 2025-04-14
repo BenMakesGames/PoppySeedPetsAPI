@@ -18,9 +18,9 @@ class LoveLanguageEnum
 {
     use Enum;
 
-    public const GIFTS = 'gifts';
-    public const TIME = 'time';
-    public const WORDS = 'words';
-    public const ACTS = 'acts';
-    public const TOUCH = 'touch';
+    public const string GIFTS = 'gifts';
+    public const string TIME = 'time';
+    public const string WORDS = 'words';
+    public const string ACTS = 'acts';
+    public const string TOUCH = 'touch';
 }

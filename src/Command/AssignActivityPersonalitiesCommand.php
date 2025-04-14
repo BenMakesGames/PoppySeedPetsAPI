@@ -23,7 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class AssignActivityPersonalitiesCommand extends Command
 {
-    public const BATCH_SIZE = 200;
+    public const int BATCH_SIZE = 200;
 
     private EntityManagerInterface $em;
     private IRandom $rng;

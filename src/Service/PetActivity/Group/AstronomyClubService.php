@@ -38,7 +38,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class AstronomyClubService
 {
-    public const ActivityIcon = 'groups/astronomy';
+    public const string ActivityIcon = 'groups/astronomy';
 
     public function __construct(
         private readonly PetExperienceService $petExperienceService,
@@ -52,7 +52,7 @@ class AstronomyClubService
     {
     }
 
-    private const Dictionary = [
+    private const array Dictionary = [
         'prefix' => [
             'the First', 'the Last', 'the Second', 'the Final'
         ],
@@ -83,7 +83,7 @@ class AstronomyClubService
         ]
     ];
 
-    private const GroupNamePatterns = [
+    private const array GroupNamePatterns = [
         '%prefix%/the %adjective%/%color% %noun% %suffix%',
         '%prefix%/the %number% %adjective%? %nouns% %suffix%',
         'the? %adjective% %color%? %noun%/%nouns%',
@@ -91,7 +91,7 @@ class AstronomyClubService
         '%color%/%adjective% %nouns% and %color%/%adjective% %nouns%',
     ];
 
-    private const MaxSkillRoll = 85;
+    private const int MaxSkillRoll = 85;
 
     public function generateGroupName(): string
     {

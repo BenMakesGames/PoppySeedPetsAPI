@@ -18,14 +18,14 @@ final class TradeGroupEnum
 {
     use Enum;
 
-    public const METALS = 1;
-    public const DARK_THINGS = 2;
-    //public const FOODS = 3;
-    public const HOLLOW_EARTH = 4;
-    //public const BOX_BOX = 5;
-    public const CURIOSITIES = 6;
-    public const PLUSHIES = 7;
-    public const BLEACH = 8;
-    public const DIGITAL = 9;
-    public const BUGS = 10;
+    public const int METALS = 1;
+    public const int DARK_THINGS = 2;
+    //public const int FOODS = 3;
+    public const int HOLLOW_EARTH = 4;
+    //public const int BOX_BOX = 5;
+    public const int CURIOSITIES = 6;
+    public const int PLUSHIES = 7;
+    public const int BLEACH = 8;
+    public const int DIGITAL = 9;
+    public const int BUGS = 10;
 }

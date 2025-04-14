@@ -41,7 +41,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/item/betaBug")]
 class BetaBugController extends AbstractController
 {
-    private const ALLOWED_ITEMS = [
+    private const array ALLOWED_ITEMS = [
         'Cooking Buddy',
         'Cooking "Alien"',
         'Cooking... with Fire',

@@ -24,7 +24,7 @@ final class UserStyleFunctions
     {
         return $em->getRepository(UserStyle::class)->findOneBy([
             'user' => $userId,
-            'name' => UserStyle::CURRENT
+            'name' => UserStyle::Current
         ]);
     }
 
@@ -35,7 +35,7 @@ final class UserStyleFunctions
             ->andWhere('t.user=:user')
             ->andWhere('t.name!=:current')
             ->setParameter('user', $user)
-            ->setParameter('current', UserStyle::CURRENT)
+            ->setParameter('current', UserStyle::Current)
             ->getQuery()
             ->getSingleScalarResult()
         ;

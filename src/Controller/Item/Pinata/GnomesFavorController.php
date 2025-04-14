@@ -31,9 +31,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/item/gnomesFavor")]
 class GnomesFavorController extends AbstractController
 {
-    private const USER_STAT_NAME = 'Redeemed a Gnome\'s Favor';
+    private const string USER_STAT_NAME = 'Redeemed a Gnome\'s Favor';
 
-    private const GNOMISH_MAGIC = [
+    private const array GNOMISH_MAGIC = [
         ' (Whoa! Magic!)',
         ' (Gnomish magic!)',
         ' #justgnomethings',

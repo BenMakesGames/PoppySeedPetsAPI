@@ -29,7 +29,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Inventory
 {
     /** @var int[] */
-    public const CONSUMABLE_LOCATIONS = [
+    public const array CONSUMABLE_LOCATIONS = [
         LocationEnum::HOME,
         LocationEnum::BASEMENT
     ];

@@ -18,7 +18,7 @@ class GatheringHolidayEnum
 {
     use Enum;
 
-    const EASTER = 'Easter';
-    const SAINT_PATRICKS = 'Saint Patrick\'s';
-    const LUNAR_NEW_YEAR = 'Lunar New Year';
+    const string EASTER = 'Easter';
+    const string SAINT_PATRICKS = 'Saint Patrick\'s';
+    const string LUNAR_NEW_YEAR = 'Lunar New Year';
 }

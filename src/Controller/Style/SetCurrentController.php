@@ -37,22 +37,19 @@ class SetCurrentController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if($theme->getName() === UserStyle::CURRENT)
+        if($theme->getName() === UserStyle::Current)
             throw new PSPInvalidOperationException('You\'re already using that theme!');
 
         $current = UserStyleFunctions::findCurrent($em, $user->getId());
 
         if(!$current)
         {
-            $current = (new UserStyle())
-                ->setUser($user)
-                ->setName(UserStyle::CURRENT)
-            ;
+            $current = new UserStyle(user: $user, name: UserStyle::Current);
 
             $em->persist($current);
         }
 
-        foreach(UserStyle::PROPERTIES as $property)
+        foreach(UserStyle::Properties as $property)
             $current->{'set' . $property}($theme->{'get' . $property}());
 
         $em->flush();

@@ -18,25 +18,25 @@ class PlayerActivityLogTagEnum
 {
     use Enum;
 
-    public const Moneys = 'Moneys';
-    public const Recycling = 'Recycling';
-    public const Market = 'Market';
-    public const Fireplace = 'Fireplace';
-    public const Greenhouse = 'Greenhouse';
-    public const Beehive = 'Beehive';
-    public const Dragon_Den = 'Dragon Den';
-    public const Account_and_Security = 'Account & Security';
-    public const Museum = 'Museum';
-    public const Grocer = 'Grocer';
-    public const Hattier = 'Hattier';
-    public const Satyr_Dice = 'Satyr Dice';
-    public const Earth_Day = 'Earth Day';
-    public const Fae_kind = 'Fae-kind';
-    public const Trader = 'Trader';
-    public const Shirikodama = 'Shirikodama';
-    public const Halloween = 'Halloween';
-    public const Special_Event = 'Special Event';
-    public const Stocking_Stuffing_Season = 'Stocking Stuffing Season';
-    public const Birdbath = 'Birdbath';
-    public const Item_Use = 'Item Use';
+    public const string Moneys = 'Moneys';
+    public const string Recycling = 'Recycling';
+    public const string Market = 'Market';
+    public const string Fireplace = 'Fireplace';
+    public const string Greenhouse = 'Greenhouse';
+    public const string Beehive = 'Beehive';
+    public const string Dragon_Den = 'Dragon Den';
+    public const string Account_and_Security = 'Account & Security';
+    public const string Museum = 'Museum';
+    public const string Grocer = 'Grocer';
+    public const string Hattier = 'Hattier';
+    public const string Satyr_Dice = 'Satyr Dice';
+    public const string Earth_Day = 'Earth Day';
+    public const string Fae_kind = 'Fae-kind';
+    public const string Trader = 'Trader';
+    public const string Shirikodama = 'Shirikodama';
+    public const string Halloween = 'Halloween';
+    public const string Special_Event = 'Special Event';
+    public const string Stocking_Stuffing_Season = 'Stocking Stuffing Season';
+    public const string Birdbath = 'Birdbath';
+    public const string Item_Use = 'Item Use';
 }

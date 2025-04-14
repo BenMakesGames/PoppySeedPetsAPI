@@ -43,11 +43,11 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ChocolateMansion
 {
-    private const QUEST_VALUE_PATIO_ONLY = 1;
-    private const QUEST_VALUE_UP_TO_GARDENS = 2;
-    private const QUEST_VALUE_UP_TO_FOYER = 3;
-    private const QUEST_VALUE_ALL_EXCEPT_CELLAR_AND_ATTIC = 6;
-    private const QUEST_VALUE_FULL_ACCESS = 8;
+    private const int QUEST_VALUE_PATIO_ONLY = 1;
+    private const int QUEST_VALUE_UP_TO_GARDENS = 2;
+    private const int QUEST_VALUE_UP_TO_FOYER = 3;
+    private const int QUEST_VALUE_ALL_EXCEPT_CELLAR_AND_ATTIC = 6;
+    private const int QUEST_VALUE_FULL_ACCESS = 8;
 
     public function __construct(
         private readonly IRandom $rng,

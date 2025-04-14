@@ -454,7 +454,7 @@ final class CalendarFunctions
         return $events;
     }
 
-    public const HOLI_MONTH_DAYS = [
+    public const array HOLI_MONTH_DAYS = [
         2021 => '329',
         2022 => '318',
         2023 => '308',
@@ -477,9 +477,9 @@ final class CalendarFunctions
         2040 => '329',
     ];
 
-    public const LEONID_PEAK_DAY_DEFAULT = 1117;
+    public const int LEONID_PEAK_DAY_DEFAULT = 1117;
 
-    public const LEONID_PEAK_DAYS = [
+    public const array LEONID_PEAK_DAYS = [
         // for years which are omitted, LEONID_PEAK_DAY_DEFAULT is assumed
         2022 => 1119,
     ];

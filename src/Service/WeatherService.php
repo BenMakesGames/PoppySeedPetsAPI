@@ -21,7 +21,7 @@ use App\Model\WeatherForecastData;
 
 class WeatherService
 {
-    private const HOUR_OF_DAY_TEMPERATURE_MODIFIER = [
+    private const array HOUR_OF_DAY_TEMPERATURE_MODIFIER = [
         // 12 am ...
         1, 1, 1, 1, 1, 0,
         0, 1, 2, 4, 6, 7,

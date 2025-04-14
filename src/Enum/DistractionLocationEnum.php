@@ -18,9 +18,9 @@ class DistractionLocationEnum
 {
     use Enum;
 
-    public const WOODS = 'woods';
-    public const UNDERGROUND = 'underground';
-    public const BEACH = 'beach';
-    public const VOLCANO = 'volcano';
-    public const IN_TOWN = 'inTown';
+    public const string WOODS = 'woods';
+    public const string UNDERGROUND = 'underground';
+    public const string BEACH = 'beach';
+    public const string VOLCANO = 'volcano';
+    public const string IN_TOWN = 'inTown';
 }

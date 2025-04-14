@@ -1812,7 +1812,7 @@ class Pet
         return $this;
     }
 
-    private const MeritsApplicableToReenactments = [
+    private const array MeritsApplicableToReenactments = [
         MeritEnum::INVERTED,
         MeritEnum::VERY_INVERTED,
         MeritEnum::SPECTRAL,

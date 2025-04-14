@@ -22,7 +22,7 @@ final class GrammarFunctions
     // CONSONANT FOLLOWED BY ANOTHER CONSONANT, AND WHICH ARE NOT LIKELY
     // TO BE REAL WORDS (OH, ALL RIGHT THEN, IT'S JUST MAGIC!)
 
-    private const A_abbrev = "(?! FJO | [HLMNS]Y.  | RY[EO] | SQU
+    private const string A_abbrev = "(?! FJO | [HLMNS]Y.  | RY[EO] | SQU
           | ( F[LR]? | [HL] | MN? | N | RH? | S[CHKLMNPTVW]? | X(YL)?) [AEIOU])
             [FHLMNRSX][A-Z]
         ";
@@ -31,15 +31,15 @@ final class GrammarFunctions
     // 'y' FOLLOWED BY A CONSONANT. ANY OTHER Y-CONSONANT PREFIX THEREFORE
     // IMPLIES AN ABBREVIATION.
 
-    private const A_y_cons = 'y(b[lor]|cl[ea]|fere|gg|p[ios]|rou|tt)';
+    private const string A_y_cons = 'y(b[lor]|cl[ea]|fere|gg|p[ios]|rou|tt)';
 
     // EXCEPTIONS TO EXCEPTIONS
 
-    private const A_explicit_an = "euler|hour(?!i)|heir|honest|hono";
+    private const string A_explicit_an = "euler|hour(?!i)|heir|honest|hono";
 
-    private const A_ordinal_an = "[aefhilmnorsx]-?th";
+    private const string A_ordinal_an = "[aefhilmnorsx]-?th";
 
-    private const A_ordinal_a = "[bcdgjkpqtuvwyz]-?th";
+    private const string A_ordinal_a = "[bcdgjkpqtuvwyz]-?th";
 
     public static function indefiniteArticle($word)
     {

@@ -18,7 +18,7 @@ class DragonHostageTypeEnum
 {
     use Enum;
 
-    public const MAGPIE = 'magpie';
-    public const RACCOON = 'raccoon';
-    public const SQUID = 'squid';
+    public const string MAGPIE = 'magpie';
+    public const string RACCOON = 'raccoon';
+    public const string SQUID = 'squid';
 }
