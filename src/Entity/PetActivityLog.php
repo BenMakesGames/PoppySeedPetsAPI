@@ -58,7 +58,7 @@ class PetActivityLog
 
     #[Groups(["petActivityLogAndPublicPet"])]
     #[ORM\ManyToOne(targetEntity: Item::class)]
-    private ?Item $equippedItem;
+    private ?Item $equippedItem = null;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\ManyToMany(targetEntity: PetActivityLogTag::class)]
