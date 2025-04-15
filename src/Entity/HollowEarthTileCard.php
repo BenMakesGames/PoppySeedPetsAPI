@@ -30,21 +30,21 @@ class HollowEarthTileCard
 
     #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\Column(type: 'string', length: 40)]
-    private $name;
+    private string $name;
 
     #[ORM\Column(type: 'json')]
     private $event = [];
 
     #[ORM\Column(type: 'integer')]
-    private $requiredAction = 0;
+    private int $requiredAction = 0;
 
     #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\ManyToOne(targetEntity: HollowEarthTileType::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $type;
+    private HollowEarthTileType $type;
 
     #[ORM\Column(type: 'string', length: 40)]
-    private $image;
+    private string $image;
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $author = null;
@@ -102,7 +102,7 @@ class HollowEarthTileCard
         return $this;
     }
 
-    public function getImage(): ?string
+    public function getImage(): string
     {
         return $this->image;
     }
