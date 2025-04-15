@@ -49,8 +49,8 @@ class LostInTownService
     {
         $pet = $petWithSkills->getPet();
 
-        $this->em->remove($pet->getTool());
-        $pet->setTool(null);
+        //$this->em->remove($pet->getTool());  //the position of these lines was essentially removing the item before the outcome state of the adventure was known
+        //$pet->setTool(null); //i have moved them to be state-dependent, but it is a little bit jank
 
         $changes = new PetChanges($pet);
 
@@ -77,7 +77,8 @@ class LostInTownService
     private function backAlley(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-
+        $this->em->remove($pet->getTool()); //the new home of item removal
+        $pet->setTool(null);
         $items = [
             $this->rng->rngNextFromArray([ 'Canned Food', 'Onion Rings', 'Spicy Tuna Salad Sammy', 'Soy Sauce', 'Korean Rice Cakes' ]),
             $this->rng->rngNextFromArray([ 'Gold Ring', 'Key Ring', 'Laser Pointer' ]),
@@ -99,7 +100,8 @@ class LostInTownService
     private function ruinedSettlement(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-
+        $this->em->remove($pet->getTool()); //the new home of item removal
+        $pet->setTool(null);
         $items = [
             'Rusted, Busted Mechanism',
             $this->rng->rngNextFromArray([
@@ -137,6 +139,8 @@ class LostInTownService
         }
         else
         {
+            $this->em->remove($pet->getTool()); //the new home of item removal; this is in the light version, which counts as a success
+            $pet->setTool(null);
             $items = [
                 $this->rng->rngNextFromArray([ 'Black Scarf', 'Cool Sunglasses', 'Gaming Box', 'Password' ]),
                 $this->rng->rngNextFromArray([ 'Glowing Protojelly', 'Green Egg', 'Thaumatoxic Cookies', 'Magic Smoke' ]),
@@ -162,7 +166,8 @@ class LostInTownService
     private function magicDoor(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-
+        $this->em->remove($pet->getTool()); //the new home of item removal
+        $pet->setTool(null);
         $items = [
             'Cobweb',
             $this->rng->rngNextFromArray([ '"Roy" Plushy', 'Bulbun Plushy', 'Peacock Plushy', 'Rainbow Dolphin Plushy', 'Sneqo Plushy' ]),
