@@ -46,7 +46,6 @@
         "symfony/yaml": "*"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.74",
         "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "*",
         "symfony/css-selector": "*",
@@ -95,6 +94,7 @@
         ]
     },
     "conflict": {
+        "friendsofphp/php-cs-fixer": "*",
         "symfony/symfony": "*"
     },
     "extra": {
