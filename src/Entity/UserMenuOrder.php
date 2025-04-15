@@ -22,7 +22,7 @@ class UserMenuOrder
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'menuOrder', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]

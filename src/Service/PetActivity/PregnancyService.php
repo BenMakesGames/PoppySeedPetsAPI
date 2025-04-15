@@ -84,10 +84,7 @@ class PregnancyService
             $colorB = $temp;
         }
 
-        $petPregnancy = (new PetBaby())
-            ->setSpecies($species)
-            ->setColorA($colorA)
-            ->setColorB($colorB)
+        $petPregnancy = (new PetBaby(species: $species, colorA: $colorA, colorB: $colorB))
             ->setParent($mother)
             ->setOtherParent($father)
         ;
@@ -118,10 +115,7 @@ class PregnancyService
             $colorB = $temp;
         }
 
-        $petPregnancy = (new PetBaby())
-            ->setSpecies($species)
-            ->setColorA($colorA)
-            ->setColorB($colorB)
+        $petPregnancy = (new PetBaby(species: $species, colorA: $colorA, colorB: $colorB))
             ->setParent($mother)
             ->setSpiritParent($mother->getSpiritCompanion())
         ;
@@ -293,7 +287,7 @@ class PregnancyService
         $this->userStatsRepository->incrementStat($user, UserStatEnum::PETS_BIRTHED);
     }
 
-    private const CANONICALIZED_FORBIDDEN_COMBINED_NAMES = [
+    private const array CANONICALIZED_FORBIDDEN_COMBINED_NAMES = [
         'beaner',
         'chink',
         'con', // coon

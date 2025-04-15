@@ -33,7 +33,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PetRelationshipService
 {
-    public const RELATIONSHIP_COMMITMENTS = [
+    public const array RELATIONSHIP_COMMITMENTS = [
         RelationshipEnum::BROKE_UP => -1,
         RelationshipEnum::DISLIKE => 0,
         RelationshipEnum::FRIENDLY_RIVAL => 1,

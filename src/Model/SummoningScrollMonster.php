@@ -158,7 +158,7 @@ class SummoningScrollMonsterElementEnum
 {
     use Enum;
 
-    public const FIRE = 'Fire';
-    public const ELECTRICITY = 'Electricity';
-    public const DARKNESS = 'Darkness';
+    public const string FIRE = 'Fire';
+    public const string ELECTRICITY = 'Electricity';
+    public const string DARKNESS = 'Darkness';
 }

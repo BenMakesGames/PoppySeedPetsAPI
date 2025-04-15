@@ -23,7 +23,7 @@ class UserFollowing
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[Groups(["myFollowers"])]
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'following')]

@@ -28,7 +28,7 @@ class InventoryFilterService
 {
     use FilterService;
 
-    public const PageSize = 100;
+    public const int PageSize = 100;
 
     private readonly ObjectRepository $repository;
     private ?User $user;

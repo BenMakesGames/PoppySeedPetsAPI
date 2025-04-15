@@ -23,19 +23,19 @@ class PetActivityLogTag
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'string', length: 40, unique: true)]
-    private $title;
+    private string $title;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $color;
+    private string $color;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'string', length: 100)]
-    private $emoji;
+    private string $emoji;
 
     public function getId(): ?int
     {

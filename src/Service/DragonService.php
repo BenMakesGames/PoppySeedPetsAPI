@@ -37,7 +37,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class DragonService
 {
     // currently sums to 75
-    private const SilverGoodies = [
+    private const array SilverGoodies = [
         [ 'weight' => 30, 'item' => 'Liquid-hot Magma' ], // 40%
         [ 'weight' => 15, 'item' => 'Quintessence' ], // 20%
         [ 'weight' => 15, 'item' => 'Charcoal' ], // 20%
@@ -49,7 +49,7 @@ class DragonService
     ];
 
     // currently sums to 100 - handy!
-    private const GoldGoodies = [
+    private const array GoldGoodies = [
         [ 'weight' => 20, 'item' => 'Liquid-hot Magma' ], // 20%
         [ 'weight' => 20, 'item' => 'Tiny Scroll of Resources' ],
         [ 'weight' => 10, 'item' => 'Dark Matter' ],
@@ -64,7 +64,7 @@ class DragonService
     ];
 
     // currently sums to 75
-    private const GemGoodies = [
+    private const array GemGoodies = [
         [ 'weight' => 20, 'item' => 'Scroll of Resources' ], // 26.6%
         [ 'weight' => 10, 'item' => 'Liquid-hot Magma' ], // 13.3%
         [ 'weight' => 10, 'item' => 'Firestone' ],

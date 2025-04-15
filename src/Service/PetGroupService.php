@@ -34,9 +34,9 @@ use Doctrine\ORM\Query\Expr\Join;
 
 class PetGroupService
 {
-    public const SOCIAL_ENERGY_PER_MEET = 60 * 12;
+    public const int SOCIAL_ENERGY_PER_MEET = 60 * 12;
 
-    public const GROUP_TYPE_NAMES = [
+    public const array GROUP_TYPE_NAMES = [
         PetGroupTypeEnum::BAND => 'band',
         PetGroupTypeEnum::ASTRONOMY => 'astronomy lab',
         PetGroupTypeEnum::GAMING => 'gaming group',
@@ -349,7 +349,7 @@ class PetGroupService
             return 3;
     }
 
-    private const FriendlyRelationships = [
+    private const array FriendlyRelationships = [
         RelationshipEnum::FRIEND,
         RelationshipEnum::BFF,
         RelationshipEnum::FWB,

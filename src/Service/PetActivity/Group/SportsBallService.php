@@ -32,7 +32,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class SportsBallService
 {
-    public const ActivityIcon = 'groups/sportsball';
+    public const string ActivityIcon = 'groups/sportsball';
 
     public function __construct(
         private readonly PetExperienceService $petExperienceService,
@@ -44,7 +44,7 @@ class SportsBallService
     {
     }
 
-    private const Dictionary = [
+    private const array Dictionary = [
         'adjective' => [
             'Lucky', 'Wild', 'Mad', 'Magic', 'Fierce', 'Feisty', 'Island', 'Jungle', 'Marvelous', 'Tough',
             'Amazing', 'Seaside', 'Umbral', 'Digital', 'Frost-born', 'Gorgeous', 'Midnight', 'Giant', 'Lightning',
@@ -60,11 +60,11 @@ class SportsBallService
         ],
     ];
 
-    private const GroupNamePatterns = [
+    private const array GroupNamePatterns = [
         '%adjective% %nouns%',
     ];
 
-    private const PossibleLoot = [
+    private const array PossibleLoot = [
         'Green Sportsball Ball',
         'Orange Sportsball Ball',
         'Sportsball Pin',

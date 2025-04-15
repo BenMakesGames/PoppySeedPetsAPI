@@ -23,27 +23,33 @@ class Trader
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: User::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[Groups(["traderOffer"])]
     #[ORM\Column(type: 'string', length: 40)]
-    private $name;
+    private string $name;
 
     #[Groups(["traderOffer"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $colorA;
+    private string $colorA;
 
     #[Groups(["traderOffer"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $colorB;
+    private string $colorB;
 
     #[Groups(["traderOffer"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $colorC;
+    private string $colorC;
+
+    public function __construct(User $user, string $name)
+    {
+        $this->user = $user;
+        $this->name = $name;
+    }
 
     public function getId(): ?int
     {
@@ -53,13 +59,6 @@ class Trader
     public function getUser(): ?User
     {
         return $this->user;
-    }
-
-    public function setUser(User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
     }
 
     public function getName(): ?string

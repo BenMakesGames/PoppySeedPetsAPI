@@ -22,12 +22,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Dragon
 {
     // as a whelp:
-    public const FOOD_REQUIRED_FOR_A_MEAL = 35;
-    public const FOOD_REQUIRED_TO_GROW = 35 * 20;
+    public const int FOOD_REQUIRED_FOR_A_MEAL = 35;
+    public const int FOOD_REQUIRED_TO_GROW = 35 * 20;
 
     // as an adult:
-    public const APPEARANCE_IMAGES = [ 1, 2, 3, 4 ];
-    public const GREETINGS_AND_THANKS = [
+    public const array APPEARANCE_IMAGES = [ 1, 2, 3, 4 ];
+    public const array GREETINGS_AND_THANKS = [
         [
             'greeting' => 'Hello, friend.',
             'thanks' => 'Thank you, friend.',
@@ -53,7 +53,7 @@ class Dragon
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: User::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]

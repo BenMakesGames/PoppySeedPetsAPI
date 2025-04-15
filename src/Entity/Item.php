@@ -29,87 +29,87 @@ class Item
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[Groups(["myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "fireplaceMantle", "fireplaceFuel", "myBeehive", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet", "myBids", "myHollowEarthTiles", "myLetters", "zoologistCatalog", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'string', length: 45, unique: true)]
-    private $name;
+    private string $name;
 
     #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\Column(type: 'text', nullable: true)]
-    private $description;
+    private ?string $description = null;
 
     #[Groups(["myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "myBeehive", "petGroupDetails", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet", "myBids", "myHollowEarthTiles", "helperPet", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'string', length: 255)]
-    private $image;
+    private string $image;
 
     #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\Column(type: 'json', nullable: true)]
     private $useActions = [];
 
     #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet"])]
-    #[ORM\OneToOne(targetEntity: 'App\Entity\ItemTool')]
-    private $tool;
+    #[ORM\OneToOne(targetEntity: ItemTool::class)]
+    private ?ItemTool $tool = null;
 
     #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\OneToOne(targetEntity: 'App\Entity\ItemFood', cascade: ['persist', 'remove'])]
-    private $food;
+    private ?ItemFood $food = null;
 
     #[ORM\Column(type: 'integer')]
-    private $fertilizer = 0;
+    private int $fertilizer = 0;
 
-    #[ORM\ManyToOne(targetEntity: 'App\Entity\Plant', inversedBy: 'item', cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(targetEntity: Plant::class, inversedBy: 'item', cascade: ['persist', 'remove'])]
     private $plant;
 
-    #[ORM\OneToMany(targetEntity: 'App\Entity\MuseumItem', mappedBy: 'item')]
-    private $museumDonations;
+    #[ORM\OneToMany(targetEntity: MuseumItem::class, mappedBy: 'item', fetch: 'EXTRA_LAZY')]
+    private Collection $museumDonations;
 
-    #[ORM\OneToMany(targetEntity: Inventory::class, mappedBy: 'item')]
-    private $inventory;
+    #[ORM\OneToMany(targetEntity: Inventory::class, mappedBy: 'item', fetch: 'EXTRA_LAZY')]
+    private Collection $inventory;
 
     #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth", "petGroupDetails", "helperPet"])]
-    #[ORM\OneToOne(targetEntity: 'App\Entity\ItemHat', inversedBy: 'item', cascade: ['persist', 'remove'])]
-    private $hat;
+    #[ORM\OneToOne(targetEntity: ItemHat::class, inversedBy: 'item', cascade: ['persist', 'remove'])]
+    private ?ItemHat $hat = null;
 
     #[ORM\Column(type: 'integer')]
-    private $fuel = 0;
+    private int $fuel = 0;
 
     #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\Column(type: 'smallint')]
-    private $recycleValue = 0;
+    private int $recycleValue = 0;
 
     #[Groups(["myInventory", "marketItem", "itemEncyclopedia"])]
     #[ORM\ManyToOne(targetEntity: 'App\Entity\Enchantment')]
     private $enchants;
 
     #[ORM\OneToOne(targetEntity: ItemGrammar::class, mappedBy: 'item', cascade: ['persist', 'remove'], fetch: 'EAGER')]
-    private $grammar;
+    private ?ItemGrammar $grammar = null;
 
     #[Groups(["myInventory", "marketItem", "itemEncyclopedia"])]
     #[ORM\ManyToOne(targetEntity: Spice::class)]
-    private $spice;
+    private ?Spice $spice = null;
 
     #[Groups(["dragonTreasure"])]
     #[ORM\OneToOne(targetEntity: ItemTreasure::class, cascade: ['persist', 'remove'])]
-    private $treasure;
+    private ?ItemTreasure $treasure = null;
 
     #[ORM\Column(type: 'boolean')]
-    private $isBug = false;
+    private bool $isBug = false;
 
     #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\ManyToOne(targetEntity: HollowEarthTileCard::class)]
-    private $hollowEarthTileCard;
+    private ?HollowEarthTileCard $hollowEarthTileCard = null;
 
     #[Groups(["itemEncyclopedia", "myInventory"])]
     #[ORM\ManyToMany(targetEntity: ItemGroup::class, mappedBy: 'items')]
-    private $itemGroups;
+    private Collection $itemGroups;
 
     #[ORM\Column(type: 'boolean')]
-    private $cannotBeThrownOut = false;
+    private bool $cannotBeThrownOut = false;
 
     #[Groups(["myDonatableInventory"])]
     #[ORM\Column(type: 'smallint')]
-    private $museumPoints;
+    private int $museumPoints = 0;
 
     public function __construct()
     {

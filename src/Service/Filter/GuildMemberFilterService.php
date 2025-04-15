@@ -24,7 +24,7 @@ class GuildMemberFilterService
 {
     use FilterService;
 
-    public const PageSize = 12;
+    public const int PageSize = 12;
 
     private readonly EntityRepository $repository;
 

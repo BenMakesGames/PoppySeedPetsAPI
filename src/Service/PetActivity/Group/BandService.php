@@ -32,7 +32,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class BandService
 {
-    public const ActivityIcon = 'groups/band';
+    public const string ActivityIcon = 'groups/band';
 
     public function __construct(
         private readonly EntityManagerInterface $em,
@@ -45,7 +45,7 @@ class BandService
     {
     }
 
-    private const AdjectiveList = [
+    private const array AdjectiveList = [
         'Ace', 'Average', 'Above-average', 'Adult', 'Angry', 'Arctic', 'Apologetic', 'Atomic',
         'Born-again', 'Big', 'Baby', 'Brilliant', 'Bad', 'Big City', 'Blue', 'Bold', 'Birthday', 'Bleeding', 'Bubbly',
         'Curious', 'Celestial', 'Careful', 'Chattering', 'Cute',
@@ -73,7 +73,7 @@ class BandService
         'Willing', 'Wandering', 'Wonderful', 'Wet', 'Weird', 'Wavering',
     ];
 
-    private const NounList = [
+    private const array NounList = [
         'Ace', 'Age', 'Act', 'Arcade', 'Alphabet', 'Army', 'Addiction',
         'Baby', 'Blade', 'Boulder', 'Bank', 'Blossom', 'Bookkeeper', 'Bumblebee', 'Butter',
         'Castle', 'Cat', 'Cereal', 'Chain', 'Chemical', 'Circle', 'Circus', 'Clown', 'Country', 'Crawlspace', 'Cream', 'Cure',
@@ -99,7 +99,7 @@ class BandService
         'War', 'Wallflower', 'Wind', 'Window', 'Wizard',
     ];
 
-    private const PluralNounList = [
+    private const array PluralNounList = [
         'Aliens', 'Accords', 'Acts', 'Ashes', 'Arms and Legs', 'Acres', 'Armies',
         'Bananas', 'Boys and Girls', 'Blades', 'Blossoms',
         'Children', 'Chemicals', 'Chains', 'Circles', 'Clowns', 'Cups', 'Circles', 'Countries', 'Clues', 'Crawlies',
@@ -123,7 +123,7 @@ class BandService
         'Wars', 'Words', 'Winds', 'Walls', 'Wallflowers',
     ];
 
-    private const NumberList = [
+    private const array NumberList = [
         'Two',
         '7',
         '33',
@@ -139,7 +139,7 @@ class BandService
         'All',
     ];
 
-    private const GroupNamePatterns = [
+    private const array GroupNamePatterns = [
         'the? %noun% %nouns%',
         'the/my/your/our? %adjective%? %noun% %nouns%',
         'the? %adjective%? %noun% %nouns%',
@@ -159,7 +159,7 @@ class BandService
         '%adjective% and %adjective%',
     ];
 
-    private const Dictionary = [
+    private const array Dictionary = [
         'noun' => self::NounList,
         'nouns' => self::PluralNounList,
         'adjective' => self::AdjectiveList,
@@ -171,7 +171,7 @@ class BandService
         return GroupNameGenerator::generateName($this->squirrel3, self::GroupNamePatterns, self::Dictionary, 60);
     }
 
-    private const BandActivitySentimentMessages = [
+    private const array BandActivitySentimentMessages = [
         'It was fun!',
         'It was a good session!',
         'It was a little stressful, but they made good progress!',
@@ -194,7 +194,7 @@ class BandService
         $group->setLastMetOn();
     }
 
-    private const FanMailFeels = [
+    private const array FanMailFeels = [
         'delighted!', 'touched.', 'very proud.',
         'ecstatic!', 'moved.'
     ];

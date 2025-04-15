@@ -25,7 +25,7 @@ class ItemGroup
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[Groups(["itemEncyclopedia", "myInventory"])]
     #[ORM\Column(type: 'string', length: 40, unique: true)]

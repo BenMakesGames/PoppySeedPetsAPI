@@ -25,12 +25,9 @@ class UserFilterService
 {
     use FilterService;
 
-    public const PageSize = 20;
+    public const int PageSize = 20;
 
-    /**
-     * @var User|null
-     */
-    private $user;
+    private ?User $user = null;
 
     private EntityRepository $repository;
 

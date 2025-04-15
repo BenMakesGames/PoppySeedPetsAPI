@@ -103,10 +103,7 @@ class RegisterController extends AbstractController
         if($existingUser)
             throw new PSPFormValidationException('Email address is already in use.');
 
-        $user = (new User())
-            ->setEmail($email)
-            ->setName($name)
-        ;
+        $user = new User(name: $name, email: $email);
 
         $user->setPassword($userPasswordEncoder->hashPassword($user, $passPhrase));
 
@@ -132,12 +129,9 @@ class RegisterController extends AbstractController
 
         $inventoryService->receiveItem('Welcome Note', $user, null, 'This Welcome Note was waiting for ' . $user->getName() . ' in their house.', LocationEnum::HOME, true);
 
-        $myTheme = (new UserStyle())
-            ->setUser($user)
-            ->setName(UserStyle::CURRENT)
-        ;
+        $myTheme = new UserStyle(user: $user, name: UserStyle::Current);
 
-        foreach(UserStyle::PROPERTIES as $property)
+        foreach(UserStyle::Properties as $property)
         {
             if(!array_key_exists($property, $theme))
             {

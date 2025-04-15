@@ -38,7 +38,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/item/philosophersStone")]
 class PhilosophersStoneController extends AbstractController
 {
-    private const PLUSHIES = [
+    private const array PLUSHIES = [
         'Bulbun Plushy' => [ 'species' => 'Bulbun', 'colorA' => 'f8d592', 'colorB' => 'd4b36e' ],
         'Peacock Plushy' => [ 'species' => 'Peacock', 'colorA' => 'ffe9d9', 'colorB' => 'a47dd7' ],
         'Rainbow Dolphin Plushy' => [ 'species' => 'Rainbow Dolphin', 'colorA' => '64ea74', 'colorB' => 'ea64de' ],

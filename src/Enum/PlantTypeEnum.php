@@ -18,7 +18,7 @@ class PlantTypeEnum
 {
     use Enum;
 
-    public const EARTH = 'earth';
-    public const WATER = 'water';
-    public const DARK = 'dark';
+    public const string EARTH = 'earth';
+    public const string WATER = 'water';
+    public const string DARK = 'dark';
 }

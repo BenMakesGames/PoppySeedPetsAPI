@@ -24,30 +24,34 @@ class UserQuest
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[ORM\Column(type: 'string', length: 120)]
-    private $name;
+    private string $name;
 
     #[ORM\Column(type: 'json')]
     private $value;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $createdOn;
+    private \DateTimeImmutable $createdOn;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $lastUpdated;
+    private \DateTimeImmutable $lastUpdated;
 
     #[ORM\Version]
     #[ORM\Column(type: 'integer')]
     private int $version;
 
-    public function __construct()
+    public function __construct(User $user, string $name, $value)
     {
+        $this->user = $user;
+        $this->name = $name;
+        $this->value = $value;
+        $this->lastUpdated = new \DateTimeImmutable();
         $this->createdOn = new \DateTimeImmutable();
     }
 
@@ -61,23 +65,9 @@ class UserQuest
         return $this->user;
     }
 
-    public function setUser(User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
     }
 
     public function getValue()

@@ -18,10 +18,10 @@ class PetLocationEnum
 {
     use Enum;
 
-    public const HOME = 'home';
-    public const DAYCARE = 'daycare';
-    public const BEEHIVE = 'beehive';
-    public const FIREPLACE = 'fireplace';
-    public const GREENHOUSE = 'greenhouse';
-    public const DRAGON_DEN = 'dragon den';
+    public const string HOME = 'home';
+    public const string DAYCARE = 'daycare';
+    public const string BEEHIVE = 'beehive';
+    public const string FIREPLACE = 'fireplace';
+    public const string GREENHOUSE = 'greenhouse';
+    public const string DRAGON_DEN = 'dragon den';
 }

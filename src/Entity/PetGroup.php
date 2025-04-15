@@ -34,41 +34,41 @@ class PetGroup
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[Groups(["petGroupDetails"])]
     #[ORM\ManyToMany(targetEntity: Pet::class, inversedBy: 'groups')]
-    private $members;
+    private Collection $members;
 
     #[Groups(["petGroup", "petGroupDetails", "petGroupIndex", "petPublicProfile"])]
     #[ORM\Column(type: 'integer')]
-    private $type;
+    private int $type;
 
     #[Groups(["petGroup"])]
     #[ORM\Column(type: 'integer')]
-    private $progress = 0;
+    private int $progress = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $skillRollTotal = 0;
+    private int $skillRollTotal = 0;
 
     #[Groups(["petGroupDetails", "petGroupIndex", "petPublicProfile"])]
     #[ORM\Column(type: 'datetime_immutable')]
-    private $createdOn;
+    private \DateTimeImmutable $createdOn;
 
     #[Groups(["petGroup", "petGroupDetails", "petGroupIndex", "petPublicProfile"])]
     #[ORM\Column(type: 'string', length: 60)]
-    private $name;
+    private string $name;
 
     #[Groups(["petGroupDetails", "petGroupIndex"])]
     #[ORM\Column(type: 'datetime_immutable')]
-    private $lastMetOn;
+    private \DateTimeImmutable $lastMetOn;
 
     #[Groups(["petGroupDetails"])]
     #[ORM\Column(type: 'integer')]
-    private $numberOfProducts = 0;
+    private int $numberOfProducts = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $socialEnergy = 0;
+    private int $socialEnergy = 0;
 
     public function __construct()
     {

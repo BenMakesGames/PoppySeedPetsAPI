@@ -93,9 +93,7 @@ class DonateController extends AbstractController
 
         foreach($inventory as $i)
         {
-            $museumItem = (new MuseumItem())
-                ->setUser($user)
-                ->setItem($i->getItem())
+            $museumItem = (new MuseumItem(user: $user, item: $i->getItem()))
                 ->setCreatedBy($i->getCreatedBy())
                 ->setComments($i->getComments())
             ;

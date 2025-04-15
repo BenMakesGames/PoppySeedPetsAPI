@@ -19,81 +19,81 @@ final class MeritEnum
     use Enum;
 
     // obtained through affection rewards (for additional config, check MeritInfo.php)
-    public const EIDETIC_MEMORY = 'Eidetic Memory';
-    public const BLACK_HOLE_TUM = 'Black Hole Tum';
-    public const LUCKY = 'Lucky';
-    public const MOON_BOUND = 'Moon-bound';
-    public const NATURAL_CHANNEL = 'Natural Channel';
-    public const NO_SHADOW_OR_REFLECTION = 'No Shadow; No Reflection';
-    public const SOOTHING_VOICE = 'Soothing Voice';
-    public const SPIRIT_COMPANION = 'Spirit Companion';
-    public const PROTOCOL_7 = 'Protocol 7';
-    public const INTROSPECTIVE = 'Introspective';
-    public const VOLAGAMY = 'Volagamy';
-    public const GREEN_THUMB = 'Green Thumb'; // +1 nature and bonuses when assisting in the greenhouse or beehive
-    public const SHOCK_RESISTANT = 'Shock-resistant'; // immune to electric attacks; never fails to get bottles of lightning
-    public const DARKVISION = 'Darkvision'; // can see in the dark
-    public const GECKO_FINGERS = 'Gecko Fingers'; // +2 climbing
-    public const WAY_OF_THE_EMPTY_HAND = 'Way of the Empty Hand'; // +5 brawl when equipped with a weapon that does not provide brawl
-    public const ATHENAS_GIFTS = 'Athena\'s Gifts'; // sometimes get a Handicrafts Supply Box
-    public const IRON_STOMACH = 'Iron Stomach'; // receives half as much poison from poisonous foods
-    public const CELESTIAL_CHORUSER = 'Celestial Choruser';
-    public const CACHING = 'Caching';
+    public const string EIDETIC_MEMORY = 'Eidetic Memory';
+    public const string BLACK_HOLE_TUM = 'Black Hole Tum';
+    public const string LUCKY = 'Lucky';
+    public const string MOON_BOUND = 'Moon-bound';
+    public const string NATURAL_CHANNEL = 'Natural Channel';
+    public const string NO_SHADOW_OR_REFLECTION = 'No Shadow; No Reflection';
+    public const string SOOTHING_VOICE = 'Soothing Voice';
+    public const string SPIRIT_COMPANION = 'Spirit Companion';
+    public const string PROTOCOL_7 = 'Protocol 7';
+    public const string INTROSPECTIVE = 'Introspective';
+    public const string VOLAGAMY = 'Volagamy';
+    public const string GREEN_THUMB = 'Green Thumb'; // +1 nature and bonuses when assisting in the greenhouse or beehive
+    public const string SHOCK_RESISTANT = 'Shock-resistant'; // immune to electric attacks; never fails to get bottles of lightning
+    public const string DARKVISION = 'Darkvision'; // can see in the dark
+    public const string GECKO_FINGERS = 'Gecko Fingers'; // +2 climbing
+    public const string WAY_OF_THE_EMPTY_HAND = 'Way of the Empty Hand'; // +5 brawl when equipped with a weapon that does not provide brawl
+    public const string ATHENAS_GIFTS = 'Athena\'s Gifts'; // sometimes get a Handicrafts Supply Box
+    public const string IRON_STOMACH = 'Iron Stomach'; // receives half as much poison from poisonous foods
+    public const string CELESTIAL_CHORUSER = 'Celestial Choruser';
+    public const string CACHING = 'Caching';
 
     // obtained through items
-    public const BEHATTED = 'Behatted';
-    public const MIRRORED = 'Mirrored'; // flips graphic
-    public const INVERTED = 'Inverted'; // inverts pet colors
-    public const VERY_INVERTED = 'Very Inverted'; // inverts pet & equipment colors
-    public const WONDROUS_STRENGTH = 'Wondrous Strength';
-    public const WONDROUS_STAMINA = 'Wondrous Stamina';
-    public const WONDROUS_DEXTERITY = 'Wondrous Dexterity';
-    public const WONDROUS_PERCEPTION = 'Wondrous Perception';
-    public const WONDROUS_INTELLIGENCE = 'Wondrous Intelligence';
-    public const BIGGER_LUNCHBOX = 'Bigger Lunchbox';
-    public const BLUSH_OF_LIFE = 'Blush of Life';
+    public const string BEHATTED = 'Behatted';
+    public const string MIRRORED = 'Mirrored'; // flips graphic
+    public const string INVERTED = 'Inverted'; // inverts pet colors
+    public const string VERY_INVERTED = 'Very Inverted'; // inverts pet & equipment colors
+    public const string WONDROUS_STRENGTH = 'Wondrous Strength';
+    public const string WONDROUS_STAMINA = 'Wondrous Stamina';
+    public const string WONDROUS_DEXTERITY = 'Wondrous Dexterity';
+    public const string WONDROUS_PERCEPTION = 'Wondrous Perception';
+    public const string WONDROUS_INTELLIGENCE = 'Wondrous Intelligence';
+    public const string BIGGER_LUNCHBOX = 'Bigger Lunchbox';
+    public const string BLUSH_OF_LIFE = 'Blush of Life';
 
     // obtained by seeking the Philosopher's Stone
-    public const METATRON_S_TOUCH = 'Metatron\'s Touch';
-    public const ICHTHYASTRA = 'Ichthyastra';
-    public const MANXOME = 'Manxome';
-    public const LIGHTNING_REINS = 'Lightning Reins';
+    public const string METATRON_S_TOUCH = 'Metatron\'s Touch';
+    public const string ICHTHYASTRA = 'Ichthyastra';
+    public const string MANXOME = 'Manxome';
+    public const string LIGHTNING_REINS = 'Lightning Reins';
 
     // obtained through house time spent
-    public const MIND_OVER_MATTER = 'Mind Over Matter';
-    public const MATTER_OVER_MIND = 'Matter Over Mind';
-    public const MODERATION = 'Moderation';
+    public const string MIND_OVER_MATTER = 'Mind Over Matter';
+    public const string MATTER_OVER_MIND = 'Matter Over Mind';
+    public const string MODERATION = 'Moderation';
 
-    public const FORCE_OF_WILL = 'Force of Will';
-    public const FORCE_OF_NATURE = 'Force of Nature';
-    public const BALANCE = 'Balance';
+    public const string FORCE_OF_WILL = 'Force of Will';
+    public const string FORCE_OF_NATURE = 'Force of Nature';
+    public const string BALANCE = 'Balance';
 
     // available by becoming a grandparent pet
-    public const NEVER_EMBARRASSED = 'Never Embarrassed';
-    public const EVERLASTING_LOVE = 'Everlasting Love';
-    public const NOTHING_TO_FEAR = 'Nothing to Fear';
+    public const string NEVER_EMBARRASSED = 'Never Embarrassed';
+    public const string EVERLASTING_LOVE = 'Everlasting Love';
+    public const string NOTHING_TO_FEAR = 'Nothing to Fear';
 
     // for Sága Jellings, only:
-    public const SAGA_SAGA = 'Sága Saga';
-    public const AFFECTIONLESS = 'Affectionless';
+    public const string SAGA_SAGA = 'Sága Saga';
+    public const string AFFECTIONLESS = 'Affectionless';
 
     // for Phoenixes, only:
-    public const ETERNAL = 'Eternal'; // +1 to all stats
+    public const string ETERNAL = 'Eternal'; // +1 to all stats
 
     // starting merits; every pet gets one (for additional config, check MeritInfo.php)
-    public const BURPS_MOTHS = 'Burps Moths';
-    public const FRIEND_OF_THE_WORLD = 'Friend of the World'; // treats rivals as friends; treats fwbs as mates; always gives in to relationship changes
-    public const GOURMAND = 'Gourmand'; // larger stomach
-    public const SPECTRAL = 'Spectral'; // opacity = 75%; +1 stealth
-    public const PREHENSILE_TONGUE = 'Prehensile Tongue'; // +1 dex; ";P" instead of ";)"
-    public const LOLLIGOVORE = 'Lolligovore'; // bonus from eating tentacles
-    public const HYPERCHROMATIC = 'Hyperchromatic'; // randomly changes colors
-    public const DREAMWALKER = 'Dreamwalker'; // gets items from dreams
-    public const GREGARIOUS = 'Gregarious'; // can be in up to 4 groups
-    public const SHEDS = 'Sheds';
-    public const LUMINARY_ESSENCE = 'Luminary Essence'; // +1 to umbra + attracts more bugs
-    public const SILVERBLOOD = 'Silverblood'; // cannot become a werecreature; +5 when crafting with silver
-    public const DOPPEL_GENE = 'Doppel Gene'; // always gives birth to twins
-    public const FAIRY_GODMOTHER = 'Fairy Godmother';
-    public const RUMPELSTILTSKINS_CURSE = 'Rumpelstiltskin\'s Curse'; // gold instead of wheat, and vice-versa
+    public const string BURPS_MOTHS = 'Burps Moths';
+    public const string FRIEND_OF_THE_WORLD = 'Friend of the World'; // treats rivals as friends; treats fwbs as mates; always gives in to relationship changes
+    public const string GOURMAND = 'Gourmand'; // larger stomach
+    public const string SPECTRAL = 'Spectral'; // opacity = 75%; +1 stealth
+    public const string PREHENSILE_TONGUE = 'Prehensile Tongue'; // +1 dex; ";P" instead of ";)"
+    public const string LOLLIGOVORE = 'Lolligovore'; // bonus from eating tentacles
+    public const string HYPERCHROMATIC = 'Hyperchromatic'; // randomly changes colors
+    public const string DREAMWALKER = 'Dreamwalker'; // gets items from dreams
+    public const string GREGARIOUS = 'Gregarious'; // can be in up to 4 groups
+    public const string SHEDS = 'Sheds';
+    public const string LUMINARY_ESSENCE = 'Luminary Essence'; // +1 to umbra + attracts more bugs
+    public const string SILVERBLOOD = 'Silverblood'; // cannot become a werecreature; +5 when crafting with silver
+    public const string DOPPEL_GENE = 'Doppel Gene'; // always gives birth to twins
+    public const string FAIRY_GODMOTHER = 'Fairy Godmother';
+    public const string RUMPELSTILTSKINS_CURSE = 'Rumpelstiltskin\'s Curse'; // gold instead of wheat, and vice-versa
 }

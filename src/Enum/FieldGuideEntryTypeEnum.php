@@ -18,11 +18,11 @@ class FieldGuideEntryTypeEnum
 {
     use Enum;
 
-    public const ANIMAL = 'animal';
-    public const PLANT = 'plant';
-    public const CELESTIAL = 'celestial';
-    public const SYNTHETIC = 'synthetic';
-    public const CRYPTID = 'cryptid';
-    public const LOCATION = 'location';
-    public const CEREMONY = 'ceremony';
+    public const string ANIMAL = 'animal';
+    public const string PLANT = 'plant';
+    public const string CELESTIAL = 'celestial';
+    public const string SYNTHETIC = 'synthetic';
+    public const string CRYPTID = 'cryptid';
+    public const string LOCATION = 'location';
+    public const string CEREMONY = 'ceremony';
 }

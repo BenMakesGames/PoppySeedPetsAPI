@@ -16,7 +16,7 @@ namespace App\Functions;
 
 class ProfanityFilterFunctions
 {
-    private const TRANSFORMS = [
+    private const array TRANSFORMS = [
         's+e+x+($|[^a-z])' => 'love$1',
         's+e+x+y+' => 'lovely',
         'c+u+n+t+' => 'muffin',

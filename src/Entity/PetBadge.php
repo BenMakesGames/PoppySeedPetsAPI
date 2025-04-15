@@ -28,18 +28,20 @@ class PetBadge
 
     #[ORM\ManyToOne(inversedBy: 'badges')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Pet $pet = null;
+    private Pet $pet;
 
     #[ORM\Column(length: 40)]
     #[Groups(['myPet', 'petPublicProfile'])]
-    private ?string $badge = null;
+    private string $badge;
 
     #[ORM\Column]
     #[Groups(['myPet', 'petPublicProfile'])]
-    private ?\DateTimeImmutable $dateAcquired;
+    private \DateTimeImmutable $dateAcquired;
 
-    public function __construct()
+    public function __construct(Pet $pet, string $badge)
     {
+        $this->pet = $pet;
+        $this->badge = $badge;
         $this->dateAcquired = new \DateTimeImmutable();
     }
 
@@ -53,7 +55,7 @@ class PetBadge
         return $this->pet;
     }
 
-    public function setPet(?Pet $pet): static
+    public function setPet(Pet $pet): static
     {
         $this->pet = $pet;
 
@@ -65,14 +67,7 @@ class PetBadge
         return $this->badge;
     }
 
-    public function setBadge(string $badge): static
-    {
-        $this->badge = $badge;
-
-        return $this;
-    }
-
-    public function getDateAcquired(): ?\DateTimeImmutable
+    public function getDateAcquired(): \DateTimeImmutable
     {
         return $this->dateAcquired;
     }

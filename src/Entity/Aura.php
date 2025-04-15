@@ -24,7 +24,7 @@ class Aura
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[Groups(["myInventory", "itemEncyclopedia", "marketItem"])]
     #[ORM\Column(type: 'string', length: 40)]

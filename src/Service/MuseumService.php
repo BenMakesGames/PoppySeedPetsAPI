@@ -34,7 +34,7 @@ class MuseumService
 
     private $donatedItemsThisRequest = [];
 
-    public function forceDonateItem(User $user, string|number|Item $item, ?string $comment, ?User $createdBy = null): bool
+    public function forceDonateItem(User $user, string|int|Item $item, ?string $comment, ?User $createdBy = null): bool
     {
         if(is_string($item))
             $item = ItemRepository::findOneByName($this->em, $item);
@@ -54,9 +54,7 @@ class MuseumService
         if($museumItem)
             return false;
 
-        $museumItem = (new MuseumItem())
-            ->setUser($user)
-            ->setItem($item)
+        $museumItem = (new MuseumItem(user: $user, item: $item))
             ->setCreatedBy($createdBy)
         ;
 

@@ -79,10 +79,10 @@ class MerchantFishController extends AbstractController
             }
             else
             {
-                $newTrades = (new TradesUnlocked())
-                    ->setUser($user)
-                    ->setTrades($squirrel3->rngNextFromArray($lockedTradeGroups))
-                ;
+                $newTrades = new TradesUnlocked(
+                    user: $user,
+                    trades: $squirrel3->rngNextFromArray($lockedTradeGroups)
+                );
 
                 $em->persist($newTrades);
 

@@ -27,24 +27,28 @@ class StatusEffect
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Pet::class, inversedBy: 'statusEffects')]
     #[ORM\JoinColumn(nullable: false)]
-    private $pet;
+    private Pet $pet;
 
     #[ORM\Column(type: 'string', length: 40)]
     #[Groups(['myPet'])]
-    private $status;
+    private string $status;
 
     #[ORM\Column(type: 'integer')]
-    private $totalDuration = 0;
+    private int $totalDuration = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $timeRemaining = 0;
+    private int $timeRemaining = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $counter = 0;
+    private int $counter = 0;
+
+    public function __construct()
+    {
+    }
 
     public function getId(): ?int
     {
@@ -56,7 +60,7 @@ class StatusEffect
         return $this->pet;
     }
 
-    public function setPet(?Pet $pet): self
+    public function setPet(Pet $pet): self
     {
         $this->pet = $pet;
 

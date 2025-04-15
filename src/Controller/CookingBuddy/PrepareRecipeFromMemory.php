@@ -36,7 +36,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/cookingBuddy')]
 class PrepareRecipeFromMemory extends AbstractController
 {
-    private const ALLOWED_LOCATIONS = [
+    private const array ALLOWED_LOCATIONS = [
         LocationEnum::HOME,
         LocationEnum::BASEMENT,
         LocationEnum::MANTLE

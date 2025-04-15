@@ -59,10 +59,7 @@ final class Claim extends AbstractController
         if(!$progress['done'])
             throw new PSPInvalidOperationException('You are not eligible to claim that achievement.');
 
-        $badge = (new UserBadge())
-            ->setUser($user)
-            ->setBadge($badge)
-        ;
+        $badge = new UserBadge(user: $user, badge: $badge);
 
         $em->persist($badge);
 

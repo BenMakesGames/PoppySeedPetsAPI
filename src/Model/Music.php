@@ -16,7 +16,7 @@ namespace App\Model;
 
 class Music
 {
-    const LYRICS = [
+    const array LYRICS = [
         // U Can't Touch This
         'Go with the flow; it is said: that if you can\'t groove to this then you are probably dead!',
 

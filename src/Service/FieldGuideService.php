@@ -94,11 +94,7 @@ class FieldGuideService
 
     private function create(User $user, FieldGuideEntry $entry, string $comment): UserFieldGuideEntry
     {
-        $record = (new UserFieldGuideEntry())
-            ->setUser($user)
-            ->setEntry($entry)
-            ->setComment($comment)
-        ;
+        $record = new UserFieldGuideEntry(user: $user, entry: $entry, comment: $comment);
 
         $this->em->persist($record);
 

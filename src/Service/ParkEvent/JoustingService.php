@@ -128,8 +128,7 @@ class JoustingService implements ParkEventInterface
 
         $this->awardExp();
 
-        $parkEvent = (new ParkEvent())
-            ->setType(ParkEventTypeEnum::JOUSTING)
+        $parkEvent = (new ParkEvent(ParkEventTypeEnum::JOUSTING))
             ->addParticipants($pets)
             ->setResults($this->results)
         ;

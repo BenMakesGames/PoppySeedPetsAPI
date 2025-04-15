@@ -29,7 +29,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Inventory
 {
     /** @var int[] */
-    public const CONSUMABLE_LOCATIONS = [
+    public const array CONSUMABLE_LOCATIONS = [
         LocationEnum::HOME,
         LocationEnum::BASEMENT
     ];
@@ -38,24 +38,24 @@ class Inventory
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups(["myPet", "myInventory", "greenhouseFertilizer", "mySeeds", "fireplaceFuel", "dragonTreasure", "myHollowEarthTiles"])]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Item::class, inversedBy: 'inventory')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(["myPet", "myInventory", "userPublicProfile", "petPublicProfile", "marketItem", "greenhouseFertilizer", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "petGroupDetails", "dragonTreasure", "myHollowEarthTiles", "helperPet"])]
-    private $item;
+    private Item $item;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $owner;
+    private User $owner;
 
     #[ORM\Column(type: 'datetime_immutable')]
     #[Groups(["myInventory"])]
-    private $createdOn;
+    private \DateTimeImmutable $createdOn;
 
     #[ORM\Column(type: 'datetime_immutable')]
     #[Groups(["myInventory"])]
-    private $modifiedOn;
+    private \DateTimeImmutable $modifiedOn;
 
     #[ORM\Column(type: 'json')]
     #[Groups(["myInventory", "fireplaceMantle"])]
@@ -63,16 +63,16 @@ class Inventory
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[Groups(["myInventory"])]
-    private $createdBy;
+    private ?User $createdBy;
 
     #[ORM\OneToOne(targetEntity: Pet::class, mappedBy: 'tool')]
-    private $holder;
+    private ?Pet $holder = null;
 
     #[ORM\Column(type: 'smallint')]
-    private $location = LocationEnum::HOME;
+    private int $location = LocationEnum::HOME;
 
     #[ORM\OneToOne(targetEntity: Pet::class, mappedBy: 'hat')]
-    private $wearer;
+    private ?Pet $wearer = null;
 
     #[ORM\Column(type: 'boolean')]
     #[Groups(["myInventory"])]
@@ -83,18 +83,18 @@ class Inventory
 
     #[ORM\ManyToOne(targetEntity: Enchantment::class)]
     #[Groups(["myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"])]
-    private $enchantment;
+    private ?Enchantment $enchantment = null;
 
     #[ORM\ManyToOne(targetEntity: Spice::class)]
     #[Groups(["myInventory", "itemEncyclopedia", "marketItem", "fireplaceFuel", "greenhouseFertilizer", "myPet", "fireplaceMantle", "dragonTreasure"])]
-    private $spice;
+    private ?Spice $spice = null;
 
     #[ORM\Column(type: 'string', length: 100)]
-    private $fullItemName;
+    private string $fullItemName;
 
     #[ORM\ManyToOne(targetEntity: Item::class)]
     #[Groups(["myInventory", "myPet", "fireplaceMantle", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "fireplaceFuel", "dragonTreasure"])]
-    private $illusion;
+    private ?Item $illusion = null;
 
     #[ORM\OneToOne(mappedBy: 'inventory', cascade: ['remove'])]
     private ?InventoryForSale $forSale = null;
@@ -103,8 +103,12 @@ class Inventory
     #[ORM\Column(type: 'integer')]
     private int $version;
 
-    public function __construct()
+    public function __construct(User $owner, Item $item)
     {
+        $this->owner = $owner;
+        $this->item = $item;
+        $this->fullItemName = InventoryModifierFunctions::getNameWithModifiers($this);
+
         $this->createdOn = new \DateTimeImmutable();
         $this->modifiedOn = new \DateTimeImmutable();
     }
@@ -117,17 +121,6 @@ class Inventory
     public function getItem(): Item
     {
         return $this->item;
-    }
-
-    public function setItem(Item $item): self
-    {
-        if($this->item !== null) throw new \InvalidArgumentException('$item has already been set; use changeItem, instead!');
-
-        $this->item = $item;
-
-        $this->fullItemName = InventoryModifierFunctions::getNameWithModifiers($this);
-
-        return $this;
     }
 
     public function changeItem(Item $item): self
@@ -158,7 +151,7 @@ class Inventory
         return $this;
     }
 
-    public function getOwner(): ?User
+    public function getOwner(): User
     {
         return $this->owner;
     }
@@ -188,16 +181,6 @@ class Inventory
 
         if($this->getHolder()) $this->getHolder()->setTool(null);
         if($this->getWearer()) $this->getWearer()->setHat(null);
-
-        return $this;
-    }
-
-    public function setOwner(User $owner): self
-    {
-        if($this->owner)
-            throw new \Exception("Cannot set item owner; item already has an owner.");
-
-        $this->owner = $owner;
 
         return $this;
     }

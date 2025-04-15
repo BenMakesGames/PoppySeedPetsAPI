@@ -20,7 +20,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: 'App\Repository\ItemToolRepository')]
 class ItemTool
 {
-    public const MODIFIER_FIELDS = [
+    public const array MODIFIER_FIELDS = [
         'arcana', 'brawl', 'climbing', 'crafts', 'fishing', 'gathering',
         'music', 'nature', 'science', 'smithing', 'stealth',
     ];
@@ -28,7 +28,7 @@ class ItemTool
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'integer')]
     private $stealth = 0;

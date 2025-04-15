@@ -18,7 +18,7 @@ class PollinatorEnum
 {
     use Enum;
 
-    public const BUTTERFLIES = 'butterflies';
-    public const BEES_1 = 'bees1';
-    public const BEES_2 = 'bees2';
+    public const string BUTTERFLIES = 'butterflies';
+    public const string BEES_1 = 'bees1';
+    public const string BEES_2 = 'bees2';
 }

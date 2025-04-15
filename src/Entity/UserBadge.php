@@ -25,20 +25,22 @@ class UserBadge
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'badges')]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[ORM\Column(type: 'string', length: 100)]
-    private $badge;
+    private string $badge;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $claimedOn;
+    private \DateTimeImmutable $claimedOn;
 
-    public function __construct()
+    public function __construct(User $user, string $badge)
     {
+        $this->user = $user;
+        $this->badge = $badge;
         $this->claimedOn = new \DateTimeImmutable();
     }
 
@@ -52,23 +54,9 @@ class UserBadge
         return $this->user;
     }
 
-    public function setUser(User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
     public function getBadge(): string
     {
         return $this->badge;
-    }
-
-    public function setBadge(string $badge): self
-    {
-        $this->badge = $badge;
-
-        return $this;
     }
 
     public function getClaimedOn(): \DateTimeImmutable

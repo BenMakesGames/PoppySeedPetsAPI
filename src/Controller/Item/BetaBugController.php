@@ -41,7 +41,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/item/betaBug")]
 class BetaBugController extends AbstractController
 {
-    private const ALLOWED_ITEMS = [
+    private const array ALLOWED_ITEMS = [
         'Cooking Buddy',
         'Cooking "Alien"',
         'Cooking... with Fire',
@@ -158,11 +158,9 @@ class BetaBugController extends AbstractController
 
         if($startingHatItem)
         {
-            $inventory = (new Inventory())
-                ->setOwner($user)
+            $inventory = (new Inventory(owner: $user, item: ItemRepository::findOneByName($em, $startingHatItem)))
                 ->setCreatedBy($user)
                 ->setLocation(LocationEnum::WARDROBE)
-                ->setItem(ItemRepository::findOneByName($em, $startingHatItem))
                 ->setWearer($newPet)
             ;
 

@@ -114,11 +114,10 @@ class AdoptController extends AbstractController
         {
             $newPet->addMerit(MeritRepository::findOneByName($em, 'Behatted'));
 
-            $hat = (new Inventory())
-                ->setItem(ItemRepository::findOneByName($em, 'Mermaid Egg'))
+            $hat = (new Inventory(owner: $user, item: ItemRepository::findOneByName($em, 'Mermaid Egg')))
                 ->setLocation(LocationEnum::WARDROBE)
                 ->addComment($newPet->getName() . ' came from the Hollow Earth wearing this...')
-                ->setOwner($user);
+            ;
 
             $em->persist($hat);
 

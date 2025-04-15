@@ -18,13 +18,13 @@ class GuildEnum
 {
     use Enum;
 
-    public const TIMES_ARROW = 'Time\'s Arrow';
-    public const LIGHT_AND_SHADOW = 'Light and Shadow';
-    public const TAPESTRIES = 'Tapestries';
-    public const INNER_SANCTUM = 'Inner Sanctum';
-    public const DWARFCRAFT = 'Dwarfcraft';
-    public const GIZUBIS_GARDEN = 'Gizubi\'s Garden';
-    public const HIGH_IMPACT = 'High Impact';
-    public const THE_UNIVERSE_FORGETS = 'The Universe Forgets';
-    public const CORRESPONDENCE = 'Correspondence';
+    public const string TIMES_ARROW = 'Time\'s Arrow';
+    public const string LIGHT_AND_SHADOW = 'Light and Shadow';
+    public const string TAPESTRIES = 'Tapestries';
+    public const string INNER_SANCTUM = 'Inner Sanctum';
+    public const string DWARFCRAFT = 'Dwarfcraft';
+    public const string GIZUBIS_GARDEN = 'Gizubi\'s Garden';
+    public const string HIGH_IMPACT = 'High Impact';
+    public const string THE_UNIVERSE_FORGETS = 'The Universe Forgets';
+    public const string CORRESPONDENCE = 'Correspondence';
 }

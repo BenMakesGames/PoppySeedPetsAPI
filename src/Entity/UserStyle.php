@@ -22,9 +22,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity]
 class UserStyle
 {
-    public const CURRENT = 'Current';
+    public const string Current = 'Current';
 
-    const PROPERTIES = [
+    const array Properties = [
         'backgroundColor',
         'speechBubbleBackgroundColor',
         'textColor',
@@ -46,95 +46,94 @@ class UserStyle
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[Groups(["publicStyle"])]
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[Groups(["myStyle"])]
     #[ORM\Column(type: 'string', length: 40)]
-    private $name;
+    private string $name;
 
     #[Groups(["myStyle", "publicStyle"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $backgroundColor;
+    private string $backgroundColor = 'EEEEEE';
 
     #[Groups(["myStyle", "publicStyle"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $speechBubbleBackgroundColor;
+    private string $speechBubbleBackgroundColor = 'FFFFFF';
 
     #[Groups(["myStyle", "publicStyle"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $textColor;
+    private string $textColor = '333333';
 
     #[Groups(["myStyle", "publicStyle"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $primaryColor;
+    private string $primaryColor = '225588';
 
     #[Groups(["myStyle", "publicStyle"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $textOnPrimaryColor;
+    private string $textOnPrimaryColor = 'FFFFFF';
 
     #[Groups(["myStyle", "publicStyle"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $tabBarBackgroundColor;
+    private string $tabBarBackgroundColor = 'BBBBBB';
 
     #[Groups(["myStyle", "publicStyle"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $linkAndButtonColor;
+    private string $linkAndButtonColor = '4477AA';
 
     #[Groups(["myStyle", "publicStyle"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $buttonTextColor;
+    private string $buttonTextColor = 'FFFFFF';
 
     #[Groups(["myStyle", "publicStyle"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $dialogLinkColor;
+    private string $dialogLinkColor = '4477AA';
 
     #[Groups(["myStyle", "publicStyle"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $warningColor;
+    private string $warningColor = 'CC4422';
 
     #[Groups(["myStyle", "publicStyle"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $gainColor;
+    private string $gainColor = '228844';
 
     #[Groups(["myStyle", "publicStyle"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $bonusAndSpiceColor;
+    private string $bonusAndSpiceColor = '009999';
 
     #[Groups(["myStyle", "publicStyle"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $bonusAndSpiceSelectedColor;
+    private string $bonusAndSpiceSelectedColor = '00CCCC';
 
     #[Groups(["myStyle", "publicStyle"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $inputBackgroundColor;
+    private string $inputBackgroundColor = 'FFFFFF';
 
     #[Groups(["myStyle", "publicStyle"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $inputTextColor;
+    private string $inputTextColor = '333333';
+
+    public function __construct(User $user, string $name)
+    {
+        $this->user = $user;
+        $this->name = $name;
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function setUser(User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }

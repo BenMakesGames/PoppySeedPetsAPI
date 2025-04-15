@@ -22,7 +22,7 @@ class PassphraseResetRequest
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'passphraseResetRequest', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]

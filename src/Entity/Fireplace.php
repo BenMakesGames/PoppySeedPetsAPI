@@ -27,9 +27,9 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 #[ORM\Entity]
 class Fireplace
 {
-    public const MAX_HEAT = 3 * 24 * 60; // 3 days
+    public const int MAX_HEAT = 3 * 24 * 60; // 3 days
 
-    public const STOCKING_APPEARANCES = [
+    public const array STOCKING_APPEARANCES = [
         'fluffed',
         'tasseled',
         'snowflaked',
@@ -42,7 +42,7 @@ class Fireplace
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'fireplace')]
     #[ORM\JoinColumn(nullable: false)]

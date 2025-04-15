@@ -26,7 +26,7 @@ class HollowEarthPlayer
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'hollowEarthPlayer')]
     #[ORM\JoinColumn(nullable: false)]

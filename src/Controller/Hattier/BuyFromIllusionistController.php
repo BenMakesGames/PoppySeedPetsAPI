@@ -32,7 +32,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/illusionist")]
 class BuyFromIllusionistController extends AbstractController
 {
-    private const INVENTORY = [
+    private const array INVENTORY = [
         'Scroll of Illusions' => [ 'moneys' => 200, 'recyclingPoints' => 100, 'bloodWine' => 2 ],
         'Blush of Life' => [ 'moneys' => 200, 'recyclingPoints' => 100, 'bloodWine' => 2 ],
         'Mysterious Seed' => [ 'moneys' => 150, 'recyclingPoints' => 75, 'bloodWine' => 1 ],

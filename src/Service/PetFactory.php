@@ -28,7 +28,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PetFactory
 {
-    private const SentinelNames = [
+    private const array SentinelNames = [
         'Sentinel',
         'Homunculus',
         'Golem',

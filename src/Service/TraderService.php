@@ -37,7 +37,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class TraderService
 {
-    private const TRADER_NAMES = [
+    private const array TRADER_NAMES = [
         // Saffron
         'Azafrán', 'Zaeafran',
 
@@ -974,7 +974,7 @@ class TraderService
         };
     }
 
-    public const NUMBER_OF_DAILY_SPECIAL_OFFERS = 5;
+    public const int NUMBER_OF_DAILY_SPECIAL_OFFERS = 5;
 
     /**
      * @return Item[]
@@ -1597,11 +1597,9 @@ class TraderService
         ;
     }
 
-    public static function generateTrader(IRandom $rng): Trader
+    public static function generateTrader(User $user, IRandom $rng): Trader
     {
-        $trader = (new Trader())
-            ->setName($rng->rngNextFromArray(self::TRADER_NAMES))
-        ;
+        $trader = new Trader(user: $user, name: $rng->rngNextFromArray(self::TRADER_NAMES));
 
         self::recolorTrader($rng, $trader);
 

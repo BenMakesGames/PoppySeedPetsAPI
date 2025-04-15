@@ -18,10 +18,10 @@ final class SpiritCompanionStarEnum
 {
     use Enum;
 
-    public const ALTAIR = 'Altair';
-    public const CASSIOPEIA = 'Cassiopeia';
-    public const CEPHEUS = 'Cepheus';
-    public const GEMINI = 'Gemini';
-    public const HYDRA = 'Hydra';
-    public const SAGITTARIUS = 'Sagittarius';
+    public const string ALTAIR = 'Altair';
+    public const string CASSIOPEIA = 'Cassiopeia';
+    public const string CEPHEUS = 'Cepheus';
+    public const string GEMINI = 'Gemini';
+    public const string HYDRA = 'Hydra';
+    public const string SAGITTARIUS = 'Sagittarius';
 }

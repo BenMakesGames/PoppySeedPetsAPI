@@ -18,12 +18,12 @@ class StoryAdventureTypeEnum
 {
     use Enum;
 
-    public const STORY = 'Story';
-    public const MINE_GOLD = 'MineGold';
-    public const COLLECT_STONE = 'CollectStone';
-    public const HUNT = 'HuntAutoScaling';
-    public const GATHER = 'Gather';
-    public const TREASURE_HUNT = 'TreasureHunt';
-    public const WANDERING_MONSTER = 'WanderingMonster';
-    public const RANDOM_RECRUIT = 'RecruitTown';
+    public const string STORY = 'Story';
+    public const string MINE_GOLD = 'MineGold';
+    public const string COLLECT_STONE = 'CollectStone';
+    public const string HUNT = 'HuntAutoScaling';
+    public const string GATHER = 'Gather';
+    public const string TREASURE_HUNT = 'TreasureHunt';
+    public const string WANDERING_MONSTER = 'WanderingMonster';
+    public const string RANDOM_RECRUIT = 'RecruitTown';
 }

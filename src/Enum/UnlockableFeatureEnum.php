@@ -18,23 +18,23 @@ final class UnlockableFeatureEnum
 {
     use Enum;
 
-    public const Florist = 'Florist';
-    public const Bookstore = 'Bookstore';
-    public const Museum = 'Museum';
-    public const Park = 'Park';
-    public const Greenhouse = 'Greenhouse';
-    public const CookingBuddy = 'Cooking Buddy';
-    public const Basement = 'Basement';
-    public const HollowEarth = 'Hollow Earth';
-    public const Market = 'Market';
-    public const Fireplace = 'Fireplace';
-    public const Beehive = 'Beehive';
-    public const Trader = 'Trader';
-    public const Mailbox = 'Mailbox';
-    public const DragonDen = 'Dragon Den';
-    public const BulkSelling = 'Bulk Selling';
-    public const Hattier = 'Hattier';
-    public const FieldGuide = 'Field Guide';
-    public const StarKindred = 'Star Kindred';
-    public const Zoologist = 'Zoologist';
+    public const string Florist = 'Florist';
+    public const string Bookstore = 'Bookstore';
+    public const string Museum = 'Museum';
+    public const string Park = 'Park';
+    public const string Greenhouse = 'Greenhouse';
+    public const string CookingBuddy = 'Cooking Buddy';
+    public const string Basement = 'Basement';
+    public const string HollowEarth = 'Hollow Earth';
+    public const string Market = 'Market';
+    public const string Fireplace = 'Fireplace';
+    public const string Beehive = 'Beehive';
+    public const string Trader = 'Trader';
+    public const string Mailbox = 'Mailbox';
+    public const string DragonDen = 'Dragon Den';
+    public const string BulkSelling = 'Bulk Selling';
+    public const string Hattier = 'Hattier';
+    public const string FieldGuide = 'Field Guide';
+    public const string StarKindred = 'Star Kindred';
+    public const string Zoologist = 'Zoologist';
 }

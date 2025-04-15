@@ -24,7 +24,7 @@ class MeritFilterService
 {
     use FilterService;
 
-    private const DefaultPageSize = 100;
+    private const int DefaultPageSize = 100;
 
     private readonly EntityRepository $repository;
 
