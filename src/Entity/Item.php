@@ -94,7 +94,7 @@ class Item
     private ?ItemTreasure $treasure = null;
 
     #[ORM\Column(type: 'boolean')]
-    private false $isBug = false;
+    private bool $isBug = false;
 
     #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\ManyToOne(targetEntity: HollowEarthTileCard::class)]
