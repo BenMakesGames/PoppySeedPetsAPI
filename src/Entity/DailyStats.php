@@ -27,163 +27,163 @@ class DailyStats
 
     #[ORM\Column(type: 'datetime_immutable')]
     #[Groups(['globalStats'])]
-    private $date;
+    private \DateTimeImmutable $date;
 
     #[ORM\Column(type: 'integer')]
     #[Groups(['globalStats'])]
-    private $numberOfPlayers1Day;
+    private int $numberOfPlayers1Day = 0;
 
     #[ORM\Column(type: 'integer')]
     #[Groups(['globalStats'])]
-    private $numberOfPlayers3Day;
+    private int $numberOfPlayers3Day = 0;
 
     #[ORM\Column(type: 'integer')]
     #[Groups(['globalStats'])]
-    private $numberOfPlayers7Day;
+    private int $numberOfPlayers7Day = 0;
 
     #[ORM\Column(type: 'integer')]
     #[Groups(['globalStats'])]
-    private $numberOfPlayers28Day;
+    private int $numberOfPlayers28Day = 0;
 
     #[ORM\Column(type: 'integer')]
     #[Groups(['globalStats'])]
-    private $numberOfPlayersLifetime;
+    private int $numberOfPlayersLifetime = 0;
 
     #[ORM\Column(type: 'integer')]
     #[Groups(['globalStats'])]
-    private $totalMoneys1Day;
+    private int $totalMoneys1Day = 0;
 
     #[ORM\Column(type: 'integer')]
     #[Groups(['globalStats'])]
-    private $totalMoneys3Day;
+    private int $totalMoneys3Day = 0;
 
     #[ORM\Column(type: 'integer')]
     #[Groups(['globalStats'])]
-    private $totalMoneys7Day;
+    private int $totalMoneys7Day = 0;
 
     #[ORM\Column(type: 'integer')]
     #[Groups(['globalStats'])]
-    private $totalMoneys28Day;
+    private int $totalMoneys28Day = 0;
 
     #[ORM\Column(type: 'integer')]
     #[Groups(['globalStats'])]
-    private $totalMoneysLifetime;
+    private int $totalMoneysLifetime = 0;
 
     #[ORM\Column(type: 'integer')]
     #[Groups(['globalStats'])]
-    private $newPlayers1Day;
+    private int $newPlayers1Day = 0;
 
     #[ORM\Column(type: 'integer')]
     #[Groups(['globalStats'])]
-    private $newPlayers3Day;
+    private int $newPlayers3Day = 0;
 
     #[ORM\Column(type: 'integer')]
     #[Groups(['globalStats'])]
-    private $newPlayers7Day;
+    private int $newPlayers7Day = 0;
 
     #[ORM\Column(type: 'integer')]
     #[Groups(['globalStats'])]
-    private $newPlayers28Day;
+    private int $newPlayers28Day = 0;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedTrader1Day;
+    private ?int $unlockedTrader1Day = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedTrader3Day;
+    private ?int $unlockedTrader3Day = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedTrader7Day;
+    private ?int $unlockedTrader7Day = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedTrader28Day;
+    private ?int $unlockedTrader28Day = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedTraderLifetime;
+    private ?int $unlockedTraderLifetime = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedFireplace1Day;
+    private ?int $unlockedFireplace1Day = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedFireplace3Day;
+    private ?int $unlockedFireplace3Day = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedFireplace7Day;
+    private ?int $unlockedFireplace7Day = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedFireplace28Day;
+    private ?int $unlockedFireplace28Day = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedFireplaceLifetime;
+    private ?int $unlockedFireplaceLifetime = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedGreenhouse1Day;
+    private ?int $unlockedGreenhouse1Day = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedGreenhouse3Day;
+    private ?int $unlockedGreenhouse3Day = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedGreenhouse7Day;
+    private ?int $unlockedGreenhouse7Day = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedGreenhouse28Day;
+    private ?int $unlockedGreenhouse28Day = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedGreenhouseLifetime;
+    private ?int $unlockedGreenhouseLifetime = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedBeehive1Day;
+    private ?int $unlockedBeehive1Day = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedBeehive3Day;
+    private ?int $unlockedBeehive3Day = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedBeehive7Day;
+    private ?int $unlockedBeehive7Day = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedBeehive28Day;
+    private ?int $unlockedBeehive28Day = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedBeehiveLifetime;
+    private ?int $unlockedBeehiveLifetime = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedPortal1Day;
+    private ?int $unlockedPortal1Day = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedPortal3Day;
+    private ?int $unlockedPortal3Day = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedPortal7Day;
+    private ?int $unlockedPortal7Day = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedPortal28Day;
+    private ?int $unlockedPortal28Day = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(['globalStats'])]
-    private ?int $unlockedPortalLifetime;
+    private ?int $unlockedPortalLifetime = null;
 
     public function getId(): ?int
     {

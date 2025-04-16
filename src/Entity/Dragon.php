@@ -61,36 +61,36 @@ class Dragon
 
     #[Groups(["myFireplace", "myDragon"])]
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
-    private $name;
+    private ?string $name = null;
 
     #[ORM\Column(type: 'integer')]
-    private $food = 0;
+    private int $food = 0;
 
     #[Groups(["myFireplace", "myDragon"])]
     #[ORM\Column(type: 'string', length: 6, nullable: true)]
-    private $colorA;
+    private ?string $colorA = null;
 
     #[Groups(["myFireplace", "myDragon"])]
     #[ORM\Column(type: 'string', length: 6, nullable: true)]
-    private $colorB;
+    private ?string $colorB = null;
 
     #[ORM\Column(type: 'boolean')]
-    private $isAdult = false;
+    private bool $isAdult = false;
 
     #[ORM\Column(type: 'integer')]
-    private $growth = 0;
-
-    #[ORM\Column(type: 'integer')]
-    #[Groups(['myDragon'])]
-    private $silver = 0;
+    private int $growth = 0;
 
     #[ORM\Column(type: 'integer')]
     #[Groups(['myDragon'])]
-    private $gold = 0;
+    private int $silver = 0;
 
     #[ORM\Column(type: 'integer')]
     #[Groups(['myDragon'])]
-    private $gems = 0;
+    private int $gold = 0;
+
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['myDragon'])]
+    private int $gems = 0;
 
     #[ORM\Column(type: 'json', nullable: true)]
     #[Groups(['myDragon'])]

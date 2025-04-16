@@ -31,32 +31,32 @@ class GreenhousePlant
     #[Groups(["greenhousePlant"])]
     #[ORM\ManyToOne(targetEntity: Plant::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $plant;
+    private Plant $plant;
 
     #[ORM\Column(type: 'integer')]
-    private $growth = 0;
+    private int $growth = 0;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $lastInteraction;
+    private \DateTimeImmutable $lastInteraction;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'greenhousePlants')]
     #[ORM\JoinColumn(nullable: false)]
-    private $owner;
+    private User $owner;
 
     #[Groups(["greenhousePlant"])]
     #[ORM\Column(type: 'boolean')]
-    private $isAdult = false;
+    private bool $isAdult = false;
 
     #[ORM\Column(type: 'integer')]
-    private $previousGrowth = 0;
+    private int $previousGrowth = 0;
 
     #[Groups(["greenhousePlant"])]
     #[ORM\Column(type: 'smallint')]
-    private $ordinal;
+    private int $ordinal;
 
     #[Groups(["greenhousePlant"])]
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
-    private $pollinators;
+    private ?string $pollinators = null;
 
     #[ORM\Version]
     #[ORM\Column(type: 'integer')]

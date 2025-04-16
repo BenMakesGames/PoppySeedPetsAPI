@@ -27,13 +27,13 @@ class FieldGuideEntry
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 20)]
-    private $type;
+    private string $type;
 
     #[ORM\Column(type: 'string', length: 40, unique: true)]
-    private $name;
+    private string $name;
 
     #[ORM\Column(type: 'string', length: 40, nullable: true)]
-    private $image;
+    private ?string $image = null;
 
     #[ORM\Column(type: 'text')]
     private $description;

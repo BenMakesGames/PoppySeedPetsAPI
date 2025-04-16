@@ -51,7 +51,7 @@ class Article
 
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
     #[Groups(['article'])]
-    private $imageUrl;
+    private ?string $imageUrl = null;
 
     public function __construct()
     {

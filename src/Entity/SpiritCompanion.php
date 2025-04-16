@@ -140,7 +140,7 @@ class SpiritCompanion
         return $this->star;
     }
 
-    public function getLastHangOut(): \DateTimeImmutable
+    public function getLastHangOut(): ?\DateTimeImmutable
     {
         return $this->lastHangOut;
     }

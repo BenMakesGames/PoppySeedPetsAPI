@@ -30,7 +30,7 @@ class HollowEarthPlayer
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'hollowEarthPlayer')]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[Groups(["hollowEarth"])]
     #[ORM\ManyToOne(targetEntity: 'App\Entity\HollowEarthTile')]
@@ -42,39 +42,39 @@ class HollowEarthPlayer
 
     #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'integer')]
-    private $movesRemaining = 0;
+    private int $movesRemaining = 0;
 
     #[Groups(["hollowEarth"])]
     #[ORM\OneToOne(targetEntity: Pet::class)]
     #[ORM\JoinColumn(nullable: true)]
-    private $chosenPet = null;
+    private ?Pet $chosenPet = null;
 
     #[ORM\Column(type: 'string', length: 1)]
-    private $currentDirection;
+    private string $currentDirection;
 
     #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'integer')]
-    private $jade = 0;
+    private int $jade = 0;
 
     #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'integer')]
-    private $incense = 0;
+    private int $incense = 0;
 
     #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'integer')]
-    private $salt = 0;
+    private int $salt = 0;
 
     #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'integer')]
-    private $amber = 0;
+    private int $amber = 0;
 
     #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'integer')]
-    private $fruit = 0;
+    private int $fruit = 0;
 
     #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'boolean')]
-    private $showGoods = false;
+    private bool $showGoods = false;
 
     #[ORM\Version]
     #[ORM\Column(type: 'integer')]
