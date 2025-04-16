@@ -40,4 +40,10 @@ class EquipmentFunctions
         ;
         $pet->setHat(null);
     }
+    public static function destroyPetTool(Pet $pet)
+    {
+        if($pet->getTool() === null)
+            return;
+        $pet->setTool(null);
+    }
 }
