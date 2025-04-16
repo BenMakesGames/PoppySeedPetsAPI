@@ -76,9 +76,7 @@ class LostInTownService
     {
         $pet = $petWithSkills->getPet();
         
-        //destroy tool
-        $this->em->remove($pet->getTool()); 
-        EquipmentFunctions::destroyPetTool($pet); 
+        EquipmentFunctions::destroyPetTool($this->em, $pet);
         
         $items = [
             $this->rng->rngNextFromArray([ 'Canned Food', 'Onion Rings', 'Spicy Tuna Salad Sammy', 'Soy Sauce', 'Korean Rice Cakes' ]),
@@ -102,9 +100,7 @@ class LostInTownService
     {
         $pet = $petWithSkills->getPet();
         
-        //destroy tool
-        $this->em->remove($pet->getTool()); 
-        EquipmentFunctions::destroyPetTool($pet);
+        EquipmentFunctions::destroyPetTool($this->em, $pet);
         
         $items = [
             'Rusted, Busted Mechanism',
@@ -143,9 +139,7 @@ class LostInTownService
         }
         else
         {
-            //destroy tool
-            $this->em->remove($pet->getTool()); 
-            EquipmentFunctions::destroyPetTool($pet);
+            EquipmentFunctions::destroyPetTool($this->em, $pet);
             
             $items = [
                 $this->rng->rngNextFromArray([ 'Black Scarf', 'Cool Sunglasses', 'Gaming Box', 'Password' ]),
@@ -173,9 +167,7 @@ class LostInTownService
     {
         $pet = $petWithSkills->getPet();
         
-        //destroy tool
-        $this->em->remove($pet->getTool()); 
-        EquipmentFunctions::destroyPetTool($pet);
+        EquipmentFunctions::destroyPetTool($this->em, $pet);
         
         $items = [
             'Cobweb',

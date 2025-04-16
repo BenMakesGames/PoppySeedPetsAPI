@@ -25,6 +25,7 @@ use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\AdventureMath;
+use App\Functions\EquipmentFunctions;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
@@ -65,8 +66,7 @@ class ChocolateMansion
     {
         $pet = $petWithSkills->getPet();
 
-        $this->em->remove($pet->getTool());
-        $pet->setTool(null);
+        EquipmentFunctions::destroyPetTool($this->em, $pet);
 
         $roomsAvailableQuest = UserQuestRepository::findOrCreate($this->em, $pet->getOwner(), 'Chocolate Mansion Rooms', self::QUEST_VALUE_PATIO_ONLY);
 

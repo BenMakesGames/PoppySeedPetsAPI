@@ -128,8 +128,7 @@ class PhilosophersStoneService
 
                     $pet->increaseEsteem(12);
 
-                    $this->em->remove($pet->getTool());
-                    $pet->setTool(null);
+                    EquipmentFunctions::destroyPetTool($this->em, $pet);
 
                     $this->inventoryService->petCollectsItem('Metatron\'s Fire', $pet, $pet->getName() . ' found this after defeating the Lava Giant!', $activityLog);
 
@@ -321,8 +320,7 @@ class PhilosophersStoneService
 
                     $pet->increaseEsteem(12);
 
-                    $this->em->remove($pet->getTool());
-                    $pet->setTool(null);
+                    EquipmentFunctions::destroyPetTool($this->em, $pet);
 
                     $this->inventoryService->petCollectsItem('Earth\'s Egg', $pet, $pet->getName() . ' got this from ' . $aMonsterType . ' Jabberwock!', $activityLog);
 

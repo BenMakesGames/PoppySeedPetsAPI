@@ -92,8 +92,7 @@ class TreasureMapService
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE ], $activityLog);
             $pet->increaseEsteem(5);
 
-            $this->em->remove($pet->getTool());
-            $pet->setTool(null);
+            EquipmentFunctions::destroyPetTool($this->em, $pet);
 
             $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' found this by following Cetgueli\'s Treasure Map!', $activityLog);
 
@@ -123,8 +122,7 @@ class TreasureMapService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
         ;
 
-        $this->em->remove($pet->getTool());
-        $pet->setTool(null);
+        EquipmentFunctions::destroyPetTool($this->em, $pet);
 
         $this->inventoryService->petCollectsItem('Magpie\'s Deal', $pet, $pet->getName() . ' got this from a Thieving Magpie in exchange for a "Gold" Idol!', $activityLog);
 
@@ -160,12 +158,9 @@ class TreasureMapService
             $this->inventoryService->petCollectsItem('Major Scroll of Riches', $pet, $pet->getName() . ' got this from Abundantia\'s Vault!', $activityLog);
         }
 
-        $this->em->remove($pet->getTool());
+        EquipmentFunctions::destroyPetTool($this->em, $pet);
 
-        $pet
-            ->setTool(null)
-            ->increaseFood(-1)
-        ;
+        $pet->increaseFood(-1);
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
         $this->petExperienceService->spendTime($pet, 120, PetActivityStatEnum::OTHER, null);
@@ -239,8 +234,7 @@ class TreasureMapService
             ;
 
             $this->inventoryService->petCollectsItem('Tower Chest', $pet, $pet->getName() . ' got this by defeating the 100th floor of the Tower of Trials!', $activityLog);
-            $this->em->remove($pet->getTool());
-            $pet->setTool(null);
+            EquipmentFunctions::destroyPetTool($this->em, $pet);
 
             PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::CLIMBED_THE_TOWER_OF_TRIALS, $activityLog);
         }
@@ -285,7 +279,8 @@ class TreasureMapService
 
         $newInventory = $this->inventoryService->receiveItem($loot, $pet->getOwner(), $pet->getOwner(), 'Given to ' . $pet->getName() . ' by a Leprechaun.', LocationEnum::WARDROBE, $pet->getTool()->getLockedToOwner());
 
-        $this->em->remove($pet->getTool());
+        EquipmentFunctions::destroyPetTool($this->em, $pet);
+
         $pet->setTool($newInventory);
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
@@ -364,8 +359,7 @@ class TreasureMapService
             return $activityLog;
         }
 
-        $this->em->remove($pet->getTool());
-        $pet->setTool(null);
+        EquipmentFunctions::destroyPetTool($this->em, $pet);
 
         $loot = $this->rng->rngNextFromArray([
             'Alice\'s Secret', 'Bob\'s Secret'
@@ -387,8 +381,7 @@ class TreasureMapService
     {
         $changes = new PetChanges($pet);
 
-        $this->em->remove($pet->getTool());
-        $pet->setTool(null);
+        EquipmentFunctions::destroyPetTool($this->em, $pet);
 
         $loot = [ 'Naner' ];
 
