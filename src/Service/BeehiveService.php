@@ -21,7 +21,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class BeehiveService
 {
-    public const DESIRED_ITEMS = [
+    public const array DESIRED_ITEMS = [
         'Red Clover' => 18,
         'Wheat Flower' => 18,
         'Orange' => 12,
@@ -36,7 +36,7 @@ class BeehiveService
         'Creamy Milk' => 12,
     ];
 
-    public const ALT_DESIRED_ITEMS = [
+    public const array ALT_DESIRED_ITEMS = [
         'Slice of Bread' => 8,
         'Really Big Leaf' => 16,
         'Corn' => 10,
@@ -113,7 +113,7 @@ class BeehiveService
     }
 
     // a couple of these are princesses; sorry about the non-semantic variable name:
-    public const QUEEN_NAMES = [
+    public const array QUEEN_NAMES = [
         'Acropolitissa', 'Adelaide', 'Adélina', 'Adosinda', 'Ædgyth', 'Ælfthryth', 'Aénor', 'Afzan', 'Agafiya',
         'Allogia', 'Amalia', 'Anglesia', 'Andregoto', 'Anka', 'Ansi', 'Aphainuchit', 'Aregund', 'Aremburga',
         'Argentaela', 'Argyra', 'Ashina', 'Aspasia', 'Astrid', 'Aud', 'Austerchild',

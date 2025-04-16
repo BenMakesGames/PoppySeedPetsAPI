@@ -26,7 +26,7 @@ class Article
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups(['article'])]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Groups(['article'])]

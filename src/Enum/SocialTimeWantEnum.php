@@ -18,7 +18,7 @@ class SocialTimeWantEnum
 {
     use Enum;
 
-    public const HANG_OUT = 'hangOut';
-    public const GROUP = 'group';
-    public const CREATE_GROUP = 'createGroup';
+    public const string HANG_OUT = 'hangOut';
+    public const string GROUP = 'group';
+    public const string CREATE_GROUP = 'createGroup';
 }

@@ -31,7 +31,7 @@ class ItemFilterService
 {
     use FilterService;
 
-    public const PageSize = 20;
+    public const int PageSize = 20;
 
     private readonly ObjectRepository $repository;
     private ?User $user;
@@ -288,5 +288,10 @@ class ItemFilterService
             return $qb->enableResultCache(24 * 60 * 60, CacheHelpers::getCacheItemName(self::class . '_' . $cacheKey));
         else
             return $qb;
+    }
+
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
     }
 }

@@ -23,6 +23,7 @@ use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
+use App\Functions\EquipmentFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PetBadgeHelpers;
@@ -92,8 +93,7 @@ class JumpRopeService
             $log->setEntry($log->getEntry() . ' Unfortunately, the Jump Rope couldn\'t handle the stress, and fell apart!');
 
             $pet = $petWithSkills->getPet();
-            $this->em->remove($pet->getTool());
-            $pet->setTool(null);
+            EquipmentFunctions::destroyPetTool($this->em, $pet);
         }
     }
 

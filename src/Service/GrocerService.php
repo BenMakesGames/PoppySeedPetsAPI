@@ -23,7 +23,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class GrocerService
 {
-    public const MAX_CAN_PURCHASE_PER_DAY = 20;
+    public const int MAX_CAN_PURCHASE_PER_DAY = 20;
 
     public function __construct(
         private readonly CacheHelper $cacheHelper, private readonly EntityManagerInterface $em
@@ -32,7 +32,7 @@ class GrocerService
     }
 
     // cost = fertilizer value + 2 + CEIL(chance_for_bonus_item / 50)
-    private const HOT_BAR_ITEMS = [
+    private const array HOT_BAR_ITEMS = [
         [ 'Basic Fish Taco', 11 ],
         [ 'Battered, Fried Fish', 8 ],
         [ 'Cake Pops', 10 ],

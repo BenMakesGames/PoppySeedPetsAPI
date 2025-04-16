@@ -26,26 +26,27 @@ class ParkEvent
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[Groups(["parkEvent"])]
     #[ORM\ManyToMany(targetEntity: Pet::class)]
-    private $participants;
+    private Collection $participants;
 
     #[Groups(["parkEvent"])]
     #[ORM\Column(type: 'string', length: 40)]
-    private $type;
+    private string $type;
 
     #[Groups(["parkEvent"])]
     #[ORM\Column(type: 'text')]
-    private $results;
+    private string $results;
 
     #[Groups(["parkEvent"])]
     #[ORM\Column(type: 'datetime_immutable')]
-    private $date;
+    private \DateTimeImmutable $date;
 
-    public function __construct()
+    public function __construct(string $type)
     {
+        $this->type = $type;
         $this->date = new \DateTimeImmutable();
         $this->participants = new ArrayCollection();
     }
@@ -89,16 +90,9 @@ class ParkEvent
         return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): string
     {
         return $this->type;
-    }
-
-    public function setType(string $type): self
-    {
-        $this->type = $type;
-
-        return $this;
     }
 
     public function getResults(): ?string

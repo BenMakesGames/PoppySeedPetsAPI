@@ -39,9 +39,9 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class KinBallService implements ParkEventInterface
 {
-    public const ROUNDS_TO_WIN = 2;
-    public const TARGET_SCORE = 5;
-    public const CRITICAL_SCORE = 3;
+    public const int ROUNDS_TO_WIN = 2;
+    public const int TARGET_SCORE = 5;
+    public const int CRITICAL_SCORE = 3;
 
     /** @var KinBallTeam[] */
     private array $teams;
@@ -81,9 +81,8 @@ class KinBallService implements ParkEventInterface
         if(!$this->isGoodNumberOfPets(count($pets)))
             throw new \InvalidArgumentException('Exactly 12 pets are required to play Kin-Ball.');
 
-        $parkEvent = (new ParkEvent())
+        $parkEvent = (new ParkEvent(ParkEventTypeEnum::KIN_BALL))
             ->addParticipants($pets)
-            ->setType(ParkEventTypeEnum::KIN_BALL)
         ;
 
         // set up teams

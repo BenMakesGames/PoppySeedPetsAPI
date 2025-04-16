@@ -27,7 +27,7 @@ class PetSpeciesFilterService
 {
     use FilterService;
 
-    public const PageSize = 20;
+    public const int PageSize = 20;
 
     private EntityRepository $repository;
     private ?User $user;
@@ -112,5 +112,10 @@ class PetSpeciesFilterService
             24 * 60 * 60,
             CacheHelpers::getCacheItemName(self::class . '_' . $cacheKey)
         );
+    }
+
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
     }
 }

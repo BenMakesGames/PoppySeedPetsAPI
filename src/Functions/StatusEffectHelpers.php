@@ -22,7 +22,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class StatusEffectHelpers
 {
-    public const BITES = [
+    public const array BITES = [
         StatusEffectEnum::BITTEN_BY_A_VAMPIRE,
         StatusEffectEnum::BITTEN_BY_A_WERECREATURE
     ];

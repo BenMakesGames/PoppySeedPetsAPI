@@ -25,26 +25,28 @@ class UserStats
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'stats')]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[ORM\Column(type: 'string', length: 100)]
-    private $stat;
+    private string $stat;
 
     #[ORM\Column(type: 'integer')]
-    private $value = 0;
+    private int $value = 0;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $firstTime;
+    private \DateTimeImmutable $firstTime;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $lastTime;
+    private \DateTimeImmutable $lastTime;
 
-    public function __construct()
+    public function __construct(User $user, string $stat)
     {
+        $this->user = $user;
+        $this->stat = $stat;
         $this->firstTime = new \DateTimeImmutable();
         $this->lastTime = new \DateTimeImmutable();
     }
@@ -54,28 +56,21 @@ class UserStats
         return $this->id;
     }
 
-    public function getUser(): ?user
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function setUser(?user $user): self
+    public function setUser(User $user): self
     {
         $this->user = $user;
 
         return $this;
     }
 
-    public function getStat(): ?string
+    public function getStat(): string
     {
         return $this->stat;
-    }
-
-    public function setStat(string $stat): self
-    {
-        $this->stat = $stat;
-
-        return $this;
     }
 
     public function getValue(): int

@@ -20,7 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class CookingBuddy
 {
-    public const NAMES = [
+    public const array NAMES = [
         'Asparagus', 'Arugula',
         'Biryani', 'Bisque',
         'Cake', 'Ceviche',

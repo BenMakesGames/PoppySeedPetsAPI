@@ -42,7 +42,7 @@ class CachingMeritAdventureService
     }
 
     // foods that are <= 4 food + love
-    private const POSSIBLE_CACHED_FOODS = [
+    private const array POSSIBLE_CACHED_FOODS = [
         'Beans',
         'Canned Food',
         'Egg',

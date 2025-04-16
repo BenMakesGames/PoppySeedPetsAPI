@@ -32,7 +32,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class GamingGroupService
 {
-    public const ActivityIcon = 'groups/gaming';
+    public const string ActivityIcon = 'groups/gaming';
 
     public function __construct(
         private readonly PetExperienceService $petExperienceService,
@@ -44,7 +44,7 @@ class GamingGroupService
     {
     }
 
-    private const Dictionary = [
+    private const array Dictionary = [
         'adjective' => [
             'Lucky', 'Feisty', 'Wild', 'Random', 'Strategic', 'Secret', 'Winning', 'High-scoring', 'Plastic',
             'Cardboard', 'Digital', 'Elusive', 'Nat-20', 'Full-motion', 'Real-time', 'Grid-based', '360',
@@ -72,7 +72,7 @@ class GamingGroupService
         ]
     ];
 
-    private const GroupNamePatterns = [
+    private const array GroupNamePatterns = [
         '%noun% of the? %periodicity%/%adjective%/%nounjective% %nouns%',
         '%periodicity% %adjective% %noun%/%nouns%',
         'the? %adjective% %nounjective%? %nouns%/%noun%',
@@ -105,14 +105,14 @@ class GamingGroupService
         return $this->squirrel3->rngNextInt(1, 20 + $total);
     }
 
-    private const NameScrawlful2 = 'Scrawlful 2';
+    private const string NameScrawlful2 = 'Scrawlful 2';
 
-    private const TypeFighting = 'fighting';
-    private const TypeRhythm = 'rhythm';
-    private const TypeBoard = 'board';
-    private const TypeParty = 'party';
-    private const TypeTTRPG = 'TTRPG';
-    private const TypeLARPing = 'LARPing';
+    private const string TypeFighting = 'fighting';
+    private const string TypeRhythm = 'rhythm';
+    private const string TypeBoard = 'board';
+    private const string TypeParty = 'party';
+    private const string TypeTTRPG = 'TTRPG';
+    private const string TypeLARPing = 'LARPing';
 
     public function meet(PetGroup $group)
     {

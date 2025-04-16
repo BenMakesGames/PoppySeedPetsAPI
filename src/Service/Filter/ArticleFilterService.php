@@ -24,7 +24,7 @@ class ArticleFilterService
 {
     use FilterService;
 
-    public const PageSize = 10;
+    public const int PageSize = 10;
 
     private readonly EntityRepository $repository;
 
@@ -62,5 +62,10 @@ class ArticleFilterService
     function applyResultCache(Query $qb, string $cacheKey): Query
     {
         return $qb; // TODO: enable caching, but clear the cache when an article is created or updated
+    }
+
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
     }
 }

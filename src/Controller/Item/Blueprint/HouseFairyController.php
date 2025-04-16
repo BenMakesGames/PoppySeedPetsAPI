@@ -40,7 +40,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/item/fairy")]
 class HouseFairyController extends AbstractController
 {
-    public const FAIRY_NAMES = [
+    public const array FAIRY_NAMES = [
         'Ævintýri', 'Alfrigg', 'Ant', 'Ao', 'Aphid', 'Apricot', 'Arethusa', 'Ariel',
         'Basil', 'Beeswax', 'Bitterweed', 'Blueberry', 'Bromine',
         'Cardamom', 'Celadon', 'Celeste', 'Cobweb', 'Coriander', 'Cornsilk', 'Cottonweed', 'Cottonwood', 'Crysta', 'Curium', 'Cyclamen',

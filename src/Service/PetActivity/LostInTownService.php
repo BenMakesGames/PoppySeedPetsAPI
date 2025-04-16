@@ -33,6 +33,7 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Functions\EquipmentFunctions;
 
 class LostInTownService
 {
@@ -48,9 +49,6 @@ class LostInTownService
     public function adventure(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-
-        $this->em->remove($pet->getTool());
-        $pet->setTool(null);
 
         $changes = new PetChanges($pet);
 
@@ -77,7 +75,9 @@ class LostInTownService
     private function backAlley(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-
+        
+        EquipmentFunctions::destroyPetTool($this->em, $pet);
+        
         $items = [
             $this->rng->rngNextFromArray([ 'Canned Food', 'Onion Rings', 'Spicy Tuna Salad Sammy', 'Soy Sauce', 'Korean Rice Cakes' ]),
             $this->rng->rngNextFromArray([ 'Gold Ring', 'Key Ring', 'Laser Pointer' ]),
@@ -99,7 +99,9 @@ class LostInTownService
     private function ruinedSettlement(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-
+        
+        EquipmentFunctions::destroyPetTool($this->em, $pet);
+        
         $items = [
             'Rusted, Busted Mechanism',
             $this->rng->rngNextFromArray([
@@ -137,6 +139,8 @@ class LostInTownService
         }
         else
         {
+            EquipmentFunctions::destroyPetTool($this->em, $pet);
+            
             $items = [
                 $this->rng->rngNextFromArray([ 'Black Scarf', 'Cool Sunglasses', 'Gaming Box', 'Password' ]),
                 $this->rng->rngNextFromArray([ 'Glowing Protojelly', 'Green Egg', 'Thaumatoxic Cookies', 'Magic Smoke' ]),
@@ -162,7 +166,9 @@ class LostInTownService
     private function magicDoor(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-
+        
+        EquipmentFunctions::destroyPetTool($this->em, $pet);
+        
         $items = [
             'Cobweb',
             $this->rng->rngNextFromArray([ '"Roy" Plushy', 'Bulbun Plushy', 'Peacock Plushy', 'Rainbow Dolphin Plushy', 'Sneqo Plushy' ]),

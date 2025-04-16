@@ -45,7 +45,7 @@ class GatheringHolidayAdventureService
     {
     }
 
-    private const HOLIDAY_TAGS = [
+    private const array HOLIDAY_TAGS = [
         GatheringHolidayEnum::EASTER => 'Easter',
         GatheringHolidayEnum::SAINT_PATRICKS => 'St. Patrick\'s',
         GatheringHolidayEnum::LUNAR_NEW_YEAR => 'Lunar New Year'

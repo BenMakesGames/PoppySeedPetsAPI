@@ -24,7 +24,7 @@ class MeritFilterService
 {
     use FilterService;
 
-    public const PageSize = 10;
+    private const int DefaultPageSize = 100;
 
     private readonly EntityRepository $repository;
 
@@ -33,13 +33,18 @@ class MeritFilterService
         $this->repository = $em->getRepository(Merit::class);
 
         $this->filterer = new Filterer(
-            self::PageSize,
+            self::DefaultPageSize,
             [
                 'name' => [ 'm.name' => 'asc' ], // first one is the default
             ],
             [
             ]
         );
+    }
+
+    public function allowedPageSizes(): array
+    {
+        return [ self::DefaultPageSize, 200 ];
     }
 
     public function createQueryBuilder(): QueryBuilder

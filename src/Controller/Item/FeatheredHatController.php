@@ -26,7 +26,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/item/featheredHat")]
 class FeatheredHatController extends AbstractController
 {
-    private const TWEAKS = [
+    private const array TWEAKS = [
         'Afternoon Hat' => 'Evening Hat',
     ];
 

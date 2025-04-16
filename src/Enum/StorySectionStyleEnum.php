@@ -18,7 +18,7 @@ final class StorySectionStyleEnum
 {
     use Enum;
 
-    public const DIALOG = 'dialog';
-    public const DESCRIPTION = 'description';
-    public const FULL_FRAME_PICTURE = 'fullFramePicture';
+    public const string DIALOG = 'dialog';
+    public const string DESCRIPTION = 'description';
+    public const string FULL_FRAME_PICTURE = 'fullFramePicture';
 }

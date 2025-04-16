@@ -22,12 +22,12 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PetActivityStatsService
 {
-    public const STATS_THAT_CANT_FAIL = [
+    public const array STATS_THAT_CANT_FAIL = [
         PetActivityStatEnum::PARK_EVENT,
         PetActivityStatEnum::OTHER
     ];
 
-    public const STAT_COLORS = [
+    public const array STAT_COLORS = [
         PetActivityStatEnum::UMBRA => '#9900FF', // purple
         PetActivityStatEnum::SMITH => '#FFCC00', // yellow
         PetActivityStatEnum::PLASTIC_PRINT => '#FFFFFF', // white
@@ -42,7 +42,7 @@ class PetActivityStatsService
         PetActivityStatEnum::OTHER => '#999999', // gray
     ];
 
-    public const STAT_LABELS = [
+    public const array STAT_LABELS = [
         PetActivityStatEnum::UMBRA => 'Umbra',
         PetActivityStatEnum::SMITH => 'Smithing',
         PetActivityStatEnum::PLASTIC_PRINT => '3D Printer',

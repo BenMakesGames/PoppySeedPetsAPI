@@ -79,17 +79,17 @@ class DragonHostageService
         );
     }
 
-    private const HostageColors = [
+    private const array HostageColors = [
         DragonHostageTypeEnum::MAGPIE => [ '3d484f', '4e4642', '696969' ],
         DragonHostageTypeEnum::RACCOON => [ '' ],
         DragonHostageTypeEnum::SQUID => [ 'e59db9', 'e7d5b2' ],
     ];
 
-    private const CrownColors = [
+    private const array CrownColors = [
         'a11b1b', '10a913', '7c1ae9', 'db28b2'
     ];
 
-    private const HostageLoot = [
+    private const array HostageLoot = [
         DragonHostageTypeEnum::MAGPIE => [
             'Ruby Feather',
             'Black Feathers',
@@ -104,14 +104,14 @@ class DragonHostageService
         ]
     ];
 
-    private const HostageDialog = [
+    private const array HostageDialog = [
         'What\'s this? It appears I\'ve been captured by a %terrible% dragon! %Complaint!% \\*sobs unconvincingly\\*',
         'Oh, how I wish a %beautiful% knight would come and save me! I\'m in such terrible peril, after all!',
         'Help, oh help! A %terrible% dragon has taken me well and truly hostage! I\'m much too young and %beautiful% to die!',
         'Woe is me! Taken hostage in the prime of my life! %Complaint!% Where, oh where, is my %beautiful% knight??'
     ];
 
-    private const HostageNames = [
+    private const array HostageNames = [
         DragonHostageTypeEnum::MAGPIE => [
             'Acel', 'Adalicia', 'Adelaide', 'Adelynn', 'Adrianna', 'Aimee',
             'Alisanne', 'Aloin', 'Alyssandra', 'Amoux', 'Ancil', 'Angela',

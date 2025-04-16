@@ -18,6 +18,6 @@ final class PetPregnancyStyleEnum
 {
     use Enum;
 
-    public const EGG = 0;
-    public const WOMB = 1;
+    public const int EGG = 0;
+    public const int WOMB = 1;
 }

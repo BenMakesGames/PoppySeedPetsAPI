@@ -28,7 +28,7 @@ class MarketFilterService
 {
     use FilterService;
 
-    public const PageSize = 20;
+    public const int PageSize = 20;
 
     private ?User $user;
 
@@ -261,5 +261,10 @@ class MarketFilterService
     function applyResultCache(Query $qb, string $cacheKey): Query
     {
         return $qb;
+    }
+
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
     }
 }

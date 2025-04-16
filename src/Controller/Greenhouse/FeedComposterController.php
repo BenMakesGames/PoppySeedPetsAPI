@@ -43,7 +43,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/greenhouse")]
 class FeedComposterController extends AbstractController
 {
-    public const FORBIDDEN_COMPOST = [
+    public const array FORBIDDEN_COMPOST = [
         'Small Bag of Fertilizer',
         'Bag of Fertilizer',
         'Large Bag of Fertilizer',

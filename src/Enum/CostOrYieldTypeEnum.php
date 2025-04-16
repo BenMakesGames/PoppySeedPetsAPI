@@ -18,7 +18,7 @@ final class CostOrYieldTypeEnum
 {
     use Enum;
 
-    public const ITEM = 'item';
-    public const MONEY = 'money';
-    public const RECYCLING_POINTS = 'recyclingPoints';
+    public const string ITEM = 'item';
+    public const string MONEY = 'money';
+    public const string RECYCLING_POINTS = 'recyclingPoints';
 }

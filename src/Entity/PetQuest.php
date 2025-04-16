@@ -25,27 +25,31 @@ class PetQuest
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Pet::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $pet;
+    private Pet $pet;
 
     #[ORM\Column(type: 'string', length: 120)]
-    private $name;
+    private string $name;
 
     #[ORM\Column(type: 'json')]
     private $value;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $createdOn;
+    private \DateTimeImmutable $createdOn;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $lastUpdated;
+    private \DateTimeImmutable $lastUpdated;
 
-    public function __construct()
+    public function __construct(Pet $pet, string $name, $value)
     {
+        $this->pet = $pet;
+        $this->name = $name;
+        $this->value = $value;
         $this->createdOn = new \DateTimeImmutable();
+        $this->lastUpdated = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -53,28 +57,14 @@ class PetQuest
         return $this->id;
     }
 
-    public function getPet(): ?Pet
+    public function getPet(): Pet
     {
         return $this->pet;
     }
 
-    public function setPet(?Pet $pet): self
-    {
-        $this->pet = $pet;
-
-        return $this;
-    }
-
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
     }
 
     public function getValue()

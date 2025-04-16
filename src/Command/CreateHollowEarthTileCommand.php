@@ -55,9 +55,8 @@ class CreateHollowEarthTileCommand extends PoppySeedPetsCommand
         $tileTypeNames = array_map(fn(HollowEarthTileType $t) => $t->getName(), $tileTypes);
 
         $tile = new HollowEarthTileCard();
-        $item = new Item();
 
-        $item
+        $item = (new Item())
             ->setHollowEarthTileCard($tile)
             ->setFuel(30)
             ->setRecycleValue(1)

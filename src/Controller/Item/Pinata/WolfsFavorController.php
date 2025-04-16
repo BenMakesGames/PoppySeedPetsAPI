@@ -37,7 +37,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/item")]
 class WolfsFavorController extends AbstractController
 {
-    private const USER_STAT_NAME = 'Redeemed a Wolf\'s Favor';
+    private const string USER_STAT_NAME = 'Redeemed a Wolf\'s Favor';
 
     #[Route("/changeWereform/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]

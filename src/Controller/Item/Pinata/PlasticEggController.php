@@ -28,7 +28,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/item/plasticEgg")]
 class PlasticEggController extends AbstractController
 {
-    private const CANDY = [
+    private const array CANDY = [
         'Blue Hard Candy',
         'Orange Hard Candy',
         'Purple Hard Candy',

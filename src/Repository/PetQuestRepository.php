@@ -61,11 +61,7 @@ class PetQuestRepository extends ServiceEntityRepository
 
             if(!$record)
             {
-                $record = (new PetQuest())
-                    ->setPet($pet)
-                    ->setName($name)
-                    ->setValue($default)
-                ;
+                $record = new PetQuest(pet: $pet, name: $name, value: $default);
 
                 $this->getEntityManager()->persist($record);
             }

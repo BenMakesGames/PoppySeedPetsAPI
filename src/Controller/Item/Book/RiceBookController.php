@@ -26,7 +26,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/item/riceBook")]
 class RiceBookController extends AbstractController
 {
-    private const RECIPES = [
+    private const array RECIPES = [
         'Nigiri',
         'Onigiri',
         'Fish Onigiri',

@@ -85,7 +85,7 @@ class SessionAuthenticator extends AbstractAuthenticator
 
         $this->sessionService->setCurrentSession($sessionId);
 
-        $session->setSessionExpiration();
+        $session->setSessionExpiration($user->getDefaultSessionLengthInHours());
         $user->setLastActivity();
         $this->em->flush();
 

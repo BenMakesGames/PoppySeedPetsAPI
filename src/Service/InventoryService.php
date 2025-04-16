@@ -265,10 +265,8 @@ class InventoryService
                     {
                         $extraItemItem = $this->getItemWithChanceForLuckyTransformation($toolTool->getWhenGatherAlsoGather());
 
-                        $extraItem = (new Inventory())
-                            ->setOwner($pet->getOwner())
+                        $extraItem = (new Inventory(owner: $pet->getOwner(), item: $extraItemItem))
                             ->setCreatedBy($pet->getOwner())
-                            ->setItem($extraItemItem)
                             ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
                             ->setLocation(LocationEnum::HOME)
                             ->setSpice($extraItemSpice)
@@ -288,10 +286,8 @@ class InventoryService
                 }
                 else if($toolTool->getAttractsBugs() && $item->getIsBug())
                 {
-                    $extraItem = (new Inventory())
-                        ->setOwner($pet->getOwner())
+                    $extraItem = (new Inventory(owner: $pet->getOwner(), item: $item))
                         ->setCreatedBy($pet->getOwner())
-                        ->setItem($item)
                         ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
                         ->setLocation(LocationEnum::HOME)
                         ->setSpice($extraItemSpice)
@@ -326,10 +322,8 @@ class InventoryService
                             $pet->getTool()->getEnchantment()->getEffects()->getWhenGatherAlsoGather()
                         );
 
-                        $extraItem = (new Inventory())
-                            ->setOwner($pet->getOwner())
+                        $extraItem = (new Inventory(owner: $pet->getOwner(), item: $extraItemItem))
                             ->setCreatedBy($pet->getOwner())
-                            ->setItem($extraItemItem)
                             ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
                             ->setLocation(LocationEnum::HOME)
                             ->setSpice($extraItemSpice)
@@ -349,10 +343,8 @@ class InventoryService
                 }
                 else if($bonusEffects->getAttractsBugs() && $item->getIsBug())
                 {
-                    $extraItem = (new Inventory())
-                        ->setOwner($pet->getOwner())
+                    $extraItem = (new Inventory(owner: $pet->getOwner(), item: $item))
                         ->setCreatedBy($pet->getOwner())
-                        ->setItem($item)
                         ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
                         ->setLocation(LocationEnum::HOME)
                         ->setSpice($extraItemSpice)
@@ -373,10 +365,8 @@ class InventoryService
         {
             $musicNote = ItemRepository::findOneByName($this->em, 'Music Note');
 
-            $extraItem = (new Inventory())
-                ->setOwner($pet->getOwner())
+            $extraItem = (new Inventory(owner: $pet->getOwner(), item: $musicNote))
                 ->setCreatedBy($pet->getOwner())
-                ->setItem($musicNote)
                 ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' as a Celestial Choruser.')
                 ->setLocation(LocationEnum::HOME)
                 ->setSpice($extraItemSpice)
@@ -397,10 +387,8 @@ class InventoryService
         {
             $pectin = ItemRepository::findOneByName($this->em, 'Pectin');
 
-            $extraItem = (new Inventory())
-                ->setOwner($pet->getOwner())
+            $extraItem = (new Inventory(owner: $pet->getOwner(), item: $pectin))
                 ->setCreatedBy($pet->getOwner())
-                ->setItem($pectin)
                 ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' while ' . StatusEffectEnum::FRUIT_CLOBBERING . '.')
                 ->setLocation(LocationEnum::HOME)
                 ->setSpice($extraItemSpice)
@@ -419,10 +407,8 @@ class InventoryService
         {
             $pectin = ItemRepository::findOneByName($this->em, 'Quintessence');
 
-            $extraItem = (new Inventory())
-                ->setOwner($pet->getOwner())
+            $extraItem = (new Inventory(owner: $pet->getOwner(), item: $pectin))
                 ->setCreatedBy($pet->getOwner())
-                ->setItem($pectin)
                 ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with its Lightning Reins.')
                 ->setLocation(LocationEnum::HOME)
                 ->setEnchantment($bonus)
@@ -436,10 +422,8 @@ class InventoryService
 
         if($pet->hasStatusEffect(StatusEffectEnum::SPICED) && $item->getSpice())
         {
-            $extraItem = (new Inventory())
-                ->setOwner($pet->getOwner())
+            $extraItem = (new Inventory(owner: $pet->getOwner(), item: $item))
                 ->setCreatedBy($pet->getOwner())
-                ->setItem($item)
                 ->addComment($pet->getName() . ' got this extra ' . $item->getName() . ' thanks to being ' . StatusEffectEnum::SPICED . '.')
                 ->setLocation(LocationEnum::HOME)
                 ->setEnchantment($bonus)
@@ -453,10 +437,8 @@ class InventoryService
 
         if($pet->hasStatusEffect(StatusEffectEnum::HOPPIN) && str_ends_with($item->getName(), 'Toad Legs'))
         {
-            $extraItem = (new Inventory())
-                ->setOwner($pet->getOwner())
+            $extraItem = (new Inventory(owner: $pet->getOwner(), item: $item))
                 ->setCreatedBy($pet->getOwner())
-                ->setItem($item)
                 ->addComment($pet->getName() . ' got this extra ' . $item->getName() . ' thanks to being ' . StatusEffectEnum::HOPPIN . '.')
                 ->setLocation(LocationEnum::HOME)
                 ->setSpice($extraItemSpice)
@@ -487,10 +469,8 @@ class InventoryService
                 return null;
         }
 
-        $i = (new Inventory())
-            ->setOwner($pet->getOwner())
+        $i = (new Inventory(owner: $pet->getOwner(), item: $item))
             ->setCreatedBy($pet->getOwner())
-            ->setItem($item)
             ->addComment($comment)
             ->setLocation(LocationEnum::HOME)
             ->setSpice($spice)
@@ -621,10 +601,8 @@ class InventoryService
     {
         $item = $this->getItemWithChanceForLuckyTransformation($item);
 
-        $i = (new Inventory())
-            ->setOwner($owner)
+        $i = (new Inventory(owner: $owner, item: $item))
             ->setCreatedBy($creator)
-            ->setItem($item)
             ->addComment($comment)
             ->setLocation($location)
             ->setLockedToOwner($lockedToOwner)

@@ -23,42 +23,45 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: 'App\Repository\PetBabyRepository')]
 class PetBaby
 {
-    public const PREGNANCY_DURATION = 30240;
-    public const PREGNANCY_INTERVAL = self::PREGNANCY_DURATION / 6;
-    public const EGG_INCUBATION_TIME = self::PREGNANCY_INTERVAL * 2;
+    public const int PREGNANCY_DURATION = 30240;
+    public const int PREGNANCY_INTERVAL = self::PREGNANCY_DURATION / 6;
+    public const int EGG_INCUBATION_TIME = self::PREGNANCY_INTERVAL * 2;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'integer')]
-    private $growth = 0;
+    private int $growth = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $affection = 0;
+    private int $affection = 0;
 
     #[ORM\ManyToOne(targetEntity: 'App\Entity\PetSpecies')]
     #[ORM\JoinColumn(nullable: false)]
-    private $species;
+    private PetSpecies $species;
 
     #[ORM\OneToOne(targetEntity: Pet::class, mappedBy: 'pregnancy')]
-    private $parent;
+    private ?Pet $parent;
 
     #[ORM\ManyToOne(targetEntity: Pet::class)]
-    private $otherParent;
+    private ?Pet $otherParent;
 
     #[ORM\ManyToOne(targetEntity: SpiritCompanion::class)]
-    private $spiritParent;
+    private ?SpiritCompanion $spiritParent = null;
 
     #[ORM\Column(type: 'string', length: 6)]
-    private $colorA;
+    private string $colorA;
 
     #[ORM\Column(type: 'string', length: 6)]
-    private $colorB;
+    private string $colorB;
 
-    public function __construct()
+    public function __construct(PetSpecies $species, string $colorA, string $colorB)
     {
+        $this->species = $species;
+        $this->colorA = $colorA;
+        $this->colorB = $colorB;
     }
 
     public function getId(): ?int
@@ -66,7 +69,7 @@ class PetBaby
         return $this->id;
     }
 
-    public function getGrowth(): ?int
+    public function getGrowth(): int
     {
         return $this->growth;
     }
@@ -78,7 +81,7 @@ class PetBaby
         return $this;
     }
 
-    public function getAffection(): ?int
+    public function getAffection(): int
     {
         return $this->affection;
     }
@@ -90,31 +93,30 @@ class PetBaby
         return $this;
     }
 
-    public function getSpecies(): ?PetSpecies
+    public function getSpecies(): PetSpecies
     {
         return $this->species;
     }
 
-    public function setSpecies(?PetSpecies $species): self
+    public function setSpecies(PetSpecies $species): self
     {
         $this->species = $species;
 
         return $this;
     }
 
-    public function getParent(): ?Pet
+    public function getParent(): Pet
     {
         return $this->parent;
     }
 
-    public function setParent(?Pet $parent): self
+    public function setParent(Pet $parent): self
     {
         $this->parent = $parent;
 
         // set (or unset) the owning side of the relation if necessary
-        $newPregnancy = $parent === null ? null : $this;
-        if ($newPregnancy !== $parent->getPregnancy()) {
-            $parent->setPregnancy($newPregnancy);
+        if ($this !== $parent->getPregnancy()) {
+            $parent->setPregnancy($this);
         }
 
         return $this;
@@ -125,7 +127,7 @@ class PetBaby
         return $this->otherParent;
     }
 
-    public function setOtherParent(Pet $otherParent): self
+    public function setOtherParent(?Pet $otherParent): self
     {
         $this->otherParent = $otherParent;
 

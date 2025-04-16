@@ -25,7 +25,7 @@ class PetActivityLogsFilterService
 {
     use FilterService;
 
-    public const PageSize = 20;
+    public const int PageSize = 20;
 
     private readonly ObjectRepository $repository;
 
@@ -51,11 +51,6 @@ class PetActivityLogsFilterService
     public function createQueryBuilder(): QueryBuilder
     {
         return $this->repository->createQueryBuilder('l');
-    }
-
-    public function setPageSize(int $pageSize): void
-    {
-        $this->filterer->setPageSize($pageSize);
     }
 
     public function filterDate(QueryBuilder $qb, $value)
@@ -114,5 +109,10 @@ class PetActivityLogsFilterService
     function applyResultCache(Query $qb, string $cacheKey): Query
     {
         return $qb;
+    }
+
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
     }
 }

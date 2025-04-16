@@ -18,17 +18,17 @@ final class ParkEventTypeEnum
 {
     use Enum;
 
-    public const KIN_BALL = 'Kin-Ball';
-    public const TRI_D_CHESS = 'Tri-D Chess';
-    public const JOUSTING = 'Jousting';
+    public const string KIN_BALL = 'Kin-Ball';
+    public const string TRI_D_CHESS = 'Tri-D Chess';
+    public const string JOUSTING = 'Jousting';
 
     /*
-    public const CTF = 'Capture the Flag';
-    public const SEPAK_TAKRAW = 'Sepak Takraw';
-    public const BADMINTON = 'Badminton';
+    public const string CTF = 'Capture the Flag';
+    public const string SEPAK_TAKRAW = 'Sepak Takraw';
+    public const string BADMINTON = 'Badminton';
 
-    public const TRIDIMENSIONAL_SCRABBLE = 'Tridimensional Scrabble';
-    public const HANDBALL = 'Handball';
-    public const POLE_VAULTING = 'Pole Vaulting';
+    public const string TRIDIMENSIONAL_SCRABBLE = 'Tridimensional Scrabble';
+    public const string HANDBALL = 'Handball';
+    public const string POLE_VAULTING = 'Pole Vaulting';
     */
 }

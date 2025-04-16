@@ -26,7 +26,7 @@ class GreenhousePlant
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[Groups(["greenhousePlant"])]
     #[ORM\ManyToOne(targetEntity: Plant::class)]

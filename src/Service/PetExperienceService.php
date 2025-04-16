@@ -37,7 +37,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PetExperienceService
 {
-    public const SOCIAL_ENERGY_PER_HANG_OUT = 576; // 2.5 hangouts per day (for average pets)
+    public const int SOCIAL_ENERGY_PER_HANG_OUT = 576; // 2.5 hangouts per day (for average pets)
 
     public function __construct(
         private readonly IRandom $squirrel3,

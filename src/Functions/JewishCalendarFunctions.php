@@ -18,36 +18,36 @@ namespace App\Functions;
 // wrapping up into a class
 class JewishCalendarFunctions
 {
-    public const TISHRI = 1;
-    public const HESHVAN = 2;
-    public const KISLEV = 3;
-    public const TEVET = 4;
-    public const SHEVAT = 5;
-    public const ADAR_I = 6;
-    public const ADAR_II = 7;
-    public const ADAR = 7;
-    public const NISAN = 8;
-    public const IYAR = 9;
-    public const SIVAN = 10;
-    public const TAMMUZ = 11;
-    public const AV = 12;
-    public const ELUL = 13;
+    public const int TISHRI = 1;
+    public const int HESHVAN = 2;
+    public const int KISLEV = 3;
+    public const int TEVET = 4;
+    public const int SHEVAT = 5;
+    public const int ADAR_I = 6;
+    public const int ADAR_II = 7;
+    public const int ADAR = 7;
+    public const int NISAN = 8;
+    public const int IYAR = 9;
+    public const int SIVAN = 10;
+    public const int TAMMUZ = 11;
+    public const int AV = 12;
+    public const int ELUL = 13;
 
-    public const SUNDAY = 0;
-    public const MONDAY = 1;
-    public const TUESDAY = 2;
-    public const WEDNESDAY = 3;
-    public const THURSDAY = 4;
-    public const FRIDAY = 5;
-    public const SATURDAY = 6;
+    public const int SUNDAY = 0;
+    public const int MONDAY = 1;
+    public const int TUESDAY = 2;
+    public const int WEDNESDAY = 3;
+    public const int THURSDAY = 4;
+    public const int FRIDAY = 5;
+    public const int SATURDAY = 6;
 
-    public const MONTH_NAMES_LEAP_YEAR = [
+    public const array MONTH_NAMES_LEAP_YEAR = [
         'Tishri', 'Heshvan', 'Kislev', 'Tevet',
         'Shevat', 'Adar I', 'Adar II', 'Nisan',
         'Iyar', 'Sivan', 'Tammuz', 'Av', 'Elul'
     ];
 
-    public const MONTH_NAMES_NON_LEAP_YEAR = [
+    public const array MONTH_NAMES_NON_LEAP_YEAR = [
         'Tishri', 'Heshvan', 'Kislev', 'Tevet',
         'Shevat', '', 'Adar', 'Nisan',
         'Iyar', 'Sivan', 'Tammuz', 'Av', 'Elul'

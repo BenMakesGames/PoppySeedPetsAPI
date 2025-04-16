@@ -26,18 +26,6 @@
             "./migrations/.gitignore"
         ]
     },
-    "friendsofphp/php-cs-fixer": {
-        "version": "3.74",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "main",
-            "version": "3.0",
-            "ref": "be2103eb4a20942e28a6dd87736669b757132435"
-        },
-        "files": [
-            "./.php-cs-fixer.dist.php"
-        ]
-    },
     "nelmio/api-doc-bundle": {
         "version": "5.0",
         "recipe": {
@@ -45,11 +33,7 @@
             "branch": "main",
             "version": "3.0",
             "ref": "c8e0c38e1a280ab9e37587a8fa32b251d5bc1c94"
-        },
-        "files": [
-            "./config/packages/nelmio_api_doc.yaml",
-            "./config/routes/nelmio_api_doc.yaml"
-        ]
+        }
     },
     "nelmio/cors-bundle": {
         "version": "2.4",

@@ -22,7 +22,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class UserMenuFunctions
 {
-    private const DEFAULT_ORDER = [
+    private const array DEFAULT_ORDER = [
         'home', 'cookingBuddy', 'basement', 'greenhouse', 'beehive', 'dragonDen', 'hollowEarth', 'starKindred',
         'fireplace', 'park', 'plaza', 'museum', 'zoologist', 'market', 'grocer', 'petShelter',
         'bookstore', 'trader', 'hattier', 'fieldGuide', 'mailbox', 'painter', 'florist',

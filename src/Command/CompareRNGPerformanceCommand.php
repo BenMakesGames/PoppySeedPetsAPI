@@ -21,7 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CompareRNGPerformanceCommand extends Command
 {
-    public const ITERATIONS = 10000;
+    public const int ITERATIONS = 10000;
 
     public function __construct()
     {

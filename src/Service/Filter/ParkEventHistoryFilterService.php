@@ -25,7 +25,7 @@ class ParkEventHistoryFilterService
 {
     use FilterService;
 
-    public const PageSize = 20;
+    public const int PageSize = 20;
 
     private ?User $user;
     private EntityRepository $repository;
@@ -42,6 +42,11 @@ class ParkEventHistoryFilterService
             [
             ]
         );
+    }
+
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
     }
 
     public function createQueryBuilder(): QueryBuilder

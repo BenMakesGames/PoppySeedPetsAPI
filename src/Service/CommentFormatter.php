@@ -21,11 +21,11 @@ use Symfony\Bundle\SecurityBundle\Security;
 
 class CommentFormatter
 {
-    public const ALLOWED_PET_PROPERTIES = [
+    public const array ALLOWED_PET_PROPERTIES = [
         'name'
     ];
 
-    public const ALLOWED_USER_PROPERTIES = [
+    public const array ALLOWED_USER_PROPERTIES = [
         'name', 'Name', 'name\'s', 'Name\'s'
     ];
 

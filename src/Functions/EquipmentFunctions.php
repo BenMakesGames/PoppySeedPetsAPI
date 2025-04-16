@@ -16,6 +16,7 @@ namespace App\Functions;
 
 use App\Entity\Pet;
 use App\Enum\LocationEnum;
+use Doctrine\ORM\EntityManagerInterface;
 
 class EquipmentFunctions
 {
@@ -39,5 +40,14 @@ class EquipmentFunctions
             ->setLocation(LocationEnum::HOME)
         ;
         $pet->setHat(null);
+    }
+
+    public static function destroyPetTool(EntityManagerInterface $em, Pet $pet)
+    {
+        if($pet->getTool() === null)
+            return;
+
+        $em->remove($pet->getTool());
+        $pet->setTool(null);
     }
 }

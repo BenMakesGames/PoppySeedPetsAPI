@@ -24,7 +24,7 @@ class MonthlyStoryAdventureFilterService
 {
     use FilterService;
 
-    public const PageSize = 12;
+    public const int PageSize = 12;
 
     private EntityRepository $repository;
 
@@ -50,5 +50,10 @@ class MonthlyStoryAdventureFilterService
     function applyResultCache(Query $qb, string $cacheKey): Query
     {
         return $qb;
+    }
+
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
     }
 }

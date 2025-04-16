@@ -24,7 +24,7 @@ class UserSpeciesCollectedFilterService
 {
     use FilterService;
 
-    public const PageSize = 20;
+    public const int PageSize = 20;
 
     private EntityRepository $repository;
 
@@ -43,6 +43,11 @@ class UserSpeciesCollectedFilterService
                 'user' => $this->filterUser(...),
             ]
         );
+    }
+
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
     }
 
     public function createQueryBuilder(): QueryBuilder

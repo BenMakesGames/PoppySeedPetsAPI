@@ -25,6 +25,7 @@ use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\AdventureMath;
+use App\Functions\EquipmentFunctions;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
@@ -43,11 +44,11 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ChocolateMansion
 {
-    private const QUEST_VALUE_PATIO_ONLY = 1;
-    private const QUEST_VALUE_UP_TO_GARDENS = 2;
-    private const QUEST_VALUE_UP_TO_FOYER = 3;
-    private const QUEST_VALUE_ALL_EXCEPT_CELLAR_AND_ATTIC = 6;
-    private const QUEST_VALUE_FULL_ACCESS = 8;
+    private const int QUEST_VALUE_PATIO_ONLY = 1;
+    private const int QUEST_VALUE_UP_TO_GARDENS = 2;
+    private const int QUEST_VALUE_UP_TO_FOYER = 3;
+    private const int QUEST_VALUE_ALL_EXCEPT_CELLAR_AND_ATTIC = 6;
+    private const int QUEST_VALUE_FULL_ACCESS = 8;
 
     public function __construct(
         private readonly IRandom $rng,
@@ -65,8 +66,7 @@ class ChocolateMansion
     {
         $pet = $petWithSkills->getPet();
 
-        $this->em->remove($pet->getTool());
-        $pet->setTool(null);
+        EquipmentFunctions::destroyPetTool($this->em, $pet);
 
         $roomsAvailableQuest = UserQuestRepository::findOrCreate($this->em, $pet->getOwner(), 'Chocolate Mansion Rooms', self::QUEST_VALUE_PATIO_ONLY);
 

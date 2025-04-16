@@ -18,9 +18,9 @@ final class MonsterOfTheWeekEnum
 {
     use Enum;
 
-    public const DIONYSUS = 'Dionysus';
-    public const ANHUR = 'Anhur';
-    public const BOSHINOGAMI = 'Boshinogami';
-    public const HUEHUECOYOTL = 'Huehuecoyotl';
-    public const CARDEA = 'Cardea';
+    public const string DIONYSUS = 'Dionysus';
+    public const string ANHUR = 'Anhur';
+    public const string BOSHINOGAMI = 'Boshinogami';
+    public const string HUEHUECOYOTL = 'Huehuecoyotl';
+    public const string CARDEA = 'Cardea';
 }

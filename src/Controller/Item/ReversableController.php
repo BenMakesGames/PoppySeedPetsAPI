@@ -27,7 +27,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/item/reversable")]
 class ReversableController extends AbstractController
 {
-    private const FLIPS = [
+    private const array FLIPS = [
         'Small Plastic Bucket' => 'Upside-down Plastic Bucket',
         'Shiny Pail' => 'Upside-down Shiny Pail',
         'Small, Yellow Plastic Bucket' => 'Upside-down, Yellow Plastic Bucket',

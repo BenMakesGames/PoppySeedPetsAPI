@@ -32,7 +32,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/item/album")]
 class AlbumController extends AbstractController
 {
-    public const GENRES = [
+    public const array GENRES = [
         'Salsa',
         'Meringue',
         'Rock',

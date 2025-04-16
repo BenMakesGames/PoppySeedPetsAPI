@@ -24,7 +24,7 @@ class MuseumFilterService
 {
     use FilterService;
 
-    public const PageSize = 20;
+    public const int PageSize = 20;
 
     private EntityRepository $repository;
 
@@ -62,5 +62,10 @@ class MuseumFilterService
     function applyResultCache(Query $qb, string $cacheKey): Query
     {
         return $qb;
+    }
+
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
     }
 }

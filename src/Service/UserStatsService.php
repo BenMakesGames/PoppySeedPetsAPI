@@ -47,10 +47,7 @@ class UserStatsService
                 if($stat)
                     return $stat;
 
-                $stat = (new UserStats())
-                    ->setUser($user)
-                    ->setStat($statName)
-                ;
+                $stat = new UserStats(user: $user, stat: $statName);
 
                 $this->em->persist($stat);
 

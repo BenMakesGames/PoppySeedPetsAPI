@@ -24,7 +24,7 @@ class GuildMemberFilterService
 {
     use FilterService;
 
-    public const PageSize = 12;
+    public const int PageSize = 12;
 
     private readonly EntityRepository $repository;
 
@@ -62,5 +62,10 @@ class GuildMemberFilterService
     function applyResultCache(Query $qb, string $cacheKey): Query
     {
         return $qb;
+    }
+
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
     }
 }

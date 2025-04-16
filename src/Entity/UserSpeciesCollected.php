@@ -25,7 +25,7 @@ class UserSpeciesCollected
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -46,15 +46,15 @@ class UserSpeciesCollected
 
     #[Groups(["zoologistCatalog"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $colorA;
+    private string $colorA;
 
     #[Groups(["zoologistCatalog"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $colorB;
+    private string $colorB;
 
     #[Groups(["zoologistCatalog"])]
     #[ORM\Column(type: 'smallint')]
-    private $scale;
+    private int $scale;
 
     public function __construct()
     {

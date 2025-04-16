@@ -28,7 +28,7 @@ class InventoryFilterService
 {
     use FilterService;
 
-    public const PageSize = 100;
+    public const int PageSize = 100;
 
     private readonly ObjectRepository $repository;
     private ?User $user;
@@ -65,6 +65,11 @@ class InventoryFilterService
                 'nameExactMatch'
             ]
         );
+    }
+
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
     }
 
     public function setUser(User $user): void

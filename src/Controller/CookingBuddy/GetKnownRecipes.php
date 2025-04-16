@@ -36,7 +36,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/cookingBuddy')]
 class GetKnownRecipes extends AbstractController
 {
-    private const AllowedLocations = [
+    private const array AllowedLocations = [
         LocationEnum::HOME,
         LocationEnum::BASEMENT,
         LocationEnum::MANTLE

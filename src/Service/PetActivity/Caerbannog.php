@@ -22,6 +22,7 @@ use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
+use App\Functions\EquipmentFunctions;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
@@ -49,8 +50,7 @@ class Caerbannog
     {
         $pet = $petWithSkills->getPet();
 
-        $this->em->remove($pet->getTool());
-        $pet->setTool(null);
+        EquipmentFunctions::destroyPetTool($this->em, $pet);
 
         $changes = new PetChanges($pet);
 

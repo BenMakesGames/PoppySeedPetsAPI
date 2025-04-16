@@ -45,4 +45,6 @@ trait FilterService
     abstract function createQueryBuilder(): QueryBuilder;
 
     abstract function applyResultCache(Query $qb, string $cacheKey): AbstractQuery;
+
+    abstract public function allowedPageSizes(): array;
 }

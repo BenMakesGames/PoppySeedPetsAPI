@@ -24,7 +24,7 @@ class UserLetterFilterService
 {
     use FilterService;
 
-    public const PageSize = 20;
+    public const int PageSize = 20;
 
     private readonly EntityRepository $repository;
 
@@ -61,5 +61,10 @@ class UserLetterFilterService
     function applyResultCache(Query $qb, string $cacheKey): Query
     {
         return $qb;
+    }
+
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
     }
 }

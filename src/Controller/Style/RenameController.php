@@ -42,7 +42,7 @@ class RenameController extends AbstractController
         if($theme->getUser()->getId() !== $user->getId())
             throw new PSPNotFoundException('That theme could not be found.');
 
-        if($theme->getName() === UserStyle::CURRENT)
+        if($theme->getName() === UserStyle::Current)
             throw new PSPInvalidOperationException('That theme cannot be renamed!');
 
         $name = mb_trim($request->request->get('name'));

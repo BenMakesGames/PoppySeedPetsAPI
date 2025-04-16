@@ -18,7 +18,7 @@ final class StoryEnum
 {
     use Enum;
 
-    public const SHARUMINYINKAS_DESPAIR = 1;
-    public const STOLEN_PLANS = 2;
-    public const MERCHANT_FISH_MERCHANT = 3;
+    public const int SHARUMINYINKAS_DESPAIR = 1;
+    public const int STOLEN_PLANS = 2;
+    public const int MERCHANT_FISH_MERCHANT = 3;
 }

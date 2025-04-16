@@ -29,18 +29,18 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/item/baabble")]
 class BaabbleController extends AbstractController
 {
-    private const LameShit = [
+    private const array LameShit = [
         'Crooked Stick', 'Scales', 'Tea Leaves', 'Aging Powder', 'Fluff', 'Pointer', 'Creamy Milk', 'Silica Grounds',
     ];
 
-    private const OkayStuff = [
+    private const array OkayStuff = [
         'Crooked Stick',
         'Iron Ore',
         'Plastic', 'Plastic',
         'Glass', 'Paper', 'Talon', 'Feathers', 'Glue',
     ];
 
-    private const GoodStuff = [
+    private const array GoodStuff = [
         'Quintessence', 'Quintessence', 'Wings',
         'Iron Ore', 'Iron Ore', 'Iron Bar',
         'Silver Ore', 'Silver Ore',
@@ -48,13 +48,13 @@ class BaabbleController extends AbstractController
         'Dark Scales', 'Hash Table', 'Paper Bag', 'Finite State Machine', 'Fiberglass', 'Tiny Scroll of Resources'
     ];
 
-    private const WeirdStuff = [
+    private const array WeirdStuff = [
         'Really Big Leaf', 'Music Note', 'Bag of Beans', 'Crystal Ball', 'Linens and Things', 'Dark Matter',
         'Coriander Flower', 'Charcoal', 'Tentacle', 'XOR', 'Liquid-hot Magma', 'Quinacridone Magenta Dye', 'Gypsum',
         'Tiny Black Hole', 'Chocolate Bar',
     ];
 
-    private const RareStuff = [
+    private const array RareStuff = [
         'Blackonite', 'Everice', 'Striped Microcline', 'Firestone', 'Black Feathers',
         'Magic Smoke', 'Lightning in a Bottle',
     ];

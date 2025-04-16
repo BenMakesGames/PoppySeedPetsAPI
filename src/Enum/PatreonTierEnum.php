@@ -18,7 +18,7 @@ class PatreonTierEnum
 {
     use Enum;
 
-    public const DAPPER_SWAN = 'DapperSwan';
+    public const string DAPPER_SWAN = 'DapperSwan';
 
     public static function getByRewardId(int $rewardId)
     {

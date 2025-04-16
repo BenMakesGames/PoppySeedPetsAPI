@@ -30,9 +30,9 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class BookstoreService
 {
-    const BOOKSTORE_QUEST_NAME = 'Items Given to Bookstore';
+    const string BOOKSTORE_QUEST_NAME = 'Items Given to Bookstore';
 
-    const QUEST_STEPS = [
+    const array QUEST_STEPS = [
         [
             'askingFor' => [ 'Moth' ],
             'dialog' => 'Could you find a Moth for me? Sometimes they just flutter into the house, but you might also be lucky enough to have a pet that burps them!',

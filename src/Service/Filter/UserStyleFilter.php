@@ -25,12 +25,12 @@ class UserStyleFilter
 {
     use FilterService;
 
-    public const PageSize = 12;
+    public const int PageSize = 12;
 
     /**
      * @var User
      */
-    private $user;
+    private User $user;
 
     private readonly EntityRepository $repository;
 
@@ -49,6 +49,11 @@ class UserStyleFilter
         );
     }
 
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
+    }
+
     public function setUser(User $user)
     {
         $this->user = $user;
@@ -58,7 +63,7 @@ class UserStyleFilter
     {
         return $this->repository->createQueryBuilder('s')
             ->andWhere('s.name != :current')
-            ->setParameter('current', UserStyle::CURRENT)
+            ->setParameter('current', UserStyle::Current)
             ->join('s.user', 'themeOwner')
         ;
     }

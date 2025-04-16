@@ -45,7 +45,7 @@ class DreamingService
     {
     }
 
-    private const Locations = [
+    private const array Locations = [
         'in a mall',
         'on a mountain path',
         'in some ruins',
@@ -73,7 +73,7 @@ class DreamingService
         'in a dilapidated arena',
     ];
 
-    private const WanderingWords = [
+    private const array WanderingWords = [
         'wandering',
         'running',
         'searching for something',
@@ -86,7 +86,7 @@ class DreamingService
         'eating %a_food%'
     ];
 
-    public const RandomPluralStuff = [
+    public const array RandomPluralStuff = [
         'bolts of silk', 'piles of treasure', 'boxes of %item%', 'people',
         'piles of snow', 'cobwebs', 'those ball pit balls', 'ringing phones',
         'piles of cotton candy (either the candy, or the pet; it wasn\'t clear)',

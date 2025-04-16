@@ -26,9 +26,9 @@ class PetFilterService
 {
     use FilterService;
 
-    public const PageSize = 12;
+    public const int PageSize = 12;
 
-    private ObjectRepository $repository;
+    private readonly ObjectRepository $repository;
 
     public function __construct(ManagerRegistry $doctrine)
     {
@@ -179,5 +179,10 @@ class PetFilterService
     function applyResultCache(Query $qb, string $cacheKey): Query
     {
         return $qb;
+    }
+
+    public function allowedPageSizes(): array
+    {
+        return [ self::PageSize ];
     }
 }

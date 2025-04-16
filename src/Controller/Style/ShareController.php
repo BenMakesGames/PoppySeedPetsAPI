@@ -56,15 +56,12 @@ class ShareController extends AbstractController
             if($numberOfThemes >= 10)
                 throw new PSPInvalidOperationException('You may not have more than 10 themes! Sorry...');
 
-            $theme = (new UserStyle())
-                ->setUser($user)
-                ->setName($name)
-            ;
+            $theme = new UserStyle(user: $user, name: $name);
 
             $em->persist($theme);
         }
 
-        foreach(UserStyle::PROPERTIES as $property)
+        foreach(UserStyle::Properties as $property)
             $theme->{'set' . $property}($current->{'get' . $property}());
 
         $em->flush();
