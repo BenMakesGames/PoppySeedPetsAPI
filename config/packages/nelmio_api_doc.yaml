@@ -1,0 +1,10 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: PoppySeedPets API
+            description: API documentation for the PoppySeedPets application
+            version: 1.0.0
+
+    areas:
+        path_patterns:
+            - ^/[^_]
