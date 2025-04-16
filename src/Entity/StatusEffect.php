@@ -31,7 +31,7 @@ class StatusEffect
 
     #[ORM\ManyToOne(targetEntity: Pet::class, inversedBy: 'statusEffects')]
     #[ORM\JoinColumn(nullable: false)]
-    private Pet $pet;
+    private ?Pet $pet;
 
     #[ORM\Column(type: 'string', length: 40)]
     #[Groups(['myPet'])]
