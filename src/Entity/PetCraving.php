@@ -26,24 +26,29 @@ class PetCraving
 
     #[ORM\OneToOne(targetEntity: Pet::class, inversedBy: 'craving')]
     #[ORM\JoinColumn(nullable: false)]
-    private $pet;
+    private Pet $pet;
 
     #[ORM\ManyToOne(targetEntity: ItemGroup::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $foodGroup;
+    private ItemGroup $foodGroup;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $createdOn;
+    private \DateTimeImmutable $createdOn;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private $satisfiedOn;
+    private ?\DateTimeImmutable $satisfiedOn = null;
+
+    public function __construct()
+    {
+        $this->createdOn = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getPet(): ?Pet
+    public function getPet(): Pet
     {
         return $this->pet;
     }
@@ -55,19 +60,19 @@ class PetCraving
         return $this;
     }
 
-    public function getFoodGroup(): ?ItemGroup
+    public function getFoodGroup(): ItemGroup
     {
         return $this->foodGroup;
     }
 
-    public function setFoodGroup(?ItemGroup $foodGroup): self
+    public function setFoodGroup(ItemGroup $foodGroup): self
     {
         $this->foodGroup = $foodGroup;
 
         return $this;
     }
 
-    public function getCreatedOn(): ?\DateTimeImmutable
+    public function getCreatedOn(): \DateTimeImmutable
     {
         return $this->createdOn;
     }

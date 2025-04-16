@@ -67,10 +67,10 @@ class PetSkills
     private ?Pet $pet = null;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private ?\DateTimeImmutable $talent;
+    private ?\DateTimeImmutable $talent = null;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private ?\DateTimeImmutable $expertise;
+    private ?\DateTimeImmutable $expertise = null;
 
     #[ORM\Column(type: 'integer')]
     private int $scrollLevels = 0;

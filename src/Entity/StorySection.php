@@ -29,10 +29,10 @@ class StorySection
     private $style;
 
     #[ORM\Column(type: 'string', length: 40, nullable: true)]
-    private $background;
+    private ?string $background = null;
 
     #[ORM\Column(type: 'string', length: 40, nullable: true)]
-    private $image;
+    private ?string $image = null;
 
     #[ORM\Column(type: 'text')]
     private $content;

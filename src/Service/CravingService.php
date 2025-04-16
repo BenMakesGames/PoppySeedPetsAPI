@@ -80,7 +80,6 @@ class CravingService
             {
                 $craving = (new PetCraving())
                     ->setFoodGroup($this->getRandomCravingItemGroup($pet))
-                    ->setCreatedOn(new \DateTimeImmutable())
                 ;
                 $this->em->persist($craving);
                 $pet->setCraving($craving);

@@ -71,7 +71,7 @@ class PetSpecies
 
     #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "petEncyclopedia", "petFriend", "petGroupDetails", "parkEvent", "helperPet"])]
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $eggImage;
+    private ?string $eggImage = null;
 
     #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "parkEvent", "helperPet", "petActivityLogAndPublicPet", 'petActivityLogs'])]
     #[ORM\Column(type: 'float')]
@@ -106,7 +106,7 @@ class PetSpecies
 
     #[Groups(["petEncyclopedia"])]
     #[ORM\Column(type: 'text', nullable: true)]
-    private ?string $physicalDescription;
+    private ?string $physicalDescription = null;
 
     public function getId(): ?int
     {
