@@ -29,7 +29,7 @@ final class Version20250415164000 extends AbstractMigration
     {
         // hat data for gravitational waves:
         $this->addSql(<<<EOSQL
-        INSERT INTO `item_hat` (`id`, `head_x`, `head_y`, `head_angle`, `head_scale`, `head_angle_fixed`) VALUES (282, '0.5', '0.75', '0', '0.42', '0')
+        INSERT INTO `item_hat` (`id`, `head_x`, `head_y`, `head_angle`, `head_scale`, `head_angle_fixed`) VALUES (282, '1', '1', '0', '0.42', '0')
         ON DUPLICATE KEY UPDATE `id` = `id`;
         EOSQL);
 
