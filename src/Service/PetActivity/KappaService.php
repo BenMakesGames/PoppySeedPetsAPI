@@ -22,6 +22,7 @@ use App\Enum\PetSkillEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
+use App\Functions\EquipmentFunctions;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PetBadgeHelpers;
 use App\Functions\PlayerLogFactory;
@@ -59,8 +60,7 @@ class KappaService
             $petWithSkills->getStrength()->getTotal() +
             $petWithSkills->getDexterity()->getTotal();
 
-        $this->em->remove($pet->getTool());
-        $pet->setTool(null);
+        EquipmentFunctions::destroyPetTool($this->em, $pet);
 
         if($totalSkill >= 12)
         {
@@ -117,8 +117,7 @@ class KappaService
             if(!$owner)
                 throw new PSPNotFoundException('Hm... there\'s no one to return it to! (I guess no one\'s been playing Poppy Seed Pets...)');
 
-            $this->em->remove($pet->getTool());
-            $pet->setTool(null);
+            EquipmentFunctions::destroyPetTool($this->em, $pet);
 
             $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' recognized the Shirikodama as belonging to ' . ActivityHelpers::UserName($owner) . ', so returned it to them. ' . ActivityHelpers::UserName($owner) . ' thanked ' . ActivityHelpers::PetName($pet) . ' with many pets and pats.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
@@ -144,8 +143,7 @@ class KappaService
             if(!$owner)
                 throw new PSPNotFoundException('Hm... there\'s no one to return it to! (I guess no one\'s been playing Poppy Seed Pets...)');
 
-            $this->em->remove($pet->getTool());
-            $pet->setTool(null);
+            EquipmentFunctions::destroyPetTool($this->em, $pet);
 
             $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' wasn\'t immediately sure who the Shirikodama belonged to, so wandered the town for a little before spotting ' . ActivityHelpers::UserName($owner) . ', and recognizing them as the owner! ' . ActivityHelpers::PetName($pet) . ' returned the Shirikodama to ' . ActivityHelpers::UserName($owner) . ', who thanked them with many pets and pats.', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
