@@ -74,7 +74,7 @@ class SpiritCompanion
     private string $star;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private \DateTimeImmutable $lastHangOut;
+    private ?\DateTimeImmutable $lastHangOut = null;
 
     #[ORM\OneToMany(targetEntity: Pet::class, mappedBy: 'spiritDad')]
     private Collection $fatheredPets;
