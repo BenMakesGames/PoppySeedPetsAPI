@@ -33,9 +33,9 @@ class HollowEarthPlayer
     private User $user;
 
     #[Groups(["hollowEarth"])]
-    #[ORM\ManyToOne(targetEntity: 'App\Entity\HollowEarthTile')]
+    #[ORM\ManyToOne(targetEntity: HollowEarthTile::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $currentTile;
+    private HollowEarthTile $currentTile;
 
     #[ORM\Column(type: 'json', nullable: true)]
     private array|null $currentAction = null;
@@ -80,12 +80,17 @@ class HollowEarthPlayer
     #[ORM\Column(type: 'integer')]
     private int $version;
 
+    public function __construct(User $user)
+    {
+        $this->user = $user;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
