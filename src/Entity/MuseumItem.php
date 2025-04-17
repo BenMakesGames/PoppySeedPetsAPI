@@ -46,7 +46,7 @@ class MuseumItem
 
     #[Groups(["museum"])]
     #[ORM\ManyToOne(targetEntity: User::class)]
-    private User $createdBy;
+    private ?User $createdBy = null;
 
     public function __construct(User $user, Item $item)
     {
