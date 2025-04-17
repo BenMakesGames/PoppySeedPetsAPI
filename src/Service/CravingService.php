@@ -78,9 +78,7 @@ class CravingService
 
             if($craving === null)
             {
-                $craving = (new PetCraving())
-                    ->setFoodGroup($this->getRandomCravingItemGroup($pet))
-                ;
+                $craving = new PetCraving($pet, $this->getRandomCravingItemGroup($pet));
                 $this->em->persist($craving);
                 $pet->setCraving($craving);
             }

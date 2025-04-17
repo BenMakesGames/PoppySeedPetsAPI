@@ -38,8 +38,10 @@ class PetCraving
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $satisfiedOn = null;
 
-    public function __construct()
+    public function __construct(Pet $pet, ItemGroup $foodGroup)
     {
+        $this->pet = $pet;
+        $this->foodGroup = $foodGroup;
         $this->createdOn = new \DateTimeImmutable();
     }
 
