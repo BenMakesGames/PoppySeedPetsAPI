@@ -80,9 +80,6 @@ class PetSkills
     #[Groups(['myPet', 'petPublicProfile'])]
     private int $level = 0;
 
-    // careful-careful: this HAS to just be a list of summations, for computeLevel, below
-    private const string LevelMath = 'stealth + nature + brawl + arcana + crafts + music + science';
-
     public function __construct()
     {
         for($x = 0; $x < 5; $x++)
@@ -96,6 +93,8 @@ class PetSkills
                 case 5: $this->dexterity++; break;
             }
         }
+
+        $this->computeLevel();
     }
 
     public function getId(): ?int
