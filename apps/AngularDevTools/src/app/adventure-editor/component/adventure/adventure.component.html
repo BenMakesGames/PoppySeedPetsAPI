@@ -1,0 +1,48 @@
+<div>
+  <img [src]="adventure|adventureIcon" />
+  @if(hasParents)
+  {
+    <button class="accordion-button" (click)="doCollapse()">{{ isOpen ? '-' : '+' }}</button>
+  }
+</div>
+@if(!isOpen)
+{
+  <div class="collapsed-branch">{{ adventure.type }}</div>
+}
+<div class="expanded-branch" [style.border-color]="adventureColor" [style.display]="(isOpen ? 'block' : 'none')">
+  <select (change)="doChangeAdventureType()" [(ngModel)]="adventure.type">
+    <option value="onward">Onward!</option>
+    <option value="petChallenge">Pet Challenge</option>
+    <option value="chooseOne">Choose One</option>
+    <option value="payItem?">Pay Item?</option>
+    <option value="payMoneys?">Pay Moneys?</option>
+    <option value="payItemAndMoneys?">Pay Item AND Moneys?</option>
+  </select>
+  @switch (adventure.type)
+  {
+    @case('chooseOne') {
+      <app-adventure-choose-one [adventure]="adventure" (adventureChange)="doUpdateAdventure($event)" />
+    }
+    @case('moveTo') {
+      <app-adventure-move-to [adventure]="adventure" (adventureChange)="doUpdateAdventure($event)" />
+    }
+    @case('onward') {
+      <app-adventure-onward [adventure]="adventure" (adventureChange)="doUpdateAdventure($event)" />
+    }
+    @case('payItem?') {
+      <app-adventure-pay-item [adventure]="adventure" (adventureChange)="doUpdateAdventure($event)" />
+    }
+    @case('payMoneys?') {
+      <app-adventure-pay-money [adventure]="adventure" (adventureChange)="doUpdateAdventure($event)" />
+    }
+    @case('payItemAndMoneys?') {
+      <app-adventure-pay-item-and-money [adventure]="adventure" (adventureChange)="doUpdateAdventure($event)" />
+    }
+    @case('petChallenge') {
+      <app-adventure-pet-challenge [adventure]="adventure" (adventureChange)="doUpdateAdventure($event)" />
+    }
+    @default {
+      <p>Unknown adventure type!</p>
+    }
+  }
+</div>

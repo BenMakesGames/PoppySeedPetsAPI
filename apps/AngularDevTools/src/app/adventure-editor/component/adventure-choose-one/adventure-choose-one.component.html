@@ -1,0 +1,18 @@
+<p>
+  <label>Description</label>
+  <textarea [(ngModel)]="adventure.description" (change)="doUpdateAdventure()"></textarea>
+</p>
+@for(button of adventure.buttons; let i = $index; track i)
+{
+  <p>
+    <span style="display:flex; flex-direction: row; gap: 1em; align-items: center;">
+      <label>Choice {{i + 1}}</label>
+      <button (click)="doDeleteChoice(i)">Remove</button>
+    </span>
+    <input type="text" [value]="button" (change)="doUpdateButton(i, $event)">
+  </p>
+  <app-adventure [(adventure)]="adventure.outcomes[i]" (adventureChange)="doUpdateAdventure()" />
+}
+<p>
+  <button (click)="doAddChoice()">+ Choice</button>
+</p>

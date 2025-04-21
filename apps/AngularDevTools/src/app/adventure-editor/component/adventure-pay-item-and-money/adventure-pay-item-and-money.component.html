@@ -1,0 +1,26 @@
+<p>
+  <label>Description</label>
+  <textarea [(ngModel)]="adventure.description" (change)="doUpdateAdventure()"></textarea>
+</p>
+<p>
+  <label>Item</label>
+  <input type="text" [(ngModel)]="adventure.item" (change)="doUpdateAdventure()" />
+</p>
+<p>
+  <label>Moneys to Pay</label>
+  <input type="number" min="1" [(ngModel)]="adventure.amount" (change)="doUpdateAdventure()" />
+</p>
+<p>
+  <label>If paid...</label>
+  <app-adventure [(adventure)]="adventure.ifPaid" (adventureChange)="doUpdateAdventure()" />
+</p>
+<p>
+  <label>
+    <input type="checkbox" [checked]="!!adventure.ifNotPaid" (change)="doToggleIfNotPaid()" />
+    Add an "if not paid" path.
+  </label>
+</p>
+<p *ngIf="adventure.ifNotPaid">
+  <label>If not paid...</label>
+  <app-adventure [(adventure)]="adventure.ifNotPaid" (adventureChange)="doUpdateAdventure()" />
+</p>

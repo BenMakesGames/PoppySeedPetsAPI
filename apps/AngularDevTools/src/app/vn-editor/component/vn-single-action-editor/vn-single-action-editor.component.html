@@ -1,0 +1,8 @@
+<p><select [(ngModel)]="action.type" (change)="doChangeType(action.type)">
+  <option *ngFor="let type of ACTION_TYPES" [value]="type">{{ type }}</option>
+</select></p>
+<ng-container *ngIf="action.type === 'exit'"></ng-container>
+<ng-container *ngIf="action.type === 'receiveItem'">
+  <pre>&#64;TODO receive item</pre>
+</ng-container>
+<app-vn-set-step-action-editor *ngIf="action.type === 'setStep'" [storySections]="storySections" [action]="setStepChoiceAction()" (actionChange)="action = $event"></app-vn-set-step-action-editor>

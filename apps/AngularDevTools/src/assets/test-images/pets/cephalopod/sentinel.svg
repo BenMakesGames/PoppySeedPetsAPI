@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" version="1.1" viewBox="0 0 8.4667 8.4667" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(0 -288.53)">
+  <ellipse cx="4.3014" cy="294" rx="1.2476" ry="1.1081" fill="#e8adad" class="colorA"/>
+  <path d="m3.8743 294.77s-1.0394-0.18899-0.89769-1.1103c0.14174-0.92132 1.2757-1.1339 1.819-0.82683 0.54334 0.30711 0.73233 1.3938 0.11812 1.8663-0.61421 0.47247-1.5355-0.0473-1.5355-0.0473" fill="none" stroke="#000" stroke-width=".26458px"/>
+  <path d="m3.581 293.96s0.98038 0 1.193-0.0709" fill="none" stroke="#000" stroke-width=".26458px"/>
+  <ellipse cx="1.6891" cy="292.97" rx=".38388" ry=".51972" fill="#e8adad" class="colorA"/>
+  <path d="m3.26 293.05s-0.51972-1.3229-1.2639-0.48428" fill="none" stroke="#000" stroke-width=".26458px"/>
+  <ellipse cx="1.9548" cy="295.25" rx=".46066" ry=".50791" fill="#e8adad" class="colorA"/>
+  <circle cx="1.9135" cy="295" r=".11946" fill="#365299" class="colorB"/>
+  <g fill="none" stroke="#000">
+   <circle cx="1.9608" cy="295.04" r=".35435" stroke-linecap="square" stroke-width=".26458"/>
+   <g stroke-width=".26458px">
+    <path d="m2.9411 293.73s-0.72052 0.12993-0.93313 0.9095"/>
+    <path d="m3.3782 294.65s-0.36616 0.60246-0.90951 0.69695"/>
+    <path d="m4.5121 294.9s0.21261 0.46065 0.25986 0.95675"/>
+    <path d="m5.2799 294.2s0.77958-0.16537 1.1694 0.21261"/>
+   </g>
+  </g>
+  <ellipse cx="4.1518" cy="291.11" rx=".39569" ry=".38979" fill="#e8adad" class="colorA"/>
+  <path d="m3.9333 292.71s-0.12993-0.69689 0.035436-1.3229" fill="none" stroke="#000" stroke-width=".26458px"/>
+  <path d="m4.6302 292.74s0.11812-0.75595 0.63783-1.0631" fill="none" stroke="#000" stroke-width=".26458px"/>
+  <ellipse cx="6.715" cy="293.57" rx=".46066" ry=".40751" fill="#e8adad" class="colorA"/>
+  <g fill="none" stroke="#000">
+   <path d="m5.1499 293.18s0.59059-0.74414 1.2757 0.0118" stroke-width=".26458px"/>
+   <circle cx="1.76" cy="292.89" r=".35435" stroke-linecap="square" stroke-width=".26458"/>
+   <circle cx="3.9215" cy="291.14" r=".35435" stroke-linecap="square" stroke-width=".26458"/>
+  </g>
+  <g stroke="#000" stroke-linecap="square" stroke-width=".26458">
+   <circle cx="5.5161" cy="291.48" r=".35435" fill="#e8adad" class="colorA"/>
+   <circle cx="6.6146" cy="293.47" r=".35435" fill="none"/>
+   <circle cx="6.7209" cy="294.72" r=".35435" fill="#e8adad" class="colorA"/>
+  </g>
+  <ellipse cx="4.6775" cy="296.23" rx=".39569" ry=".38979" fill="#e8adad" class="colorA"/>
+  <circle cx="4.831" cy="296.23" r=".35435" fill="none" stroke="#000" stroke-linecap="square" stroke-width=".26458"/>
+  <circle cx="2.1261" cy="295.44" r=".35435" fill="#e8adad" stroke="#000" stroke-linecap="square" stroke-width=".26458" class="colorA"/>
+  <g fill="#365299" class="colorB">
+   <circle cx="1.721" cy="292.92" r=".11946"/>
+   <circle cx="3.8743" cy="291.15" r=".11946"/>
+   <circle cx="2.1734" cy="295.44" r=".11946"/>
+   <circle cx="4.8428" cy="296.26" r=".11946"/>
+   <circle cx="6.7091" cy="294.68" r=".11946"/>
+   <circle cx="6.6146" cy="293.48" r=".11946"/>
+   <circle cx="5.5633" cy="291.51" r=".11946"/>
+  </g>
+ </g>
+</svg>

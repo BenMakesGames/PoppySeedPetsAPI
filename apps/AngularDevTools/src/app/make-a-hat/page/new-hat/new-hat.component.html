@@ -1,0 +1,45 @@
+<form>
+  <input type="file" (change)="doSelectFile($event)">
+</form>
+<div id="editor" *ngIf="svgBackgroundData" [class.dark]="darkMode">
+
+  <div id="controls">
+    <div>
+      <p><button type="button" (click)="doToggleDarkMode()">Toggle dark mode</button></p>
+      <dl>
+        <dt>Head X</dt>
+        <dd>{{ hat.x }}</dd>
+        <dt>Head Y</dt>
+        <dd>{{ hat.y }}</dd>
+        <dt><label for="gripAngle">Head Angle</label></dt>
+        <dd class="range">
+          <input id="gripAngle" name="gripAngle" type="number" min="-180" max="180" [(ngModel)]="hat.angle" (input)="doChangeGripProperty()">
+          <input name="gripAngle2" type="range" min="-180" max="180" [(ngModel)]="hat.angle" (input)="doChangeGripProperty()">
+        </dd>
+        <dt><label for="headAngleFixed">Head Angle Fixed?</label></dt>
+        <dd><input id="headAngleFixed" name="headAngleFixed" type="checkbox" [(ngModel)]="hat.angleFixed" [value]="1" (change)="doChangeGripProperty()"></dd>
+        <dt></dt>
+        <dt>Head Scale</dt>
+        <dd class="range">
+          <input id="gripScale" name="gripScale" type="number" min="0.25" max="1.5" step="0.01" [(ngModel)]="hat.scale" (input)="doChangeGripProperty()">
+          <input name="gripScale2" type="range" min="0.25" max="1.5" step="0.01" [(ngModel)]="hat.scale" (input)="doChangeGripProperty()">
+        </dd>
+      </dl>
+      <p class="sql">{{ SQL }}</p>
+    </div>
+  </div>
+
+  <div id="subject">
+    <div [ngStyle]="{ backgroundImage: svgBackgroundData }" [style.transform]="'rotate(' + hat.angle + 'deg)'" [style.width]="ITEM_SIZE + 'px'" [style.height]="ITEM_SIZE + 'px'" (click)="doSetHead($event)"></div>
+  </div>
+
+  <div id="preview">
+    <div *ngFor="let s of SPECIES; let i = index">
+      <img [src]="'assets/test-images/pets/' + s.image + '.svg'" id="pet">
+      <div class="item" [ngStyle]="hatPositionStyle[i]">
+        <div [ngStyle]="hatRotationStyle[i]">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

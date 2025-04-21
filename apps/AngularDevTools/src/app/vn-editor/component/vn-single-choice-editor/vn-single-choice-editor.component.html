@@ -1,0 +1,6 @@
+<input type="text" [(ngModel)]="choice.text">
+<ol>
+  <li *ngFor="let action of choice.actions; let i = index">
+    <app-vn-single-action-editor [(action)]="choice.actions[i]" [storySections]="storySections"></app-vn-single-action-editor>
+  </li>
+</ol>

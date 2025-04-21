@@ -1,0 +1,40 @@
+{
+  "name": "poppy-seed-pets-tools",
+  "version": "0.0.0",
+  "main": "main.js",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e",
+    "electron": "ng build && electron .",
+    "build:win": "ng build && electron-packager . --out=build --platform=win32 --overwrite --ignore=/node_modules --ignore=/e2e --ignore=/src --ignore=/build --ignore=/.idea"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^19.2.7",
+    "@angular/cdk": "^19.2.10",
+    "@angular/common": "^19.2.7",
+    "@angular/compiler": "^19.2.7",
+    "@angular/core": "^19.2.7",
+    "@angular/forms": "^19.2.7",
+    "@angular/material": "^19.2.10",
+    "@angular/platform-browser": "^19.2.7",
+    "@angular/platform-browser-dynamic": "^19.2.7",
+    "@angular/router": "^19.2.7",
+    "d3": "^7.8.0",
+    "rxjs": "^7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "^0.15.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^19.2.8",
+    "@angular/cli": "^19.2.8",
+    "@angular/compiler-cli": "^19.2.7",
+    "electron": "^35.1",
+    "@electron/packager": "^18.3",
+    "typescript": "~5.5.4"
+  }
+}

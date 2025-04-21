@@ -1,0 +1,20 @@
+.affected-needs {
+  display: grid;
+  grid-template-columns: 100px 100px;
+  grid-template-rows: auto;
+  gap: 0.5em;
+  align-items: center;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+.items {
+  display: grid;
+  grid-template-columns: 100px 200px min-content;
+  grid-template-rows: auto;
+  gap: 0.5em;
+  align-items: center;
+}

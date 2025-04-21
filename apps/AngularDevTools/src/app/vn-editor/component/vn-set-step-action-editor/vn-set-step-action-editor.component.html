@@ -1,0 +1,3 @@
+<select [(ngModel)]="action.step" (change)="doChangeStep()">
+  <option *ngFor="let s of storySections" [ngValue]="s.id">#{{ s.id }} - {{ s.style }}: {{ s.content|slice:0:40 }}</option>
+</select>

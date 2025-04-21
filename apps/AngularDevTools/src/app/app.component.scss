@@ -1,0 +1,26 @@
+nav {
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  background-color: #369;
+  padding: 0.5em 0.5em 0;
+
+  > a {
+    display: block;
+    text-align: center;
+    width: 10rem;
+    color: white;
+    padding: 0.5rem 0;
+    text-decoration: none;
+
+    &.active {
+      background-color: #eee;
+      color: black;
+      font-weight: bold;
+    }
+  }
+}
+
+main {
+  padding: 0 1rem 1rem;
+}

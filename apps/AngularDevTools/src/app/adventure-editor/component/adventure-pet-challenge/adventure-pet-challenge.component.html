@@ -1,0 +1,36 @@
+<p>
+  <label>Description</label>
+  <textarea [(ngModel)]="adventure.description" (change)="doUpdateAdventure()"></textarea>
+</p>
+<p>
+  <label>Button Text</label>
+  <input type="text" [(ngModel)]="adventure.buttonText" (change)="doUpdateAdventure()">
+</p>
+<p>
+  <label>Stats and/or Skills</label>
+  <span class="stats-grid">
+    <label *ngFor="let stat of allStatsAndSkills">
+      <input type="checkbox" [checked]="adventure.stats.includes(stat)" (change)="doToggleStat(stat)" />
+      {{ stat }}
+    </label>
+  </span>
+</p>
+<p>
+  <label>Difficulty</label>
+  <select [(ngModel)]="adventure.requiredRoll" (change)="doUpdateAdventure()">
+    <option [value]="10">Easy</option>
+    <option [value]="15">Regular</option>
+    <option [value]="20">Hard</option>
+    <option [value]="25">Very hard</option>
+    <option [value]="30">Epic hard</option>
+    <option [value]="40">omg, why so hard?</option>
+  </select>
+</p>
+<p>
+  <label>On success...</label>
+  <app-adventure [(adventure)]="adventure.ifSuccess" (adventureChange)="doUpdateAdventure()" />
+</p>
+<p>
+  <label>On failure...</label>
+  <app-adventure [(adventure)]="adventure.ifFail" (adventureChange)="doUpdateAdventure()" />
+</p>

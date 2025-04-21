@@ -1,0 +1,11 @@
+<form class="dialog" (submit)="doImport()">
+  <div>
+    <label>Adventure JSON</label>
+    <textarea [(ngModel)]="jsonText" rows="5"></textarea>
+    <div class="error" *ngIf="error">{{ error }}</div>
+  </div>
+  <div class="buttons">
+    <button type="submit">Import</button>
+    <button type="button" class="wire" (click)="doCancel()">Cancel</button>
+  </div>
+</form>

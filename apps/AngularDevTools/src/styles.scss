@@ -1,0 +1,185 @@
+html,body {
+  font-size: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, sans-serif;
+  background-color: #eee;
+}
+
+input,select,textarea,button {
+  font-family: inherit;
+  font-size: inherit;
+  box-sizing: border-box;
+  padding: 0.25em 0.5em;
+}
+
+input,select,textarea {
+  background-color: #fff;
+  border: 1px solid #999;
+  border-radius: 3px;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  max-width: 720px;
+}
+
+#editor {
+  display: grid;
+  grid-template-columns: auto 350px;
+  grid-template-areas:
+    "subject controls"
+    "preview controls"
+  ;
+
+  &.dark {
+    background-color: #333;
+  }
+
+  > #controls {
+    background-color: #ddd;
+    grid-area: controls;
+    padding: 0 1rem;
+
+    > div {
+      position: sticky;
+      top: 1rem;
+    }
+  }
+
+  > #subject {
+    grid-area: subject;
+
+    > div {
+      display: inline-block;
+      padding: 0;
+      margin: 0;
+      border: 1px solid red;
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+    }
+  }
+
+  > #preview {
+    grid-area: preview;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    pointer-events: none;
+
+    > div {
+      width: 100px;
+      height: 100px;
+      position: relative;
+      padding: 25px;
+    }
+  }
+
+  .range {
+    display: flex;
+    flex-direction: row;
+
+    > input[type=number] {
+      width: 5rem;
+    }
+
+    > input[type=range] {
+      width: 100%;
+    }
+  }
+
+  #pet {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+  }
+
+  .item {
+    position: absolute;
+
+    > div {
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+    }
+  }
+
+  .sql {
+    font-family: monospace;
+    white-space: pre-wrap;
+  }
+}
+
+label {
+  display: block;
+  width: fit-content;
+}
+
+button,.button {
+  display: inline-block;
+  background-color: #369;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+
+  &.link-text {
+    background-color: transparent;
+    color: #369;
+    padding: 0;
+    text-decoration: underline;
+  }
+}
+
+
+
+/***** dialogs ***************************************************************/
+
+.mat-mdc-dialog-container .mdc-dialog__container .mdc-dialog__surface {
+  background: #eee;
+  box-shadow: 5px 5px 1px rgba(0, 0, 0, 0.15);
+  border-radius: 0;
+}
+
+.cdk-overlay-container {
+  > * {
+    z-index: 10;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+
+  .cdk-overlay-backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .cdk-global-overlay-wrapper {
+    display: flex;
+    pointer-events: none;
+
+    .cdk-overlay-pane {
+      max-height: calc(100vh - 5rem);
+      display: flex;
+      pointer-events: auto;
+    }
+  }
+}
+
+.dialog {
+  padding: 1rem;
+}
+
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5em;
+}
+
+.error {
+  color: red;
+}

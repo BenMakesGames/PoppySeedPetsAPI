@@ -1,0 +1,51 @@
+<form *ngIf="!stories || !storySections">
+  <p>Select a JSON file exported by PHPMyAdmin. This file must contain the story and story_section tables.</p>
+  <p>Or click "No File" to start from scratch.</p>
+  <p><input type="file" (change)="doSelectFile($event)"></p>
+  <p><button type="button" (click)="doNoFile()">No File</button></p>
+</form>
+<div *ngIf="stories && storySections">
+  <p><select [(ngModel)]="selectedStoryId" (change)="doSelectStory(selectedStoryId)">
+    <option *ngFor="let s of stories" [value]="s.id">{{ s.title }}</option>
+  </select></p>
+  <p><button type="button" (click)="doAddStory()">+ Story</button></p>
+</div>
+<ng-container *ngIf="selectedSections">
+  <hr>
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th class="numeric">ID</th>
+        <th>Style</th>
+        <th>Background</th>
+        <th>Portrait</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let section of selectedSections">
+        <tr>
+          <td><button (click)="doExpandCollapse(section.id)">...</button></td>
+          <td class="numeric">{{ section.id }}</td>
+          <td><select [(ngModel)]="section.style">
+            <option *ngFor="let style of SECTION_STYLES" [value]="style">{{ style }}</option>
+          </select></td>
+          <td><input type="text" [(ngModel)]="section.background"></td>
+          <td><input type="text" [(ngModel)]="section.image"></td>
+        </tr>
+        <tr [class.collapsed]="expandedSectionId != section.id">
+          <td colspan="2"></td>
+          <td colspan="3">
+            <textarea [(ngModel)]="section.content"></textarea>
+            <app-vn-choices-editor [(choices)]="section.choices" [storySections]="selectedSections"></app-vn-choices-editor>
+            <p><button type="button" (click)="doDeleteSection(expandedSectionId)">DELETE</button></p>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+  <p><button type="button" (click)="doAddSection()">+ Section</button></p>
+  <p>
+    <app-vn-graph [sections]="selectedSections"></app-vn-graph>
+  </p>
+</ng-container>

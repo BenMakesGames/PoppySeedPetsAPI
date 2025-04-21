@@ -1,0 +1,58 @@
+<p>
+  <label>Description</label>
+  <textarea [(ngModel)]="adventure.description" (change)="doUpdateAdventure()"></textarea>
+</p>
+<p>
+  <label>Button Text</label>
+  <input type="text" [(ngModel)]="adventure.buttonText" (change)="doUpdateAdventure()">
+</p>
+<p>
+  <label>Pet needs affected:</label>
+  <span class="affected-needs">
+    <label><input type="checkbox" [checked]="adventure.food !== undefined" (change)="doTogglePetNeed('food')" /> Food?</label>
+    <input type="number" [(ngModel)]="adventure.food" (change)="doUpdateAdventure()">
+
+    <label><input type="checkbox" [checked]="adventure.safety !== undefined" (change)="doTogglePetNeed('safety')" /> Safety?</label>
+    <input type="number" [(ngModel)]="adventure.safety" (change)="doUpdateAdventure()">
+
+    <label><input type="checkbox" [checked]="adventure.love !== undefined" (change)="doTogglePetNeed('love')" /> Love?</label>
+    <input type="number" [(ngModel)]="adventure.love" (change)="doUpdateAdventure()">
+
+    <label><input type="checkbox" [checked]="adventure.esteem !== undefined" (change)="doTogglePetNeed('esteem')" /> Esteem?</label>
+    <input type="number" [(ngModel)]="adventure.esteem" (change)="doUpdateAdventure()">
+  </span>
+</p>
+<p>
+  <label><input type="checkbox" [checked]="adventure.exp" (change)="doToggleExp()"> Gain experience?</label>
+</p>
+<div *ngIf="adventure.exp">
+  <p>
+    <label>Experience gain</label>
+    <input type="number" [(ngModel)]="adventure.exp.amount" min="1" max="5" (change)="doUpdateAdventure()">
+  </p>
+  <p>
+    <label>Skills that could be leveled</label>
+    <span class="stats-grid">
+    <label *ngFor="let stat of allSkills">
+      <input type="checkbox" [checked]="adventure.exp.stats.includes(stat)" (change)="doToggleStat(stat)" />
+      {{ stat }}
+    </label>
+  </span>
+  </p>
+</div>
+<p>
+  <label><input type="checkbox" [checked]="adventure.receiveItems" (change)="doToggleItems()"> Receive items?</label>
+</p>
+<div *ngIf="adventure.receiveItems">
+  <div class="items">
+    @for(item of adventure.receiveItems; let i = $index; track i)
+    {
+      <div>Item {{ i }}</div>
+      <input type="text" [value]="adventure.receiveItems[i]" (change)="doUpdateItemName(i, $event)" />
+      <button (click)="doRemoveItem(i)">Remove</button>
+    }
+  </div>
+  <p>
+    <button (click)="doAddItem()">+ Item</button>
+  </p>
+</div>

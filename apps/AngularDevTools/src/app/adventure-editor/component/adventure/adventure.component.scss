@@ -1,0 +1,62 @@
+:host {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+
+  > div { position: relative; }
+}
+
+img {
+  width: 2em;
+  height: 2em;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+.tree-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: #333;
+}
+
+.connecting-line
+{
+  position: absolute;
+  top: 1em;
+  left: -1.5em;
+  right: 0;
+  height: 1px;
+  background-color: #333;
+}
+
+.accordion-button
+{
+  position: absolute;
+  left: -2em;
+  width: 1.5em;
+  text-align: center;
+  top: .25em;
+  padding: 0;
+  height: 1.5em;
+  line-height: 1.5em;
+}
+
+.collapsed-branch
+{
+  flex-grow: 1;
+  font-weight: bold;
+  padding-top: 0.25em;
+}
+
+.expanded-branch
+{
+  flex-grow: 1;
+  border: 3px solid #ccc;
+  padding: 1em 1em 0;
+  z-index: 0;
+  margin-left: -1.5em;
+}
