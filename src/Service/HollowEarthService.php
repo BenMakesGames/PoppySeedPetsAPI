@@ -76,7 +76,7 @@ class HollowEarthService
         if($user->getHollowEarthPlayer() !== null)
             return;
 
-        $hollowEarthPlayer = (new HollowEarthPlayer())
+        $hollowEarthPlayer = (new HollowEarthPlayer(user: $user))
             ->setCurrentTile(HollowEarthTileRepository::findOneById($this->em, 1))
         ;
 
@@ -214,7 +214,7 @@ class HollowEarthService
         $this->enterTile($player, $tile);
 
         $card = $this->getEffectiveTileCard($player, $tile);
-        $event = $card ? $card->getEvent() : null;
+        $event = $card?->getEvent();
 
         $player
             ->setCurrentTile($tile)

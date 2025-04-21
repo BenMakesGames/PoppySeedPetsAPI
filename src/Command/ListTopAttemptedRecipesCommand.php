@@ -36,7 +36,7 @@ class ListTopAttemptedRecipesCommand extends PoppySeedPetsCommand
     {
         $this
             ->setName('app:list-top-attempted-recipes')
-            ->setDescription('Lists the top attempted recipes in the game.')
+            ->setDescription('Lists the top attempted recipes in the game, in markdown format.')
         ;
     }
 
@@ -51,8 +51,8 @@ class ListTopAttemptedRecipesCommand extends PoppySeedPetsCommand
             ->getScalarResult()
         ;
 
-        echo ' Qty   | Recipe                 | Human-readable recipe';
-        echo '-------+------------------------+-------------------------------';
+        echo "| Qty | Recipe | Human-readable recipe |\n";
+        echo "| --- | --- | --- |\n";
 
         foreach($topRecipes as $recipe)
         {
@@ -61,9 +61,9 @@ class ListTopAttemptedRecipesCommand extends PoppySeedPetsCommand
             $itemStrings = array_map(fn($item) => $item->quantity . 'x ' . $item->item->getName(), $recipeItems);
 
             echo
-                ' ' . str_pad($recipe['qty'], 5, ' ') .
-                ' | ' . str_pad($recipe['recipe'], 22, ' ') .
-                ' | ' . ArrayFunctions::list_nice($itemStrings) . "\r\n";
+                '| ' . $recipe['qty'] .
+                ' | ' . $recipe['recipe'] .
+                ' | ' . ArrayFunctions::list_nice($itemStrings) . " |\n";
         }
 
         return self::SUCCESS;

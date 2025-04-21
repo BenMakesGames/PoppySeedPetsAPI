@@ -18,7 +18,8 @@ use App\Service\Squirrel3;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: 'App\Repository\PetSkillsRepository')]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Entity()]
 #[ORM\Index(columns: ['level'], name: 'level_idx')]
 class PetSkills
 {
@@ -75,15 +76,9 @@ class PetSkills
     #[ORM\Column(type: 'integer')]
     private int $scrollLevels = 0;
 
-    #[ORM\Column(
-        type: 'integer',
-        insertable: false,
-        updatable: false,
-        columnDefinition: 'INT GENERATED ALWAYS AS (stealth + nature + brawl + arcana + crafts + music + science) STORED',
-        generated: 'ALWAYS'
-    )]
+    #[ORM\Column(type: 'integer')]
     #[Groups(['myPet', 'petPublicProfile'])]
-    private int $level;
+    private int $level = 0;
 
     public function __construct()
     {
@@ -98,6 +93,8 @@ class PetSkills
                 case 5: $this->dexterity++; break;
             }
         }
+
+        $this->computeLevel();
     }
 
     public function getId(): ?int
@@ -108,6 +105,25 @@ class PetSkills
     public function getLevel(): int
     {
         return $this->level;
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     * Also called in code, by increaseStat and decreaseStat, to ensure the updated level
+     * is available immediately in-code.
+     */
+    public function computeLevel(): void
+    {
+        $this->level =
+            $this->stealth +
+            $this->nature +
+            $this->brawl +
+            $this->arcana +
+            $this->crafts +
+            $this->music +
+            $this->science
+        ;
     }
 
     public function getStat(string $statName): int
@@ -128,6 +144,8 @@ class PetSkills
             $this->{$statName}++;
         }
 
+        $this->computeLevel();
+
         return $this;
     }
 
@@ -140,6 +158,8 @@ class PetSkills
         {
             $this->{$statName}--;
         }
+
+        $this->computeLevel();
 
         return $this;
     }

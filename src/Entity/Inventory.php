@@ -23,8 +23,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Table]
 #[ORM\Index(name: 'modified_on_idx', columns: ['modified_on'])]
-#[ORM\Index(name: 'location_idx', columns: ['location'])]
 #[ORM\Index(name: 'full_item_name_idx', columns: ['full_item_name'])]
+#[ORM\Index(name: 'owner_location_item_idx', columns: ['owner_id', 'location', 'item_id'])]
 #[ORM\Entity(repositoryClass: 'App\Repository\InventoryRepository')]
 class Inventory
 {
