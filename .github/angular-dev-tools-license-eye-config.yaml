@@ -1,0 +1,24 @@
+header:
+  license:
+    spdx-id: GPL-3.0-or-later
+    copyright-owner: Ben Hendel-Doying and contributors
+    copyright-year: '2019-2025'
+    software-name: Poppy Seed Pets Dev Tools
+    content: |
+      This file is part of Poppy Seed Pets Dev Tools.
+
+      Poppy Seed Pets Dev Tools is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+      Poppy Seed Pets Dev Tools is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+      You should have received a copy of the GNU General Public License along with Poppy Seed Pets Dev Tools. If not, see <https://www.gnu.org/licenses/>.
+
+  paths:
+    - 'apps/AngularDevTools/src/**/*.ts'
+    - 'apps/AngularDevTools/src/**/*.scss'
+    - 'apps/AngularDevTools/src/**/*.html'
+
+  comment: on-failure
+
+  license-locations:
+    - COPYING

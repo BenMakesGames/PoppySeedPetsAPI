@@ -14,9 +14,9 @@ header:
       You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
 
   paths:
-    - 'src/*/**/*.php'
-    - 'tests/*/**/*.php'
-    - 'migrations/**/*.php'
+    - 'apps/PHPAPI/src/*/**/*.php'
+    - 'apps/PHPAPI/tests/*/**/*.php'
+    - 'apps/PHPAPI/migrations/**/*.php'
 
   comment: on-failure
 
