@@ -112,22 +112,22 @@ class MothController extends AbstractController
 
         switch($moonPhase)
         {
-            case MoonPhaseEnum::NEW_MOON:
+            case MoonPhaseEnum::NewMoon:
                 $percentChanceOfGreatSuccess *= 1 / 2;
                 break;
-            case MoonPhaseEnum::WAXING_CRESCENT:
-            case MoonPhaseEnum::WANING_CRESCENT:
+            case MoonPhaseEnum::WaxingCrescent:
+            case MoonPhaseEnum::WaningCrescent:
                 $percentChanceOfGreatSuccess *= 2 / 3;
                 break;
-            case MoonPhaseEnum::FIRST_QUARTER:
-            case MoonPhaseEnum::LAST_QUARTER:
+            case MoonPhaseEnum::FirstQuarter:
+            case MoonPhaseEnum::LastQuarter:
                 $percentChanceOfGreatSuccess *= 3 / 4;
                 break;
-            case MoonPhaseEnum::WAXING_GIBBOUS:
-            case MoonPhaseEnum::WANING_GIBBOUS:
+            case MoonPhaseEnum::WaxingGibbous:
+            case MoonPhaseEnum::WaningGibbous:
                 $percentChanceOfGreatSuccess *= 4 / 5;
                 break;
-            case MoonPhaseEnum::FULL_MOON:
+            case MoonPhaseEnum::FullMoon:
                 break;
         }
 

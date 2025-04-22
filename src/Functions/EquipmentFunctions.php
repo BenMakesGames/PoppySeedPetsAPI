@@ -20,7 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class EquipmentFunctions
 {
-    public static function unequipPet(Pet $pet)
+    public static function unequipPet(Pet $pet): void
     {
         if($pet->getTool() === null)
             return;
@@ -31,7 +31,7 @@ class EquipmentFunctions
         $pet->setTool(null);
     }
 
-    public static function unhatPet(Pet $pet)
+    public static function unhatPet(Pet $pet): void
     {
         if($pet->getHat() === null)
             return;
@@ -42,7 +42,7 @@ class EquipmentFunctions
         $pet->setHat(null);
     }
 
-    public static function destroyPetTool(EntityManagerInterface $em, Pet $pet)
+    public static function destroyPetTool(EntityManagerInterface $em, Pet $pet): void
     {
         if($pet->getTool() === null)
             return;

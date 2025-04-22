@@ -14,11 +14,12 @@ declare(strict_types=1);
 
 namespace App\Functions;
 
-use App\Entity\Pet;
-
 final class ColorFunctions
 {
-    public static function RGB2HSL(int $red, int $green, int $blue)
+    /**
+     * @return array{h: float, s: float, l: float}
+     */
+    public static function RGB2HSL(int $red, int $green, int $blue): array
     {
         $r = $red / 255;
         $g = $green / 255;
@@ -63,7 +64,10 @@ final class ColorFunctions
         return [ 'h' => $h, 's' => $s, 'l' => $l ];
     }
 
-    public static function HSL2RGB(float $h, float $s, float $l)
+    /**
+     * @return array{r: float, g: float, b: float}
+     */
+    public static function HSL2RGB(float $h, float $s, float $l): array
     {
         $r = $l;
         $g = $l;
@@ -145,7 +149,7 @@ final class ColorFunctions
         return ColorFunctions::RGB2HSL($rgb['r'], $rgb['g'], $rgb['b']);
     }
 
-    public static function ChangeHue(string $hexColor, float $hue)
+    public static function ChangeHue(string $hexColor, float $hue): string
     {
         $hsl = ColorFunctions::Hex2HSL($hexColor);
         $hsl['h'] = $hue;
@@ -153,7 +157,7 @@ final class ColorFunctions
     }
 
     // not-perfect, but should be computationally fast!
-    public static function GrayscalifyHex(string $hexColor)
+    public static function GrayscalifyHex(string $hexColor): string
     {
         $r = substr($hexColor, 0, 2);
         $g = substr($hexColor, 2, 2);

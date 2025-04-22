@@ -20,7 +20,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 abstract class AdminController extends AbstractController
 {
-    public function adminIPsOnly(Request $request)
+    public function adminIPsOnly(Request $request): void
     {
         if(!preg_match('/' . $this->getParameter('adminIpRegex') . '/', $request->getClientIp()))
             throw new AccessDeniedHttpException('Sorry: the device you\'re using is not trusted to perform administrative actions.');

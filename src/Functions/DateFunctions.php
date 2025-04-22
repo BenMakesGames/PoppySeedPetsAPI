@@ -18,9 +18,9 @@ use App\Enum\MoonPhaseEnum;
 
 final class DateFunctions
 {
-    public const float MOON_CYCLE_LENGTH = 29.53058868;
+    public const float MoonCycleLength = 29.53058868;
 
-    public const array FULL_MOON_NAMES = [
+    public const array FullMoonNames = [
         1 => 'Wolf',
         2 => 'Snow',
         3 => 'Worm',
@@ -39,28 +39,28 @@ final class DateFunctions
     // which was adapted from http://home.att.net/~srschmitt/script_moon_phase.html#contents
     // which was adapted from a BASIC program in the Astronomical Computing column of Sky & Telescope, April 1994.
     // what a history :P
-    public static function moonPhase(\DateTimeInterface $dt): string
+    public static function moonPhase(\DateTimeInterface $dt): MoonPhaseEnum
     {
         $AG = self::getMoonAge($dt);
 
         if($AG < 1.84566)
-            return MoonPhaseEnum::NEW_MOON;
+            return MoonPhaseEnum::NewMoon;
         else if($AG < 5.53699)
-            return MoonPhaseEnum::WAXING_CRESCENT;
+            return MoonPhaseEnum::WaxingCrescent;
         else if($AG < 9.22831)
-            return MoonPhaseEnum::FIRST_QUARTER;
+            return MoonPhaseEnum::FirstQuarter;
         else if($AG < 12.91963)
-            return MoonPhaseEnum::WAXING_GIBBOUS;
+            return MoonPhaseEnum::WaxingGibbous;
         else if($AG < 16.61096)
-            return MoonPhaseEnum::FULL_MOON;
+            return MoonPhaseEnum::FullMoon;
         else if($AG < 20.30228)
-            return MoonPhaseEnum::WANING_GIBBOUS;
+            return MoonPhaseEnum::WaningGibbous;
         else if($AG < 23.99361)
-            return MoonPhaseEnum::LAST_QUARTER;
+            return MoonPhaseEnum::LastQuarter;
         else if($AG < 27.68493)
-            return MoonPhaseEnum::WANING_CRESCENT;
+            return MoonPhaseEnum::WaningCrescent;
         else
-            return MoonPhaseEnum::NEW_MOON;
+            return MoonPhaseEnum::NewMoon;
     }
 
     public static function getJulianDate(int $year, int $month, int $day)
@@ -93,19 +93,19 @@ final class DateFunctions
 
         $JD = gregoriantojd($month, $day, $year);
 
-        $IP = ($JD - 2451550.1) / self::MOON_CYCLE_LENGTH;
+        $IP = ($JD - 2451550.1) / self::MoonCycleLength;
 
         // normalize IP
         $IP -= (int)floor($IP);
         if($IP < 0)
             $IP++;
 
-        return $IP * self::MOON_CYCLE_LENGTH;
+        return $IP * self::MoonCycleLength;
     }
 
     public static function getIsExactFullMoon(\DateTimeImmutable $dt): bool
     {
-        $halfMoonLength = self::MOON_CYCLE_LENGTH / 2;
+        $halfMoonLength = self::MoonCycleLength / 2;
 
         $moonAge = self::getMoonAge($dt);
 
@@ -169,9 +169,7 @@ final class DateFunctions
 
     public static function getFullMoonName(\DateTimeImmutable $dt): ?string
     {
-        $phase = self::moonPhase($dt);
-
-        if($phase !== MoonPhaseEnum::FULL_MOON)
+        if(self::moonPhase($dt) !== MoonPhaseEnum::FullMoon)
             return null;
 
         $exactFullMoon = self::getClosestExactFullMoon($dt);
@@ -182,12 +180,12 @@ final class DateFunctions
         $fullMoonDaysThatMonth = self::getFullExactMoonDays($fullMoonYear, $fullMoonMonth);
 
         if(count($fullMoonDaysThatMonth) === 1)
-            return self::FULL_MOON_NAMES[$fullMoonMonth];
+            return self::FullMoonNames[$fullMoonMonth];
 
         $exactFullMoonDay = (int)$exactFullMoon->format('d');
 
         if($exactFullMoonDay == $fullMoonDaysThatMonth[0])
-            return self::FULL_MOON_NAMES[$fullMoonMonth];
+            return self::FullMoonNames[$fullMoonMonth];
         else
             return 'Blue';
     }

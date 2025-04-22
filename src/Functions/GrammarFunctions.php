@@ -41,7 +41,7 @@ final class GrammarFunctions
 
     private const string A_ordinal_a = "[bcdgjkpqtuvwyz]-?th";
 
-    public static function indefiniteArticle($word)
+    public static function indefiniteArticle($word): string
     {
         // HANDLE ORDINAL FORMS
         if(preg_match("/^(".self::A_ordinal_a.")/i", $word))    return 'a';

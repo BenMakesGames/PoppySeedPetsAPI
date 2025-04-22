@@ -23,7 +23,7 @@ final class UserUnlockedFeatureHelpers
     // warning: side effects!
     private static array $createdThisRequest = [];
 
-    public static function create(EntityManagerInterface $em, User $user, string $feature)
+    public static function create(EntityManagerInterface $em, User $user, string $feature): void
     {
         if(in_array($feature, UserUnlockedFeatureHelpers::$createdThisRequest))
             return;
