@@ -166,7 +166,7 @@ class GatheringHolidayAdventureService
         {
             for($i = 0; $i < $numItems; $i++)
             {
-                $r = $this->rng->rngNextInt(1, 100);
+                $r = random_int(1, 100);
 
                 if($r <= 2) // 2%
                     $egg = 'Pink Plastic Egg';
