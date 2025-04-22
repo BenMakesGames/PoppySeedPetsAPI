@@ -48,7 +48,7 @@ class PetFactory
 
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly IRandom $squirrel3
+        private readonly IRandom $rng
     )
     {
     }
@@ -98,24 +98,24 @@ class PetFactory
             ->andWhere('p.birthDate<:today')
             ->setParameter('today', $now)
             ->setMaxResults(1)
-            ->setFirstResult($this->squirrel3->rngNextInt(0, $petCount - 1))
+            ->setFirstResult($this->rng->rngNextInt(0, $petCount - 1))
             ->getQuery()
             ->getSingleResult()
         ;
 
-        $colorA = $this->squirrel3->rngNextTweakedColor($basePet->getColorA());
-        $colorB = $this->squirrel3->rngNextTweakedColor($basePet->getColorB());
+        $colorA = $this->rng->rngNextTweakedColor($basePet->getColorA());
+        $colorB = $this->rng->rngNextTweakedColor($basePet->getColorB());
 
         $isSagaJelling = $petSpecies->getName() === 'Sága Jelling';
 
         $startingMerit = $isSagaJelling
             ? MeritRepository::findOneByName($this->em, MeritEnum::SAGA_SAGA)
-            : MeritRepository::getRandomStartingMerit($this->em, $this->squirrel3)
+            : MeritRepository::getRandomStartingMerit($this->em, $this->rng)
         ;
 
         $name = $petSpecies->getName() === 'Sentinel'
-            ? $this->squirrel3->rngNextFromArray(self::SentinelNames)
-            : $this->squirrel3->rngNextFromArray(PetShelterPet::PetNames)
+            ? $this->rng->rngNextFromArray(self::SentinelNames)
+            : $this->rng->rngNextFromArray(PetShelterPet::PetNames)
         ;
 
         $pet = $this->createPet(
@@ -124,13 +124,13 @@ class PetFactory
             $petSpecies,
             $colorA,
             $colorB,
-            FlavorEnum::getRandomValue($this->squirrel3),
+            FlavorEnum::getRandomValue($this->rng),
             $startingMerit
         );
 
         $pet
-            ->setFoodAndSafety($this->squirrel3->rngNextInt(10, 12), -9)
-            ->setScale($this->squirrel3->rngNextInt(80, 120))
+            ->setFoodAndSafety($this->rng->rngNextInt(10, 12), -9)
+            ->setScale($this->rng->rngNextInt(80, 120))
         ;
 
         if($isSagaJelling)

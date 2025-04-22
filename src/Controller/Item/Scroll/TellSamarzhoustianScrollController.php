@@ -35,7 +35,7 @@ class TellSamarzhoustianScrollController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService, IRandom $squirrel3, UserStatsService $userStatsRepository
+        ResponseService $responseService, IRandom $rng, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -79,9 +79,9 @@ class TellSamarzhoustianScrollController extends AbstractController
         $em->remove($inventory);
 
         $listOfItems = [
-            $squirrel3->rngNextFromArray($ingredients),
-            $squirrel3->rngNextFromArray($spices),
-            $squirrel3->rngNextFromArray($fancyItems),
+            $rng->rngNextFromArray($ingredients),
+            $rng->rngNextFromArray($spices),
+            $rng->rngNextFromArray($fancyItems),
         ];
 
         foreach($listOfItems as $itemName)

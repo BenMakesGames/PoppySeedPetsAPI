@@ -42,7 +42,7 @@ class SummoningSomethingFriendlyController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function summonSomethingFriendly(
         Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
-        EntityManagerInterface $em, PetFactory $petFactory, IRandom $squirrel3
+        EntityManagerInterface $em, PetFactory $petFactory, IRandom $rng
     ): JsonResponse
     {
         /** @var User $user */
@@ -58,7 +58,7 @@ class SummoningSomethingFriendlyController extends AbstractController
         $gotASentinel = false;
         $gotAReusedSentinel = false;
 
-        if($squirrel3->rngNextInt(1, 19) === 1)
+        if($rng->rngNextInt(1, 19) === 1)
         {
             $pet = $petFactory->createRandomPetOfSpecies(
                 $user,
@@ -88,9 +88,9 @@ class SummoningSomethingFriendlyController extends AbstractController
                     $daysInTheWild = (new \DateTimeImmutable())->diff($pet->getLastInteracted())->days;
                     $percentChanceOfTransformation = min(10, (int)floor($daysInTheWild / 14));
 
-                    if($squirrel3->rngNextInt(1, 100) <= $percentChanceOfTransformation)
+                    if($rng->rngNextInt(1, 100) <= $percentChanceOfTransformation)
                     {
-                        $species = $squirrel3->rngNextFromArray($em->getRepository(PetSpecies::class)->findAll());
+                        $species = $rng->rngNextFromArray($em->getRepository(PetSpecies::class)->findAll());
 
                         if($species->getName() !== 'Sentinel' && $species->getId() != $pet->getSpecies()->getId())
                         {
@@ -112,7 +112,7 @@ class SummoningSomethingFriendlyController extends AbstractController
         {
             $allSpecies = $em->getRepository(PetSpecies::class)->findAll();
 
-            $pet = $petFactory->createRandomPetOfSpecies($user, $squirrel3->rngNextFromArray($allSpecies));
+            $pet = $petFactory->createRandomPetOfSpecies($user, $rng->rngNextFromArray($allSpecies));
 
             $gotASentinel = $pet->getSpecies()->getName() === 'Sentinel';
         }
@@ -126,22 +126,22 @@ class SummoningSomethingFriendlyController extends AbstractController
             $pet->setLocation(PetLocationEnum::DAYCARE);
 
             if($gotAReusedSentinel)
-                $message = 'You read the scroll... not ' . $squirrel3->rngNextInt(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet! But it looks like someone took care of it... has it done this before?) You put it in the Pet Shelter daycare...';
+                $message = 'You read the scroll... not ' . $rng->rngNextInt(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet! But it looks like someone took care of it... has it done this before?) You put it in the Pet Shelter daycare...';
             else if($gotASentinel)
-                $message = 'You read the scroll... not ' . $squirrel3->rngNextInt(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet!) You put it in the Pet Shelter daycare...';
+                $message = 'You read the scroll... not ' . $rng->rngNextInt(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet!) You put it in the Pet Shelter daycare...';
             else
-                $message = 'You read the scroll... not ' . $squirrel3->rngNextInt(3, 6) . ' seconds later, ' . GrammarFunctions::indefiniteArticle($pet->getSpecies()->getName()) . ' ' . $pet->getSpecies()->getName() . ' named ' . $pet->getName() . ' opens the door, waves "hello", then closes it again before heading to the Pet Shelter!';
+                $message = 'You read the scroll... not ' . $rng->rngNextInt(3, 6) . ' seconds later, ' . GrammarFunctions::indefiniteArticle($pet->getSpecies()->getName()) . ' ' . $pet->getSpecies()->getName() . ' named ' . $pet->getName() . ' opens the door, waves "hello", then closes it again before heading to the Pet Shelter!';
         }
         else
         {
             $pet->setLocation(PetLocationEnum::HOME);
 
             if($gotAReusedSentinel)
-                $message = 'You read the scroll... not ' . $squirrel3->rngNextInt(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet! But it looks like someone took care of it... has it done this before?) Well... it\'s here now, I guess...';
+                $message = 'You read the scroll... not ' . $rng->rngNextInt(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet! But it looks like someone took care of it... has it done this before?) Well... it\'s here now, I guess...';
             else if($gotASentinel)
-                $message = 'You read the scroll... not ' . $squirrel3->rngNextInt(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet!) Well... it\'s here now, I guess...';
+                $message = 'You read the scroll... not ' . $rng->rngNextInt(3, 6) . ' seconds later, a Sentinel appears! (That\'s not a pet!) Well... it\'s here now, I guess...';
             else
-                $message = 'You read the scroll... not ' . $squirrel3->rngNextInt(3, 6) . ' seconds later, ' . GrammarFunctions::indefiniteArticle($pet->getSpecies()->getName()) . ' ' . $pet->getSpecies()->getName() . ' named ' . $pet->getName() . ' opens the door, and walks inside!';
+                $message = 'You read the scroll... not ' . $rng->rngNextInt(3, 6) . ' seconds later, ' . GrammarFunctions::indefiniteArticle($pet->getSpecies()->getName()) . ' ' . $pet->getSpecies()->getName() . ' named ' . $pet->getName() . ' opens the door, and walks inside!';
         }
 
         $em->flush();

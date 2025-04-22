@@ -46,7 +46,7 @@ class GiveCandyToTrickOrTreaterController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function giveCandy(
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
-        Request $request, Clock $clock, IRandom $squirrel3, FieldGuideService $fieldGuideService
+        Request $request, Clock $clock, IRandom $rng, FieldGuideService $fieldGuideService
     )
     {
         /** @var User $user */
@@ -108,7 +108,7 @@ class GiveCandyToTrickOrTreaterController extends AbstractController
             $favoriteFlavorStrength = EatingService::getFavoriteFlavorStrength($trickOrTreater, new FoodWithSpice($candy->getItem(), null));
 
             if($favoriteFlavorStrength > 0)
-                $logMessage .= ' (' . $squirrel3->rngNextFromArray([ 'Just what they wanted!', 'Ah! The good stuff!', 'One of their favorites!' ]) . ')';
+                $logMessage .= ' (' . $rng->rngNextFromArray([ 'Just what they wanted!', 'Ah! The good stuff!', 'One of their favorites!' ]) . ')';
 
             PetActivityLogFactory::createUnreadLog($em, $trickOrTreater, $logMessage)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)

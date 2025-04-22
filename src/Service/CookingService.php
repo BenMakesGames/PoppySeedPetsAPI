@@ -26,7 +26,6 @@ use App\Functions\NumberFunctions;
 use App\Functions\RecipeRepository;
 use App\Model\ItemQuantity;
 use App\Model\PrepareRecipeResults;
-use App\Repository\InventoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class CookingService
@@ -35,8 +34,7 @@ class CookingService
         private readonly InventoryService $inventoryService,
         private readonly EntityManagerInterface $em,
         private readonly UserStatsService $userStatsRepository,
-        private readonly InventoryRepository $inventoryRepository,
-        private readonly IRandom $squirrel3
+        private readonly IRandom $rng
     )
     {
     }
@@ -266,20 +264,20 @@ class CookingService
 
         if(count($spices) > 0)
         {
-            // $this->squirrel3->rngNextShuffle the spices
-            $this->squirrel3->rngNextShuffle($spices);
+            // shuffle the spices
+            $this->rng->rngNextShuffle($spices);
 
             // then add ~1/3 duplicate spices, but always at the END of the initial list
             $originalSpicesCount = count($spices);
 
             for($i = 0; $i < $originalSpicesCount; $i++)
             {
-                if($this->squirrel3->rngNextInt(1, 3) === 1 && !$spices[$i]->getEffects()->getChanceForBonusItem())
+                if($this->rng->rngNextInt(1, 3) === 1 && !$spices[$i]->getEffects()->getChanceForBonusItem())
                     $spices[] = $spices[$i];
             }
 
             // apply the spices to the new inventory in a random order
-            $this->squirrel3->rngNextShuffle($newInventory);
+            $this->rng->rngNextShuffle($newInventory);
 
             for($i = 0; $i < count($newInventory) && count($spices) > 0; $i++)
             {

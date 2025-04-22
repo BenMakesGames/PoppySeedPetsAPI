@@ -14,50 +14,68 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Functions\RandomFunctions;
+use Random\Engine\Xoshiro256StarStar;
+use Random\Randomizer;
 
-class Squirrel3 implements IRandom
+class Xoshiro implements IRandom
 {
-    private int $seed;
-    private int $rngIndex = 0;
+    private Randomizer $rng;
 
     public function __construct(?int $seed = null)
     {
-        $this->seed = $seed ?? random_int(0, PHP_INT_MAX);
+        $this->rng = new Randomizer(new Xoshiro256StarStar($seed));
     }
 
+    /**
+     * @inheritdoc
+     */
     public function rngNext(): int
     {
-        return RandomFunctions::squirrel3Noise($this->rngIndex++, $this->seed);
+        return $this->rng->nextInt();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function rngNextFloat(): float
     {
-        return $this->rngNext() / 0xffffffff;
+        return $this->rng->nextFloat();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function rngNextBool(): bool
     {
-        return ($this->rngNext() & 1) === 1;
+        return $this->rng->getInt(0, 1) === 1;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function rngNextInt(int $min, int $inclusiveMax): int
     {
-        return ($this->rngNext() % ($inclusiveMax - $min + 1)) + $min;
+        return $this->rng->getInt($min, $inclusiveMax);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function rngNextFromArray(array $array): mixed
     {
-        return array_slice($array, $this->rngNextInt(0, count($array) - 1), 1)[0];
+        return array_slice($array, $this->rng->getInt(0, count($array) - 1), 1)[0];
     }
 
-    public function rngNextShuffle(array &$array)
+    /**
+     * @inheritdoc
+     */
+    public function rngNextShuffle(array &$array): void
     {
         $n = count($array);
 
         for($i = 0; $i < $n - 1; $i++)
         {
-            $r = $this->rngNextInt($i, $n - 1);
+            $r = $this->rng->getInt($i, $n - 1);
             $temp = $array[$r];
             $array[$r] = $array[$i];
             $array[$i] = $temp;
@@ -65,18 +83,18 @@ class Squirrel3 implements IRandom
     }
 
     /**
-     * Do not use on huge arrays; it creates another array of equal size.
+     * @inheritdoc
      */
     public function rngNextSubsetFromArray(array $array, int $number): array
     {
-        $indicies = array_keys($array);
+        $indices = array_keys($array);
 
-        $this->rngNextShuffle($indicies);
+        $this->rngNextShuffle($indices);
 
         $return = [];
 
         for($i = 0; $i < $number; $i++)
-            $return[] = $array[$indicies[$i]];
+            $return[] = $array[$indices[$i]];
 
         return $return;
     }
@@ -87,10 +105,10 @@ class Squirrel3 implements IRandom
 
         for($i = 0; $i < 3; $i++)
         {
-            $part = hexdec($color[$i << 1] . $color[($i << 1) + 1]);    // get color part as decimal
-            $part += $this->rngNextInt(-$radius, $radius);          // randomize
-            $part = max(0, min(255, $part));                        // keep between 0 and 255
-            $part = str_pad(dechex($part), 2, '0', STR_PAD_LEFT);   // turn back into hex
+            $part = hexdec($color[$i << 1] . $color[($i << 1) + 1]); // get color part as decimal
+            $part += $this->rng->getInt(-$radius, $radius);          // randomize
+            $part = max(0, min(255, $part));                         // keep between 0 and 255
+            $part = str_pad(dechex($part), 2, '0', STR_PAD_LEFT);    // turn back into hex
 
             $newColor .= $part;
         }

@@ -36,7 +36,7 @@ class SpiritPolymorphPotionController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function drink(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        IRandom $squirrel3
+        IRandom $rng
     )
     {
         /** @var User $user */
@@ -58,7 +58,7 @@ class SpiritPolymorphPotionController extends AbstractController
         $currentImage = $pet->getSpiritCompanion()->getImage();
         $possibleImages = array_filter(SpiritCompanion::IMAGES, fn($i) => $i !== $currentImage);
 
-        $pet->getSpiritCompanion()->setImage($squirrel3->rngNextFromArray($possibleImages));
+        $pet->getSpiritCompanion()->setImage($rng->rngNextFromArray($possibleImages));
 
         $em->flush();
 

@@ -32,7 +32,7 @@ class MaracaController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -42,13 +42,13 @@ class MaracaController extends AbstractController
 
         $location = $inventory->getLocation();
 
-        $count = $squirrel3->rngNextInt(2, 3);
+        $count = $rng->rngNextInt(2, 3);
 
         // definitely Beans
         $inventoryService->receiveItem('Beans', $user, $user, $user->getName() . ' sacrificed a Maraca for these.', $location);
 
         // 50/50 chance of Magic Beans
-        if($squirrel3->rngNextInt(1, 2) === 1)
+        if($rng->rngNextInt(1, 2) === 1)
             $inventoryService->receiveItem('Magic Beans', $user, $user, $user->getName() . ' sacrificed a Maraca for these.', $location);
         else
             $inventoryService->receiveItem('Everybeans', $user, $user, $user->getName() . ' sacrificed a Maraca for these.', $location);

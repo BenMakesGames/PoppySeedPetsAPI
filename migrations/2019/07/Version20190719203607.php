@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace DoctrineMigrations;
 
 use App\Enum\FlavorEnum;
-use App\Service\Squirrel3;
+use App\Service\Xoshiro;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
@@ -42,7 +42,7 @@ final class Version20190719203607 extends AbstractMigration
     {
         parent::postUp($schema);
 
-        $squirrel3 = new Squirrel3();
+        $rng = new Xoshiro();
         $pets = $this->connection->fetchAllAssociative('SELECT id FROM pet');
 
         foreach($pets as $pet)
@@ -51,7 +51,7 @@ final class Version20190719203607 extends AbstractMigration
                 'UPDATE pet SET favorite_flavor=:flavor WHERE id=:id LIMIT 1',
                 [
                     'id' => $pet['id'],
-                    'flavor' => FlavorEnum::getRandomValue($squirrel3)
+                    'flavor' => FlavorEnum::getRandomValue($rng)
                 ]
             );
         }

@@ -32,7 +32,7 @@ class NoetalaEggController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -46,9 +46,9 @@ class NoetalaEggController extends AbstractController
         $inventoryService->receiveItem('Quinacridone Magenta Dye', $user, $user, 'This oozed out of a Noetala Egg that ' . $user->getName() . ' opened.', $location);
 
         // 75% chance of more Fluff
-        $includeFluff = $squirrel3->rngNextInt(1, 4) != 1;
+        $includeFluff = $rng->rngNextInt(1, 4) != 1;
 
-        $loot = $squirrel3->rngNextFromArray([
+        $loot = $rng->rngNextFromArray([
             'Quintessence', 'Talon', 'Tentacle', 'Green Dye'
         ]);
 

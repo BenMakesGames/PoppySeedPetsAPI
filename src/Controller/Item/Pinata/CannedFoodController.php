@@ -34,7 +34,7 @@ class CannedFoodController extends AbstractController
     #[Route("/{inventory}/open", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function open(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         EntityManagerInterface $em, UserStatsService $userStatsRepository, TransactionService $transactionService
     )
     {
@@ -48,9 +48,9 @@ class CannedFoodController extends AbstractController
 
         $cansOpened = $userStatsRepository->incrementStat($user, UserStatEnum::CANS_OF_FOOD_OPENED);
 
-        if($cansOpened->getValue() > 3 && $squirrel3->rngNextInt(1, 50) === 1)
+        if($cansOpened->getValue() > 3 && $rng->rngNextInt(1, 50) === 1)
         {
-            $worms = $squirrel3->rngNextInt(4, 12);
+            $worms = $rng->rngNextInt(4, 12);
 
             for($i = 0; $i < $worms; $i++)
                 $inventoryService->receiveItem('Worms', $user, $user, $user->getName() . ' found this in a can. A Canned Food can. Of worms.', $location, $lockedToOwner);
@@ -59,7 +59,7 @@ class CannedFoodController extends AbstractController
         }
         else
         {
-            $item = $squirrel3->rngNextFromArray([
+            $item = $rng->rngNextFromArray([
                 'Tomato', 'Corn', 'Fish', 'Beans', 'Creamed Corn',
                 'Tomato', 'Corn', 'Fish', 'Beans', 'Creamed Corn',
                 'Fermented Fish', 'Coffee Beans',

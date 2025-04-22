@@ -33,7 +33,7 @@ class CetguelisTreasureController extends AbstractController
     #[Route("/cetguelis-treasure/{inventory}/open", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openCetguelisTreasure(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -57,7 +57,7 @@ class CetguelisTreasureController extends AbstractController
             'Dumbbell',
         ];
 
-        $items[] = $squirrel3->rngNextFromArray([
+        $items[] = $rng->rngNextFromArray([
             'Weird, Blue Egg',
             'Unexpectedly-familiar Metal Box',
         ]);

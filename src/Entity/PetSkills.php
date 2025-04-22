@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Service\Squirrel3;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 

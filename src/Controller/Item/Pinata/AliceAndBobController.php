@@ -33,7 +33,7 @@ class AliceAndBobController extends AbstractController
     #[Route("/alicesSecret/{inventory}/teaTime", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function alicesSecretTeaTime(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
         UserStatsService $userStatsRepository, ResponseService $responseService
     )
     {
@@ -49,7 +49,7 @@ class AliceAndBobController extends AbstractController
 
         for($i = 0; $i < 3; $i++)
         {
-            $loot[] = $squirrel3->rngNextFromArray([
+            $loot[] = $rng->rngNextFromArray([
                 'Coffee Bean Tea with Mammal Extract',
                 'Ginger Tea',
                 'Black Tea',
@@ -59,15 +59,15 @@ class AliceAndBobController extends AbstractController
 
         for($i = 0; $i < 2; $i++)
         {
-            if($squirrel3->rngNextInt(1, 5) === 1)
+            if($rng->rngNextInt(1, 5) === 1)
             {
-                $loot[] = $squirrel3->rngNextFromArray([
+                $loot[] = $rng->rngNextFromArray([
                     'Dreamwalker\'s Tea', 'Yogurt Muffin',
                 ]);
             }
             else
             {
-                $loot[] = $squirrel3->rngNextFromArray([
+                $loot[] = $rng->rngNextFromArray([
                     'Toadstool', 'Mini Chocolate Chip Cookies', 'Pumpkin Bread',
                 ]);
             }
@@ -101,7 +101,7 @@ class AliceAndBobController extends AbstractController
     #[Route("/alicesSecret/{inventory}/cards", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function alicesSecretCards(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
         UserStatsService $userStatsRepository, ResponseService $responseService
     )
     {
@@ -112,7 +112,7 @@ class AliceAndBobController extends AbstractController
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         $loot = [
-            'Paper', 'Paper', 'Paper', 'Paper', $squirrel3->rngNextFromArray([ 'Paper', 'Quinacridone Magenta Dye' ])
+            'Paper', 'Paper', 'Paper', 'Paper', $rng->rngNextFromArray([ 'Paper', 'Quinacridone Magenta Dye' ])
         ];
 
         $newInventory = [];
@@ -126,7 +126,7 @@ class AliceAndBobController extends AbstractController
     #[Route("/bobsSecret/{inventory}/fish", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function bobsSecretFish(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
         UserStatsService $userStatsRepository, ResponseService $responseService
     )
     {
@@ -144,15 +144,15 @@ class AliceAndBobController extends AbstractController
 
         for($i = 0; $i < 3; $i++)
         {
-            if($squirrel3->rngNextInt(1, 5) === 1)
+            if($rng->rngNextInt(1, 5) === 1)
             {
-                $loot[] = $squirrel3->rngNextFromArray([
+                $loot[] = $rng->rngNextFromArray([
                     'Sand Dollar', 'Tentacle',
                 ]);
             }
             else
             {
-                $loot[] = $squirrel3->rngNextFromArray([
+                $loot[] = $rng->rngNextFromArray([
                     'Fish', 'Scales',
                 ]);
             }
@@ -169,7 +169,7 @@ class AliceAndBobController extends AbstractController
     #[Route("/bobsSecret/{inventory}/tool", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function bobsTool(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
         UserStatsService $userStatsRepository, ResponseService $responseService
     )
     {
@@ -180,7 +180,7 @@ class AliceAndBobController extends AbstractController
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
         // apply "Bob's" bonus
-        $tool = $squirrel3->rngNextFromArray([
+        $tool = $rng->rngNextFromArray([
             'Iron Tongs',
             'Garden Shovel',
             'Crooked Fishing Rod',

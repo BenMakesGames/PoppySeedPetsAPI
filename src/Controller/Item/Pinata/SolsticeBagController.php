@@ -35,7 +35,7 @@ class SolsticeBagController extends AbstractController
     #[Route("/summerSolsticeBag/{bag}/open", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openSummerSolsticeBag(
-        Inventory $bag, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $bag, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         EntityManagerInterface $em, HattierService $hattierService
     )
     {
@@ -53,7 +53,7 @@ class SolsticeBagController extends AbstractController
             'Orange Sportsball Ball', 'Sunflower', 'Tile: Private Fishing Spot', 'Tall Glass of Yellownade'
         ];
 
-        $items = $squirrel3->rngNextSubsetFromArray($possibleItems, 3);
+        $items = $rng->rngNextSubsetFromArray($possibleItems, 3);
 
         foreach($items as $item)
             $inventoryService->receiveItem($item, $user, $user, "Found inside {$bag->getItem()->getNameWithArticle()}.", $location, $lockedToOwner);
@@ -82,7 +82,7 @@ class SolsticeBagController extends AbstractController
     #[Route("/winterSolsticeBag/{bag}/open", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openWinterSolsticeBag(
-        Inventory $bag, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $bag, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         EntityManagerInterface $em, HattierService $hattierService
     )
     {
@@ -100,7 +100,7 @@ class SolsticeBagController extends AbstractController
             'Marshmallows', 'Mint', 'Sweet Ginger Tea', 'Tile: Bakery Bites'
         ];
 
-        $items = $squirrel3->rngNextSubsetFromArray($possibleItems, 3);
+        $items = $rng->rngNextSubsetFromArray($possibleItems, 3);
 
         foreach($items as $item)
             $inventoryService->receiveItem($item, $user, $user, "Found inside {$bag->getItem()->getNameWithArticle()}.", $location, $lockedToOwner);

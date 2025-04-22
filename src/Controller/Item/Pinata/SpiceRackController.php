@@ -33,7 +33,7 @@ class SpiceRackController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function loot(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -45,7 +45,7 @@ class SpiceRackController extends AbstractController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $spices = $squirrel3->rngNextSubsetFromArray([
+        $spices = $rng->rngNextSubsetFromArray([
             'Cheesy Flakes',
             'Fool\'s Spice',
             'Freshly-squeezed Fish Oil',

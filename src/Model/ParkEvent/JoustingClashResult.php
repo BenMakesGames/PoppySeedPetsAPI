@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Model\ParkEvent;
 
 use App\Service\IRandom;
-use App\Service\Squirrel3;
 
 final class JoustingClashResult
 {

@@ -45,7 +45,7 @@ class GreenhouseService
     public function __construct(
         private readonly InventoryService $inventoryService,
         private readonly PetFactory $petFactory,
-        private readonly IRandom $squirrel3,
+        private readonly IRandom $rng,
         private readonly EntityManagerInterface $em,
         private readonly UserStatsService $userStatsRepository,
         private readonly NormalizerInterface $normalizer,
@@ -61,7 +61,7 @@ class GreenhouseService
         switch($greenhouse->getVisitingBird())
         {
             case BirdBathBirdEnum::OWL:
-                $scroll = $this->squirrel3->rngNextFromArray([
+                $scroll = $this->rng->rngNextFromArray([
                     'Behatting Scroll',
                     'Behatting Scroll',
                     'Behatting Scroll',
@@ -78,10 +78,10 @@ class GreenhouseService
             case BirdBathBirdEnum::RAVEN:
                 $this->inventoryService->receiveItem('Black Feathers', $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
                 $this->inventoryService->receiveItem('Black Feathers', $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
-                $extraItem = $this->squirrel3->rngNextFromArray([
+                $extraItem = $this->rng->rngNextFromArray([
                     'Juice Box',
-                    $this->squirrel3->rngNextFromArray([ 'Winged Key', 'Piece of Cetgueli\'s Map' ]),
-                    $this->squirrel3->rngNextFromArray([ 'Magic Smoke', 'Lightning in a Bottle' ]),
+                    $this->rng->rngNextFromArray([ 'Winged Key', 'Piece of Cetgueli\'s Map' ]),
+                    $this->rng->rngNextFromArray([ 'Magic Smoke', 'Lightning in a Bottle' ]),
                 ]);
                 $extraInventory = $this->inventoryService->receiveItem($extraItem, $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
                 $message = 'As you approach the raven, it turns to face you. You freeze, and stare at each other for a few seconds before the raven flies off in a flurry of Black Feathers! Also, it apparently left ' . $extraInventory->getItem()->getNameWithArticle() . ' behind? \'Kay...';
@@ -111,9 +111,9 @@ class GreenhouseService
     public function applyPollinatorSpice(Inventory $item, string $pollinators)
     {
         if($pollinators === PollinatorEnum::BEES_1 || $pollinators === PollinatorEnum::BEES_2)
-            $spiceName = $this->squirrel3->rngNextInt(1, 20) === 1 ? 'of Queens' : 'Anthophilan';
+            $spiceName = $this->rng->rngNextInt(1, 20) === 1 ? 'of Queens' : 'Anthophilan';
         else if($pollinators === PollinatorEnum::BUTTERFLIES)
-            $spiceName = $this->squirrel3->rngNextFromArray([ 'Fortified', 'Nectarous' ]);
+            $spiceName = $this->rng->rngNextFromArray([ 'Fortified', 'Nectarous' ]);
         else
             throw new \InvalidArgumentException('Programmer foolishness did not account for all pollinators when applying spices!');
 
@@ -137,16 +137,16 @@ class GreenhouseService
             );
         }
 
-        $startingMerit = MeritRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray($startingMerits));
+        $startingMerit = MeritRepository::findOneByName($this->em, $this->rng->rngNextFromArray($startingMerits));
 
-        $harvestedPet = $this->petFactory->createPet($user, $name, $species, $colorA, $colorB, FlavorEnum::getRandomValue($this->squirrel3), $startingMerit);
+        $harvestedPet = $this->petFactory->createPet($user, $name, $species, $colorA, $colorB, FlavorEnum::getRandomValue($this->rng), $startingMerit);
 
         if($bonusMerit)
             $harvestedPet->addMerit($bonusMerit);
 
         $harvestedPet
-            ->setFoodAndSafety($this->squirrel3->rngNextInt(10, 12), -9)
-            ->setScale($this->squirrel3->rngNextInt(80, 120))
+            ->setFoodAndSafety($this->rng->rngNextInt(10, 12), -9)
+            ->setScale($this->rng->rngNextInt(80, 120))
         ;
 
         $this->em->remove($plant);
@@ -201,7 +201,7 @@ class GreenhouseService
             return false;
 
         /** @var GreenhousePlant $plant */
-        $plant = $this->squirrel3->rngNextFromArray($availablePlants);
+        $plant = $this->rng->rngNextFromArray($availablePlants);
 
         $plant->setPollinators($pollinator);
 
@@ -230,7 +230,7 @@ class GreenhouseService
             $weedText = null;
         else
         {
-            $weedText = $this->squirrel3->rngNextFromArray([
+            $weedText = $this->rng->rngNextFromArray([
                 'Don\'t need \'em; don\'t want \'em!',
                 'Get outta\' here, weeds!',
                 'Weeds can gtfo!',
@@ -250,22 +250,22 @@ class GreenhouseService
     {
         $species = $this->em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Dapper Swan' ]);
 
-        $colorA = $this->squirrel3->rngNextTweakedColor($this->squirrel3->rngNextFromArray([
+        $colorA = $this->rng->rngNextTweakedColor($this->rng->rngNextFromArray([
             'EEEEEE', 'EEDDCC', 'DDDDBB'
         ]));
 
-        $colorB = $this->squirrel3->rngNextTweakedColor($this->squirrel3->rngNextFromArray([
+        $colorB = $this->rng->rngNextTweakedColor($this->rng->rngNextFromArray([
             'bb0000', '33CCFF', '009900', 'CC9933', '333333'
         ]));
 
-        if($this->squirrel3->rngNextInt(1, 3) === 1)
+        if($this->rng->rngNextInt(1, 3) === 1)
         {
             $temp = $colorA;
             $colorA = $colorB;
             $colorB = $temp;
         }
 
-        $name = $this->squirrel3->rngNextFromArray([
+        $name = $this->rng->rngNextFromArray([
             'Gosling', 'Goose', 'Honks', 'Clamshell', 'Mussel', 'Seafood', 'Nauplius', 'Mr. Beaks',
             'Medli', 'Buff', 'Tuft', 'Tail-feather', 'Anser', 'Cygnus', 'Paisley', 'Bolo', 'Cravat',
             'Ascot', 'Neckerchief'
@@ -280,22 +280,22 @@ class GreenhouseService
     {
         $species = $this->em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Mushroom' ]);
 
-        $colorA = $this->squirrel3->rngNextTweakedColor($this->squirrel3->rngNextFromArray([
+        $colorA = $this->rng->rngNextTweakedColor($this->rng->rngNextFromArray([
             'e32c2c', 'e5e5d6', 'dd8a09', 'a8443d'
         ]));
 
-        $colorB = $this->squirrel3->rngNextTweakedColor($this->squirrel3->rngNextFromArray([
+        $colorB = $this->rng->rngNextTweakedColor($this->rng->rngNextFromArray([
             'd7d38b', 'e5e5d6', '716363'
         ]));
 
-        if($this->squirrel3->rngNextInt(1, 4) === 1)
+        if($this->rng->rngNextInt(1, 4) === 1)
         {
             $temp = $colorA;
             $colorA = $colorB;
             $colorB = $temp;
         }
 
-        $name = $this->squirrel3->rngNextFromArray([
+        $name = $this->rng->rngNextFromArray([
             'Cremini', 'Button', 'Portobello', 'Oyster', 'Porcini', 'Morel', 'Enoki', 'Shimeji',
             'Shiitake', 'Maitake', 'Reishi', 'Puffball', 'Galerina', 'Milkcap', 'Bolete',
             'Honey', 'Pinewood', 'Horse', 'Périgord', 'Tooth', 'Blewitt', 'Pom Pom', 'Ear', 'Jelly',
@@ -311,15 +311,15 @@ class GreenhouseService
     {
         $species = $this->em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Tomate' ]);
 
-        $colorA = $this->squirrel3->rngNextTweakedColor($this->squirrel3->rngNextFromArray([
+        $colorA = $this->rng->rngNextTweakedColor($this->rng->rngNextFromArray([
             'FF6622', 'FFCC22', '77FF22', 'FF2222', '7722FF'
         ]));
 
-        $colorB = $this->squirrel3->rngNextTweakedColor($this->squirrel3->rngNextFromArray([
+        $colorB = $this->rng->rngNextTweakedColor($this->rng->rngNextFromArray([
             '007700', '009922', '00bb44'
         ]));
 
-        $name = $this->squirrel3->rngNextFromArray([
+        $name = $this->rng->rngNextFromArray([
             'Alicante', 'Azoychka', 'Krim', 'Brandywine', 'Campari', 'Canario', 'Tomkin',
             'Flamenco', 'Giulietta', 'Grandero', 'Trifele', 'Jubilee', 'Juliet', 'Kumato',
             'Monterosa', 'Montserrat', 'Plum', 'Raf', 'Roma', 'Rutgers', 'Marzano', 'Cherry',

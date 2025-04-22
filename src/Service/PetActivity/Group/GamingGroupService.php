@@ -39,7 +39,7 @@ class GamingGroupService
         private readonly EntityManagerInterface $em,
         private readonly InventoryService $inventoryService,
         private readonly PetRelationshipService $petRelationshipService,
-        private readonly IRandom $squirrel3
+        private readonly IRandom $rng
     )
     {
     }
@@ -85,7 +85,7 @@ class GamingGroupService
 
     public function generateGroupName(): string
     {
-        return GroupNameGenerator::generateName($this->squirrel3, self::GroupNamePatterns, self::Dictionary, 60);
+        return GroupNameGenerator::generateName($this->rng, self::GroupNamePatterns, self::Dictionary, 60);
     }
 
     private function rollSkill(Pet $pet, array $skills): int
@@ -102,7 +102,7 @@ class GamingGroupService
             };
         }
 
-        return $this->squirrel3->rngNextInt(1, 20 + $total);
+        return $this->rng->rngNextInt(1, 20 + $total);
     }
 
     private const string NameScrawlful2 = 'Scrawlful 2';
@@ -116,12 +116,12 @@ class GamingGroupService
 
     public function meet(PetGroup $group)
     {
-        $partyGameName = $this->squirrel3->rngNextFromArray([ 'Reds to Reds', self::NameScrawlful2, 'Mixit', 'One-night Werecreature' ]);
+        $partyGameName = $this->rng->rngNextFromArray([ 'Reds to Reds', self::NameScrawlful2, 'Mixit', 'One-night Werecreature' ]);
 
-        $game = $this->squirrel3->rngNextFromArray([
+        $game = $this->rng->rngNextFromArray([
             [
                 'type' => self::TypeFighting,
-                'name' => $this->squirrel3->rngNextFromArray([ 'Hyper Smash Sisters', 'Spiritcalibur II' ]),
+                'name' => $this->rng->rngNextFromArray([ 'Hyper Smash Sisters', 'Spiritcalibur II' ]),
                 'winWith' => [ 'dexterity', 'perception', 'intelligence' ],
                 'exp' => null,
                 'possibleLoot' => null,
@@ -130,7 +130,7 @@ class GamingGroupService
             ],
             [
                 'type' => self::TypeRhythm,
-                'name' => $this->squirrel3->rngNextFromArray([ 'Dance Dance Uprising', 'Guitar Champion' ]),
+                'name' => $this->rng->rngNextFromArray([ 'Dance Dance Uprising', 'Guitar Champion' ]),
                 'winWith' => null,
                 'exp' => [ PetSkillEnum::MUSIC ],
                 'possibleLoot' => [ 'Music Note' ],
@@ -139,7 +139,7 @@ class GamingGroupService
             ],
             [
                 'type' => self::TypeBoard,
-                'name' => $this->squirrel3->rngNextFromArray([ 'Settlers of Hollow Earth', 'Galaxy Hauler' ]),
+                'name' => $this->rng->rngNextFromArray([ 'Settlers of Hollow Earth', 'Galaxy Hauler' ]),
                 'winWith' => [ 'luck' ],
                 'exp' => null,
                 'possibleLoot' => [ 'Glowing Six-sided Die' ],
@@ -148,7 +148,7 @@ class GamingGroupService
             ],
             [
                 'type' => self::TypeBoard,
-                'name' => $this->squirrel3->rngNextFromArray([ 'Naner Farmer', 'Spice Magnate', 'Terraforming Ganymede', 'Gemstone Alchemist' ]),
+                'name' => $this->rng->rngNextFromArray([ 'Naner Farmer', 'Spice Magnate', 'Terraforming Ganymede', 'Gemstone Alchemist' ]),
                 'winWith' => [ 'intelligence' ],
                 'exp' => null,
                 'possibleLoot' => null,
@@ -235,7 +235,7 @@ class GamingGroupService
                 else
                     $messageTemplate .= ' They won most of the games!';
 
-                $member->increaseEsteem($this->squirrel3->rngNextInt(4, 7));
+                $member->increaseEsteem($this->rng->rngNextInt(4, 7));
             }
             else if($member->getId() === $lowestPerformer)
             {
@@ -244,11 +244,11 @@ class GamingGroupService
                 else
                 {
                     $messageTemplate .= ' They didn\'t do very well, but it was still fun.';
-                    $member->increaseEsteem($this->squirrel3->rngNextInt(2, 5));
+                    $member->increaseEsteem($this->rng->rngNextInt(2, 5));
                 }
             }
             else
-                $member->increaseEsteem($this->squirrel3->rngNextInt(3, 6));
+                $member->increaseEsteem($this->rng->rngNextInt(3, 6));
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $this->formatMessage($messageTemplate, $member, $group))
                 ->setIcon(self::ActivityIcon)
@@ -259,14 +259,14 @@ class GamingGroupService
             if($game['exp'])
                 $this->petExperienceService->gainExp($member, 1, $game['exp'], $activityLog);
 
-            if($game['possibleLoot'] && $this->squirrel3->rngNextInt(1, 10) === 1 && !$lowestPerformer)
+            if($game['possibleLoot'] && $this->rng->rngNextInt(1, 10) === 1 && !$lowestPerformer)
             {
-                $enchantmentName = $this->squirrel3->rngNextFromArray($game['lootEnchantments']);
+                $enchantmentName = $this->rng->rngNextFromArray($game['lootEnchantments']);
 
                 $enchantment = $enchantmentName == null ? null : EnchantmentRepository::findOneByName($this->em, $enchantmentName);
 
                 $this->inventoryService->petCollectsEnhancedItem(
-                    $this->squirrel3->rngNextFromArray($game['possibleLoot']),
+                    $this->rng->rngNextFromArray($game['possibleLoot']),
                     $enchantment,
                     null,
                     $member,

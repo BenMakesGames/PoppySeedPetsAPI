@@ -32,7 +32,7 @@ class RockController extends AbstractController
     #[Route("/rock/{rock}/smash", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function smash(
-        Inventory $rock, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $rock, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -64,8 +64,8 @@ class RockController extends AbstractController
 
         $userStatsRepository->incrementStat($user, 'Smashed Open a ' . $rock->getItem()->getName());
 
-        $ore = $squirrel3->rngNextFromArray($ores);
-        $extraItem = $squirrel3->rngNextFromArray($extraItems);
+        $ore = $rng->rngNextFromArray($ores);
+        $extraItem = $rng->rngNextFromArray($extraItems);
 
         $inventoryService->receiveItem($ore, $user, $rock->getCreatedBy(), 'Found inside a Rock.', $location, $lockedToOwner);
         $inventoryService->receiveItem($extraItem, $user, $rock->getCreatedBy(), 'Found inside a Rock.', $location, $lockedToOwner);

@@ -35,7 +35,7 @@ class BasketController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openBasketOfFish(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -51,11 +51,11 @@ class BasketController extends AbstractController
         $loot = [
             'Fish',
             'Fish',
-            $squirrel3->rngNextFromArray([ 'Fish', 'Seaweed', 'Algae', 'Sand Dollar' ]),
-            $squirrel3->rngNextFromArray([ 'Silica Grounds', 'Seaweed' ]),
+            $rng->rngNextFromArray([ 'Fish', 'Seaweed', 'Algae', 'Sand Dollar' ]),
+            $rng->rngNextFromArray([ 'Silica Grounds', 'Seaweed' ]),
         ];
 
-        if($squirrel3->rngNextInt(1, 10) === 1)
+        if($rng->rngNextInt(1, 10) === 1)
         {
             $loot[] = 'Secret Seashell';
             $exclaim = '! (Ohh!)';
@@ -118,7 +118,7 @@ class BasketController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openFlowerBasket(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $squirrel3, Clock $clock
+        EntityManagerInterface $em, IRandom $rng, Clock $clock
     )
     {
         /** @var User $user */
@@ -130,7 +130,7 @@ class BasketController extends AbstractController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $weirdItem = DateFunctions::isCornMoon($clock->now) ? null : $squirrel3->rngNextFromArray([ 'Wheat Flour', 'Flour Tortilla' ]);
+        $weirdItem = DateFunctions::isCornMoon($clock->now) ? null : $rng->rngNextFromArray([ 'Wheat Flour', 'Flour Tortilla' ]);
 
         $possibleFlowers = [
             'Rice Flower',
@@ -148,13 +148,13 @@ class BasketController extends AbstractController
 
         for($i = 0; $i < 4; $i++)
         {
-            if($weirdItem && $squirrel3->rngNextInt(1, 8) === 1)
+            if($weirdItem && $rng->rngNextInt(1, 8) === 1)
             {
                 $itemName = $weirdItem;
                 $weird++;
             }
             else
-                $itemName = $squirrel3->rngNextFromArray($possibleFlowers);
+                $itemName = $rng->rngNextFromArray($possibleFlowers);
 
             $items[] = $itemName;
 

@@ -36,7 +36,7 @@ class HotPotatoController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function toss(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, IRandom $squirrel3, HotPotatoService $hotPotatoService,
+        InventoryService $inventoryService, IRandom $rng, HotPotatoService $hotPotatoService,
         UserStatsService $userStatsRepository
     )
     {
@@ -46,7 +46,7 @@ class HotPotatoController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'hotPotato/#/toss');
 
-        if($squirrel3->rngNextInt(1, 10 + $numberOfTosses) <= $numberOfTosses + 1)
+        if($rng->rngNextInt(1, 10 + $numberOfTosses) <= $numberOfTosses + 1)
         {
             $spice = $inventory->getSpice();
 
@@ -57,7 +57,7 @@ class HotPotatoController extends AbstractController
 
             for($i = 0; $i < $numberOfTosses; $i++)
             {
-                $allItemNames[] = $squirrel3->rngNextFromArray([
+                $allItemNames[] = $rng->rngNextFromArray([
                     'Smashed Potatoes',
                     'Liquid-hot Magma',
                     'Butter',
@@ -96,7 +96,7 @@ class HotPotatoController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function tossChocolateBomb(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, IRandom $squirrel3, HotPotatoService $hotPotatoService
+        InventoryService $inventoryService, IRandom $rng, HotPotatoService $hotPotatoService
     )
     {
         /** @var User $user */
@@ -106,12 +106,12 @@ class HotPotatoController extends AbstractController
 
         $numberOfTosses = HotPotatoService::countTosses($inventory);
 
-        if($squirrel3->rngNextInt(1, 100) <= 10 + $numberOfTosses * 10)
+        if($rng->rngNextInt(1, 100) <= 10 + $numberOfTosses * 10)
         {
             $numberOfItems = 5 + $numberOfTosses;
             $spice = $inventory->getSpice();
 
-            $loot = $squirrel3->rngNextSubsetFromArray([
+            $loot = $rng->rngNextSubsetFromArray([
                 'Chocolate Bar',
                 'Chocolate Bomb',
                 'Chocolate Cake Pops',
@@ -152,7 +152,7 @@ class HotPotatoController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function tossHongbao(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        IRandom $squirrel3, HotPotatoService $hotPotatoService, TransactionService $transactionService
+        IRandom $rng, HotPotatoService $hotPotatoService, TransactionService $transactionService
     )
     {
         /** @var User $user */
@@ -160,9 +160,9 @@ class HotPotatoController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'hotPotato/#/tossHongbao');
 
-        if($squirrel3->rngNextInt(1, 5) === 1)
+        if($rng->rngNextInt(1, 5) === 1)
         {
-            $money = $squirrel3->rngNextInt(10, 20);
+            $money = $rng->rngNextInt(10, 20);
 
             $transactionService->getMoney($user, $money, "Found this inside {$inventory->getItem()->getNameWithArticle()}.");
 

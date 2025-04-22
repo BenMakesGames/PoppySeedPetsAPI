@@ -155,7 +155,7 @@ class SelfReflectionController extends AbstractController
     #[Route("/{pet}/selfReflection/reconcile", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function reconcileWithAnotherPet(
         Pet $pet, Request $request, ResponseService $responseService, PetRelationshipRepository $petRelationshipRepository,
-        EntityManagerInterface $em, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -201,9 +201,9 @@ class SelfReflectionController extends AbstractController
             PetRelationshipService::max($otherSide->getRelationshipGoal(), RelationshipEnum::FRIEND)
         );
 
-        $newRelationship = $squirrel3->rngNextFromArray($possibleRelationships);
+        $newRelationship = $rng->rngNextFromArray($possibleRelationships);
 
-        $minimumCommitment = PetRelationshipService::generateInitialCommitment($squirrel3, $newRelationship, $newRelationship);
+        $minimumCommitment = PetRelationshipService::generateInitialCommitment($rng, $newRelationship, $newRelationship);
 
         $relationshipDescriptions = [
             RelationshipEnum::FRIEND => 'friends',

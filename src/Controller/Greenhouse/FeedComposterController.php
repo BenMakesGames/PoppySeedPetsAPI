@@ -55,7 +55,7 @@ class FeedComposterController extends AbstractController
     public function feedComposter(
         ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository,
         InventoryService $inventoryService, EntityManagerInterface $em, UserStatsService $userStatsRepository,
-        IRandom $squirrel3, GreenhouseService $greenhouseService
+        IRandom $rng, GreenhouseService $greenhouseService
     ): JsonResponse
     {
         /** @var User $user */
@@ -136,13 +136,13 @@ class FeedComposterController extends AbstractController
             if($user->getBeehive())
                 $bugs[] = 'Bee Larva';
 
-            $bonusItem = ItemRepository::findOneByName($em, $squirrel3->rngNextFromArray([
-                $squirrel3->rngNextFromArray([ 'Talon', 'Silica Grounds', 'Secret Seashell', 'Brown Bow' ]),
-                $squirrel3->rngNextFromArray($bugs),
+            $bonusItem = ItemRepository::findOneByName($em, $rng->rngNextFromArray([
+                $rng->rngNextFromArray([ 'Talon', 'Silica Grounds', 'Secret Seashell', 'Brown Bow' ]),
+                $rng->rngNextFromArray($bugs),
                 'Grandparoot',
                 'Toadstool',
                 'String', // let it get rancid
-                $squirrel3->rngNextFromArray([ 'Iron Ore', 'Iron Ore', 'Silver Ore', 'Gold Ore', 'Worms' ]),
+                $rng->rngNextFromArray([ 'Iron Ore', 'Iron Ore', 'Silver Ore', 'Gold Ore', 'Worms' ]),
                 'Paper Bag',
             ]));
 

@@ -35,7 +35,7 @@ class GlitterBombController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function toss(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        IRandom $squirrel3, HotPotatoService $hotPotatoService
+        IRandom $rng, HotPotatoService $hotPotatoService
     )
     {
         /** @var User $user */
@@ -43,7 +43,7 @@ class GlitterBombController extends AbstractController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'glitterBomb/#/toss');
 
-        if($squirrel3->rngNextInt(1, 5) === 1)
+        if($rng->rngNextInt(1, 5) === 1)
         {
             $pets = $em->getRepository(Pet::class)->findBy([
                 'owner' => $user,

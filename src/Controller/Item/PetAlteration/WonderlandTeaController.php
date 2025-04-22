@@ -35,7 +35,7 @@ class WonderlandTeaController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function serveTinyTea(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        IRandom $squirrel3
+        IRandom $rng
     )
     {
         /** @var User $user */
@@ -54,7 +54,7 @@ class WonderlandTeaController extends AbstractController
 
         $pet->setScale(max(
             50,
-            $pet->getScale() - $squirrel3->rngNextInt(8, 12)
+            $pet->getScale() - $rng->rngNextInt(8, 12)
         ));
 
         $em->remove($inventory);
@@ -70,7 +70,7 @@ class WonderlandTeaController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function serveTremendousTea(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        IRandom $squirrel3
+        IRandom $rng
     )
     {
         /** @var User $user */
@@ -89,7 +89,7 @@ class WonderlandTeaController extends AbstractController
 
         $pet->setScale(min(
             150,
-            $pet->getScale() + $squirrel3->rngNextInt(8, 12)
+            $pet->getScale() + $rng->rngNextInt(8, 12)
         ));
 
         $em->remove($inventory);

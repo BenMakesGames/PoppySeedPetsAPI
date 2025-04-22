@@ -33,7 +33,7 @@ class HalloweenSmithingService
     public function __construct(
         private readonly PetExperienceService $petExperienceService,
         private readonly InventoryService $inventoryService,
-        private readonly IRandom $squirrel3,
+        private readonly IRandom $rng,
         private readonly HouseSimService $houseSimService,
         private readonly EntityManagerInterface $em
     )
@@ -49,19 +49,19 @@ class HalloweenSmithingService
             'Upside-down, Yellow Plastic Bucket'
         ];
 
-        $makes = ItemRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray([
+        $makes = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
             'Ecstatic Pumpkin Bucket',
             'Distressed Pumpkin Bucket',
             'Unconvinced Pumpkin Bucket',
         ]));
 
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
         if($roll >= 15)
         {
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::SMITH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::SMITH, true);
 
-            $itemUsed = $this->houseSimService->getState()->loseOneOf($this->squirrel3, $buckets);
+            $itemUsed = $this->houseSimService->getState()->loseOneOf($this->rng, $buckets);
             $itemUsedItem = ItemRepository::findOneByName($this->em, $itemUsed);
             $pet->increaseEsteem(2);
 
@@ -83,7 +83,7 @@ class HalloweenSmithingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
         }
 
         return $activityLog;

@@ -34,7 +34,7 @@ class MusicController extends AbstractController
     #[Route("/music/{inventory}/invoke", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function invokeMusicScroll(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -60,8 +60,8 @@ class MusicController extends AbstractController
 
         $newInventory = [
             $inventoryService->receiveItem('Music Note', $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location),
-            $inventoryService->receiveItem($squirrel3->rngNextFromArray($commonItems), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location),
-            $inventoryService->receiveItem($squirrel3->rngNextFromArray($rareItems), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location),
+            $inventoryService->receiveItem($rng->rngNextFromArray($commonItems), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location),
+            $inventoryService->receiveItem($rng->rngNextFromArray($rareItems), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location),
         ];
 
         $itemList = array_map(fn(Inventory $i) => $i->getItem()->getName(), $newInventory);

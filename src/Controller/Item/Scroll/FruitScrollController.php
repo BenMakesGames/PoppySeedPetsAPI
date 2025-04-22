@@ -34,7 +34,7 @@ class FruitScrollController extends AbstractController
     #[Route("/fruit/{inventory}/invoke", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function invokeFruitScroll(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -46,13 +46,13 @@ class FruitScrollController extends AbstractController
 
         $em->remove($inventory);
 
-        $r = $squirrel3->rngNextInt(1, 6);
+        $r = $rng->rngNextInt(1, 6);
 
         if($r === 1)
         {
             $userStatsRepository->incrementStat($user, 'Misread a Scroll');
 
-            $pectin = $squirrel3->rngNextInt($squirrel3->rngNextInt(3, 5), $squirrel3->rngNextInt(6, 10));
+            $pectin = $rng->rngNextInt($rng->rngNextInt(3, 5), $rng->rngNextInt(6, 10));
             $location = $inventory->getLocation();
 
             for($i = 0; $i < $pectin; $i++)
@@ -68,13 +68,13 @@ class FruitScrollController extends AbstractController
         {
             $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
 
-            $item = $squirrel3->rngNextFromArray([
+            $item = $rng->rngNextFromArray([
                 'Pamplemousse', 'Blackberries', 'Bunch of Naners', 'Blueberries', 'Red',
                 'Orange', 'Apricot', 'Melowatern', 'Honeydont', 'Pineapple',
                 'Yellowy Lime', 'Ponzu',
             ]);
 
-            $numItems = $squirrel3->rngNextInt(5, $squirrel3->rngNextInt(6, 12));
+            $numItems = $rng->rngNextInt(5, $rng->rngNextInt(6, 12));
             $location = $inventory->getLocation();
 
             for($i = 0; $i < $numItems; $i++)
@@ -84,7 +84,7 @@ class FruitScrollController extends AbstractController
 
             $message = 'You read the scroll perfectly, summoning ' . $numItems . '&times; ' . $item . '!';
 
-            if($squirrel3->rngNextInt(1, 10) == 10)
+            if($rng->rngNextInt(1, 10) == 10)
                 $message .= "\n\nAs the scroll dissolves, the motes of nothingness it leaves behind form words in your mind:\n\n\"Tie a String to a Fruit Fly, and find my reward.\"\n\nFascinating! Who knew motes of nothingness could talk!";
 
             $responseService->addFlashMessage($message);
@@ -106,13 +106,13 @@ class FruitScrollController extends AbstractController
                 'Tomato', 'Spicy Peps', 'Cucumber',
             ];
 
-            $numItems = $squirrel3->rngNextInt(5, $squirrel3->rngNextInt(6, $squirrel3->rngNextInt(7, 15)));
+            $numItems = $rng->rngNextInt(5, $rng->rngNextInt(6, $rng->rngNextInt(7, 15)));
 
             $newInventory = [];
             $location = $inventory->getLocation();
 
             for($i = 0; $i < $numItems; $i++)
-                $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray($possibleItems), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location);
+                $newInventory[] = $inventoryService->receiveItem($rng->rngNextFromArray($possibleItems), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location);
 
             $itemList = array_map(fn(Inventory $i) => $i->getItem()->getName(), $newInventory);
             sort($itemList);

@@ -63,7 +63,7 @@ class BaabbleController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openBlackBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $squirrel3
+        EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $rng
     )
     {
         /** @var User $user */
@@ -78,22 +78,22 @@ class BaabbleController extends AbstractController
 
         $items = [];
 
-        $lameThings = $squirrel3->rngNextInt(2, 8);
-        $okayThings = $squirrel3->rngNextInt(7, 17);
-        $goodThings = $squirrel3->rngNextInt(0, 9);
+        $lameThings = $rng->rngNextInt(2, 8);
+        $okayThings = $rng->rngNextInt(7, 17);
+        $goodThings = $rng->rngNextInt(0, 9);
 
         for($i = 0; $i < $lameThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::LameShit);
+            $items[] = $rng->rngNextFromArray(self::LameShit);
 
         for($i = 0; $i < $okayThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::OkayStuff);
+            $items[] = $rng->rngNextFromArray(self::OkayStuff);
 
         for($i = 0; $i < $goodThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::GoodStuff);
+            $items[] = $rng->rngNextFromArray(self::GoodStuff);
 
-        $weirdItem = $squirrel3->rngNextFromArray(self::WeirdStuff);
+        $weirdItem = $rng->rngNextFromArray(self::WeirdStuff);
 
-        $noteworthy = [ $squirrel3->rngNextFromArray($items), $weirdItem ];
+        $noteworthy = [ $rng->rngNextFromArray($items), $weirdItem ];
 
         shuffle($noteworthy);
 
@@ -115,7 +115,7 @@ class BaabbleController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openWhiteBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $squirrel3
+        EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $rng
     )
     {
         /** @var User $user */
@@ -130,26 +130,26 @@ class BaabbleController extends AbstractController
 
         $items = [];
 
-        $lameThings = $squirrel3->rngNextInt(4, 14);
-        $okayThings = $squirrel3->rngNextInt(10, 18);
-        $goodThings = $squirrel3->rngNextInt(0, 9);
+        $lameThings = $rng->rngNextInt(4, 14);
+        $okayThings = $rng->rngNextInt(10, 18);
+        $goodThings = $rng->rngNextInt(0, 9);
         $rareThings = 1;
 
         for($i = 0; $i < $lameThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::LameShit);
+            $items[] = $rng->rngNextFromArray(self::LameShit);
 
         for($i = 0; $i < $okayThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::OkayStuff);
+            $items[] = $rng->rngNextFromArray(self::OkayStuff);
 
         for($i = 0; $i < $goodThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::GoodStuff);
+            $items[] = $rng->rngNextFromArray(self::GoodStuff);
 
         for($i = 0; $i < $rareThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::RareStuff);
+            $items[] = $rng->rngNextFromArray(self::RareStuff);
 
-        $weirdItem = $squirrel3->rngNextFromArray(self::WeirdStuff);
+        $weirdItem = $rng->rngNextFromArray(self::WeirdStuff);
 
-        $noteworthy = [ $squirrel3->rngNextFromArray($items), $weirdItem ];
+        $noteworthy = [ $rng->rngNextFromArray($items), $weirdItem ];
 
         shuffle($noteworthy);
 
@@ -171,7 +171,7 @@ class BaabbleController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openGoldBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $squirrel3
+        EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $rng
     )
     {
         /** @var User $user */
@@ -186,28 +186,28 @@ class BaabbleController extends AbstractController
 
         $items = [];
 
-        $lameThings = $squirrel3->rngNextInt(4, 14);
-        $okayThings = $squirrel3->rngNextInt(6, 16);
-        $goodThings = $squirrel3->rngNextInt(0, 12);
-        $weirdThings = $squirrel3->rngNextInt(0, 10);
-        $rareThings = $squirrel3->rngNextInt(1, 5);
+        $lameThings = $rng->rngNextInt(4, 14);
+        $okayThings = $rng->rngNextInt(6, 16);
+        $goodThings = $rng->rngNextInt(0, 12);
+        $weirdThings = $rng->rngNextInt(0, 10);
+        $rareThings = $rng->rngNextInt(1, 5);
 
         for($i = 0; $i < $lameThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::LameShit);
+            $items[] = $rng->rngNextFromArray(self::LameShit);
 
         for($i = 0; $i < $okayThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::OkayStuff);
+            $items[] = $rng->rngNextFromArray(self::OkayStuff);
 
         for($i = 0; $i < $goodThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::GoodStuff);
+            $items[] = $rng->rngNextFromArray(self::GoodStuff);
 
         for($i = 0; $i < $weirdThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::WeirdStuff);
+            $items[] = $rng->rngNextFromArray(self::WeirdStuff);
 
         for($i = 0; $i < $rareThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::RareStuff);
+            $items[] = $rng->rngNextFromArray(self::RareStuff);
 
-        $noteworthy = [ $squirrel3->rngNextFromArray($items), $squirrel3->rngNextFromArray($items) ];
+        $noteworthy = [ $rng->rngNextFromArray($items), $rng->rngNextFromArray($items) ];
 
         shuffle($noteworthy);
 
@@ -230,7 +230,7 @@ class BaabbleController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openShinyBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $squirrel3
+        EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $rng
     )
     {
         /** @var User $user */
@@ -245,28 +245,28 @@ class BaabbleController extends AbstractController
 
         $items = [];
 
-        $lameThings = $squirrel3->rngNextInt(0, 12);
-        $okayThings = $squirrel3->rngNextInt(4, 16);
-        $goodThings = $squirrel3->rngNextInt(4, 16);
-        $weirdThings = $squirrel3->rngNextInt(4, 14);
-        $rareThings = $squirrel3->rngNextInt(3, 7);
+        $lameThings = $rng->rngNextInt(0, 12);
+        $okayThings = $rng->rngNextInt(4, 16);
+        $goodThings = $rng->rngNextInt(4, 16);
+        $weirdThings = $rng->rngNextInt(4, 14);
+        $rareThings = $rng->rngNextInt(3, 7);
 
         for($i = 0; $i < $lameThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::LameShit);
+            $items[] = $rng->rngNextFromArray(self::LameShit);
 
         for($i = 0; $i < $okayThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::OkayStuff);
+            $items[] = $rng->rngNextFromArray(self::OkayStuff);
 
         for($i = 0; $i < $goodThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::GoodStuff);
+            $items[] = $rng->rngNextFromArray(self::GoodStuff);
 
         for($i = 0; $i < $weirdThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::WeirdStuff);
+            $items[] = $rng->rngNextFromArray(self::WeirdStuff);
 
         for($i = 0; $i < $rareThings; $i++)
-            $items[] = $squirrel3->rngNextFromArray(self::RareStuff);
+            $items[] = $rng->rngNextFromArray(self::RareStuff);
 
-        $noteworthy = [ $squirrel3->rngNextFromArray($items), $squirrel3->rngNextFromArray($items) ];
+        $noteworthy = [ $rng->rngNextFromArray($items), $rng->rngNextFromArray($items) ];
 
         shuffle($noteworthy);
 

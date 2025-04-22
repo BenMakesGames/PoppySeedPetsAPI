@@ -29,7 +29,7 @@ use App\Functions\ColorFunctions;
 use App\Functions\NumberFunctions;
 use App\Model\ComputedPetSkills;
 use App\Service\IRandom;
-use App\Service\Squirrel3;
+use App\Service\Xoshiro;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -292,21 +292,21 @@ class Pet
 
     public function __construct()
     {
-        $squirrel3 = new Squirrel3();
+        $rng = new Xoshiro();
 
         $this->birthDate = new \DateTimeImmutable();
         $this->lastInteracted = (new \DateTimeImmutable())->modify('-3 days');
         $this->locationMoveDate = new \DateTimeImmutable();
-        $this->stomachSize = $squirrel3->rngNextInt(16, 30);
+        $this->stomachSize = $rng->rngNextInt(16, 30);
         $this->petRelationships = new ArrayCollection();
         $this->statusEffects = new ArrayCollection();
-        $this->extroverted = $squirrel3->rngNextInt(-1, 1);
-        $this->bonusMaximumFriends = $squirrel3->rngNextInt(-2, 2);
-        $this->wereform = $squirrel3->rngNextInt(0, 5);
+        $this->extroverted = $rng->rngNextInt(-1, 1);
+        $this->bonusMaximumFriends = $rng->rngNextInt(-2, 2);
+        $this->wereform = $rng->rngNextInt(0, 5);
 
-        if($squirrel3->rngNextInt(1, 5) > 1)
+        if($rng->rngNextInt(1, 5) > 1)
             $this->sexDrive = 1; // 80% sexual
-        else if($squirrel3->rngNextInt(1, 10) === 1)
+        else if($rng->rngNextInt(1, 10) === 1)
             $this->sexDrive = -1; // 2% asexual
         else
             $this->sexDrive = 0; // 18% flexible
@@ -316,13 +316,13 @@ class Pet
         $this->merits = new ArrayCollection();
         $this->groups = new ArrayCollection();
 
-        $this->loveLanguage = LoveLanguageEnum::getRandomValue($squirrel3);
+        $this->loveLanguage = LoveLanguageEnum::getRandomValue($rng);
         $this->lunchboxItems = new ArrayCollection();
 
-        $this->assignAffectionExpressions($squirrel3);
-        $this->assignActivityPersonality($squirrel3);
+        $this->assignAffectionExpressions($rng);
+        $this->assignActivityPersonality($rng);
 
-        $this->lunchboxIndex = $squirrel3->rngNextInt(0, 13);
+        $this->lunchboxIndex = $rng->rngNextInt(0, 13);
         $this->badges = new ArrayCollection();
     }
 
@@ -1079,17 +1079,17 @@ class Pet
 
     public function getLowestNeed(): string
     {
-        $squirrel3 = new Squirrel3();
+        $rng = new Xoshiro();
 
-        if($this->getSafety() >= $squirrel3->rngNextInt(0, 4) && $this->getLove() >= $squirrel3->rngNextInt(0, 4) && $this->getEsteem() >= $squirrel3->rngNextInt(0, 4))
+        if($this->getSafety() >= $rng->rngNextInt(0, 4) && $this->getLove() >= $rng->rngNextInt(0, 4) && $this->getEsteem() >= $rng->rngNextInt(0, 4))
         {
             return '';
         }
-        else if($this->getSafety() <= $this->getLove() + $squirrel3->rngNextInt(0, 4) && $this->getSafety() <= $this->getEsteem() + $squirrel3->rngNextInt(0, 4))
+        else if($this->getSafety() <= $this->getLove() + $rng->rngNextInt(0, 4) && $this->getSafety() <= $this->getEsteem() + $rng->rngNextInt(0, 4))
         {
             return 'safety';
         }
-        else if($this->getSafety() <= $this->getEsteem() + $squirrel3->rngNextInt(2, 4))
+        else if($this->getSafety() <= $this->getEsteem() + $rng->rngNextInt(2, 4))
         {
             return 'love';
         }

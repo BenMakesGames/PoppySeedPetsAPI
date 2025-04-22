@@ -96,7 +96,7 @@ class BugController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function feedBug(
         Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
-        EntityManagerInterface $em, Request $request, InventoryService $inventoryService, IRandom $squirrel3
+        EntityManagerInterface $em, Request $request, InventoryService $inventoryService, IRandom $rng
     )
     {
         /** @var User $user */
@@ -134,7 +134,7 @@ class BugController extends AbstractController
 
                 if($item->getItem()->getName() === 'Ants on a Log')
                 {
-                    if($squirrel3->rngNextInt(1, 6) === 6)
+                    if($rng->rngNextInt(1, 6) === 6)
                     {
                         $inventoryService->receiveItem('Ant Queen', $user, $user, $user->getName() . ' fed a Line of Ants; as a result, this Queen Ant showed up! (Is this a good thing?)', $inventory->getLocation());
                         $message = 'As part of a study on cannibalism in other species, you feed the Line of Ants some Ants on a Log. And oh: you\'ve attracted the attention of an Ant Queen! (What a surprising result! What could it mean!?)';
@@ -147,7 +147,7 @@ class BugController extends AbstractController
                 }
                 else
                 {
-                    if($squirrel3->rngNextInt(1, 6) === 6)
+                    if($rng->rngNextInt(1, 6) === 6)
                     {
                         $inventoryService->receiveItem('Ant Queen', $user, $user, $user->getName() . ' fed a Line of Ants; as a result, this Queen Ant showed up! (Is this a good thing?)', $inventory->getLocation());
                         $message = 'Oh? You\'ve attracted an Ant Queen!';

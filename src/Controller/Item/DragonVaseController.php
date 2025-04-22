@@ -123,7 +123,7 @@ class DragonVaseController extends AbstractController
     #[Route("/{inventory}/dip", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
         Request $request, UserStatsService $userStatsRepository
     )
     {
@@ -180,7 +180,7 @@ class DragonVaseController extends AbstractController
             );
         }
 
-        $newBonus = EnchantmentRepository::findOneByName($em, $squirrel3->rngNextFromArray($possibleBonuses));
+        $newBonus = EnchantmentRepository::findOneByName($em, $rng->rngNextFromArray($possibleBonuses));
 
         $hadAnEnchantment = $dippedItem->getEnchantment() !== null;
         $oldName = InventoryModifierFunctions::getNameWithModifiers($dippedItem);

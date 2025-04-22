@@ -31,7 +31,7 @@ class FairyRingController extends AbstractController
     #[Route("/{inventory}/takeApart", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function takeApart(
-        Inventory $inventory, ResponseService $responseService, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, IRandom $rng,
         EntityManagerInterface $em, InventoryService $inventoryService
     )
     {
@@ -49,8 +49,8 @@ class FairyRingController extends AbstractController
 
         $message = 'You pull the Wings off the Fairy Ring. Now it\'s just a regular Gold Ring.';
 
-        if($squirrel3->rngNextInt(1, 70) === 1)
-            $message .= $squirrel3->rngNextFromArray([ ' (I hope you\'re happy.)', ' (See what thy hand hath wrought!)', ' (All according to plan...)' ]);
+        if($rng->rngNextInt(1, 70) === 1)
+            $message .= $rng->rngNextFromArray([ ' (I hope you\'re happy.)', ' (See what thy hand hath wrought!)', ' (All according to plan...)' ]);
 
         return $responseService->itemActionSuccess($message, [ 'itemDeleted' => true ]);
 

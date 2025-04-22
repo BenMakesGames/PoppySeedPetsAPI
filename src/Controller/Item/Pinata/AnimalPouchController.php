@@ -34,7 +34,7 @@ class AnimalPouchController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openMagpiePouch(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService, IRandom $squirrel3
+        ResponseService $responseService, IRandom $rng
     )
     {
         /** @var User $user */
@@ -44,10 +44,10 @@ class AnimalPouchController extends AbstractController
 
         $possibleItems = [
             'Fool\'s Spice',
-            $squirrel3->rngNextFromArray([ '"Gold" Idol', 'Phishing Rod' ]),
-            $squirrel3->rngNextFromArray([ 'Glass', 'Crystal Ball' ]),
+            $rng->rngNextFromArray([ '"Gold" Idol', 'Phishing Rod' ]),
+            $rng->rngNextFromArray([ 'Glass', 'Crystal Ball' ]),
             'Mixed Nuts',
-            $squirrel3->rngNextFromArray([ 'Fluff', 'String' ]),
+            $rng->rngNextFromArray([ 'Fluff', 'String' ]),
             'Sand Dollar'
         ];
 
@@ -56,7 +56,7 @@ class AnimalPouchController extends AbstractController
 
         $em->remove($inventory);
 
-        $listOfItems = $squirrel3->rngNextSubsetFromArray($possibleItems, 3);
+        $listOfItems = $rng->rngNextSubsetFromArray($possibleItems, 3);
 
         foreach($listOfItems as $itemName)
         {
@@ -75,7 +75,7 @@ class AnimalPouchController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openRaccoonPouch(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService, IRandom $squirrel3
+        ResponseService $responseService, IRandom $rng
     )
     {
         /** @var User $user */
@@ -85,11 +85,11 @@ class AnimalPouchController extends AbstractController
 
         $possibleItems = [
             'Beans',
-            $squirrel3->rngNextFromArray([ 'Baked Fish Fingers', 'Deep-fried Toad Legs' ]),
+            $rng->rngNextFromArray([ 'Baked Fish Fingers', 'Deep-fried Toad Legs' ]),
             'Trout Yogurt',
             'Caramel-covered Popcorn',
-            $squirrel3->rngNextFromArray([ 'Instant Ramen (Dry)', 'Paper Bag' ]),
-            $squirrel3->rngNextFromArray([ 'Mixed Nut Brittle', 'Berry Muffin' ]),
+            $rng->rngNextFromArray([ 'Instant Ramen (Dry)', 'Paper Bag' ]),
+            $rng->rngNextFromArray([ 'Mixed Nut Brittle', 'Berry Muffin' ]),
         ];
 
         $spice = $inventory->getSpice();
@@ -98,7 +98,7 @@ class AnimalPouchController extends AbstractController
 
         $em->remove($inventory);
 
-        $listOfItems = $squirrel3->rngNextSubsetFromArray($possibleItems, 3);
+        $listOfItems = $rng->rngNextSubsetFromArray($possibleItems, 3);
 
         foreach($listOfItems as $itemName)
         {

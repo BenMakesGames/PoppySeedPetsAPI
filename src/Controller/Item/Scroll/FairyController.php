@@ -34,7 +34,7 @@ class FairyController extends AbstractController
     #[Route("/fairy/{inventory}/read", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function readFairyScroll(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         EntityManagerInterface $em, UserStatsService $userStatsRepository
     )
     {
@@ -48,8 +48,8 @@ class FairyController extends AbstractController
 
         $loot = [
             'Wings',
-            $squirrel3->rngNextFromArray($lameItems),
-            $squirrel3->rngNextFromArray($lameItems),
+            $rng->rngNextFromArray($lameItems),
+            $rng->rngNextFromArray($lameItems),
         ];
 
         foreach($loot as $item)

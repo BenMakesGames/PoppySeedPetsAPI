@@ -34,7 +34,7 @@ class SeaController extends AbstractController
     #[Route("/sea/{inventory}/invoke", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function invokeSeaScroll(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -52,19 +52,19 @@ class SeaController extends AbstractController
             'Fish',
             'Seaweed',
             'Silica Grounds',
-            $squirrel3->rngNextFromArray([ 'Fish', 'Tentacle' ]),
-            $squirrel3->rngNextFromArray([ 'Seaweed', 'Fish' ]),
-            $squirrel3->rngNextFromArray([ 'Seaweed', 'Silica Grounds' ]),
-            $squirrel3->rngNextFromArray([ 'Seaweed', 'Crooked Stick' ]),
+            $rng->rngNextFromArray([ 'Fish', 'Tentacle' ]),
+            $rng->rngNextFromArray([ 'Seaweed', 'Fish' ]),
+            $rng->rngNextFromArray([ 'Seaweed', 'Silica Grounds' ]),
+            $rng->rngNextFromArray([ 'Seaweed', 'Crooked Stick' ]),
         ];
 
-        if($squirrel3->rngNextInt(1, 4) === 1) $items[] = 'Glass';
-        if($squirrel3->rngNextInt(1, 5) === 1) $items[] = 'Music Note';
-        if($squirrel3->rngNextInt(1, 8) === 1) $items[] = 'Mermaid Egg';
-        if($squirrel3->rngNextInt(1, 10) === 1) $items[] = 'Secret Seashell';
-        if($squirrel3->rngNextInt(1, 15) === 1) $items[] = 'Iron Ore';
-        if($squirrel3->rngNextInt(1, 20) === 1) $items[] = 'Little Strongbox';
-        if($squirrel3->rngNextInt(1, 45) === 1) $items[] = 'Ceremony of Sand and Sea';
+        if($rng->rngNextInt(1, 4) === 1) $items[] = 'Glass';
+        if($rng->rngNextInt(1, 5) === 1) $items[] = 'Music Note';
+        if($rng->rngNextInt(1, 8) === 1) $items[] = 'Mermaid Egg';
+        if($rng->rngNextInt(1, 10) === 1) $items[] = 'Secret Seashell';
+        if($rng->rngNextInt(1, 15) === 1) $items[] = 'Iron Ore';
+        if($rng->rngNextInt(1, 20) === 1) $items[] = 'Little Strongbox';
+        if($rng->rngNextInt(1, 45) === 1) $items[] = 'Ceremony of Sand and Sea';
 
         $location = $inventory->getLocation();
 

@@ -39,12 +39,12 @@ class RunParkEventsCommand extends Command
     private TriDChessService $triDChessService;
     private JoustingService $joustingService;
     private LoggerInterface $logger;
-    private IRandom $squirrel3;
+    private IRandom $rng;
 
     public function __construct(
         KinBallService $kinBallService, EntityManagerInterface $em,
         TriDChessService $triDChessService, JoustingService $joustingService, LoggerInterface $logger,
-        IRandom $squirrel3
+        IRandom $rng
     )
     {
         $this->kinBallService = $kinBallService;
@@ -52,7 +52,7 @@ class RunParkEventsCommand extends Command
         $this->triDChessService = $triDChessService;
         $this->joustingService = $joustingService;
         $this->logger = $logger;
-        $this->squirrel3 = $squirrel3;
+        $this->rng = $rng;
 
         parent::__construct();
     }
@@ -142,7 +142,7 @@ class RunParkEventsCommand extends Command
 
     private function playTriDChess(): ?ParkEvent
     {
-        $idealNumberOfPets = $this->squirrel3->rngNextFromArray([ 8, 16, 16 ]);
+        $idealNumberOfPets = $this->rng->rngNextFromArray([ 8, 16, 16 ]);
 
         $pets = self::findPetsEligibleForParkEvent($this->em, ParkEventTypeEnum::TRI_D_CHESS, $idealNumberOfPets * 3);
 
@@ -167,7 +167,7 @@ class RunParkEventsCommand extends Command
 
     private function playJousting(): ?ParkEvent
     {
-        $idealNumberOfPets = $this->squirrel3->rngNextFromArray([ 16, 16, 32 ]);
+        $idealNumberOfPets = $this->rng->rngNextFromArray([ 16, 16, 32 ]);
 
         $pets = self::findPetsEligibleForParkEvent($this->em, ParkEventTypeEnum::JOUSTING, $idealNumberOfPets * 3);
 
@@ -202,7 +202,7 @@ class RunParkEventsCommand extends Command
         usort($pets, $sortMethod);
 
         // pick one of the two ends
-        $offset = $this->squirrel3->rngNextInt(1, 2) === 1 ? 0 : count($pets) - $numberWanted;
+        $offset = $this->rng->rngNextInt(1, 2) === 1 ? 0 : count($pets) - $numberWanted;
 
         return array_slice($pets, $offset, $numberWanted);
     }
