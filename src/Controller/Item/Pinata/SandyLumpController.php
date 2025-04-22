@@ -33,7 +33,7 @@ class SandyLumpController extends AbstractController
     #[Route("/{lump}/clean", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function clean(
-        Inventory $lump, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $lump, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -45,19 +45,19 @@ class SandyLumpController extends AbstractController
         $location = $lump->getLocation();
         $lockedToOwner = $lump->getLockedToOwner();
 
-        if($squirrel3->rngNextInt(1, 25) === 1)
+        if($rng->rngNextInt(1, 25) === 1)
         {
-            $item = $squirrel3->rngNextFromArray([
+            $item = $rng->rngNextFromArray([
                 'Secret Seashell',
-                $squirrel3->rngNextFromArray([ 'Striped Microcline', 'Blackonite' ]),
+                $rng->rngNextFromArray([ 'Striped Microcline', 'Blackonite' ]),
                 'Dino Skull',
                 'Key Ring',
-                $squirrel3->rngNextFromArray([ 'Meteorite', 'Species Transmigration Serum' ]),
+                $rng->rngNextFromArray([ 'Meteorite', 'Species Transmigration Serum' ]),
             ]);
         }
         else
         {
-            $item = $squirrel3->rngNextFromArray([
+            $item = $rng->rngNextFromArray([
                 'Iron Ore', 'Iron Ore', 'Silver Ore', 'Gold Ore',
                 'Silica Grounds', 'Silica Grounds', 'Sand Dollar',
                 'Talon',

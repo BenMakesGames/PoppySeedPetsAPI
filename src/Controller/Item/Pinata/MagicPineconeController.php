@@ -34,7 +34,7 @@ class MagicPineconeController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function raid(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService, IRandom $squirrel3
+        ResponseService $responseService, IRandom $rng
     )
     {
         /** @var User $user */
@@ -59,7 +59,7 @@ class MagicPineconeController extends AbstractController
 
         $juniper = SpiceRepository::findOneByName($em, 'Juniper');
 
-        $listOfItems = $squirrel3->rngNextSubsetFromArray($possibleItems, 3);
+        $listOfItems = $rng->rngNextSubsetFromArray($possibleItems, 3);
 
         $listOfItems[] = 'Blueberries';
         $listOfItems[] = 'Blueberries';

@@ -61,7 +61,7 @@ class KinBallService implements ParkEventInterface
         private readonly PetExperienceService $petExperienceService,
         private readonly TransactionService $transactionService,
         private readonly InventoryService $inventoryService,
-        private readonly IRandom $squirrel3,
+        private readonly IRandom $rng,
         private readonly ParkService $parkService,
         private readonly UserStatsService $userStatsRepository
     )
@@ -89,7 +89,7 @@ class KinBallService implements ParkEventInterface
         $this->teams = [
             new KinBallTeam('black'),
             new KinBallTeam('grey'),
-            new KinBallTeam($this->squirrel3->rngNextInt(1, 2) === 1 ? 'blue' : 'pink'),
+            new KinBallTeam($this->rng->rngNextInt(1, 2) === 1 ? 'blue' : 'pink'),
         ];
 
         /** @var KinBallParticipant[] $participants */
@@ -105,7 +105,7 @@ class KinBallService implements ParkEventInterface
             $this->teams[$team]->pets[] = $participant;
         }
 
-        $this->attackingTeam = $this->squirrel3->rngNextInt(0, 2);
+        $this->attackingTeam = $this->rng->rngNextInt(0, 2);
 
         foreach($this->teams as $team)
         {
@@ -192,7 +192,7 @@ class KinBallService implements ParkEventInterface
 
         $winningTeamIndex = $this->getGameWinningTeam();
 
-        $firstPlaceMoneys = 2 * 12 - $this->squirrel3->rngNextInt(0, 8); // * 12, because there are 12 players
+        $firstPlaceMoneys = 2 * 12 - $this->rng->rngNextInt(0, 8); // * 12, because there are 12 players
         $firstPlaceMoneys += (int)ceil($affectionTotal / 12); // affection bonus
         $firstPlaceMoneys += (int)floor($firstPlaceMoneys * 3 / 4); // usually there's a second-place prize; not in Kin-Ball!
         $firstPlaceMoneys = (int)ceil($firstPlaceMoneys / 4); // the prize is shared by all four members of the team
@@ -275,7 +275,7 @@ class KinBallService implements ParkEventInterface
             fn($t) => $t !== $this->attackingTeam
         );
 
-        $this->designatedTeam = $this->squirrel3->rngNextFromArray($possibleTeams);
+        $this->designatedTeam = $this->rng->rngNextFromArray($possibleTeams);
     }
 
     private function getTeamsHavingScore(int $score)
@@ -413,22 +413,22 @@ class KinBallService implements ParkEventInterface
 
         $defendingPet = $this->getRandomPetFromTeam($this->designatedTeam);
 
-        $attackRoll = $this->squirrel3->rngNextInt(1, 3 + $callingPet->skill);
+        $attackRoll = $this->rng->rngNextInt(1, 3 + $callingPet->skill);
 
         if($attackRoll === 1)
         {
             $this->results .= '* ' . $callingPet->pet->getName() . ' didn\'t hit the ball hard enough!' . "\n";
             $this->givePointToOtherTeams($this->attackingTeam);
         }
-        else if($this->squirrel3->rngNextInt(1, 3 + $defendingPet->skill) >= $attackRoll)
+        else if($this->rng->rngNextInt(1, 3 + $defendingPet->skill) >= $attackRoll)
         {
             $this->results .= '* ' . $defendingPet->pet->getName() . ' catches the ball.' . "\n";
         }
         else
         {
-            $foul = $this->squirrel3->rngNextInt(1, 3);
+            $foul = $this->rng->rngNextInt(1, 3);
 
-            if($defendingPet->pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 20) === 1)
+            if($defendingPet->pet->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 20) === 1)
             {
                 if($foul === 1)
                     $this->results .= '* ' . $defendingPet->pet->getName() . ' tried to catch the ball, and it was totally going to hit below the hips, but ' . $defendingPet->pet->getName() . ' happened to stumble in such a way that made them dip juuuust low enough for it to be a legal touch! Lucky~!' . "\n";
@@ -470,6 +470,6 @@ class KinBallService implements ParkEventInterface
 
     private function getRandomPetFromTeam(int $team): KinBallParticipant
     {
-        return $this->squirrel3->rngNextFromArray($this->teams[$team]->pets);
+        return $this->rng->rngNextFromArray($this->teams[$team]->pets);
     }
 }

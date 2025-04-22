@@ -74,7 +74,7 @@ class GnomesFavorController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getFood(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $squirrel3, UserStatsService $userStatsRepository
+        EntityManagerInterface $em, IRandom $rng, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -123,7 +123,7 @@ class GnomesFavorController extends AbstractController
         $itemList = array_map(fn(Inventory $i) => $i->getFullItemName(), $newInventory);
         sort($itemList);
 
-        $extraSilliness = $squirrel3->rngNextFromArray(self::GNOMISH_MAGIC);
+        $extraSilliness = $rng->rngNextFromArray(self::GNOMISH_MAGIC);
 
         return $responseService->itemActionSuccess(ArrayFunctions::list_nice($itemList) . ' materialize in front of you with a flash! ' . $extraSilliness, [ 'itemDeleted' => true ]);
     }

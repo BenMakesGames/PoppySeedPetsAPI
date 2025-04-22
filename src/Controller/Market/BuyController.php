@@ -44,7 +44,7 @@ class BuyController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buy(
         Request $request, ResponseService $responseService, CacheItemPoolInterface $cache, EntityManagerInterface $em,
-        IRandom $squirrel3, TransactionService $transactionService, MarketService $marketService
+        IRandom $rng, TransactionService $transactionService, MarketService $marketService
     )
     {
         /** @var User $user */
@@ -70,7 +70,7 @@ class BuyController extends AbstractController
 
             $itemsInBasement = InventoryRepository::countItemsInLocation($em, $user, LocationEnum::BASEMENT);
 
-            $dang = $squirrel3->rngNextFromArray([
+            $dang = $rng->rngNextFromArray([
                 'Dang!',
                 'Goodness!',
                 'Great googly-moogly!',

@@ -48,7 +48,7 @@ class PregnancyService
         private readonly PetExperienceService $petExperienceService,
         private readonly UserStatsService $userStatsRepository,
         private readonly PetFactory $petFactory,
-        private readonly IRandom $squirrel3
+        private readonly IRandom $rng
     )
     {
     }
@@ -64,7 +64,7 @@ class PregnancyService
 
     private function createPregnancy(Pet $mother, Pet $father): void
     {
-        $r = $this->squirrel3->rngNextInt(1, 100);
+        $r = $this->rng->rngNextInt(1, 100);
 
         if($r <= 45)
             $species = $mother->getSpecies();
@@ -73,11 +73,11 @@ class PregnancyService
         else
             $species = $this->getRandomBreedingSpecies();
 
-        $colorA = PetColorFunctions::generateColorFromParentColors($this->squirrel3, $mother->getColorA(), $father->getColorA());
-        $colorB = PetColorFunctions::generateColorFromParentColors($this->squirrel3, $mother->getColorB(), $father->getColorB());
+        $colorA = PetColorFunctions::generateColorFromParentColors($this->rng, $mother->getColorA(), $father->getColorA());
+        $colorB = PetColorFunctions::generateColorFromParentColors($this->rng, $mother->getColorB(), $father->getColorB());
 
         // 20% of the time, swap colorA and colorB around
-        if($this->squirrel3->rngNextInt(1, 5) === 1)
+        if($this->rng->rngNextInt(1, 5) === 1)
         {
             $temp = $colorA;
             $colorA = $colorB;
@@ -97,18 +97,18 @@ class PregnancyService
         if(!$mother->getSpiritCompanion())
             throw new \Exception("Spirit companion not found! This is a bug! Ben has been notified...");
 
-        $r = $this->squirrel3->rngNextInt(1, 100);
+        $r = $this->rng->rngNextInt(1, 100);
 
         if($r <= 80)
             $species = $mother->getSpecies();
         else
             $species = $this->getRandomBreedingSpecies();
 
-        $colorA = PetColorFunctions::generateColorFromParentColors($this->squirrel3, $mother->getColorA(), $mother->getColorA());
-        $colorB = PetColorFunctions::generateColorFromParentColors($this->squirrel3, $mother->getColorB(), $mother->getColorB());
+        $colorA = PetColorFunctions::generateColorFromParentColors($this->rng, $mother->getColorA(), $mother->getColorA());
+        $colorB = PetColorFunctions::generateColorFromParentColors($this->rng, $mother->getColorB(), $mother->getColorB());
 
         // 20% of the time, swap colorA and colorB around
-        if($this->squirrel3->rngNextInt(1, 5) === 1)
+        if($this->rng->rngNextInt(1, 5) === 1)
         {
             $temp = $colorA;
             $colorA = $colorB;
@@ -127,7 +127,7 @@ class PregnancyService
     {
         $species = $this->em->getRepository(PetSpecies::class)->findBy([ 'availableFromBreeding' => true ]);
 
-        return $this->squirrel3->rngNextFromArray($species);
+        return $this->rng->rngNextFromArray($species);
     }
 
     public function giveBirth(Pet $pet): void
@@ -160,11 +160,11 @@ class PregnancyService
             $pregnancy->getSpecies(),
             $pregnancy->getColorA(),
             $pregnancy->getColorB(),
-            FlavorEnum::getRandomValue($this->squirrel3),
-            MeritRepository::getRandomStartingMerit($this->em, $this->squirrel3)
+            FlavorEnum::getRandomValue($this->rng),
+            MeritRepository::getRandomStartingMerit($this->em, $this->rng)
         );
 
-        if($pet->hasMerit(MeritEnum::DOPPEL_GENE) || $this->squirrel3->rngNextInt(1, 444) === 1)
+        if($pet->hasMerit(MeritEnum::DOPPEL_GENE) || $this->rng->rngNextInt(1, 444) === 1)
         {
             $babies[] = $this->petFactory->createPet(
                 $user,
@@ -172,8 +172,8 @@ class PregnancyService
                 $pregnancy->getSpecies(),
                 $pregnancy->getColorA(),
                 $pregnancy->getColorB(),
-                FlavorEnum::getRandomValue($this->squirrel3),
-                MeritRepository::getRandomStartingMerit($this->em, $this->squirrel3)
+                FlavorEnum::getRandomValue($this->rng),
+                MeritRepository::getRandomStartingMerit($this->em, $this->rng)
             );
         }
 
@@ -186,15 +186,15 @@ class PregnancyService
         $smallestParent = min($pregnancy->getParent()->getScale(), $pregnancy->getOtherParent() == null ? 50 : $pregnancy->getOtherParent()->getScale());
         $largestParent = max($pregnancy->getParent()->getScale(), $pregnancy->getOtherParent() == null ? 50 : $pregnancy->getOtherParent()->getScale());
 
-        $min = $smallestParent === 80 ? 80 : $this->squirrel3->rngNextInt(min($smallestParent, 80), max($smallestParent, 80));
-        $max = $largestParent === 120 ? 120 : $this->squirrel3->rngNextInt(min($largestParent, 120), max($largestParent, 120));
+        $min = $smallestParent === 80 ? 80 : $this->rng->rngNextInt(min($smallestParent, 80), max($smallestParent, 80));
+        $max = $largestParent === 120 ? 120 : $this->rng->rngNextInt(min($largestParent, 120), max($largestParent, 120));
 
         if($min === $max)
             $babySize = $min;
         else if($min < $max)
-            $babySize = $this->squirrel3->rngNextInt($min, $max);
+            $babySize = $this->rng->rngNextInt($min, $max);
         else
-            $babySize = $this->squirrel3->rngNextInt($max, $min);
+            $babySize = $this->rng->rngNextInt($max, $min);
 
         foreach($babies as $baby)
         {
@@ -214,7 +214,7 @@ class PregnancyService
 
         $numberOfPetsAtHome = PetRepository::getNumberAtHome($this->em, $user);
 
-        $adjective = $this->squirrel3->rngNextFromArray([
+        $adjective = $this->rng->rngNextFromArray([
             'a beautiful', 'an energetic', 'a wriggly',
             'a smiling', 'an intense-looking', 'a plump',
         ]);
@@ -274,14 +274,14 @@ class PregnancyService
 
         $this->em->remove($pregnancy);
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::OTHER, null);
 
         // applied in a slightly weird order, because I-dunno
         $pet
-            ->increaseLove($this->squirrel3->rngNextInt(8, 16))
-            ->increaseEsteem($this->squirrel3->rngNextInt(8, 16))
-            ->increaseSafety($this->squirrel3->rngNextInt(8, 16))
-            ->increaseFood(-$this->squirrel3->rngNextInt(8, 16))
+            ->increaseLove($this->rng->rngNextInt(8, 16))
+            ->increaseEsteem($this->rng->rngNextInt(8, 16))
+            ->increaseSafety($this->rng->rngNextInt(8, 16))
+            ->increaseFood(-$this->rng->rngNextInt(8, 16))
         ;
 
         $this->userStatsRepository->incrementStat($user, UserStatEnum::PETS_BIRTHED);
@@ -316,14 +316,14 @@ class PregnancyService
             $n1Part = $n1;
         else
         {
-            $n1Offset = $this->squirrel3->rngNextInt(
+            $n1Offset = $this->rng->rngNextInt(
                 max(0, (int)ceil(\mb_strlen($n1) / 2) - 2),
                 min(\mb_strlen($n1) - 1, (int)(\mb_strlen($n1) / 2) + 2)
             );
 
             if($n1Offset === 0 || $n1Offset === \mb_strlen($n1) - 1)
                 $n1Part = $n1;
-            else if($this->squirrel3->rngNextBool())
+            else if($this->rng->rngNextBool())
                 $n1Part = \mb_substr($n1, 0, $n1Offset);
             else
                 $n1Part = \mb_substr($n1, $n1Offset);
@@ -333,14 +333,14 @@ class PregnancyService
             $n2Part = $n2;
         else
         {
-            $n2Offset = $this->squirrel3->rngNextInt(
+            $n2Offset = $this->rng->rngNextInt(
                 max(0, (int)ceil(\mb_strlen($n2) / 2) - 2),
                 min(\mb_strlen($n2) - 1, (int)(\mb_strlen($n2) / 2) + 2)
             );
 
             if($n2Offset === 0 || $n2Offset === \mb_strlen($n1) - 1)
                 $n2Part = $n2;
-            else if($this->squirrel3->rngNextBool())
+            else if($this->rng->rngNextBool())
                 $n2Part = \mb_substr($n2, 0, $n2Offset);
             else
                 $n2Part = \mb_substr($n2, $n2Offset);
@@ -351,7 +351,7 @@ class PregnancyService
         $newName = preg_replace('/ +/', ' ', mb_strtolower($newName));
 
         if(PregnancyService::isForbiddenCombinedName($newName))
-            $newName = $this->squirrel3->rngNextFromArray(PetShelterPet::PetNames);
+            $newName = $this->rng->rngNextFromArray(PetShelterPet::PetNames);
 
         return mb_convert_case($newName, MB_CASE_TITLE);
     }

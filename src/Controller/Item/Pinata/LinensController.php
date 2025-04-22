@@ -37,7 +37,7 @@ class LinensController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function rummageThroughLinens(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -49,9 +49,9 @@ class LinensController extends AbstractController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $baseNumberOfCloth = $squirrel3->rngNextInt(1, 2);
+        $baseNumberOfCloth = $rng->rngNextInt(1, 2);
 
-        $extraItem = $squirrel3->rngNextFromArray([ 'White Cloth', 'Super-wrinkled Cloth' ]);
+        $extraItem = $rng->rngNextFromArray([ 'White Cloth', 'Super-wrinkled Cloth' ]);
 
         $inventoryService->receiveItem($extraItem, $user, $user, $user->getName() . ' found this in a pile of Linens and Things.', $location, $lockedToOwner);
 

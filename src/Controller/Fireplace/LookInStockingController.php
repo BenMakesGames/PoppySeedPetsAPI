@@ -37,7 +37,7 @@ class LookInStockingController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function lookInStocking(
         InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
-        IRandom $squirrel3
+        IRandom $rng
     )
     {
         /** @var User $user */
@@ -112,7 +112,7 @@ class LookInStockingController extends AbstractController
             if(JewishCalendarFunctions::isHanukkah($now))
                 $item = [ 'Dreidel', false ];
             else
-                $item = $squirrel3->rngNextFromArray($randomRewards);
+                $item = $rng->rngNextFromArray($randomRewards);
         }
 
         $itemObject = ItemRepository::findOneByName($em, $item[0]);
@@ -122,7 +122,7 @@ class LookInStockingController extends AbstractController
         if($item[1])
         {
             $newItem->setSpice(
-                SpiceRepository::findOneByName($em, $squirrel3->rngNextFromArray([
+                SpiceRepository::findOneByName($em, $rng->rngNextFromArray([
                     '5-Spice\'d',
                     'Autumnal',
                     'Buttery',
@@ -145,7 +145,7 @@ class LookInStockingController extends AbstractController
         ];
 
         $responseService->addFlashMessage(
-            $squirrel3->rngNextFromArray($messages) . "\n\n" . ucfirst($itemObject->getNameWithArticle()) . '!'
+            $rng->rngNextFromArray($messages) . "\n\n" . ucfirst($itemObject->getNameWithArticle()) . '!'
         );
 
         $gotStockingPresent->setValue($now->format('Y-m-d'));

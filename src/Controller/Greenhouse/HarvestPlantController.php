@@ -57,7 +57,7 @@ class HarvestPlantController extends AbstractController
         GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService, UserStatsService $userStatsRepository,
         GreenhouseAdventureService $greenhouseAdventureService,
-        GreenhouseService $greenhouseService, IRandom $squirrel3, FieldGuideService $fieldGuideService,
+        GreenhouseService $greenhouseService, IRandom $rng, FieldGuideService $fieldGuideService,
         HattierService $hattierService, TransactionService $transactionService,
         NoetalaAdventureService $noetalaAdventureService
     ): JsonResponse
@@ -163,7 +163,7 @@ class HarvestPlantController extends AbstractController
 
             foreach($plant->getPlant()->getPlantYields() as $yield)
             {
-                $quantity = $squirrel3->rngNextInt($yield->getMin(), $yield->getMax());
+                $quantity = $rng->rngNextInt($yield->getMin(), $yield->getMax());
 
                 for($i = 0; $i < $quantity; $i++)
                 {
@@ -195,7 +195,7 @@ class HarvestPlantController extends AbstractController
 
             if($harvestBonusMint)
             {
-                $comment = $squirrel3->rngNextInt(1, 4) === 1
+                $comment = $rng->rngNextInt(1, 4) === 1
                     ? $user->getName() . ' harvested this from ' . GrammarFunctions::indefiniteArticle($plantName) . ' ' . $plantName . '?! (Mint! It gets everywhere!)'
                     : $user->getName() . ' harvested this from ' . GrammarFunctions::indefiniteArticle($plantName) . ' ' . $plantName . '...'
                 ;
@@ -242,10 +242,10 @@ class HarvestPlantController extends AbstractController
             {
                 $chanceOfHelp = sqrt(count($eligiblePets)) * 100;
 
-                if($squirrel3->rngNextInt(1, 550) <= $chanceOfHelp || $plant->getPlant()->getName() === 'Earth Tree')
+                if($rng->rngNextInt(1, 550) <= $chanceOfHelp || $plant->getPlant()->getName() === 'Earth Tree')
                 {
                     /** @var Pet $helper */
-                    $helper = $squirrel3->rngNextFromArray($eligiblePets);
+                    $helper = $rng->rngNextFromArray($eligiblePets);
 
                     $activity = $greenhouseAdventureService->adventure($helper->getComputedSkills(), $plant);
 

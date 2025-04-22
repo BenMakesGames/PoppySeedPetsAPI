@@ -41,7 +41,7 @@ class CookAndCombineController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function prepareRecipe(
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
-        EntityManagerInterface $em, CookingService $cookingService, IRandom $squirrel3
+        EntityManagerInterface $em, CookingService $cookingService, IRandom $rng
     )
     {
         /** @var User $user */
@@ -152,7 +152,7 @@ class CookAndCombineController extends AbstractController
         else if($totalQuantity < 10 || strpos($results->recipe['ingredients'], ',') === false)
             $exclaim = '!';
         else
-            $exclaim = '! (' . $squirrel3->rngNextFromArray([ 'Dang!', 'Wow!', 'Incredible...', 'So cook! Very meal!', 'A veritable feast!', 'Such skill!' ]) . ')';
+            $exclaim = '! (' . $rng->rngNextFromArray([ 'Dang!', 'Wow!', 'Incredible...', 'So cook! Very meal!', 'A veritable feast!', 'Such skill!' ]) . ')';
 
         $responseService->addFlashMessage('You prepared ' . ArrayFunctions::list_nice_quantities($qList) . $exclaim);
 

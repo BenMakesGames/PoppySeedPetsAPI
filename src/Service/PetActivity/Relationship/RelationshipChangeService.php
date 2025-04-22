@@ -30,7 +30,7 @@ class RelationshipChangeService
 {
     public function __construct(
         private readonly LoveService $loveService,
-        private readonly IRandom $squirrel3,
+        private readonly IRandom $rng,
         private readonly EntityManagerInterface $em
     )
     {
@@ -130,7 +130,7 @@ class RelationshipChangeService
         {
             $p1
                 ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                ->setRelationshipGoal($this->squirrel3->rngNextFromArray([
+                ->setRelationshipGoal($this->rng->rngNextFromArray([
                     RelationshipEnum::FRIENDLY_RIVAL, RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE
                 ]))
             ;
@@ -147,7 +147,7 @@ class RelationshipChangeService
         $p1->setCurrentRelationship(RelationshipEnum::FRIEND);
         $p2->setCurrentRelationship(RelationshipEnum::FRIEND);
 
-        if($this->squirrel3->rngNextInt(1, 3) === 1)
+        if($this->rng->rngNextInt(1, 3) === 1)
             $mostly = ' (Well, mostly!)';
         else
             $mostly = '';
@@ -187,13 +187,13 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelyFromFriendsToBFFs($p1, $p2);
 
             case RelationshipEnum::FWB:
-                if($this->squirrel3->rngNextInt(1, 4) === 1)
+                if($this->rng->rngNextInt(1, 4) === 1)
                     return $this->hangOutPrivatelyFromFriendsToBFFs($p1, $p2);
                 else
                     return $this->hangOutPrivatelyFromFriendsToFWBs($p1, $p2);
 
             case RelationshipEnum::MATE:
-                if($this->squirrel3->rngNextInt(1, 4) === 1)
+                if($this->rng->rngNextInt(1, 4) === 1)
                     return $this->hangOutPrivatelyFromFriendsToMates($p1, $p2);
                 else
                     return $this->hangOutPrivatelyFromFriendsToBFFs($p1, $p2);
@@ -337,7 +337,7 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingMatesWithCompleteRejection($p1, $p2);
 
             case RelationshipEnum::FRIEND:
-                if($this->squirrel3->rngNextInt(1, 4) === 1)
+                if($this->rng->rngNextInt(1, 4) === 1)
                     return $this->hangOutPrivatelyFromFriendsToBFFs($p1, $p2);
                 else
                     return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 25, 45);
@@ -441,7 +441,7 @@ class RelationshipChangeService
             $p1->setCurrentRelationship($p2->getRelationshipGoal());
             $p2->setCurrentRelationship($p2->getRelationshipGoal());
 
-            if($this->squirrel3->rngNextInt(1, 4) !== 1)
+            if($this->rng->rngNextInt(1, 4) !== 1)
                 $p1->setRelationshipGoal($p2->getRelationshipGoal());
 
             if($p1IsFriendOfTheWorld)
@@ -454,7 +454,7 @@ class RelationshipChangeService
             $p1->setCurrentRelationship($p1->getRelationshipGoal());
             $p2->setCurrentRelationship($p1->getRelationshipGoal());
 
-            if($this->squirrel3->rngNextInt(1, 4) !== 1)
+            if($this->rng->rngNextInt(1, 4) !== 1)
                 $p2->setRelationshipGoal($p1->getRelationshipGoal());
 
             if($p2IsFriendOfTheWorld)
@@ -504,7 +504,7 @@ class RelationshipChangeService
                 $chanceP2ChangesMind = (int)ceil($chanceP2ChangesMind / 4);
         }
 
-        $r = $this->squirrel3->rngNextInt(1, 100);
+        $r = $this->rng->rngNextInt(1, 100);
 
         $p1ChangesMind = $r <= $chanceP1ChangesMind;
         $p2ChangesMind = $r > $chanceP1ChangesMind && $r <= $chanceP1ChangesMind + $chanceP2ChangesMind;
@@ -575,7 +575,7 @@ class RelationshipChangeService
             $p1->setCurrentRelationship($p2->getRelationshipGoal());
             $p2->setCurrentRelationship($p2->getRelationshipGoal());
 
-            if($this->squirrel3->rngNextInt(1, 3) !== 1)
+            if($this->rng->rngNextInt(1, 3) !== 1)
                 $p1->setRelationshipGoal($p2->getRelationshipGoal());
         }
         else if($p2ChangesMind)
@@ -588,7 +588,7 @@ class RelationshipChangeService
             $p1->setCurrentRelationship($p1->getRelationshipGoal());
             $p2->setCurrentRelationship($p1->getRelationshipGoal());
 
-            if($this->squirrel3->rngNextInt(1, 3) !== 1)
+            if($this->rng->rngNextInt(1, 3) !== 1)
                 $p2->setRelationshipGoal($p1->getRelationshipGoal());
         }
         else // break up
@@ -636,8 +636,8 @@ class RelationshipChangeService
 
             case RelationshipEnum::FRIEND:
                 $p2->getPet()
-                    ->increaseLove(-$this->squirrel3->rngNextInt(12, 18))
-                    ->increaseEsteem(-$this->squirrel3->rngNextInt(8, 12))
+                    ->increaseLove(-$this->rng->rngNextInt(12, 18))
+                    ->increaseEsteem(-$this->rng->rngNextInt(8, 12))
                 ;
 
                 $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
@@ -660,8 +660,8 @@ class RelationshipChangeService
             case RelationshipEnum::FWB:
             case RelationshipEnum::MATE:
                 $p2->getPet()
-                    ->increaseLove(-$this->squirrel3->rngNextInt(16, 24))
-                    ->increaseEsteem(-$this->squirrel3->rngNextInt(12, 16))
+                    ->increaseLove(-$this->rng->rngNextInt(16, 24))
+                    ->increaseEsteem(-$this->rng->rngNextInt(12, 16))
                 ;
 
                 $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
@@ -940,8 +940,8 @@ class RelationshipChangeService
             case RelationshipEnum::FRIEND:
             case RelationshipEnum::FRIENDLY_RIVAL:
                 $p2->getPet()
-                    ->increaseLove(-$this->squirrel3->rngNextInt(4, 8))
-                    ->increaseEsteem(-$this->squirrel3->rngNextInt(1, 4))
+                    ->increaseLove(-$this->rng->rngNextInt(4, 8))
+                    ->increaseEsteem(-$this->rng->rngNextInt(1, 4))
                 ;
 
                 $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
@@ -959,8 +959,8 @@ class RelationshipChangeService
             case RelationshipEnum::BFF:
             case RelationshipEnum::FWB:
                 $p2->getPet()
-                    ->increaseLove(-$this->squirrel3->rngNextInt(12, 18))
-                    ->increaseEsteem(-$this->squirrel3->rngNextInt(8, 12))
+                    ->increaseLove(-$this->rng->rngNextInt(12, 18))
+                    ->increaseEsteem(-$this->rng->rngNextInt(8, 12))
                 ;
 
                 $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
@@ -978,8 +978,8 @@ class RelationshipChangeService
 
             case RelationshipEnum::MATE:
                 $p2->getPet()
-                    ->increaseLove(-$this->squirrel3->rngNextInt(16, 24))
-                    ->increaseEsteem(-$this->squirrel3->rngNextInt(12, 16))
+                    ->increaseLove(-$this->rng->rngNextInt(16, 24))
+                    ->increaseEsteem(-$this->rng->rngNextInt(12, 16))
                 ;
 
                 $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
@@ -1010,7 +1010,7 @@ class RelationshipChangeService
         switch($p1->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                if($this->squirrel3->rngNextInt(1, 4) === 1)
+                if($this->rng->rngNextInt(1, 4) === 1)
                     return $this->hangOutPrivatelyFromFWBsToFriends($p1, $p2);
                 else
                     return $this->hangOutPrivatelyFromFWBsToDisliked($p1, $p2);
@@ -1269,13 +1269,13 @@ class RelationshipChangeService
 
             case RelationshipEnum::FWB:
                 // negotiate for a less-involved relationship
-                $p2->setRelationshipGoal($this->squirrel3->rngNextFromArray([ RelationshipEnum::BFF, RelationshipEnum::FRIEND, RelationshipEnum::FRIEND ]));
+                $p2->setRelationshipGoal($this->rng->rngNextFromArray([ RelationshipEnum::BFF, RelationshipEnum::FRIEND, RelationshipEnum::FRIEND ]));
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 35, 0);
 
             case RelationshipEnum::MATE:
                 $p2->getPet()
-                    ->increaseLove(-$this->squirrel3->rngNextInt(16, 24))
-                    ->increaseEsteem(-$this->squirrel3->rngNextInt(12, 16))
+                    ->increaseLove(-$this->rng->rngNextInt(16, 24))
+                    ->increaseEsteem(-$this->rng->rngNextInt(12, 16))
                 ;
 
                 $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
@@ -1307,7 +1307,7 @@ class RelationshipChangeService
         switch($p1->getRelationshipGoal())
         {
             case RelationshipEnum::DISLIKE:
-                if($this->squirrel3->rngNextInt(1, 4) === 1)
+                if($this->rng->rngNextInt(1, 4) === 1)
                     return $this->hangOutPrivatelyFromMatesToFriends($p1, $p2);
                 else
                     return $this->hangOutPrivatelyFromMatesToDisliked($p1, $p2);
@@ -1542,7 +1542,7 @@ class RelationshipChangeService
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 15, 60);
 
             case RelationshipEnum::MATE:
-                $p2->setRelationshipGoal($this->squirrel3->rngNextFromArray([ RelationshipEnum::FWB, RelationshipEnum::MATE ]));
+                $p2->setRelationshipGoal($this->rng->rngNextFromArray([ RelationshipEnum::FWB, RelationshipEnum::MATE ]));
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 15, 60);
 
             default:
@@ -1573,8 +1573,8 @@ class RelationshipChangeService
             case RelationshipEnum::FRIEND:
             case RelationshipEnum::FRIENDLY_RIVAL:
                 $p2->getPet()
-                    ->increaseLove(-$this->squirrel3->rngNextInt(12, 18))
-                    ->increaseEsteem(-$this->squirrel3->rngNextInt(8, 12))
+                    ->increaseLove(-$this->rng->rngNextInt(12, 18))
+                    ->increaseEsteem(-$this->rng->rngNextInt(8, 12))
                 ;
 
                 $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
@@ -1593,7 +1593,7 @@ class RelationshipChangeService
             case RelationshipEnum::FWB:
             case RelationshipEnum::MATE:
                 // negotiate for a less-involved relationship
-                $p2->setRelationshipGoal($this->squirrel3->rngNextFromArray([ RelationshipEnum::FWB, RelationshipEnum::BFF, RelationshipEnum::FRIEND ]));
+                $p2->setRelationshipGoal($this->rng->rngNextFromArray([ RelationshipEnum::FWB, RelationshipEnum::BFF, RelationshipEnum::FRIEND ]));
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 20, 0);
 
             default:

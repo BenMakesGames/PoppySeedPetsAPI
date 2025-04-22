@@ -35,7 +35,7 @@ class WerecreatureEncounterService
 {
     public function __construct(
         private readonly PetExperienceService $petExperienceService,
-        private readonly IRandom $squirrel3,
+        private readonly IRandom $rng,
         private readonly ResponseService $responseService,
         private readonly InventoryService $inventoryService,
         private readonly EntityManagerInterface $em
@@ -56,13 +56,13 @@ class WerecreatureEncounterService
 
             if($treasure && $treasure->getSilver() > 0)
             {
-                $lootItem = ItemRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray([
+                $lootItem = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
                     'Talon', 'Fluff'
                 ]));
 
                 $pet
-                    ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
-                    ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                    ->increaseEsteem($this->rng->rngNextInt(2, 4))
+                    ->increaseSafety($this->rng->rngNextInt(2, 4))
                 ;
 
                 $message .= 'However, upon seeing %pet:' . $pet->getId() . '.name%\'s silver ' . $hat->getItem()->getName() . ', the creature ran off, dropping ' . $lootItem->getNameWithArticle() . ' as it went!';
@@ -74,7 +74,7 @@ class WerecreatureEncounterService
                 PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DEFEATED_A_WERECREATURE_WITH_SILVER, $activityLog);
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
 
                 $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' scared off a werecreature, and received this.', $activityLog);
 
@@ -90,13 +90,13 @@ class WerecreatureEncounterService
 
             if($treasure && $treasure->getSilver() > 0)
             {
-                $lootItem = ItemRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray([
+                $lootItem = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
                     'Talon', 'Fluff'
                 ]));
 
                 $pet
-                    ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
-                    ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                    ->increaseEsteem($this->rng->rngNextInt(2, 4))
+                    ->increaseSafety($this->rng->rngNextInt(2, 4))
                 ;
 
                 $message .= '%pet:' . $pet->getId() . '.name% brandished their silver ' . $tool->getItem()->getName() . '; the creature ran off at the sight of it, dropping ' . $lootItem->getNameWithArticle() . ' as it went!';
@@ -108,7 +108,7 @@ class WerecreatureEncounterService
                 PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::DEFEATED_A_WERECREATURE_WITH_SILVER, $activityLog);
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
 
                 $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' chased off a werecreature, and received this.', $activityLog);
 
@@ -118,9 +118,9 @@ class WerecreatureEncounterService
 
         $skill = 20 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getBrawl()->getTotal();
 
-        if($this->squirrel3->rngNextInt(1, $skill) >= 15)
+        if($this->rng->rngNextInt(1, $skill) >= 15)
         {
-            $lootItem = ItemRepository::findOneByName($this->em, $this->squirrel3->rngNextFromArray([
+            $lootItem = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
                 'Talon', 'Fluff'
             ]));
 
@@ -129,8 +129,8 @@ class WerecreatureEncounterService
             StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BITTEN_BY_A_WERECREATURE, 1);
 
             $pet
-                ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
-                ->increaseSafety(-$this->squirrel3->rngNextInt(2, 4))
+                ->increaseEsteem($this->rng->rngNextInt(2, 4))
+                ->increaseSafety(-$this->rng->rngNextInt(2, 4))
             ;
 
             if($silverblood)
@@ -143,7 +143,7 @@ class WerecreatureEncounterService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
 
             $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' received this from a fight with a werecreature.', $activityLog);
 
@@ -152,8 +152,8 @@ class WerecreatureEncounterService
         else
         {
             $pet
-                ->increaseEsteem(-$this->squirrel3->rngNextInt(2, 4))
-                ->increaseSafety(-$this->squirrel3->rngNextInt(4, 8))
+                ->increaseEsteem(-$this->rng->rngNextInt(2, 4))
+                ->increaseSafety(-$this->rng->rngNextInt(4, 8))
             ;
 
             StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::BITTEN_BY_A_WERECREATURE, 1);
@@ -165,7 +165,7 @@ class WerecreatureEncounterService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
 
             return $activityLog;
         }

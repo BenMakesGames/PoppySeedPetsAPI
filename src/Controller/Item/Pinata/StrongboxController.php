@@ -34,7 +34,7 @@ class StrongboxController extends AbstractController
     #[Route("/little-strongbox/{inventory}/open", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openLittleStrongbox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em,
         TransactionService $transactionService
     )
@@ -52,9 +52,9 @@ class StrongboxController extends AbstractController
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
-        $moneys = $squirrel3->rngNextInt(10, 40);
+        $moneys = $rng->rngNextInt(10, 40);
 
-        if($squirrel3->rngNextInt(1, 10) === 1)
+        if($rng->rngNextInt(1, 10) === 1)
             $moneys *= 2;
 
         $transactionService->getMoney($user, $moneys, 'Found inside ' . $inventory->getItem()->getNameWithArticle() . '.');
@@ -88,7 +88,7 @@ class StrongboxController extends AbstractController
     #[Route("/very-strongbox/{inventory}/open", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openVeryStrongbox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
     )
     {
@@ -105,18 +105,18 @@ class StrongboxController extends AbstractController
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
-        $moneys = $squirrel3->rngNextInt(20, 60);
+        $moneys = $rng->rngNextInt(20, 60);
 
-        if($squirrel3->rngNextInt(1, 10) === 1)
+        if($rng->rngNextInt(1, 10) === 1)
             $moneys *= 2;
 
         $transactionService->getMoney($user, $moneys, 'Found inside ' . $inventory->getItem()->getNameWithArticle() . '.');
 
         $items = [
-            $squirrel3->rngNextFromArray([ 'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die' ]),
-            $squirrel3->rngNextFromArray([ 'Rusty Blunderbuss', 'Rusty Rapier', 'Pepperbox' ]),
-            $squirrel3->rngNextFromArray([ 'Minor Scroll of Riches', 'Hourglass' ]),
-            $squirrel3->rngNextFromArray([ 'Scroll of Fruit', 'Scroll of the Sea', 'Gold Ring' ])
+            $rng->rngNextFromArray([ 'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die' ]),
+            $rng->rngNextFromArray([ 'Rusty Blunderbuss', 'Rusty Rapier', 'Pepperbox' ]),
+            $rng->rngNextFromArray([ 'Minor Scroll of Riches', 'Hourglass' ]),
+            $rng->rngNextFromArray([ 'Scroll of Fruit', 'Scroll of the Sea', 'Gold Ring' ])
         ];
 
         $newInventory = [];
@@ -133,7 +133,7 @@ class StrongboxController extends AbstractController
     #[Route("/outrageously-strongbox/{inventory}/open", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openOutrageouslyStrongbox(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
     )
     {
@@ -150,18 +150,18 @@ class StrongboxController extends AbstractController
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
-        $moneys = $squirrel3->rngNextInt(30, 80);
+        $moneys = $rng->rngNextInt(30, 80);
 
-        if($squirrel3->rngNextInt(1, 10) === 1)
+        if($rng->rngNextInt(1, 10) === 1)
             $moneys *= 2;
 
         $transactionService->getMoney($user, $moneys, 'Found inside ' . $inventory->getItem()->getNameWithArticle() . '.');
 
         $items = [
-            $squirrel3->rngNextFromArray([ 'Major Scroll of Riches', 'Magic Hourglass' ]),
-            $squirrel3->rngNextFromArray([ 'Rusty Blunderbuss', 'Rusty Rapier', 'Password' ]),
-            $squirrel3->rngNextFromArray([ 'Spice Rack', 'Gold Telescope', 'Tile: Silver Vein' ]),
-            $squirrel3->rngNextFromArray([ 'Hat Box', 'Forgetting Scroll', 'Glowing Protojelly' ])
+            $rng->rngNextFromArray([ 'Major Scroll of Riches', 'Magic Hourglass' ]),
+            $rng->rngNextFromArray([ 'Rusty Blunderbuss', 'Rusty Rapier', 'Password' ]),
+            $rng->rngNextFromArray([ 'Spice Rack', 'Gold Telescope', 'Tile: Silver Vein' ]),
+            $rng->rngNextFromArray([ 'Hat Box', 'Forgetting Scroll', 'Glowing Protojelly' ])
         ];
 
         $newInventory = [];

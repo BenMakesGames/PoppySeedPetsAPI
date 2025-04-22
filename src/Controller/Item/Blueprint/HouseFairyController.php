@@ -127,7 +127,7 @@ class HouseFairyController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        UserStatsService $userStatsRepository, IRandom $squirrel3
+        UserStatsService $userStatsRepository, IRandom $rng
     )
     {
         /** @var User $user */
@@ -171,11 +171,11 @@ class HouseFairyController extends AbstractController
 
         UserUnlockedFeatureHelpers::create($em, $user, UnlockableFeatureEnum::Fireplace);
 
-        $stockingColors = PetColorFunctions::generateRandomPetColors($squirrel3);
+        $stockingColors = PetColorFunctions::generateRandomPetColors($rng);
 
         $fireplace = (new Fireplace())
             ->setUser($user)
-            ->setStockingAppearance($squirrel3->rngNextFromArray(Fireplace::STOCKING_APPEARANCES))
+            ->setStockingAppearance($rng->rngNextFromArray(Fireplace::STOCKING_APPEARANCES))
             ->setStockingColorA($stockingColors[0])
             ->setStockingColorB($stockingColors[1])
         ;
@@ -211,7 +211,7 @@ class HouseFairyController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function makeFairyFloss(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryRepository $inventoryRepository, IRandom $squirrel3
+        InventoryRepository $inventoryRepository, IRandom $rng
     )
     {
         /** @var User $user */
@@ -234,7 +234,7 @@ class HouseFairyController extends AbstractController
             );
         }
 
-        $fairyFloss = $squirrel3->rngNextFromArray([ 'Pink Fairy Floss', 'Blue Fairy Floss' ]);
+        $fairyFloss = $rng->rngNextFromArray([ 'Pink Fairy Floss', 'Blue Fairy Floss' ]);
 
         $message = '"Thanks! Give me a second here!"' . "\n\n" . $this->fairyName($inventory) . ' proceeds to spin around, stretching the sugar out, then wrapping it around a bit of Paper that... seems to have come from nowhere???' . "\n\nAfter doing this, they fall over, holding the newly-spun candy aloft.\n\n" . '"Whoo! And here you go! Some ' . $fairyFloss . '!"';
 

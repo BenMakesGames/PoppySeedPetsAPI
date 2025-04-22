@@ -35,7 +35,7 @@ class EggplantController extends AbstractController
     #[Route("/{inventory}/clean", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function open(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         EntityManagerInterface $em, UserStatsService $userStatsRepository
     )
     {
@@ -47,7 +47,7 @@ class EggplantController extends AbstractController
 
         $location = $inventory->getLocation();
 
-        $r = $squirrel3->rngNextInt(1, 6);
+        $r = $rng->rngNextInt(1, 6);
         $eggs = 0;
 
         if($r === 1)
@@ -95,7 +95,7 @@ class EggplantController extends AbstractController
             $userStatsRepository->incrementStat($user, UserStatEnum::ROTTEN_EGGPLANTS, 1);
         }
 
-        if($squirrel3->rngNextInt(1, 100) === 1)
+        if($rng->rngNextInt(1, 100) === 1)
         {
             $inventoryService->receiveItem('Eggplant Bow', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
 
@@ -104,7 +104,7 @@ class EggplantController extends AbstractController
             else
                 $message .= ' Oh, and what\'s this? There\'s a purple bow inside! You clean it off, and keep it, as well!';
         }
-        else if($squirrel3->rngNextInt(1, 100) === 1)
+        else if($rng->rngNextInt(1, 100) === 1)
         {
             $inventoryService->receiveItem('Mysterious Seed', $user, $user, $user->getName() . ' got this by cleaning an Eggplant.', $location);
 

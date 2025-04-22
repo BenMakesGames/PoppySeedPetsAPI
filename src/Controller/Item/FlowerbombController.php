@@ -32,7 +32,7 @@ class FlowerbombController extends AbstractController
     #[Route("/{inventory}/toss", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function toss(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
         InventoryService $inventoryService, HotPotatoService $hotPotatoService
     )
     {
@@ -48,7 +48,7 @@ class FlowerbombController extends AbstractController
         if($isNarcissusBomb && $lastFlowerBombWasNarcissistic->getValue())
             return $hotPotatoService->tossItem($inventory);
 
-        if($squirrel3->rngNextInt(1, 100) > 10 + $numberOfTosses * 5)
+        if($rng->rngNextInt(1, 100) > 10 + $numberOfTosses * 5)
             return $hotPotatoService->tossItem($inventory);
 
         $possibleFlowers = $isNarcissusBomb
@@ -73,7 +73,7 @@ class FlowerbombController extends AbstractController
 
         for($i = 0; $i < 10 + $numberOfTosses; $i++)
         {
-            $flower = $squirrel3->rngNextFromArray($possibleFlowers);
+            $flower = $rng->rngNextFromArray($possibleFlowers);
             $inventoryService->receiveItem($flower, $user, $inventory->getCreatedBy(), 'This exploded out of a Flowerbomb.', $inventory->getLocation());
         }
 

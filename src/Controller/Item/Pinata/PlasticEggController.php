@@ -50,7 +50,7 @@ class PlasticEggController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function open(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -75,32 +75,32 @@ class PlasticEggController extends AbstractController
                     ],
                     [
                         'items' => [ 'Beans', 'Beans' ],
-                        'description' => 'revealing Beans!' . ($squirrel3->rngNextInt(1, 4) === 1 ? ' BEAAAAAAANS!' : ''),
+                        'description' => 'revealing Beans!' . ($rng->rngNextInt(1, 4) === 1 ? ' BEAAAAAAANS!' : ''),
                     ],
                     [
                         'items' => [
-                            $squirrel3->rngNextFromArray(self::CANDY),
-                            $squirrel3->rngNextFromArray(self::CANDY),
-                            $squirrel3->rngNextFromArray(self::CANDY)
+                            $rng->rngNextFromArray(self::CANDY),
+                            $rng->rngNextFromArray(self::CANDY),
+                            $rng->rngNextFromArray(self::CANDY)
                         ],
                         'description' => 'and there\'s candy inside! (Yay! Candy!)',
                     ],
                     [
                         'items' => [
-                            $squirrel3->rngNextFromArray(self::CANDY),
-                            $squirrel3->rngNextFromArray(self::CANDY),
-                            $squirrel3->rngNextFromArray(self::CANDY)
+                            $rng->rngNextFromArray(self::CANDY),
+                            $rng->rngNextFromArray(self::CANDY),
+                            $rng->rngNextFromArray(self::CANDY)
                         ],
                         'description' => 'and there\'s candy inside! :D',
                     ],
                     [
                         'items' => [
-                            $squirrel3->rngNextFromArray([
+                            $rng->rngNextFromArray([
                                 'Mini Chocolate Chip Cookies',
                                 'Shortbread Cookies',
                                 'Thicc Mints',
                             ]),
-                            $squirrel3->rngNextFromArray([
+                            $rng->rngNextFromArray([
                                 'Browser Cookie',
                                 'Fortune Cookie',
                                 'World\'s Best Sugar Cookie'
@@ -121,27 +121,27 @@ class PlasticEggController extends AbstractController
                 $possibleLoot = [
                     [
                         'items' => [
-                            $squirrel3->rngNextFromArray(self::CANDY),
-                            $squirrel3->rngNextFromArray(self::CANDY),
-                            $squirrel3->rngNextFromArray(self::CANDY),
-                            $squirrel3->rngNextFromArray(self::CANDY),
-                            $squirrel3->rngNextFromArray(self::CANDY)
+                            $rng->rngNextFromArray(self::CANDY),
+                            $rng->rngNextFromArray(self::CANDY),
+                            $rng->rngNextFromArray(self::CANDY),
+                            $rng->rngNextFromArray(self::CANDY),
+                            $rng->rngNextFromArray(self::CANDY)
                         ],
                         'description' => 'and there\'s candy inside! SO MUCH CANDY!',
                     ],
                     [
                         'items' => [ 'Century Egg' ],
-                        'description' => 'and there\'s a Century Egg inside?!' . ($squirrel3->rngNextInt(1, 4) === 1 ? ' WHO WOULD DO SUCH A THING?!?' : '')
+                        'description' => 'and there\'s a Century Egg inside?!' . ($rng->rngNextInt(1, 4) === 1 ? ' WHO WOULD DO SUCH A THING?!?' : '')
                     ],
                     [
                         'items' => [
-                            $squirrel3->rngNextFromArray([ 'Black Animal Ears', 'White Animal Ears' ])
+                            $rng->rngNextFromArray([ 'Black Animal Ears', 'White Animal Ears' ])
                         ],
                         'description' => 'and there\'s animal ears inside! (Oh, but don\'t worry: they\'re not real! See? Just Plastic and polyester!)'
                     ],
                     [
                         'items' => [
-                            $squirrel3->rngNextFromArray([
+                            $rng->rngNextFromArray([
                                 '"Gold" Idol',
                                 'Glowing Six-sided Die',
                                 'Gold Triangle',
@@ -181,7 +181,7 @@ class PlasticEggController extends AbstractController
                 throw new \Exception('Ben screwed up! There\'s no code to handle a ' . $inventory->getItem()->getName() . '!');
         }
 
-        $loot = $squirrel3->rngNextFromArray($possibleLoot);
+        $loot = $rng->rngNextFromArray($possibleLoot);
 
         $message = 'You open up the plastic egg, ' . $loot['description'];
 

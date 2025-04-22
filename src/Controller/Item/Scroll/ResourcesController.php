@@ -36,7 +36,7 @@ class ResourcesController extends AbstractController
     #[Route("/resources/{inventory}/invoke", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function readResourcesScroll(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
         ResponseService $responseService, UserStatsService $userStatsRepository
     )
     {
@@ -53,7 +53,7 @@ class ResourcesController extends AbstractController
         $possibleItems = [
             'Liquid-hot Magma',
             'Plastic', 'Crooked Stick', 'Fluff', 'Pointer',
-            'Iron Ore', $squirrel3->rngNextFromArray([ 'Silver Ore', 'Silver Ore', 'Gold Ore' ]),
+            'Iron Ore', $rng->rngNextFromArray([ 'Silver Ore', 'Silver Ore', 'Gold Ore' ]),
             'Scales', 'Yellow Dye', 'Feathers', 'Talon', 'Paper',
             'Glass', 'Gypsum'
         ];
@@ -69,7 +69,7 @@ class ResourcesController extends AbstractController
 
         for($i = 0; $i < $numberOfItems; $i++)
         {
-            $item = $squirrel3->rngNextFromArray($possibleItems);
+            $item = $rng->rngNextFromArray($possibleItems);
             $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
             $listOfItems[] = $item;
         }

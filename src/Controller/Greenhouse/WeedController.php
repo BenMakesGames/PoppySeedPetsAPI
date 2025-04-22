@@ -49,7 +49,7 @@ class WeedController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function weedPlants(
         ResponseService $responseService, EntityManagerInterface $em, InventoryService $inventoryService,
-        IRandom $squirrel3, Clock $clock
+        IRandom $rng, Clock $clock
     ): JsonResponse
     {
         /** @var User $user */
@@ -69,10 +69,10 @@ class WeedController extends AbstractController
 
         $weeds->setValue((new \DateTimeImmutable())->modify('+18 hours')->format('Y-m-d H:i:s'));
 
-        if($squirrel3->rngNextInt(1, 4) === 1)
-            $itemName = $squirrel3->rngNextFromArray([ 'Fluff', 'Red Clover', 'Talon', 'Feathers' ]);
+        if($rng->rngNextInt(1, 4) === 1)
+            $itemName = $rng->rngNextFromArray([ 'Fluff', 'Red Clover', 'Talon', 'Feathers' ]);
         else
-            $itemName = $squirrel3->rngNextFromArray([ 'Dandelion', 'Crooked Stick', 'Crooked Stick' ]);
+            $itemName = $rng->rngNextFromArray([ 'Dandelion', 'Crooked Stick', 'Crooked Stick' ]);
 
         $foundItem = $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this while weeding their Greenhouse.', LocationEnum::HOME);
         $foundItem2 = null;
@@ -89,7 +89,7 @@ class WeedController extends AbstractController
                 ]
             ;
 
-            $foundItem2 = $inventoryService->receiveItem($squirrel3->rngNextFromArray($possibleItem2s), $user, $user, $user->getName() . ' found this while cleaning their Fish Statue.', LocationEnum::HOME);
+            $foundItem2 = $inventoryService->receiveItem($rng->rngNextFromArray($possibleItem2s), $user, $user, $user->getName() . ' found this while cleaning their Fish Statue.', LocationEnum::HOME);
 
             $message = 'You found ' . $foundItem->getItem()->getNameWithArticle() . ' while cleaning up, plus ' . $foundItem2->getItem()->getNameWithArticle() . ' near the Fish Statue!';
 
@@ -114,7 +114,7 @@ class WeedController extends AbstractController
 
             if($hasDarkPlots)
             {
-                $basicItems[] = $squirrel3->rngNextFromArray([ 'Toadstool', 'Chanterelle' ]);
+                $basicItems[] = $rng->rngNextFromArray([ 'Toadstool', 'Chanterelle' ]);
             }
 
             if($hasWaterPlots)
@@ -128,7 +128,7 @@ class WeedController extends AbstractController
             }
 
             $extraItem = PetAssistantService::getExtraItem(
-                $squirrel3,
+                $rng,
                 $skill,
                 $basicItems,
                 $slightlyCoolerItems,
@@ -174,7 +174,7 @@ class WeedController extends AbstractController
                 if($hasWaterPlots)
                     $possibleFlowers[] = 'Lotus Flower';
 
-                $bonusFlower = $squirrel3->rngNextFromArray($possibleFlowers);
+                $bonusFlower = $rng->rngNextFromArray($possibleFlowers);
 
                 $activityLogEntry->setEntry($activityLogEntry->getEntry() . ' ... oh! And a ' . $bonusFlower . '!');
             }
@@ -194,7 +194,7 @@ class WeedController extends AbstractController
                 PetBadgeHelpers::awardBadge($em, $helper, PetBadgeEnum::GREENHOUSE_FISHER, $activityLogEntry);
         }
 
-        $message .= ' ' . $squirrel3->rngNextFromArray([ 'Noice!', 'Yoink!', '👍', '👌', 'Neat-o!', 'Okey dokey!' ]);
+        $message .= ' ' . $rng->rngNextFromArray([ 'Noice!', 'Yoink!', '👍', '👌', 'Neat-o!', 'Okey dokey!' ]);
 
         PlayerLogFactory::create($em, $user, $message, [ 'Greenhouse' ]);
 

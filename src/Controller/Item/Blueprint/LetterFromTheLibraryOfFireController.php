@@ -74,7 +74,7 @@ The Library of Fire is always open. We look forward to seeing you!');
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function meltSeal(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $squirrel3, PetAssistantService $petAssistantService
+        EntityManagerInterface $em, IRandom $rng, PetAssistantService $petAssistantService
     )
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'letterFromTheLibraryOfFire/#/meltSeal');
@@ -88,10 +88,10 @@ The Library of Fire is always open. We look forward to seeing you!');
         {
             $colors = [
                 ColorFunctions::HSL2Hex(0, 0.52, 0.5),
-                ColorFunctions::HSL2Hex($squirrel3->rngNextInt(0, 1000) / 1000, 0.4, 0.42),
+                ColorFunctions::HSL2Hex($rng->rngNextInt(0, 1000) / 1000, 0.4, 0.42),
             ];
 
-            if($squirrel3->rngNextInt(1, 3) === 1)
+            if($rng->rngNextInt(1, 3) === 1)
             {
                 $temp = $colors[0];
                 $colors[0] = $colors[1];
@@ -100,7 +100,7 @@ The Library of Fire is always open. We look forward to seeing you!');
 
             $dragon = (new Dragon())
                 ->setOwner($user)
-                ->setName($squirrel3->rngNextFromArray([
+                ->setName($rng->rngNextFromArray([
                     'Tanin', 'Draak', 'Dragua', 'Zenido', 'Vishap', 'Herensuge', 'Ghuṛi Biśēṣa',
                     'Chinjoka', 'Qiú', 'Lohikäärme', 'Drak\'oni', 'Ḍrēgana', 'Naga', 'Ajagar',
                     'Zaj', 'Sárkány', 'Dreki', 'Ryū', 'Aydahar', 'Neak', 'Yong', 'Zîha',
@@ -108,8 +108,8 @@ The Library of Fire is always open. We look forward to seeing you!');
                     'Tarako', 'Dhiragoni', 'Makarā', 'Masduulaagii', 'Joka', 'Aƶdaho', 'Ṭirākaṉ',
                     'Mạngkr', 'Ejderha', 'Ajdaho', 'Inamba',
                 ]))
-                ->setColorA($squirrel3->rngNextTweakedColor($colors[0]))
-                ->setColorB($squirrel3->rngNextTweakedColor($colors[1]))
+                ->setColorA($rng->rngNextTweakedColor($colors[0]))
+                ->setColorB($rng->rngNextTweakedColor($colors[1]))
             ;
 
             $em->persist($dragon);

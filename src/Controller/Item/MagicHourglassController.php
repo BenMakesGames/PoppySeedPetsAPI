@@ -37,7 +37,7 @@ class MagicHourglassController extends AbstractController
     public function shatter(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         HouseService $houseService, UserStatsService $userStatsRepository, EntityManagerInterface $em,
-        IRandom $squirrel3
+        IRandom $rng
     )
     {
         /** @var User $user */
@@ -54,7 +54,7 @@ class MagicHourglassController extends AbstractController
 
         $message = 'Crazy-magic energies flow through the house, swirling and dancing with chaotic shapes that you\'re pretty sure are fractal in nature.' . "\n\n" . 'Also, the Silica Grounds inside - now reduced to Aging Powder - spill all over the ground.';
 
-        if($squirrel3->rngNextInt(1, 8) === 1)
+        if($rng->rngNextInt(1, 8) === 1)
             $message .= ' Way to go.';
 
         $em->remove($inventory);

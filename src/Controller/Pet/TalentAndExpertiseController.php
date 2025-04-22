@@ -37,7 +37,7 @@ class TalentAndExpertiseController extends AbstractController
     #[Route("/{pet}/pickTalent", requirements: ["pet" => "\d+"], methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function pickTalent(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng
     )
     {
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
@@ -62,8 +62,8 @@ class TalentAndExpertiseController extends AbstractController
                 ->increaseStat('perception')
                 ->increaseStat('dexterity')
 
-                ->increaseStat($squirrel3->rngNextFromArray([ 'intelligence', 'perception' ]))
-                ->increaseStat($squirrel3->rngNextFromArray([ 'intelligence', 'perception', 'dexterity' ]))
+                ->increaseStat($rng->rngNextFromArray([ 'intelligence', 'perception' ]))
+                ->increaseStat($rng->rngNextFromArray([ 'intelligence', 'perception', 'dexterity' ]))
             ;
         }
         else if($talent === MeritEnum::MATTER_OVER_MIND)
@@ -73,8 +73,8 @@ class TalentAndExpertiseController extends AbstractController
                 ->increaseStat('stamina')
                 ->increaseStat('dexterity')
 
-                ->increaseStat($squirrel3->rngNextFromArray([ 'strength', 'stamina' ]))
-                ->increaseStat($squirrel3->rngNextFromArray([ 'strength', 'stamina', 'dexterity' ]))
+                ->increaseStat($rng->rngNextFromArray([ 'strength', 'stamina' ]))
+                ->increaseStat($rng->rngNextFromArray([ 'strength', 'stamina', 'dexterity' ]))
             ;
         }
         else if($talent === MeritEnum::MODERATION)
@@ -102,7 +102,7 @@ class TalentAndExpertiseController extends AbstractController
     #[Route("/{pet}/pickExpertise", requirements: ["pet" => "\d+"], methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function pickExpertise(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng
     )
     {
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
@@ -127,8 +127,8 @@ class TalentAndExpertiseController extends AbstractController
                 ->increaseStat('perception')
                 ->increaseStat('dexterity')
 
-                ->increaseStat($squirrel3->rngNextFromArray([ 'intelligence', 'perception' ]))
-                ->increaseStat($squirrel3->rngNextFromArray([ 'intelligence', 'perception', 'dexterity' ]))
+                ->increaseStat($rng->rngNextFromArray([ 'intelligence', 'perception' ]))
+                ->increaseStat($rng->rngNextFromArray([ 'intelligence', 'perception', 'dexterity' ]))
             ;
         }
         else if($expertise === MeritEnum::FORCE_OF_NATURE)
@@ -138,8 +138,8 @@ class TalentAndExpertiseController extends AbstractController
                 ->increaseStat('stamina')
                 ->increaseStat('dexterity')
 
-                ->increaseStat($squirrel3->rngNextFromArray([ 'strength', 'stamina' ]))
-                ->increaseStat($squirrel3->rngNextFromArray([ 'strength', 'stamina', 'dexterity' ]))
+                ->increaseStat($rng->rngNextFromArray([ 'strength', 'stamina' ]))
+                ->increaseStat($rng->rngNextFromArray([ 'strength', 'stamina', 'dexterity' ]))
             ;
         }
         else if($expertise === MeritEnum::BALANCE)

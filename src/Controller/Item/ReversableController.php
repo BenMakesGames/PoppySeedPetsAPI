@@ -39,7 +39,7 @@ class ReversableController extends AbstractController
     #[Route("/{inventory}/flip", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function flipIt(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng
     )
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'reversable/#/flip');
@@ -65,7 +65,7 @@ class ReversableController extends AbstractController
 
         $em->flush();
 
-        $message = $squirrel3->rngNextFromArray([
+        $message = $rng->rngNextFromArray([
             'The ' . $oldItemName . ' has been completely transformed, becoming ' . $newItem->getNameWithArticle() . '!' . "\n\n" . 'Incredible.',
             'You rotate the ' . $oldItemName . ' approximately 3.14 radians about its x-axis, et voilà: ' . $newItem->getNameWithArticle() . '!',
             'You deftly flip the ' . $oldItemName . ' into ' . $newItem->getNameWithArticle() . '!',

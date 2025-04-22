@@ -40,7 +40,7 @@ class MoonPearlController extends AbstractController
     public function smash(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, PetExperienceService $petExperienceService,
-        IRandom $squirrel3
+        IRandom $rng
     )
     {
         /** @var User $user */
@@ -56,7 +56,7 @@ class MoonPearlController extends AbstractController
 
         $reloadPets = false;
 
-        if($squirrel3->rngNextInt(1, 20) === 1 && $user->getGreenhouse() && $user->getGreenhouse()->getMaxDarkPlants() > 0)
+        if($rng->rngNextInt(1, 20) === 1 && $user->getGreenhouse() && $user->getGreenhouse()->getMaxDarkPlants() > 0)
         {
             $message = 'You shatter the Moon Pearl, yielding a couple lumps of Moon Dust, some Silica Grounds, AND WHAT\'S THIS? A Moondial Blueprint?!';
 
@@ -75,12 +75,12 @@ class MoonPearlController extends AbstractController
             if(count($availableHelpers) > 0)
             {
                 /** @var Pet $helper */
-                $helper = $squirrel3->rngNextFromArray($availableHelpers);
+                $helper = $rng->rngNextFromArray($availableHelpers);
 
                 $helperWithSkills = $helper->getComputedSkills();
                 $skill = 20 + $helperWithSkills->getArcana()->getTotal() + $helperWithSkills->getIntelligence()->getTotal() + $helperWithSkills->getDexterity()->getTotal();
 
-                if($squirrel3->rngNextInt(1, $skill) >= 16)
+                if($rng->rngNextInt(1, $skill) >= 16)
                 {
                     $activityLog = PetActivityLogFactory::createUnreadLog($em, $helper, ActivityHelpers::UserName($user, true) . ' shattered a moon pearl; ' . ActivityHelpers::PetName($helper) . ' gathered up some of its Quintessence before it could evaporate away!');
 

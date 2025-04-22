@@ -67,7 +67,7 @@ class LeprechaunController extends AbstractController
     #[Route("/greenScroll/{inventory}/read", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function readGreenScroll(
-        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3,
+        Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
         ResponseService $responseService, UserStatsService $userStatsRepository
     )
     {
@@ -95,7 +95,7 @@ class LeprechaunController extends AbstractController
 
         for($i = 0; $i < $numberOfItems; $i++)
         {
-            $item = $squirrel3->rngNextFromArray($possibleItems);
+            $item = $rng->rngNextFromArray($possibleItems);
             $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $locked);
             $listOfItems[] = $item;
         }

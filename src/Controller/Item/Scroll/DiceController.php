@@ -33,7 +33,7 @@ class DiceController extends AbstractController
     #[Route("/dice/{inventory}/read", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function readScrollOfDice(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         EntityManagerInterface $em, UserStatsService $userStatsRepository
     )
     {
@@ -46,7 +46,7 @@ class DiceController extends AbstractController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $n = $squirrel3->rngNextInt(1, 100);
+        $n = $rng->rngNextInt(1, 100);
         $howRead = '';
 
         if($n <= 40)
@@ -64,7 +64,7 @@ class DiceController extends AbstractController
         else
         {
             $dice = 8;
-            $howRead = ' with ' . $squirrel3->rngNextFromArray([
+            $howRead = ' with ' . $rng->rngNextFromArray([
                 'a booming voice',
                 'a voice as vibrant as a rainbow',
                 'a voice as smooth as Chocolate Syrup',
@@ -74,7 +74,7 @@ class DiceController extends AbstractController
 
         for($i = 0; $i < $dice; $i++)
         {
-            $die = $squirrel3->rngNextFromArray([
+            $die = $rng->rngNextFromArray([
                 'Glowing Four-sided Die', 'Glowing Four-sided Die',
                 'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die',
                 'Glowing Eight-sided Die', 'Glowing Eight-sided Die',
@@ -91,7 +91,7 @@ class DiceController extends AbstractController
 
         $message = 'You read the scroll' . $howRead . ', and the shapes of ' . $dice . ' dice form on its surface before suddenly popping out';
 
-        if($squirrel3->rngNextInt(1, 5) === 1)
+        if($rng->rngNextInt(1, 5) === 1)
         {
             $message .= '! The scroll\'s magic is consumed in the process, reducing it to mundane Paper.';
             $inventoryService->receiveItem('Paper', $user, $user, 'The mundane remains of ' . $inventory->getItem()->getNameWithArticle() . ' read by ' . $user->getName() . '.', $location, $lockedToOwner);

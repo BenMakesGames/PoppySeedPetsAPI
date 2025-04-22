@@ -58,7 +58,7 @@ class UmbraService
         private readonly GuildService $guildService,
         private readonly StrangeUmbralEncounters $strangeUmbralEncounters,
         private readonly FieldGuideService $fieldGuideService,
-        private readonly IRandom $squirrel3,
+        private readonly IRandom $rng,
         private readonly HattierService $hattierService,
         private readonly EntityManagerInterface $em,
         private readonly LeonidsService $leonidsService,
@@ -76,7 +76,7 @@ class UmbraService
 
         $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'The Umbra', ActivityHelpers::PetName($pet) . ' pushed through the Storm and entered the Umbra!');
 
-        if(CalendarFunctions::isLeonidPeakOrAdjacent($this->clock->now) && $this->squirrel3->rngNextInt(1, 4) === 1)
+        if(CalendarFunctions::isLeonidPeakOrAdjacent($this->clock->now) && $this->rng->rngNextInt(1, 4) === 1)
         {
             $activityLog = $this->leonidsService->adventure($petWithSkills);
         }
@@ -88,7 +88,7 @@ class UmbraService
 
             $skill = NumberFunctions::clamp($skill, 1, 23);
 
-            $roll = $this->squirrel3->rngNextInt(1, $skill);
+            $roll = $this->rng->rngNextInt(1, $skill);
 
             switch ($roll)
             {
@@ -183,7 +183,7 @@ class UmbraService
         ;
 
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::ARCANA ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
         return $activityLog;
     }
@@ -192,19 +192,19 @@ class UmbraService
     {
         $pet = $petWithSkills->getPet();
 
-        if($this->squirrel3->rngNextInt(1, 10) === 1)
+        if($this->rng->rngNextInt(1, 10) === 1)
         {
             // visit the library's arboretum
 
-            if($this->squirrel3->rngNextInt(1, 5) === 1)
+            if($this->rng->rngNextInt(1, 5) === 1)
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited the Library of Fire\'s arboretum, and found the brick with your name on it!')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
                 ;
 
                 $pet
-                    ->increaseEsteem($this->squirrel3->rngNextInt(3, 6))
-                    ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                    ->increaseEsteem($this->rng->rngNextInt(3, 6))
+                    ->increaseSafety($this->rng->rngNextInt(2, 4))
                 ;
             }
             else {
@@ -212,20 +212,20 @@ class UmbraService
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
                 ;
 
-                $pet->increaseSafety($this->squirrel3->rngNextInt(2, 4));
+                $pet->increaseSafety($this->rng->rngNextInt(2, 4));
             }
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
         }
-        else if($this->squirrel3->rngNextInt(1, 3) === 1 && $pet->getGuildMembership() === null && !$pet->hasMerit(MeritEnum::AFFECTIONLESS))
+        else if($this->rng->rngNextInt(1, 3) === 1 && $pet->getGuildMembership() === null && !$pet->hasMerit(MeritEnum::AFFECTIONLESS))
         {
             $activityLog = $this->guildService->joinGuildUmbra($petWithSkills);
         }
         else {
             // visit a floor of the library and read some books
 
-            $floor = $this->squirrel3->rngNextInt(8, 414);
+            $floor = $this->rng->rngNextInt(8, 414);
 
             if($floor === 29)
                 $floor = 28;
@@ -236,9 +236,9 @@ class UmbraService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
             ;
 
-            $pet->increaseSafety($this->squirrel3->rngNextInt(2, 4));
-            $this->petExperienceService->gainExp($pet, $this->squirrel3->rngNextInt(1, 2), PetSkillEnum::getValues(), $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+            $pet->increaseSafety($this->rng->rngNextInt(2, 4));
+            $this->petExperienceService->gainExp($pet, $this->rng->rngNextInt(1, 2), PetSkillEnum::getValues(), $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
         }
 
         $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY);
@@ -250,11 +250,11 @@ class UmbraService
     {
         $pet = $petWithSkills->getPet();
 
-        $skill = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getExploreUmbraBonus()->getTotal());
+        $skill = $this->rng->rngNextInt(1, 20 + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getExploreUmbraBonus()->getTotal());
 
         if($skill >= 11)
         {
-            $reward = $this->squirrel3->rngNextInt(1, 3);
+            $reward = $this->rng->rngNextInt(1, 3);
 
             if($reward === 1)
             {
@@ -282,7 +282,7 @@ class UmbraService
             }
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
             return $activityLog;
         }
@@ -293,7 +293,7 @@ class UmbraService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
             return $activityLog;
         }
@@ -306,7 +306,7 @@ class UmbraService
         $hasEideticMemory = $pet->hasMerit(MeritEnum::EIDETIC_MEMORY);
         $hasRelevantSpirit = $pet->getSpiritCompanion() !== null && $pet->getSpiritCompanion()->getStar() === SpiritCompanionStarEnum::ALTAIR;
 
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getExploreUmbraBonus()->getTotal());
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getExploreUmbraBonus()->getTotal());
 
         $rewards = [
             'Quintessence' => 'some',
@@ -316,14 +316,14 @@ class UmbraService
             'Pommegranite' => 'a',
         ];
 
-        if($this->squirrel3->rngNextInt(1, 10) === 1)
+        if($this->rng->rngNextInt(1, 10) === 1)
             $rewards['Broccolinomicon'] = 'a copy of the';
 
         $reward = array_rand($rewards);
 
         if($hasEideticMemory || $hasRelevantSpirit)
         {
-            if($hasEideticMemory && !($hasRelevantSpirit && $this->squirrel3->rngNextBool()))
+            if($hasEideticMemory && !($hasRelevantSpirit && $this->rng->rngNextBool()))
             {
                 $messageDetail = $pet->getName() . ' had already memorized the lay of the land, and pointed the way';
                 $useSpirit = false;
@@ -333,7 +333,7 @@ class UmbraService
                 $useSpirit = true;
             }
 
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
+            if($this->rng->rngNextInt(1, 2) === 1)
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. ' . $messageDetail . '; the spirit was very thankful, and insisted that ' . $pet->getName() . ' take ' . $rewards[$reward] . ' ' . $reward . '.')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
@@ -352,7 +352,7 @@ class UmbraService
                 $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Spirit Companion' ]));
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
             $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT);
 
@@ -361,7 +361,7 @@ class UmbraService
 
         if($roll >= 14)
         {
-            if($this->squirrel3->rngNextInt(1, 2) === 1)
+            if($this->rng->rngNextInt(1, 2) === 1)
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% met a friendly spirit lost in the Umbra. ' . $pet->getName() . ' was able to point the way; the spirit was very thankful, and insisted that ' . $pet->getName() . ' take ' . $rewards[$reward] . ' ' . $reward . '.')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
@@ -377,7 +377,7 @@ class UmbraService
             }
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
             return $activityLog;
         }
@@ -388,7 +388,7 @@ class UmbraService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
             return $activityLog;
         }
@@ -396,7 +396,7 @@ class UmbraService
 
     private function foundDrizzlyBear(ComputedPetSkills $petWithSkills): PetActivityLog
     {
-        $roll = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal());
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal());
         $pet = $petWithSkills->getPet();
 
         $petName = ActivityHelpers::PetName($pet);
@@ -425,7 +425,7 @@ class UmbraService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA, PetSkillEnum::STEALTH ], $activityLog);
         }
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, $success);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, $success);
 
         return $activityLog;
     }
@@ -437,9 +437,9 @@ class UmbraService
 
         $pet = $petWithSkills->getPet();
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
-        if($pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 80) === 1)
+        if($pet->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 80) === 1)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a Little Strongbox! Lucky~!')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
@@ -453,7 +453,7 @@ class UmbraService
             return $activityLog;
         }
 
-        if($this->squirrel3->rngNextInt(1, 100) === 1)
+        if($this->rng->rngNextInt(1, 100) === 1)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a Little Strongbox, and took it!')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
@@ -468,11 +468,11 @@ class UmbraService
         }
 
         if($pet->hasMerit(MeritEnum::LUCKY))
-            $die = $this->squirrel3->rngNextFromArray([ 'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die', 'Glowing Ten-sided Die' ]);
+            $die = $this->rng->rngNextFromArray([ 'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die', 'Glowing Ten-sided Die' ]);
         else
-            $die = $this->squirrel3->rngNextFromArray([ 'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die' ]);
+            $die = $this->rng->rngNextFromArray([ 'Glowing Four-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Six-sided Die', 'Glowing Eight-sided Die' ]);
 
-        if($pet->hasMerit(MeritEnum::LUCKY) && $this->squirrel3->rngNextInt(1, 50) === 1)
+        if($pet->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 50) === 1)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a ' . $die . '! Lucky~!')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
@@ -486,7 +486,7 @@ class UmbraService
             return $activityLog;
         }
 
-        if($this->squirrel3->rngNextInt(1, 80) === 1)
+        if($this->rng->rngNextInt(1, 80) === 1)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% walked along a dark river for a while. On its shore, ' . $pet->getName() . ' spotted a ' . $die . ', and took it!')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
@@ -519,22 +519,22 @@ class UmbraService
             'Silica Grounds', 'Quintessence', 'Aging Powder', 'Fluff'
         ];
 
-        if($this->squirrel3->rngNextInt(1, 50) === 1)
+        if($this->rng->rngNextInt(1, 50) === 1)
             $prize = 'Forgetting Scroll';
-        else if($this->squirrel3->rngNextInt(1, 50) === 1)
+        else if($this->rng->rngNextInt(1, 50) === 1)
             $prize = 'Spirit Polymorph Potion Recipe';
-        else if($this->squirrel3->rngNextInt(1, 100) === 1)
+        else if($this->rng->rngNextInt(1, 100) === 1)
             $prize = 'Blackonite';
-        else if($this->squirrel3->rngNextInt(1, 50) === 1)
+        else if($this->rng->rngNextInt(1, 50) === 1)
             $prize = 'Charcoal';
         else
-            $prize = $this->squirrel3->rngNextFromArray($prizes);
+            $prize = $this->rng->rngNextFromArray($prizes);
 
         if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
         {
             $skill = 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal();
 
-            $roll = $this->squirrel3->rngNextInt(1, $skill);
+            $roll = $this->rng->rngNextInt(1, $skill);
             $success = $roll >= 12;
 
             if($success)
@@ -552,7 +552,7 @@ class UmbraService
                 $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' defeated a gross-looking mummy with crazy-long arms, and took this.', $activityLog);
 
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
                 return $activityLog;
             }
@@ -563,7 +563,7 @@ class UmbraService
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
                 return $activityLog;
             }
@@ -571,7 +571,7 @@ class UmbraService
 
         $skill = 20 + max($petWithSkills->getBrawl()->getTotal(), $petWithSkills->getArcana()->getTotal()) + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal();
 
-        $roll = $this->squirrel3->rngNextInt(1, $skill);
+        $roll = $this->rng->rngNextInt(1, $skill);
         $success = $roll >= 12;
 
         $isRanged = $pet->getTool() && $pet->getTool()->rangedOnly() && $pet->getTool()->brawlBonus() > 0;
@@ -608,7 +608,7 @@ class UmbraService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
         }
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, $roll >= $success);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, $roll >= $success);
 
         return $activityLog;
     }
@@ -620,11 +620,11 @@ class UmbraService
 
         $pet = $petWithSkills->getPet();
 
-        $fishingSkill = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getExploreUmbraBonus()->getTotal());
+        $fishingSkill = $this->rng->rngNextInt(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getExploreUmbraBonus()->getTotal());
 
-        $roll = $this->squirrel3->rngNextInt(1, $fishingSkill);
+        $roll = $this->rng->rngNextInt(1, $fishingSkill);
 
-        if($this->squirrel3->rngNextInt(1, 200) == 1)
+        if($this->rng->rngNextInt(1, 200) == 1)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% decided to fish in a dark river, and pulled up a Jelling Polyp!')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Fishing' ]))
@@ -643,11 +643,11 @@ class UmbraService
         {
             $prizes = [ 'Fish' ];
 
-            if($this->squirrel3->rngNextInt(1, 2) == 1)
+            if($this->rng->rngNextInt(1, 2) == 1)
             {
                 $prizes[] = 'Dark Scales';
 
-                if($this->squirrel3->rngNextInt(1, 10) === 1)
+                if($this->rng->rngNextInt(1, 10) === 1)
                     $prizes[] = 'Secret Seashell';
                 else
                     $prizes[] = 'Seaweed';
@@ -657,7 +657,7 @@ class UmbraService
             else {
                 $prizes[] = 'Quintessence';
 
-                if($this->squirrel3->rngNextInt(1, 4) === 1)
+                if($this->rng->rngNextInt(1, 4) === 1)
                     $prizes[] = 'Music Note';
                 else
                     $prizes[] = 'Creamy Milk';
@@ -665,7 +665,7 @@ class UmbraService
                 $fish = 'an oddly-beautiful, squirming mass';
             }
 
-            $this->squirrel3->rngNextShuffle($prizes);
+            $this->rng->rngNextShuffle($prizes);
 
             if($roll >= 18)
             {
@@ -693,7 +693,7 @@ class UmbraService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
         }
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::FISH, $roll >= 13);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::FISH, $roll >= 13);
 
         return $activityLog;
     }
@@ -702,7 +702,7 @@ class UmbraService
     {
         $pet = $petWithSkills->getPet();
 
-        if($pet->hasMerit(MeritEnum::BEHATTED) && $this->squirrel3->rngNextInt(1, 100) === 1)
+        if($pet->hasMerit(MeritEnum::BEHATTED) && $this->rng->rngNextInt(1, 100) === 1)
         {
             $activityLog = $this->hattierService->petMaybeUnlockAura(
                 $pet,
@@ -715,7 +715,7 @@ class UmbraService
             if($activityLog)
             {
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
                 $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::The_Umbra,
@@ -728,16 +728,16 @@ class UmbraService
 
         $loot = [ 'Noetala Egg' ];
 
-        if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) < 15)
+        if($this->rng->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal()) < 15)
         {
             $pet->increaseFood(-1);
 
-            if($this->squirrel3->rngNextInt(1, 20) + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal() >= 20)
+            if($this->rng->rngNextInt(1, 20) + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal() >= 20)
             {
-                if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 25)
+                if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 25)
                     $loot[] = 'Quintessence';
 
-                if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15)
+                if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15)
                     $loot[] = 'Fluff';
 
                 $pet->increaseEsteem(3);
@@ -754,13 +754,13 @@ class UmbraService
                 $didWhat = 'defeated one of Noetala\'s guard, and took this';
 
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::HUNT, true);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::HUNT, true);
             }
             else {
                 $loot = [ 'Fluff' ];
 
                 $pet->increaseEsteem(-3);
-                $pet->increaseSafety(-$this->squirrel3->rngNextInt(4, 8));
+                $pet->increaseSafety(-$this->rng->rngNextInt(4, 8));
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% fell into a giant cocoon. While trying to find their way out, ' . $pet->getName() . ' was ambushed by one of Noetala\'s guard, and was wounded and covered in Fluff before being able to escape!')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::The_Umbra,
@@ -772,16 +772,16 @@ class UmbraService
                 $didWhat = 'was attacked by one of Noetala\'s guard, and covered in this';
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::HUNT, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::HUNT, false);
             }
         }
         else {
             $didWhat = 'stole this from a giant cocoon';
 
-            if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 25)
+            if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 25)
                 $loot[] = 'Quintessence';
 
-            if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15)
+            if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal()) >= 15)
                 $loot[] = 'Fluff';
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% stumbled upon Noetala\'s giant cocoon. They snuck around inside for a bit, and made off with ' . ArrayFunctions::list_nice_sorted($loot) . '.')
@@ -795,10 +795,10 @@ class UmbraService
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH, PetSkillEnum::ARCANA ], $activityLog);
 
-            if($this->squirrel3->rngNextInt(1, 50) === 1)
+            if($this->rng->rngNextInt(1, 50) === 1)
                 $activityLog->setEntry($activityLog->getEntry() . ' ("Snuck"? "Sneaked"? I dunno. One of thems.)');
 
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
         }
 
         foreach($loot as $itemName)
@@ -811,11 +811,11 @@ class UmbraService
     {
         $pet = $petWithSkills->getPet();
 
-        $umbraCheck = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getExploreUmbraBonus()->getTotal());
+        $umbraCheck = $this->rng->rngNextInt(1, 10 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getExploreUmbraBonus()->getTotal());
 
         if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
         {
-            $loot = $this->squirrel3->rngNextFromArray([ 'Blood Wine', 'Linens and Things' ]);
+            $loot = $this->rng->rngNextFromArray([ 'Blood Wine', 'Linens and Things' ]);
 
             $pet->increaseEsteem(2);
 
@@ -833,7 +833,7 @@ class UmbraService
         }
         else if($pet->getTool() && $pet->getTool()->isGrayscaling())
         {
-            $loot = $this->squirrel3->rngNextFromArray([ 'Blood Wine', 'Linens and Things' ]);
+            $loot = $this->rng->rngNextFromArray([ 'Blood Wine', 'Linens and Things' ]);
 
             $pet->increaseEsteem(2);
 
@@ -850,7 +850,7 @@ class UmbraService
         }
         else if($pet->hasStatusEffect(StatusEffectEnum::CORDIAL))
         {
-            $loot = $this->squirrel3->rngNextFromArray([ 'Blood Wine', 'Linens and Things' ]);
+            $loot = $this->rng->rngNextFromArray([ 'Blood Wine', 'Linens and Things' ]);
 
             $pet->increaseEsteem(2);
 
@@ -866,11 +866,11 @@ class UmbraService
         else if($umbraCheck >= 12)
         {
             // realize it's vampires; chance to steal
-            $stealthCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal());
+            $stealthCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal());
 
             if($stealthCheck >= 16)
             {
-                $loot = $this->squirrel3->rngNextFromArray([ 'Blood Wine', 'Linens and Things' ]);
+                $loot = $this->rng->rngNextFromArray([ 'Blood Wine', 'Linens and Things' ]);
 
                 $pet->increaseEsteem(2);
 
@@ -897,11 +897,11 @@ class UmbraService
         }
         else {
             // don't realize; get in a fight
-            $brawlCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal());
+            $brawlCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl()->getTotal());
 
             if($brawlCheck >= 20)
             {
-                $loot = $this->squirrel3->rngNextFromArray([ 'Super-wrinkled Cloth', 'White Cloth', 'Talon', 'Quintessence' ]);
+                $loot = $this->rng->rngNextFromArray([ 'Super-wrinkled Cloth', 'White Cloth', 'Talon', 'Quintessence' ]);
 
                 $pet
                     ->increaseEsteem(2)
@@ -946,7 +946,7 @@ class UmbraService
             }
         }
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
         return $activityLog;
     }
@@ -963,16 +963,16 @@ class UmbraService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(30, 45), PetActivityStatEnum::UMBRA, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::UMBRA, false);
 
             return $activityLog;
         }
 
         $pet->increaseFood(-1);
 
-        if($this->squirrel3->rngNextInt(1, 3) === 1)
+        if($this->rng->rngNextInt(1, 3) === 1)
         {
-            if($this->squirrel3->rngNextInt(1, 20) + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() >= 18)
+            if($this->rng->rngNextInt(1, 20) + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStrength()->getTotal() >= 18)
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra. A fox spirit leapt out of nowhere and attacked, and %pet:' . $pet->getId() . '.name% fought back, liberating the creature\'s Quintessence, and... its nuts?')
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
@@ -980,7 +980,7 @@ class UmbraService
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::HUNT, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::HUNT, false);
 
                 $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' liberated this from a fox spirit in a frozen quag in the deep Umbra.', $activityLog);
                 $this->inventoryService->petCollectsItem('Fox Nut', $pet, $pet->getName() . ' liberated this from a fox spirit in a frozen quag in the deep Umbra.', $activityLog);
@@ -991,13 +991,13 @@ class UmbraService
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::HUNT, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::HUNT, false);
             }
 
             return $activityLog;
         }
 
-        if($this->squirrel3->rngNextInt(1, 20) + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getExploreUmbraBonus()->getTotal() < 18)
+        if($this->rng->rngNextInt(1, 20) + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getExploreUmbraBonus()->getTotal() < 18)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra, but all they found was a Crooked Stick.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Dark', 'Gathering' ]))
@@ -1005,12 +1005,12 @@ class UmbraService
             $this->inventoryService->petCollectsItem('Crooked Stick', $pet, $pet->getName() . ' found this in a frozen quag in the deep Umbra.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::GATHER, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::GATHER, false);
 
             return $activityLog;
         }
 
-        if($this->squirrel3->rngNextBool())
+        if($this->rng->rngNextBool())
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'Using their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ', ' . ActivityHelpers::PetName($pet) . ' explored a frozen quag deep in the Umbra. Their eyes caught the glint of some frost-covered Marshmallows, which they took!');
 
@@ -1031,7 +1031,7 @@ class UmbraService
         }
 
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(60, 75), PetActivityStatEnum::GATHER, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::GATHER, true);
 
         return $activityLog;
     }
@@ -1041,7 +1041,7 @@ class UmbraService
         $pet = $petWithSkills->getPet();
         $skill = 20 + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal();
 
-        $roll = $this->squirrel3->rngNextInt(1, $skill);
+        $roll = $this->rng->rngNextInt(1, $skill);
 
         $isRanged = $pet->getTool() && $pet->getTool()->rangedOnly() && $pet->getTool()->brawlBonus() > 0;
 
@@ -1053,10 +1053,10 @@ class UmbraService
         {
             $possiblePrizes = [ 'Alien Tissue', 'Plastic', 'Silver Bar', 'Qabrêk Splàdj' ];
 
-            $prizes = [ $this->squirrel3->rngNextFromArray($possiblePrizes) ];
+            $prizes = [ $this->rng->rngNextFromArray($possiblePrizes) ];
 
             if($roll >= 30)
-                $prizes[] = $this->squirrel3->rngNextFromArray($possiblePrizes);
+                $prizes[] = $this->rng->rngNextFromArray($possiblePrizes);
 
             $pet
                 ->increaseEsteem(3)
@@ -1081,7 +1081,7 @@ class UmbraService
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
         }
 
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::HUNT, $roll >= 20);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, $roll >= 20);
 
         return $activityLog;
     }
@@ -1096,24 +1096,24 @@ class UmbraService
 
         $didWhat = 'harvested this from a Cursed Garden in the Umbra';
 
-        $skillCheck = $this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getExploreUmbraBonus()->getTotal());
+        $skillCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getExploreUmbraBonus()->getTotal());
 
         if($skillCheck < 15)
         {
             $pet->increaseFood(-1);
 
-            if($this->squirrel3->rngNextInt(1, 20) + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getArcana()->getTotal() >= 20)
+            if($this->rng->rngNextInt(1, 20) + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getArcana()->getTotal() >= 20)
             {
-                if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal()) >= 15)
+                if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal()) >= 15)
                     $loot[] = 'Quintessence';
 
-                $pet->increaseEsteem($this->squirrel3->rngNextInt(1, 2));
+                $pet->increaseEsteem($this->rng->rngNextInt(1, 2));
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a Cursed Garden, but while looking for food, was attacked by an Angry Spirit. ' . $pet->getName() . ' defeated the Angry Spirit, and took its ' . ArrayFunctions::list_nice_sorted($loot) . '.')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Stealth', 'Fighting' ]))
                 ;
                 $didWhat = 'defeated an Angry Spirit in the Umbra, and got this';
 
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::UMBRA, true);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::UMBRA, true);
                 $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
             }
             else {
@@ -1125,21 +1125,21 @@ class UmbraService
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Stealth', 'Fighting' ]))
                 ;
 
-                $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 75), PetActivityStatEnum::UMBRA, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::UMBRA, false);
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ], $activityLog);
 
                 return $activityLog;
             }
         }
         else {
-            if($this->squirrel3->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getExploreUmbraBonus()->getTotal()) >= 25)
-                $loot[] = $this->squirrel3->rngNextFromArray([ 'Nutmeg', 'Eggplant', 'Silica Grounds' ]);
+            if($this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getExploreUmbraBonus()->getTotal()) >= 25)
+                $loot[] = $this->rng->rngNextFromArray([ 'Nutmeg', 'Eggplant', 'Silica Grounds' ]);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a Cursed Garden, and harvested ' . ArrayFunctions::list_nice_sorted($loot) . '.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Stealth', 'Gathering' ]))
             ;
 
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH, PetSkillEnum::ARCANA ], $activityLog);
         }
 
@@ -1155,7 +1155,7 @@ class UmbraService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
         ;
         $this->petExperienceService->gainExp($pet, 10, [ PetSkillEnum::ARCANA, PetSkillEnum::NATURE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 
         return $activityLog;
     }

@@ -14,33 +14,18 @@ declare(strict_types=1);
 
 namespace App\Controller\Item\Blueprint;
 
-use App\Controller\Item\ItemControllerHelpers;
-use App\Entity\Greenhouse;
-use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\User;
-use App\Enum\LocationEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
-use App\Enum\PetSkillEnum;
-use App\Enum\UnlockableFeatureEnum;
-use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
-use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
-use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\PetChanges;
-use App\Repository\InventoryRepository;
-use App\Service\BeehiveService;
-use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
-use App\Service\Squirrel3;
+use App\Service\Xoshiro;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class BlueprintHelpers
 {
@@ -60,15 +45,15 @@ class BlueprintHelpers
         EntityManagerInterface $em, Pet $pet, ?string $skill, string $flashMessage, string $logMessage
     )
     {
-        $squirrel3 = new Squirrel3();
+        $rng = new Xoshiro();
         $changes = new PetChanges($pet);
 
         if($skill && $pet->getSkills()->getStat($skill) >= 20)
             $skill = null;
 
         $pet
-            ->increaseLove($squirrel3->rngNextInt(3, 6))
-            ->increaseEsteem($squirrel3->rngNextInt(2, 4))
+            ->increaseLove($rng->rngNextInt(3, 6))
+            ->increaseEsteem($rng->rngNextInt(2, 4))
         ;
 
         $petExperienceService->gainAffection($pet, 10);

@@ -36,7 +36,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class HouseMonsterService
 {
     public function __construct(
-        private readonly IRandom $squirrel3,
+        private readonly IRandom $rng,
         private readonly UserStatsService $userStatsRepository,
         private readonly InventoryService $inventoryService,
         private readonly EntityManagerInterface $em,
@@ -99,13 +99,13 @@ class HouseMonsterService
             $petChanges[$pet->getId()] = new PetChanges($pet);
         }
 
-        $roll = $this->squirrel3->rngNextInt(max(20, 1 + ($totalSkill >> 1)), 20 + $totalSkill);
+        $roll = $this->rng->rngNextInt(max(20, 1 + ($totalSkill >> 1)), 20 + $totalSkill);
 
         $result = $userSummonedDescription . ', causing ' . $monster->nameWithArticle . ' to be summoned! ';
 
         $loot = $monster->minorRewards;
 
-        $grab = $this->squirrel3->rngNextFromArray([
+        $grab = $this->rng->rngNextFromArray([
             'grab', 'snag', 'take'
         ]);
 
@@ -127,7 +127,7 @@ class HouseMonsterService
         else if($roll >= 50)
         {
             $loot[] = $monster->majorReward;
-            $loot[] = $this->squirrel3->rngNextFromArray($monster->minorRewards);
+            $loot[] = $this->rng->rngNextFromArray($monster->minorRewards);
 
             $result .= ArrayFunctions::list_nice($petNames) . ' ' . (count($petsAtHome) === 1 ? 'beats' : 'beat') . ' the monster back, and were rewarded with ' . ArrayFunctions::list_nice_sorted($loot) . '!';
 
@@ -164,19 +164,19 @@ class HouseMonsterService
             if($won)
             {
                 $pet
-                    ->increaseSafety($this->squirrel3->rngNextInt(4, 8))
-                    ->increaseEsteem($this->squirrel3->rngNextInt(6, 10))
+                    ->increaseSafety($this->rng->rngNextInt(4, 8))
+                    ->increaseEsteem($this->rng->rngNextInt(6, 10))
                 ;
             }
             else
             {
-                $pet->increaseSafety(-$this->squirrel3->rngNextInt(4, 8));
+                $pet->increaseSafety(-$this->rng->rngNextInt(4, 8));
 
                 // you can't feel bad about yourself if you didn't even have a chance... right??
                 if($totalSkill >= 40)
-                    $pet->increaseEsteem(-$this->squirrel3->rngNextInt(2, 4));
+                    $pet->increaseEsteem(-$this->rng->rngNextInt(2, 4));
                 else
-                    $pet->increaseLove(-$this->squirrel3->rngNextInt(2, 4)); // not very cool of you to summon the thing, then, though, I guess :P
+                    $pet->increaseLove(-$this->rng->rngNextInt(2, 4)); // not very cool of you to summon the thing, then, though, I guess :P
             }
         }
 
@@ -190,7 +190,7 @@ class HouseMonsterService
                 $result .= "\n\n" . ArrayFunctions::list_nice($unprotectedPetNames) . ' ' . (count($unprotectedPetNames) === 1 ? 'was' : 'were') . ' consumed by ' . $monster->name . '\'s darkness, and became terrified!';
 
             foreach($unprotectedPets as $pet)
-                $pet->increaseSafety(-$this->squirrel3->rngNextInt(4, 12));
+                $pet->increaseSafety(-$this->rng->rngNextInt(4, 12));
         }
 
         if($won)
@@ -213,7 +213,7 @@ class HouseMonsterService
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $result);
 
-            $this->petExperienceService->spendTime($pet, $this->squirrel3->rngNextInt(5, 15), PetActivityStatEnum::HUNT, $won);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(5, 15), PetActivityStatEnum::HUNT, $won);
             $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ], $activityLog);
 
             $changes = $petChanges[$pet->getId()]->compare($pet);

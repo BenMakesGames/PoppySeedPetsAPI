@@ -32,7 +32,7 @@ class HouseService
         private readonly CacheItemPoolInterface $cache,
         private readonly EntityManagerInterface $em,
         private readonly InventoryService $inventoryService,
-        private readonly IRandom $squirrel3,
+        private readonly IRandom $rng,
         private readonly HouseSimService $houseSimService,
         private readonly SagaSagaService $sagaSagaService,
         private readonly PetSocialActivityService $petSocialActivityService,
@@ -120,7 +120,7 @@ class HouseService
 
             while(count($petsWithTime) > 0)
             {
-                $this->squirrel3->rngNextShuffle($petsWithTime);
+                $this->rng->rngNextShuffle($petsWithTime);
 
                 $petsWithTime = $this->processPets($petsWithTime);
             }

@@ -53,7 +53,7 @@ class BeehiveService
 
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly IRandom $squirrel3
+        private readonly IRandom $rng
     )
     {
     }
@@ -64,7 +64,7 @@ class BeehiveService
             throw new \Exception('Player #' . $user->getId() . ' already has a beehive!');
 
         $beehive = (new Beehive())
-            ->setQueenName($this->squirrel3->rngNextFromArray(self::QUEEN_NAMES))
+            ->setQueenName($this->rng->rngNextFromArray(self::QUEEN_NAMES))
             ->setRequestedItem(ItemRepository::findOneByName($this->em, array_rand(self::DESIRED_ITEMS)))
             ->setAlternateRequestedItem(ItemRepository::findOneByName($this->em, array_rand(self::ALT_DESIRED_ITEMS)))
         ;

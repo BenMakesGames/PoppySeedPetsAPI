@@ -41,7 +41,7 @@ class HotPotController extends AbstractController
     #[Route("/{inventory}/dip", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
         Request $request, InventoryRepository $inventoryRepository, UserStatsService $userStatsRepository
     )
     {
@@ -98,7 +98,7 @@ class HotPotController extends AbstractController
             );
         }
 
-        $newSpice = SpiceRepository::findOneByName($em, $squirrel3->rngNextFromArray($possibleSpices));
+        $newSpice = SpiceRepository::findOneByName($em, $rng->rngNextFromArray($possibleSpices));
 
         $hadASpice = $dippedItem->getSpice() !== null;
         $oldName = InventoryModifierFunctions::getNameWithModifiers($dippedItem);

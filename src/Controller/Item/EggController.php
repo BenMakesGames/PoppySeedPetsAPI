@@ -41,7 +41,7 @@ class EggController extends AbstractController
     #[Route("/jellingPolyp/{inventory}/hatch", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function hatchPolyp(
-        Inventory $inventory, ResponseService $responseService, IRandom $squirrel3, EntityManagerInterface $em,
+        Inventory $inventory, ResponseService $responseService, IRandom $rng, EntityManagerInterface $em,
         PetFactory $petFactory
     )
     {
@@ -64,7 +64,7 @@ class EggController extends AbstractController
 
         $em->remove($inventory);
 
-        $jellingName = $squirrel3->rngNextFromArray([
+        $jellingName = $rng->rngNextFromArray([
             'Epistêmê',
             'Gyaan',
             'Wissen',
@@ -86,7 +86,7 @@ class EggController extends AbstractController
         ]);
 
         $newPet = $petFactory->createPet(
-            $user, $jellingName, $jelling, '', '', FlavorEnum::getRandomValue($squirrel3), MeritRepository::findOneByName($em, MeritEnum::SAGA_SAGA)
+            $user, $jellingName, $jelling, '', '', FlavorEnum::getRandomValue($rng), MeritRepository::findOneByName($em, MeritEnum::SAGA_SAGA)
         );
 
         $newPet
@@ -94,7 +94,7 @@ class EggController extends AbstractController
             ->increaseSafety(10)
             ->increaseEsteem(10)
             ->increaseFood(-8)
-            ->setScale($squirrel3->rngNextInt(80, 120))
+            ->setScale($rng->rngNextInt(80, 120))
             ->addMerit(MeritRepository::findOneByName($em, MeritEnum::AFFECTIONLESS))
         ;
 
@@ -110,7 +110,7 @@ class EggController extends AbstractController
         else
             $message .= "and floats into your house as if swimming through the air...";
 
-        PetColorFunctions::recolorPet($squirrel3, $newPet);
+        PetColorFunctions::recolorPet($rng, $newPet);
 
         $em->flush();
 
@@ -123,7 +123,7 @@ class EggController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function hatchWeirdBlueEgg(
         Inventory $inventory, ResponseService $responseService,
-        EntityManagerInterface $em, PetFactory $petFactory, IRandom $squirrel3,
+        EntityManagerInterface $em, PetFactory $petFactory, IRandom $rng,
         InventoryService $inventoryService
     )
     {
@@ -146,7 +146,7 @@ class EggController extends AbstractController
         $increasedPetLimitWithMetalBox = UserQuestRepository::findOrCreate($em, $user, 'Increased Pet Limit with Metal Box', false);
 
         $getAPet = (!$increasedPetLimitWithEgg->getValue() && !$increasedPetLimitWithMetalBox->getValue())
-            || $squirrel3->rngNextInt(1, 3) === 1;
+            || $rng->rngNextInt(1, 3) === 1;
 
         $em->remove($inventory);
 
@@ -164,7 +164,7 @@ class EggController extends AbstractController
 
             $message .= "\n\nAnyway, it's super cute, and... really seems to like you! In fact, it's already named itself after you??";
 
-            $monkeyName = $squirrel3->rngNextFromArray([
+            $monkeyName = $rng->rngNextFromArray([
                 'Climbing',
                 'Fuzzy',
                 'Howling',
@@ -176,7 +176,7 @@ class EggController extends AbstractController
             ]) . ' ' . $user->getName();
 
             $newPet = $petFactory->createPet(
-                $user, $monkeyName, $starMonkey, '', '', FlavorEnum::getRandomValue($squirrel3), MeritRepository::getRandomStartingMerit($em, $squirrel3)
+                $user, $monkeyName, $starMonkey, '', '', FlavorEnum::getRandomValue($rng), MeritRepository::getRandomStartingMerit($em, $rng)
             );
 
             $newPet
@@ -184,7 +184,7 @@ class EggController extends AbstractController
                 ->increaseSafety(10)
                 ->increaseEsteem(10)
                 ->increaseFood(-8)
-                ->setScale($squirrel3->rngNextInt(80, 120))
+                ->setScale($rng->rngNextInt(80, 120))
             ;
 
             $numberOfPetsAtHome = PetRepository::getNumberAtHome($em, $user);
@@ -195,7 +195,7 @@ class EggController extends AbstractController
                 $message .= "\n\nBut, you know, your house is full, so into the daycare it goes, I guess!";
             }
 
-            PetColorFunctions::recolorPet($squirrel3, $newPet);
+            PetColorFunctions::recolorPet($rng, $newPet);
 
             $responseService->setReloadPets();
         }
@@ -215,7 +215,7 @@ class EggController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openMetalBox(
         Inventory $inventory, ResponseService $responseService,
-        EntityManagerInterface $em, PetFactory $petFactory, IRandom $squirrel3,
+        EntityManagerInterface $em, PetFactory $petFactory, IRandom $rng,
         InventoryService $inventoryService, TransactionService $transactionService
     )
     {
@@ -238,7 +238,7 @@ class EggController extends AbstractController
         $increasedPetLimitWithMetalBox = UserQuestRepository::findOrCreate($em, $user, 'Increased Pet Limit with Metal Box', false);
 
         $getAPet = (!$increasedPetLimitWithEgg->getValue() && !$increasedPetLimitWithMetalBox->getValue())
-            || $squirrel3->rngNextInt(1, 3) === 1;
+            || $rng->rngNextInt(1, 3) === 1;
 
         $em->remove($inventory);
 
@@ -257,12 +257,12 @@ class EggController extends AbstractController
             $message .= "\n\nAnyway, it's dashing around like it's excited to be here; it really seems to like you! In fact, it's already named itself after you??";
 
             $newPet = $petFactory->createPet(
-                $user, '', $grabber, '', '', FlavorEnum::getRandomValue($squirrel3), MeritRepository::getRandomStartingMerit($em, $squirrel3)
+                $user, '', $grabber, '', '', FlavorEnum::getRandomValue($rng), MeritRepository::getRandomStartingMerit($em, $rng)
             );
 
-            PetColorFunctions::recolorPet($squirrel3, $newPet, 0.2);
+            PetColorFunctions::recolorPet($rng, $newPet, 0.2);
 
-            $robotName = 'Metal ' . $user->getName() . ' ' . $squirrel3->rngNextFromArray([
+            $robotName = 'Metal ' . $user->getName() . ' ' . $rng->rngNextFromArray([
                 '2.0',
                 'Beta',
                 'Mk 2',
@@ -280,7 +280,7 @@ class EggController extends AbstractController
                 ->increaseSafety(10)
                 ->increaseEsteem(10)
                 ->increaseFood(-8)
-                ->setScale($squirrel3->rngNextInt(80, 120))
+                ->setScale($rng->rngNextInt(80, 120))
             ;
 
             $numberOfPetsAtHome = PetRepository::getNumberAtHome($em, $user);

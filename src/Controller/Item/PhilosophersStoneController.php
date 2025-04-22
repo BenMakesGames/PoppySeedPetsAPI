@@ -49,7 +49,7 @@ class PhilosophersStoneController extends AbstractController
     #[Route("/{inventory}/use", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function useStone(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
         PetFactory $petFactory, Request $request, InventoryRepository $inventoryRepository,
         UserStatsService $userStatsRepository
     )
@@ -84,7 +84,7 @@ class PhilosophersStoneController extends AbstractController
         $em->remove($plushy);
         $em->remove($inventory);
 
-        $name = $squirrel3->rngNextFromArray([
+        $name = $rng->rngNextFromArray([
             'Perenelle', 'Ostanes', 'Nicolas', 'Hermes',
             'Chymes', 'Zosimos', 'Paphnutia', 'Arephius',
             'Paracelsus', 'Vallalar', 'Kanada', 'Laozi',
@@ -92,7 +92,7 @@ class PhilosophersStoneController extends AbstractController
 
         $startingMerit = MeritRepository::findOneByName($em, MeritEnum::ETERNAL);
 
-        $pet = $petFactory->createPet($user, $name, $species, $speciesInfo['colorA'], $speciesInfo['colorB'], FlavorEnum::getRandomValue($squirrel3), $startingMerit);
+        $pet = $petFactory->createPet($user, $name, $species, $speciesInfo['colorA'], $speciesInfo['colorB'], FlavorEnum::getRandomValue($rng), $startingMerit);
 
         $numberOfPetsAtHome = PetRepository::getNumberAtHome($em, $user);
 

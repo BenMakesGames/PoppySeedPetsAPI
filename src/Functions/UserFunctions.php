@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Functions;
 
 use App\Entity\User;
-use App\Service\Squirrel3;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class UserFunctions

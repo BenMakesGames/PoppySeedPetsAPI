@@ -40,7 +40,7 @@ class BandService
         private readonly InventoryService $inventoryService,
         private readonly PetExperienceService $petExperienceService,
         private readonly TransactionService $transactionService,
-        private readonly IRandom $squirrel3
+        private readonly IRandom $rng
     )
     {
     }
@@ -168,7 +168,7 @@ class BandService
 
     public function generateGroupName(): string
     {
-        return GroupNameGenerator::generateName($this->squirrel3, self::GroupNamePatterns, self::Dictionary, 60);
+        return GroupNameGenerator::generateName($this->rng, self::GroupNamePatterns, self::Dictionary, 60);
     }
 
     private const array BandActivitySentimentMessages = [
@@ -179,9 +179,9 @@ class BandService
 
     public function meet(PetGroup $group): void
     {
-        if($group->getNumberOfProducts() > 0 && $this->squirrel3->rngNextInt(1, 10) === 1)
+        if($group->getNumberOfProducts() > 0 && $this->rng->rngNextInt(1, 10) === 1)
         {
-            $r = $this->squirrel3->rngNextInt(1, 100);
+            $r = $this->rng->rngNextInt(1, 100);
 
             if ($r <= 75)
                 $this->receiveFanMail($group);
@@ -208,8 +208,8 @@ class BandService
             $feels = self::FanMailFeels[($pet->getId() * 89) % count(self::FanMailFeels)];
 
             $pet
-                ->increaseEsteem($this->squirrel3->rngNextInt(6, 12))
-                ->increaseLove($this->squirrel3->rngNextInt(2, 4))
+                ->increaseEsteem($this->rng->rngNextInt(6, 12))
+                ->increaseLove($this->rng->rngNextInt(2, 4))
             ;
 
             PetActivityLogFactory::createUnreadLog($this->em, $pet, $group->getName() . ' received some fan mail! %pet:' . $pet->getId() . '.name% was ' . $feels)
@@ -223,7 +223,7 @@ class BandService
 
     public function receiveRoyalties(PetGroup $group): void
     {
-        $moneys = $this->squirrel3->rngNextInt(1, 3) + (int)floor(
+        $moneys = $this->rng->rngNextInt(1, 3) + (int)floor(
             sqrt($group->getNumberOfProducts() * 10) / count($group->getMembers())
         );
 
@@ -233,7 +233,7 @@ class BandService
 
             $this->transactionService->getMoney($pet->getOwner(), $moneys, $pet->getName() . ' got royalties from ' . $group->getName() . ' sales!');
 
-            $pet->increaseEsteem($this->squirrel3->rngNextInt(4, 8));
+            $pet->increaseEsteem($this->rng->rngNextInt(4, 8));
 
             PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% got royalties from ' . $group->getName() . ' sales!')
                 ->setIcon(self::ActivityIcon)
@@ -255,7 +255,7 @@ class BandService
 
         $soothingVoiceValue = 3;
         $skill = 0;
-        $progress = $this->squirrel3->rngNextInt(5, 12 + $bandSize * 2);
+        $progress = $this->rng->rngNextInt(5, 12 + $bandSize * 2);
         /** @var PetChanges[] $petChanges */ $petChanges = [];
 
         foreach($group->getMembers() as $pet)
@@ -263,7 +263,7 @@ class BandService
             $petWithSkills = $pet->getComputedSkills();
             $petChanges[$pet->getId()] = new PetChanges($pet);
 
-            $roll = $this->squirrel3->rngNextInt(1, 10 + $petWithSkills->getMusic()->getTotal());
+            $roll = $this->rng->rngNextInt(1, 10 + $petWithSkills->getMusic()->getTotal());
 
             if($pet->hasMerit(MeritEnum::SOOTHING_VOICE) && $soothingVoiceValue > 0)
             {
@@ -283,7 +283,7 @@ class BandService
 
         if($group->getProgress() >= 100)
         {
-            $totalRoll = $this->squirrel3->rngNextInt(1, $group->getSkillRollTotal());
+            $totalRoll = $this->rng->rngNextInt(1, $group->getSkillRollTotal());
 
             $group
                 ->clearProgress()
@@ -299,9 +299,9 @@ class BandService
 
             foreach($group->getMembers() as $member)
             {
-                $member->increaseEsteem($this->squirrel3->rngNextInt(8, 12));
+                $member->increaseEsteem($this->rng->rngNextInt(8, 12));
 
-                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $group->getName() . ($this->squirrel3->rngNextInt(1, 5) === 1 ? ' finally' : '') . ' released a new ' . $item . '!')
+                $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $group->getName() . ($this->rng->rngNextInt(1, 5) === 1 ? ' finally' : '') . ' released a new ' . $item . '!')
                     ->setIcon(self::ActivityIcon)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
@@ -315,19 +315,19 @@ class BandService
         }
         else
         {
-            $groupSentiment = $this->squirrel3->rngNextFromArray([ 0, 0, 1, 1, 1, 2 ]);
+            $groupSentiment = $this->rng->rngNextFromArray([ 0, 0, 1, 1, 1, 2 ]);
 
             foreach($group->getMembers() as $member)
             {
-                if($this->squirrel3->rngNextInt(1, 8) === 1)
-                    $sentiment = $this->squirrel3->rngNextFromArray([ 0, 0, 1, 1, 1, 2 ]);
+                if($this->rng->rngNextInt(1, 8) === 1)
+                    $sentiment = $this->rng->rngNextFromArray([ 0, 0, 1, 1, 1, 2 ]);
                 else
                     $sentiment = $groupSentiment;
 
                 if($sentiment === 0)
-                    $member->increaseLove($this->squirrel3->rngNextInt(2, 6));
+                    $member->increaseLove($this->rng->rngNextInt(2, 6));
                 else if($sentiment === 1)
-                    $member->increaseEsteem($this->squirrel3->rngNextInt(2, 6));
+                    $member->increaseEsteem($this->rng->rngNextInt(2, 6));
 
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $member->getName() . ' jammed with ' . $group->getName() . '. ' . self::BandActivitySentimentMessages[$sentiment])
                     ->setIcon(self::ActivityIcon)

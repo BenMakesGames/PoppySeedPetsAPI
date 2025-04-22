@@ -33,7 +33,7 @@ class BarnaclesController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function harvestBarnacles(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -45,12 +45,12 @@ class BarnaclesController extends AbstractController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $numberOfItems = $squirrel3->rngNextInt(1, 2);
+        $numberOfItems = $rng->rngNextInt(1, 2);
         $loot = [];
 
         for($i = 0; $i < $numberOfItems; $i++)
         {
-            $itemName = $squirrel3->rngNextFromArray([ 'Egg', 'Egg', 'Feathers' ]);
+            $itemName = $rng->rngNextFromArray([ 'Egg', 'Egg', 'Feathers' ]);
 
             $loot[] = $itemName;
 

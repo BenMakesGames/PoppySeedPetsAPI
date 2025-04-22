@@ -141,7 +141,7 @@ class FishingService
                 case 20:
                 case 21:
                     // @TODO
-                    /*if($this->squirrel3->rngNextInt(1, 50) === 1)
+                    /*if($this->rng->rngNextInt(1, 50) === 1)
                         $activityLog = $this->fishedNarwhal($pet);
                     else*/
                         $activityLog = $this->fishedJellyfish($petWithSkills);

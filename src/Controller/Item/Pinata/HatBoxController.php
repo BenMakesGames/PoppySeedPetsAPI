@@ -34,7 +34,7 @@ class HatBoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openHatBox(
         Inventory $box, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, IRandom $squirrel3
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -45,7 +45,7 @@ class HatBoxController extends AbstractController
         $location = $box->getLocation();
         $lockedToOwner = $box->getLockedToOwner();
 
-        $hatItem = ItemRepository::findOneByName($em, $squirrel3->rngNextFromArray([
+        $hatItem = ItemRepository::findOneByName($em, $rng->rngNextFromArray([
             'Bright Top Hat',
             'Masquerade Mask',
             'Merchant\'s Cap',

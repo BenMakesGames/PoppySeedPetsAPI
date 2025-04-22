@@ -34,7 +34,7 @@ class BurntLogController extends AbstractController
     #[Route("/{inventory}/break", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openBurntLog(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         EntityManagerInterface $em, UserStatsService $userStatsRepository
     )
     {
@@ -49,7 +49,7 @@ class BurntLogController extends AbstractController
 
         $stat = $userStatsRepository->incrementStat($user, UserStatEnum::BURNT_LOGS_BROKEN);
 
-        $extraItem = ItemRepository::findOneByName($em, $squirrel3->rngNextFromArray([
+        $extraItem = ItemRepository::findOneByName($em, $rng->rngNextFromArray([
             'Crooked Stick',
             'Iron Ore',
             'Glass',
@@ -57,7 +57,7 @@ class BurntLogController extends AbstractController
             'Fried Egg',
         ]));
 
-        if($squirrel3->rngNextInt(1, 4) === 1)
+        if($rng->rngNextInt(1, 4) === 1)
         {
             $charcoalReceived = 'Charcoal, Liquid-hot Magma';
             $inventoryService->receiveItem('Liquid-hot Magma', $user, $user, $user->getName() . ' pulled this out of a Burnt Log.', $location, $lockedToOwner);

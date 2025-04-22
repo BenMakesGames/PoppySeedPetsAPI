@@ -43,7 +43,7 @@ class IridescentHandCannonController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function fireHandCannon(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetColorFunctions $petColorChangingService, IRandom $squirrel3, HattierService $hattierService
+        PetColorFunctions $petColorChangingService, IRandom $rng, HattierService $hattierService
     )
     {
         /** @var User $user */
@@ -77,7 +77,7 @@ class IridescentHandCannonController extends AbstractController
         else
             $oldColor = $pet->getColorB();
 
-        $newColor = $petColorChangingService->randomizeColorDistinctFromPreviousColor($squirrel3, $oldColor);
+        $newColor = $petColorChangingService->randomizeColorDistinctFromPreviousColor($rng, $oldColor);
 
         if($color === 'A')
             $pet->setColorA($newColor);
@@ -96,21 +96,21 @@ class IridescentHandCannonController extends AbstractController
             $responseService->addFlashMessage($pet->getName() . ' has been chromatically altered!');
         }
 
-        $deleted = $squirrel3->rngNextInt(1, 10) === 1;
+        $deleted = $rng->rngNextInt(1, 10) === 1;
 
         if($deleted)
         {
             $comment = 'This was once an Iridescent Hand Cannon.';
 
-            if($squirrel3->rngNextBool())
+            if($rng->rngNextBool())
             {
                 $comment .= ' Then it got rusty and fell apart.';
 
-                if($squirrel3->rngNextBool())
+                if($rng->rngNextBool())
                 {
                     $comment .= ' At the same time!';
 
-                    if($squirrel3->rngNextBool())
+                    if($rng->rngNextBool())
                         $comment .= ' (It\'s more common than you\'d think!)';
                 }
             }
