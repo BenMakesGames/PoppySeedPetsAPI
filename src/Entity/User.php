@@ -17,6 +17,7 @@ namespace App\Entity;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ArrayFunctions;
+use App\Service\TransactionService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -336,7 +337,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @deprecated use TransactionService::getMoneys and spendMoneys instead
+     * @deprecated use {@see TransactionService::getMoney} and {@see TransactionService::spendMoney} instead
      */
     public function increaseMoneys(int $amount): self
     {
@@ -553,7 +554,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @deprecated use TransactionService::getRecyclingPoints and spendRecyclingPoints instead
+     * @deprecated use {@see TransactionService::getRecyclingPoints} and {@see TransactionService::spendRecyclingPoints} instead
      */
     public function increaseRecyclePoints(int $recyclePoints): self
     {
@@ -639,7 +640,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @deprecated use TransactionService::getMuseumFavor instead
+     * @deprecated use {@see TransactionService::getMuseumFavor} instead
      */
     public function addMuseumPoints(int $museumPoints): self
     {
@@ -654,7 +655,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @deprecated use TransactionService::spendMuseumFavor instead
+     * @deprecated use {@see TransactionService::spendMuseumFavor} instead
      */
     public function addMuseumPointsSpent(int $museumPointsSpent): self
     {
