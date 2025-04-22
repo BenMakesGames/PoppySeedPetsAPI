@@ -79,9 +79,6 @@ class ResponseService
     {
         $user = $this->getUser();
 
-        if($user && $user->getIsAdmin())
-            $groups[] = SerializationGroupEnum::QUERY_ADMIN;
-
         $responseData = [
             'success' => true,
         ];
@@ -108,9 +105,6 @@ class ResponseService
             'today' => $weather,
             'forecast' => $this->weatherService->get24HourForecast(),
         ], null, [ 'groups' => [ SerializationGroupEnum::WEATHER ]]);
-
-        if($user && $user->getIsAdmin())
-            $responseData['serializationGroups'] = $groups;
 
         $this->injectUserData($responseData);
 

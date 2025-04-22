@@ -34,7 +34,6 @@ final class SerializationGroupEnum
     public const string USER_PUBLIC_PROFILE = 'userPublicProfile';
     public const string ARTICLE = 'article';
     public const string MUSEUM = 'museum';
-    public const string QUERY_ADMIN = 'queryAdmin';
     public const string PET_SHELTER_PET = 'petShelterPet';
     public const string MARKET_ITEM = 'marketItem';
     public const string TRADER_OFFER = 'traderOffer';
