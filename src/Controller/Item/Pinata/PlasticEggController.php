@@ -68,7 +68,7 @@ class PlasticEggController extends AbstractController
                 {
                     $possibleLoot = [
                         [
-                            'items' => 'Yellow Plastic Egg',
+                            'items' => [ 'Yellow Plastic Egg' ],
                             'description' => 'and-- hey! There\'s a Yellow Plastic Egg inside!'
                         ]
                     ];
@@ -135,7 +135,7 @@ class PlasticEggController extends AbstractController
                 {
                     $possibleLoot = [
                         [
-                            'items' => 'Yellow Plastic Egg',
+                            'items' => [ 'Pink Plastic Egg' ],
                             'description' => 'and-- hey! There\'s a Pink Plastic Egg inside!'
                         ]
                     ];
