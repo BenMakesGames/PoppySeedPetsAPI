@@ -14,14 +14,14 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-final class MoonPhaseEnum
+enum MoonPhaseEnum: string
 {
-    public const string NEW_MOON = 'new moon';
-    public const string WAXING_CRESCENT = 'waxing crescent';
-    public const string FIRST_QUARTER = 'first quarter';
-    public const string WAXING_GIBBOUS = 'waxing gibbous';
-    public const string FULL_MOON = 'full moon';
-    public const string WANING_GIBBOUS = 'waning gibbous';
-    public const string LAST_QUARTER = 'last quarter';
-    public const string WANING_CRESCENT = 'waning crescent';
+    case NewMoon = 'new moon';
+    case WaxingCrescent = 'waxing crescent';
+    case FirstQuarter = 'first quarter';
+    case WaxingGibbous = 'waxing gibbous';
+    case FullMoon = 'full moon';
+    case WaningGibbous = 'waning gibbous';
+    case LastQuarter = 'last quarter';
+    case WaningCrescent = 'waning crescent';
 }

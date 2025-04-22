@@ -20,7 +20,7 @@ use App\Service\IRandom;
 
 class AdventureMath
 {
-    public static function petAttractsBug(IRandom $rng, Pet $pet, int $oneInXChance)
+    public static function petAttractsBug(IRandom $rng, Pet $pet, int $oneInXChance): bool
     {
         if($pet->hasMerit(MeritEnum::LUMINARY_ESSENCE))
             $oneInXChance = (int)\ceil($oneInXChance * 2 / 3);

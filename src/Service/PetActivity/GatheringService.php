@@ -886,7 +886,7 @@ class GatheringService
     {
         // no chance for a "gathering distraction" here; that code is in doNormalMicroJungle
 
-        if(DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FULL_MOON)
+        if(DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FullMoon)
             $activityLog = $this->encounterNangTani($petWithSkills);
         else
             $activityLog = $this->doNormalMicroJungle($petWithSkills);
@@ -1292,7 +1292,7 @@ class GatheringService
     {
         // no "gathering distraction" here; that's been placed inside doNormalDeepMicroJungle
 
-        if(DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FULL_MOON)
+        if(DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FullMoon)
             $activityLog = $this->encounterNangTani($petWithSkills);
         else
             $activityLog = $this->doNormalDeepMicroJungle($petWithSkills);

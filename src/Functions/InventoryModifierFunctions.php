@@ -23,7 +23,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class InventoryModifierFunctions
 {
-    public static function enchant(EntityManagerInterface $em, Inventory $tool, Inventory $enchantment)
+    public static function enchant(EntityManagerInterface $em, Inventory $tool, Inventory $enchantment): void
     {
         if($tool->getEnchantment())
             throw new PSPInvalidOperationException('That tool already has the "' . $tool->getEnchantment()->getName() . '" bonus. Remove it first if you want to apply a new bonus.');
@@ -33,7 +33,7 @@ class InventoryModifierFunctions
         $em->remove($enchantment);
     }
 
-    public static function spiceUp(EntityManagerInterface $em, Inventory $food, Inventory $spice)
+    public static function spiceUp(EntityManagerInterface $em, Inventory $food, Inventory $spice): void
     {
         if($food->getSpice())
             throw new PSPInvalidOperationException('That food is already "' . $food->getSpice()->getName() . '". It can\'t be spiced up any further!');

@@ -144,15 +144,15 @@ class HarvestPlantController extends AbstractController
             ->clearGrowth()
         ;
 
-        if($plant->getPlant()->getName() === 'Barnacle Tree' && DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FULL_MOON)
+        if($plant->getPlant()->getName() === 'Barnacle Tree' && DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FullMoon)
         {
             $message = $greenhouseService->makeDapperSwanPet($plant);
         }
-        else if($plant->getPlant()->getName() === 'Toadstool Troop' && DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::NEW_MOON)
+        else if($plant->getPlant()->getName() === 'Toadstool Troop' && DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::NewMoon)
         {
             $message = $greenhouseService->makeMushroomPet($plant);
         }
-        else if($plant->getPlant()->getName() === 'Tomato Plant' && DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FULL_MOON)
+        else if($plant->getPlant()->getName() === 'Tomato Plant' && DateFunctions::moonPhase(new \DateTimeImmutable()) === MoonPhaseEnum::FullMoon)
         {
             $message = $greenhouseService->makeTomatePet($plant);
         }
