@@ -168,11 +168,11 @@ class GatheringHolidayAdventureService
             {
                 $r = $this->rng->rngNextInt(1, 100);
 
-                if($r <= 2)
+                if($r <= 2) // 2%
                     $egg = 'Pink Plastic Egg';
-                else if($r <= 10)
+                else if($r <= 11) // 9%
                     $egg = 'Yellow Plastic Egg';
-                else
+                else // 89%
                     $egg = 'Blue Plastic Egg';
 
                 $this->inventoryService->petCollectsItem($egg, $pet, $pet->getName() . ' found this ' . $where . '!', $activityLog)
