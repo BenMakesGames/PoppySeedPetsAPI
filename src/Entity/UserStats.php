@@ -79,7 +79,7 @@ class UserStats
     }
 
     /**
-     * @deprecated Do not call directly; use UserStatsService
+     * @deprecated Do not call directly; use {@see UserStatsService}
      */
     public function increaseValue(int $value): self
     {

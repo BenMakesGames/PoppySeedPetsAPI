@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Enum\SpiritCompanionStarEnum;
-use App\Service\Squirrel3;
+use App\Service\Xoshiro;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -81,11 +81,11 @@ class SpiritCompanion
 
     public function __construct()
     {
-        $squirrel3 = new Squirrel3();
+        $rng = new Xoshiro();
 
-        $this->star = SpiritCompanionStarEnum::getRandomValue($squirrel3);
-        $this->name = $squirrel3->rngNextFromArray(self::NAMES);
-        $this->image = $squirrel3->rngNextFromArray(self::IMAGES);
+        $this->star = SpiritCompanionStarEnum::getRandomValue($rng);
+        $this->name = $rng->rngNextFromArray(self::NAMES);
+        $this->image = $rng->rngNextFromArray(self::IMAGES);
         $this->fatheredPets = new ArrayCollection();
     }
 

@@ -60,7 +60,7 @@ class JoustingService implements ParkEventInterface
         private readonly PetRelationshipService $petRelationshipService,
         private readonly TransactionService $transactionService,
         private readonly InventoryService $inventoryService,
-        private readonly IRandom $squirrel3,
+        private readonly IRandom $rng,
         private readonly ParkService $parkService,
         private readonly UserStatsService $userStatsRepository
     )
@@ -170,8 +170,8 @@ class JoustingService implements ParkEventInterface
 
     private function doMatch(JoustingTeam $team1, JoustingTeam $team2): int
     {
-        $team1->randomizeRoles($this->squirrel3);
-        $team2->randomizeRoles($this->squirrel3);
+        $team1->randomizeRoles($this->rng);
+        $team2->randomizeRoles($this->rng);
 
         $this->results .= '#### ' . $team1->getTeamName() . ' vs ' . $team2->getTeamName() . "\n";
 
@@ -188,7 +188,7 @@ class JoustingService implements ParkEventInterface
 
         if($team1WontWorkTogether && $team2WontWorkTogether)
         {
-            $winningTeam = $this->squirrel3->rngNextInt(1, 2);
+            $winningTeam = $this->rng->rngNextInt(1, 2);
 
             $this->results .= $team1->rider->getName() . ' and ' . $team1->mount->getName() . ' refuse to work with one another! But the same is true for ' . $team2->rider->getName() . ' and ' . $team2->mount->getName() . '! There\'s nothing to do but flip a coin; ' . ($winningTeam === 1 ? $team1->getTeamName() : $team2->getTeamName()) . ' "wins"...' . "\n\n";
 
@@ -226,13 +226,13 @@ class JoustingService implements ParkEventInterface
 
         if(count($rivalries) > 0)
         {
-            $this->squirrel3->rngNextShuffle($rivalries);
+            $this->rng->rngNextShuffle($rivalries);
 
             foreach($rivalries as $rivalry)
             {
-                $i = $this->squirrel3->rngNextInt(0, 1);
+                $i = $this->rng->rngNextInt(0, 1);
 
-                $reaction = $this->squirrel3->rngNextFromArray([
+                $reaction = $this->rng->rngNextFromArray([
                     'narrows their eyes at',
                     'sticks out their ' . ($rivalry[$i]->hasMerit(MeritEnum::PREHENSILE_TONGUE) ? 'prehensile ' : '') . 'tongue at',
                     'makes a face at',
@@ -252,7 +252,7 @@ class JoustingService implements ParkEventInterface
 
         for($round = 0; $round < 4; $round++)
         {
-            $clashResult = new JoustingClashResult($this->squirrel3, $team1, $team2);
+            $clashResult = new JoustingClashResult($this->rng, $team1, $team2);
 
             $this->results .= '1. ' . $this->describeClash($clashResult) . "\n";
 
@@ -284,19 +284,19 @@ class JoustingService implements ParkEventInterface
         if($team1Points === $team2Points)
         {
             $this->results .= 'The jousters tie, each with ' . $team1Points . ' points!';
-            if($team1Points === 0 && $this->squirrel3->rngNextInt(1, 10) === 1)
+            if($team1Points === 0 && $this->rng->rngNextInt(1, 10) === 1)
                 $this->results .= ' Let the judgement be that they jousted poorly!';
 
             $this->results .= ' The draw shall be resolved with a race; everyone is the horse!' . "\n\n";
 
             $tieBreakers = [ 0.1, 0.2, 0.3, 0.4 ];
-            $this->squirrel3->rngNextShuffle($tieBreakers);
+            $this->rng->rngNextShuffle($tieBreakers);
 
             $results = [
-                [ 'name' => $team1->rider->getName(), 'team' => 1, 'roll' => $this->squirrel3->rngNextInt(1, 10 + $team1->rider->getSkills()->getStrength()) + $tieBreakers[0] ],
-                [ 'name' => $team1->mount->getName(), 'team' => 1, 'roll' => $this->squirrel3->rngNextInt(1, 10 + $team1->mount->getSkills()->getStrength()) + $tieBreakers[1] ],
-                [ 'name' => $team2->rider->getName(), 'team' => 2, 'roll' => $this->squirrel3->rngNextInt(1, 10 + $team2->rider->getSkills()->getStrength()) + $tieBreakers[2] ],
-                [ 'name' => $team2->mount->getName(), 'team' => 2, 'roll' => $this->squirrel3->rngNextInt(1, 10 + $team2->mount->getSkills()->getStrength()) + $tieBreakers[3] ],
+                [ 'name' => $team1->rider->getName(), 'team' => 1, 'roll' => $this->rng->rngNextInt(1, 10 + $team1->rider->getSkills()->getStrength()) + $tieBreakers[0] ],
+                [ 'name' => $team1->mount->getName(), 'team' => 1, 'roll' => $this->rng->rngNextInt(1, 10 + $team1->mount->getSkills()->getStrength()) + $tieBreakers[1] ],
+                [ 'name' => $team2->rider->getName(), 'team' => 2, 'roll' => $this->rng->rngNextInt(1, 10 + $team2->rider->getSkills()->getStrength()) + $tieBreakers[2] ],
+                [ 'name' => $team2->mount->getName(), 'team' => 2, 'roll' => $this->rng->rngNextInt(1, 10 + $team2->mount->getSkills()->getStrength()) + $tieBreakers[3] ],
             ];
 
             usort($results, fn($a, $b) => $b['roll'] <=> $a['roll']);
@@ -393,7 +393,7 @@ class JoustingService implements ParkEventInterface
 
         $affectionAverage = $affectionTotal / (count($this->participants) << 1);
 
-        $firstPlaceMoneys = 2 * count($this->participants) - $this->squirrel3->rngNextInt(0, 8); // base prize
+        $firstPlaceMoneys = 2 * count($this->participants) - $this->rng->rngNextInt(0, 8); // base prize
         $firstPlaceMoneys += (int)ceil($affectionAverage); // affection bonus
         $firstPlaceMoneys = (int)ceil($firstPlaceMoneys / 2); // divide by two, because two pets share the prize
 

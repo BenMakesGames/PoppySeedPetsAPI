@@ -40,7 +40,7 @@ class PetExperienceService
     public const int SOCIAL_ENERGY_PER_HANG_OUT = 576; // 2.5 hangouts per day (for average pets)
 
     public function __construct(
-        private readonly IRandom $squirrel3,
+        private readonly IRandom $rng,
         private readonly InventoryService $inventoryService,
         private readonly UserStatsService $userStatsRepository,
         private readonly HattierService $hattierService,
@@ -94,7 +94,7 @@ class PetExperienceService
             if($focusStatusEffect && $pet->getSkills()->getStat($focusStatusEffect->skill) >= 10)
                 $statToLevel = $focusStatusEffect->skill;
             else
-                $statToLevel = $this->squirrel3->rngNextFromArray($stats);
+                $statToLevel = $this->rng->rngNextFromArray($stats);
 
             // only remove a Focused status effect if the focused stat was leveled-up
             if($focusStatusEffect && $focusStatusEffect->skill == $statToLevel)
@@ -182,17 +182,17 @@ class PetExperienceService
         if($pet->hasStatusEffect(StatusEffectEnum::EXTRA_EXTROVERTED) || $pet->hasStatusEffect(StatusEffectEnum::MOONSTRUCK))
             $energy = (int)ceil($energy / 2);
 
-        if($this->squirrel3->rngNextInt(1, 10) === 1)
+        if($this->rng->rngNextInt(1, 10) === 1)
         {
             // smallish chance to consume WAY less energy. this was added to help jiggle pets out of a situation where
             // two pets owned by the same account are always offset in social energy such that they're never able to hang
             // out with each other.
-            $energy = $this->squirrel3->rngNextInt((int)ceil($energy / 4), (int)ceil($energy * 3 / 4));
+            $energy = $this->rng->rngNextInt((int)ceil($energy / 4), (int)ceil($energy * 3 / 4));
         }
         else
         {
             // always add a LITTLE random jiggle, though:
-            $energy = $this->squirrel3->rngNextInt((int)ceil($energy * 8 / 10), (int)ceil($energy * 12 / 10));
+            $energy = $this->rng->rngNextInt((int)ceil($energy * 8 / 10), (int)ceil($energy * 12 / 10));
         }
 
         // tool modifiers (if any)

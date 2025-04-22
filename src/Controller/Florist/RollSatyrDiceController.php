@@ -39,7 +39,7 @@ class RollSatyrDiceController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function rollEm(
         ResponseService $responseService, EntityManagerInterface $em, InventoryService $inventoryService,
-        Request $request, IRandom $squirrel3, TransactionService $transactionService, Clock $clock,
+        Request $request, IRandom $rng, TransactionService $transactionService, Clock $clock,
         UserStatsService $userStatsService
     )
     {
@@ -54,13 +54,13 @@ class RollSatyrDiceController extends AbstractController
         if($user->getRecyclePoints() < 100)
             throw new PSPNotEnoughCurrencyException('100♺', $user->getRecyclePoints() . '♺');
 
-        $r1 = $squirrel3->rngNextInt(1, 6);
-        $r2 = $squirrel3->rngNextInt(1, 6);
+        $r1 = $rng->rngNextInt(1, 6);
+        $r2 = $rng->rngNextInt(1, 6);
 
-        if($squirrel3->rngNextInt(1, 20) == 1)
+        if($rng->rngNextInt(1, 20) == 1)
             $r1 = 0;
 
-        if($squirrel3->rngNextInt(1, 20 - $r1) == 1)
+        if($rng->rngNextInt(1, 20 - $r1) == 1)
             $r2 = 0;
 
         $total = $r1 + $r2;

@@ -14,9 +14,6 @@ declare(strict_types=1);
 
 namespace App\Functions;
 
-use App\Service\IRandom;
-use App\Service\Squirrel3;
-
 final class StringFunctions
 {
     public static function isTruthy($v): bool

@@ -44,7 +44,7 @@ class AlbumController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function listenToSingle(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -56,9 +56,9 @@ class AlbumController extends AbstractController
 
         $musicNotes = new ItemQuantity();
         $musicNotes->item = ItemRepository::findOneByName($em, 'Music Note');
-        $musicNotes->quantity = $squirrel3->rngNextInt(3, 4);
+        $musicNotes->quantity = $rng->rngNextInt(3, 4);
 
-        $extraItem = $squirrel3->rngNextFromArray([ 'Pointer', 'NUL', 'Quintessence' ]);
+        $extraItem = $rng->rngNextFromArray([ 'Pointer', 'NUL', 'Quintessence' ]);
 
         $inventoryService->giveInventoryQuantities($musicNotes, $user, $user, $user->getName() . ' got this by listening to a Single.', $location);
         $inventoryService->receiveItem($extraItem, $user, $user, $user->getName() . ' got this by listening to a Single.', $location);
@@ -78,7 +78,7 @@ class AlbumController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function listenToEP(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -90,10 +90,10 @@ class AlbumController extends AbstractController
 
         $musicNotes = new ItemQuantity();
         $musicNotes->item = ItemRepository::findOneByName($em, 'Music Note');
-        $musicNotes->quantity = $squirrel3->rngNextInt(4, 6);
+        $musicNotes->quantity = $rng->rngNextInt(4, 6);
 
-        $genre = $squirrel3->rngNextFromArray(self::GENRES);
-        $extraItem = $squirrel3->rngNextFromArray([ 'Pointer', 'NUL', 'Quintessence' ]);
+        $genre = $rng->rngNextFromArray(self::GENRES);
+        $extraItem = $rng->rngNextFromArray([ 'Pointer', 'NUL', 'Quintessence' ]);
 
         $inventoryService->giveInventoryQuantities($musicNotes, $user, $user, $user->getName() . ' got this by listening to an EP.', $location);
         $inventoryService->receiveItem($genre, $user, $user, $user->getName() . ' got this by listening to a EP.', $location);
@@ -104,7 +104,7 @@ class AlbumController extends AbstractController
         $em->flush();
 
         return $responseService->itemActionSuccess(
-            "<em>♫ " . $squirrel3->rngNextFromArray(Music::LYRICS) . " ♪</em>\n\n" .
+            "<em>♫ " . $rng->rngNextFromArray(Music::LYRICS) . " ♪</em>\n\n" .
             'What totally and completely original songs these pets have written! In the ' . mb_strtolower($genre) . ' genre, of course... so you get some ' . $genre . "! (Of course!)\n\n" .
             'You also received ' . $musicNotes->quantity . ' Music Notes, and a ' . $extraItem . '.',
             [ 'itemDeleted' => true ]
@@ -115,7 +115,7 @@ class AlbumController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function listenToLP(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -127,9 +127,9 @@ class AlbumController extends AbstractController
 
         $musicNotes = new ItemQuantity();
         $musicNotes->item = ItemRepository::findOneByName($em, 'Music Note');
-        $musicNotes->quantity = $squirrel3->rngNextInt(4, 6);
+        $musicNotes->quantity = $rng->rngNextInt(4, 6);
 
-        $genre = $squirrel3->rngNextFromArray(self::GENRES);
+        $genre = $rng->rngNextFromArray(self::GENRES);
 
         $extraItems = [ 'NUL', 'Pointer', 'Quintessence' ];
 
@@ -144,7 +144,7 @@ class AlbumController extends AbstractController
         $em->flush();
 
         return $responseService->itemActionSuccess(
-            "<em>♫ " . $squirrel3->rngNextFromArray(Music::LYRICS) . " ♪</em>\n\n" .
+            "<em>♫ " . $rng->rngNextFromArray(Music::LYRICS) . " ♪</em>\n\n" .
             'What totally and completely original songs these pets have written! In the ' . mb_strtolower($genre) . ' genre, of course... so you get some ' . $genre . "! (Of course!)\n\n" .
             'You also received ' . $musicNotes->quantity . ' Music Notes, ' . ArrayFunctions::list_nice($extraItems) . '.',
             [ 'itemDeleted' => true ]

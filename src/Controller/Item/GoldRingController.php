@@ -41,7 +41,7 @@ class GoldRingController extends AbstractController
     #[Route("/{inventory}/smash", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function smash(
-        Inventory $inventory, ResponseService $responseService, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, IRandom $rng,
         EntityManagerInterface $em
     )
     {
@@ -49,7 +49,7 @@ class GoldRingController extends AbstractController
 
         $inventory->changeItem(ItemRepository::findOneByName($em, 'Gold Bar'));
 
-        $message = $squirrel3->rngNextFromArray([
+        $message = $rng->rngNextFromArray([
             'Easy as 1, 2, 3.',
             'Easy as pie.',
             'Easy as falling off a log.',

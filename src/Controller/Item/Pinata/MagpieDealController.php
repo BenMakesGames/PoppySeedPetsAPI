@@ -58,7 +58,7 @@ class MagpieDealController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getFeathersAndEggs(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $squirrel3
+        EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -76,7 +76,7 @@ class MagpieDealController extends AbstractController
         ];
 
         for($i = 0; $i < 3; $i++)
-            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray([ 'Feathers', 'Egg' ]), $user, $user, $user->getName() . ' got this from a Magpie\'s Deal.', $location);
+            $newInventory[] = $inventoryService->receiveItem($rng->rngNextFromArray([ 'Feathers', 'Egg' ]), $user, $user, $user->getName() . ' got this from a Magpie\'s Deal.', $location);
 
         $itemList = array_map(fn(Inventory $i) => $i->getItem()->getName(), $newInventory);
         sort($itemList);

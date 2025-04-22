@@ -32,7 +32,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class ParkService
 {
     public function __construct(
-        private readonly IRandom $squirrel3,
+        private readonly IRandom $rng,
         private readonly InventoryService $inventoryService,
         private readonly EntityManagerInterface $em,
         private readonly HattierService $hattierService,
@@ -71,13 +71,13 @@ class ParkService
 
             $pet->setLastParkEvent();
 
-            if($forceBalloon || $this->squirrel3->rngNextInt(1, 10) === 1)
+            if($forceBalloon || $this->rng->rngNextInt(1, 10) === 1)
             {
                 $changes = new PetChanges($pet);
 
                 $pet
-                    ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
-                    ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                    ->increaseEsteem($this->rng->rngNextInt(2, 4))
+                    ->increaseSafety($this->rng->rngNextInt(2, 4))
                 ;
 
                 [ $balloon, $log ] = $this->petCollectsRandomBalloon($pet, $parkEvent->getType(), $commentExtra, $forceBalloon);
@@ -126,7 +126,7 @@ class ParkService
                     $birthdayPresentsByUser[$userId]->setValue($birthdayPresentsByUser[$userId]->getValue() + 1);
 
                     $this->inventoryService->receiveItem(
-                        $this->squirrel3->rngNextFromArray([
+                        $this->rng->rngNextFromArray([
                             'Red PSP B-day Present',
                             'Yellow PSP B-day Present',
                             'Purple PSP B-day Present'
@@ -151,7 +151,7 @@ class ParkService
         }
         else
         {
-            $balloon = $this->squirrel3->rngNextFromArray([
+            $balloon = $this->rng->rngNextFromArray([
                 'Red Balloon',
                 'Orange Balloon',
                 'Yellow Balloon',

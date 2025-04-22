@@ -33,7 +33,7 @@ class DieController extends AbstractController
     #[Route("/{inventory}/roll", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function roll(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
         HollowEarthService $hollowEarthService
     )
     {
@@ -49,14 +49,14 @@ class DieController extends AbstractController
 
         if($itemName === 'Dreidel')
         {
-            $roll = $squirrel3->rngNextFromArray([
+            $roll = $rng->rngNextFromArray([
                 'נ', 'ג', 'ה', 'ש'
             ]);
         }
         else
         {
             $sides = HollowEarthService::DICE_ITEMS[$itemName];
-            $roll = $squirrel3->rngNextInt(1, $sides);
+            $roll = $rng->rngNextInt(1, $sides);
         }
 
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::HollowEarth))
@@ -76,8 +76,7 @@ class DieController extends AbstractController
     #[Route("/{inventory}/changeYourFate", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function changeYourFate(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
-        HollowEarthService $hollowEarthService
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
     )
     {
         /** @var User $user */

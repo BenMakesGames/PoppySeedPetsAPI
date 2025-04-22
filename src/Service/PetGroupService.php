@@ -48,7 +48,7 @@ class PetGroupService
         private readonly PetExperienceService $petExperienceService,
         private readonly BandService $bandService,
         private readonly AstronomyClubService $astronomyClubService,
-        private readonly IRandom $squirrel3,
+        private readonly IRandom $rng,
         private readonly GamingGroupService $gamingGroupService,
         private readonly SportsBallService $sportsBallService
     )
@@ -113,7 +113,7 @@ class PetGroupService
 
         foreach($group->getMembers() as $member)
         {
-            $happiness = $this->getMemberHappiness($group, $member) + $this->squirrel3->rngNextInt(-500, 500) / 100;
+            $happiness = $this->getMemberHappiness($group, $member) + $this->rng->rngNextInt(-500, 500) / 100;
 
             if($happiness < 0)
             {
@@ -142,16 +142,16 @@ class PetGroupService
 
             if($member->getId() === $unhappiestPet->getId())
             {
-                $member->increaseEsteem(-$this->squirrel3->rngNextInt(2, 4));
+                $member->increaseEsteem(-$this->rng->rngNextInt(2, 4));
             }
             else
             {
                 $r = $member->getRelationshipWith($unhappiestPet);
 
                 if($r && $r->getHappiness() < 0)
-                    $member->increaseSafety($this->squirrel3->rngNextInt(2, 4));
+                    $member->increaseSafety($this->rng->rngNextInt(2, 4));
                 else
-                    $member->increaseLove(-$this->squirrel3->rngNextInt(2, 4));
+                    $member->increaseLove(-$this->rng->rngNextInt(2, 4));
             }
 
             $message = count($group->getMembers()) === 1
@@ -194,7 +194,7 @@ class PetGroupService
             return false;
 
         // if the group is not in danger of disbanding, there's a large chance of NOT recruiting
-        if($numMembers >= $group->getMinimumSize() && $this->squirrel3->rngNextInt(1, $numMembers * 20) > 1)
+        if($numMembers >= $group->getMinimumSize() && $this->rng->rngNextInt(1, $numMembers * 20) > 1)
             return false;
 
         /** @var Pet[] $recruit */
@@ -227,7 +227,7 @@ class PetGroupService
         }
 
         // if you failed to recruit, and you don't have enough members, the group might disband
-        if(count($group->getMembers()) === 1 || (count($group->getMembers()) < $group->getMinimumSize() && $this->squirrel3->rngNextInt(1, 2) === 1))
+        if(count($group->getMembers()) === 1 || (count($group->getMembers()) < $group->getMinimumSize() && $this->rng->rngNextInt(1, 2) === 1))
         {
             $this->disbandGroup($group);
 
@@ -271,8 +271,8 @@ class PetGroupService
 
             $member
                 ->removeGroup($group)
-                ->increaseEsteem(-$this->squirrel3->rngNextInt(4, 8))
-                ->increaseLove(-$this->squirrel3->rngNextInt(2, 4))
+                ->increaseEsteem(-$this->rng->rngNextInt(4, 8))
+                ->increaseLove(-$this->rng->rngNextInt(2, 4))
             ;
 
             PetActivityLogFactory::createUnreadLog($this->em, $member, $group->getName() . ' tried to recruit another member, but couldn\'t find anyone. They decided to disband :(')
@@ -296,8 +296,8 @@ class PetGroupService
             $changes = new PetChanges($member);
 
             $member
-                ->increaseLove($this->squirrel3->rngNextInt(2, 4))
-                ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
+                ->increaseLove($this->rng->rngNextInt(2, 4))
+                ->increaseEsteem($this->rng->rngNextInt(2, 4))
             ;
 
             if($member->getId() === $recruit->getId())
@@ -314,8 +314,8 @@ class PetGroupService
                     $message .= ' ' . $group->getName() . ' is saved!';
 
                     $member
-                        ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
-                        ->increaseSafety($this->squirrel3->rngNextInt(2, 4))
+                        ->increaseEsteem($this->rng->rngNextInt(2, 4))
+                        ->increaseSafety($this->rng->rngNextInt(2, 4))
                     ;
                 }
             }
@@ -459,11 +459,11 @@ class PetGroupService
             // gaming groups are totally random
 
             default:
-                $this->squirrel3->rngNextShuffle($availableFriends);
+                $this->rng->rngNextShuffle($availableFriends);
         }
 
         /** @var ComputedPetSkills[] $friendsToInvite */
-        $friendsToInvite = array_slice($availableFriends, 0, min(count($availableFriends), $this->squirrel3->rngNextInt(2, $this->squirrel3->rngNextInt(3, 4))));
+        $friendsToInvite = array_slice($availableFriends, 0, min(count($availableFriends), $this->rng->rngNextInt(2, $this->rng->rngNextInt(3, 4))));
         $friendNames = array_map(fn(ComputedPetSkills $p) => $p->getPet()->getName(), $friendsToInvite);
 
         foreach($friendsToInvite as $friend)

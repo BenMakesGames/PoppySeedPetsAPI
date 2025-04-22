@@ -31,7 +31,7 @@ class DragonPolymorphPotionController extends AbstractController
     #[Route("/{inventory}/give", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function drink(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -56,7 +56,7 @@ class DragonPolymorphPotionController extends AbstractController
             fn(int $image) => $image !== $currentAppearance
         );
 
-        $dragon->setAppearance($squirrel3->rngNextFromArray($availableAppearances));
+        $dragon->setAppearance($rng->rngNextFromArray($availableAppearances));
 
         $em->flush();
 

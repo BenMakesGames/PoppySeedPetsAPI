@@ -16,7 +16,6 @@ namespace App\Command;
 
 use App\Service\AdoptionService;
 use App\Service\Clock;
-use App\Service\Squirrel3;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -47,7 +46,7 @@ class PortalPetsCountCommand extends Command
         for($i = 0; $i < 365; $i++)
         {
             $number = AdoptionService::getNumberOfPets($clock->now);
-            $rarePetIndicies = AdoptionService::getRarePetIndicies($clock->now);
+            $rarePetIndices = AdoptionService::getRarePetIndices($clock->now);
 
             $min = min($min, $number);
             $max = max($max, $number);
@@ -55,8 +54,8 @@ class PortalPetsCountCommand extends Command
 
             $output->write($clock->now->format('Y-m-d') . ': ' . $number);
 
-            if(count($rarePetIndicies) > 0)
-                $output->write(' (rare pets: ' . implode(', ', $rarePetIndicies) . ')');
+            if(count($rarePetIndices) > 0)
+                $output->write(' (rare pets: ' . implode(', ', $rarePetIndices) . ')');
 
             $output->writeln('');
 

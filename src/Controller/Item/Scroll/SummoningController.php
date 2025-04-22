@@ -38,7 +38,7 @@ class SummoningController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function summonSomethingUnfriendly(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        HouseMonsterService $houseMonsterService, IRandom $squirrel3, UserStatsService $userStatsRepository
+        HouseMonsterService $houseMonsterService, IRandom $rng, UserStatsService $userStatsRepository
     ): JsonResponse
     {
         /** @var User $user */
@@ -59,7 +59,7 @@ class SummoningController extends AbstractController
         }
 
         /** @var SummoningScrollMonster $monster */
-        $monster = $squirrel3->rngNextFromArray([
+        $monster = $rng->rngNextFromArray([
             SummoningScrollMonster::CreateDragon(),
             SummoningScrollMonster::CreateBalrog(),
             SummoningScrollMonster::CreateBasabasa(),
@@ -80,7 +80,7 @@ class SummoningController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function summonSomethingFromDeepSpace(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        HouseMonsterService $houseMonsterService, IRandom $squirrel3
+        HouseMonsterService $houseMonsterService, IRandom $rng
     ): JsonResponse
     {
         /** @var User $user */
@@ -101,7 +101,7 @@ class SummoningController extends AbstractController
         }
 
         /** @var SummoningScrollMonster $monster */
-        $monster = $squirrel3->rngNextFromArray([
+        $monster = $rng->rngNextFromArray([
             SummoningScrollMonster::CreateCrystallineEntity(),
             SummoningScrollMonster::CreateBivusRelease(),
             SummoningScrollMonster::CreateSpaceJelly(),

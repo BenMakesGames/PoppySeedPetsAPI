@@ -35,7 +35,7 @@ class CryptocurrencyWalletController extends AbstractController
     #[Route("/{inventory}/unlock", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
         UserStatsService $userStatsRepository, TransactionService $transactionService,
         InventoryService $inventoryService
     )
@@ -52,7 +52,7 @@ class CryptocurrencyWalletController extends AbstractController
 
         $userStatsRepository->incrementStat($user, 'Opened a ' . $inventory->getItem()->getName());
 
-        if($squirrel3->rngNextInt(1, 4) === 1)
+        if($rng->rngNextInt(1, 4) === 1)
         {
             $inventoryService->receiveItem('Magic Smoke', $user, $user, 'Escaped from a Cryptocurrency Wallet, ruining it.', $inventory->getLocation());
 
@@ -60,7 +60,7 @@ class CryptocurrencyWalletController extends AbstractController
         }
         else
         {
-            $moneys = $squirrel3->rngNextInt($squirrel3->rngNextInt(5, 15), $squirrel3->rngNextInt(20, $squirrel3->rngNextInt(25, 95)));
+            $moneys = $rng->rngNextInt($rng->rngNextInt(5, 15), $rng->rngNextInt(20, $rng->rngNextInt(25, 95)));
 
             $transactionService->getMoney($user, $moneys, 'Found inside a ' . $inventory->getItem()->getName() . '.');
 

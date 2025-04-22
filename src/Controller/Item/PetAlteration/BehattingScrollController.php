@@ -40,7 +40,7 @@ class BehattingScrollController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function readBehattingScroll(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        IRandom $squirrel3, UserStatsService $userStatsRepository
+        IRandom $rng, UserStatsService $userStatsRepository
     )
     {
         /** @var User $user */
@@ -65,7 +65,7 @@ class BehattingScrollController extends AbstractController
 
         $pet->addMerit($merit);
 
-        $adjective = $squirrel3->rngNextFromArray([
+        $adjective = $rng->rngNextFromArray([
             'awe-inspiring', 'incredible', 'breathtaking', 'amazing', 'fabulous'
         ]);
 

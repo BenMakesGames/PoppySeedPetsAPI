@@ -39,7 +39,7 @@ class RollDieController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function rollDie(
         ResponseService $responseService, EntityManagerInterface $em, HollowEarthService $hollowEarthService,
-        Request $request, InventoryService $inventoryService, IRandom $squirrel3
+        Request $request, InventoryService $inventoryService, IRandom $rng
     )
     {
         /** @var User $user */
@@ -67,7 +67,7 @@ class RollDieController extends AbstractController
             throw new PSPNotFoundException('You do not have a ' . $itemName . '!');
 
         $sides = HollowEarthService::DICE_ITEMS[$itemName];
-        $moves = $squirrel3->rngNextInt(1, $sides);
+        $moves = $rng->rngNextInt(1, $sides);
 
         $responseService->addFlashMessage('You rolled a ' . $moves . '!');
 
@@ -77,11 +77,11 @@ class RollDieController extends AbstractController
 
         $hollowEarthService->advancePlayer($player);
 
-        if(CalendarFunctions::isEaster($now) && $squirrel3->rngNextInt(1, 4) === 1)
+        if(CalendarFunctions::isEaster($now) && $rng->rngNextInt(1, 4) === 1)
         {
-            if($squirrel3->rngNextInt(1, 6) === 6)
+            if($rng->rngNextInt(1, 6) === 6)
             {
-                if($squirrel3->rngNextInt(1, 12) === 12)
+                if($rng->rngNextInt(1, 12) === 12)
                     $loot = 'Pink Plastic Egg';
                 else
                     $loot = 'Yellow Plastic Egg';
@@ -93,7 +93,7 @@ class RollDieController extends AbstractController
                 ->setLockedToOwner($loot !== 'Blue Plastic Egg')
             ;
 
-            if($squirrel3->rngNextInt(1, 10) === 1)
+            if($rng->rngNextInt(1, 10) === 1)
                 $responseService->addFlashMessage('(While moving through the Hollow Earth, you spot a ' . $loot . '! But you decide to leave it there... ... nah, I\'m just kidding, of course you scoop the thing up immediately!)');
             else
                 $responseService->addFlashMessage('(While moving through the Hollow Earth, you spot a ' . $loot . '!)');

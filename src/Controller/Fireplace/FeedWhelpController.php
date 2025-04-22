@@ -42,7 +42,7 @@ class FeedWhelpController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function feedWhelp(
         Request $request, ResponseService $responseService,
-        InventoryService $inventoryService, EntityManagerInterface $em, IRandom $squirrel3
+        InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng
     )
     {
         /** @var User $user */
@@ -84,7 +84,7 @@ class FeedWhelpController extends AbstractController
             {
                 $whelp->decreaseFood();
 
-                $r = $squirrel3->rngNextInt(1, 100);
+                $r = $rng->rngNextInt(1, 100);
 
                 if($r === 1)
                     $loot[] = 'Firestone';          // 1%
@@ -110,7 +110,7 @@ class FeedWhelpController extends AbstractController
         }
         else
         {
-            $adverb = $squirrel3->rngNextFromArray([
+            $adverb = $rng->rngNextFromArray([
                 'happily', 'happily', 'happily', 'excitedly', 'blithely', 'eagerly'
             ]);
 
@@ -119,7 +119,7 @@ class FeedWhelpController extends AbstractController
 
         if($whelp->getGrowth() >= 35 * 20)
         {
-            $greetingsAndThanks = $squirrel3->rngNextSubsetFromArray(Dragon::GREETINGS_AND_THANKS, 2);
+            $greetingsAndThanks = $rng->rngNextSubsetFromArray(Dragon::GREETINGS_AND_THANKS, 2);
 
             $whelp
                 ->setIsAdult(true)

@@ -38,7 +38,7 @@ class MerchantFishController extends AbstractController
     #[Route("/{inventory}/talk", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
         StoryService $storyService, Request $request, TraderService $traderService, InventoryService $inventoryService
     )
     {
@@ -63,10 +63,10 @@ class MerchantFishController extends AbstractController
 
             if(count($lockedTradeGroups) === 0)
             {
-                $loot = $squirrel3->rngNextFromArray([
-                    $squirrel3->rngNextFromArray([ 'Yellow Dye', 'Green Dye' ]),
+                $loot = $rng->rngNextFromArray([
+                    $rng->rngNextFromArray([ 'Yellow Dye', 'Green Dye' ]),
                     'Spice Rack',
-                    $squirrel3->rngNextFromArray([ 'Silver Bar', 'Gold Bar' ]),
+                    $rng->rngNextFromArray([ 'Silver Bar', 'Gold Bar' ]),
                     'Tentacle',
                     'White Cloth',
                     'Secret Seashell'
@@ -81,7 +81,7 @@ class MerchantFishController extends AbstractController
             {
                 $newTrades = new TradesUnlocked(
                     user: $user,
-                    trades: $squirrel3->rngNextFromArray($lockedTradeGroups)
+                    trades: $rng->rngNextFromArray($lockedTradeGroups)
                 );
 
                 $em->persist($newTrades);

@@ -42,7 +42,7 @@ class ClaimRewardsController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function claimRewards(
         InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
-        IRandom $squirrel3
+        IRandom $rng
     )
     {
         /** @var User $user */
@@ -83,7 +83,7 @@ class ClaimRewardsController extends AbstractController
 
         for($i = 0; $i < $numItems; $i++)
         {
-            $itemName = $possibleRewards[$squirrel3->rngNextInt(0, $squirrel3->rngNextInt(7, 7 + $rewardLevelBonus))];
+            $itemName = $possibleRewards[$rng->rngNextInt(0, $rng->rngNextInt(7, 7 + $rewardLevelBonus))];
 
             if($itemName === 'House Fairy')
             {
@@ -100,7 +100,7 @@ class ClaimRewardsController extends AbstractController
                 $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Oops! How\'d that get left in there!)', LocationEnum::HOME);
             else if($itemName === 'Naner Pancakes' || $itemName === 'Hot Dog')
                 $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Whew! didn\'t burn!)', LocationEnum::HOME);
-            else if($squirrel3->rngNextInt(1, 4) === 1)
+            else if($rng->rngNextInt(1, 4) === 1)
                 $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Did someone put that in there? It seems like someone put that in there.)', LocationEnum::HOME);
             else
                 $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Is that... normal?)', LocationEnum::HOME);
@@ -113,7 +113,7 @@ class ClaimRewardsController extends AbstractController
         else
             $fireplace->spendPoints($numItems * 8 * 60);
 
-        $message = ($fireplace->getHeat() >= 2 * 60 && $squirrel3->rngNextInt(1, 3) === 1)
+        $message = ($fireplace->getHeat() >= 2 * 60 && $rng->rngNextInt(1, 3) === 1)
             ? 'You reach inside the Fireplace while the fire is still burning, just like a totally normal person would do, and pull out ' . ArrayFunctions::list_nice($itemsReceived) . '!'
             : 'You reach inside the Fireplace, and pull out ' . ArrayFunctions::list_nice($itemsReceived) . '!';
 
@@ -127,7 +127,7 @@ class ClaimRewardsController extends AbstractController
 
             $inventoryService->receiveItem('Gnome\'s Favor', $user, $user, $user->getName() . ' was given this by a Fireplace Gnome!', LocationEnum::HOME);
 
-            $gnomishMessage = $squirrel3->rngNextFromArray([
+            $gnomishMessage = $rng->rngNextFromArray([
                 'A gnome stumbles out of the fireplace and thanks you for your gifts before falling into a gap in the hearth\'s brickwork.',
                 'A gnome pokes its head out of a gap in the hearth\'s brickwork, teeters for a bit, then gives you a thumbs up before vanishing in the darkness...',
                 'A gnome wobbles past you, into the fireplace, and trips into a gap in the hearth\'s brickwork, vanishing. You hear a fading "yeaaah, ' . GrammarFunctions::stretchWord($user->getName()) . '!" echo from the fireplace.'

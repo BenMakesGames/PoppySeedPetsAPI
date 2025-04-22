@@ -28,7 +28,7 @@ class LoveService
 {
     public function __construct(
         private readonly PregnancyService $pregnancyService,
-        private readonly IRandom $squirrel3
+        private readonly IRandom $rng
     )
     {
     }
@@ -38,40 +38,40 @@ class LoveService
         $giver = $givingPet->getPet();
         $receiver = $receivingPet->getPet();
 
-        if($giver->hasMerit(MeritEnum::INTROSPECTIVE) || $giver->hasMerit(MeritEnum::EIDETIC_MEMORY) || $this->squirrel3->rngNextInt(1, 3) === 1)
+        if($giver->hasMerit(MeritEnum::INTROSPECTIVE) || $giver->hasMerit(MeritEnum::EIDETIC_MEMORY) || $this->rng->rngNextInt(1, 3) === 1)
             $expression = $receiver->getLoveLanguage();
         else
             $expression = $giver->getLoveLanguage();
 
         $giver
-            ->increaseLove($this->squirrel3->rngNextInt(3, 5))
-            ->increaseSafety($this->squirrel3->rngNextInt(3, 5))
-            ->increaseEsteem($this->squirrel3->rngNextInt(3, 5))
+            ->increaseLove($this->rng->rngNextInt(3, 5))
+            ->increaseSafety($this->rng->rngNextInt(3, 5))
+            ->increaseEsteem($this->rng->rngNextInt(3, 5))
         ;
 
         $side = 0;
 
         if($expression === $giver->getLoveLanguage())
         {
-            $giver->increaseLove($this->squirrel3->rngNextInt(2, 4));
+            $giver->increaseLove($this->rng->rngNextInt(2, 4));
         }
 
         if($expression === $receiver->getLoveLanguage())
         {
-            $giver->increaseEsteem($this->squirrel3->rngNextInt(2, 4));
+            $giver->increaseEsteem($this->rng->rngNextInt(2, 4));
 
             $receiver
-                ->increaseLove($this->squirrel3->rngNextInt(2, 4))
-                ->increaseEsteem($this->squirrel3->rngNextInt(2, 4))
+                ->increaseLove($this->rng->rngNextInt(2, 4))
+                ->increaseEsteem($this->rng->rngNextInt(2, 4))
             ;
 
             $side = $expression === $giver->getLoveLanguage() ? 1 : 2;
         }
 
         $receiver
-            ->increaseLove($this->squirrel3->rngNextInt(3, 5))
-            ->increaseSafety($this->squirrel3->rngNextInt(3, 5))
-            ->increaseEsteem($this->squirrel3->rngNextInt(3, 5))
+            ->increaseLove($this->rng->rngNextInt(3, 5))
+            ->increaseSafety($this->rng->rngNextInt(3, 5))
+            ->increaseEsteem($this->rng->rngNextInt(3, 5))
         ;
 
         // the message array triplets refer to whether the expression is the giver's love language, both of the pets' love languages,
@@ -84,7 +84,7 @@ class LoveService
 
                 $message = $giver->getName() . ' hung out with ' . $receiver->getName() . '. ';
 
-                if($this->squirrel3->rngNextInt(1, 100) <= $sexyTimesChance)
+                if($this->rng->rngNextInt(1, 100) <= $sexyTimesChance)
                 {
                     $cordial = $giver->hasStatusEffect(StatusEffectEnum::CORDIAL) || $receiver->hasStatusEffect(StatusEffectEnum::CORDIAL);
 
@@ -103,12 +103,12 @@ class LoveService
                         [ $giver->getName() . ' really enjoyed giving ' . $receiver->getName() . ' the attention!', '', $receiver->getName() . ' really appreciated the attention!' ][$side]
                     ;
 
-                    if($this->squirrel3->rngNextInt(1, 20) === 1)
+                    if($this->rng->rngNextInt(1, 20) === 1)
                         $this->pregnancyService->getPregnant($giver, $receiver);
                 }
                 else
                 {
-                    if($this->squirrel3->rngNextBool())
+                    if($this->rng->rngNextBool())
                     {
                         $message .= [
                             $giver->getName() . ' surprised ' . $receiver->getName() . ' with a kiss!',
@@ -145,14 +145,14 @@ class LoveService
                     $services[] = $giver->getName() . ' cleaned & patched up ' . $receiver->getName() . '\'s ' . $receiver->getTool()->getItem()->getName() . '.';
 
                 $message = $giver->getName() . ' hung out with ' . $receiver->getName() . '. ' .
-                    $this->squirrel3->rngNextFromArray($services) . ' ' .
+                    $this->rng->rngNextFromArray($services) . ' ' .
                     [ $giver->getName() . ' was happy to feel useful!', $receiver->getName() . ' really appreciated it; ' . $giver->getName() . ' was delighted to help!', $receiver->getName() . ' really appreciated the help!' ][$side]
                 ;
                 break;
 
             case LoveLanguageEnum::WORDS:
                 $message = $giver->getName() . ' hung out with ' . $receiver->getName() . '. ' .
-                    $giver->getName() . ' ' . ($this->squirrel3->rngNextInt(0, $giver->getSkills()->getMusic()) >= 4 ? 'sang a love song for' : 'gave a love poem to') . ' ' . $receiver->getName() . '! ' .
+                    $giver->getName() . ' ' . ($this->rng->rngNextInt(0, $giver->getSkills()->getMusic()) >= 4 ? 'sang a love song for' : 'gave a love poem to') . ' ' . $receiver->getName() . '! ' .
                     [ $receiver->getName() . ' thought it was a little silly, but very cute.', $receiver->getName() . ' loved it! ' . $giver->getName() . ' was delighted!', $receiver->getName() . ' loved it!' ][$side]
                 ;
 
@@ -160,9 +160,9 @@ class LoveService
 
             case LoveLanguageEnum::TIME:
                 $message = $giver->getName() . ' hung out with ' . $receiver->getName() . '. ' .
-                    $this->squirrel3->rngNextFromArray([
+                    $this->rng->rngNextFromArray([
                         'They took a walk on the beach, and got into a staring contest with some seagulls.',
-                        'They went to the park, and watched some pets ' . $this->squirrel3->rngNextFromArray([ 'jousting', 'play Tri-D chess', 'play Kin-Ball' ]) . '.',
+                        'They went to the park, and watched some pets ' . $this->rng->rngNextFromArray([ 'jousting', 'play Tri-D chess', 'play Kin-Ball' ]) . '.',
                         'They went to the plaza and made wishes at the fountain.',
                         'They hung out at the bookstore cafe for a while.'
                     ]) . ' ' .
@@ -171,7 +171,7 @@ class LoveService
                 break;
 
             case LoveLanguageEnum::GIFTS:
-                $gift = $this->squirrel3->rngNextFromArray([
+                $gift = $this->rng->rngNextFromArray([
                     'a small gift',
                     'a gift',
                     'a small present',

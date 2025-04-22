@@ -35,7 +35,7 @@ class PullUpPlantController extends AbstractController
     #[Route("/{plant}/pullUp", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function pullUpPlant(
-        GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em, IRandom $squirrel3,
+        GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
         InventoryService $inventoryService
     ): JsonResponse
     {
@@ -70,7 +70,7 @@ class PullUpPlantController extends AbstractController
             $responseService->addFlashMessage($flashMessage);
 
             $inventoryService->receiveItem('Fluff', $user, $user, 'Dropped by a startled goat.', LocationEnum::HOME);
-            if($squirrel3->rngNextInt(1, 2) === 1)
+            if($rng->rngNextInt(1, 2) === 1)
                 $inventoryService->receiveItem('Fluff', $user, $user, 'Dropped by a startled goat.', LocationEnum::HOME);
         }
 

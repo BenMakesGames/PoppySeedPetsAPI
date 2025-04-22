@@ -35,7 +35,7 @@ class TripleChestController extends AbstractController
     #[Route("/tripleChest/{inventory}/openWithIronKey", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openWithIronKey(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
     )
     {
@@ -52,7 +52,7 @@ class TripleChestController extends AbstractController
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
-        $moneys = $squirrel3->rngNextInt(10, $squirrel3->rngNextInt(20, $squirrel3->rngNextInt(50, $squirrel3->rngNextInt(100, 200)))); // averages 35?
+        $moneys = $rng->rngNextInt(10, $rng->rngNextInt(20, $rng->rngNextInt(50, $rng->rngNextInt(100, 200)))); // averages 35?
 
         $transactionService->getMoney($user, $moneys, 'Found inside ' . $inventory->getItem()->getNameWithArticle() . '.');
 
@@ -71,9 +71,9 @@ class TripleChestController extends AbstractController
         $location = $inventory->getLocation();
 
         for($i = 0; $i < 2; $i++)
-            $newInventory[] = $inventoryService->receiveItem($squirrel3->rngNextFromArray($possibleItems), $user, $user, $comment, $location);
+            $newInventory[] = $inventoryService->receiveItem($rng->rngNextFromArray($possibleItems), $user, $user, $comment, $location);
 
-        $finalLoot = $squirrel3->rngNextFromArray([
+        $finalLoot = $rng->rngNextFromArray([
             'Major Scroll of Riches',
             'Scroll of Dice',
             'Noetala Egg',
@@ -89,7 +89,7 @@ class TripleChestController extends AbstractController
     #[Route("/tripleChest/{inventory}/openWithSilverKey", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openWithSilverKey(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
     )
     {
@@ -106,7 +106,7 @@ class TripleChestController extends AbstractController
 
         $comment = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.';
 
-        $moneys = $squirrel3->rngNextInt(15, $squirrel3->rngNextInt(45, $squirrel3->rngNextInt(100, $squirrel3->rngNextInt(200, 300)))); // averages 50?
+        $moneys = $rng->rngNextInt(15, $rng->rngNextInt(45, $rng->rngNextInt(100, $rng->rngNextInt(200, 300)))); // averages 50?
 
         $transactionService->getMoney($user, $moneys, 'Found inside ' . $inventory->getItem()->getNameWithArticle() . '.');
 
@@ -117,13 +117,13 @@ class TripleChestController extends AbstractController
             'Glowing Six-sided Die',
         ];
 
-        $items[] = $squirrel3->rngNextFromArray([
+        $items[] = $rng->rngNextFromArray([
             'Rusty Blunderbuss',
             'Rusty Rapier',
             'Pepperbox',
         ]);
 
-        $items[] = $squirrel3->rngNextFromArray([
+        $items[] = $rng->rngNextFromArray([
             'Scroll of Fruit',
             'Magic Hourglass',
             'Forgetting Scroll',
@@ -143,7 +143,7 @@ class TripleChestController extends AbstractController
     #[Route("/tripleChest/{inventory}/openWithGoldKey", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openWithGoldKey(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
     )
     {
@@ -166,7 +166,7 @@ class TripleChestController extends AbstractController
             'Liquid-hot Magma',
         ];
 
-        $items[] = $squirrel3->rngNextFromArray([
+        $items[] = $rng->rngNextFromArray([
             'Monster-summoning Scroll',
         ]);
 

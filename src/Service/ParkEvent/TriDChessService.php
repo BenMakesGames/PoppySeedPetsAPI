@@ -62,7 +62,7 @@ class TriDChessService implements ParkEventInterface
         private readonly PetRelationshipService $petRelationshipService,
         private readonly TransactionService $transactionService,
         private readonly InventoryService $inventoryService,
-        private readonly IRandom $squirrel3,
+        private readonly IRandom $rng,
         private readonly ParkService $parkService,
         private readonly UserStatsService $userStatsRepository
     )
@@ -153,7 +153,7 @@ class TriDChessService implements ParkEventInterface
         $this->results .= $p1->pet->getName() . ' vs ' . $p2->pet->getName() . "\n";
 
         $move = 2;
-        $playOrder = $this->squirrel3->rngNextInt(0, 1);
+        $playOrder = $this->rng->rngNextInt(0, 1);
 
         // the internet claims that the average number of moves is 40.
         // this simulation expects pets to have a 50/50 chance to make progress, in an evenly-matched game.
@@ -215,17 +215,17 @@ class TriDChessService implements ParkEventInterface
     {
         $bonus = 0;
 
-        if($this->squirrel3->rngNextInt(1, 400) < $participant->skill && $move > 5)
+        if($this->rng->rngNextInt(1, 400) < $participant->skill && $move > 5)
         {
             $this->results .= '* ' . $participant->pet->getName() . ' made a brilliant play!' . "\n";
 
             return 10;
         }
-        else if($participant->pet->hasMerit(MeritEnum::SPIRIT_COMPANION) && $participant->pet->getSpiritCompanion()->getStar() === SpiritCompanionStarEnum::CASSIOPEIA && $this->squirrel3->rngNextInt(1, 100) <= 3 && $move > 3)
+        else if($participant->pet->hasMerit(MeritEnum::SPIRIT_COMPANION) && $participant->pet->getSpiritCompanion()->getStar() === SpiritCompanionStarEnum::CASSIOPEIA && $this->rng->rngNextInt(1, 100) <= 3 && $move > 3)
         {
-            $this->results .= '* ' . $participant->pet->getName() . '\'s spirit companion nudged ' . $this->squirrel3->rngNextFromArray(self::CHESS_PIECES) . ' forward.';
+            $this->results .= '* ' . $participant->pet->getName() . '\'s spirit companion nudged ' . $this->rng->rngNextFromArray(self::CHESS_PIECES) . ' forward.';
 
-            switch($this->squirrel3->rngNextInt(1, 3))
+            switch($this->rng->rngNextInt(1, 3))
             {
                 case 1: $this->results .= ' ' . $participant->pet->getName() . ' is confused, but it\'s too late now. Hopefully it works out...' . "\n"; break;
                 case 2: $this->results .= ' It\'s a surprisingly-good play!' . "\n"; $bonus = 2; break;
@@ -235,9 +235,9 @@ class TriDChessService implements ParkEventInterface
 
         $lowerBounds = min((int)ceil($participant->skill / 2), $participant->skill + $healthAdvantage - 1);
 
-        $damage = $this->squirrel3->rngNextInt($lowerBounds, $participant->skill + $healthAdvantage);
+        $damage = $this->rng->rngNextInt($lowerBounds, $participant->skill + $healthAdvantage);
 
-        return max($this->squirrel3->rngNextInt(1, 3), $damage) + $bonus;
+        return max($this->rng->rngNextInt(1, 3), $damage) + $bonus;
     }
 
 
@@ -245,7 +245,7 @@ class TriDChessService implements ParkEventInterface
     {
         $affectionAverage = ArrayFunctions::average($this->participants, fn(TriDChessParticipant $p) => $p->pet->getAffectionLevel());
 
-        $firstPlaceMoneys = 2 * count($this->participants) - $this->squirrel3->rngNextInt(0, 8); // base prize
+        $firstPlaceMoneys = 2 * count($this->participants) - $this->rng->rngNextInt(0, 8); // base prize
         $firstPlaceMoneys += (int)ceil($affectionAverage); // affection bonus
 
         $secondPlaceMoneys = (int)ceil($firstPlaceMoneys * 3 / 4);

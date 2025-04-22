@@ -32,7 +32,7 @@ class PSPBirthdayPresentController extends AbstractController
     #[Route("/{inventory}/open", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function open(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         EntityManagerInterface $em
     )
     {
@@ -45,7 +45,7 @@ class PSPBirthdayPresentController extends AbstractController
 
         $loot = [
             'Slice of Poppy Seed* Pie',
-            $squirrel3->rngNextFromArray([
+            $rng->rngNextFromArray([
                 'Ruby Feather', 'Secret Seashell', 'Candle', 'Gold Ring', 'Mysterious Seed',
                 'Behatting Scroll', 'Magic Bean Milk', 'Magic Brush'
             ])
@@ -62,7 +62,7 @@ class PSPBirthdayPresentController extends AbstractController
         ];
 
         for($x = 0; $x < 2; $x++)
-            $loot[] = $squirrel3->rngNextFromArray($possibleLoot);
+            $loot[] = $rng->rngNextFromArray($possibleLoot);
 
         foreach($loot as $itemName)
         {

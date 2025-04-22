@@ -35,7 +35,7 @@ class StrangeFieldController extends AbstractController
     #[Route("/{inventory}/collapse", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function open(
-        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $squirrel3,
+        Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         EntityManagerInterface $em, UserStatsService $userStatsRepository
     )
     {
@@ -56,7 +56,7 @@ class StrangeFieldController extends AbstractController
             'Megalium', 'Megalium',
         ];
 
-        $items = $squirrel3->rngNextSubsetFromArray($possibleItems, 2);
+        $items = $rng->rngNextSubsetFromArray($possibleItems, 2);
 
         foreach($items as $item)
             $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' collapsed a Strange Field, releasing this.', $location, $lockedToOwner);

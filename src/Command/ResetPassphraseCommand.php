@@ -30,15 +30,13 @@ class ResetPassphraseCommand extends Command
 {
     private EntityManagerInterface $em;
     private UserPasswordHasherInterface $passwordEncoder;
-    private IRandom $squirrel3;
 
     public function __construct(
-        EntityManagerInterface $em, UserPasswordHasherInterface $passwordEncoder, IRandom $squirrel3
+        EntityManagerInterface $em, UserPasswordHasherInterface $passwordEncoder
     )
     {
         $this->em = $em;
         $this->passwordEncoder = $passwordEncoder;
-        $this->squirrel3 = $squirrel3;
 
         parent::__construct();
     }
