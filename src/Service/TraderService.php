@@ -774,18 +774,14 @@ class TraderService
             );
         }
 
-        if(CalendarFunctions::isEaster($this->clock->now))
+        if(self::isEasterTradesAvailable($this->clock->now))
         {
             $offers[] = TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Blue Plastic Egg'), 5)
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Blue Plastic Egg'), 10),
                 ],
                 [
-                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Chili Calamari'), 1),
-                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Deep-fried Toad Legs'), 1),
-                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Fisherman\'s Pie'), 1),
-                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Tomato Soup'), 1),
-                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Coffee Jelly'), 1),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Yellow Plastic Egg'), 1),
                 ],
                 'We fish collect the things, too, you know!',
                 $user,
@@ -794,22 +790,10 @@ class TraderService
 
             $offers[] = TraderOffer::createTradeOffer(
                 [
-                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Yellow Plastic Egg'), 2),
+                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Yellow Plastic Egg'), 5),
                 ],
-                [
-                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Spice Rack'), 3),
-                ],
-                'We fish collect the things, too, you know!',
-                $user,
-                $quantities
-            );
-
-            $offers[] = TraderOffer::createTradeOffer(
                 [
                     TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Pink Plastic Egg'), 1),
-                ],
-                [
-                    TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Hat Box'), 1),
                 ],
                 'We fish collect the things, too, you know!',
                 $user,
@@ -824,7 +808,7 @@ class TraderService
                     TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Turkey King'), 1)
                 ],
                 [ TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Bleached Turkey Head'), 1) ],
-                'Oh, I don\'t need any moneys. The little crown is good enough for me.',
+                'Oh, I don\'t need any Moneys - the little crown is good enough for me!',
                 $user,
                 $quantities
             );
@@ -876,23 +860,6 @@ class TraderService
 
         if(CalendarFunctions::isCreepyMaskDay($this->clock->now))
         {
-            // TODO: can remove this block after 2024 :P
-            if($this->clock->now->format('Y') == '2024')
-            {
-                $offers[] = TraderOffer::createTradeOffer(
-                    [
-                        TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Magic Pinecone'), 1),
-                    ],
-                    [
-                        TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($this->em, 'Wand of Lightning'), 2),
-                    ],
-                    "",
-                    $user,
-                    $quantities,
-                    true
-                );
-            }
-
             if($this->clock->now->format('n') >= 10 || $this->clock->now->format('n') <= 3) // Oct - Mar
                 $masks = [ 'Ashen Yew', 'Crystalline', 'Gold Devil' ];
             else
@@ -1624,5 +1591,17 @@ class TraderService
         $n = ($n * 47059) ^ ($n << 7);
 
         return 20 + (abs($n) % 7) * 5;
+    }
+
+    private static function isEasterTradesAvailable(\DateTimeInterface $dt): bool
+    {
+        if(CalendarFunctions::isEaster($dt)) return true;
+
+        // I don't love this way of doing it, but it works for easter (whose celebrations never span two different years)
+        // "z" is "the day of the year", so we can test the date that way, ignoring time
+        $easter = (int)\DateTimeImmutable::createFromFormat('U', (string)easter_date((int)$dt->format('Y')))->format('z');
+        $today = (int)$dt->format('z');
+
+        return $today > $easter && $today - $easter <= 7;
     }
 }
