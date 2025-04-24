@@ -88,6 +88,9 @@ class GamingGroupService
         return GroupNameGenerator::generateName($this->rng, self::GroupNamePatterns, self::Dictionary, 60);
     }
 
+    /**
+     * @param string[] $skills
+     */
     private function rollSkill(Pet $pet, array $skills): int
     {
         $total = 0;

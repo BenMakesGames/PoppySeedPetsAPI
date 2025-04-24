@@ -34,6 +34,7 @@ use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -45,7 +46,7 @@ class HornOfPlentyController extends AbstractController
     public function use(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService, IRandom $rng, HotPotatoService $hotPotatoService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

@@ -29,21 +29,22 @@ class UserActivityLog
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[Groups(["userActivityLogs"])]
     #[ORM\Column(type: 'text')]
-    private $entry;
+    private string $entry;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $createdOn;
+    private \DateTimeImmutable $createdOn;
 
     #[Groups(["userActivityLogs"])]
     #[ORM\ManyToMany(targetEntity: UserActivityLogTag::class)]
-    private $tags;
+    private Collection $tags;
 
-    public function __construct()
+    public function __construct(User $user)
     {
+        $this->user = $user;
         $this->tags = new ArrayCollection();
         $this->createdOn = new \DateTimeImmutable();
     }
@@ -53,12 +54,12 @@ class UserActivityLog
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(User $user): self
     {
         $this->user = $user;
 
@@ -77,16 +78,9 @@ class UserActivityLog
         return $this;
     }
 
-    public function getCreatedOn(): ?\DateTimeImmutable
+    public function getCreatedOn(): \DateTimeImmutable
     {
         return $this->createdOn;
-    }
-
-    public function setCreatedOn(\DateTimeImmutable $createdOn): self
-    {
-        $this->createdOn = $createdOn;
-
-        return $this;
     }
 
     /**

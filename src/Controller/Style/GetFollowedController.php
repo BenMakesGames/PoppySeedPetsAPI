@@ -19,6 +19,7 @@ use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\UserStyleFilter;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -30,7 +31,7 @@ class GetFollowedController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getThemesOfFollowedPlayers(
         Request $request, UserStyleFilter $userStyleFilter, ResponseService $responseService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

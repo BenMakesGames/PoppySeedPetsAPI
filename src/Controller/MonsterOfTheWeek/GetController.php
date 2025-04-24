@@ -20,6 +20,7 @@ use App\Exceptions\PSPNotFoundException;
 use App\Functions\SimpleDb;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -28,7 +29,7 @@ class GetController extends AbstractController
 {
     #[Route("/current", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getCurrent(ResponseService $responseService)
+    public function getCurrent(ResponseService $responseService): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

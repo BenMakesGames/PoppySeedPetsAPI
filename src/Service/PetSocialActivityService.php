@@ -137,7 +137,7 @@ class PetSocialActivityService
         return false;
     }
 
-    public function recomputeFriendRatings(Pet $pet)
+    public function recomputeFriendRatings(Pet $pet): void
     {
         $friends = $this->petRelationshipRepository->getFriends($pet);
 

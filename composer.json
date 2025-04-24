@@ -51,13 +51,13 @@
         "twig/twig": "^2.12|^3.0"
     },
     "require-dev": {
+        "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "*",
         "symfony/css-selector": "*",
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "*",
-        "symfony/stopwatch": "*",
-        "vimeo/psalm": "^6.5"
+        "symfony/stopwatch": "*"
     },
     "config": {
         "preferred-install": {

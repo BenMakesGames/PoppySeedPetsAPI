@@ -39,6 +39,7 @@ use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -50,7 +51,7 @@ class BoxController extends AbstractController
     public function openTwilightBox(
         Inventory $box, ResponseService $responseService,
         EntityManagerInterface $em, InventoryService $inventoryService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -92,7 +93,7 @@ class BoxController extends AbstractController
         Inventory $box, ResponseService $responseService, InventoryService $inventoryService,
         PetExperienceService $petExperienceService, UserStatsService $userStatsRepository, EntityManagerInterface $em,
         IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -160,7 +161,7 @@ class BoxController extends AbstractController
     public function openSmallOreBox(
         Inventory $box, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -197,7 +198,7 @@ class BoxController extends AbstractController
     public function openBoxBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -270,7 +271,7 @@ class BoxController extends AbstractController
     public function openCerealBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, Clock $clock
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -301,7 +302,7 @@ class BoxController extends AbstractController
     public function openBakers(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, Clock $clock
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -351,7 +352,7 @@ class BoxController extends AbstractController
     public function openFruitsNVeggies(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -397,7 +398,7 @@ class BoxController extends AbstractController
     public function openNatureBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, Clock $clock
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -441,7 +442,7 @@ class BoxController extends AbstractController
     public function openMonsterBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -483,7 +484,7 @@ class BoxController extends AbstractController
     public function openHandicrafts(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -521,7 +522,7 @@ class BoxController extends AbstractController
     public function openGamingBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -566,7 +567,7 @@ class BoxController extends AbstractController
     public function openBagOfBeans(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -596,7 +597,7 @@ class BoxController extends AbstractController
     public function disassemblePepperbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -630,7 +631,7 @@ class BoxController extends AbstractController
     public function listenToJukebox(
         Inventory $inventory, ResponseService $responseService, PetExperienceService $petExperienceService,
         EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -679,7 +680,7 @@ class BoxController extends AbstractController
     public function raidSandbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -750,7 +751,7 @@ class BoxController extends AbstractController
     public function openPaperBag(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, Clock $clock
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -832,7 +833,7 @@ class BoxController extends AbstractController
     public function open4thOfJulyBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -862,7 +863,7 @@ class BoxController extends AbstractController
     public function openBastilleDayBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -897,7 +898,7 @@ class BoxController extends AbstractController
     public function openCincoDeMayoBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -927,7 +928,7 @@ class BoxController extends AbstractController
     public function openNewYearBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -964,7 +965,7 @@ class BoxController extends AbstractController
     public function openLunarNewYearBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -993,7 +994,7 @@ class BoxController extends AbstractController
     public function openGoldChest(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -1038,7 +1039,7 @@ class BoxController extends AbstractController
     public function openRubyChest(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -1076,7 +1077,7 @@ class BoxController extends AbstractController
     public function openTowerBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -1109,7 +1110,7 @@ class BoxController extends AbstractController
     public function openFishBag(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -1155,7 +1156,7 @@ class BoxController extends AbstractController
         Inventory $box, ResponseService $responseService, InventoryService $inventoryService,
         UserStatsService $userStatsRepository, EntityManagerInterface $em,
         IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

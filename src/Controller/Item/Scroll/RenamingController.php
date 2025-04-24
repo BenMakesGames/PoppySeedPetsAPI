@@ -31,6 +31,7 @@ use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -43,7 +44,7 @@ class RenamingController extends AbstractController
     public function readRenamingScroll(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         UserStatsService $userStatsRepository
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -72,7 +73,7 @@ class RenamingController extends AbstractController
     public function renameSpiritCompanion(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         UserStatsService $userStatsRepository
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -104,7 +105,7 @@ class RenamingController extends AbstractController
     public function renameYourself(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         TransactionService $transactionService, UserStatsService $userStatsRepository
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

@@ -23,6 +23,7 @@ use App\Functions\DragonHelpers;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +36,7 @@ class DragonTongueController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getSpeech(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -58,7 +59,7 @@ class DragonTongueController extends AbstractController
     public function setSpeech(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

@@ -22,6 +22,7 @@ use App\Functions\UserUnlockedFeatureHelpers;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -33,7 +34,7 @@ class StarKindredController extends AbstractController
     public function read(
         Inventory $inventory, ResponseService $responseService,
         EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

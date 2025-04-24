@@ -19,6 +19,7 @@ use App\Exceptions\PSPNotFoundException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -30,7 +31,7 @@ class ChangeIconController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function setIcon(
         Request $request, ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         $user = $this->getUser();
         $itemId = $request->request->getInt('item');

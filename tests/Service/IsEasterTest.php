@@ -23,7 +23,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class IsEasterTest extends KernelTestCase
 {
-    public function testIsEaster()
+    public function testIsEaster(): void
     {
         self::assertFalse(CalendarFunctions::isEaster(new \DateTime('2024-03-28')), '2024-03-28 MUST NOT BE Easter');
         self::assertTrue(CalendarFunctions::isEaster(new \DateTime('2024-03-29')), '2024-03-29 MUST BE Easter');

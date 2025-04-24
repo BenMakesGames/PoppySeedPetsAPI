@@ -48,7 +48,7 @@ class MagicBeanstalkService
     {
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills)
+    public function adventure(ComputedPetSkills $petWithSkills): void
     {
         $pet = $petWithSkills->getPet();
         $maxSkill = 10 + (int)floor(($petWithSkills->getStrength()->getTotal() + $petWithSkills->getStamina()->getTotal()) * 1.5) + (int)ceil($petWithSkills->getNature()->getTotal() / 2) + $petWithSkills->getClimbingBonus()->getTotal() - $pet->getAlcohol() * 2;

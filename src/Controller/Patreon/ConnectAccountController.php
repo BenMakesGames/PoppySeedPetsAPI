@@ -31,7 +31,7 @@ class ConnectAccountController extends AbstractController
     #[Route("/connectAccount", methods: ["GET"])]
     public function connectPatreonAccount(
         Request $request, EntityManagerInterface $em
-    )
+    ): RedirectResponse
     {
         $code = $request->query->get('code');
         $userId = $request->query->get('state');

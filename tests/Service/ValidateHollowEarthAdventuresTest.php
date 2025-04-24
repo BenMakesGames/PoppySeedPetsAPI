@@ -30,7 +30,7 @@ class ValidateHollowEarthAdventuresTest extends KernelTestCase
     /**
      * @group requiresDatabase
      */
-    public function testHollowEarthAdventuresAreValid()
+    public function testHollowEarthAdventuresAreValid(): void
     {
         self::bootKernel();
 
@@ -50,7 +50,7 @@ class ValidateHollowEarthAdventuresTest extends KernelTestCase
         }
     }
 
-    private static function validateItemNamesAreLegit(EntityManagerInterface $em, string $adventureName, array $event)
+    private static function validateItemNamesAreLegit(EntityManagerInterface $em, string $adventureName, array $event): void
     {
         foreach($event as $key => $value)
         {
@@ -61,7 +61,7 @@ class ValidateHollowEarthAdventuresTest extends KernelTestCase
         }
     }
 
-    private static function validateItemNames(EntityManagerInterface $em, string $adventureName, array|string $itemNames)
+    private static function validateItemNames(EntityManagerInterface $em, string $adventureName, array|string $itemNames): void
     {
         if(!is_array($itemNames))
             $itemNames = [ $itemNames ];
@@ -74,7 +74,7 @@ class ValidateHollowEarthAdventuresTest extends KernelTestCase
         }
     }
 
-    private static function validatePetChallengesAreLegit(EntityManagerInterface $em, string $adventureName, array $event)
+    private static function validatePetChallengesAreLegit(EntityManagerInterface $em, string $adventureName, array $event): void
     {
         foreach($event as $key => $value)
         {
@@ -85,7 +85,7 @@ class ValidateHollowEarthAdventuresTest extends KernelTestCase
         }
     }
 
-    private static function validatePetChallenge(EntityManagerInterface $em, string $adventureName, array $petChallenge)
+    private static function validatePetChallenge(EntityManagerInterface $em, string $adventureName, array $petChallenge): void
     {
         assertTrue(array_key_exists('ifSuccess', $petChallenge), "Adventure \"{$adventureName}\" has a pet challenge without an \"ifSuccess\" key.");
     }

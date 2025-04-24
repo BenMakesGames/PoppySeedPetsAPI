@@ -22,6 +22,7 @@ use App\Exceptions\PSPPetNotFoundException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -33,7 +34,7 @@ class LunchboxPaintController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function paintLunchbox(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
-    )
+    ): JsonResponse
     {
         $user = $this->getUser();
 

@@ -25,6 +25,7 @@ use App\Service\PassphraseResetService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -40,7 +41,7 @@ class SecurityController extends AbstractController
     public function updateEmail(
         Request $request, ResponseService $responseService, UserPasswordHasherInterface $passwordEncoder,
         EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -85,7 +86,7 @@ class SecurityController extends AbstractController
     public function updatePassphrase(
         Request $request, ResponseService $responseService, UserPasswordHasherInterface $passwordEncoder,
         EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -120,7 +121,7 @@ class SecurityController extends AbstractController
     public function requestPassphraseReset(
         Request $request, EntityManagerInterface $em, ResponseService $responseService,
         PassphraseResetService $passphraseResetService
-    )
+    ): JsonResponse
     {
         $email = trim($request->request->getString('email'));
 
@@ -145,7 +146,7 @@ class SecurityController extends AbstractController
     public function resetPassphrase(
         string $code, Request $request, UserPasswordHasherInterface $userPasswordEncoder, EntityManagerInterface $em,
         ResponseService $responseService
-    )
+    ): JsonResponse
     {
         $passphrase = mb_trim($request->request->getString('passphrase'));
 

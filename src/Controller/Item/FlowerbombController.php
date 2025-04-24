@@ -23,6 +23,7 @@ use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -34,7 +35,7 @@ class FlowerbombController extends AbstractController
     public function toss(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
         InventoryService $inventoryService, HotPotatoService $hotPotatoService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

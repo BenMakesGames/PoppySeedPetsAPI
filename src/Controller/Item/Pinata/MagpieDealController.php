@@ -23,6 +23,7 @@ use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -34,7 +35,7 @@ class MagpieDealController extends AbstractController
     public function getQuint(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -59,7 +60,7 @@ class MagpieDealController extends AbstractController
     public function getFeathersAndEggs(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -93,7 +94,7 @@ class MagpieDealController extends AbstractController
     public function getSticks(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -118,7 +119,7 @@ class MagpieDealController extends AbstractController
     public function getShinyMetals(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

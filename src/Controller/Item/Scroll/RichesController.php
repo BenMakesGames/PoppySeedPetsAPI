@@ -24,6 +24,7 @@ use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -36,7 +37,7 @@ class RichesController extends AbstractController
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService,
         IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -71,7 +72,7 @@ class RichesController extends AbstractController
     public function invokeMajorRichesScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

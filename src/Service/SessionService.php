@@ -48,7 +48,7 @@ class SessionService
         return $this->em->getRepository(UserSession::class)->count([ 'sessionId' => $sessionId ]) > 0;
     }
 
-    public function setCurrentSession(string $userSessionId)
+    public function setCurrentSession(string $userSessionId): void
     {
         $this->currentSessionId = $userSessionId;
     }
@@ -93,7 +93,7 @@ class SessionService
         return true;
     }
 
-    public static function clearCookie()
+    public static function clearCookie(): void
     {
         if($_ENV['APP_ENV'] === 'dev')
             setcookie('sessionId', '', time() - 60 * 60, '/', 'localhost', false, true);

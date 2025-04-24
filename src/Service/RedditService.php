@@ -39,7 +39,7 @@ class RedditService
         return 'PHP:Poppy Seed Pets news poster:1 (by /u/BenMakesGames)';
     }
 
-    private function getAccessToken()
+    private function getAccessToken(): string
     {
         $client = new Client([
             'base_uri' => 'https://www.reddit.com/'

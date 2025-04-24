@@ -23,6 +23,7 @@ use App\Service\MuseumService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -35,7 +36,7 @@ class GetWingedKeyController extends AbstractController
     public function getWingedKey(
         ResponseService $responseService, MarketService $marketService, MuseumService $museumService,
         InventoryService $inventoryService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

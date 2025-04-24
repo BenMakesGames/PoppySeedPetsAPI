@@ -20,6 +20,7 @@ use App\Entity\User;
 use App\Service\CookingService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -30,7 +31,7 @@ class BucheDeNoelRecipeController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function upload(
         Inventory $inventory, ResponseService $responseService, CookingService $cookingService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -46,7 +47,7 @@ class BucheDeNoelRecipeController extends AbstractController
 
     #[Route("/{inventory}/read", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function read(Inventory $inventory, ResponseService $responseService)
+    public function read(Inventory $inventory, ResponseService $responseService): JsonResponse
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'note/bucheDeNoel/#/read');
 

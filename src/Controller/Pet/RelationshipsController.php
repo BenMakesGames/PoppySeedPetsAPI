@@ -22,6 +22,7 @@ use App\Service\Filter\PetRelationshipFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -34,7 +35,7 @@ class RelationshipsController extends AbstractController
     public function getPetRelationships(
         Pet $pet, ResponseService $responseService, Request $request,
         PetRelationshipFilterService $petRelationshipFilterService
-    )
+    ): JsonResponse
     {
         $petRelationshipFilterService->addRequiredFilter('pet', $pet);
 
@@ -51,7 +52,7 @@ class RelationshipsController extends AbstractController
     public function getPetFriends(
         Pet $pet, ResponseService $responseService, NormalizerInterface $normalizer,
         PetRelationshipRepository $petRelationshipRepository
-    )
+    ): JsonResponse
     {
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
             throw new PSPPetNotFoundException();
@@ -70,7 +71,7 @@ class RelationshipsController extends AbstractController
     #[Route("/{pet}/familyTree", methods: ["GET"])]
     public function getFamilyTree(
         Pet $pet, ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         $siblings = self::findSiblings($pet, $em);
         $parents = self::findParents($pet, $em);

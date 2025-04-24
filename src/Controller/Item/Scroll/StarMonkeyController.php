@@ -26,6 +26,7 @@ use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -37,7 +38,7 @@ class StarMonkeyController extends AbstractController
     public function getItems(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -72,7 +73,7 @@ class StarMonkeyController extends AbstractController
     public function getSummoningScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

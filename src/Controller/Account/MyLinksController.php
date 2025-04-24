@@ -24,6 +24,7 @@ use App\Functions\SimpleDb;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -32,7 +33,7 @@ class MyLinksController extends AbstractController
 {
     #[Route("/my/interwebs", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getMyInterwebs(ResponseService $responseService)
+    public function getMyInterwebs(ResponseService $responseService): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -50,7 +51,9 @@ class MyLinksController extends AbstractController
 
     #[Route("/my/interwebs/{link}", methods: ["DELETE"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function deleteLink(UserLink $link, ResponseService $responseService, EntityManagerInterface $em)
+    public function deleteLink(
+        UserLink $link, ResponseService $responseService, EntityManagerInterface $em
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -68,7 +71,7 @@ class MyLinksController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function createLink(
         Request $request, ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

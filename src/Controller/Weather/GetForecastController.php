@@ -21,6 +21,7 @@ use App\Service\PlazaService;
 use App\Service\ResponseService;
 use App\Service\WeatherService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
@@ -33,7 +34,7 @@ class GetForecastController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getForecast(
         ResponseService $responseService, WeatherService $weatherService, PlazaService $plazaService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

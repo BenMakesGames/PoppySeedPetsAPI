@@ -629,7 +629,7 @@ class TraderService
         );
     }
 
-    private function computeSpecialOfferItemsAndPrices(int $offers)
+    private function computeSpecialOfferItemsAndPrices(int $offers): array
     {
         $results = [];
 
@@ -973,6 +973,9 @@ class TraderService
         ;
     }
 
+    /**
+     * @return TraderOffer[]
+     */
     private function getMetalOffers(User $user, array $quantities): array
     {
         return [
@@ -1078,6 +1081,9 @@ class TraderService
         ];
     }
 
+    /**
+     * @return TraderOffer[]
+     */
     private function getUmbralThingsOffers(User $user, array $quantities): array
     {
         return [
@@ -1150,6 +1156,9 @@ class TraderService
         return false;
     }
 
+    /**
+     * @return TraderOffer[]
+     */
     private function getFoodsOffers(User $user, array $quantities): array
     {
         $offers = [];
@@ -1223,6 +1232,9 @@ class TraderService
         return $offers;
     }
 
+    /**
+     * @return TraderOffer[]
+     */
     private function getCuriositiesOffers(User $user, array $quantities): array
     {
         return [
@@ -1319,7 +1331,10 @@ class TraderService
         ];
     }
 
-    private function getPlushyOffers(User $user, array $quantities)
+    /**
+     * @return TraderOffer[]
+     */
+    private function getPlushyOffers(User $user, array $quantities): array
     {
         return [
             TraderOffer::createTradeOffer(
@@ -1456,7 +1471,13 @@ class TraderService
     /**
      * CAREFUL: Also used by some items, to perform transmutations, and the florist!
      */
-    public function makeExchange(User $user, TraderOffer $exchange, int $location, int $quantity, string $itemDescription = 'Received by trading with the Trader.')
+    public function makeExchange(
+        User $user,
+        TraderOffer $exchange,
+        int $location,
+        int $quantity,
+        string $itemDescription = 'Received by trading with the Trader.'
+    ): void
     {
         foreach($exchange->cost as $cost)
         {
@@ -1525,7 +1546,7 @@ class TraderService
         }
     }
 
-    public static function recolorTrader(IRandom $rng, Trader $trader)
+    public static function recolorTrader(IRandom $rng, Trader $trader): void
     {
         $h1 = $rng->rngNextInt(0, 255);
         $h2 = $rng->rngNextInt(0, 255);

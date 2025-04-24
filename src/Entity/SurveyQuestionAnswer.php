@@ -28,18 +28,18 @@ class SurveyQuestionAnswer
     #[Groups(["surveyQuestionAnswer"])]
     #[ORM\ManyToOne(targetEntity: SurveyQuestion::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $question;
+    private SurveyQuestion $question;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[Groups(["surveyQuestionAnswer"])]
     #[ORM\Column(type: 'text')]
-    private $answer;
+    private string $answer;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $createdOn;
+    private \DateTimeImmutable $createdOn;
 
     public function __construct()
     {

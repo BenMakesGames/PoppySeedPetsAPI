@@ -19,6 +19,7 @@ use App\Functions\ItemRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -34,7 +35,7 @@ class FeatheredHatController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function tweakHat(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'featheredHat/#/tweak');
 

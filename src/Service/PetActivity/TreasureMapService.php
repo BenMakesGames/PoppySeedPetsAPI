@@ -525,7 +525,10 @@ class TreasureMapService
         return $activityLog;
     }
 
-    public static function getFluffmongerFlavorFoods($flavor)
+    /**
+     * @return string[]
+     */
+    public static function getFluffmongerFlavorFoods($flavor): array
     {
         return match ($flavor)
         {
@@ -545,7 +548,7 @@ class TreasureMapService
         };
     }
 
-    public function doToastSkeweredMarshmallow(Pet $pet)
+    public function doToastSkeweredMarshmallow(Pet $pet): void
     {
         $changes = new PetChanges($pet);
 

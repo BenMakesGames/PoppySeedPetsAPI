@@ -28,7 +28,7 @@ use App\Service\PetActivity\PregnancyService;
 use App\Service\PetActivity\Relationship\FriendlyRivalsService;
 use App\Service\PetActivity\Relationship\LoveService;
 use App\Service\PetActivity\Relationship\RelationshipChangeService;
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetRelationshipService
@@ -97,7 +97,7 @@ class PetRelationshipService
     }
 
     /**
-     * @param ArrayCollection|Pet[] $pets
+     * @param Collection|Pet[] $pets
      */
     public function groupGathering(
         $pets,
@@ -124,7 +124,9 @@ class PetRelationshipService
         }
     }
 
-    public function seeAtGroupGathering(Pet $p1, Pet $p2, string $hangOutDescription, string $enemyDescription, string $meetSummary, string $meetActivityLogTemplate, array $groupTags, int $meetChance = 5)
+    public function seeAtGroupGathering(
+        Pet $p1, Pet $p2, string $hangOutDescription, string $enemyDescription, string $meetSummary, string $meetActivityLogTemplate, array $groupTags, int $meetChance = 5
+    ): void
     {
         if($p1->getId() === $p2->getId()) return;
 
@@ -342,7 +344,13 @@ class PetRelationshipService
         return $values[$targetRelationship] - $values[$initialRelationship];
     }
 
-    public function hangOutPublicly(PetRelationship $p1, PetRelationship $p2, string $hangOutDescription, string $enemyDescription, array $groupTags)
+    public function hangOutPublicly(
+        PetRelationship $p1,
+        PetRelationship $p2,
+        string $hangOutDescription,
+        string $enemyDescription,
+        array $groupTags
+    ): void
     {
         $p1->decrementTimeUntilChange(0.5);
         $p2->decrementTimeUntilChange(0.5);

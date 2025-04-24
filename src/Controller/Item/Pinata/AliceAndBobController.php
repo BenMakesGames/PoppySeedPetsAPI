@@ -24,6 +24,7 @@ use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -35,7 +36,7 @@ class AliceAndBobController extends AbstractController
     public function alicesSecretTeaTime(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
         UserStatsService $userStatsRepository, ResponseService $responseService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -86,7 +87,7 @@ class AliceAndBobController extends AbstractController
     public function alicesSecretHourglass(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
         UserStatsService $userStatsRepository, ResponseService $responseService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -103,7 +104,7 @@ class AliceAndBobController extends AbstractController
     public function alicesSecretCards(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
         UserStatsService $userStatsRepository, ResponseService $responseService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -128,7 +129,7 @@ class AliceAndBobController extends AbstractController
     public function bobsSecretFish(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
         UserStatsService $userStatsRepository, ResponseService $responseService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -171,7 +172,7 @@ class AliceAndBobController extends AbstractController
     public function bobsTool(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
         UserStatsService $userStatsRepository, ResponseService $responseService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -203,7 +204,7 @@ class AliceAndBobController extends AbstractController
     public function bobsBBQ(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
         UserStatsService $userStatsRepository, ResponseService $responseService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

@@ -30,6 +30,7 @@ use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -44,7 +45,7 @@ class WolfsFavorController extends AbstractController
     public function changePetWereform(
         Inventory $inventory, ResponseService $responseService, Request $request,
         EntityManagerInterface $em, IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -83,7 +84,7 @@ class WolfsFavorController extends AbstractController
     public function getFluffAndTalons(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $rng, UserStatsService $userStatsRepository
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -121,7 +122,7 @@ class WolfsFavorController extends AbstractController
     public function getMoonStuff(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, UserStatsService $userStatsRepository
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

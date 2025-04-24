@@ -31,6 +31,7 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -45,7 +46,7 @@ class PlayController extends AbstractController
         HollowEarthService $hollowEarthService, ResponseService $responseService, EntityManagerInterface $em,
         Request $request, InventoryRepository $inventoryRepository, TransactionService $transactionService,
         IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

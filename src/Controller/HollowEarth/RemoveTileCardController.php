@@ -22,6 +22,7 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -33,7 +34,7 @@ class RemoveTileCardController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function removeTileCard(
         Request $request, ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         $user = $this->getUser();
         $player = $user->getHollowEarthPlayer();

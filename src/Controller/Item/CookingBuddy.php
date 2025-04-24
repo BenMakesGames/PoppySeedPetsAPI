@@ -21,6 +21,7 @@ use App\Functions\UserUnlockedFeatureHelpers;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -34,7 +35,7 @@ class CookingBuddy extends AbstractController
     public function addOrReplace(
         Inventory $inventory, EntityManagerInterface $em, ResponseService $responseService,
         IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

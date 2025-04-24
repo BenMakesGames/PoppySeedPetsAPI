@@ -35,7 +35,7 @@ class PetAndPraiseService
     {
     }
 
-    public function doPet(User $petter, Pet $pet)
+    public function doPet(User $petter, Pet $pet): void
     {
         if(!$pet->isAtHome())
             throw new PSPInvalidOperationException('Pets that aren\'t home cannot be interacted with.');

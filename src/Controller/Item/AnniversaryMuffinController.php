@@ -21,6 +21,7 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -31,7 +32,7 @@ class AnniversaryMuffinController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function wishForLengthySkillScroll(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -55,7 +56,7 @@ class AnniversaryMuffinController extends AbstractController
     public function wishFor700MuseumFavor(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         TransactionService $transactionService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

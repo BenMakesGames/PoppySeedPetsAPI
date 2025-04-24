@@ -21,6 +21,7 @@ use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,7 +34,7 @@ class PetActivityLogsController extends AbstractController
     #[Route("", methods: ["GET"])]
     public function history(
         Request $request, ResponseService $responseService, PetActivityLogsFilterService $petActivityLogsFilterService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -48,7 +49,7 @@ class PetActivityLogsController extends AbstractController
     #[DoesNotRequireHouseHours]
     #[Route("/getAllTags", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getAllTags(ResponseService $responseService, EntityManagerInterface $em)
+    public function getAllTags(ResponseService $responseService, EntityManagerInterface $em): JsonResponse
     {
         $tags = $em->getRepository(PetActivityLogTag::class)->findAll();
 

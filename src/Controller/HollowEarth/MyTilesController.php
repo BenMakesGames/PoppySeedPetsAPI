@@ -22,6 +22,7 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -33,7 +34,7 @@ class MyTilesController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getMyTiles(
         InventoryRepository $inventoryRepository, ResponseService $responseService, Request $request
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

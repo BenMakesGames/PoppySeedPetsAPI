@@ -29,6 +29,7 @@ use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -41,7 +42,7 @@ class BehattingScrollController extends AbstractController
     public function readBehattingScroll(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         IRandom $rng, UserStatsService $userStatsRepository
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

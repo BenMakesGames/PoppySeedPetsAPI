@@ -24,16 +24,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class GetRelationshipsToHangOutWithCommand extends Command
 {
-    private PetRelationshipRepository $petRelationshipRepository;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        PetRelationshipRepository $petRelationshipRepository, EntityManagerInterface $em
+        private readonly PetRelationshipRepository $petRelationshipRepository,
+        private readonly EntityManagerInterface $em
     )
     {
-        $this->petRelationshipRepository = $petRelationshipRepository;
-        $this->em = $em;
-
         parent::__construct();
     }
 

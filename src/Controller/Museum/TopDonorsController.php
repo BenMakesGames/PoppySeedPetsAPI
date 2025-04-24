@@ -25,6 +25,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Routing\Attribute\Route;
@@ -37,7 +38,7 @@ class TopDonorsController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getTopDonors(
         Request $request, ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         if(!$this->getUser()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
             throw new PSPNotUnlockedException('Museum');

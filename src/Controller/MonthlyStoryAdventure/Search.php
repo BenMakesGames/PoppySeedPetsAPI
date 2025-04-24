@@ -21,6 +21,7 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Service\Filter\MonthlyStoryAdventureFilterService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -34,7 +35,7 @@ class Search extends AbstractController
         MonthlyStoryAdventureFilterService $filterService,
         Request $request,
         ResponseService $responseService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

@@ -27,6 +27,7 @@ use App\Service\PlazaService;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +42,7 @@ class CollectHolidayBoxController extends AbstractController
         Request $request, PlazaService $plazaService, MuseumService $museumService,
         InventoryService $inventoryService, EntityManagerInterface $em, ResponseService $responseService,
         UserStatsService $userStatsRepository
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

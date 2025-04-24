@@ -29,6 +29,9 @@ class TransactionService
     {
     }
 
+    /**
+     * @param string[] $additionalTags
+     */
     public function spendMoney(User $user, int $amount, string $description, bool $countTotalMoneysSpentStat = true, array $additionalTags = []): UserActivityLog
     {
         if($amount < 1)
@@ -47,6 +50,9 @@ class TransactionService
         return PlayerLogFactory::create($this->em, $user, $description . ' (-' . $amount . '~~m~~)', $tags);
     }
 
+    /**
+     * @param string[] $additionalTags
+     */
     public function getMoney(User $user, int $amount, string $description, array $additionalTags = []): UserActivityLog
     {
         if($amount < 1)
@@ -59,7 +65,10 @@ class TransactionService
         return PlayerLogFactory::create($this->em, $user, $description . ' (+' . $amount . '~~m~~)', $tags);
     }
 
-    public function spendRecyclingPoints(User $user, int $amount, string $description, array $additionalTags = [])
+    /**
+     * @param string[] $additionalTags
+     */
+    public function spendRecyclingPoints(User $user, int $amount, string $description, array $additionalTags = []): UserActivityLog
     {
         if($amount < 1)
             throw new \InvalidArgumentException('$amount must be 1 or greater.');
@@ -74,7 +83,10 @@ class TransactionService
         return PlayerLogFactory::create($this->em, $user, $description . ' (-' . $amount . ' Recycling Point' . ($amount == 1 ? '' : 's') . ')', $tags);
     }
 
-    public function getRecyclingPoints(User $user, int $amount, string $description, array $additionalTags = [])
+    /**
+     * @param string[] $additionalTags
+     */
+    public function getRecyclingPoints(User $user, int $amount, string $description, array $additionalTags = []): UserActivityLog
     {
         if($amount < 0)
             throw new \InvalidArgumentException('$amount must be 1 or greater.');
@@ -87,7 +99,10 @@ class TransactionService
         return PlayerLogFactory::create($this->em, $user, $description . ' (+' . $amount . ' Recycling Point' . ($amount == 1 ? '' : 's') . ')', $tags);
     }
 
-    public function spendMuseumFavor(User $user, int $amount, string $description, array $additionalTags = [])
+    /**
+     * @param string[] $additionalTags
+     */
+    public function spendMuseumFavor(User $user, int $amount, string $description, array $additionalTags = []): UserActivityLog
     {
         if($amount < 1)
             throw new \InvalidArgumentException('$amount must be 1 or greater.');
@@ -102,7 +117,10 @@ class TransactionService
         return PlayerLogFactory::create($this->em, $user, $description . ' (-' . $amount . ' Museum Favor)', $tags);
     }
 
-    public function getMuseumFavor(User $user, int $amount, string $description, array $additionalTags = [])
+    /**
+     * @param string[] $additionalTags
+     */
+    public function getMuseumFavor(User $user, int $amount, string $description, array $additionalTags = []): UserActivityLog
     {
         if($amount < 1)
             throw new \InvalidArgumentException('$amount must be 1 or greater.');

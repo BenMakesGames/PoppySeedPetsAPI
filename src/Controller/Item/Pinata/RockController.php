@@ -23,6 +23,7 @@ use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -34,7 +35,7 @@ class RockController extends AbstractController
     public function smash(
         Inventory $rock, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -89,7 +90,7 @@ class RockController extends AbstractController
     public function openPommegranite(
         Inventory $rock, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

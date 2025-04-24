@@ -20,6 +20,7 @@ use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -40,7 +41,7 @@ class ReversableController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function flipIt(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng
-    )
+    ): JsonResponse
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'reversable/#/flip');
 

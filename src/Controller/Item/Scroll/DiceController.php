@@ -24,6 +24,7 @@ use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -35,7 +36,7 @@ class DiceController extends AbstractController
     public function readScrollOfDice(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         EntityManagerInterface $em, UserStatsService $userStatsRepository
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

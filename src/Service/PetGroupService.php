@@ -55,7 +55,7 @@ class PetGroupService
     {
     }
 
-    public function doGroupActivity(PetGroup $group)
+    public function doGroupActivity(PetGroup $group): void
     {
         $group->spendSocialEnergy(PetGroupService::SOCIAL_ENERGY_PER_MEET);
 
@@ -88,7 +88,7 @@ class PetGroupService
         }
     }
 
-    public function getMemberHappiness(PetGroup $group, Pet $pet)
+    public function getMemberHappiness(PetGroup $group, Pet $pet): int
     {
         // array_reduce is NOT easier to read (and doesn't seem more CPU-efficient, especially since we have to convert toArray())
         $happiness = $pet->getEsteem();

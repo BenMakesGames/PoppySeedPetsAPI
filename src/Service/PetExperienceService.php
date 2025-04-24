@@ -166,7 +166,7 @@ class PetExperienceService
         return null;
     }
 
-    private function unlockLevel50Style(Pet $pet)
+    private function unlockLevel50Style(Pet $pet): void
     {
         $this->hattierService->petMaybeUnlockAura(
             $pet,
@@ -177,7 +177,7 @@ class PetExperienceService
         );
     }
 
-    public function spendSocialEnergy(Pet $pet, int $energy)
+    public function spendSocialEnergy(Pet $pet, int $energy): void
     {
         if($pet->hasStatusEffect(StatusEffectEnum::EXTRA_EXTROVERTED) || $pet->hasStatusEffect(StatusEffectEnum::MOONSTRUCK))
             $energy = (int)ceil($energy / 2);

@@ -25,6 +25,7 @@ use App\Exceptions\PSPPetNotFoundException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -37,7 +38,7 @@ class ApplyIllusionController extends AbstractController
     public function buyIllusion(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         Request $request
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

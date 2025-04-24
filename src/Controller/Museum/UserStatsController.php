@@ -22,6 +22,7 @@ use App\Service\Filter\ItemFilterService;
 use App\Service\Filter\MuseumFilterService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -34,7 +35,7 @@ class UserStatsController extends AbstractController
     public function userDonatedItems(
         User $user,
         Request $request, ResponseService $responseService, MuseumFilterService $museumFilterService
-    )
+    ): JsonResponse
     {
         if(!$this->getUser()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
             throw new PSPNotUnlockedException('Museum');
@@ -52,7 +53,7 @@ class UserStatsController extends AbstractController
     public function userNonDonatedItems(
         User $user,
         Request $request, ResponseService $responseService, ItemFilterService $itemFilterService
-    )
+    ): JsonResponse
     {
         if(!$this->getUser()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
             throw new PSPNotUnlockedException('Museum');
@@ -70,7 +71,7 @@ class UserStatsController extends AbstractController
     public function userItemCount(
         User $user,
         Request $request, ResponseService $responseService, MuseumFilterService $museumFilterService
-    )
+    ): JsonResponse
     {
         if(!$this->getUser()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
             throw new PSPNotUnlockedException('Museum');

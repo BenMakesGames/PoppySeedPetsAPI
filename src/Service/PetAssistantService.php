@@ -34,25 +34,25 @@ class PetAssistantService
     {
     }
 
-    private static function assertOwnership(User $user, Pet $pet)
+    private static function assertOwnership(User $user, Pet $pet): void
     {
         if($pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
     }
 
-    private static function assertAvailability(Pet $pet)
+    private static function assertAvailability(Pet $pet): void
     {
         if($pet->getLocation() != PetLocationEnum::HOME && $pet->getLocation() != PetLocationEnum::DAYCARE)
             throw new PSPInvalidOperationException('That pet is currently at the ' . $pet->getLocation() . '.');
     }
 
-    private static function assertCanAssignHelpers(User $user)
+    private static function assertCanAssignHelpers(User $user): void
     {
         if(!$user->getCanAssignHelpers())
             throw new PSPNotUnlockedException('Helpers');
     }
 
-    public static function helpBeehive(User $user, Pet $pet)
+    public static function helpBeehive(User $user, Pet $pet): void
     {
         self::assertOwnership($user, $pet);
 
@@ -76,7 +76,7 @@ class PetAssistantService
         $pet->setLocation(PetLocationEnum::BEEHIVE);
     }
 
-    public static function helpGreenhouse(User $user, Pet $pet)
+    public static function helpGreenhouse(User $user, Pet $pet): void
     {
         self::assertOwnership($user, $pet);
 
@@ -96,7 +96,7 @@ class PetAssistantService
         $pet->setLocation(PetLocationEnum::GREENHOUSE);
     }
 
-    public function helpFireplace(User $user, Pet $pet)
+    public function helpFireplace(User $user, Pet $pet): void
     {
         self::assertOwnership($user, $pet);
 
@@ -121,7 +121,7 @@ class PetAssistantService
         $pet->setLocation(PetLocationEnum::FIREPLACE);
     }
 
-    public function helpDragon(User $user, Pet $pet)
+    public function helpDragon(User $user, Pet $pet): void
     {
         self::assertOwnership($user, $pet);
 
@@ -141,7 +141,7 @@ class PetAssistantService
         $pet->setLocation(PetLocationEnum::DRAGON_DEN);
     }
 
-    public function stopAssisting(User $user, Pet $pet)
+    public function stopAssisting(User $user, Pet $pet): void
     {
         self::assertOwnership($user, $pet);
 

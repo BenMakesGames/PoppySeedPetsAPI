@@ -34,6 +34,7 @@ use App\Service\ResponseService;
 use App\Service\Typeahead\PetRelationshipTypeaheadService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -46,7 +47,7 @@ class SelfReflectionController extends AbstractController
     public function getGuildMembership(
         Pet $pet, ResponseService $responseService, PetRelationshipRepository $petRelationshipRepository,
         PetRelationshipService $petRelationshipService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         // just to prevent scraping (this endpoint is currently - 2020-06-29 - used only for changing a pet's guild)
         if($pet->getOwner()->getId() !== $this->getUser()->getId())
@@ -104,7 +105,7 @@ class SelfReflectionController extends AbstractController
     #[Route("/{pet}/selfReflection/changeGuild", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function changeGuild(
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -156,7 +157,7 @@ class SelfReflectionController extends AbstractController
     public function reconcileWithAnotherPet(
         Pet $pet, Request $request, ResponseService $responseService, PetRelationshipRepository $petRelationshipRepository,
         EntityManagerInterface $em, IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -251,7 +252,7 @@ class SelfReflectionController extends AbstractController
     public function troubledRelationshipsTypeaheadSearch(
         Request $request, ResponseService $responseService, EntityManagerInterface $em,
         PetRelationshipTypeaheadService $petRelationshipTypeaheadService, PetRelationshipService $petRelationshipService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

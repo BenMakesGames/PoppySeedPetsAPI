@@ -25,6 +25,7 @@ use App\Service\MarketService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -33,7 +34,7 @@ class LimitsController extends AbstractController
 {
     #[Route("/limits", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getMarketLimits(ResponseService $responseService, MarketService $marketService)
+    public function getMarketLimits(ResponseService $responseService, MarketService $marketService): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -52,7 +53,7 @@ class LimitsController extends AbstractController
     public function increaseMarketLimits(
         ResponseService $responseService, MarketService $marketService, InventoryService $inventoryService,
         EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

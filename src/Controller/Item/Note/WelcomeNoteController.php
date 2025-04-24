@@ -18,6 +18,7 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -26,7 +27,7 @@ class WelcomeNoteController extends AbstractController
 {
     #[Route("/welcome/{inventory}/read", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function readWelcomeNote(Inventory $inventory, ResponseService $responseService)
+    public function readWelcomeNote(Inventory $inventory, ResponseService $responseService): JsonResponse
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'note/welcome/#/read');
 

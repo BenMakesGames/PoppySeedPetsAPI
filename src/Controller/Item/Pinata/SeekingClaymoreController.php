@@ -40,7 +40,7 @@ class SeekingClaymoreController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function tune(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -98,7 +98,7 @@ class SeekingClaymoreController extends AbstractController
     public function seekMeat(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -138,7 +138,7 @@ class SeekingClaymoreController extends AbstractController
     public function seekSweet(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -189,7 +189,7 @@ class SeekingClaymoreController extends AbstractController
     public function seekWheat(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -227,7 +227,7 @@ class SeekingClaymoreController extends AbstractController
     public function seekBeat(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -266,7 +266,7 @@ class SeekingClaymoreController extends AbstractController
     public function seekSheet(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         EntityManagerInterface $em, IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -319,8 +319,8 @@ class SeekingClaymoreController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function seekPeat(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng
-    )
+        EntityManagerInterface $em
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

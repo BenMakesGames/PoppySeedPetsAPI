@@ -19,6 +19,7 @@ use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\PetGroupFilterService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -28,7 +29,7 @@ class PetGroupController extends AbstractController
     #[Route("", methods: ["GET"])]
     public function getAllGroups(
         ResponseService $responseService, PetGroupFilterService $petGroupFilterService, Request $request
-    )
+    ): JsonResponse
     {
         return $responseService->success(
             $petGroupFilterService->getResults($request->query),
@@ -37,7 +38,7 @@ class PetGroupController extends AbstractController
     }
 
     #[Route("/{group}", methods: ["GET"])]
-    public function getGroup(PetGroup $group, ResponseService $responseService)
+    public function getGroup(PetGroup $group, ResponseService $responseService): JsonResponse
     {
         return $responseService->success($group, [ SerializationGroupEnum::PET_GROUP_DETAILS ]);
     }

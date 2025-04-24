@@ -25,6 +25,7 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -37,7 +38,7 @@ class TelephoneController extends AbstractController
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         TransactionService $transactionService, IRandom $rng,
         InventoryService $inventoryService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
