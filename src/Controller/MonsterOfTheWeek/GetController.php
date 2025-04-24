@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace App\Controller\MonsterOfTheWeek;
 
 use App\Entity\User;
+use App\Enum\MonsterOfTheWeekEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\SimpleDb;
 use App\Service\ResponseService;
@@ -67,7 +68,7 @@ class GetController extends AbstractController
         if(count($data) == 0)
             throw new PSPNotFoundException("No spirit was found...");
 
-        $milestones = MonsterOfTheWeekHelpers::getBasePrizeValues($data[0]['monster']);
+        $milestones = MonsterOfTheWeekHelpers::getBasePrizeValues(MonsterOfTheWeekEnum::from($data[0]['monster']));
 
         return $responseService->success([
             'id' => $data[0]['id'],
