@@ -19,10 +19,10 @@ use GuzzleHttp\Client;
 
 class RedditService
 {
-    private $apiClientId;
-    private $apiClientSecret;
-    private $username;
-    private $password;
+    private string $apiClientId;
+    private string $apiClientSecret;
+    private string $username;
+    private string $password;
 
     public function __construct(
         string $apiClientId, string $apiClientSecret, string $username, string $password
@@ -62,7 +62,7 @@ class RedditService
         return $responseData['access_token'];
     }
 
-    public function postArticle(Article $article)
+    public function postArticle(Article $article): void
     {
         $accessToken = $this->getAccessToken();
 

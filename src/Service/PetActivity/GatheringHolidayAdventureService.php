@@ -88,7 +88,7 @@ class GatheringHolidayAdventureService
         return $activityLog;
     }
 
-    private static function searchingFor(string $holiday, bool $plural): string
+    private static function searchingFor(GatheringHolidayEnum $holiday, bool $plural): string
     {
         return match ($holiday)
         {

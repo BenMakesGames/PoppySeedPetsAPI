@@ -313,7 +313,7 @@ class HollowEarthService
         }
     }
 
-    private function collectGoods(HollowEarthPlayer $player, string $goods, bool $getDouble)
+    private function collectGoods(HollowEarthPlayer $player, string $goods, bool $getDouble): void
     {
         $quantity = $getDouble ? 2 : 1;
 
@@ -416,7 +416,10 @@ class HollowEarthService
             $activityLog->setChanges($petChanges->compare($pet));
     }
 
-    private function receiveItems(HollowEarthPlayer $player, Pet $pet, PetChanges $petChanges, $items, ?PetActivityLog $activityLog)
+    /**
+     * @param string[]|string $items
+     */
+    private function receiveItems(HollowEarthPlayer $player, Pet $pet, PetChanges $petChanges, array|string $items, ?PetActivityLog $activityLog): void
     {
         if(!is_array($items))
             $items = [ $items ];
@@ -467,7 +470,7 @@ class HollowEarthService
         return ArrayFunctions::find_one($this->getTrades($player), fn($t) => $t['id'] === $tradeId);
     }
 
-    public function getTrades(HollowEarthPlayer $player)
+    public function getTrades(HollowEarthPlayer $player): array
     {
         $items = ItemRepository::findByNames($this->em, [
             'Potion of Arcana',
@@ -500,7 +503,7 @@ class HollowEarthService
         ];
     }
 
-    private static function createTrade(HollowEarthPlayer $player, array $items, string $id, string $itemName, array $cost)
+    private static function createTrade(HollowEarthPlayer $player, array $items, string $id, string $itemName, array $cost): array
     {
         return
         [

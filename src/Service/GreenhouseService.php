@@ -108,7 +108,7 @@ class GreenhouseService
         return $message;
     }
 
-    public function applyPollinatorSpice(Inventory $item, string $pollinators)
+    public function applyPollinatorSpice(Inventory $item, string $pollinators): void
     {
         if($pollinators === PollinatorEnum::BEES_1 || $pollinators === PollinatorEnum::BEES_2)
             $spiceName = $this->rng->rngNextInt(1, 20) === 1 ? 'of Queens' : 'Anthophilan';
@@ -165,7 +165,7 @@ class GreenhouseService
         return $message;
     }
 
-    public function maybeAssignPollinators(User $user)
+    public function maybeAssignPollinators(User $user): void
     {
         $twoHoursAgo = $this->clock->now->sub(\DateInterval::createFromDateString('2 hours'));
 
@@ -276,7 +276,7 @@ class GreenhouseService
         return $this->harvestPlantAsPet($plant, $species, $colorA, $colorB, $name, $bonusMerit);
     }
 
-    public function makeMushroomPet(GreenhousePlant $plant)
+    public function makeMushroomPet(GreenhousePlant $plant): string
     {
         $species = $this->em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Mushroom' ]);
 
@@ -307,7 +307,7 @@ class GreenhouseService
         return $this->harvestPlantAsPet($plant, $species, $colorA, $colorB, $name, $bonusMerit);
     }
 
-    public function makeTomatePet(GreenhousePlant $plant)
+    public function makeTomatePet(GreenhousePlant $plant): string
     {
         $species = $this->em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Tomate' ]);
 

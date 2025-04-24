@@ -60,7 +60,7 @@ class PetActivityStatsService
     /**
      * @throws EnumInvalidValueException
      */
-    public static function logStat(EntityManagerInterface $em, Pet $pet, string $stat, ?bool $success, int $time)
+    public static function logStat(EntityManagerInterface $em, Pet $pet, string $stat, ?bool $success, int $time): void
     {
         $stat = strtolower($stat);
 

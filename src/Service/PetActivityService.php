@@ -136,7 +136,7 @@ class PetActivityService
     {
     }
 
-    public function runHour(Pet $pet)
+    public function runHour(Pet $pet): void
     {
         $hasEventPersonality = $pet->hasActivityPersonality(ActivityPersonalityEnum::EVENTS_AND_MAPS);
 

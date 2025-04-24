@@ -23,6 +23,7 @@ use App\Enum\PetLocationEnum;
 use App\Functions\UserQuestRepository;
 use App\Service\PetActivity\SagaSagaService;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 
 class HouseService
@@ -60,7 +61,7 @@ class HouseService
         return $petsWithTime > 0;
     }
 
-    public function getHouseRunLock(User $user)
+    public function getHouseRunLock(User $user): CacheItemInterface
     {
         return $this->cache->getItem('User #' . $user->getId() . ' - Running House Hours');
     }

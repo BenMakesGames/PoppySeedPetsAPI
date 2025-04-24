@@ -693,7 +693,7 @@ class CraftingService
         return $activityLog;
     }
 
-    public function createDecoratedSpear(ComputedPetSkills $petWithSkills)
+    public function createDecoratedSpear(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
@@ -725,7 +725,7 @@ class CraftingService
         return $activityLog;
     }
 
-    public function createFishingRecorder(ComputedPetSkills $petWithSkills)
+    public function createFishingRecorder(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getMusic()->getTotal());
@@ -2576,7 +2576,7 @@ class CraftingService
         return $this->createFlag($petWithSkills, 'Green Dye', 'Dragon Flag');
     }
 
-    private function createFlag(ComputedPetSkills $petWithSkills, string $dye, string $making)
+    private function createFlag(ComputedPetSkills $petWithSkills, string $dye, string $making): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $makingItem = ItemRepository::findOneByName($this->em, $making);

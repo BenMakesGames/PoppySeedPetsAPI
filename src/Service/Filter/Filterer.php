@@ -22,9 +22,9 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class Filterer
 {
-    private $orderByMap;
-    private $filterMap;
-    private $filterWithoutCallbackMap;
+    private array $orderByMap;
+    private array $filterMap;
+    private array $filterWithoutCallbackMap;
     private int $pageSize;
     private array $defaultFilters = [];
     private array $requiredFilters = [];
