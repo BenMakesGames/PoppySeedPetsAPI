@@ -39,22 +39,22 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class TriDChessService implements ParkEventInterface
 {
-    public const array CHESS_PIECES = [
+    public const array ChessPieces = [
         'a pawn', 'a rook', 'a knight', 'a bishop', 'the queen', 'the king',
     ];
 
     /** @var TriDChessParticipant[] */
-    private $participants;
+    private array $participants;
 
     /** @var TriDChessParticipant[] */
-    private $winners;
+    private array $winners;
 
-    private $wins = [];
-    private $defeatedBy = [];
+    private array $wins = [];
+    private array $defeatedBy = [];
 
-    private $results = '';
+    private string $results = '';
 
-    private $round = 0;
+    private int $round = 0;
 
     public function __construct(
         private readonly PetExperienceService $petExperienceService,
@@ -77,7 +77,7 @@ class TriDChessService implements ParkEventInterface
     /**
      * @param Pet[] $pets
      */
-    public function play($pets): ParkEvent
+    public function play(array $pets): ParkEvent
     {
         if(!$this->isGoodNumberOfPets(count($pets)))
             throw new \InvalidArgumentException('The number of pets must be 8, 16, or 32.');
@@ -223,7 +223,7 @@ class TriDChessService implements ParkEventInterface
         }
         else if($participant->pet->hasMerit(MeritEnum::SPIRIT_COMPANION) && $participant->pet->getSpiritCompanion()->getStar() === SpiritCompanionStarEnum::CASSIOPEIA && $this->rng->rngNextInt(1, 100) <= 3 && $move > 3)
         {
-            $this->results .= '* ' . $participant->pet->getName() . '\'s spirit companion nudged ' . $this->rng->rngNextFromArray(self::CHESS_PIECES) . ' forward.';
+            $this->results .= '* ' . $participant->pet->getName() . '\'s spirit companion nudged ' . $this->rng->rngNextFromArray(self::ChessPieces) . ' forward.';
 
             switch($this->rng->rngNextInt(1, 3))
             {

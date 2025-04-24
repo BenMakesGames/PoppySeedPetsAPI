@@ -42,15 +42,15 @@ use Doctrine\ORM\EntityManagerInterface;
 class JoustingService implements ParkEventInterface
 {
     /** @var JoustingTeam[] */
-    private $participants;
+    private array $participants;
 
     /** @var JoustingTeam[] */
-    private $winners;
+    private array $winners;
 
     /** @var JoustingParticipant[] */
-    private $individualParticipants;
+    private array $individualParticipants;
 
-    private $results = '';
+    private string $results = '';
 
     private int $round = 0;
 
@@ -80,7 +80,7 @@ class JoustingService implements ParkEventInterface
     /**
      * @param Pet[] $pets
      */
-    public function play($pets): ParkEvent
+    public function play(array $pets): ParkEvent
     {
         if(!$this->isGoodNumberOfPets(count($pets)))
             throw new \InvalidArgumentException('The number of pets must be 16, or 32.');

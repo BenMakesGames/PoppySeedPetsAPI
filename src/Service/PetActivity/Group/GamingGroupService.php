@@ -117,7 +117,7 @@ class GamingGroupService
     private const string TypeTTRPG = 'TTRPG';
     private const string TypeLARPing = 'LARPing';
 
-    public function meet(PetGroup $group)
+    public function meet(PetGroup $group): void
     {
         $partyGameName = $this->rng->rngNextFromArray([ 'Reds to Reds', self::NameScrawlful2, 'Mixit', 'One-night Werecreature' ]);
 

@@ -195,6 +195,9 @@ class HouseSim implements IHouseSim
         return true;
     }
 
+    /**
+     * @return Inventory[]
+     */
     public function getInventoryToRemove(): array
     {
         return $this->inventoryToRemoveFromDatabase;

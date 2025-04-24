@@ -97,9 +97,12 @@ class HattierService
         );
     }
 
+    /**
+     * @var array<string, UserUnlockedAura>
+     */
     private array $userAurasPerRequestCache = [];
 
-    public function playerUnlockAura(User $user, Enchantment $enchantment, string $comment)
+    public function playerUnlockAura(User $user, Enchantment $enchantment, string $comment): UserUnlockedAura
     {
         $cacheKey = $user->getId() . '-' . $enchantment->getId();
 

@@ -377,7 +377,7 @@ class Inventory
         ;
     }
 
-    public function brawlBonus($allowRanged = true): int
+    public function brawlBonus(bool $allowRanged = true): int
     {
         if(!$allowRanged && $this->rangedOnly())
             return 0;

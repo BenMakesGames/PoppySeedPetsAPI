@@ -150,7 +150,7 @@ class HollowEarthService
         return $data;
     }
 
-    private function getCardAuthor(?HollowEarthTileCard $card)
+    private function getCardAuthor(?HollowEarthTileCard $card): ?array
     {
         if(!$card?->getAuthor())
             return null;

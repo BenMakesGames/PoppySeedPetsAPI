@@ -15,9 +15,14 @@ declare(strict_types=1);
 namespace App\Service\ParkEvent;
 
 use App\Entity\ParkEvent;
+use App\Entity\Pet;
 
 interface ParkEventInterface
 {
     public function isGoodNumberOfPets(int $petCount): bool;
-    public function play($pets): ParkEvent;
+
+    /**
+     * @param Pet[] $pets
+     */
+    public function play(array $pets): ParkEvent;
 }

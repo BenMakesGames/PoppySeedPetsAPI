@@ -148,7 +148,7 @@ class ComputedPetSkills
     }
 
     #[Groups(['myPet'])]
-    public function getBrawl($allowRanged = true): TotalPetSkill
+    public function getBrawl(bool $allowRanged = true): TotalPetSkill
     {
         $skill = new TotalPetSkill();
         $skill->base = $this->pet->getSkills()->getBrawl();
