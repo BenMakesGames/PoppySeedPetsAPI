@@ -567,7 +567,7 @@ class HuntingService
     private function huntedLargeToad(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'hunting in the woods');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Woods, 'hunting in the woods');
 
         $pet = $petWithSkills->getPet();
         $skill = 10 + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getBrawl(false)->getTotal();
@@ -610,7 +610,7 @@ class HuntingService
     private function huntedScarecrow(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::IN_TOWN, 'hunting around town');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::InTown, 'hunting around town');
 
         $pet = $petWithSkills->getPet();
 
@@ -824,7 +824,7 @@ class HuntingService
     private function huntedThievingMagpie(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'hunting in the woods');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Woods, 'hunting in the woods');
 
         $pet = $petWithSkills->getPet();
         $intSkill = 10 + $petWithSkills->getIntelligence()->getTotal();
@@ -927,7 +927,7 @@ class HuntingService
     private function huntedGhosts(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'hunting in the woods');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Woods, 'hunting in the woods');
 
         $pet = $petWithSkills->getPet();
 
@@ -1136,7 +1136,7 @@ class HuntingService
     private function huntedSatyr(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'hunting in the woods');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Woods, 'hunting in the woods');
 
         $pet = $petWithSkills->getPet();
 
@@ -1273,7 +1273,7 @@ class HuntingService
     private function huntedPaperGolem(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::IN_TOWN, 'hunting around town');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::InTown, 'hunting around town');
 
         $pet = $petWithSkills->getPet();
 
@@ -1366,7 +1366,7 @@ class HuntingService
     private function huntedLeshyDemon(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'hunting in the woods');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Woods, 'hunting in the woods');
 
         $pet = $petWithSkills->getPet();
 
@@ -1540,7 +1540,7 @@ class HuntingService
     private function huntedEggSaladMonstrosity(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::IN_TOWN, 'hunting around town');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::InTown, 'hunting around town');
 
         $pet = $petWithSkills->getPet();
 

@@ -14,13 +14,11 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-class DistractionLocationEnum
+enum DistractionLocationEnum: string
 {
-    use FakeEnum;
-
-    public const string WOODS = 'woods';
-    public const string UNDERGROUND = 'underground';
-    public const string BEACH = 'beach';
-    public const string VOLCANO = 'volcano';
-    public const string IN_TOWN = 'inTown';
+    case Woods = 'woods';
+    case Underground = 'underground';
+    case Beach = 'beach';
+    case Volcano = 'volcano';
+    case InTown = 'inTown';
 }
