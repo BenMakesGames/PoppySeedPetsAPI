@@ -333,7 +333,7 @@ class DeepSeaService
         return $activityLog;
     }
 
-    private function fightGiantSquid(ComputedPetSkills $petWithSkills)
+    private function fightGiantSquid(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 
@@ -398,7 +398,7 @@ class DeepSeaService
         return $activityLog;
     }
 
-    private function meetFriendlyWhale(Pet $pet)
+    private function meetFriendlyWhale(Pet $pet): PetActivityLog
     {
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
 

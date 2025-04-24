@@ -185,7 +185,7 @@ class PizzaDaydream
         return $log;
     }
 
-    private function doMozzarellaCloud(ComputedPetSkills $petWithSkills)
+    private function doMozzarellaCloud(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 
@@ -198,7 +198,7 @@ class PizzaDaydream
         return $log;
     }
 
-    private function doBubblegumSauce(ComputedPetSkills $petWithSkills)
+    private function doBubblegumSauce(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 

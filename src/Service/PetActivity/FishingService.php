@@ -189,7 +189,7 @@ class FishingService
         }
     }
 
-    private function creditLackOfReflection(PetActivityLog $activityLog)
+    private function creditLackOfReflection(PetActivityLog $activityLog): void
     {
         $hasNoReflection = $activityLog->getPet()->hasStatusEffect(StatusEffectEnum::INVISIBLE) || $activityLog->getPet()->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION);
 
@@ -925,7 +925,7 @@ class FishingService
         return $activityLog;
     }
 
-    public function fishedGhoti(ComputedPetSkills $petWithSkills)
+    public function fishedGhoti(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
             return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Volcano, 'looking for a good fishing spot at the foot of the volcano');

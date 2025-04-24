@@ -800,13 +800,13 @@ class PetActivityService
         return false;
     }
 
-    private function doNothing(Pet $pet)
+    private function doNothing(Pet $pet): void
     {
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
         PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% hung around the house.');
     }
 
-    private function pickDesire(array $petDesires)
+    private function pickDesire(array $petDesires): string
     {
         $totalDesire = array_sum($petDesires);
 

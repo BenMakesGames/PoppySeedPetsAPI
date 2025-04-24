@@ -1818,7 +1818,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Rainbow', 1);
             $this->houseSimService->getState()->loseItem('Wings', 1);
             $pet->increaseEsteem($this->rng->rngNextInt(4, 8));
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created Rainbow Wings!', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created Rainbow Wings!')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 30)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,

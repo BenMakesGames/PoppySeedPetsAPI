@@ -2615,7 +2615,7 @@ class CraftingService
         return $activityLog;
     }
 
-    private function createSunSunFlag(ComputedPetSkills $petWithSkills)
+    private function createSunSunFlag(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
@@ -2651,7 +2651,7 @@ class CraftingService
         return $activityLog;
     }
 
-    private function createSunSunFlagFlagSon(ComputedPetSkills $petWithSkills)
+    private function createSunSunFlagFlagSon(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
@@ -2685,7 +2685,7 @@ class CraftingService
         return $activityLog;
     }
 
-    private function createPaleFlail(ComputedPetSkills $petWithSkills)
+    private function createPaleFlail(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
@@ -2721,7 +2721,7 @@ class CraftingService
         return $activityLog;
     }
 
-    private function createBindle(ComputedPetSkills $petWithSkills)
+    private function createBindle(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
@@ -2775,7 +2775,7 @@ class CraftingService
     /**
      * @throws EnumInvalidValueException
      */
-    private function createBindle2(ComputedPetSkills $petWithSkills)
+    private function createBindle2(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
