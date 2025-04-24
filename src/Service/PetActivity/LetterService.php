@@ -312,7 +312,7 @@ class LetterService
         ;
     }
 
-    private static function getNumberOfLettersFromSender(EntityManagerInterface $em, User $user, string $sender)
+    private static function getNumberOfLettersFromSender(EntityManagerInterface $em, User $user, string $sender): int
     {
         if(!LetterSenderEnum::isAValue($sender))
             throw new EnumInvalidValueException(LetterSenderEnum::class, $sender);

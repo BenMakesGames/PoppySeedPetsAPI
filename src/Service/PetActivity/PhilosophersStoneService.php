@@ -161,7 +161,7 @@ class PhilosophersStoneService
         return $activityLog;
     }
 
-    public function seekVesicaHydrargyrum(ComputedPetSkills $petWithSkills)
+    public function seekVesicaHydrargyrum(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         // go to a cave in the frozen quag in the umbra
         // if win, and pet has never won before:
@@ -259,7 +259,7 @@ class PhilosophersStoneService
         return $activityLog;
     }
 
-    public function seekEarthsEgg(ComputedPetSkills $petWithSkills)
+    public function seekEarthsEgg(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         // go to forest, and fight one of some random Jabberwock:
         // if win, and pet has never won before, defeat the Manxome Jabberwock
