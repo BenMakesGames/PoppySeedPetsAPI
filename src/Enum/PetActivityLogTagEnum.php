@@ -16,7 +16,7 @@ namespace App\Enum;
 
 class PetActivityLogTagEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string Group_Hangout = 'Group Hangout';
     public const string One_on_One_Hangout = '1-on-1 Hangout';

@@ -16,7 +16,7 @@ namespace App\Enum;
 
 class SocialTimeWantEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string HANG_OUT = 'hangOut';
     public const string GROUP = 'group';

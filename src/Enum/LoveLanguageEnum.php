@@ -16,7 +16,7 @@ namespace App\Enum;
 
 class LoveLanguageEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string GIFTS = 'gifts';
     public const string TIME = 'time';

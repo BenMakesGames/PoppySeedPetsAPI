@@ -16,7 +16,7 @@ namespace App\Enum;
 
 class PollinatorEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string BUTTERFLIES = 'butterflies';
     public const string BEES_1 = 'bees1';

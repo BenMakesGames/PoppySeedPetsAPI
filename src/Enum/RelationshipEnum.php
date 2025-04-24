@@ -16,7 +16,7 @@ namespace App\Enum;
 
 final class RelationshipEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string BROKE_UP = 'broke up';
     public const string DISLIKE = 'dislike';

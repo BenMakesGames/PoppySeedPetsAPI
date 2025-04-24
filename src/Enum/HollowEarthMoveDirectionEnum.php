@@ -16,7 +16,7 @@ namespace App\Enum;
 
 final class HollowEarthMoveDirectionEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string NORTH = 'N';
     public const string EAST = 'E';

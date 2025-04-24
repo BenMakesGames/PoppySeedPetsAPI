@@ -16,7 +16,7 @@ namespace App\Enum;
 
 class DistractionLocationEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string WOODS = 'woods';
     public const string UNDERGROUND = 'underground';

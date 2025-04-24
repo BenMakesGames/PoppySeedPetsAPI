@@ -16,7 +16,7 @@ namespace App\Enum;
 
 final class ParkEventTypeEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string KIN_BALL = 'Kin-Ball';
     public const string TRI_D_CHESS = 'Tri-D Chess';

@@ -15,7 +15,7 @@ namespace App\Enum;
 
 final class PetBadgeEnum
 {
-    use Enum;
+    use FakeEnum;
 
     // affection!
     public const string REVEALED_FAVORITE_FLAVOR = 'revealedFavoriteFlavor';

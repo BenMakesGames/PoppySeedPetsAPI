@@ -16,7 +16,7 @@ namespace App\Enum;
 
 class UserLinkVisibilityEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string LOGGED_IN = 'LoggedIn';
     public const string FOLLOWED = 'Followed';
