@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace App\Controller\MonsterOfTheWeek;
 
 use App\Entity\User;
+use App\Enum\MonsterOfTheWeekEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\SimpleDb;
 use App\Service\ResponseService;
@@ -71,7 +72,7 @@ class GetAvailableRewards extends AbstractController
 
         foreach($data as $monster)
         {
-            $milestones = MonsterOfTheWeekHelpers::getBasePrizeValues($monster['monster']);
+            $milestones = MonsterOfTheWeekHelpers::getBasePrizeValues(MonsterOfTheWeekEnum::from($monster['monster']));
 
             $monsters[] = [
                 'id' => $monster['id'],
