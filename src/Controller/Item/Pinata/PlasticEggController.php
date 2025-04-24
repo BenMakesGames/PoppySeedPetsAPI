@@ -64,94 +64,119 @@ class PlasticEggController extends AbstractController
             case 'Blue Plastic Egg':
                 // common
 
-                $possibleLoot = [
-                    [
-                        'items' => [ 'Plastic' ],
-                        'description' => 'but it\'s Plastic all the way through! (Dang trick eggs!)'
-                    ],
-                    [
-                        'items' => [ 'Egg' ],
-                        'description' => 'revealing... an actual Egg? Huh. Okay. Weird.'
-                    ],
-                    [
-                        'items' => [ 'Beans', 'Beans' ],
-                        'description' => 'revealing Beans!' . ($rng->rngNextInt(1, 4) === 1 ? ' BEAAAAAAANS!' : ''),
-                    ],
-                    [
-                        'items' => [
-                            $rng->rngNextFromArray(self::CANDY),
-                            $rng->rngNextFromArray(self::CANDY),
-                            $rng->rngNextFromArray(self::CANDY)
+                if($rng->rngNextInt(1, 30) === 1)
+                {
+                    $possibleLoot = [
+                        [
+                            'items' => [ 'Yellow Plastic Egg' ],
+                            'description' => 'and-- hey! There\'s a Yellow Plastic Egg inside!'
+                        ]
+                    ];
+                }
+                else
+                {
+                    $possibleLoot = [
+                        [
+                            'items' => [ 'Plastic' ],
+                            'description' => 'but it\'s Plastic all the way through! (Dang trick eggs!)'
                         ],
-                        'description' => 'and there\'s candy inside! (Yay! Candy!)',
-                    ],
-                    [
-                        'items' => [
-                            $rng->rngNextFromArray(self::CANDY),
-                            $rng->rngNextFromArray(self::CANDY),
-                            $rng->rngNextFromArray(self::CANDY)
+                        [
+                            'items' => [ 'Egg' ],
+                            'description' => 'revealing... an actual Egg? Huh. Okay. Weird.'
                         ],
-                        'description' => 'and there\'s candy inside! :D',
-                    ],
-                    [
-                        'items' => [
-                            $rng->rngNextFromArray([
-                                'Mini Chocolate Chip Cookies',
-                                'Shortbread Cookies',
-                                'Thicc Mints',
-                            ]),
-                            $rng->rngNextFromArray([
-                                'Browser Cookie',
-                                'Fortune Cookie',
-                                'World\'s Best Sugar Cookie'
-                            ])
+                        [
+                            'items' => [ 'Beans', 'Beans' ],
+                            'description' => 'revealing Beans!' . ($rng->rngNextInt(1, 4) === 1 ? ' BEAAAAAAANS!' : ''),
                         ],
-                        'description' => 'and - ooh! - there\'s cookies inside!',
-                    ],
-                    [
-                        'items' => [ 'Fluff', 'String' ],
-                        'description' => 'but there\'s just some Fluff and a bit of String inside. Hrm.',
-                    ]
-                ];
+                        [
+                            'items' => [
+                                $rng->rngNextFromArray(self::CANDY),
+                                $rng->rngNextFromArray(self::CANDY),
+                                $rng->rngNextFromArray(self::CANDY)
+                            ],
+                            'description' => 'and there\'s candy inside! (Yay! Candy!)',
+                        ],
+                        [
+                            'items' => [
+                                $rng->rngNextFromArray(self::CANDY),
+                                $rng->rngNextFromArray(self::CANDY),
+                                $rng->rngNextFromArray(self::CANDY)
+                            ],
+                            'description' => 'and there\'s candy inside! :D',
+                        ],
+                        [
+                            'items' => [
+                                $rng->rngNextFromArray([
+                                    'Mini Chocolate Chip Cookies',
+                                    'Shortbread Cookies',
+                                    'Thicc Mints',
+                                ]),
+                                $rng->rngNextFromArray([
+                                    'Browser Cookie',
+                                    'Fortune Cookie',
+                                    'World\'s Best Sugar Cookie'
+                                ])
+                            ],
+                            'description' => 'and - ooh! - there\'s cookies inside!',
+                        ],
+                        [
+                            'items' => [ 'Fluff', 'String' ],
+                            'description' => 'but there\'s just some Fluff and a bit of String inside. Hrm.',
+                        ]
+                    ];
+                }
+
                 break;
 
             case 'Yellow Plastic Egg':
                 // uncommon
 
-                $possibleLoot = [
-                    [
-                        'items' => [
-                            $rng->rngNextFromArray(self::CANDY),
-                            $rng->rngNextFromArray(self::CANDY),
-                            $rng->rngNextFromArray(self::CANDY),
-                            $rng->rngNextFromArray(self::CANDY),
-                            $rng->rngNextFromArray(self::CANDY)
+                if($rng->rngNextInt(1, 15) === 1)
+                {
+                    $possibleLoot = [
+                        [
+                            'items' => [ 'Pink Plastic Egg' ],
+                            'description' => 'and-- hey! There\'s a Pink Plastic Egg inside!'
+                        ]
+                    ];
+                }
+                else
+                {
+                    $possibleLoot = [
+                        [
+                            'items' => [
+                                $rng->rngNextFromArray(self::CANDY),
+                                $rng->rngNextFromArray(self::CANDY),
+                                $rng->rngNextFromArray(self::CANDY),
+                                $rng->rngNextFromArray(self::CANDY),
+                                $rng->rngNextFromArray(self::CANDY)
+                            ],
+                            'description' => 'and there\'s candy inside! SO MUCH CANDY!',
                         ],
-                        'description' => 'and there\'s candy inside! SO MUCH CANDY!',
-                    ],
-                    [
-                        'items' => [ 'Century Egg' ],
-                        'description' => 'and there\'s a Century Egg inside?!' . ($rng->rngNextInt(1, 4) === 1 ? ' WHO WOULD DO SUCH A THING?!?' : '')
-                    ],
-                    [
-                        'items' => [
-                            $rng->rngNextFromArray([ 'Black Animal Ears', 'White Animal Ears' ])
+                        [
+                            'items' => [ 'Century Egg' ],
+                            'description' => 'and there\'s a Century Egg inside?!' . ($rng->rngNextInt(1, 4) === 1 ? ' WHO WOULD DO SUCH A THING?!?' : '')
                         ],
-                        'description' => 'and there\'s animal ears inside! (Oh, but don\'t worry: they\'re not real! See? Just Plastic and polyester!)'
-                    ],
-                    [
-                        'items' => [
-                            $rng->rngNextFromArray([
-                                '"Gold" Idol',
-                                'Glowing Six-sided Die',
-                                'Gold Triangle',
-                                'Maraca',
-                                'Toy Alien Gun'
-                            ])
+                        [
+                            'items' => [
+                                $rng->rngNextFromArray([ 'Black Animal Ears', 'White Animal Ears' ])
+                            ],
+                            'description' => 'and there\'s animal ears inside! (Oh, but don\'t worry: they\'re not real! See? Just Plastic and polyester!)'
                         ],
-                        'description' => 'and there\'s a toy inside! (Which toy? Check your house and see! It\'s a surprise, and/or this part of the code doesn\'t have access to the item name, for weird reasons I won\'t get into here!)'
-                    ]
-                ];
+                        [
+                            'items' => [
+                                $rng->rngNextFromArray([
+                                    '"Gold" Idol',
+                                    'Glowing Six-sided Die',
+                                    'Gold Triangle',
+                                    'Maraca',
+                                    'Toy Alien Gun'
+                                ])
+                            ],
+                            'description' => 'and there\'s a toy inside! (Which toy? Check your house and see! It\'s a surprise, and/or this part of the code doesn\'t have access to the item name, for weird reasons I won\'t get into here!)'
+                        ]
+                    ];
+                }
                 break;
 
             case 'Pink Plastic Egg':
@@ -167,8 +192,8 @@ class PlasticEggController extends AbstractController
                         'description' => 'and there\'s... a prism inside? Weird. It\'s very shiny...'
                     ],
                     [
-                        'items' => [ 'Ruby Feather' ],
-                        'description' => 'and there\'s... a Ruby Feather inside! (Oh! Pretty!)'
+                        'items' => [ 'Feathers', 'Ruby Feather' ],
+                        'description' => 'and there\'s... some Feathers inside, including a Ruby Feather! (Oh! Pretty!)'
                     ],
                     [
                         'items' => [ 'Species Transmigration Serum' ],
