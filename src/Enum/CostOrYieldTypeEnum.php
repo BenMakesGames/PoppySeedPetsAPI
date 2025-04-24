@@ -16,7 +16,7 @@ namespace App\Enum;
 
 final class CostOrYieldTypeEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string ITEM = 'item';
     public const string MONEY = 'money';

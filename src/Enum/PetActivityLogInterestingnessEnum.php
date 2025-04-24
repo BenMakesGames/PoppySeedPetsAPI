@@ -16,7 +16,7 @@ namespace App\Enum;
 
 final class PetActivityLogInterestingnessEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const int HO_HUM = 0;
     public const int UNCOMMON_ACTIVITY = 1000;

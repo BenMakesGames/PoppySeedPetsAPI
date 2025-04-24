@@ -16,7 +16,7 @@ namespace App\Enum;
 
 final class SpiritCompanionStarEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string ALTAIR = 'Altair';
     public const string CASSIOPEIA = 'Cassiopeia';

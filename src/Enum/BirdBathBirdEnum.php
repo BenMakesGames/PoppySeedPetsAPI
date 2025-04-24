@@ -16,7 +16,7 @@ namespace App\Enum;
 
 class BirdBathBirdEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string OWL = 'owl';
     public const string RAVEN = 'raven';

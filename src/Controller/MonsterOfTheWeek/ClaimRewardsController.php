@@ -109,36 +109,39 @@ class ClaimRewardsController extends AbstractController
         return $responseService->success('You received ' . ArrayFunctions::list_nice($rewards) . $punctuation);
     }
 
-    public static function ReceivedAPrizeFrom(string $prizeType, string $monster): string
+    public static function ReceivedAPrizeFrom(string $prizeType, MonsterOfTheWeekEnum $monster): string
     {
         return match($prizeType)
         {
             'Minor' => match ($monster)
             {
-                MonsterOfTheWeekEnum::ANHUR => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_A_HUNTER_OF_ANHUR,
-                MonsterOfTheWeekEnum::BOSHINOGAMI => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_SOME_BOSHINOGAMI,
-                MonsterOfTheWeekEnum::CARDEA => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_CARDEAS_LOCKBEARER,
-                MonsterOfTheWeekEnum::DIONYSUS => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_DIONYSUSS_HUNGER,
-                MonsterOfTheWeekEnum::HUEHUECOYOTL => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_HUEHUECOYOTLS_FOLLY,
-                default => throw new \Exception('Invalid monster: ' . $monster)
+                MonsterOfTheWeekEnum::Anhur => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_A_HUNTER_OF_ANHUR,
+                MonsterOfTheWeekEnum::Boshinogami => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_SOME_BOSHINOGAMI,
+                MonsterOfTheWeekEnum::Cardea => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_CARDEAS_LOCKBEARER,
+                MonsterOfTheWeekEnum::Dionysus => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_DIONYSUSS_HUNGER,
+                MonsterOfTheWeekEnum::Huehuecoyotl => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_HUEHUECOYOTLS_FOLLY,
+                MonsterOfTheWeekEnum::EiriPersona => UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_AN_EIRI_PERSONA,
+                default => throw new \Exception('Invalid monster: ' . $monster->value)
             },
             'Moderate' => match ($monster)
             {
-                MonsterOfTheWeekEnum::ANHUR => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_A_HUNTER_OF_ANHUR,
-                MonsterOfTheWeekEnum::BOSHINOGAMI => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_SOME_BOSHINOGAMI,
-                MonsterOfTheWeekEnum::CARDEA => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_CARDEAS_LOCKBEARER,
-                MonsterOfTheWeekEnum::DIONYSUS => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_DIONYSUSS_HUNGER,
-                MonsterOfTheWeekEnum::HUEHUECOYOTL => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_HUEHUECOYOTLS_FOLLY,
-                default => throw new \Exception('Invalid monster: ' . $monster)
+                MonsterOfTheWeekEnum::Anhur => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_A_HUNTER_OF_ANHUR,
+                MonsterOfTheWeekEnum::Boshinogami => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_SOME_BOSHINOGAMI,
+                MonsterOfTheWeekEnum::Cardea => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_CARDEAS_LOCKBEARER,
+                MonsterOfTheWeekEnum::Dionysus => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_DIONYSUSS_HUNGER,
+                MonsterOfTheWeekEnum::Huehuecoyotl => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_HUEHUECOYOTLS_FOLLY,
+                MonsterOfTheWeekEnum::EiriPersona => UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_AN_EIRI_PERSONA,
+                default => throw new \Exception('Invalid monster: ' . $monster->value)
             },
             'Major' => match ($monster)
             {
-                MonsterOfTheWeekEnum::ANHUR => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_A_HUNTER_OF_ANHUR,
-                MonsterOfTheWeekEnum::BOSHINOGAMI => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_SOME_BOSHINOGAMI,
-                MonsterOfTheWeekEnum::CARDEA => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_CARDEAS_LOCKBEARER,
-                MonsterOfTheWeekEnum::DIONYSUS => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_DIONYSUSS_HUNGER,
-                MonsterOfTheWeekEnum::HUEHUECOYOTL => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_HUEHUECOYOTLS_FOLLY,
-                default => throw new \Exception('Invalid monster: ' . $monster)
+                MonsterOfTheWeekEnum::Anhur => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_A_HUNTER_OF_ANHUR,
+                MonsterOfTheWeekEnum::Boshinogami => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_SOME_BOSHINOGAMI,
+                MonsterOfTheWeekEnum::Cardea => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_CARDEAS_LOCKBEARER,
+                MonsterOfTheWeekEnum::Dionysus => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_DIONYSUSS_HUNGER,
+                MonsterOfTheWeekEnum::Huehuecoyotl => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_HUEHUECOYOTLS_FOLLY,
+                MonsterOfTheWeekEnum::EiriPersona => UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_AN_EIRI_PERSONA,
+                default => throw new \Exception('Invalid monster: ' . $monster->value)
             }
         };
     }

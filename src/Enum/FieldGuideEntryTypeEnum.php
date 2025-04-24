@@ -16,7 +16,7 @@ namespace App\Enum;
 
 class FieldGuideEntryTypeEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string ANIMAL = 'animal';
     public const string PLANT = 'plant';

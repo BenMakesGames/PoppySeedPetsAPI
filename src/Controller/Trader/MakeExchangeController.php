@@ -56,11 +56,11 @@ class MakeExchangeController extends AbstractController
 
         $exchange = $traderService->getOfferById($user, $id);
 
-        if($quantity > $exchange->canMakeExchange)
-            throw new PSPInvalidOperationException('You only have the stuff to do this exchange up to ' . $exchange->canMakeExchange . ' times.');
-
         if(!$exchange)
             throw new PSPNotFoundException('There is no such exchange available.');
+
+        if($quantity > $exchange->canMakeExchange)
+            throw new PSPInvalidOperationException('You only have the stuff to do this exchange up to ' . $exchange->canMakeExchange . ' times.');
 
         if(!$traderService->userCanMakeExchange($user, $exchange, LocationEnum::HOME))
             throw new PSPNotFoundException('The items you need to make this exchange could not be found in your house.');

@@ -16,7 +16,7 @@ namespace App\Enum;
 
 class PetLocationEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string HOME = 'home';
     public const string DAYCARE = 'daycare';

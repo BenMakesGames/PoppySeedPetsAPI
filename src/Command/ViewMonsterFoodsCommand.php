@@ -43,7 +43,7 @@ class ViewMonsterFoodsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $types = MonsterOfTheWeekEnum::getValues();
+        $types = MonsterOfTheWeekEnum::cases();
         $everyItem = $this->em->getRepository(Item::class)->findBy([], [ 'name' => 'ASC' ]);
 
         foreach($types as $type)
@@ -52,11 +52,11 @@ class ViewMonsterFoodsCommand extends Command
         return 0;
     }
 
-    private function showInfo(OutputInterface $output, array $everyItem, string $monsterType)
+    private function showInfo(OutputInterface $output, array $everyItem, MonsterOfTheWeekEnum $monsterType)
     {
         $thresholds = MonsterOfTheWeekHelpers::getBasePrizeValues($monsterType);
 
-        $output->writeln("$monsterType - $thresholds[0], $thresholds[1], $thresholds[2]");
+        $output->writeln("{$monsterType->value} - $thresholds[0], $thresholds[1], $thresholds[2]");
         $output->writeln("-------------------------------");
 
         foreach($everyItem as $item)

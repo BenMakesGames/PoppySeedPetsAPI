@@ -16,7 +16,7 @@ namespace App\Enum;
 
 final class StatusEffectEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string BITTEN_BY_A_VAMPIRE = 'Bitten (by a Vampire)';
     public const string BITTEN_BY_A_WERECREATURE = 'Bitten (by a Werecreature)';

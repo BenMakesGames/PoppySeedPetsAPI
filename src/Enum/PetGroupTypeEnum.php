@@ -16,7 +16,7 @@ namespace App\Enum;
 
 class PetGroupTypeEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const int BAND = 1;
     public const int ASTRONOMY = 2;

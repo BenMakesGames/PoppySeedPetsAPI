@@ -16,7 +16,7 @@ namespace App\Enum;
 
 class UserLinkWebsiteEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string CHICKEN_SMOOTHIE = 'ChickenSmoothie';
     public const string DEVIANT_ART = 'DeviantArt';

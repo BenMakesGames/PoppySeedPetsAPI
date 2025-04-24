@@ -16,7 +16,7 @@ namespace App\Enum;
 
 final class StoryEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const int SHARUMINYINKAS_DESPAIR = 1;
     public const int STOLEN_PLANS = 2;

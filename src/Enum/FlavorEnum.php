@@ -16,7 +16,7 @@ namespace App\Enum;
 
 final class FlavorEnum
 {
-    use Enum;
+    use FakeEnum;
 
     const string EARTHY = 'earthy';
     const string FRUITY = 'fruity';

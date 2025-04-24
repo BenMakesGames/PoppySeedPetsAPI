@@ -16,7 +16,7 @@ namespace App\Enum;
 
 final class TradeGroupEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const int METALS = 1;
     public const int DARK_THINGS = 2;

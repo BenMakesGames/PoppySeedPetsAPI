@@ -92,7 +92,7 @@ class HuntingService
         $weather = WeatherService::getWeather($this->clock->now, $pet);
         $isRaining = $weather->getRainfall() > 0;
 
-        if(DateFunctions::moonPhase($this->clock->now) === MoonPhaseEnum::FULL_MOON && $this->rng->rngNextInt(1, 100) === 1)
+        if(DateFunctions::moonPhase($this->clock->now) === MoonPhaseEnum::FullMoon && $this->rng->rngNextInt(1, 100) === 1)
         {
             $activityLog = $this->werecreatureEncounterService->encounterWerecreature($petWithSkills, 'hunting', [ 'Hunting' ]);
         }

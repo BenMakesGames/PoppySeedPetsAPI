@@ -16,7 +16,7 @@ namespace App\Enum;
 
 final class StorySectionStyleEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string DIALOG = 'dialog';
     public const string DESCRIPTION = 'description';

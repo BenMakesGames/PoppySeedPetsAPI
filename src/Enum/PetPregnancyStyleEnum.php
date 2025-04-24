@@ -16,7 +16,7 @@ namespace App\Enum;
 
 final class PetPregnancyStyleEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const int EGG = 0;
     public const int WOMB = 1;

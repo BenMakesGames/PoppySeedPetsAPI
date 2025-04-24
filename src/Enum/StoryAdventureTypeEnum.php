@@ -16,7 +16,7 @@ namespace App\Enum;
 
 class StoryAdventureTypeEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string STORY = 'Story';
     public const string MINE_GOLD = 'MineGold';

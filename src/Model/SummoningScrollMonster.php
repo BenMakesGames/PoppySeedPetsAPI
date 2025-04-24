@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-use App\Enum\Enum;
+use App\Enum\FakeEnum;
 use App\Enum\PetBadgeEnum;
 
 class SummoningScrollMonster
@@ -156,7 +156,7 @@ class SummoningScrollMonster
 
 class SummoningScrollMonsterElementEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string FIRE = 'Fire';
     public const string ELECTRICITY = 'Electricity';

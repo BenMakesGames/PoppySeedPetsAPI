@@ -16,7 +16,7 @@ namespace App\Enum;
 
 class ActivityPersonalityEnum
 {
-    use Enum;
+    use FakeEnum;
 
     // 0-15 are gathering
     public const int GATHERING = 1 << 0;

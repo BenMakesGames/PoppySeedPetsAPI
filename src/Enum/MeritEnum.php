@@ -16,7 +16,7 @@ namespace App\Enum;
 
 final class MeritEnum
 {
-    use Enum;
+    use FakeEnum;
 
     // obtained through affection rewards (for additional config, check MeritInfo.php)
     public const string EIDETIC_MEMORY = 'Eidetic Memory';

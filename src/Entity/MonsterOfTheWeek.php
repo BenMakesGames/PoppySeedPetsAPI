@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\MonsterOfTheWeekEnum;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,48 +26,60 @@ class MonsterOfTheWeek
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 100)]
-    private ?string $monster = null;
+    #[ORM\Column(length: 100, type: 'string', enumType: MonsterOfTheWeekEnum::class)]
+    private MonsterOfTheWeekEnum $monster;
 
     #[ORM\Column]
     private int $communityTotal = 0;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Item $easyPrize = null;
+    private Item $easyPrize;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Item $mediumPrize = null;
+    private Item $mediumPrize;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Item $hardPrize = null;
+    private Item $hardPrize;
 
     #[ORM\Column]
-    private int $level = 1;
+    private int $level;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    private ?\DateTimeImmutable $startDate = null;
+    private \DateTimeImmutable $startDate;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    private ?\DateTimeImmutable $endDate = null;
+    private \DateTimeImmutable $endDate;
+
+    public function __construct(
+        MonsterOfTheWeekEnum $monster,
+        \DateTimeImmutable $startDate,
+        \DateTimeImmutable $endDate,
+        int $level,
+        Item $easyPrize,
+        Item $mediumPrize,
+        Item $hardPrize
+    )
+    {
+        $this->monster = $monster;
+        $this->startDate = $startDate;
+        $this->endDate = $endDate;
+        $this->level = $level;
+        $this->easyPrize = $easyPrize;
+        $this->mediumPrize = $mediumPrize;
+        $this->hardPrize = $hardPrize;
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getMonster(): ?string
+    public function getMonster(): MonsterOfTheWeekEnum
     {
         return $this->monster;
-    }
-
-    public function setMonster(string $monster): static
-    {
-        $this->monster = $monster;
-
-        return $this;
     }
 
     public function getCommunityTotal(): int
@@ -74,23 +87,9 @@ class MonsterOfTheWeek
         return $this->communityTotal;
     }
 
-    public function setCommunityTotal(int $communityTotal): static
-    {
-        $this->communityTotal = $communityTotal;
-
-        return $this;
-    }
-
     public function getEasyPrize(): Item
     {
         return $this->easyPrize;
-    }
-
-    public function setEasyPrize(Item $easyPrize): static
-    {
-        $this->easyPrize = $easyPrize;
-
-        return $this;
     }
 
     public function getMediumPrize(): Item
@@ -98,23 +97,9 @@ class MonsterOfTheWeek
         return $this->mediumPrize;
     }
 
-    public function setMediumPrize(Item $mediumPrize): static
-    {
-        $this->mediumPrize = $mediumPrize;
-
-        return $this;
-    }
-
     public function getHardPrize(): Item
     {
         return $this->hardPrize;
-    }
-
-    public function setHardPrize(Item $hardPrize): static
-    {
-        $this->hardPrize = $hardPrize;
-
-        return $this;
     }
 
     public function getLevel(): ?int
@@ -122,35 +107,14 @@ class MonsterOfTheWeek
         return $this->level;
     }
 
-    public function setLevel(int $level): static
-    {
-        $this->level = $level;
-
-        return $this;
-    }
-
-    public function getStartDate(): ?\DateTimeImmutable
+    public function getStartDate(): \DateTimeImmutable
     {
         return $this->startDate;
     }
 
-    public function setStartDate(\DateTimeImmutable $startDate): static
-    {
-        $this->startDate = $startDate;
-
-        return $this;
-    }
-
-    public function getEndDate(): ?\DateTimeImmutable
+    public function getEndDate(): \DateTimeImmutable
     {
         return $this->endDate;
-    }
-
-    public function setEndDate(\DateTimeImmutable $endDate): static
-    {
-        $this->endDate = $endDate;
-
-        return $this;
     }
 
     public function isCurrent(\DateTimeImmutable $todaysDate): bool

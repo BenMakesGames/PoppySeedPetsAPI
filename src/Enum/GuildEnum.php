@@ -16,7 +16,7 @@ namespace App\Enum;
 
 class GuildEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string TIMES_ARROW = 'Time\'s Arrow';
     public const string LIGHT_AND_SHADOW = 'Light and Shadow';

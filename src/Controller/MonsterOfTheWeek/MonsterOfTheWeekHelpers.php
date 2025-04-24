@@ -20,101 +20,107 @@ use App\Enum\PetSkillEnum;
 
 final class MonsterOfTheWeekHelpers
 {
-    public static function getConsolationPrize(string $monster): string
+    public static function getConsolationPrize(MonsterOfTheWeekEnum $monster): string
     {
         return match($monster)
         {
-            MonsterOfTheWeekEnum::ANHUR => 'Crooked Stick',
-            MonsterOfTheWeekEnum::BOSHINOGAMI => 'Fluff',
-            MonsterOfTheWeekEnum::CARDEA => 'String',
-            MonsterOfTheWeekEnum::DIONYSUS => 'Blueberries',
-            MonsterOfTheWeekEnum::HUEHUECOYOTL => 'Music Note',
+            MonsterOfTheWeekEnum::Anhur => 'Crooked Stick',
+            MonsterOfTheWeekEnum::Boshinogami => 'Fluff',
+            MonsterOfTheWeekEnum::Cardea => 'String',
+            MonsterOfTheWeekEnum::Dionysus => 'Blueberries',
+            MonsterOfTheWeekEnum::Huehuecoyotl => 'Music Note',
+            MonsterOfTheWeekEnum::EiriPersona => 'Pointer',
             default => throw new \InvalidArgumentException("Invalid monster")
         };
     }
 
-    public static function getBasePrizeValues(string $monster): array
+    public static function getBasePrizeValues(MonsterOfTheWeekEnum $monster): array
     {
         return match($monster)
         {
             // [ easy = hard / 7.5, rounding down to a nice number; medium is about half way between ]
-            MonsterOfTheWeekEnum::ANHUR => [ 25, 110, 200 ],
-            MonsterOfTheWeekEnum::BOSHINOGAMI => [ 40, 170, 300 ],
-            MonsterOfTheWeekEnum::CARDEA => [ 10, 45, 75 ],
-            MonsterOfTheWeekEnum::DIONYSUS => [ 100, 425, 750 ],
-            MonsterOfTheWeekEnum::HUEHUECOYOTL => [ 10, 45, 75 ],
+            MonsterOfTheWeekEnum::Anhur => [ 25, 110, 200 ],
+            MonsterOfTheWeekEnum::Boshinogami => [ 40, 170, 300 ],
+            MonsterOfTheWeekEnum::Cardea => [ 10, 45, 75 ],
+            MonsterOfTheWeekEnum::Dionysus => [ 100, 425, 750 ],
+            MonsterOfTheWeekEnum::Huehuecoyotl => [ 10, 45, 75 ],
+            MonsterOfTheWeekEnum::EiriPersona => [ 25, 110, 200 ],
             default => throw new \InvalidArgumentException("Invalid monster")
         };
     }
 
-    public static function getCommunityContributionLevel(string $monster, int $communityContribution)
+    public static function getCommunityContributionLevel(MonsterOfTheWeekEnum $monster, int $communityContribution)
     {
         $highValue = self::getBasePrizeValues($monster)[2];
 
         return max(1, (int)ceil($communityContribution / $highValue));
     }
 
-    public static function getSpiritNameWithArticle(string $monster): string
+    public static function getSpiritNameWithArticle(MonsterOfTheWeekEnum $monster): string
     {
         return match($monster)
         {
-            MonsterOfTheWeekEnum::ANHUR => 'a Hunter of Anhur',
-            MonsterOfTheWeekEnum::BOSHINOGAMI => 'some Boshinogami',
-            MonsterOfTheWeekEnum::CARDEA => 'Cardea\'s Lockbearer',
-            MonsterOfTheWeekEnum::DIONYSUS => 'Dionysus\'s Hunger',
-            MonsterOfTheWeekEnum::HUEHUECOYOTL => 'Huehuecoyotl\'s Folly',
+            MonsterOfTheWeekEnum::Anhur => 'a Hunter of Anhur',
+            MonsterOfTheWeekEnum::Boshinogami => 'some Boshinogami',
+            MonsterOfTheWeekEnum::Cardea => 'Cardea\'s Lockbearer',
+            MonsterOfTheWeekEnum::Dionysus => 'Dionysus\'s Hunger',
+            MonsterOfTheWeekEnum::Huehuecoyotl => 'Huehuecoyotl\'s Folly',
             default => throw new \InvalidArgumentException("Invalid monster"),
         };
     }
 
-    public static function getEasyPrizes(string $monster): array
+    public static function getEasyPrizes(MonsterOfTheWeekEnum $monster): array
     {
         return match($monster)
         {
-            MonsterOfTheWeekEnum::ANHUR => [ 'Monster-summoning Scroll', 'Potion of Brawling', 'Wolf\'s Bane' ],
-            MonsterOfTheWeekEnum::BOSHINOGAMI => [ 'Handicrafts Supply Box', 'Potion of Crafts' ],
-            MonsterOfTheWeekEnum::CARDEA => [ 'Magpie Pouch', 'Magpie\'s Deal', 'Tile: Thieving Magpie' ],
-            MonsterOfTheWeekEnum::DIONYSUS => [ 'Essence d\'Assortiment', 'Potion of Nature' ],
-            MonsterOfTheWeekEnum::HUEHUECOYOTL => [ 'Potion of Music', 'Dancing Sword', 'LP' ],
+            MonsterOfTheWeekEnum::Anhur => [ 'Monster-summoning Scroll', 'Potion of Brawling', 'Wolf\'s Bane' ],
+            MonsterOfTheWeekEnum::Boshinogami => [ 'Handicrafts Supply Box', 'Potion of Crafts' ],
+            MonsterOfTheWeekEnum::Cardea => [ 'Magpie Pouch', 'Magpie\'s Deal', 'Tile: Thieving Magpie' ],
+            MonsterOfTheWeekEnum::Dionysus => [ 'Essence d\'Assortiment', 'Potion of Nature' ],
+            MonsterOfTheWeekEnum::Huehuecoyotl => [ 'Potion of Music', 'Dancing Sword', 'LP' ],
+            MonsterOfTheWeekEnum::EiriPersona => [ 'Magic Smoke', 'Lightning in a Bottle', 'Potion of Science' ],
             default => throw new \InvalidArgumentException("Invalid monster")
         };
     }
 
-    public static function getMediumPrizes(string $monster): array
+    public static function getMediumPrizes(MonsterOfTheWeekEnum $monster): array
     {
         return match ($monster)
         {
-            MonsterOfTheWeekEnum::ANHUR => [ 'Tile: Giant Cave Toad', 'Monster Box', 'Very Strongbox' ],
-            MonsterOfTheWeekEnum::BOSHINOGAMI => [ 'Hat Box' ],
-            MonsterOfTheWeekEnum::CARDEA => [ 'Tile: Flying Keys, Only', 'Magic Crystal Ball', 'White Feathers', 'Tile: Triple Chest' ],
-            MonsterOfTheWeekEnum::DIONYSUS => [ 'Tile: Statue Garden', 'Whisper Stone' ],
-            MonsterOfTheWeekEnum::HUEHUECOYOTL => [ 'Magic Hourglass', 'Maraca', 'Tile: Very Cool Beans' ],
+            MonsterOfTheWeekEnum::Anhur => [ 'Tile: Giant Cave Toad', 'Monster Box', 'Very Strongbox' ],
+            MonsterOfTheWeekEnum::Boshinogami => [ 'Hat Box' ],
+            MonsterOfTheWeekEnum::Cardea => [ 'Tile: Flying Keys, Only', 'Magic Crystal Ball', 'Bag of Feathers', 'Tile: Triple Chest' ],
+            MonsterOfTheWeekEnum::Dionysus => [ 'Tile: Statue Garden', 'Whisper Stone' ],
+            MonsterOfTheWeekEnum::Huehuecoyotl => [ 'Magic Hourglass', 'Maraca', 'Tile: Very Cool Beans' ],
+            MonsterOfTheWeekEnum::EiriPersona => [ 'Eiri Persona Persona' ],
             default => throw new \InvalidArgumentException("Invalid monster"),
         };
     }
 
-    public static function getHardPrizes(string $monster): array
+    public static function getHardPrizes(MonsterOfTheWeekEnum $monster): array
     {
         return match($monster)
         {
-            MonsterOfTheWeekEnum::ANHUR => [ 'Skill Scroll: Brawl', 'Skill Scroll: Stealth' ],
-            MonsterOfTheWeekEnum::BOSHINOGAMI => [ 'Scroll of Illusions', 'Skill Scroll: Crafts', 'Behatting Scroll' ],
-            MonsterOfTheWeekEnum::CARDEA => [ 'Ruby Feather', 'Skill Scroll: Arcana', 'Skill Scroll: Science', 'Forgetting Scroll' ],
-            MonsterOfTheWeekEnum::DIONYSUS => [ 'Skill Scroll: Nature' ],
-            MonsterOfTheWeekEnum::HUEHUECOYOTL => [ 'Skill Scroll: Music' ],
+            MonsterOfTheWeekEnum::Anhur => [ 'Skill Scroll: Brawl', 'Skill Scroll: Stealth' ],
+            MonsterOfTheWeekEnum::Boshinogami => [ 'Scroll of Illusions', 'Skill Scroll: Crafts', 'Behatting Scroll' ],
+            MonsterOfTheWeekEnum::Cardea => [ 'Skill Scroll: Arcana', 'Forgetting Scroll' ],
+            MonsterOfTheWeekEnum::Dionysus => [ 'Skill Scroll: Nature' ],
+            MonsterOfTheWeekEnum::Huehuecoyotl => [ 'Skill Scroll: Music' ],
+            MonsterOfTheWeekEnum::EiriPersona => [ 'Skill Scroll: Science' ],
             default => throw new \InvalidArgumentException("Invalid monster"),
         };
     }
 
-    public static function getItemValue(string $monster, Item $item): int
+    public static function getItemValue(MonsterOfTheWeekEnum $monster, Item $item): int
     {
         return match($monster)
         {
-            MonsterOfTheWeekEnum::ANHUR => self::getItemValueForAnhur($item),
-            MonsterOfTheWeekEnum::BOSHINOGAMI => self::getItemValueForBoshinogami($item),
-            MonsterOfTheWeekEnum::CARDEA => self::getItemValueForCardea($item),
-            MonsterOfTheWeekEnum::DIONYSUS => self::getItemValueForDionysus($item),
-            MonsterOfTheWeekEnum::HUEHUECOYOTL => self::getItemValueForHuehuecoyotl($item),
+            MonsterOfTheWeekEnum::Anhur => self::getItemValueForAnhur($item),
+            MonsterOfTheWeekEnum::Boshinogami => self::getItemValueForBoshinogami($item),
+            MonsterOfTheWeekEnum::Cardea => self::getItemValueForCardea($item),
+            MonsterOfTheWeekEnum::Dionysus => self::getItemValueForDionysus($item),
+            MonsterOfTheWeekEnum::Huehuecoyotl => self::getItemValueForHuehuecoyotl($item),
+            MonsterOfTheWeekEnum::EiriPersona => self::getItemValueForEiriPersona($item),
             default => 0,
         };
     }
@@ -143,7 +149,7 @@ final class MonsterOfTheWeekHelpers
             $points = max($points, $effects->getGrantedSkill() == PetSkillEnum::BRAWL ? 2 : 0);
         }
 
-        return $points;
+        return (int)floor(pow($points, 1.3333));
     }
 
     public static function getItemValueForBoshinogami(Item $item): int
@@ -215,6 +221,51 @@ final class MonsterOfTheWeekHelpers
         if($item->hasItemGroup('Musical Instrument'))
             $points += 2;
 
-        return $points;
+        return (int)floor(pow($points, 1.3333));
+    }
+
+    public static function getItemValueForEiriPersona(Item $item): int
+    {
+        if($item->getName() === 'Eiri Persona Persona')
+            return 11;
+
+        if($item->hasItemGroup('Robot') || $item->getName() === 'Tinfoil Hat')
+            return 3;
+
+        if(in_array($item->getName(), [ 'XOR', 'Hash Table', 'Password', 'Cryptocurrency Wallet', 'Diffie-H Key' ]))
+            return 2;
+
+        if(in_array($item->getName(), [ 'Finite State Machine', 'NUL', 'Pointer', 'String' ]))
+            return 1;
+
+        $points = 0;
+
+        if($item->getTool())
+        {
+            $effects = $item->getTool();
+
+            $points = max($points, $effects->getScience() + ($effects->getFocusSkill() == PetSkillEnum::SCIENCE ? 2 : 0) + ($effects->getPreventsBugs() ? 1 : 0));
+        }
+
+        if($item->getEnchants() && $item->getEnchants()->getEffects())
+        {
+            $effects = $item->getEnchants()->getEffects();
+            $points = max($points, $effects->getScience() + ($effects->getFocusSkill() == PetSkillEnum::SCIENCE ? 2 : 0) + ($effects->getPreventsBugs() ? 1 : 0));
+        }
+
+        if($item->getFood())
+        {
+            $effects = $item->getFood();
+
+            $points = max($points, $effects->getGrantedSkill() == PetSkillEnum::SCIENCE ? 2 : 0);
+        }
+
+        if(str_contains(mb_strtolower($item->getName()), 'fiberglass'))
+            $points += 2;
+
+        if(str_contains(mb_strtolower($item->getName()), 'phone'))
+            $points += 1;
+
+        return (int)floor(pow($points, 1.3333));
     }
 }

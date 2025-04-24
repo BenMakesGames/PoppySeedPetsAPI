@@ -16,7 +16,7 @@ namespace App\Enum;
 
 class PlantTypeEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string EARTH = 'earth';
     public const string WATER = 'water';

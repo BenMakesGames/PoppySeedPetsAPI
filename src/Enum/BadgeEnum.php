@@ -15,7 +15,7 @@ namespace App\Enum;
 
 final class BadgeEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string RECYCLED_10 = 'Recycled10';
     public const string RECYCLED_100 = 'Recycled100';
@@ -106,6 +106,7 @@ final class BadgeEnum
     public const string GREAT_SPIRIT_CARDEAS_LOCKBEARER_10 = 'GreatSpiritCardeasLockbearer10';
     public const string GREAT_SPIRIT_DIONYSUSS_HUNGER_10 = 'GreatSpiritDionysussHunger10';
     public const string GREAT_SPIRIT_HUEHUECOYOTLS_FOLLY_10 = 'GreatSpiritHuehuecoyotlsFolly10';
+    public const string GREAT_SPIRIT_EIRI_PERSONA_10 = 'GreatSpiritEiriPersona10';
 
     public const string MISREAD_SCROLL = 'MisreadScroll1';
     public const string READ_SCROLL_1 = 'ReadScroll1';

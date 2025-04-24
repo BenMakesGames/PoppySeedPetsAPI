@@ -37,7 +37,7 @@ class ValidateMonsterOfTheWeekPrizesTest extends KernelTestCase
         /** @var EntityManagerInterface $em */
         $em = $container->get(EntityManagerInterface::class);
 
-        $monsterTypes = MonsterOfTheWeekEnum::getValues();
+        $monsterTypes = MonsterOfTheWeekEnum::cases();
 
         foreach($monsterTypes as $monsterType)
         {

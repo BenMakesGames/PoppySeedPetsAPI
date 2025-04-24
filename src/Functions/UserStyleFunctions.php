@@ -20,7 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class UserStyleFunctions
 {
-    public static function findCurrent(EntityManagerInterface $em, int $userId)
+    public static function findCurrent(EntityManagerInterface $em, int $userId): ?UserStyle
     {
         return $em->getRepository(UserStyle::class)->findOneBy([
             'user' => $userId,

@@ -16,7 +16,7 @@ namespace App\Enum;
 
 final class HollowEarthRequiredActionEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const int NO = 0;
     public const int YES_AND_KEEP_MOVING = 1;

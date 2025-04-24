@@ -61,13 +61,18 @@ class CreateMonstersOfTheWeekCommand extends Command
         if($monsterId !== null)
             return self::SUCCESS;
 
-        $previousTwoMonsterTypes = $this->em->getRepository(MonsterOfTheWeek::class)
+        $previousTwoMonsterTypesValues = $this->em->getRepository(MonsterOfTheWeek::class)
             ->createQueryBuilder('m')
             ->select('m.monster')
             ->orderBy('m.id', 'DESC')
             ->setMaxResults(2)
             ->getQuery()
             ->getSingleColumnResult();
+
+        $previousTwoMonsterTypes = array_map(
+            fn($value) => MonsterOfTheWeekEnum::from($value),
+            $previousTwoMonsterTypesValues
+        );
 
         $monsterType = $this->selectMonsterType($previousTwoMonsterTypes);
 
@@ -92,25 +97,25 @@ class CreateMonstersOfTheWeekCommand extends Command
                 $level = 1;
         }
 
-        $monster = (new MonsterOfTheWeek())
-            ->setMonster($monsterType)
-            ->setStartDate($currentMonday)
-            ->setEndDate($currentMonday->modify('next sunday')->setTime(23, 59, 59))
-            ->setCommunityTotal(0)
-            ->setLevel($level)
-            ->setEasyPrize($this->selectEasyPrize($monsterType))
-            ->setMediumPrize($this->selectMediumPrize($monsterType))
-            ->setHardPrize($this->selectHardPrize($monsterType));
+        $monster = new MonsterOfTheWeek(
+            monster: $monsterType,
+            startDate: $currentMonday,
+            endDate: $currentMonday->modify('next sunday')->setTime(23, 59, 59),
+            level: $level,
+            easyPrize: $this->selectEasyPrize($monsterType),
+            mediumPrize: $this->selectMediumPrize($monsterType),
+            hardPrize: $this->selectHardPrize($monsterType)
+        );
 
         $this->em->persist($monster);
         $this->em->flush();
 
-        $output->writeln("Created level-$level $monsterType");
+        $output->writeln("Created level-$level {$monsterType->value}");
 
         return self::SUCCESS;
     }
 
-    private function getPreviousMonsterOfType(string $monsterType): ?MonsterOfTheWeek
+    private function getPreviousMonsterOfType(MonsterOfTheWeekEnum $monsterType): ?MonsterOfTheWeek
     {
         return $this->em->getRepository(MonsterOfTheWeek::class)
             ->createQueryBuilder('m')
@@ -122,25 +127,28 @@ class CreateMonstersOfTheWeekCommand extends Command
             ->getOneOrNullResult();
     }
 
-    private function selectMonsterType(array $previousTwoMonsterTypes): string
+    /**
+     * @param MonsterOfTheWeekEnum[] $previousTwoMonsterTypes
+     */
+    private function selectMonsterType(array $previousTwoMonsterTypes): MonsterOfTheWeekEnum
     {
-        $allMonsterTypes = MonsterOfTheWeekEnum::getValues();
-        $monsterTypes = array_diff($allMonsterTypes, $previousTwoMonsterTypes);
+        $allMonsterTypes = MonsterOfTheWeekEnum::cases();
+        $monsterTypes = array_filter($allMonsterTypes, fn($case) => !in_array($case, $previousTwoMonsterTypes, true));
 
         return $monsterTypes[array_rand($monsterTypes)];
     }
 
-    private function selectEasyPrize(string $monsterType)
+    private function selectEasyPrize(MonsterOfTheWeekEnum $monsterType)
     {
         return $this->selectPrizeItem(MonsterOfTheWeekHelpers::getEasyPrizes($monsterType));
     }
 
-    private function selectMediumPrize(string $monsterType)
+    private function selectMediumPrize(MonsterOfTheWeekEnum $monsterType)
     {
         return $this->selectPrizeItem(MonsterOfTheWeekHelpers::getMediumPrizes($monsterType));
     }
 
-    private function selectHardPrize(string $monsterType)
+    private function selectHardPrize(MonsterOfTheWeekEnum $monsterType)
     {
         return $this->selectPrizeItem(MonsterOfTheWeekHelpers::getHardPrizes($monsterType));
     }

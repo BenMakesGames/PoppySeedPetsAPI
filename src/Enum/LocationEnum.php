@@ -16,7 +16,7 @@ namespace App\Enum;
 
 final class LocationEnum
 {
-    use Enum;
+    use FakeEnum;
 
     const int HOME = 0;
     const int BASEMENT = 1;

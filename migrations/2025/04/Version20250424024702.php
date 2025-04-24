@@ -11,21 +11,26 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
+namespace DoctrineMigrations;
 
-namespace App\Enum;
+use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
 
-class PatreonTierEnum
+final class Version20250424024702 extends AbstractMigration
 {
-    use FakeEnum;
-
-    public const string DAPPER_SWAN = 'DapperSwan';
-
-    public static function getByRewardId(int $rewardId)
+    public function getDescription(): string
     {
-        switch($rewardId)
-        {
-            case 9967352: return self::DAPPER_SWAN;
-            default: throw new \InvalidArgumentException('Invalid rewardId.');
-        }
+        return '';
+    }
+
+    public function up(Schema $schema): void
+    {
+        $this->addSql(<<<'EOSQL'
+        UPDATE `item` SET `use_actions` = '[[\"Open\",\"bagOfFeathers/#/open\"]]', `description` = 'Oh gosh - _soooo_ inventive - it\'s almost as if I have no idea what\'s going to be insii-iiiide...' WHERE `item`.`id` = 1445; 
+        EOSQL);
+    }
+
+    public function down(Schema $schema): void
+    {
     }
 }
