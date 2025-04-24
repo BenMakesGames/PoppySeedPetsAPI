@@ -532,6 +532,18 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Hollow Earth Booster Pack: Community Pack'), 3);
                 break;
 
+            case BadgeEnum::GREAT_SPIRIT_EIRI_PERSONA_10:
+                $progress = [
+                    'target' => 10,
+                    'current' => self::getStatTotal($user, [
+                        UserStatEnum::RECEIVED_A_MINOR_PRIZE_FROM_AN_EIRI_PERSONA,
+                        UserStatEnum::RECEIVED_A_MODERATE_PRIZE_FROM_AN_EIRI_PERSONA,
+                        UserStatEnum::RECEIVED_A_MAJOR_PRIZE_FROM_AN_EIRI_PERSONA
+                    ], $em, $cache)
+                ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Magic Smoke'), 3);
+                break;
+
             case BadgeEnum::MISREAD_SCROLL:
                 $progress = [ 'target' => 1, 'current' => self::getStatTotal($user, [ 'Misread a Scroll' ], $em, $cache) ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Pectin'), 1);
