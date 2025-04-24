@@ -100,14 +100,14 @@ class PetRelationshipService
      * @param Collection|Pet[] $pets
      */
     public function groupGathering(
-        $pets,
+        Collection|array $pets,
         string $hangOutDescription,
         string $enemyDescription,
         string $meetProfileText,
         string $meetActivityLogTemplate,
         array $groupTags,
         int $meetChance = 2
-    )
+    ): void
     {
         // array_values, because keys might not be sequential (members can leave), but we need to use array indices.
         // ->toArray, because we might have received a stupid ArrayCollection from Doctrine
@@ -329,7 +329,7 @@ class PetRelationshipService
         return $commitment;
     }
 
-    public static function calculateRelationshipDistance($initialRelationship, $targetRelationship): int
+    public static function calculateRelationshipDistance(string $initialRelationship, string $targetRelationship): int
     {
         $values = [
             RelationshipEnum::BROKE_UP => -2,

@@ -178,7 +178,21 @@ class PetAssistantService
             $pet->setLocation(PetLocationEnum::HOME);
     }
 
-    public static function getExtraItem(IRandom $rng, int $totalSkill, array $baseList, array $mediumList, array $highList, array $superHighList)
+    /**
+     * @param string[] $baseList
+     * @param string[] $mediumList
+     * @param string[] $highList
+     * @param string[] $superHighList
+     * @return string
+     */
+    public static function getExtraItem(
+        IRandom $rng,
+        int $totalSkill,
+        array $baseList,
+        array $mediumList,
+        array $highList,
+        array $superHighList
+    ): string
     {
         $roll = $rng->rngNextInt(1, min(30, 10 + $totalSkill));
 

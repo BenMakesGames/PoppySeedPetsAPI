@@ -136,7 +136,7 @@ class TreasureMapService
             $this->inventoryService->petAttractsRandomBug($pet);
     }
 
-    public function doAbundantiasVault(Pet $pet)
+    public function doAbundantiasVault(Pet $pet): void
     {
         $changes = new PetChanges($pet);
 
