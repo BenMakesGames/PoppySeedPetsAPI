@@ -22,19 +22,22 @@ final class Version20250424043857 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Creates a new item_hat entry and links it to an item.';
     }
 
     public function up(Schema $schema): void
     {
-        // hat data for Gnome's Favor:
-        $this->addSql(<<<EOSQL
-        INSERT INTO `item_hat` (`id`, `head_x`, `head_y`, `head_angle`, `head_angle_fixed`, `head_scale`) VALUES (285, '0.525', '0.93', '-14', '0', '0.49')
-        ON DUPLICATE KEY UPDATE `id` = `id`;
-        EOSQL);
+        // Create a new hat and set values from the Make a Hat tool
+        $this->addSql(<<<'EOSQL'
+INSERT INTO `item_hat` (`head_x`, `head_y`, `head_angle`, `head_angle_fixed`, `head_scale`) VALUES ('0.525', '0.93', '-14', '0', '0.49');
+EOSQL);
 
-        // add hat id for Gnome's Favor:
-        $this->addSql('UPDATE `item` SET `hat_id` = 285 WHERE `item`.`id` = 1173;');
+        // Link the new hat to the desired item (update the item ID as needed)
+        $this->addSql(<<<'EOSQL'
+UPDATE `item`
+SET `hat_id` = (SELECT MAX(`id`) FROM `item_hat`)
+WHERE `item`.`id` = 1173;
+EOSQL);
     }
 
     public function down(Schema $schema): void
