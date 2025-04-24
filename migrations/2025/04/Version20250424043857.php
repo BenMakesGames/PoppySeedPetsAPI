@@ -29,12 +29,12 @@ final class Version20250424043857 extends AbstractMigration
     {
         // hat data for Gnome's Favor:
         $this->addSql(<<<EOSQL
-        INSERT INTO `item_hat` (`id`, `head_x`, `head_y`, `head_angle`, `head_angle_fixed`, `head_scale`) VALUES (01JSK0HSP4YVQA288K2RWZJX01, '0.525', '0.93', '-14', '0', '0.49')
+        INSERT INTO `item_hat` (`id`, `head_x`, `head_y`, `head_angle`, `head_angle_fixed`, `head_scale`) VALUES ('01JSK0HSP4YVQA288K2RWZJX01', '0.525', '0.93', '-14', '0', '0.49')
         ON DUPLICATE KEY UPDATE `id` = `id`;
         EOSQL);
 
         // add hat id for Gnome's Favor:
-        $this->addSql('UPDATE `item` SET `hat_id` = 01JSK0HSP4YVQA288K2RWZJX01 WHERE `item`.`id` = 1173;');
+        $this->addSql('UPDATE `item` SET `hat_id` = '01JSK0HSP4YVQA288K2RWZJX01' WHERE `item`.`id` = 1173;');
     }
 
     public function down(Schema $schema): void
