@@ -228,7 +228,7 @@ class ResponseService
         return $this->reloadPets;
     }
 
-    public function setReloadInventory($reload = true): self
+    public function setReloadInventory(bool $reload = true): self
     {
         $this->reloadInventory = $reload;
         return $this;
