@@ -38,7 +38,7 @@ class SkillScrollController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseBrawl(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
-    )
+    ): JsonResponse
     {
         return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::BRAWL);
     }
@@ -47,7 +47,7 @@ class SkillScrollController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseCrafts(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
-    )
+    ): JsonResponse
     {
         return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::CRAFTS);
     }
@@ -56,7 +56,7 @@ class SkillScrollController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseMusic(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
-    )
+    ): JsonResponse
     {
         return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::MUSIC);
     }
@@ -65,7 +65,7 @@ class SkillScrollController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseNature(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
-    )
+    ): JsonResponse
     {
         return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::NATURE);
     }
@@ -74,7 +74,7 @@ class SkillScrollController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseScience(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
-    )
+    ): JsonResponse
     {
         return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::SCIENCE);
     }
@@ -83,7 +83,7 @@ class SkillScrollController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseStealth(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
-    )
+    ): JsonResponse
     {
         return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::STEALTH);
     }
@@ -92,7 +92,7 @@ class SkillScrollController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseArcana(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
-    )
+    ): JsonResponse
     {
         return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::ARCANA);
     }

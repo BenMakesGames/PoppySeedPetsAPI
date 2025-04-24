@@ -1101,7 +1101,7 @@ class ProgrammingService
         return $activityLog;
     }
 
-    private function createInfinityImp(Pet $captor)
+    private function createInfinityImp(Pet $captor): void
     {
         $infinityImp = $this->em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Infinity Imp' ]);
 

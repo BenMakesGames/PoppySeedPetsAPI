@@ -32,6 +32,7 @@ use App\Service\PetFactory;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -43,7 +44,7 @@ class GoldRingController extends AbstractController
     public function smash(
         Inventory $inventory, ResponseService $responseService, IRandom $rng,
         EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'goldRing/#/smash');
 
@@ -80,7 +81,7 @@ class GoldRingController extends AbstractController
     public function collect100(
         Inventory $inventory, EntityManagerInterface $em, InventoryService $inventoryService,
         ResponseService $responseService, PetFactory $petFactory, IRandom $rng, HattierService $hattierService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

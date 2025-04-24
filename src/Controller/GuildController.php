@@ -20,6 +20,7 @@ use App\Service\Filter\GuildMemberFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -27,7 +28,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class GuildController extends AbstractController
 {
     #[Route("", methods: ["GET"])]
-    public function getAll(ResponseService $responseService, EntityManagerInterface $em)
+    public function getAll(ResponseService $responseService, EntityManagerInterface $em): JsonResponse
     {
         return $responseService->success($em->getRepository(Guild::class)->findAll(), [ SerializationGroupEnum::GUILD_ENCYCLOPEDIA ]);
     }
@@ -35,7 +36,7 @@ class GuildController extends AbstractController
     #[Route("/{guild}", methods: ["GET"])]
     public function getGuild(
         Guild $guild, ResponseService $responseService, GuildMemberFilterService $guildMemberFilterService, Request $request
-    )
+    ): JsonResponse
     {
         $guildMemberFilterService->addRequiredFilter('guild', $guild->getId());
 

@@ -84,7 +84,7 @@ class JumpRopeService
         return $activityLog;
     }
 
-    private function doBreakCheck(ComputedPetSkills $petWithSkills, int $difficulty, PetActivityLog $log)
+    private function doBreakCheck(ComputedPetSkills $petWithSkills, int $difficulty, PetActivityLog $log): void
     {
         $skillCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal());
 

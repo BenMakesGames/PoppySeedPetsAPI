@@ -25,6 +25,7 @@ use App\Service\MuseumService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -36,7 +37,7 @@ class WunderbussController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function usedWish(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -53,7 +54,7 @@ class WunderbussController extends AbstractController
     public function search(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         MuseumService $museumService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

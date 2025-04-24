@@ -21,14 +21,10 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ListTopAttemptedRecipesCommand extends PoppySeedPetsCommand
 {
-    private EntityManagerInterface $em;
-
     public function __construct(
-        EntityManagerInterface $em
+        private readonly EntityManagerInterface $em
     )
     {
-        $this->em = $em;
-
         parent::__construct();
     }
 

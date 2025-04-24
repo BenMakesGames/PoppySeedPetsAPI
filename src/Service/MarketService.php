@@ -62,7 +62,7 @@ class MarketService
 
     }
 
-    public function updateLowestPriceForItem(Item $item)
+    public function updateLowestPriceForItem(Item $item): void
     {
         $lowestPrice = $this->computeLowestPriceForItem($item);
 
@@ -100,7 +100,7 @@ class MarketService
         return $log;
     }
 
-    public function transferItemToPlayer(Inventory $item, User $newOwner, int $location, int $sellPrice, string $newItemComment)
+    public function transferItemToPlayer(Inventory $item, User $newOwner, int $location, int $sellPrice, string $newItemComment): void
     {
         $this->userStatsRepository->incrementStat($item->getOwner(), UserStatEnum::TOTAL_MONEYS_EARNED_IN_MARKET, $sellPrice);
         $this->userStatsRepository->incrementStat($item->getOwner(), UserStatEnum::ITEMS_SOLD_IN_MARKET, 1);
@@ -114,7 +114,7 @@ class MarketService
         ;
     }
 
-    public function canOfferWingedKey(User $user)
+    public function canOfferWingedKey(User $user): bool
     {
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::Market) && $user->hasUnlockedFeature(UnlockableFeatureEnum::Museum) && $user->getMaxSellPrice() >= 100)
         {
@@ -194,7 +194,7 @@ class MarketService
         return true;
     }
 
-    public function removeMarketListingForItem(int $itemId)
+    public function removeMarketListingForItem(int $itemId): void
     {
         $item = MarketListingRepository::findMarketListingForItem($this->em, $itemId);
 

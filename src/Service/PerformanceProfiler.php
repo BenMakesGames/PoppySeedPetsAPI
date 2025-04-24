@@ -35,7 +35,7 @@ class PerformanceProfiler
         ]);
     }
 
-    public function logExecutionTime(string $METHOD, float $executionTimeSeconds)
+    public function logExecutionTime(string $METHOD, float $executionTimeSeconds): void
     {
         if(!$this->cloudWatchClient)
             return;

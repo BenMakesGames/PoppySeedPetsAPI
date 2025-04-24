@@ -88,6 +88,9 @@ class GamingGroupService
         return GroupNameGenerator::generateName($this->rng, self::GroupNamePatterns, self::Dictionary, 60);
     }
 
+    /**
+     * @param string[] $skills
+     */
     private function rollSkill(Pet $pet, array $skills): int
     {
         $total = 0;
@@ -114,7 +117,7 @@ class GamingGroupService
     private const string TypeTTRPG = 'TTRPG';
     private const string TypeLARPing = 'LARPing';
 
-    public function meet(PetGroup $group)
+    public function meet(PetGroup $group): void
     {
         $partyGameName = $this->rng->rngNextFromArray([ 'Reds to Reds', self::NameScrawlful2, 'Mixit', 'One-night Werecreature' ]);
 

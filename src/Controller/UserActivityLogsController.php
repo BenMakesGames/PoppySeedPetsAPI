@@ -22,6 +22,7 @@ use App\Service\Filter\UserActivityLogsFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Attribute\Route;
@@ -33,7 +34,7 @@ class UserActivityLogsController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function history(
         Request $request, ResponseService $responseService, UserActivityLogsFilterService $userActivityLogsFilterService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -48,7 +49,7 @@ class UserActivityLogsController extends AbstractController
     #[DoesNotRequireHouseHours]
     #[Route("/getAllTags", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getAllTags(ResponseService $responseService, EntityManagerInterface $em)
+    public function getAllTags(ResponseService $responseService, EntityManagerInterface $em): JsonResponse
     {
         $tags = $em->getRepository(UserActivityLogTag::class)->findAll();
 

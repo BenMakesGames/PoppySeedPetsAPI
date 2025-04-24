@@ -24,6 +24,7 @@ use App\Service\ResponseService;
 use App\Service\SessionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -39,7 +40,7 @@ final class LogInController extends AbstractController
         #[MapRequestPayload] LogInRequest $logInRequest, Request $request,
         UserPasswordHasherInterface $userPasswordEncoder, SessionService $sessionService,
         EntityManagerInterface $em, ResponseService $responseService
-    )
+    ): JsonResponse
     {
         if(!$logInRequest->email || !$logInRequest->passphrase)
             throw new PSPFormValidationException('"email" and "passphrase" are both required.');

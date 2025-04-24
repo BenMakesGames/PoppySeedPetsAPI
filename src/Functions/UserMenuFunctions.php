@@ -29,7 +29,7 @@ final class UserMenuFunctions
         'journal', 'achievements'
     ];
 
-    public static function updateUserMenuSortOrder(EntityManagerInterface $em, User $user, array $order)
+    public static function updateUserMenuSortOrder(EntityManagerInterface $em, User $user, array $order): void
     {
         $order = array_filter($order, fn($o) => in_array($o, self::DEFAULT_ORDER));
 

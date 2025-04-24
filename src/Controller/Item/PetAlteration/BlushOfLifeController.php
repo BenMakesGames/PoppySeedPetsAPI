@@ -27,6 +27,7 @@ use App\Functions\PetActivityLogFactory;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Attribute\Route;
@@ -39,7 +40,7 @@ class BlushOfLifeController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function drinkBlushOfLife(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

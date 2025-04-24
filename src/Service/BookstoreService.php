@@ -16,6 +16,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Entity\UserStats;
+use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
@@ -164,7 +165,10 @@ class BookstoreService
         $bookstoreQuestStep->setValue($bookstoreQuestStep->getValue() + 1);
     }
 
-    public function getAvailableCafe(User $user)
+    /**
+     * @return array<string, int>
+     */
+    public function getAvailableCafe(User $user): array
     {
         $cafePrices = [
             'Coffee Bean Tea' => 8,
@@ -180,10 +184,13 @@ class BookstoreService
         }
 
         return $cafePrices;
-
     }
 
-    public function getAvailableGames(User $user)
+    /**
+     * @return array<string, int>
+     * @throws EnumInvalidValueException
+     */
+    public function getAvailableGames(User $user): array
     {
         $gamePrices = [
             'Formation' => 15,
@@ -207,7 +214,11 @@ class BookstoreService
         return $gamePrices;
     }
 
-    public function getAvailableBooks(User $user)
+    /**
+     * @return array<string, int>
+     * @throws EnumInvalidValueException
+     */
+    public function getAvailableBooks(User $user): array
     {
         $bookPrices = [
             'Welcome Note' => 10, // remember: this item can be turned into plain paper
@@ -320,7 +331,7 @@ class BookstoreService
         return $bookPrices;
     }
 
-    public function getRenamingScrollCost(User $user)
+    public function getRenamingScrollCost(User $user): int
     {
         // 800 -> 250
         $bookstoreQuestStep = UserQuestRepository::findOrCreate($this->em, $user, self::BOOKSTORE_QUEST_NAME, 0);
@@ -343,7 +354,7 @@ class BookstoreService
         return false;
     }
 
-    private function getDialog(User $user)
+    private function getDialog(User $user): string
     {
         if(CalendarFunctions::isStockingStuffingSeason($this->clock->now))
             return 'We\'ve got some special items in for Stocking Stuffing Season! Let me know if I can get you something.';
@@ -351,7 +362,7 @@ class BookstoreService
             return 'What can I get you?';
     }
 
-    public function getResponseData(User $user)
+    public function getResponseData(User $user): array
     {
         if($this->renamingScrollAvailable($user))
         {

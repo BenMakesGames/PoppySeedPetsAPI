@@ -21,6 +21,7 @@ use App\Functions\SimpleDb;
 use App\Service\CommentFormatter;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -31,7 +32,7 @@ class FieldGuideController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getUnlockedEntries(
         ResponseService $responseService, CommentFormatter $commentFormatter
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

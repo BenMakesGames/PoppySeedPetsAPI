@@ -19,6 +19,7 @@ use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\MarketFilterService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -28,7 +29,9 @@ class SearchController extends AbstractController
 {
     #[Route("/search", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function search(Request $request, ResponseService $responseService, MarketFilterService $marketFilterService)
+    public function search(
+        Request $request, ResponseService $responseService, MarketFilterService $marketFilterService
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

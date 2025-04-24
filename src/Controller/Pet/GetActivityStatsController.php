@@ -21,6 +21,7 @@ use App\Exceptions\PSPPetNotFoundException;
 use App\Service\PetActivityStatsService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -31,7 +32,7 @@ class GetActivityStatsController extends AbstractController
     #[Route("/{pet}/activityStats", methods: ["GET"], requirements: ["pet" => "\d+"])]
     public function activityStats(
         Pet $pet, ResponseService $responseService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

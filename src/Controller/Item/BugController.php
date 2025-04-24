@@ -37,6 +37,7 @@ use App\Service\StoryService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -49,7 +50,7 @@ class BugController extends AbstractController
     public function squishBug(
         Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
         EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -75,7 +76,7 @@ class BugController extends AbstractController
     public function putBugOutside(
         Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
         EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -97,7 +98,7 @@ class BugController extends AbstractController
     public function feedBug(
         Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
         EntityManagerInterface $em, Request $request, InventoryService $inventoryService, IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -196,7 +197,7 @@ class BugController extends AbstractController
     public function adopt(
         Inventory $inventory, EntityManagerInterface $em, ResponseService $responseService, PetFactory $petFactory,
         IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -289,7 +290,7 @@ class BugController extends AbstractController
     public function talkToQueen(
         Inventory $inventory, StoryService $storyService, Request $request,
         ResponseService $responseService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

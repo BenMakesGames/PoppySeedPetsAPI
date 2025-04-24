@@ -19,10 +19,10 @@ use GuzzleHttp\Client;
 
 class RedditService
 {
-    private $apiClientId;
-    private $apiClientSecret;
-    private $username;
-    private $password;
+    private string $apiClientId;
+    private string $apiClientSecret;
+    private string $username;
+    private string $password;
 
     public function __construct(
         string $apiClientId, string $apiClientSecret, string $username, string $password
@@ -39,7 +39,7 @@ class RedditService
         return 'PHP:Poppy Seed Pets news poster:1 (by /u/BenMakesGames)';
     }
 
-    private function getAccessToken()
+    private function getAccessToken(): string
     {
         $client = new Client([
             'base_uri' => 'https://www.reddit.com/'
@@ -62,7 +62,7 @@ class RedditService
         return $responseData['access_token'];
     }
 
-    public function postArticle(Article $article)
+    public function postArticle(Article $article): void
     {
         $accessToken = $this->getAccessToken();
 

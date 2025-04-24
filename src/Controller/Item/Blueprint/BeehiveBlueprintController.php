@@ -28,6 +28,7 @@ use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -40,7 +41,7 @@ class BeehiveBlueprintController extends AbstractController
     public function buildBeehive(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
         BeehiveService $beehiveService, PetExperienceService $petExperienceService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

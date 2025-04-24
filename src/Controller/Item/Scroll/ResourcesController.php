@@ -27,6 +27,7 @@ use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -38,7 +39,7 @@ class ResourcesController extends AbstractController
     public function readResourcesScroll(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
         ResponseService $responseService, UserStatsService $userStatsRepository
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -86,7 +87,7 @@ class ResourcesController extends AbstractController
     public function readResourcesScrollForFood(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
         ResponseService $responseService, UserStatsService $userStatsRepository, Clock $clock
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

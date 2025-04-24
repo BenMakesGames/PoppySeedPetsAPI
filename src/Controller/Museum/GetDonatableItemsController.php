@@ -24,6 +24,7 @@ use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -35,7 +36,7 @@ class GetDonatableItemsController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getDonatable(
         ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

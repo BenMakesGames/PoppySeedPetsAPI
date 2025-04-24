@@ -28,6 +28,7 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -37,7 +38,7 @@ class GiftShopController extends AbstractController
 {
     #[Route("/giftShop", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getGiftShop(ResponseService $responseService, MuseumService $museumService)
+    public function getGiftShop(ResponseService $responseService, MuseumService $museumService): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -55,7 +56,7 @@ class GiftShopController extends AbstractController
     public function buyFromGiftShop(
         Request $request, ResponseService $responseService, MuseumService $museumService,
         InventoryService $inventoryService, EntityManagerInterface $em, TransactionService $transactionService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

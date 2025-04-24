@@ -54,7 +54,7 @@ class UserStyleFilter
         return [ self::PageSize ];
     }
 
-    public function setUser(User $user)
+    public function setUser(User $user): void
     {
         $this->user = $user;
     }
@@ -68,7 +68,7 @@ class UserStyleFilter
         ;
     }
 
-    public function filterFollowing(QueryBuilder $qb, $value)
+    public function filterFollowing(QueryBuilder $qb, $value): QueryBuilder
     {
         if(strtolower($value) === 'true' || (int)$value > 0)
         {

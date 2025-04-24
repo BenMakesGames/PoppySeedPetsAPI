@@ -17,6 +17,7 @@ namespace App\Controller\Account;
 use App\Functions\SimpleDb;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -25,7 +26,7 @@ class GetStatsController extends AbstractController
 {
     #[Route("/stats", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getStats(ResponseService $responseService)
+    public function getStats(ResponseService $responseService): JsonResponse
     {
         $stats = SimpleDb::createReadOnlyConnection()
             ->query(

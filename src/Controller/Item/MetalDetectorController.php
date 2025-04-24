@@ -19,6 +19,7 @@ use App\Functions\ItemRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -29,7 +30,7 @@ class MetalDetectorController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function tuneMetalDetectorForIron(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'metalDetector/#/tune/iron');
 
@@ -47,7 +48,7 @@ class MetalDetectorController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function tuneMetalDetectorForSilver(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'metalDetector/#/tune/silver');
 
@@ -65,7 +66,7 @@ class MetalDetectorController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function tuneMetalDetectorForGold(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'metalDetector/#/tune/gold');
 

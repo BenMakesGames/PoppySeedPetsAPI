@@ -47,27 +47,17 @@ class PetSummonedAwayService
     {
         $pet = $petWithSkills->getPet();
 
-        /** @var PetActivityLog $activityLog */
-        $activityLog = null;
         $changes = new PetChanges($pet);
 
         $pet->increaseSafety(-$this->rng->rngNextInt(2, 4));
 
-        switch($this->rng->rngNextInt(1, 4))
+        $activityLog = match($this->rng->rngNextInt(1, 4))
         {
-            case 1:
-                $activityLog = $this->doSummonedToFight($petWithSkills);
-                break;
-            case 2:
-                $activityLog = $this->doSummonedToCleanAndHost($petWithSkills);
-                break;
-            case 3:
-                $activityLog = $this->doSummonedToAssistWithRitual($petWithSkills);
-                break;
-            case 4:
-                $activityLog = $this->doSummonedToAssistWithGathering($petWithSkills);
-                break;
-        }
+            1 => $this->doSummonedToFight($petWithSkills),
+            2 => $this->doSummonedToCleanAndHost($petWithSkills),
+            3 => $this->doSummonedToAssistWithRitual($petWithSkills),
+            4 => $this->doSummonedToAssistWithGathering($petWithSkills),
+        };
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 

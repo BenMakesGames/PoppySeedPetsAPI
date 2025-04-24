@@ -45,17 +45,14 @@ class GatheringHolidayAdventureService
     {
     }
 
-    private const array HOLIDAY_TAGS = [
-        GatheringHolidayEnum::EASTER => 'Easter',
-        GatheringHolidayEnum::SAINT_PATRICKS => 'St. Patrick\'s',
-        GatheringHolidayEnum::LUNAR_NEW_YEAR => 'Lunar New Year'
+    private const array HolidayTags = [
+        GatheringHolidayEnum::Easter->value => 'Easter',
+        GatheringHolidayEnum::SaintPatricks->value => 'St. Patrick\'s',
+        GatheringHolidayEnum::LunarNewYear->value => 'Lunar New Year'
     ];
 
-    public function adventure(ComputedPetSkills $petWithSkills, string $holiday): PetActivityLog
+    public function adventure(ComputedPetSkills $petWithSkills, GatheringHolidayEnum $holiday): PetActivityLog
     {
-        if(!GatheringHolidayEnum::isAValue($holiday))
-            throw new EnumInvalidValueException(GatheringHolidayEnum::class, $holiday);
-
         $pet = $petWithSkills->getPet();
         $maxSkill = 10 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() - $pet->getAlcohol() - $pet->getPsychedelic();
 
@@ -82,7 +79,7 @@ class GatheringHolidayAdventureService
 
         $activityLog
             ->setChanges($changes->compare($pet))
-            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Special Event', self::HOLIDAY_TAGS[$holiday] ]))
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Special Event', self::HolidayTags[$holiday->value] ]))
         ;
 
         if(AdventureMath::petAttractsBug($this->rng, $pet, 75))
@@ -91,13 +88,13 @@ class GatheringHolidayAdventureService
         return $activityLog;
     }
 
-    private static function searchingFor(string $holiday, bool $plural): string
+    private static function searchingFor(GatheringHolidayEnum $holiday, bool $plural): string
     {
         return match ($holiday)
         {
-            GatheringHolidayEnum::EASTER => $plural ? 'plastic eggs' : 'plastic egg',
-            GatheringHolidayEnum::SAINT_PATRICKS => $plural ? 'clovers' : 'clover',
-            GatheringHolidayEnum::LUNAR_NEW_YEAR => $plural ? 'moneys envelopes' : 'moneys envelope',
+            GatheringHolidayEnum::Easter => $plural ? 'plastic eggs' : 'plastic egg',
+            GatheringHolidayEnum::SaintPatricks => $plural ? 'clovers' : 'clover',
+            GatheringHolidayEnum::LunarNewYear => $plural ? 'moneys envelopes' : 'moneys envelope',
             default => throw new EnumInvalidValueException(GatheringHolidayEnum::class, $holiday),
         };
     }
@@ -105,9 +102,9 @@ class GatheringHolidayAdventureService
     /**
      * @throws EnumInvalidValueException
      */
-    private function goSearching(ComputedPetSkills $petWithSkills, string $holiday, string $where, int $minEggs, int $maxEggs, int $encounterChance, int $experience, bool $dark = false, bool $hot = false): PetActivityLog
+    private function goSearching(ComputedPetSkills $petWithSkills, GatheringHolidayEnum $holiday, string $where, int $minEggs, int $maxEggs, int $encounterChance, int $experience, bool $dark = false, bool $hot = false): PetActivityLog
     {
-        if($holiday === GatheringHolidayEnum::EASTER)
+        if($holiday === GatheringHolidayEnum::Easter)
         {
             if($this->rng->rngNextInt(1, 100) <= $encounterChance && date('l') !== 'Friday')
                 return $this->getAttacked($petWithSkills, $maxEggs);
@@ -162,7 +159,7 @@ class GatheringHolidayAdventureService
 
         $this->petExperienceService->gainExp($pet, $experience, [ PetSkillEnum::NATURE ], $activityLog);
 
-        if($holiday === GatheringHolidayEnum::EASTER)
+        if($holiday === GatheringHolidayEnum::Easter)
         {
             for($i = 0; $i < $numItems; $i++)
             {
@@ -183,7 +180,7 @@ class GatheringHolidayAdventureService
             if($numItems > 0)
                 PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FOUND_A_PLASTIC_EGG, $activityLog);
         }
-        else if($holiday === GatheringHolidayEnum::SAINT_PATRICKS)
+        else if($holiday === GatheringHolidayEnum::SaintPatricks)
         {
             for($i = 0; $i < $numItems; $i++)
             {
@@ -196,7 +193,7 @@ class GatheringHolidayAdventureService
             if($numItems > 0)
                 PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FOUND_ONE_CLOVER_LEAF, $activityLog);
         }
-        else if($holiday === GatheringHolidayEnum::LUNAR_NEW_YEAR)
+        else if($holiday === GatheringHolidayEnum::LunarNewYear)
         {
             for($i = 0; $i < $numItems; $i++)
             {
@@ -213,7 +210,7 @@ class GatheringHolidayAdventureService
     /**
      * @throws EnumInvalidValueException
      */
-    private function getAttacked(ComputedPetSkills $petWithSkills, int $level)
+    private function getAttacked(ComputedPetSkills $petWithSkills, int $level): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 

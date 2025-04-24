@@ -32,6 +32,7 @@ use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -42,7 +43,7 @@ class MothController extends AbstractController
     #[Route("/getQuantity/{inventory}", methods: ["GET"])]
     public function getMothInfo(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -72,7 +73,7 @@ class MothController extends AbstractController
         ResponseService $responseService, UserStatsService $userStatsRepository,
         EntityManagerInterface $em, Request $request, InventoryRepository $inventoryRepository,
         IRandom $rng, InventoryService $inventoryService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

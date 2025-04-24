@@ -24,7 +24,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class PetRenamingHelpers
 {
-    public static function renamePet(EntityManagerInterface $em, Pet $pet, string $newName)
+    public static function renamePet(EntityManagerInterface $em, Pet $pet, string $newName): void
     {
         if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
             throw new PSPInvalidOperationException('This pet is Affectionless. It\'s not interested in taking on a new name.');
@@ -42,7 +42,7 @@ final class PetRenamingHelpers
         $pet->setName($petName);
     }
 
-    public static function renameSpiritCompanion(EntityManagerInterface $em, SpiritCompanion $spiritCompanion, string $newName)
+    public static function renameSpiritCompanion(EntityManagerInterface $em, SpiritCompanion $spiritCompanion, string $newName): void
     {
         $companionName = ProfanityFilterFunctions::filter(trim($newName));
 

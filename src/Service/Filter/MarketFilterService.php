@@ -74,12 +74,12 @@ class MarketFilterService
         ;
     }
 
-    public function setUser(User $user)
+    public function setUser(User $user): void
     {
         $this->user = $user;
     }
 
-    public function filterName(QueryBuilder $qb, $value, $filters)
+    public function filterName(QueryBuilder $qb, $value, $filters): void
     {
         $name = mb_trim($value);
 
@@ -101,7 +101,7 @@ class MarketFilterService
         }
     }
 
-    public function filterCandy(QueryBuilder $qb, $value)
+    public function filterCandy(QueryBuilder $qb, $value): void
     {
         if((int)(new \DateTimeImmutable())->format('n') !== 10)
             return;
@@ -115,7 +115,7 @@ class MarketFilterService
             $qb->andWhere('food.isCandy=1');
     }
 
-    public function filterEdible(QueryBuilder $qb, $value)
+    public function filterEdible(QueryBuilder $qb, $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('item.food IS NULL');
@@ -123,7 +123,7 @@ class MarketFilterService
             $qb->andWhere('item.food IS NOT NULL');
     }
 
-    public function filterFoodFlavors(QueryBuilder $qb, $value)
+    public function filterFoodFlavors(QueryBuilder $qb, $value): void
     {
         if(!is_array($value)) $value = [ $value ];
 
@@ -143,7 +143,7 @@ class MarketFilterService
             $qb->andWhere('food.' . $stat . ' > 0');
     }
 
-    public function filterEquipable(QueryBuilder $qb, $value)
+    public function filterEquipable(QueryBuilder $qb, $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('item.tool IS NULL');
@@ -151,7 +151,7 @@ class MarketFilterService
             $qb->andWhere('item.tool IS NOT NULL');
     }
 
-    public function filterBonus(QueryBuilder $qb, $value)
+    public function filterBonus(QueryBuilder $qb, $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('item.enchants IS NULL');
@@ -159,7 +159,7 @@ class MarketFilterService
             $qb->andWhere('item.enchants IS NOT NULL');
     }
 
-    public function filterSpice(QueryBuilder $qb, $value)
+    public function filterSpice(QueryBuilder $qb, $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('item.spice IS NULL');
@@ -167,7 +167,7 @@ class MarketFilterService
             $qb->andWhere('item.spice IS NOT NULL');
     }
 
-    public function filterAHat(QueryBuilder $qb, $value)
+    public function filterAHat(QueryBuilder $qb, $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('item.hat IS NULL');
@@ -175,7 +175,7 @@ class MarketFilterService
             $qb->andWhere('item.hat IS NOT NULL');
     }
 
-    public function filterEquipStats(QueryBuilder $qb, $value)
+    public function filterEquipStats(QueryBuilder $qb, $value): void
     {
         if(!is_array($value)) $value = [ $value ];
 
@@ -197,7 +197,7 @@ class MarketFilterService
         }
     }
 
-    public function filterHasDonated(QueryBuilder $qb, $value)
+    public function filterHasDonated(QueryBuilder $qb, $value): void
     {
         if(!$this->user)
             return;
@@ -215,7 +215,7 @@ class MarketFilterService
             $qb->andWhere('donations.id IS NOT NULL');
     }
 
-    public function filterItemGroup(QueryBuilder $qb, $value)
+    public function filterItemGroup(QueryBuilder $qb, $value): void
     {
         if(!in_array('itemGroups', $qb->getAllAliases()))
             $qb->leftJoin('item.itemGroups', 'itemGroup');
@@ -226,7 +226,7 @@ class MarketFilterService
         ;
     }
 
-    public function filterIsFuel(QueryBuilder $qb, $value)
+    public function filterIsFuel(QueryBuilder $qb, $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('item.fuel = 0');
@@ -234,7 +234,7 @@ class MarketFilterService
             $qb->andWhere('item.fuel > 0');
     }
 
-    public function filterIsFertilizer(QueryBuilder $qb, $value)
+    public function filterIsFertilizer(QueryBuilder $qb, $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('item.fertilizer = 0');
@@ -242,7 +242,7 @@ class MarketFilterService
             $qb->andWhere('item.fertilizer > 0');
     }
 
-    public function filterIsTreasure(QueryBuilder $qb, $value)
+    public function filterIsTreasure(QueryBuilder $qb, $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('item.treasure IS NULL');
@@ -250,7 +250,7 @@ class MarketFilterService
             $qb->andWhere('item.treasure IS NOT NULL');
     }
 
-    public function filterIsRecyclable(QueryBuilder $qb, $value)
+    public function filterIsRecyclable(QueryBuilder $qb, $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('item.recycleValue = 0');

@@ -102,7 +102,7 @@ class MonthlyStoryAdventureService
         return $results->text;
     }
 
-    private function markStepComplete(User $user, MonthlyStoryAdventureStep $step)
+    private function markStepComplete(User $user, MonthlyStoryAdventureStep $step): void
     {
         $completedStep = (new UserMonthlyStoryAdventureStepCompleted())
             ->setUser($user)

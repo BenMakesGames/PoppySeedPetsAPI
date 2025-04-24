@@ -38,7 +38,7 @@ class PoopingService
     {
     }
 
-    public function shed(Pet $pet)
+    public function shed(Pet $pet): void
     {
         $this->inventoryService->receiveItem($pet->getSpecies()->getSheds(), $pet->getOwner(), $pet->getOwner(), $pet->getName() . ' shed this.', LocationEnum::HOME);
 

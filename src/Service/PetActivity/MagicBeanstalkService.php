@@ -48,7 +48,7 @@ class MagicBeanstalkService
     {
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills)
+    public function adventure(ComputedPetSkills $petWithSkills): void
     {
         $pet = $petWithSkills->getPet();
         $maxSkill = 10 + (int)floor(($petWithSkills->getStrength()->getTotal() + $petWithSkills->getStamina()->getTotal()) * 1.5) + (int)ceil($petWithSkills->getNature()->getTotal() / 2) + $petWithSkills->getClimbingBonus()->getTotal() - $pet->getAlcohol() * 2;
@@ -194,7 +194,7 @@ class MagicBeanstalkService
         return $activityLog;
     }
 
-    private function foundBirdNest(ComputedPetSkills $petWithSkills, $roll)
+    private function foundBirdNest(ComputedPetSkills $petWithSkills, int $roll): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 
@@ -328,7 +328,7 @@ class MagicBeanstalkService
         return $activityLog;
     }
 
-    private function foundPegasusNest(ComputedPetSkills $petWithSkills)
+    private function foundPegasusNest(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 
@@ -368,7 +368,7 @@ class MagicBeanstalkService
         return $activityLog;
     }
 
-    private function foundPegasusNestHighImpact(ComputedPetSkills $petWithSkills)
+    private function foundPegasusNestHighImpact(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 
@@ -406,7 +406,7 @@ class MagicBeanstalkService
         return $activityLog;
     }
 
-    private function foundEverice(ComputedPetSkills $petWithSkills)
+    private function foundEverice(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 
@@ -438,7 +438,7 @@ class MagicBeanstalkService
         return $activityLog;
     }
 
-    private function foundLightning(ComputedPetSkills $petWithSkills)
+    private function foundLightning(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 
@@ -483,7 +483,7 @@ class MagicBeanstalkService
         return $activityLog;
     }
 
-    private function foundGiantCastle(ComputedPetSkills $petWithSkills)
+    private function foundGiantCastle(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 

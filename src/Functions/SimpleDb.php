@@ -45,7 +45,10 @@ final class SimpleDb
     }
     */
 
-    public static function parseDatabaseUri(string $uri)
+    /**
+     * @return array{dsn: string, user: string, password: string}
+     */
+    public static function parseDatabaseUri(string $uri): array
     {
         $parts = parse_url($uri);
 
@@ -63,7 +66,7 @@ final class SimpleDb
         ];
     }
 
-    public function query(string $query, ?array $parameters = null)
+    public function query(string $query, ?array $parameters = null): SimpleStatement
     {
         $statement = $this->pdo->prepare($query);
 
@@ -78,11 +81,8 @@ final class SimpleDb
 
 final class SimpleStatement
 {
-    private \PDOStatement $statement;
-
-    public function __construct(\PDOStatement $statement)
+    public function __construct(private readonly \PDOStatement $statement)
     {
-        $this->statement = $statement;
     }
 
     public function mapResults(string|callable $classNameOrMappingFunction): array

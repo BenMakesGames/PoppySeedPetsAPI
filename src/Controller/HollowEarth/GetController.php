@@ -21,6 +21,7 @@ use App\Service\FieldGuideService;
 use App\Service\HollowEarthService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -32,7 +33,7 @@ class GetController extends AbstractController
     public function getState(
         ResponseService $responseService, HollowEarthService $hollowEarthService,
         FieldGuideService $fieldGuideService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

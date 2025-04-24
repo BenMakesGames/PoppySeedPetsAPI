@@ -21,6 +21,7 @@ use App\Service\ResponseService;
 use App\Service\SurveyService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Routing\Attribute\Route;
@@ -33,7 +34,7 @@ class SurveyController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getSurveyQuestions(
         string $guid, SurveyService $surveyService, ResponseService $responseService, NormalizerInterface $normalizer
-    )
+    ): JsonResponse
     {
         $now = new \DateTimeImmutable();
 
@@ -60,7 +61,7 @@ class SurveyController extends AbstractController
     public function submitSurvey(
         string $guid, SurveyService $surveyService, Request $request, ResponseService $responseService,
         EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         $now = new \DateTimeImmutable();
 
@@ -74,7 +75,7 @@ class SurveyController extends AbstractController
 
         foreach($questions as $question)
         {
-            $answer = trim($request->request->get($question->getId()));
+            $answer = trim($request->request->getString("{$question->getId()}"));
 
             if($answer)
                 $surveyService->upsertAnswer($question, $user, $answer);

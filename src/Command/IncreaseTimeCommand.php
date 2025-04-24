@@ -21,12 +21,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class IncreaseTimeCommand extends Command
 {
-    private $em;
-
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(private readonly EntityManagerInterface $em)
     {
-        $this->em = $em;
-
         parent::__construct();
     }
 

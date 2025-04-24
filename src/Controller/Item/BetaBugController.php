@@ -34,6 +34,7 @@ use App\Service\PetFactory;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -53,7 +54,9 @@ class BetaBugController extends AbstractController
 
     #[Route("/{inventory}/eligibleItems", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getEligibleItems(Inventory $inventory, ResponseService $responseService, InventoryRepository $inventoryRepository)
+    public function getEligibleItems(
+        Inventory $inventory, ResponseService $responseService, InventoryRepository $inventoryRepository
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -80,7 +83,7 @@ class BetaBugController extends AbstractController
     public function useBug(
         Inventory $inventory, Request $request, InventoryRepository $inventoryRepository,
         ResponseService $responseService, EntityManagerInterface $em, PetFactory $petFactory, IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -117,7 +120,7 @@ class BetaBugController extends AbstractController
     private static function makeBeetleEvil(
         ResponseService $responseService, EntityManagerInterface $em,
         User $user, Inventory $beetle
-    )
+    ): void
     {
         $beetle->changeItem(ItemRepository::findOneByName($em, 'EVIL Sentient Beetle'));
         $beetle->addComment($user->getName() . ' introduced a Beta Bug into the Sentient Beetle, turning it EVIL!');
@@ -142,7 +145,7 @@ class BetaBugController extends AbstractController
         ResponseService $responseService, EntityManagerInterface $em, PetFactory $petFactory, IRandom $rng,
         Inventory $inventoryItem, User $user, Merit $startingMerit, string $favoriteFlavor, ?string $startingHatItem,
         string $bodyColor, int $scale
-    )
+    ): void
     {
         $newPet = $petFactory->createPet(
             $user,

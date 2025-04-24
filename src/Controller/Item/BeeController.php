@@ -18,6 +18,7 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -28,7 +29,9 @@ class BeeController extends AbstractController
 {
     #[Route("/{inventory}/giveToBeehive", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function giveToBeehive(Inventory $inventory, EntityManagerInterface $em, ResponseService $responseService)
+    public function giveToBeehive(
+        Inventory $inventory, EntityManagerInterface $em, ResponseService $responseService
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

@@ -23,6 +23,7 @@ use App\Service\Filter\UserLetterFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -35,7 +36,7 @@ class LetterController extends AbstractController
     public function getLetters(
         Request $request, ResponseService $responseService,
         UserLetterFilterService $userLetterFilterService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -55,7 +56,7 @@ class LetterController extends AbstractController
     public function markRead(
         UserLetter $letter, EntityManagerInterface $em, ResponseService $responseService,
         FieldGuideService $fieldGuideService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

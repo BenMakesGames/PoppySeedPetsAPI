@@ -25,6 +25,7 @@ use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -37,7 +38,7 @@ class MoveController extends AbstractController
     public function moveInventory(
         int $location, Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
         EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         if(!LocationEnum::isAValue($location))
             throw new PSPFormValidationException('Invalid location given.');

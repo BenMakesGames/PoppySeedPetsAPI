@@ -29,6 +29,7 @@ use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -40,7 +41,7 @@ class GrocerController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getInventory(
         GrocerService $grocerService, ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -67,7 +68,7 @@ class GrocerController extends AbstractController
         Request $request, ResponseService $responseService, GrocerService $grocerService,
         TransactionService $transactionService, EntityManagerInterface $em,
         UserStatsService $userStatsRepository
-    )
+    ): JsonResponse
     {
         $buyTo = $request->request->getInt('location');
         $payWith = strtolower($request->request->getAlpha('payWith', 'moneys'));

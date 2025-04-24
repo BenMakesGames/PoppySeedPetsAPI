@@ -21,6 +21,7 @@ use App\Functions\UserMenuFunctions;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -33,7 +34,7 @@ class SaveMenuOrderController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function saveMenuOrder(
         Request $request, EntityManagerInterface $em, ResponseService $responseService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

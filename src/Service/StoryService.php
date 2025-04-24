@@ -62,11 +62,12 @@ class StoryService
      */
     public function doStory(User $user, int $storyId, ParameterBag $request, Inventory $callingInventory = null): StoryStep
     {
-        $this->story = $this->em->getRepository(Story::class)->find($storyId);
+        $story = $this->em->getRepository(Story::class)->find($storyId);
 
-        if (!$this->story)
+        if (!$story)
             throw new PSPNotFoundException('That Story doesn\'t exist! (Uh oh! Is something broken? Maybe reload and try again?)');
 
+        $this->story = $story;
         $this->callingInventory = $callingInventory;
         $this->user = $user;
         $this->step = UserQuestRepository::findOrCreate($this->em, $user, $this->story->getQuestValue(), $this->story->getFirstSection()->getId());

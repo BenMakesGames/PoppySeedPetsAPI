@@ -92,7 +92,7 @@ class SportsBallService
         return $this->rng->rngNextInt(1, 25 + $total);
     }
 
-    public function meet(PetGroup $group)
+    public function meet(PetGroup $group): void
     {
         $message = '%pet% got together with %group% and played some Sportsball.';
 
@@ -164,7 +164,7 @@ class SportsBallService
         $group->setLastMetOn();
     }
 
-    private function formatMessage(string $template, Pet $member, PetGroup $group)
+    private function formatMessage(string $template, Pet $member, PetGroup $group): string
     {
         return str_replace(
             [

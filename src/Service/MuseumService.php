@@ -32,7 +32,7 @@ class MuseumService
     {
     }
 
-    private $donatedItemsThisRequest = [];
+    private array $donatedItemsThisRequest = [];
 
     public function forceDonateItem(User $user, string|int|Item $item, ?string $comment, ?User $createdBy = null): bool
     {

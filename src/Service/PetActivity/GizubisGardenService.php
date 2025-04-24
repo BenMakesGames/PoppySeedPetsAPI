@@ -54,7 +54,7 @@ class GizubisGardenService
         };
     }
 
-    private function doRandomSeedlingadventure(ComputedPetSkills $petWithSkills)
+    private function doRandomSeedlingadventure(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $member = $pet->getGuildMembership();
@@ -87,7 +87,7 @@ class GizubisGardenService
         return $activityLog;
     }
 
-    private function doWaterTreeOfLife(ComputedPetSkills $petWithSkills)
+    private function doWaterTreeOfLife(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getNature()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getPerception()->getTotal());
@@ -131,7 +131,7 @@ class GizubisGardenService
     /**
      * @throws EnumInvalidValueException
      */
-    private function doCook(ComputedPetSkills $petWithSkills)
+    private function doCook(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getIntelligence()->getTotal());

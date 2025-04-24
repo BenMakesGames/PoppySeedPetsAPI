@@ -28,7 +28,7 @@ class PetRelationshipTypeaheadService extends TypeaheadService
         parent::__construct($em->getRepository(Pet::class));
     }
 
-    public function setParameters(Pet $pet, array $relationships)
+    public function setParameters(Pet $pet, array $relationships): void
     {
         $this->pet = $pet;
         $this->relationships = $relationships;

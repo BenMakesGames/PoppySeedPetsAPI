@@ -24,6 +24,7 @@ use App\Service\Filter\InventoryFilterService;
 use App\Service\ResponseService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -35,7 +36,7 @@ class GetController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getMyHouseInventory(
         ResponseService $responseService, ManagerRegistry $doctrine
-    )
+    ): JsonResponse
     {
         $inventoryRepository = $doctrine->getRepository(Inventory::class, 'readonly');
 
@@ -52,7 +53,7 @@ class GetController extends AbstractController
     public function getMyInventory(
         Request $request, ResponseService $responseService, InventoryFilterService $inventoryFilterService,
         int $location
-    )
+    ): JsonResponse
     {
         if(!LocationEnum::isAValue($location))
             throw new PSPFormValidationException('Invalid location given.');
@@ -74,7 +75,7 @@ class GetController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getSummary(
         int $location, ResponseService $responseService, InventoryRepository $inventoryRepository
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

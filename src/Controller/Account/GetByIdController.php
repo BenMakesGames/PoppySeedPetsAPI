@@ -29,6 +29,7 @@ use App\Functions\UserStyleFunctions;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -39,7 +40,7 @@ class GetByIdController extends AbstractController
     #[Route("/{user}", methods: ["GET"], requirements: ["user" => "\d+"])]
     public function getProfile(
         User $user, ResponseService $responseService, NormalizerInterface $normalizer, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         $pets = $em->getRepository(Pet::class)->findBy([ 'owner' => $user, 'location' => PetLocationEnum::HOME ]);
         $theme = UserStyleFunctions::findCurrent($em, $user->getId());

@@ -32,6 +32,7 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -43,7 +44,7 @@ class EggController extends AbstractController
     public function hatchPolyp(
         Inventory $inventory, ResponseService $responseService, IRandom $rng, EntityManagerInterface $em,
         PetFactory $petFactory
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -125,7 +126,7 @@ class EggController extends AbstractController
         Inventory $inventory, ResponseService $responseService,
         EntityManagerInterface $em, PetFactory $petFactory, IRandom $rng,
         InventoryService $inventoryService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -217,7 +218,7 @@ class EggController extends AbstractController
         Inventory $inventory, ResponseService $responseService,
         EntityManagerInterface $em, PetFactory $petFactory, IRandom $rng,
         InventoryService $inventoryService, TransactionService $transactionService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

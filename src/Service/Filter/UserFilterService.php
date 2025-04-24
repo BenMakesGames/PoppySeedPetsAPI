@@ -56,12 +56,12 @@ class UserFilterService
         return $this->repository->createQueryBuilder('u');
     }
 
-    public function setUser(?User $user)
+    public function setUser(?User $user): void
     {
         $this->user = $user;
     }
 
-    public function filterName(QueryBuilder $qb, $value)
+    public function filterName(QueryBuilder $qb, $value): void
     {
         $qb
             ->andWhere('u.name LIKE :nameLike')
@@ -69,7 +69,7 @@ class UserFilterService
         ;
     }
 
-    public function filterFollowedBy(QueryBuilder $qb, $value)
+    public function filterFollowedBy(QueryBuilder $qb, $value): void
     {
         if($this->user && ($value === $this->user->getId() || $this->user->hasRole('ROLE_ADMIN')))
         {
@@ -83,7 +83,7 @@ class UserFilterService
         }
     }
 
-    public function filterFollowing(QueryBuilder $qb, $value)
+    public function filterFollowing(QueryBuilder $qb, $value): void
     {
         if($this->user && ($value === $this->user->getId() || $this->user->hasRole('ROLE_ADMIN')))
         {

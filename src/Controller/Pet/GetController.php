@@ -25,6 +25,7 @@ use App\Service\Typeahead\PetTypeaheadService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -33,7 +34,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class GetController extends AbstractController
 {
     #[Route("", methods: ["GET"])]
-    public function searchPets(Request $request, ResponseService $responseService, PetFilterService $petFilterService)
+    public function searchPets(
+        Request $request, ResponseService $responseService, PetFilterService $petFilterService
+    ): JsonResponse
     {
         return $responseService->success(
             $petFilterService->getResults($request->query),
@@ -43,7 +46,7 @@ class GetController extends AbstractController
 
     #[Route("/my", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getMyPets(ResponseService $responseService, ManagerRegistry $doctrine)
+    public function getMyPets(ResponseService $responseService, ManagerRegistry $doctrine): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -60,7 +63,7 @@ class GetController extends AbstractController
 
     #[Route("/my/{id}", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getMyPet(ResponseService $responseService, EntityManagerInterface $em, int $id)
+    public function getMyPet(ResponseService $responseService, EntityManagerInterface $em, int $id): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -77,7 +80,7 @@ class GetController extends AbstractController
     }
 
     #[Route("/{pet}", methods: ["GET"], requirements: ["pet" => "\d+"])]
-    public function profile(Pet $pet, ResponseService $responseService)
+    public function profile(Pet $pet, ResponseService $responseService): JsonResponse
     {
         return $responseService->success($pet, [ SerializationGroupEnum::PET_PUBLIC_PROFILE ]);
     }
@@ -86,7 +89,7 @@ class GetController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function typeaheadSearch(
         Request $request, ResponseService $responseService, PetTypeaheadService $petTypeaheadService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

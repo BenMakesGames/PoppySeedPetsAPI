@@ -22,6 +22,7 @@ use App\Service\Filter\PetSpeciesFilterService;
 use App\Service\Filter\UserSpeciesCollectedFilterService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -33,7 +34,7 @@ class GetDiscoveredSpeciesController extends AbstractController
     #[Route("", methods: ["GET"])]
     public function getDiscoveredSpecies(
         UserSpeciesCollectedFilterService $userSpeciesCollectedFilterService, Request $request, ResponseService $responseService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

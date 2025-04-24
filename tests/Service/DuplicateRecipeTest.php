@@ -26,7 +26,7 @@ class DuplicateRecipeTest extends KernelTestCase
     /**
      * @doesNotPerformAssertions
      */
-    public function testDuplicateRecipesDoNotExist()
+    public function testDuplicateRecipesDoNotExist(): void
     {
         $seenIngredients = [];
 

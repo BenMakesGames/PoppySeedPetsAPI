@@ -43,6 +43,7 @@ use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -57,7 +58,7 @@ class AdoptController extends AbstractController
         EntityManagerInterface $em, UserStatsService $userStatsRepository, Clock $clock,
         TransactionService $transactionService, IRandom $rng, PetFactory $petFactory,
         HattierService $hattierService
-    )
+    ): JsonResponse
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');
         /** @var User $user */

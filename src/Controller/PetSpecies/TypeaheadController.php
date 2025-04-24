@@ -18,6 +18,7 @@ use App\Attributes\DoesNotRequireHouseHours;
 use App\Service\ResponseService;
 use App\Service\Typeahead\PetSpeciesTypeaheadService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -28,7 +29,7 @@ class TypeaheadController extends AbstractController
     #[Route("/typeahead", methods: ["GET"])]
     public function typeaheadSearch(
         Request $request, ResponseService $responseService, PetSpeciesTypeaheadService $petSpeciesTypeaheadService
-    )
+    ): JsonResponse
     {
         $suggestions = $petSpeciesTypeaheadService->search('name', $request->query->get('search', ''));
 

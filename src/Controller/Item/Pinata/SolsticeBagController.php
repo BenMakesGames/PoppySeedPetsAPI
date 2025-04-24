@@ -26,6 +26,7 @@ use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -37,7 +38,7 @@ class SolsticeBagController extends AbstractController
     public function openSummerSolsticeBag(
         Inventory $bag, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         EntityManagerInterface $em, HattierService $hattierService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -84,7 +85,7 @@ class SolsticeBagController extends AbstractController
     public function openWinterSolsticeBag(
         Inventory $bag, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
         EntityManagerInterface $em, HattierService $hattierService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

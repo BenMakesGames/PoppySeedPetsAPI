@@ -58,7 +58,7 @@ class FishingService
     {
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills)
+    public function adventure(ComputedPetSkills $petWithSkills): void
     {
         $pet = $petWithSkills->getPet();
         $maxSkill = 5 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() - (int)ceil(($pet->getAlcohol() + $pet->getPsychedelic()) / 2);
@@ -189,7 +189,7 @@ class FishingService
         }
     }
 
-    private function creditLackOfReflection(PetActivityLog $activityLog)
+    private function creditLackOfReflection(PetActivityLog $activityLog): void
     {
         $hasNoReflection = $activityLog->getPet()->hasStatusEffect(StatusEffectEnum::INVISIBLE) || $activityLog->getPet()->hasMerit(MeritEnum::NO_SHADOW_OR_REFLECTION);
 
@@ -349,7 +349,7 @@ class FishingService
     private function fishedGallopingOctopus(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::BEACH, 'looking for a good fishing spot on the beach');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Beach, 'looking for a good fishing spot on the beach');
 
         $pet = $petWithSkills->getPet();
         $fightSkill = $this->rng->rngNextInt(1, 10 + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getFishingBonus()->getTotal() + $petWithSkills->getBrawl(false)->getTotal() + $petWithSkills->getStrength()->getTotal());
@@ -581,7 +581,7 @@ class FishingService
     private function fishedWaterfallBasin(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'looking for a good fishing spot in the woods');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Woods, 'looking for a good fishing spot in the woods');
 
         $pet = $petWithSkills->getPet();
 
@@ -925,10 +925,10 @@ class FishingService
         return $activityLog;
     }
 
-    public function fishedGhoti(ComputedPetSkills $petWithSkills)
+    public function fishedGhoti(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::VOLCANO, 'looking for a good fishing spot at the foot of the volcano');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Volcano, 'looking for a good fishing spot at the foot of the volcano');
 
         $pet = $petWithSkills->getPet();
 
@@ -973,10 +973,10 @@ class FishingService
         return $activityLog;
     }
 
-    public function fishedCoralReef(ComputedPetSkills $petWithSkills)
+    public function fishedCoralReef(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::BEACH, 'looking for a good fishing spot on the beach');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Beach, 'looking for a good fishing spot on the beach');
 
         $pet = $petWithSkills->getPet();
 
@@ -1063,7 +1063,7 @@ class FishingService
     private function fishedJellyfish(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::BEACH, 'looking for a good fishing spot on the beach');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Beach, 'looking for a good fishing spot on the beach');
 
         $pet = $petWithSkills->getPet();
 

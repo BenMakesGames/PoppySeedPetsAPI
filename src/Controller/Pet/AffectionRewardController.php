@@ -33,6 +33,7 @@ use App\Functions\UserUnlockedFeatureHelpers;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -42,7 +43,9 @@ class AffectionRewardController extends AbstractController
 {
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/{pet}/availableMerits", methods: ["GET"], requirements: ["pet" => "\d+"])]
-    public function getAvailableMerits(Pet $pet, ResponseService $responseService, EntityManagerInterface $em)
+    public function getAvailableMerits(
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

@@ -44,7 +44,7 @@ class ParkService
     /**
      * @param ParkEventParticipant[] $participants
      */
-    public function giveOutParticipationRewards(ParkEvent $parkEvent, array $participants)
+    public function giveOutParticipationRewards(ParkEvent $parkEvent, array $participants): void
     {
         $impressiveAura = EnchantmentRepository::findOneByName($this->em, 'Impressive');
 

@@ -81,7 +81,7 @@ class PetColorFunctions
         }
     }
 
-    public static function recolorPet(IRandom $rng, Pet $pet, float $maxSaturation = 1)
+    public static function recolorPet(IRandom $rng, Pet $pet, float $maxSaturation = 1): void
     {
         $colors = PetColorFunctions::generateRandomPetColors($rng, $maxSaturation);
 

@@ -28,6 +28,7 @@ use App\Functions\EquipmentFunctions;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -38,7 +39,7 @@ class EquipController extends AbstractController
     #[Route("/{pet}/equip/{inventory}", methods: ["POST"], requirements: ["pet" => "\d+", "inventory" => "\d+"])]
     public function equipPet(
         Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

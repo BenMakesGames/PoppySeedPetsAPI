@@ -136,7 +136,7 @@ class PetActivityService
     {
     }
 
-    public function runHour(Pet $pet)
+    public function runHour(Pet $pet): void
     {
         $hasEventPersonality = $pet->hasActivityPersonality(ActivityPersonalityEnum::EVENTS_AND_MAPS);
 
@@ -536,19 +536,19 @@ class PetActivityService
 
         if($this->rng->rngNextInt(1, 100) <= ($hasEventPersonality ? 24 : 16) && CalendarFunctions::isSaintPatricksDay($this->clock->now))
         {
-            $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::SAINT_PATRICKS);
+            $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::SaintPatricks);
             return;
         }
 
         if($this->rng->rngNextInt(1, 100) <= ($hasEventPersonality ? 30 : 25) && CalendarFunctions::isEaster($this->clock->now))
         {
-            $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::EASTER);
+            $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::Easter);
             return;
         }
 
         if($this->rng->rngNextInt(1, 100) <= ($hasEventPersonality ? 9 : 6) && CalendarFunctions::isChineseNewYear($this->clock->now))
         {
-            $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::LUNAR_NEW_YEAR);
+            $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::LunarNewYear);
             return;
         }
 
@@ -800,13 +800,13 @@ class PetActivityService
         return false;
     }
 
-    private function doNothing(Pet $pet)
+    private function doNothing(Pet $pet): void
     {
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
         PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% hung around the house.');
     }
 
-    private function pickDesire(array $petDesires)
+    private function pickDesire(array $petDesires): string
     {
         $totalDesire = array_sum($petDesires);
 

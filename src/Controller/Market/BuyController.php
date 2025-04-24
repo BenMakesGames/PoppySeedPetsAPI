@@ -33,6 +33,7 @@ use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -45,7 +46,7 @@ class BuyController extends AbstractController
     public function buy(
         Request $request, ResponseService $responseService, CacheItemPoolInterface $cache, EntityManagerInterface $em,
         IRandom $rng, TransactionService $transactionService, MarketService $marketService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

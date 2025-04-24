@@ -33,7 +33,7 @@ class LoveService
     {
     }
 
-    public function expressLove(PetRelationship $givingPet, PetRelationship $receivingPet)
+    public function expressLove(PetRelationship $givingPet, PetRelationship $receivingPet): string
     {
         $giver = $givingPet->getPet();
         $receiver = $receivingPet->getPet();
@@ -205,7 +205,10 @@ class LoveService
         return count(array_intersect($p1Ancestors, $p2Ancestors)) > 0;
     }
 
-    private function getAncestorIds(Pet $pet)
+    /**
+     * @return int[]
+     */
+    private function getAncestorIds(Pet $pet): array
     {
         // we'll go back two generations; and include yourself:
         $ancestorIds = [
@@ -284,7 +287,7 @@ class LoveService
         }
     }
 
-    public function sexyTimesEmoji(Pet $p1, Pet $p2)
+    public function sexyTimesEmoji(Pet $p1, Pet $p2): string
     {
         if($p1->hasMerit(MeritEnum::PREHENSILE_TONGUE) || $p2->hasMerit(MeritEnum::PREHENSILE_TONGUE))
             return ';P';

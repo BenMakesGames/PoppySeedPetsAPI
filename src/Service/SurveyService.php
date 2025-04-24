@@ -41,6 +41,9 @@ class SurveyService
         ;
     }
 
+    /**
+     * @return SurveyQuestion[]|null
+     */
     public function getSurveyQuestions(string $guid, \DateTimeImmutable $dateTime): ?array
     {
         $survey = $this->getActiveSurvey($guid, $dateTime);
@@ -93,7 +96,7 @@ class SurveyService
         return $answer;
     }
 
-    public function deleteAnswer(SurveyQuestion $question, User $user)
+    public function deleteAnswer(SurveyQuestion $question, User $user): void
     {
         $answer = $this->em->getRepository(SurveyQuestionAnswer::class)->findOneBy([
             'user' => $user,

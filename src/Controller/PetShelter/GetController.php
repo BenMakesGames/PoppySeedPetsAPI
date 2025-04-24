@@ -22,6 +22,7 @@ use App\Service\AdoptionService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -32,7 +33,7 @@ class GetController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getAvailablePets(
         AdoptionService $adoptionService, ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         $now = (new \DateTimeImmutable())->format('Y-m-d');
         /** @var User $user */

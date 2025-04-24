@@ -37,8 +37,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -79,7 +77,15 @@ class RelationshipChangeService
         return $logs;
     }
 
-    private static function createLogs(EntityManagerInterface $em, Pet $p1, string $p1Message, Pet $p2, string $p2Message, $icon = '')
+    /**
+     * @return PetActivityLog[]
+     */
+    private static function createLogs(
+        EntityManagerInterface $em,
+        Pet $p1, string $p1Message,
+        Pet $p2, string $p2Message,
+        string $icon = ''
+    ): array
     {
         $log1 = PetActivityLogFactory::createUnreadLog($em, $p1, $p1Message);
 
@@ -97,8 +103,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -168,8 +172,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -204,8 +206,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -251,8 +251,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -301,8 +299,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -324,8 +320,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -368,8 +362,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -409,14 +401,13 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
-     * @param int $chanceP1ChangesMind
-     * @param int $chanceP2ChangesMind
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
-    private function hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama(PetRelationship $p1, PetRelationship $p2, int $chanceP1ChangesMind, int $chanceP2ChangesMind)
+    private function hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama(
+        PetRelationship $p1, PetRelationship $p2,
+        int $chanceP1ChangesMind, int $chanceP2ChangesMind
+    ): array
     {
         $downgradeDescription = [
             RelationshipEnum::DISLIKE => 'break up entirely',
@@ -484,7 +475,7 @@ class RelationshipChangeService
     }
 
     private function determineWhoChangesTheirMind(
-        PetRelationship $p1, PetRelationship $p2, $chanceP1ChangesMind, $chanceP2ChangesMind
+        PetRelationship $p1, PetRelationship $p2, int $chanceP1ChangesMind, int $chanceP2ChangesMind
     ): array
     {
         $p1IsFriendOfTheWorld = $p1->getPet()->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD);
@@ -521,14 +512,15 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
-     * @param $chanceP1ChangesMind
-     * @param $chanceP2ChangesMind
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
-    private function hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama(PetRelationship $p1, PetRelationship $p2, $chanceP1ChangesMind, $chanceP2ChangesMind)
+    private function hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama(
+        PetRelationship $p1,
+        PetRelationship $p2,
+        int $chanceP1ChangesMind,
+        int $chanceP2ChangesMind
+    ): array
     {
         $upgradeDescription = [
             RelationshipEnum::DISLIKE => 'break up',
@@ -615,8 +607,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -683,8 +673,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -732,8 +720,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -762,8 +748,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -815,8 +799,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -869,8 +851,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -918,8 +898,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -1000,8 +978,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -1033,8 +1009,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -1072,8 +1046,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -1128,8 +1100,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -1183,8 +1153,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -1239,8 +1207,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -1297,8 +1263,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -1330,8 +1294,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -1386,8 +1348,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -1443,8 +1403,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -1499,8 +1457,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */
@@ -1551,8 +1507,6 @@ class RelationshipChangeService
     }
 
     /**
-     * @param PetRelationship $p1
-     * @param PetRelationship $p2
      * @return PetActivityLog[]
      * @throws EnumInvalidValueException
      */

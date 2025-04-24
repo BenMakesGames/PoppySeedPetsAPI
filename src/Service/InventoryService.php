@@ -183,7 +183,7 @@ class InventoryService
      * @throws PSPNotFoundException
      * @throws EnumInvalidValueException
      */
-    public function petCollectsEnhancedItem($item, ?Enchantment $bonus, ?Spice $spice, Pet $pet, string $comment, PetActivityLog $activityLog): ?Inventory
+    public function petCollectsEnhancedItem(string|Item $item, ?Enchantment $bonus, ?Spice $spice, Pet $pet, string $comment, PetActivityLog $activityLog): ?Inventory
     {
         $item = $this->getItemWithChanceForLuckyTransformation($item);
 
@@ -506,7 +506,7 @@ class InventoryService
         return $this->petCollectsEnhancedItem($item, null, null, $pet, $comment, $activityLog);
     }
 
-    public function petAttractsRandomBug(Pet $pet, $bugName = null): ?Inventory
+    public function petAttractsRandomBug(Pet $pet, string $bugName = null): ?Inventory
     {
         $bugs = 1;
         $toolAttractsBugs = false;

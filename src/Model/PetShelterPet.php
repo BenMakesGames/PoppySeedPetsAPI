@@ -78,7 +78,7 @@ final class PetShelterPet
         'Zen', 'Zofija', 'Zuan', 'Zygmunt'
     ];
 
-    public static function generatePirateName(\DateTimeImmutable $dt, int $index)
+    public static function generatePirateName(\DateTimeImmutable $dt, int $index): string
     {
         $i1 = (int)$dt->format('jz') + $index * (int)$dt->format('w') * 71; // 71 = a small prime
         $i2 = (int)$dt->format('Yz') + $index * (int)$dt->format('N') * 167; // 167 = a slightly-larger prime
