@@ -22,7 +22,7 @@ final class Version20250424043857 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Make Gnome\'s Favor a hat';
+        return '';
     }
 
     public function up(Schema $schema): void
