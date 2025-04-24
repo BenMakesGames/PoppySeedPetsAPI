@@ -16,7 +16,7 @@ namespace App\Enum;
 
 class GatheringHolidayEnum
 {
-    use Enum;
+    use FakeEnum;
 
     const string EASTER = 'Easter';
     const string SAINT_PATRICKS = 'Saint Patrick\'s';

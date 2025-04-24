@@ -16,7 +16,7 @@ namespace App\Enum;
 
 final class UserStatEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string TOTAL_MONEYS_SPENT = 'Total Moneys Spent';
     public const string TOTAL_MONEYS_EARNED_IN_MARKET = 'Total Moneys Earned in Market';
@@ -85,4 +85,8 @@ final class UserStatEnum
     public const string RECEIVED_A_MINOR_PRIZE_FROM_HUEHUECOYOTLS_FOLLY = 'Received a Minor Reward from Huehuecoyotl\'s Folly';
     public const string RECEIVED_A_MODERATE_PRIZE_FROM_HUEHUECOYOTLS_FOLLY = 'Received a Moderate Reward from Huehuecoyotl\'s Folly';
     public const string RECEIVED_A_MAJOR_PRIZE_FROM_HUEHUECOYOTLS_FOLLY = 'Received a Major Reward from Huehuecoyotl\'s Folly';
+
+    public const string RECEIVED_A_MINOR_PRIZE_FROM_AN_EIRI_PERSONA = 'Received a Minor Reward from an Eiri Persona';
+    public const string RECEIVED_A_MODERATE_PRIZE_FROM_AN_EIRI_PERSONA = 'Received a Moderate Reward from an Eiri Persona';
+    public const string RECEIVED_A_MAJOR_PRIZE_FROM_AN_EIRI_PERSONA = 'Received a Major Reward from an Eiri Persona';
 }

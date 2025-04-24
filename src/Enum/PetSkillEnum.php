@@ -16,7 +16,7 @@ namespace App\Enum;
 
 final class PetSkillEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string ARCANA = 'arcana';
     public const string BRAWL = 'brawl';

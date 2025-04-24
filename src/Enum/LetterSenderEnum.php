@@ -16,7 +16,7 @@ namespace App\Enum;
 
 class LetterSenderEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string SHARUMINYINKA = 'Sharuminyinka';
     public const string KATICA = 'Katica';

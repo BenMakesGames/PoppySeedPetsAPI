@@ -16,7 +16,7 @@ namespace App\Enum;
 
 final class UnlockableFeatureEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string Florist = 'Florist';
     public const string Bookstore = 'Bookstore';

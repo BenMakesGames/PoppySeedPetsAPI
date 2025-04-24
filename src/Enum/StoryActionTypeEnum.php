@@ -16,7 +16,7 @@ namespace App\Enum;
 
 final class StoryActionTypeEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string SET_STEP = 'setStep';
     public const string RECEIVE_ITEM = 'receiveItem';

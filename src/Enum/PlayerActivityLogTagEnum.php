@@ -16,7 +16,7 @@ namespace App\Enum;
 
 class PlayerActivityLogTagEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string Moneys = 'Moneys';
     public const string Recycling = 'Recycling';

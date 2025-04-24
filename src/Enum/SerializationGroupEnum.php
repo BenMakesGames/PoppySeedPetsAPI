@@ -18,7 +18,7 @@ namespace App\Enum;
 /** @deprecated Please stop using serialization groups. They're awful. */
 final class SerializationGroupEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string MY_ACCOUNT = 'myAccount';
     public const string MY_PET = 'myPet';

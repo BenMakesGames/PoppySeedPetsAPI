@@ -33,7 +33,7 @@ class Item
 
     #[Groups(["myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "fireplaceMantle", "fireplaceFuel", "myBeehive", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet", "myBids", "myHollowEarthTiles", "myLetters", "zoologistCatalog", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'string', length: 45, unique: true)]
-    private string $name;
+    private string $name = '';
 
     #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\Column(type: 'text', nullable: true)]
@@ -41,7 +41,7 @@ class Item
 
     #[Groups(["myPet", "myInventory", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "museum", "marketItem", "knownRecipe", "mySeeds", "hollowEarth", "fireplaceMantle", "fireplaceFuel", "myBeehive", "petGroupDetails", "itemTypeahead", "guildEncyclopedia", "greenhouseFertilizer", "dragonTreasure", "petActivityLogAndPublicPet", "myBids", "myHollowEarthTiles", "helperPet", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'string', length: 255)]
-    private string $image;
+    private string $image = '';
 
     #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\Column(type: 'json', nullable: true)]

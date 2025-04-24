@@ -15,7 +15,7 @@ namespace App\Enum;
 
 final class BadgeEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string RECYCLED_10 = 'Recycled10';
     public const string RECYCLED_100 = 'Recycled100';

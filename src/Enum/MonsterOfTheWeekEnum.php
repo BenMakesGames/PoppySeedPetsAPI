@@ -14,13 +14,14 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-final class MonsterOfTheWeekEnum
+enum MonsterOfTheWeekEnum: string
 {
     use Enum;
 
-    public const string DIONYSUS = 'Dionysus';
-    public const string ANHUR = 'Anhur';
-    public const string BOSHINOGAMI = 'Boshinogami';
-    public const string HUEHUECOYOTL = 'Huehuecoyotl';
-    public const string CARDEA = 'Cardea';
+    case Dionysus = 'Dionysus';
+    case Anhur = 'Anhur';
+    case Boshinogami = 'Boshinogami';
+    case Huehuecoyotl = 'Huehuecoyotl';
+    case Cardea = 'Cardea';
+    case EiriPersona = 'Eiri Persona';
 }

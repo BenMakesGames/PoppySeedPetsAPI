@@ -16,7 +16,7 @@ namespace App\Enum;
 
 final class PetActivityStatEnum
 {
-    use Enum;
+    use FakeEnum;
 
     public const string CRAFT = 'craft';
     public const string MAGIC_BIND = 'magicbind';

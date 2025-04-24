@@ -14,18 +14,25 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-class PatreonTierEnum
+use App\Service\IRandom;
+
+trait FakeEnum
 {
-    use FakeEnum;
-
-    public const string DAPPER_SWAN = 'DapperSwan';
-
-    public static function getByRewardId(int $rewardId)
+    /**
+     * @return string[]|int[]
+     */
+    public static function getValues(): array
     {
-        switch($rewardId)
-        {
-            case 9967352: return self::DAPPER_SWAN;
-            default: throw new \InvalidArgumentException('Invalid rewardId.');
-        }
+        return array_values((new \ReflectionClass(__CLASS__))->getConstants());
+    }
+
+    public static function isAValue(string|int $value): bool
+    {
+        return in_array($value, self::getValues());
+    }
+
+    public static function getRandomValue(IRandom $rng): string
+    {
+        return $rng->rngNextFromArray(self::getValues());
     }
 }
