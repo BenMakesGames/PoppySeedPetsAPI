@@ -536,19 +536,19 @@ class PetActivityService
 
         if($this->rng->rngNextInt(1, 100) <= ($hasEventPersonality ? 24 : 16) && CalendarFunctions::isSaintPatricksDay($this->clock->now))
         {
-            $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::SAINT_PATRICKS);
+            $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::SaintPatricks);
             return;
         }
 
         if($this->rng->rngNextInt(1, 100) <= ($hasEventPersonality ? 30 : 25) && CalendarFunctions::isEaster($this->clock->now))
         {
-            $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::EASTER);
+            $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::Easter);
             return;
         }
 
         if($this->rng->rngNextInt(1, 100) <= ($hasEventPersonality ? 9 : 6) && CalendarFunctions::isChineseNewYear($this->clock->now))
         {
-            $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::LUNAR_NEW_YEAR);
+            $this->gatheringHolidayAdventureService->adventure($petWithSkills, GatheringHolidayEnum::LunarNewYear);
             return;
         }
 

@@ -807,7 +807,7 @@ class UmbraService
         return $activityLog;
     }
 
-    private function foundVampireCastle(ComputedPetSkills $petWithSkills)
+    private function foundVampireCastle(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 

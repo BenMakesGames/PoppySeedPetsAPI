@@ -14,11 +14,9 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-class GatheringHolidayEnum
+enum GatheringHolidayEnum: string
 {
-    use FakeEnum;
-
-    const string EASTER = 'Easter';
-    const string SAINT_PATRICKS = 'Saint Patrick\'s';
-    const string LUNAR_NEW_YEAR = 'Lunar New Year';
+    case Easter = 'Easter';
+    case SaintPatricks = 'Saint Patrick\'s';
+    case LunarNewYear = 'Lunar New Year';
 }

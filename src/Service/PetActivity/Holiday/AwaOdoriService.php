@@ -16,6 +16,7 @@ namespace App\Service\PetActivity\Holiday;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\PetActivityLogTag;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
@@ -107,7 +108,11 @@ class AwaOdoriService
         return $activityLog;
     }
 
-    private function dance(Pet $pet, $listOfPetNames, $activityLogTags, bool $markLogAsRead): PetActivityLog
+    /**
+     * @param PetActivityLogTag[] $activityLogTags
+     * @throws \Exception
+     */
+    private function dance(Pet $pet, string$listOfPetNames, array $activityLogTags, bool $markLogAsRead): PetActivityLog
     {
         $changes = new PetChanges($pet);
 

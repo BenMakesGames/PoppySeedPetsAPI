@@ -211,7 +211,7 @@ class IcyMoonService
         return $activityLog;
     }
 
-    private function fightBabyCrystallineEntity(ComputedPetSkills $petWithSkills)
+    private function fightBabyCrystallineEntity(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 

@@ -1434,9 +1434,14 @@ class GatheringService
         return $activityLog;
     }
 
-    private function maybeGetHeatstroke(ComputedPetSkills $petWithSkills, PetActivityLog $activityLog, int $difficulty, string $locationName)
+    private function maybeGetHeatstroke(
+        ComputedPetSkills $petWithSkills,
+        PetActivityLog $activityLog,
+        int $difficulty,
+        string $locationName
+    ): void
     {
-        if($this->rng->rngNextInt(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
+        if($this->rng->rngNextInt(1, 10 + $petWithSkills->getStamina()->getTotal()) < $difficulty)
         {
             $pet = $petWithSkills->getPet();
 

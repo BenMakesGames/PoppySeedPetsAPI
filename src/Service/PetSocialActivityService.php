@@ -220,7 +220,6 @@ class PetSocialActivityService
             'relationship' => $pet
         ]);
 
-        /** @var $friendRelationshipsByFriendId[] $friendRelationships */
         $friendRelationshipsByFriendId = [];
 
         foreach($friendRelationships as $fr)
@@ -270,7 +269,7 @@ class PetSocialActivityService
         return $rng->rngNextInt(1, 2000) === 1;
     }
 
-    private function hangOutWithSpiritCompanion(Pet $pet)
+    private function hangOutWithSpiritCompanion(Pet $pet): void
     {
         $teachingStat = null;
         $activityTags = [ 'Spirit Companion' ];
@@ -543,7 +542,7 @@ class PetSocialActivityService
     /**
      * @throws EnumInvalidValueException
      */
-    private function hangOutWithOtherPet(PetRelationship $pet, PetRelationship $friend)
+    private function hangOutWithOtherPet(PetRelationship $pet, PetRelationship $friend): void
     {
         $petChanges = new PetChanges($pet->getPet());
         $friendChanges = new PetChanges($friend->getPet());
