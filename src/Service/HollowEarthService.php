@@ -240,7 +240,7 @@ class HollowEarthService
 
         while($player->getMovesRemaining() > 0 && $player->getCurrentAction() === null)
         {
-            $leftGoTile = $leftGoTile || ($player->getCurrentTile()?->getCard()?->getId() === 1);
+            $leftGoTile = $leftGoTile || ($player->getCurrentTile()->getCard()?->getId() === 1);
 
             $nextTile = $this->getNextTile($player);
 

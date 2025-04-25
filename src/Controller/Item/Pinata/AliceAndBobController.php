@@ -34,8 +34,7 @@ class AliceAndBobController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function alicesSecretTeaTime(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
-        UserStatsService $userStatsRepository, ResponseService $responseService,
-        UserAccessor $userAccessor
+        UserStatsService $userStatsRepository, ResponseService $responseService, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -85,8 +84,7 @@ class AliceAndBobController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function alicesSecretHourglass(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        UserStatsService $userStatsRepository, ResponseService $responseService,
-        UserAccessor $userAccessor
+        UserStatsService $userStatsRepository, ResponseService $responseService, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -127,8 +125,7 @@ class AliceAndBobController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function bobsSecretFish(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
-        UserStatsService $userStatsRepository, ResponseService $responseService,
-        UserAccessor $userAccessor
+        UserStatsService $userStatsRepository, ResponseService $responseService, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();

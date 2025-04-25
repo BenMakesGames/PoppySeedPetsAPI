@@ -44,8 +44,7 @@ class AlbumController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function listenToSingle(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng,
-        UserAccessor $userAccessor
+        EntityManagerInterface $em, IRandom $rng, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -79,8 +78,7 @@ class AlbumController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function listenToEP(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng,
-        UserAccessor $userAccessor
+        EntityManagerInterface $em, IRandom $rng, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -117,8 +115,7 @@ class AlbumController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function listenToLP(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng,
-        UserAccessor $userAccessor
+        EntityManagerInterface $em, IRandom $rng, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
