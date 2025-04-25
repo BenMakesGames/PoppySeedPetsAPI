@@ -17,7 +17,6 @@ namespace App\Controller\Item\Blueprint;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Greenhouse;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Enum\PetSkillEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;

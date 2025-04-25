@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Style;
 
-use App\Entity\User;
 use App\Entity\UserStyle;
 use App\Exceptions\PSPNotFoundException;
 use App\Service\ResponseService;

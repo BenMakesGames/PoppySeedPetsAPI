@@ -16,7 +16,6 @@ namespace App\Controller\Greenhouse;
 
 use App\Entity\GreenhousePlant;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Enum\PlantTypeEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;

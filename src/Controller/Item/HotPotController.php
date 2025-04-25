@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPFormValidationException;

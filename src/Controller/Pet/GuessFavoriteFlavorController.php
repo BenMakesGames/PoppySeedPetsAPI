@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;

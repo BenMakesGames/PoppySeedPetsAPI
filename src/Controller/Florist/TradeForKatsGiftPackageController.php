@@ -14,26 +14,18 @@ declare(strict_types=1);
 
 namespace App\Controller\Florist;
 
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Exceptions\PSPFormValidationException;
-use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotUnlockedException;
-use App\Functions\ArrayFunctions;
 use App\Functions\ItemRepository;
 use App\Model\TraderOffer;
 use App\Model\TraderOfferCostOrYield;
 use App\Repository\InventoryRepository;
-use App\Service\FloristService;
-use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\TraderService;
-use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Service\UserAccessor;

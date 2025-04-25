@@ -17,7 +17,6 @@ namespace App\Controller\Item\Blueprint;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Dragon;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Functions\ColorFunctions;
 use App\Service\InventoryService;
 use App\Service\IRandom;

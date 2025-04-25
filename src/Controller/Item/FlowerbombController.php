@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Functions\UserQuestRepository;
 use App\Service\HotPotatoService;
 use App\Service\InventoryService;

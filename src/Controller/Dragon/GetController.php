@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Dragon;
 
-use App\Entity\User;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\DragonHelpers;
 use App\Service\ResponseService;

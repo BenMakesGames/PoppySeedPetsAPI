@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Beehive;
 
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;

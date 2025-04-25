@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Park;
 
-use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\ParkEventHistoryFilterService;
 use App\Service\ResponseService;

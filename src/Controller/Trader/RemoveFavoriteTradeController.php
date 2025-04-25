@@ -14,23 +14,14 @@ declare(strict_types=1);
 
 namespace App\Controller\Trader;
 
-use App\Entity\User;
 use App\Entity\UserFavoriteTrade;
-use App\Enum\LocationEnum;
-use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Exceptions\PSPFormValidationException;
-use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
-use App\Functions\UserQuestRepository;
-use App\Service\FieldGuideService;
-use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Service\UserAccessor;

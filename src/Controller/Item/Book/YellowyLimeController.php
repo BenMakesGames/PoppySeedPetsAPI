@@ -16,7 +16,6 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Repository\InventoryRepository;

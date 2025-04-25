@@ -18,7 +18,6 @@ use App\Entity\HollowEarthPlayerTile;
 use App\Entity\HollowEarthTile;
 use App\Entity\HollowEarthTileType;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;

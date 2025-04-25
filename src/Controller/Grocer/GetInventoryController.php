@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Grocer;
 
-use App\Entity\User;
 use App\Functions\UserQuestRepository;
 use App\Service\GrocerService;
 use App\Service\ResponseService;

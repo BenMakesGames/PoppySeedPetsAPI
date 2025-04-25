@@ -14,9 +14,7 @@ declare(strict_types=1);
 
 namespace App\Controller\MonsterOfTheWeek;
 
-use App\Entity\User;
 use App\Enum\MonsterOfTheWeekEnum;
-use App\Exceptions\PSPNotFoundException;
 use App\Functions\SimpleDb;
 use App\Service\ResponseService;
 use Symfony\Component\HttpFoundation\JsonResponse;

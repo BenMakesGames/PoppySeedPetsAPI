@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\MarketBid;
 
-use App\Entity\Inventory;
 use App\Entity\InventoryForSale;
 use App\Entity\MarketBid;
 use App\Entity\User;
@@ -24,7 +23,6 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
-use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ItemRepository;
 use App\Functions\MarketListingRepository;

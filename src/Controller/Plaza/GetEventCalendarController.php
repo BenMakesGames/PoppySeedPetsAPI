@@ -14,21 +14,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Plaza;
 
-use App\Entity\User;
-use App\Enum\LocationEnum;
-use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Functions\CalendarFunctions;
 use App\Service\CacheHelper;
 use App\Service\Clock;
-use App\Service\InventoryService;
-use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\TransactionService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/plaza")]
 class GetEventCalendarController

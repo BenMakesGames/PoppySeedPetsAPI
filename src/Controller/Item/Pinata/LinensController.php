@@ -17,7 +17,6 @@ namespace App\Controller\Item\Pinata;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Trader;
-use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;

@@ -16,7 +16,6 @@ namespace App\Controller\Item\ChooseAPet;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;

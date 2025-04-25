@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Service\IRandom;

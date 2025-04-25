@@ -17,7 +17,6 @@ namespace App\Controller\Item\ChooseAPet;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Merit;
-use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Exceptions\PSPFormValidationException;

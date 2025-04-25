@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Fireplace;
 
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ItemRepository;

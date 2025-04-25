@@ -17,7 +17,6 @@ namespace App\Controller\Greenhouse;
 use App\Entity\GreenhousePlant;
 use App\Entity\Pet;
 use App\Entity\PlantYieldItem;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\MoonPhaseEnum;

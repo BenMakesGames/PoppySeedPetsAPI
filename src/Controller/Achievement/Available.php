@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Achievement;
 
-use App\Entity\User;
 use App\Entity\UserBadge;
 use App\Enum\BadgeEnum;
 use App\Enum\SerializationGroupEnum;

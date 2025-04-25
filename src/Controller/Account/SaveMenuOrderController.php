@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Account;
 
 use App\Attributes\DoesNotRequireHouseHours;
-use App\Entity\User;
 use App\Exceptions\PSPFormValidationException;
 use App\Functions\UserMenuFunctions;
 use App\Service\ResponseService;

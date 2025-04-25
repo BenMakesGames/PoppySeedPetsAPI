@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\CookingBuddy;
 
-use App\Entity\User;
 use App\Exceptions\PSPNotFoundException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;

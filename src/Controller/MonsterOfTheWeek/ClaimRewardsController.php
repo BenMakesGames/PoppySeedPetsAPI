@@ -14,10 +14,8 @@ declare(strict_types=1);
 
 namespace App\Controller\MonsterOfTheWeek;
 
-use App\Entity\Inventory;
 use App\Entity\MonsterOfTheWeek;
 use App\Entity\MonsterOfTheWeekContribution;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MonsterOfTheWeekEnum;
 use App\Enum\UserStatEnum;
@@ -29,7 +27,6 @@ use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Service\UserAccessor;

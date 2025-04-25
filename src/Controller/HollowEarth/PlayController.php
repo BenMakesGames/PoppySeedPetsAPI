@@ -16,7 +16,6 @@ namespace App\Controller\HollowEarth;
 
 use App\Entity\HollowEarthPlayer;
 use App\Entity\HollowEarthPlayerTile;
-use App\Entity\User;
 use App\Enum\HollowEarthActionTypeEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;

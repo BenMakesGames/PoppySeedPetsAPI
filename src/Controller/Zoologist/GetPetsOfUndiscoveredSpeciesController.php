@@ -14,15 +14,11 @@ declare(strict_types=1);
 
 namespace App\Controller\Zoologist;
 
-use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\SimpleDb;
 use App\Model\FilterResults;
-use App\Service\Filter\PetFilterService;
-use App\Service\Filter\PetSpeciesFilterService;
-use App\Service\Filter\UserSpeciesCollectedFilterService;
 use App\Service\ResponseService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

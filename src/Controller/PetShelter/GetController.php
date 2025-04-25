@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\PetShelter;
 
-use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\PetRepository;
 use App\Functions\UserQuestRepository;

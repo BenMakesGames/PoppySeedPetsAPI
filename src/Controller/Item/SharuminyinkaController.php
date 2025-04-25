@@ -15,8 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Entity\User;
-use App\Enum\LocationEnum;
 use App\Functions\ItemRepository;
 use App\Model\TraderOffer;
 use App\Model\TraderOfferCostOrYield;

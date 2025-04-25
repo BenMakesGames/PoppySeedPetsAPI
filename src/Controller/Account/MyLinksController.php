@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Account;
 
-use App\Entity\User;
 use App\Entity\UserLink;
 use App\Enum\UserLinkVisibilityEnum;
 use App\Enum\UserLinkWebsiteEnum;

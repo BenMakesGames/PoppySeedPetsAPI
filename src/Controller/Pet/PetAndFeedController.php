@@ -16,14 +16,11 @@ namespace App\Controller\Pet;
 
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\LocationEnum;
-use App\Enum\MeritEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
-use App\Repository\InventoryRepository;
 use App\Service\IRandom;
 use App\Service\PetActivity\EatingService;
 use App\Service\PetAndPraiseService;
@@ -42,8 +39,7 @@ class PetAndFeedController
     #[Route("/{pet}/pet", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function pet(
         Pet $pet, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
-        PetAndPraiseService $petAndPraiseService,
-        UserAccessor $userAccessor
+        PetAndPraiseService $petAndPraiseService, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -70,8 +66,7 @@ class PetAndFeedController
     #[Route("/{pet}/feed", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function feed(
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
-        EatingService $eatingService,
-        UserAccessor $userAccessor
+        EatingService $eatingService, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();

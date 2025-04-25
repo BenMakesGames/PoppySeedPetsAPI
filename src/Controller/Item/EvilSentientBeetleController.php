@@ -16,7 +16,6 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Model\SummoningScrollMonster;
 use App\Service\PetActivity\HouseMonsterService;

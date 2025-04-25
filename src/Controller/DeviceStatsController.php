@@ -16,7 +16,6 @@ namespace App\Controller;
 
 use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\DeviceStats;
-use App\Entity\User;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;

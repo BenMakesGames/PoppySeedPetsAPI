@@ -17,7 +17,6 @@ namespace App\Controller\Item\Pinata;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;

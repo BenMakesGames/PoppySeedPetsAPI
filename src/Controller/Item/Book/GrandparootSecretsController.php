@@ -16,7 +16,6 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Service\CookingService;
 use App\Service\ResponseService;
 use Symfony\Component\HttpFoundation\JsonResponse;

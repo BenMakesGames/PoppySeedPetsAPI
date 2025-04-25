@@ -16,7 +16,6 @@ namespace App\Controller\Pet;
 
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\SerializationGroupEnum;

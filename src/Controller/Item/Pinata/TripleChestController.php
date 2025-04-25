@@ -16,7 +16,6 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Exceptions\PSPNotFoundException;
 use App\Repository\InventoryRepository;
 use App\Service\InventoryService;

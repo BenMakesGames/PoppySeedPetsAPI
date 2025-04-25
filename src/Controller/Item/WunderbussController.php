@@ -16,7 +16,6 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Entity\MuseumItem;
-use App\Entity\User;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ItemRepository;

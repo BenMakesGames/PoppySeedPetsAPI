@@ -17,7 +17,6 @@ namespace App\Controller\Pet;
 use App\Entity\Merit;
 use App\Entity\Pet;
 use App\Entity\SpiritCompanion;
-use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SerializationGroupEnum;

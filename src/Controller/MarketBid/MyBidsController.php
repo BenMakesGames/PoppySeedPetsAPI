@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\MarketBid;
 
-use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;

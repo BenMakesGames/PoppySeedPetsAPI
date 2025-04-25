@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Hattier;
 
-use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Service\HattierService;
 use App\Service\ResponseService;

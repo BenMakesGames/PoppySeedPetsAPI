@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Trader;
 
 use App\Entity\Trader;
-use App\Entity\User;
 use App\Entity\UserFavoriteTrade;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;

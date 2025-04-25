@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\MarketBid;
 
-use App\Entity\User;
 use App\Exceptions\PSPNotFoundException;
 use App\Repository\MarketBidRepository;
 use App\Service\ResponseService;

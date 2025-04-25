@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Zoologist;
 
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Entity\UserSpeciesCollected;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;

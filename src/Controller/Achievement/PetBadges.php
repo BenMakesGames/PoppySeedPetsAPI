@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Achievement;
 
-use App\Entity\User;
 use App\Enum\PetBadgeEnum;
 use App\Functions\SimpleDb;
 use App\Service\ResponseService;

@@ -17,7 +17,6 @@ namespace App\Controller\House;
 use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;

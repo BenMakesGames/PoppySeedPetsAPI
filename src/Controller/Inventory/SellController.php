@@ -16,7 +16,6 @@ namespace App\Controller\Inventory;
 
 use App\Entity\Inventory;
 use App\Entity\Item;
-use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;

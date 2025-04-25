@@ -16,7 +16,6 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Entity\TradesUnlocked;
-use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\StoryEnum;
 use App\Enum\UnlockableFeatureEnum;

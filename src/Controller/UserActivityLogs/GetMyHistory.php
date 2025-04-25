@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\UserActivityLogs;
 
-use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\UserActivityLogsFilterService;
 use App\Service\ResponseService;

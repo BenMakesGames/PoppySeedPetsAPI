@@ -17,7 +17,6 @@ namespace App\Controller\Pet;
 use App\Entity\Inventory;
 use App\Entity\LunchboxItem;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;

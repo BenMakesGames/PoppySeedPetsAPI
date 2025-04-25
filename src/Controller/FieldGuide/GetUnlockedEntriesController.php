@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\FieldGuide;
 
-use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\SimpleDb;

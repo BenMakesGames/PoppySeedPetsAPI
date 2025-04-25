@@ -16,7 +16,6 @@ namespace App\Controller\Item\Blueprint;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\UnlockableFeatureEnum;

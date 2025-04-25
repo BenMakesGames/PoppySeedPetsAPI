@@ -17,7 +17,6 @@ namespace App\Controller\Pet;
 use App\Entity\Guild;
 use App\Entity\Pet;
 use App\Entity\PetRelationship;
-use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\RelationshipEnum;

@@ -16,7 +16,6 @@ namespace App\Controller;
 
 use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\PetActivityLogTag;
-use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\ResponseService;

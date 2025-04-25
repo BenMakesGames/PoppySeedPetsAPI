@@ -14,16 +14,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Florist;
 
-use App\Entity\Inventory;
-use App\Entity\User;
 use App\Entity\UserStats;
-use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Service\FloristService;
 use App\Service\ResponseService;
-use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;

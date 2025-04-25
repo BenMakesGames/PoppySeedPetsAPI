@@ -17,7 +17,6 @@ namespace App\Controller\MonsterOfTheWeek;
 use App\Entity\Inventory;
 use App\Entity\MonsterOfTheWeek;
 use App\Entity\MonsterOfTheWeekContribution;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Service\Clock;

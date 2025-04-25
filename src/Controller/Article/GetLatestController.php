@@ -16,7 +16,6 @@ namespace App\Controller\Article;
 
 use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\Article;
-use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;

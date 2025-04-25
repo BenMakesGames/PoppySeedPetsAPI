@@ -16,7 +16,6 @@ namespace App\Controller\Item;
 
 use App\Entity\Dragon;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Exceptions\PSPNotFoundException;
 use App\Service\IRandom;
 use App\Service\ResponseService;

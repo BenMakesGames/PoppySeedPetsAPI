@@ -18,7 +18,6 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Fireplace;
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\UnlockableFeatureEnum;

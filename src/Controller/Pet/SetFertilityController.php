@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;

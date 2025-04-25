@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\MonthlyStoryAdventure;
 
 use App\Entity\MonthlyStoryAdventure;
-use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;

@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Park;
 
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\ParkEventTypeEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPPetNotFoundException;

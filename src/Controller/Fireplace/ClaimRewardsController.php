@@ -14,14 +14,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Fireplace;
 
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
-use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\PetBadgeHelpers;

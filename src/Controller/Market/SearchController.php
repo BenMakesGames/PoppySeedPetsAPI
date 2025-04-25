@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Market;
 
-use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\MarketFilterService;
 use App\Service\ResponseService;

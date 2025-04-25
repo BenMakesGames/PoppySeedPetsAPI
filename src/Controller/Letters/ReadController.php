@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Letters;
 
-use App\Entity\User;
 use App\Entity\UserLetter;
 use App\Exceptions\PSPNotFoundException;
 use App\Service\FieldGuideService;

@@ -16,7 +16,6 @@ namespace App\Controller\MonthlyStoryAdventure;
 
 use App\Entity\MonthlyStoryAdventureStep;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;

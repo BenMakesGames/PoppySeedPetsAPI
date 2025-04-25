@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Greenhouse;
 
 use App\Entity\GreenhousePlant;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PollinatorEnum;
 use App\Exceptions\PSPNotFoundException;

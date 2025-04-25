@@ -14,9 +14,7 @@ declare(strict_types=1);
 
 namespace App\Controller\CookingBuddy;
 
-use App\Entity\Inventory;
 use App\Entity\KnownRecipes;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPInvalidOperationException;

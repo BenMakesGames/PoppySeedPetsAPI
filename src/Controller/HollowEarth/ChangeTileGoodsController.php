@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\HollowEarth;
 
 use App\Entity\HollowEarthPlayerTile;
-use App\Entity\User;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;

@@ -16,7 +16,6 @@ namespace App\Controller\Pet;
 
 use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;

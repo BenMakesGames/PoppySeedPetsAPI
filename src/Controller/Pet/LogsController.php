@@ -16,7 +16,6 @@ namespace App\Controller\Pet;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPPetNotFoundException;

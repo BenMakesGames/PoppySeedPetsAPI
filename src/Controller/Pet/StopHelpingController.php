@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Service\PetAssistantService;
 use App\Service\ResponseService;
 use Symfony\Component\HttpFoundation\JsonResponse;

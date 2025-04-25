@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Fireplace;
 
 use App\Entity\Fireplace;
-use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotUnlockedException;

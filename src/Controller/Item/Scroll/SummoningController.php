@@ -17,7 +17,6 @@ namespace App\Controller\Item\Scroll;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Enum\UserStatEnum;
 use App\Model\SummoningScrollMonster;

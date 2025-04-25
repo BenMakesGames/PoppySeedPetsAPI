@@ -18,7 +18,6 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\SpiritCompanion;
-use App\Entity\User;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Service\IRandom;

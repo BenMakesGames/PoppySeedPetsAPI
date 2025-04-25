@@ -15,12 +15,7 @@ declare(strict_types=1);
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Entity\User;
-use App\Enum\UnlockableFeatureEnum;
-use App\Functions\EnchantmentRepository;
 use App\Functions\ItemRepository;
-use App\Functions\UserQuestRepository;
-use App\Service\HattierService;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
