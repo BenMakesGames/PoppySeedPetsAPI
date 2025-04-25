@@ -50,7 +50,7 @@ class PetRelationshipFilterService
         ;
     }
 
-    public function filterPet(QueryBuilder $qb, $value)
+    public function filterPet(QueryBuilder $qb, $value): void
     {
         $qb
             ->andWhere('r.pet = :pet')

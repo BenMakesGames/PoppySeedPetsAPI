@@ -53,7 +53,7 @@ class PetGroupFilterService
         return $this->repository->createQueryBuilder('g');
     }
 
-    public function filterType(QueryBuilder $qb, $value)
+    public function filterType(QueryBuilder $qb, $value): void
     {
         $qb
             ->andWhere('g.type = :type')
@@ -61,7 +61,7 @@ class PetGroupFilterService
         ;
     }
 
-    public function filterName(QueryBuilder $qb, $value)
+    public function filterName(QueryBuilder $qb, $value): void
     {
         $qb
             ->andWhere('g.name LIKE :name')
@@ -69,7 +69,7 @@ class PetGroupFilterService
         ;
     }
 
-    public function filterWithPetsOwnedBy(QueryBuilder $qb, $value)
+    public function filterWithPetsOwnedBy(QueryBuilder $qb, $value): void
     {
         if(is_numeric($value) && (int)$value == $value)
         {
