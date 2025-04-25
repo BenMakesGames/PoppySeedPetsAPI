@@ -12,54 +12,48 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller\Account;
+namespace App\Controller\Survey;
 
-use App\Entity\MuseumItem;
 use App\Exceptions\PSPNotFoundException;
 use App\Service\ResponseService;
+use App\Service\SurveyService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
 
-#[Route("/account")]
-class ChangeIconController
+#[Route("/survey")]
+class SubmitSurveyAnswersController
 {
-    #[Route("/changeIcon", methods: ["POST"])]
+    #[Route("/{guid}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function setIcon(
-        Request $request, ResponseService $responseService, EntityManagerInterface $em,
+    public function submitSurvey(
+        string $guid, SurveyService $surveyService, Request $request, ResponseService $responseService,
+        EntityManagerInterface $em,
         UserAccessor $userAccessor
     ): JsonResponse
     {
+        $now = new \DateTimeImmutable();
+
+        $questions = $surveyService->getSurveyQuestions($guid, $now);
+
+        if(!$questions)
+            throw new PSPNotFoundException('Survey not found.');
+
         $user = $userAccessor->getUserOrThrow();
-        $itemId = $request->request->getInt('item');
 
-        $donated = $em->getRepository(MuseumItem::class)->findOneBy([
-            'user' => $user->getId(),
-            'item' => $itemId
-        ]);
+        foreach($questions as $question)
+        {
+            $answer = trim($request->request->getString("{$question->getId()}"));
 
-        if(!$donated)
-            throw new PSPNotFoundException('You have not donated that item... YET! (I believe in you!)');
+            if($answer)
+                $surveyService->upsertAnswer($question, $user, $answer);
+            else
+                $surveyService->deleteAnswer($question, $user);
+        }
 
-        $user->setIcon('items/' . $donated->getItem()->getImage());
-
-        $em->flush();
-
-        return $responseService->success();
-    }
-
-    #[Route("/clearIcon", methods: ["PATCH"])]
-    #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function clearIcon(
-        ResponseService $responseService, EntityManagerInterface $em, UserAccessor $userAccessor
-    ): JsonResponse
-    {
-        $user = $userAccessor->getUserOrThrow();
-        $user->setIcon(null);
         $em->flush();
 
         return $responseService->success();

@@ -12,22 +12,20 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller;
+namespace App\Controller\Survey;
 
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Service\ResponseService;
 use App\Service\SurveyService;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\UserAccessor;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 #[Route("/survey")]
-class SurveyController
+class GetSurveyController
 {
     #[Route("/{guid}", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
@@ -53,37 +51,5 @@ class SurveyController
             'questions' => $normalizer->normalize($questions, null, [ 'groups' => [ SerializationGroupEnum::SURVEY_QUESTION ] ]),
             'answers' => $normalizer->normalize($answers, null, [ 'groups' => [ SerializationGroupEnum::SURVEY_QUESTION_ANSWER ] ])
         ]);
-    }
-
-    #[Route("/{guid}", methods: ["POST"])]
-    #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function submitSurvey(
-        string $guid, SurveyService $surveyService, Request $request, ResponseService $responseService,
-        EntityManagerInterface $em,
-        UserAccessor $userAccessor
-    ): JsonResponse
-    {
-        $now = new \DateTimeImmutable();
-
-        $questions = $surveyService->getSurveyQuestions($guid, $now);
-
-        if(!$questions)
-            throw new PSPNotFoundException('Survey not found.');
-
-        $user = $userAccessor->getUserOrThrow();
-
-        foreach($questions as $question)
-        {
-            $answer = trim($request->request->getString("{$question->getId()}"));
-
-            if($answer)
-                $surveyService->upsertAnswer($question, $user, $answer);
-            else
-                $surveyService->deleteAnswer($question, $user);
-        }
-
-        $em->flush();
-
-        return $responseService->success();
     }
 }
