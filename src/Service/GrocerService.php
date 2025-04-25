@@ -135,9 +135,10 @@ class GrocerService
     }
 
     /**
+     * @param array{0: string, 1: int} $itemData
      * @throws PSPNotFoundException
      */
-    private function createInventoryData($itemData, bool $special): array
+    private function createInventoryData(array $itemData, bool $special): array
     {
         $item = ItemRepository::findOneByName($this->em, $itemData[0]);
 
