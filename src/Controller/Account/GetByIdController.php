@@ -68,7 +68,7 @@ class GetByIdController extends AbstractController
         return $responseService->success($data);
     }
 
-    private function getLinks(User $user, EntityManagerInterface $em)
+    private function getLinks(User $user, EntityManagerInterface $em): array
     {
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
@@ -104,7 +104,7 @@ class GetByIdController extends AbstractController
 
     #[DoesNotRequireHouseHours]
     #[Route("/{user}/minimal", methods: ["GET"], requirements: ["user" => "\d+"])]
-    public function getProfileMinimal(User $user, ResponseService $responseService)
+    public function getProfileMinimal(User $user, ResponseService $responseService): JsonResponse
     {
         return $responseService->success($user, [ SerializationGroupEnum::USER_PUBLIC_PROFILE ]);
     }

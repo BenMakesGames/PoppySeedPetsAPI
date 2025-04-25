@@ -21,6 +21,7 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Service\BookstoreService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -33,7 +34,7 @@ class GetAvailableBooks extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getAvailableBooks(
         BookstoreService $bookstoreService, ResponseService $responseService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

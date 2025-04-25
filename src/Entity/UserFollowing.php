@@ -35,10 +35,10 @@ class UserFollowing
     private $following;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $dateAdded;
+    private \DateTimeImmutable $dateAdded;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $note;
+    private ?string $note = null;
 
     public function __construct()
     {

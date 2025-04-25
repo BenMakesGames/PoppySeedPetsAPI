@@ -21,6 +21,7 @@ use App\Exceptions\PSPNotFoundException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -32,7 +33,7 @@ class UnFollowController extends AbstractController
     #[Route("/{following}", methods: ["DELETE"])]
     public function handle(
         User $following, ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         $user = $this->getUser();
 

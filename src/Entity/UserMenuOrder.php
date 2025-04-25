@@ -26,17 +26,22 @@ class UserMenuOrder
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'menuOrder', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[ORM\Column(type: 'simple_array')]
     private $menuOrder = [];
+
+    public function __construct(User $user)
+    {
+        $this->user = $user;
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }

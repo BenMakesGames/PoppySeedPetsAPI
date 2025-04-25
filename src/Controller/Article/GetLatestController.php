@@ -21,6 +21,7 @@ use App\Enum\SerializationGroupEnum;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/article")]
@@ -30,7 +31,7 @@ class GetLatestController extends AbstractController
     #[Route("/latest", methods: ["GET"])]
     public function getLatest(
         ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User|null $user */
         $user = $this->getUser();

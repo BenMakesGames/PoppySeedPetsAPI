@@ -25,6 +25,7 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -32,7 +33,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/illusionist")]
 class BuyFromIllusionistController extends AbstractController
 {
-    private const array INVENTORY = [
+    private const array Inventory = [
         'Scroll of Illusions' => [ 'moneys' => 200, 'recyclingPoints' => 100, 'bloodWine' => 2 ],
         'Blush of Life' => [ 'moneys' => 200, 'recyclingPoints' => 100, 'bloodWine' => 2 ],
         'Mysterious Seed' => [ 'moneys' => 150, 'recyclingPoints' => 75, 'bloodWine' => 1 ],
@@ -48,7 +49,7 @@ class BuyFromIllusionistController extends AbstractController
     public function buy(
         Request $request, TransactionService $transactionService, InventoryService $inventoryService,
         EntityManagerInterface $em, ResponseService $responseService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -59,10 +60,10 @@ class BuyFromIllusionistController extends AbstractController
         if($payWith !== 'moneys' && $payWith !== 'recyclingPoints' && $payWith !== 'bloodWine')
             throw new PSPFormValidationException('You must choose whether to pay with moneys, recycling points, or Blood Wine.');
 
-        if(!array_key_exists($item, self::INVENTORY))
+        if(!array_key_exists($item, self::Inventory))
             throw new PSPFormValidationException('That item is not for sale.');
 
-        $cost = self::INVENTORY[$item][$payWith];
+        $cost = self::Inventory[$item][$payWith];
 
         if($cost < 1)
             throw new \Exception('Cost should not be less than 1! Ben made a mistake!');

@@ -33,6 +33,7 @@ use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -45,7 +46,7 @@ class TradeForKatsGiftPackageController extends AbstractController
     public function makeTrade(
         InventoryRepository $inventoryRepository, ResponseService $responseService,
         EntityManagerInterface $em, TraderService $traderService, UserStatsService $userStatsService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

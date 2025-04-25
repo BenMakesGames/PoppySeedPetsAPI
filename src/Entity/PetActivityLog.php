@@ -54,7 +54,7 @@ class PetActivityLog
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'integer')]
-    private $interestingness = 0;
+    private int $interestingness = 0;
 
     #[Groups(["petActivityLogAndPublicPet"])]
     #[ORM\ManyToOne(targetEntity: Item::class)]
@@ -173,7 +173,7 @@ class PetActivityLog
     }
 
     /**
-     * @return Collection|PetActivityLogTag[]
+     * @return Collection<int, PetActivityLogTag>
      */
     public function getTags(): Collection
     {

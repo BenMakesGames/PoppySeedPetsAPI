@@ -33,7 +33,7 @@ class TestChineseCalendar extends PoppySeedPetsCommand
 
         $chineseCalendar = new \Overtrue\ChineseCalendar\Calendar();
 
-        var_export($chineseCalendar->solar($year, $month, $day));
+        var_export($chineseCalendar->solar((int)$year, (int)$month, (int)$day));
 
         return self::SUCCESS;
     }

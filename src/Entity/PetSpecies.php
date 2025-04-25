@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -102,11 +104,16 @@ class PetSpecies
     private string $nameSort;
 
     #[ORM\OneToMany(targetEntity: 'App\Entity\Pet', mappedBy: 'species')]
-    private $pets;
+    private Collection $pets;
 
     #[Groups(["petEncyclopedia"])]
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $physicalDescription = null;
+
+    public function __construct()
+    {
+        $this->pets = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {

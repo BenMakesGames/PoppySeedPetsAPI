@@ -21,6 +21,7 @@ use App\Exceptions\PSPNotFoundException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/encyclopedia")]
@@ -28,7 +29,9 @@ class GetSpeciesController extends AbstractController
 {
     #[DoesNotRequireHouseHours]
     #[Route("/species/{speciesName}", methods: ["GET"])]
-    public function getSpeciesByName(string $speciesName, EntityManagerInterface $em, ResponseService $responseService)
+    public function getSpeciesByName(
+        string $speciesName, EntityManagerInterface $em, ResponseService $responseService
+    ): JsonResponse
     {
         $species = $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => $speciesName ]);
 

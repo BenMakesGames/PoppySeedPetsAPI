@@ -19,6 +19,7 @@ use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\ItemFilterService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -27,7 +28,9 @@ class ItemSearchController extends AbstractController
 {
     #[DoesNotRequireHouseHours]
     #[Route("/item", methods: ["GET"])]
-    public function itemSearch(Request $request, ItemFilterService $itemFilterService, ResponseService $responseService)
+    public function itemSearch(
+        Request $request, ItemFilterService $itemFilterService, ResponseService $responseService
+    ): JsonResponse
     {
         $itemFilterService->setUser($this->getUser());
 

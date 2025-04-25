@@ -91,7 +91,7 @@ class ExportSurveyAnswersCommand extends Command
         return 0;
     }
 
-    private function exportUsers(array $ids, array $questionColumns, OutputInterface $output)
+    private function exportUsers(array $ids, array $questionColumns, OutputInterface $output): void
     {
         $users = $this->em->getRepository(User::class)->findBy([ 'id' => $ids ], [ 'id' => 'ASC' ]);
 
@@ -114,7 +114,7 @@ class ExportSurveyAnswersCommand extends Command
         }
     }
 
-    private function exportAnswers(User $user, array $row, OutputInterface $output)
+    private function exportAnswers(User $user, array $row, OutputInterface $output): void
     {
         $data = [
             $user->getId(),
@@ -130,7 +130,7 @@ class ExportSurveyAnswersCommand extends Command
         $output->writeln(ExportSurveyAnswersCommand::arrayToCSVLine($data));
     }
 
-    private static function arrayToCSVLine(array $values)
+    private static function arrayToCSVLine(array $values): string
     {
         return implode(',', array_map(function ($v) {
             return '"' . str_replace('"', '""', $v) . '"';

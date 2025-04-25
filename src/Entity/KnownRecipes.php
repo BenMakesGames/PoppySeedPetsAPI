@@ -27,10 +27,16 @@ class KnownRecipes
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[ORM\Column(type: 'string', length: 45)]
-    private $recipe;
+    private string $recipe;
+
+    public function __construct(User $user, string $recipe)
+    {
+        $this->user = $user;
+        $this->recipe = $recipe;
+    }
 
     public function getId(): ?int
     {

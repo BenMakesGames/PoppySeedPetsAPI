@@ -26,22 +26,24 @@ class RecipeAttempted
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $recipe;
+    private string $recipe;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $firstAttemptedOn;
+    private \DateTimeImmutable $firstAttemptedOn;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $lastAttemptedOn;
+    private \DateTimeImmutable $lastAttemptedOn;
 
     #[ORM\Column(type: 'integer')]
-    private $timesAttempted = 1;
+    private int $timesAttempted = 1;
 
-    public function __construct()
+    public function __construct(User $user, string $recipe)
     {
+        $this->user = $user;
+        $this->recipe = $recipe;
         $this->firstAttemptedOn = new \DateTimeImmutable();
         $this->lastAttemptedOn = new \DateTimeImmutable();
     }
@@ -51,28 +53,14 @@ class RecipeAttempted
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
-    }
-
-    public function setUser(User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
     }
 
     public function getRecipe(): string
     {
         return $this->recipe;
-    }
-
-    public function setRecipe(string $recipe): self
-    {
-        $this->recipe = $recipe;
-
-        return $this;
     }
 
     public function getFirstAttemptedOn(): \DateTimeImmutable

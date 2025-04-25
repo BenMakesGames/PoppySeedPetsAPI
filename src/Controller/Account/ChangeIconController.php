@@ -53,7 +53,7 @@ class ChangeIconController extends AbstractController
 
     #[Route("/clearIcon", methods: ["PATCH"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function clearIcon(ResponseService $responseService, EntityManagerInterface $em)
+    public function clearIcon(ResponseService $responseService, EntityManagerInterface $em): JsonResponse
     {
         $user = $this->getUser();
         $user->setIcon(null);

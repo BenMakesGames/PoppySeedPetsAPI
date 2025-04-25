@@ -141,7 +141,7 @@ abstract class PoppySeedPetsCommand extends Command
         return $this->ask($question);
     }
 
-    protected function ask(Question $q)
+    protected function ask(Question $q): mixed
     {
         return $this->questionHelper->ask($this->input, $this->output, $q);
     }

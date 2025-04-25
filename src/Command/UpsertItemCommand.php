@@ -107,12 +107,12 @@ class UpsertItemCommand extends PoppySeedPetsCommand
         return $this->ask($question);
     }
 
-    private function name(Item $item, string $name)
+    private function name(Item $item, string $name): void
     {
         $item->setName($this->askName('What is it called?', $item, $name));
     }
 
-    private function article(Item $item)
+    private function article(Item $item): void
     {
         if(!$item->getGrammar())
         {
@@ -133,7 +133,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
         }
     }
 
-    private function image(Item $item)
+    private function image(Item $item): void
     {
         if($item->getImage())
             $item->setImage($this->ask(new Question('What is its image? (' . $item->getImage() . ') ', $item->getImage())));
@@ -141,12 +141,12 @@ class UpsertItemCommand extends PoppySeedPetsCommand
             $item->setImage($this->ask(new Question('What is its image? ', '')));
     }
 
-    private function fertilizer(Item $item)
+    private function fertilizer(Item $item): void
     {
         $item->setFertilizer($this->askInt('Fertilizer hours', $item->getFertilizer()));
     }
 
-    private function food(Item $item)
+    private function food(Item $item): void
     {
         $edible = $item->getFood() !== null;
 
@@ -191,7 +191,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
         }
     }
 
-    private function tool(Item $item)
+    private function tool(Item $item): void
     {
         $equipable = $item->getTool() !== null;
 
@@ -215,7 +215,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
             $tool->setGripAngle($this->askInt('Grip angle', $tool->getGripAngle()));
             $tool->setGripAngleFixed($this->confirm('Grip angle fixed?', $tool->getGripAngleFixed()));
 
-            foreach(ItemTool::MODIFIER_FIELDS as $modifier)
+            foreach(ItemTool::ModifierFields as $modifier)
                 $tool->{'set' . $modifier}($this->askInt(ucfirst($modifier), $tool->{'get' . $modifier}()));
 
             $tool->setProvidesLight($this->askBool('Provides light?', $tool->getProvidesLight()));
@@ -240,7 +240,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
         return $result === 'NULL' ? null : $result;
     }
 
-    private function hat(Item $item)
+    private function hat(Item $item): void
     {
         $wearable = $item->getHat() !== null;
 
@@ -273,12 +273,12 @@ class UpsertItemCommand extends PoppySeedPetsCommand
         }
     }
 
-    private function fuel(Item $item)
+    private function fuel(Item $item): void
     {
         $item->setFuel($this->askInt('Fuel', $item->getFuel()));
     }
 
-    private function recycleValueAndMuseumPoints(Item $item)
+    private function recycleValueAndMuseumPoints(Item $item): void
     {
         $item->setRecycleValue($this->askInt('Recycle Value', $item->getRecycleValue()));
 
@@ -286,7 +286,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
         $item->setMuseumPoints($this->askInt('Museum Points', $item->getMuseumPoints() ?? max(1, (int)floor($item->getRecycleValue() / 5) * 10)));
     }
 
-    private function groups(Item $item)
+    private function groups(Item $item): void
     {
         $suggestedItemGroups = [];
 

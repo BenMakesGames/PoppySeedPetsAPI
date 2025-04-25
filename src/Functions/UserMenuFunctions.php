@@ -43,9 +43,7 @@ final class UserMenuFunctions
 
         if(!$userSortOrderEntity)
         {
-            $userSortOrderEntity = (new UserMenuOrder())
-                ->setUser($user)
-            ;
+            $userSortOrderEntity = new UserMenuOrder($user);
 
             $em->persist($userSortOrderEntity);
         }

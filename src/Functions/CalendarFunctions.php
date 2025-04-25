@@ -251,7 +251,7 @@ final class CalendarFunctions
     public static function getChineseCalendarInfo(\DateTimeInterface $dt): ChineseCalendarInfo
     {
         $info = (new \Overtrue\ChineseCalendar\Calendar())
-            ->solar($dt->format('Y'), $dt->format('m'), $dt->format('d'))
+            ->solar((int)$dt->format('Y'), (int)$dt->format('m'), (int)$dt->format('d'))
         ;
 
         $result = new ChineseCalendarInfo();

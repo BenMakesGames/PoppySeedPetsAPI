@@ -22,7 +22,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class HollowEarthTileRepository
 {
-    public static function findOneById(EntityManagerInterface $em, int $tileId)
+    public static function findOneById(EntityManagerInterface $em, int $tileId): ?HollowEarthTile
     {
         $tile = $em->getRepository(HollowEarthTile::class)->createQueryBuilder('t')
             ->andWhere('t.id = :id')
@@ -40,7 +40,7 @@ final class HollowEarthTileRepository
     /**
      * @return HollowEarthTile[]
      */
-    public static function findAllInBounds(EntityManagerInterface $em)
+    public static function findAllInBounds(EntityManagerInterface $em): array
     {
         return $em->getRepository(HollowEarthTile::class)->createQueryBuilder('t')
             ->andWhere('t.moveDirection != :zero')

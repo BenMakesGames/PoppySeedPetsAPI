@@ -31,6 +31,7 @@ use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -44,7 +45,7 @@ final class Claim extends AbstractController
         ResponseService $responseService, Request $request, EntityManagerInterface $em,
         UserStatsService $userStatsRepository, InventoryService $inventoryService,
         TransactionService $transactionService, IRandom $rng
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -94,7 +95,7 @@ final class Claim extends AbstractController
         return $responseService->success();
     }
 
-    private static function describeYield(TraderOfferCostOrYield $yield)
+    private static function describeYield(TraderOfferCostOrYield $yield): string
     {
         return match ($yield->type)
         {
@@ -108,7 +109,7 @@ final class Claim extends AbstractController
     private static function getAchievementReward(
         User $user, TraderOfferCostOrYield $yield, InventoryService $inventoryService,
         TransactionService $transactionService
-    )
+    ): void
     {
         switch($yield->type)
         {

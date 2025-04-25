@@ -18,6 +18,7 @@ use App\Entity\User;
 use App\Functions\SimpleDb;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -26,7 +27,7 @@ final class Completed extends AbstractController
 {
     #[Route("", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getCompleted(ResponseService $responseService)
+    public function getCompleted(ResponseService $responseService): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

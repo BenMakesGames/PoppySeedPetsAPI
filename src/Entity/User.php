@@ -110,22 +110,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $passphraseResetRequest;
 
     #[ORM\OneToMany(targetEntity: 'App\Entity\GreenhousePlant', mappedBy: 'owner', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
-    private $greenhousePlants;
+    private Collection $greenhousePlants;
 
     #[ORM\OneToMany(targetEntity: UserSession::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $userSessions;
 
     #[ORM\OneToOne(targetEntity: 'App\Entity\HollowEarthPlayer', mappedBy: 'user', cascade: ['persist', 'remove'], fetch: 'EXTRA_LAZY')]
-    private $hollowEarthPlayer;
+    private ?HollowEarthPlayer $hollowEarthPlayer = null;
 
     #[ORM\OneToOne(targetEntity: 'App\Entity\Fireplace', mappedBy: 'user', cascade: ['persist', 'remove'], fetch: 'EXTRA_LAZY')]
-    private $fireplace;
+    private ?Fireplace $fireplace = null;
 
     #[ORM\OneToOne(targetEntity: 'App\Entity\Beehive', mappedBy: 'user', cascade: ['persist', 'remove'])]
-    private $beehive;
+    private ?Beehive $beehive = null;
 
     #[ORM\OneToOne(targetEntity: 'App\Entity\Greenhouse', mappedBy: 'owner', cascade: ['persist', 'remove'])]
-    private $greenhouse;
+    private ?Greenhouse $greenhouse = null;
 
     #[Groups(["myAccount"])]
     #[ORM\Column(type: 'integer')]
@@ -164,17 +164,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Groups(["myAccount"])]
     #[ORM\OneToMany(targetEntity: UserUnlockedFeature::class, mappedBy: 'user', orphanRemoval: true)]
-    private $unlockedFeatures;
+    private Collection $unlockedFeatures;
 
     #[ORM\OneToMany(targetEntity: UserBadge::class, mappedBy: 'user', orphanRemoval: true)]
-    private $badges;
+    private Collection $badges;
 
     #[Groups(["myAccount"])]
     #[ORM\OneToOne(targetEntity: UserSubscription::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     private $subscription;
 
     #[ORM\OneToMany(targetEntity: UserFieldGuideEntry::class, mappedBy: 'user', orphanRemoval: true)]
-    private $fieldGuideEntries;
+    private Collection $fieldGuideEntries;
 
     #[ORM\OneToOne(mappedBy: 'owner', cascade: ['persist', 'remove'])]
     private ?CookingBuddy $cookingBuddy = null;
@@ -203,7 +203,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -270,7 +270,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }

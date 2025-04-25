@@ -19,6 +19,7 @@ use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\UserFilterService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -32,7 +33,7 @@ class Followers extends AbstractController
     public function handle(
         ResponseService $responseService, Request $request,
         UserFilterService $userFilterService
-    )
+    ): JsonResponse
     {
         $user = $this->getUser();
 

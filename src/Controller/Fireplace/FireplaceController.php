@@ -25,6 +25,7 @@ use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -37,7 +38,7 @@ class FireplaceController extends AbstractController
     public function getFireplace(
         ResponseService $responseService, EntityManagerInterface $em,
         NormalizerInterface $normalizer
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -65,7 +66,7 @@ class FireplaceController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getFireplaceFuel(
         InventoryRepository $inventoryRepository, ResponseService $responseService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -82,7 +83,7 @@ class FireplaceController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getWhelpFood(
         ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -107,7 +108,9 @@ class FireplaceController extends AbstractController
     }
 
     #[Route("/mantle/{user}", methods: ["GET"], requirements: [ "user" => "\d+" ])]
-    public function getMantle(User $user, InventoryRepository $inventoryRepository, ResponseService $responseService)
+    public function getMantle(
+        User $user, InventoryRepository $inventoryRepository, ResponseService $responseService
+    ): JsonResponse
     {
         $inventory = $inventoryRepository->findBy([
             'owner' => $user,

@@ -63,7 +63,7 @@ final class DateFunctions
             return MoonPhaseEnum::NewMoon;
     }
 
-    public static function getJulianDate(int $year, int $month, int $day)
+    public static function getJulianDate(int $year, int $month, int $day): int
     {
         $yy = $year - (int)((12 - $month) / 10);
         $mm = $month + 9;

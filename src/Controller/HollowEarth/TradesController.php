@@ -59,7 +59,7 @@ class TradesController extends AbstractController
     public function makeExchange(
         string $tradeId, Request $request, ResponseService $responseService, EntityManagerInterface $em,
         HollowEarthService $hollowEarthService, InventoryService $inventoryService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

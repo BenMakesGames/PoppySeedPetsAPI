@@ -35,6 +35,7 @@ use App\Service\PetActivity\EatingService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -47,7 +48,7 @@ class GiveCandyToTrickOrTreaterController extends AbstractController
     public function giveCandy(
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
         Request $request, Clock $clock, IRandom $rng, FieldGuideService $fieldGuideService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

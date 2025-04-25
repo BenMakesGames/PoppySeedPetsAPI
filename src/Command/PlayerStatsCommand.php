@@ -60,7 +60,7 @@ class PlayerStatsCommand extends PoppySeedPetsCommand
         return self::SUCCESS;
     }
 
-    private function getCount(Query $query, string $argument)
+    private function getCount(Query $query, string $argument): int
     {
         return (int)$query->execute([ $argument ])[0][1];
     }

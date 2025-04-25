@@ -55,7 +55,7 @@ class ControllerActionSubscriber implements EventSubscriberInterface
         $this->convertJsonStringToArray($event);
     }
 
-    private function checkRateLimiters(ControllerEvent $event)
+    private function checkRateLimiters(ControllerEvent $event): void
     {
         /** @var User $user */
         $user = $this->security->getUser();
@@ -68,7 +68,7 @@ class ControllerActionSubscriber implements EventSubscriberInterface
         $defaultLimiter->reserve(1, 15)->wait();
     }
 
-    private function checkHouseHours(ControllerEvent $event)
+    private function checkHouseHours(ControllerEvent $event): void
     {
         $controllerAction = $event->getController();
         $method = new \ReflectionMethod(get_class($controllerAction[0]), $controllerAction[1]);
@@ -94,7 +94,7 @@ class ControllerActionSubscriber implements EventSubscriberInterface
         throw new PSPHoursMustBeRun();
     }
 
-    private function convertJsonStringToArray(ControllerEvent $event)
+    private function convertJsonStringToArray(ControllerEvent $event): void
     {
         $request = $event->getRequest();
 
@@ -109,7 +109,7 @@ class ControllerActionSubscriber implements EventSubscriberInterface
         $request->request->replace(is_array($data) ? $data : array());
     }
 
-    public function finalizeResponse(ResponseEvent $event)
+    public function finalizeResponse(ResponseEvent $event): void
     {
         $event->getResponse()->headers->set('X-Powered-By', 'PSYC-101');
     }

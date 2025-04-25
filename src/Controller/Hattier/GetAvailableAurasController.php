@@ -19,6 +19,7 @@ use App\Enum\SerializationGroupEnum;
 use App\Service\HattierService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -27,7 +28,9 @@ class GetAvailableAurasController extends AbstractController
 {
     #[Route("/unlockedStyles", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getUnlockedAuras(HattierService $hattierService, ResponseService $responseService)
+    public function getUnlockedAuras(
+        HattierService $hattierService, ResponseService $responseService
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

@@ -74,7 +74,6 @@ class MuseumService
     {
         $inventory = [];
 
-        /** @var ItemGroup[] $groups */
         $groups = $this->em->getRepository(ItemGroup::class)->findBy([
             'isGiftShop' => true
         ]);

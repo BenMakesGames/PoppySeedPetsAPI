@@ -21,6 +21,7 @@ use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Event\TerminateEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterface
 {
@@ -33,7 +34,7 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
         ];
     }
 
-    private $user;
+    private ?UserInterface $user = null;
 
     public function __construct(
         private readonly Security $security,
@@ -42,7 +43,7 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
     {
     }
 
-    public function startRequest (ControllerEvent $event)
+    public function startRequest(ControllerEvent $event): void
     {
         if(!$event->getRequest()->isMethodIdempotent())
             return;
@@ -66,14 +67,17 @@ class OneNonIdempotentRequestPerUserSubscriber implements EventSubscriberInterfa
         ;
     }
 
-    public function terminateResponse(TerminateEvent $event)
+    public function terminateResponse(TerminateEvent $event): void
     {
         $this->done();
     }
 
-    public function exception(ExceptionEvent $event) { $this->done(); }
+    public function exception(ExceptionEvent $event): void
+    {
+        $this->done();
+    }
 
-    private function done()
+    private function done(): void
     {
         if(!$this->user)
             return;

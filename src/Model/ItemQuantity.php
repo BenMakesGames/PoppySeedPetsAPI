@@ -25,6 +25,12 @@ class ItemQuantity
     #[Groups(['myInventory', 'knownRecipe'])]
     public int $quantity;
 
+    public function __construct(Item $item, int $quantity)
+    {
+        $this->item = $item;
+        $this->quantity = $quantity;
+    }
+
     /**
      * @param ItemQuantity[] $quantities
      * @return ItemQuantity[]
@@ -38,11 +44,10 @@ class ItemQuantity
             if($quantity->quantity % $divisor !== 0)
                 throw new \InvalidArgumentException('$quantities cannot be evenly divided by $divisor (' . $divisor . ')');
 
-            $q = new ItemQuantity();
-            $q->item = $quantity->item;
-            $q->quantity = $quantity->quantity / $divisor;
-
-            $dividedQuantities[] = $q;
+            $dividedQuantities[] = new ItemQuantity(
+                $quantity->item,
+                $quantity->quantity / $divisor
+            );
         }
 
         return $dividedQuantities;
