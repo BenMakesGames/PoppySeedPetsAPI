@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller;
+namespace App\Controller\FieldGuide;
 
 use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
@@ -26,7 +26,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/fieldGuide")]
-class FieldGuideController extends AbstractController
+class GetUnlockedEntriesController extends AbstractController
 {
     #[Route("", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
