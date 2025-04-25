@@ -20,22 +20,22 @@ use App\Functions\ItemRepository;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/anniversaryMuffin")]
-class AnniversaryMuffinController extends AbstractController
+class AnniversaryMuffinController
 {
     #[Route("/{inventory}/lengthySkillScroll", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function wishForLengthySkillScroll(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'anniversaryMuffin/#/lengthySkillScroll');
 
@@ -55,11 +55,11 @@ class AnniversaryMuffinController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function wishFor700MuseumFavor(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        TransactionService $transactionService
+        TransactionService $transactionService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'anniversaryMuffin/#/museumFavor');
 

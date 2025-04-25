@@ -25,23 +25,23 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item")]
-class SolsticeBagController extends AbstractController
+class SolsticeBagController
 {
     #[Route("/summerSolsticeBag/{bag}/open", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openSummerSolsticeBag(
         Inventory $bag, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        EntityManagerInterface $em, HattierService $hattierService
+        EntityManagerInterface $em, HattierService $hattierService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $bag, 'summerSolsticeBag/#/open');
         ItemControllerHelpers::validateLocationSpace($bag, $em);
@@ -84,11 +84,11 @@ class SolsticeBagController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openWinterSolsticeBag(
         Inventory $bag, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        EntityManagerInterface $em, HattierService $hattierService
+        EntityManagerInterface $em, HattierService $hattierService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $bag, 'winterSolsticeBag/#/open');
         ItemControllerHelpers::validateLocationSpace($bag, $em);

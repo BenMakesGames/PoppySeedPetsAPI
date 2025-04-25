@@ -12,30 +12,37 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller\Style;
+namespace App\Controller\Pet;
 
 use App\Entity\User;
-use App\Entity\UserStyle;
 use App\Enum\SerializationGroupEnum;
 use App\Service\ResponseService;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\Typeahead\PetTypeaheadService;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Service\UserAccessor;
 
-#[Route("/style")]
-class GetMineController
+#[Route("/pet")]
+class TypeaheadController
 {
-    #[Route("", methods: ["GET"])]
+    #[Route("/typeahead", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getThemes(EntityManagerInterface $em, ResponseService $responseService,
+    public function typeaheadSearch(
+        Request $request, ResponseService $responseService, PetTypeaheadService $petTypeaheadService,
         UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
-        $themes = $em->getRepository(UserStyle::class)->findBy([ 'user' => $user ]);
 
-        return $responseService->success($themes, [ SerializationGroupEnum::MY_STYLE ]);
+        $petTypeaheadService->setUser($user);
+
+        if($request->query->has('speciesId'))
+            $petTypeaheadService->setSpeciesId($request->query->getInt('speciesId'));
+
+        $suggestions = $petTypeaheadService->search('name', $request->query->get('search', ''));
+
+        return $responseService->success($suggestions, [ SerializationGroupEnum::MY_PET, SerializationGroupEnum::MY_PET_LOCATION ]);
     }
 }

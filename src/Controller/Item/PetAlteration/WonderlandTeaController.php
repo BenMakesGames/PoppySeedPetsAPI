@@ -23,24 +23,24 @@ use App\Exceptions\PSPPetNotFoundException;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item")]
-class WonderlandTeaController extends AbstractController
+class WonderlandTeaController
 {
     #[Route("/tinyTea/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function serveTinyTea(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        IRandom $rng
+        IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'tinyTea');
 
@@ -71,11 +71,11 @@ class WonderlandTeaController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function serveTremendousTea(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        IRandom $rng
-    )
+        IRandom $rng,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'tremendousTea');
 
@@ -105,11 +105,11 @@ class WonderlandTeaController extends AbstractController
     #[Route("/totallyTea/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function serveTotallyTea(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
-    )
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'totallyTea');
 

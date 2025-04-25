@@ -21,23 +21,23 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/ohGames")]
-class OhGamesController extends AbstractController
+class OhGamesController
 {
     #[Route("/{inventory}/rockPaintingKit", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function rockPaintingKit(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng
+        EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'ohGames/#/rockPaintingKit');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -78,11 +78,11 @@ class OhGamesController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function sneqosAndLadders(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng
+        EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'ohGames/#/sneqosAndLadders');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);

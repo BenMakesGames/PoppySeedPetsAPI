@@ -33,23 +33,23 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/hornOfPlenty")]
-class HornOfPlentyController extends AbstractController
+class HornOfPlentyController
 {
     #[Route("/{inventory}/use", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function use(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, IRandom $rng, HotPotatoService $hotPotatoService
+        InventoryService $inventoryService, IRandom $rng, HotPotatoService $hotPotatoService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
         $numberOfTosses = HotPotatoService::countTeleports($inventory);
 
         $petsAtHome = $em->getRepository(Pet::class)->findBy([

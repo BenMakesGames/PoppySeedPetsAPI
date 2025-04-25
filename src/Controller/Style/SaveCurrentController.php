@@ -19,23 +19,23 @@ use App\Entity\UserStyle;
 use App\Functions\UserStyleFunctions;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/style")]
-class SaveCurrentController extends AbstractController
+class SaveCurrentController
 {
     #[Route("/current", methods: ["PATCH"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function saveCurrentStyle(
-        Request $request, EntityManagerInterface $em, ResponseService $responseService
+        Request $request, EntityManagerInterface $em, ResponseService $responseService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $style = UserStyleFunctions::findCurrent($em, $user->getId());
 

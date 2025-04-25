@@ -26,23 +26,23 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/fireplace")]
-class LookInStockingController extends AbstractController
+class LookInStockingController
 {
     #[Route("/lookInStocking", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function lookInStocking(
         InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
-        IRandom $rng
+        IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
         $now = new \DateTimeImmutable();
         $monthAndDay = $now->format('md');
 

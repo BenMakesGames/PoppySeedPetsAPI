@@ -21,20 +21,19 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Service\UserAccessor;
 
 #[Route("/item/bee")]
-class BeeController extends AbstractController
+class BeeController
 {
     #[Route("/{inventory}/giveToBeehive", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function giveToBeehive(
-        Inventory $inventory, EntityManagerInterface $em, ResponseService $responseService
+        Inventory $inventory, EntityManagerInterface $em, ResponseService $responseService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'bee/#/giveToBeehive');
 

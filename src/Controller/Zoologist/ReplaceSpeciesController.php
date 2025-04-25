@@ -23,23 +23,23 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/zoologist")]
-class ReplaceSpeciesController extends AbstractController
+class ReplaceSpeciesController
 {
     #[Route("/replaceEntry", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function replace(
-        EntityManagerInterface $em, Request $request, ResponseService $responseService
+        EntityManagerInterface $em, Request $request, ResponseService $responseService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Zoologist))
             throw new PSPNotUnlockedException('Zoologist');

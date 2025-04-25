@@ -19,13 +19,13 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Service\CookingService;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/riceBook")]
-class RiceBookController extends AbstractController
+class RiceBookController
 {
     private const array RECIPES = [
         'Nigiri',
@@ -48,11 +48,11 @@ class RiceBookController extends AbstractController
     #[Route("/{inventory}/upload", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function upload(
-        Inventory $inventory, ResponseService $responseService, CookingService $cookingService
+        Inventory $inventory, ResponseService $responseService, CookingService $cookingService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'riceBook/#/upload');
 
@@ -63,9 +63,11 @@ class RiceBookController extends AbstractController
 
     #[Route("/{inventory}/read", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function read(Inventory $inventory, ResponseService $responseService): JsonResponse
+    public function read(Inventory $inventory, ResponseService $responseService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'riceBook/#/read');
+        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'riceBook/#/read');
 
         return $responseService->itemActionSuccess('# Of Rice
 

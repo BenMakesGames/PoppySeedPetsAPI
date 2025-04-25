@@ -27,25 +27,25 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/florist")]
-class BuyController extends AbstractController
+class BuyController
 {
     #[Route("/buy", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buyFlowerbomb(
         Request $request, FloristService $floristService,
         InventoryService $inventoryService, ResponseService $responseService, UserStatsService $userStatsRepository,
-        EntityManagerInterface $em, TransactionService $transactionService
+        EntityManagerInterface $em, TransactionService $transactionService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Florist))
             throw new PSPNotUnlockedException('Florist');

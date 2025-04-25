@@ -31,24 +31,25 @@ use App\Functions\MeritRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Model\MeritInfo;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/item/forgettingScroll")]
-class ForgettingScrollController extends AbstractController
+class ForgettingScrollController
 {
     #[Route("/{inventory}/forgettableThings", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getForgettableThings(
         Inventory $inventory, ResponseService $responseService, Request $request, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'forgettingScroll');
 
@@ -79,11 +80,10 @@ class ForgettingScrollController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function forgetMerit(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        UserStatsService $userStatsRepository
-    )
+        UserStatsService $userStatsRepository, UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'forgettingScroll');
 
@@ -158,11 +158,10 @@ class ForgettingScrollController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function forgetSkill(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        UserStatsService $userStatsRepository
-    )
+        UserStatsService $userStatsRepository, UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'forgettingScroll');
 

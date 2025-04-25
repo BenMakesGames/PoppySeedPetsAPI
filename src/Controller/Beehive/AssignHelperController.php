@@ -20,22 +20,22 @@ use App\Enum\SerializationGroupEnum;
 use App\Service\PetAssistantService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/beehive")]
-class AssignHelperController extends AbstractController
+class AssignHelperController
 {
     #[Route("/assignHelper/{pet}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function assignHelper(
-        Pet $pet, ResponseService $responseService, EntityManagerInterface $em
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         PetAssistantService::helpBeehive($user, $pet);
 

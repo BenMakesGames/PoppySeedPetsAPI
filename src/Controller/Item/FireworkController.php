@@ -22,23 +22,22 @@ use App\Functions\UserQuestRepository;
 use App\Service\HattierService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/firework")]
-class FireworkController extends AbstractController
+class FireworkController
 {
     #[Route("/{inventory}/light", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function light(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        HattierService $hattierService
+        HattierService $hattierService, UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'firework/#/light');
 

@@ -20,24 +20,24 @@ use App\Exceptions\PSPFormValidationException;
 use App\Functions\UserMenuFunctions;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/account")]
-class SaveMenuOrderController extends AbstractController
+class SaveMenuOrderController
 {
     #[Route("/menuOrder", methods: ["PATCH"])]
     #[DoesNotRequireHouseHours]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function saveMenuOrder(
-        Request $request, EntityManagerInterface $em, ResponseService $responseService
+        Request $request, EntityManagerInterface $em, ResponseService $responseService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
         $newOrder = $request->request->all('order');
 
         if(count($newOrder) === 0)

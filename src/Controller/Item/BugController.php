@@ -36,24 +36,24 @@ use App\Service\ResponseService;
 use App\Service\StoryService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/bug")]
-class BugController extends AbstractController
+class BugController
 {
     #[Route("/{inventory}/squish", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function squishBug(
         Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'bug/#/squish');
 
@@ -75,11 +75,10 @@ class BugController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function putBugOutside(
         Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'bug/#/putOutside');
 
@@ -97,11 +96,11 @@ class BugController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function feedBug(
         Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
-        EntityManagerInterface $em, Request $request, InventoryService $inventoryService, IRandom $rng
+        EntityManagerInterface $em, Request $request, InventoryService $inventoryService, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'feedBug');
 
@@ -196,11 +195,10 @@ class BugController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function adopt(
         Inventory $inventory, EntityManagerInterface $em, ResponseService $responseService, PetFactory $petFactory,
-        IRandom $rng
+        IRandom $rng, UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'bug/#/adopt');
 
@@ -289,11 +287,10 @@ class BugController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function talkToQueen(
         Inventory $inventory, StoryService $storyService, Request $request,
-        ResponseService $responseService
+        ResponseService $responseService, UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'bug/#/squish');
 

@@ -24,24 +24,24 @@ use App\Service\Clock;
 use App\Service\Holidays\HalloweenService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use App\Service\UserAccessor;
 
 #[Route("/halloween")]
-class TrickOrTreaterController extends AbstractController
+class TrickOrTreaterController
 {
     #[Route("/trickOrTreater", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getTrickOrTreater(
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
-        NormalizerInterface $normalizer, Clock $clock
+        NormalizerInterface $normalizer, Clock $clock,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!CalendarFunctions::isHalloween($clock->now))
             throw new PSPInvalidOperationException('It isn\'t Halloween!');

@@ -19,23 +19,23 @@ use App\Entity\User;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/hollowEarth")]
-class ChangeTileGoodsController extends AbstractController
+class ChangeTileGoodsController
 {
     #[Route("/changeTileGoods", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function changeTileGoods(
-        Request $request, ResponseService $responseService, EntityManagerInterface $em
+        Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
         $player = $user->getHollowEarthPlayer();
 
         $selectedGoods = $request->request->getAlpha('goods');

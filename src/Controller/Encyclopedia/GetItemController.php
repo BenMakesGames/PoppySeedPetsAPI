@@ -20,12 +20,11 @@ use App\Exceptions\PSPNotFoundException;
 use App\Functions\ItemRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/encyclopedia")]
-class GetItemController extends AbstractController
+class GetItemController
 {
     #[DoesNotRequireHouseHours]
     #[Route("/item/{itemName}", methods: ["GET"])]

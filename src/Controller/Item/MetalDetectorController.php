@@ -18,21 +18,22 @@ use App\Entity\Inventory;
 use App\Functions\ItemRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/metalDetector")]
-class MetalDetectorController extends AbstractController
+class MetalDetectorController
 {
     #[Route("/{inventory}/tune/iron", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function tuneMetalDetectorForIron(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'metalDetector/#/tune/iron');
+        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'metalDetector/#/tune/iron');
 
         $inventory->changeItem(ItemRepository::findOneByName($em, 'Metal Detector (Iron)'));
 
@@ -47,10 +48,11 @@ class MetalDetectorController extends AbstractController
     #[Route("/{inventory}/tune/silver", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function tuneMetalDetectorForSilver(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'metalDetector/#/tune/silver');
+        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'metalDetector/#/tune/silver');
 
         $inventory->changeItem(ItemRepository::findOneByName($em, 'Metal Detector (Silver)'));
 
@@ -65,10 +67,11 @@ class MetalDetectorController extends AbstractController
     #[Route("/{inventory}/tune/gold", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function tuneMetalDetectorForGold(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'metalDetector/#/tune/gold');
+        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'metalDetector/#/tune/gold');
 
         $inventory->changeItem(ItemRepository::findOneByName($em, 'Metal Detector (Gold)'));
 

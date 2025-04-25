@@ -30,25 +30,25 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use phpDocumentor\Reflection\Location;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use App\Service\UserAccessor;
 
 #[Route("/greenhouse")]
-class GetGreenhouseController extends AbstractController
+class GetGreenhouseController
 {
     #[Route("", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getGreenhouse(
         ResponseService $responseService, GreenhouseService $greenhouseService,
-        NormalizerInterface $normalizer, EntityManagerInterface $em
+        NormalizerInterface $normalizer, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->getGreenhouse())
             throw new PSPNotUnlockedException('Greenhouse');

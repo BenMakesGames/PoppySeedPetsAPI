@@ -22,22 +22,23 @@ use App\Functions\PetColorFunctions;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/spicyKonpeito")]
-class SpicyKonpeitoController extends AbstractController
+class SpicyKonpeitoController
 {
     #[Route("/{inventory}/give", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function feedToDragon(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        PetColorFunctions $petColorChangingService, IRandom $rng
+        PetColorFunctions $petColorChangingService, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'spicyKonpeito/#/give');
 

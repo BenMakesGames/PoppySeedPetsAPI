@@ -18,24 +18,24 @@ use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\UserLetterFilterService;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/letter")]
-class GetMyLettersController extends AbstractController
+class GetMyLettersController
 {
     #[Route("", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getLetters(
         Request $request, ResponseService $responseService,
-        UserLetterFilterService $userLetterFilterService
+        UserLetterFilterService $userLetterFilterService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $userLetterFilterService->addRequiredFilter('user', $user->getId());
 

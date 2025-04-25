@@ -23,20 +23,21 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Service\UserAccessor;
 
 #[Route("/item")]
-class RijndaelController extends AbstractController
+class RijndaelController
 {
     #[Route("/rijndael/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function search(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'rijndael');
+        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'rijndael');
 
         $searchForId = $request->request->getInt('itemId');
 

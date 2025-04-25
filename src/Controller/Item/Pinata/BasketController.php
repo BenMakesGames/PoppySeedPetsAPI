@@ -24,23 +24,23 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/basket")]
-class BasketController extends AbstractController
+class BasketController
 {
     #[Route("/fish/{inventory}/open", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openBasketOfFish(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng
+        EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'basket/fish/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -84,11 +84,11 @@ class BasketController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openFruitBasket(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em
-    )
+        EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'basket/fruit/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -119,11 +119,11 @@ class BasketController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openFlowerBasket(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng, Clock $clock
-    )
+        EntityManagerInterface $em, IRandom $rng, Clock $clock,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'basket/flower/#/loot');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);

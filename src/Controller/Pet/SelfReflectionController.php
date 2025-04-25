@@ -33,24 +33,25 @@ use App\Service\PetRelationshipService;
 use App\Service\ResponseService;
 use App\Service\Typeahead\PetRelationshipTypeaheadService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/pet")]
-class SelfReflectionController extends AbstractController
+class SelfReflectionController
 {
     #[Route("/{pet}/selfReflection", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getGuildMembership(
         Pet $pet, ResponseService $responseService, PetRelationshipRepository $petRelationshipRepository,
-        PetRelationshipService $petRelationshipService, EntityManagerInterface $em
+        PetRelationshipService $petRelationshipService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
         // just to prevent scraping (this endpoint is currently - 2020-06-29 - used only for changing a pet's guild)
-        if($pet->getOwner()->getId() !== $this->getUser()->getId())
+        if($pet->getOwner()->getId() !== $userAccessor->getUserOrThrow()->getId())
             throw new PSPPetNotFoundException();
 
         $guildData = array_map(
@@ -104,11 +105,11 @@ class SelfReflectionController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/{pet}/selfReflection/changeGuild", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function changeGuild(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($user->getId() !== $pet->getOwner()->getId())
             throw new PSPPetNotFoundException();
@@ -156,11 +157,11 @@ class SelfReflectionController extends AbstractController
     #[Route("/{pet}/selfReflection/reconcile", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function reconcileWithAnotherPet(
         Pet $pet, Request $request, ResponseService $responseService, PetRelationshipRepository $petRelationshipRepository,
-        EntityManagerInterface $em, IRandom $rng
+        EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($user->getId() !== $pet->getOwner()->getId())
             throw new PSPPetNotFoundException();
@@ -251,11 +252,11 @@ class SelfReflectionController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function troubledRelationshipsTypeaheadSearch(
         Request $request, ResponseService $responseService, EntityManagerInterface $em,
-        PetRelationshipTypeaheadService $petRelationshipTypeaheadService, PetRelationshipService $petRelationshipService
+        PetRelationshipTypeaheadService $petRelationshipTypeaheadService, PetRelationshipService $petRelationshipService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $petId = $request->query->getInt('petId', 0);
 

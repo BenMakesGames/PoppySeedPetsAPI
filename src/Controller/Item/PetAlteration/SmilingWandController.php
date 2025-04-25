@@ -24,23 +24,23 @@ use App\Functions\ActivityHelpers;
 use App\Functions\PetActivityLogFactory;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/smilingWand")]
-class SmilingWandController extends AbstractController
+class SmilingWandController
 {
     #[Route("/{inventory}/use", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function waveSmilingWand(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'smilingWand');
 

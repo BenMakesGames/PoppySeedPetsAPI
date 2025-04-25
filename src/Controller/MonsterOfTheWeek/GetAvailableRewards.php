@@ -19,20 +19,21 @@ use App\Enum\MonsterOfTheWeekEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\SimpleDb;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/monsterOfTheWeek")]
-class GetAvailableRewards extends AbstractController
+class GetAvailableRewards
 {
     #[Route("/rewards", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getCurrent(ResponseService $responseService): JsonResponse
+    public function getCurrent(ResponseService $responseService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $db = SimpleDb::createReadOnlyConnection();
 

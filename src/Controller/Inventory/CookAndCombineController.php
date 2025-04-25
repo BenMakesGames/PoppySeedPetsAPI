@@ -29,24 +29,24 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/inventory")]
-class CookAndCombineController extends AbstractController
+class CookAndCombineController
 {
     #[Route("/prepare", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function prepareRecipe(
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
-        EntityManagerInterface $em, CookingService $cookingService, IRandom $rng
+        EntityManagerInterface $em, CookingService $cookingService, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $inventoryIds = $request->request->all('inventory');
 

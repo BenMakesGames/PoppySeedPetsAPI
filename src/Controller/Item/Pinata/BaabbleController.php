@@ -22,13 +22,13 @@ use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/baabble")]
-class BaabbleController extends AbstractController
+class BaabbleController
 {
     private const array LameShit = [
         'Crooked Stick', 'Scales', 'Tea Leaves', 'Aging Powder', 'Fluff', 'Pointer', 'Creamy Milk', 'Silica Grounds',
@@ -64,11 +64,11 @@ class BaabbleController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openBlackBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $rng
+        EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'baabble/black/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -116,11 +116,11 @@ class BaabbleController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openWhiteBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $rng
-    )
+        EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $rng,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'baabble/white/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -172,11 +172,11 @@ class BaabbleController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openGoldBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $rng
-    )
+        EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $rng,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'baabble/gold/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -231,11 +231,11 @@ class BaabbleController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openShinyBaabble(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $rng
-    )
+        EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $rng,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'baabble/shiny/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);

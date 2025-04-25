@@ -28,24 +28,24 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/trader")]
-class MakeExchangeController extends AbstractController
+class MakeExchangeController
 {
     #[Route("/{id}/exchange", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function makeExchange(
         string $id, TraderService $traderService, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, Request $request, FieldGuideService $fieldGuideService
+        InventoryService $inventoryService, Request $request, FieldGuideService $fieldGuideService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Trader))
             throw new PSPNotUnlockedException('Trader');

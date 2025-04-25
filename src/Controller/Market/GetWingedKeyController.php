@@ -22,24 +22,24 @@ use App\Service\MarketService;
 use App\Service\MuseumService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/market")]
-class GetWingedKeyController extends AbstractController
+class GetWingedKeyController
 {
     #[Route("/getWingedKey", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getWingedKey(
         ResponseService $responseService, MarketService $marketService, MuseumService $museumService,
-        InventoryService $inventoryService, EntityManagerInterface $em
+        InventoryService $inventoryService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$marketService->canOfferWingedKey($user))
             throw new AccessDeniedHttpException();

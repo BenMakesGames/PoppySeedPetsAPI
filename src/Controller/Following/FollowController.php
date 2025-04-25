@@ -23,25 +23,25 @@ use App\Exceptions\PSPNotFoundException;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/following")]
-class FollowController extends AbstractController
+class FollowController
 {
     #[DoesNotRequireHouseHours]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("", methods: ["POST"])]
     public function add(
         Request $request, ResponseService $responseService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
         $followingId = $request->request->getInt('following');
         $note = $request->request->getString('note');
 

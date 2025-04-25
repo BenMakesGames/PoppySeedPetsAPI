@@ -29,25 +29,25 @@ use App\Service\GreenhouseService;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/greenhouse")]
-class FertilizePlantController extends AbstractController
+class FertilizePlantController
 {
     #[Route("/{plant}/fertilize", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function fertilizePlant(
         GreenhousePlant $plant, ResponseService $responseService, Request $request, EntityManagerInterface $em,
         InventoryRepository $inventoryRepository, UserStatsService $userStatsRepository,
-        GreenhouseService $greenhouseService
+        GreenhouseService $greenhouseService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($plant->getOwner()->getId() !== $user->getId())
             throw new PSPNotFoundException('That plant does not exist.');

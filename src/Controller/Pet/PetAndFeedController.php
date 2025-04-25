@@ -29,24 +29,24 @@ use App\Service\PetActivity\EatingService;
 use App\Service\PetAndPraiseService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/pet")]
-class PetAndFeedController extends AbstractController
+class PetAndFeedController
 {
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/{pet}/pet", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function pet(
         Pet $pet, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
-        PetAndPraiseService $petAndPraiseService
+        PetAndPraiseService $petAndPraiseService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
@@ -70,13 +70,13 @@ class PetAndFeedController extends AbstractController
     #[Route("/{pet}/feed", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function feed(
         Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
-        EatingService $eatingService
+        EatingService $eatingService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
-        if($pet->getOwner()->getId() !== $this->getUser()->getId())
+        if($pet->getOwner()->getId() !== $userAccessor->getUserOrThrow()->getId())
             throw new PSPPetNotFoundException();
 
         if(!$pet->isAtHome())

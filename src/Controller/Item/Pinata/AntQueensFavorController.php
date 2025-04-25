@@ -22,23 +22,23 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/antQueensFavor")]
-class AntQueensFavorController extends AbstractController
+class AntQueensFavorController
 {
     #[Route("/{inventory}/bugStuff", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getBugStuff(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng
+        EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'antQueensFavor/#/bugStuff');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -82,11 +82,11 @@ class AntQueensFavorController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getFood(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng
+        EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'antQueensFavor/#/candy');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -132,11 +132,11 @@ class AntQueensFavorController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function craftingSupplies(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng
+        EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'antQueensFavor/#/craftingSupplies');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);

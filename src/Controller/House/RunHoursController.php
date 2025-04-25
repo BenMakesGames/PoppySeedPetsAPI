@@ -25,25 +25,25 @@ use App\Service\HouseService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/house")]
-class RunHoursController extends AbstractController
+class RunHoursController
 {
     #[DoesNotRequireHouseHours]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/runHours", methods: ["POST"])]
     public function runHours(
         ResponseService $responseService, HouseService $houseService, EntityManagerInterface $em, LoggerInterface $logger,
-        NormalizerInterface $normalizer
+        NormalizerInterface $normalizer,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         try
         {
@@ -66,7 +66,7 @@ class RunHoursController extends AbstractController
             $responseService->setReloadInventory(false);
 
             $inventory = $em->getRepository(Inventory::class)->findBy([
-                'owner' => $this->getUser(),
+                'owner' => $userAccessor->getUserOrThrow(),
                 'location' => LocationEnum::HOME
             ]);
 

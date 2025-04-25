@@ -18,12 +18,11 @@ use App\Entity\DailyStats;
 use App\Enum\SerializationGroupEnum;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/globalStats")]
-class GlobalStatsController extends AbstractController
+class GlobalStatsController
 {
     #[Route("/today", methods: ["GET"])]
     public function getToday(EntityManagerInterface $em, ResponseService $responseService): JsonResponse

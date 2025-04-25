@@ -21,24 +21,24 @@ use App\Repository\InventoryRepository;
 use App\Service\RecyclingService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/inventory")]
-class ThrowAwayController extends AbstractController
+class ThrowAwayController
 {
     #[Route("/throwAway", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function throwAway(
         Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
-        EntityManagerInterface $em, RecyclingService $recyclingService
+        EntityManagerInterface $em, RecyclingService $recyclingService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $inventoryIds = $request->request->all('inventory');
 

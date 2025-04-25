@@ -20,23 +20,23 @@ use App\Exceptions\PSPNotFoundException;
 use App\Service\FieldGuideService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/letter")]
-class ReadController extends AbstractController
+class ReadController
 {
     #[Route("/{letter}/read", methods: ["PATCH"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function markRead(
         UserLetter $letter, EntityManagerInterface $em, ResponseService $responseService,
-        FieldGuideService $fieldGuideService
+        FieldGuideService $fieldGuideService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($letter->getUser()->getId() !== $user->getId())
             throw new PSPNotFoundException('That letter does not exist??!?');

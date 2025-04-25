@@ -25,23 +25,23 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Service\MarketService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/inventory")]
-class SellController extends AbstractController
+class SellController
 {
     #[Route("/sell", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function setSellPrice(
-        ResponseService $responseService, Request $request, EntityManagerInterface $em, MarketService $marketService
+        ResponseService $responseService, Request $request, EntityManagerInterface $em, MarketService $marketService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Market))
             throw new PSPNotUnlockedException('Market');

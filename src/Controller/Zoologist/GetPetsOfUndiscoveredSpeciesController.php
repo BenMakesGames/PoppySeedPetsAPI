@@ -24,23 +24,23 @@ use App\Service\Filter\PetFilterService;
 use App\Service\Filter\PetSpeciesFilterService;
 use App\Service\Filter\UserSpeciesCollectedFilterService;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/zoologist")]
-class GetPetsOfUndiscoveredSpeciesController extends AbstractController
+class GetPetsOfUndiscoveredSpeciesController
 {
     #[Route("/showable", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getPets(
-        Request $request, ResponseService $responseService
+        Request $request, ResponseService $responseService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Zoologist))
             throw new PSPNotUnlockedException('Zoologist');

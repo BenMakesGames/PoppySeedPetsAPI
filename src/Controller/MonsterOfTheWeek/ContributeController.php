@@ -23,24 +23,24 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Service\Clock;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/monsterOfTheWeek")]
-class ContributeController extends AbstractController
+class ContributeController
 {
     #[Route("/{monsterId}/contribute", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function makeContribution(
         int $monsterId, Request $request, ResponseService $responseService, EntityManagerInterface $em,
-        Clock $clock
+        Clock $clock,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $monster = $em->getRepository(MonsterOfTheWeek::class)->findOneBy([
             'id' => $monsterId

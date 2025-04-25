@@ -19,21 +19,22 @@ use App\Entity\Inventory;
 use App\Functions\ItemRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/butterknife")]
-class ButterknifeController extends AbstractController
+class ButterknifeController
 {
     #[Route("/{inventory}/mold", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function moldButterknife(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'butterknife/#/mold');
+        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'butterknife/#/mold');
 
         $butter = ItemRepository::findOneByName($em, 'Butter');
 

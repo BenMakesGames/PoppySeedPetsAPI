@@ -30,24 +30,24 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/fireplace")]
-class FeedWhelpController extends AbstractController
+class FeedWhelpController
 {
     #[Route("/feedWhelp", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function feedWhelp(
         Request $request, ResponseService $responseService,
-        InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng
+        InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $whelp = DragonRepository::findWhelp($em, $user);
 

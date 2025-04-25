@@ -30,23 +30,23 @@ use App\Service\PetFactory;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/summoningScroll")]
-class SummoningSomethingFriendlyController extends AbstractController
+class SummoningSomethingFriendlyController
 {
     #[Route("/{inventory}/friendly", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function summonSomethingFriendly(
         Inventory $inventory, ResponseService $responseService, UserStatsService $userStatsRepository,
-        EntityManagerInterface $em, PetFactory $petFactory, IRandom $rng
+        EntityManagerInterface $em, PetFactory $petFactory, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'summoningScroll/#/friendly');
 

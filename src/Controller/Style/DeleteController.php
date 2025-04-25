@@ -19,22 +19,22 @@ use App\Entity\UserStyle;
 use App\Exceptions\PSPNotFoundException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/style")]
-class DeleteController extends AbstractController
+class DeleteController
 {
     #[Route("/{theme}", methods: ["DELETE"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function deleteTheme(
-        UserStyle $theme, ResponseService $responseService, EntityManagerInterface $em
+        UserStyle $theme, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($theme->getUser()->getId() !== $user->getId())
             throw new PSPNotFoundException('That theme could not be found.');

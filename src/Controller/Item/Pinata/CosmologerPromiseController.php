@@ -19,24 +19,24 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/item/cosmologerPromise")]
-class CosmologerPromiseController extends AbstractController
+class CosmologerPromiseController
 {
     #[Route("/{inventory}/secretSeashell", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getSecretSeashell(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'cosmologerPromise/#/secretSeashell');
 
@@ -56,11 +56,11 @@ class CosmologerPromiseController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getAlienTissue(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'cosmologerPromise/#/alienTissue');
 
@@ -80,11 +80,11 @@ class CosmologerPromiseController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getVeryStrongbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'cosmologerPromise/#/veryStrongbox');
 

@@ -25,24 +25,24 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/hotPotato")]
-class HotPotatoController extends AbstractController
+class HotPotatoController
 {
     #[Route("/{inventory}/toss", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function toss(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryService $inventoryService, IRandom $rng, HotPotatoService $hotPotatoService,
-        UserStatsService $userStatsRepository
+        UserStatsService $userStatsRepository,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
         $numberOfTosses = HotPotatoService::countTosses($inventory);
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'hotPotato/#/toss');
@@ -97,11 +97,11 @@ class HotPotatoController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function tossChocolateBomb(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, IRandom $rng, HotPotatoService $hotPotatoService
-    )
+        InventoryService $inventoryService, IRandom $rng, HotPotatoService $hotPotatoService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'hotPotato/#/tossChocolateBomb');
 
@@ -153,11 +153,11 @@ class HotPotatoController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function tossHongbao(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        IRandom $rng, HotPotatoService $hotPotatoService, TransactionService $transactionService
-    )
+        IRandom $rng, HotPotatoService $hotPotatoService, TransactionService $transactionService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'hotPotato/#/tossHongbao');
 

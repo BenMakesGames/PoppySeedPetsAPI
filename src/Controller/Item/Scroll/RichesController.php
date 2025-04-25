@@ -23,24 +23,24 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/scroll")]
-class RichesController extends AbstractController
+class RichesController
 {
     #[Route("/minorRiches/{inventory}/invoke", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function invokeMinorRichesScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
         UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService,
-        IRandom $rng
+        IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'scroll/minorRiches/#/invoke');
 
@@ -71,11 +71,11 @@ class RichesController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function invokeMajorRichesScroll(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'scroll/majorRiches/#/invoke');
 

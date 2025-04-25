@@ -24,20 +24,21 @@ use App\Service\InventoryService;
 use App\Service\MarketService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/market")]
-class LimitsController extends AbstractController
+class LimitsController
 {
     #[Route("/limits", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getMarketLimits(ResponseService $responseService, MarketService $marketService): JsonResponse
+    public function getMarketLimits(ResponseService $responseService, MarketService $marketService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         return $responseService->success([
             'offeringBulkSellUpgrade' => $marketService->canOfferWingedKey($user),
@@ -52,11 +53,11 @@ class LimitsController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseMarketLimits(
         ResponseService $responseService, MarketService $marketService, InventoryService $inventoryService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $itemRequired = $marketService->getItemToRaiseLimit($user);
 

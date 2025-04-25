@@ -24,23 +24,23 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/greenhouse")]
-class PullUpPlantController extends AbstractController
+class PullUpPlantController
 {
     #[Route("/{plant}/pullUp", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function pullUpPlant(
         GreenhousePlant $plant, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
-        InventoryService $inventoryService
+        InventoryService $inventoryService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($plant->getOwner()->getId() !== $user->getId())
             throw new PSPNotFoundException('That plant does not exist.');

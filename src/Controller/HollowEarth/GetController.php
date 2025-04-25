@@ -20,23 +20,23 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Service\FieldGuideService;
 use App\Service\HollowEarthService;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/hollowEarth")]
-class GetController extends AbstractController
+class GetController
 {
     #[Route("", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getState(
         ResponseService $responseService, HollowEarthService $hollowEarthService,
-        FieldGuideService $fieldGuideService
+        FieldGuideService $fieldGuideService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($user->getHollowEarthPlayer() === null)
             throw new PSPNotUnlockedException('Hollow Earth');

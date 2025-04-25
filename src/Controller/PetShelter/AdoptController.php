@@ -40,16 +40,16 @@ use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use App\Service\UserAccessor;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/petShelter")]
-class AdoptController extends AbstractController
+class AdoptController
 {
     #[Route("/{id}/adopt", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
@@ -57,12 +57,11 @@ class AdoptController extends AbstractController
         int $id, AdoptionService $adoptionService, Request $request, ResponseService $responseService,
         EntityManagerInterface $em, UserStatsService $userStatsRepository, Clock $clock,
         TransactionService $transactionService, IRandom $rng, PetFactory $petFactory,
-        HattierService $hattierService
+        HattierService $hattierService, UserAccessor $userAccessor
     ): JsonResponse
     {
+        $user = $userAccessor->getUserOrThrow();
         $now = (new \DateTimeImmutable())->format('Y-m-d');
-        /** @var User $user */
-        $user = $this->getUser();
         $costToAdopt = $adoptionService->getAdoptionFee($user);
         $lastAdopted = UserQuestRepository::find($em, $user, 'Last Adopted a Pet');
 

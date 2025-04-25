@@ -24,23 +24,23 @@ use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/sharuminyinka")]
-class SharuminyinkaController extends AbstractController
+class SharuminyinkaController
 {
     #[Route("/{inventory}/createHope", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function createHope(
         Inventory $inventory, ResponseService $responseService, TraderService $traderService,
-        EntityManagerInterface $em, InventoryRepository $inventoryRepository
+        EntityManagerInterface $em, InventoryRepository $inventoryRepository,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'sharuminyinka/#/createHope');
 
@@ -78,11 +78,11 @@ class SharuminyinkaController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function createMemory(
         Inventory $inventory, ResponseService $responseService, TraderService $traderService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'sharuminyinka/#/createMemory');
 

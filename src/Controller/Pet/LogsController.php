@@ -22,21 +22,22 @@ use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/pet")]
-class LogsController extends AbstractController
+class LogsController
 {
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/{pet}/logs/calendar/{year}/{month}", methods: ["GET"], requirements: ["pet" => "\d+", "year" => "\d+", "month" => "\d+"])]
     public function logCalendar(
         ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor,
 
         // route arguments:
         Pet $pet, ?int $year = null, ?int $month = null
@@ -51,8 +52,7 @@ class LogsController extends AbstractController
         if($month < 1 || $month > 12)
             throw new PSPFormValidationException('"month" must be between 1 and 12!');
 
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($user->getId() !== $pet->getOwner()->getId())
             throw new PSPPetNotFoundException();
@@ -99,11 +99,11 @@ class LogsController extends AbstractController
     #[Route("/{pet}/logs", methods: ["GET"], requirements: ["pet" => "\d+"])]
     public function logs(
         Pet $pet, ResponseService $responseService, PetActivityLogsFilterService $petActivityLogsFilterService,
-        Request $request
+        Request $request,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($user->getId() !== $pet->getOwner()->getId())
             throw new PSPPetNotFoundException();

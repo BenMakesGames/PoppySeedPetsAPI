@@ -21,22 +21,22 @@ use App\Exceptions\PSPNotFoundException;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/dragonPolymorphPotion")]
-class DragonPolymorphPotionController extends AbstractController
+class DragonPolymorphPotionController
 {
     #[Route("/{inventory}/give", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function drink(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'dragonPolymorphPotion/#/give');
 

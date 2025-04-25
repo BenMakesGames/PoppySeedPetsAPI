@@ -32,24 +32,24 @@ use App\Service\TraderService;
 use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/florist")]
-class TradeForKatsGiftPackageController extends AbstractController
+class TradeForKatsGiftPackageController
 {
     #[Route("/tradeForGiftPackage", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function makeTrade(
         InventoryRepository $inventoryRepository, ResponseService $responseService,
-        EntityManagerInterface $em, TraderService $traderService, UserStatsService $userStatsService
+        EntityManagerInterface $em, TraderService $traderService, UserStatsService $userStatsService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Florist))
             throw new PSPNotUnlockedException('Florist');

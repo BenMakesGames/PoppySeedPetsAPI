@@ -39,25 +39,24 @@ use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/dragonVase")]
-class DragonVaseController extends AbstractController
+class DragonVaseController
 {
     #[Route("/{inventory}/smash", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function smash(
         Inventory $inventory, ResponseService $responseService, IRandom $rng,
         PetExperienceService $petExperienceService, InventoryService $inventoryService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em, UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'dragonVase/#/smash');
 
@@ -125,11 +124,10 @@ class DragonVaseController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function dipATool(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
-        Request $request, UserStatsService $userStatsRepository
+        Request $request, UserStatsService $userStatsRepository, UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'dragonVase');
 

@@ -26,23 +26,23 @@ use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/scroll")]
-class ResourcesController extends AbstractController
+class ResourcesController
 {
     #[Route("/resources/{inventory}/invoke", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function readResourcesScroll(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
-        ResponseService $responseService, UserStatsService $userStatsRepository
+        ResponseService $responseService, UserStatsService $userStatsRepository,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'scroll/resources/#/invoke');
 
@@ -86,11 +86,11 @@ class ResourcesController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function readResourcesScrollForFood(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
-        ResponseService $responseService, UserStatsService $userStatsRepository, Clock $clock
+        ResponseService $responseService, UserStatsService $userStatsRepository, Clock $clock,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'scroll/resources/#/invokeFood');
 

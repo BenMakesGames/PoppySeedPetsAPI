@@ -20,24 +20,24 @@ use App\Functions\PetRepository;
 use App\Functions\UserQuestRepository;
 use App\Service\AdoptionService;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/petShelter")]
-class GetController extends AbstractController
+class GetController
 {
     #[Route("", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getAvailablePets(
-        AdoptionService $adoptionService, ResponseService $responseService, EntityManagerInterface $em
+        AdoptionService $adoptionService, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
+        $user = $userAccessor->getUserOrThrow();
         $now = (new \DateTimeImmutable())->format('Y-m-d');
-        /** @var User $user */
-        $user = $this->getUser();
         $costToAdopt = $adoptionService->getAdoptionFee($user);
         $lastAdopted = UserQuestRepository::find($em, $user, 'Last Adopted a Pet');
 

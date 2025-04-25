@@ -20,20 +20,21 @@ use App\Exceptions\PSPNotFoundException;
 use App\Service\ResponseService;
 use App\Service\SurveyService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/survey")]
-class SurveyController extends AbstractController
+class SurveyController
 {
     #[Route("/{guid}", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getSurveyQuestions(
-        string $guid, SurveyService $surveyService, ResponseService $responseService, NormalizerInterface $normalizer
+        string $guid, SurveyService $surveyService, ResponseService $responseService, NormalizerInterface $normalizer,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
         $now = new \DateTimeImmutable();
@@ -44,8 +45,7 @@ class SurveyController extends AbstractController
         if(!$questions)
             throw new PSPNotFoundException('Survey not found.');
 
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $answers = $surveyService->getSurveyQuestionAnswers($guid, $user);
 
@@ -60,7 +60,8 @@ class SurveyController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function submitSurvey(
         string $guid, SurveyService $surveyService, Request $request, ResponseService $responseService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
         $now = new \DateTimeImmutable();
@@ -70,8 +71,7 @@ class SurveyController extends AbstractController
         if(!$questions)
             throw new PSPNotFoundException('Survey not found.');
 
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         foreach($questions as $question)
         {

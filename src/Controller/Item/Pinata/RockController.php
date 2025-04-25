@@ -22,23 +22,23 @@ use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item")]
-class RockController extends AbstractController
+class RockController
 {
     #[Route("/rock/{rock}/smash", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function smash(
         Inventory $rock, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
+        UserStatsService $userStatsRepository, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $rock, 'rock/#/smash');
         ItemControllerHelpers::validateLocationSpace($rock, $em);
@@ -89,11 +89,11 @@ class RockController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openPommegranite(
         Inventory $rock, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
+        UserStatsService $userStatsRepository, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $rock, 'pommegranite/#/smash');
         ItemControllerHelpers::validateLocationSpace($rock, $em);
