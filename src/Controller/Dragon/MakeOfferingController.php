@@ -21,6 +21,7 @@ use App\Service\DragonService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Attribute\Route;
@@ -34,7 +35,7 @@ class MakeOfferingController extends AbstractController
     public function giveTreasure(
         ResponseService $responseService, EntityManagerInterface $em,
         Request $request, DragonService $dragonService, NormalizerInterface $normalizer
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

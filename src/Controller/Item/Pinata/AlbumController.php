@@ -55,9 +55,10 @@ class AlbumController extends AbstractController
 
         $location = $inventory->getLocation();
 
-        $musicNotes = new ItemQuantity();
-        $musicNotes->item = ItemRepository::findOneByName($em, 'Music Note');
-        $musicNotes->quantity = $rng->rngNextInt(3, 4);
+        $musicNotes = new ItemQuantity(
+            ItemRepository::findOneByName($em, 'Music Note'),
+            $rng->rngNextInt(3, 4)
+        );
 
         $extraItem = $rng->rngNextFromArray([ 'Pointer', 'NUL', 'Quintessence' ]);
 
@@ -89,9 +90,10 @@ class AlbumController extends AbstractController
 
         $location = $inventory->getLocation();
 
-        $musicNotes = new ItemQuantity();
-        $musicNotes->item = ItemRepository::findOneByName($em, 'Music Note');
-        $musicNotes->quantity = $rng->rngNextInt(4, 6);
+        $musicNotes = new ItemQuantity(
+            ItemRepository::findOneByName($em, 'Music Note'),
+            $rng->rngNextInt(4, 6)
+        );
 
         $genre = $rng->rngNextFromArray(self::GENRES);
         $extraItem = $rng->rngNextFromArray([ 'Pointer', 'NUL', 'Quintessence' ]);
@@ -126,9 +128,10 @@ class AlbumController extends AbstractController
 
         $location = $inventory->getLocation();
 
-        $musicNotes = new ItemQuantity();
-        $musicNotes->item = ItemRepository::findOneByName($em, 'Music Note');
-        $musicNotes->quantity = $rng->rngNextInt(4, 6);
+        $musicNotes = new ItemQuantity(
+            ItemRepository::findOneByName($em, 'Music Note'),
+            $rng->rngNextInt(4, 6)
+        );
 
         $genre = $rng->rngNextFromArray(self::GENRES);
 

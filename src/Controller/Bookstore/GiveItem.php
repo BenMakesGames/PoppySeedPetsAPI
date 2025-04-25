@@ -22,6 +22,7 @@ use App\Service\BookstoreService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -34,7 +35,7 @@ class GiveItem extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function giveItem(
         string $item, BookstoreService $bookstoreService, ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

@@ -28,6 +28,7 @@ use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -41,7 +42,7 @@ class BuyController extends AbstractController
         Request $request, FloristService $floristService,
         InventoryService $inventoryService, ResponseService $responseService, UserStatsService $userStatsRepository,
         EntityManagerInterface $em, TransactionService $transactionService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

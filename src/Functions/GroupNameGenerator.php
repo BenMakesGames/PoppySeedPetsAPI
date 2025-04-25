@@ -50,7 +50,12 @@ class GroupNameGenerator
         return $newParts;
     }
 
-    private static function generateNameFromParts(IRandom $rng, array $parts, $dictionary, $maxLength): string
+    private static function generateNameFromParts(
+        IRandom $rng,
+        array $parts,
+        array $dictionary,
+        int $maxLength
+    ): string
     {
         while(true)
         {

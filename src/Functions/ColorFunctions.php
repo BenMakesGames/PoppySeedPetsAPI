@@ -143,7 +143,10 @@ final class ColorFunctions
         return ColorFunctions::RGB2Hex((int)$rgb['r'], (int)$rgb['g'], (int)$rgb['b']);
     }
 
-    public static function Hex2HSL(string $hexColor)
+    /**
+     * @return array{h: float, s: float, l: float}
+     */
+    public static function Hex2HSL(string $hexColor): array
     {
         $rgb = ColorFunctions::Hex2RGB($hexColor);
         return ColorFunctions::RGB2HSL($rgb['r'], $rgb['g'], $rgb['b']);

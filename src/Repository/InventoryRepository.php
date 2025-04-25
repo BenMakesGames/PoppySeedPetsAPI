@@ -182,9 +182,10 @@ class InventoryRepository extends ServiceEntityRepository
 
         foreach($results as $result)
         {
-            $quantity = new ItemQuantity();
-            $quantity->item = $result[0];
-            $quantity->quantity = (int)$result['quantity'];
+            $quantity = new ItemQuantity(
+                $result[0],
+                (int)$result['quantity'],
+            );
 
             if($indexBy)
             {

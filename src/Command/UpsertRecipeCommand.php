@@ -134,12 +134,12 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         return $this->ask($question);
     }
 
-    private function name(array &$recipe, string $name)
+    private function name(array &$recipe, string $name): void
     {
         $recipe['name'] = $this->askName('What is it called?', $recipe, $name);
     }
 
-    private function ingredients(array &$recipe)
+    private function ingredients(array &$recipe): void
     {
         $ingredients = InventoryService::deserializeItemList($this->em, $recipe['ingredients']);
 
@@ -148,7 +148,7 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         $recipe['ingredients'] = InventoryService::serializeItemList($ingredients);
     }
 
-    private function makes(array &$recipe)
+    private function makes(array &$recipe): void
     {
         $makes = InventoryService::deserializeItemList($this->em, $recipe['makes']);
 
@@ -180,15 +180,13 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
 
         while(true)
         {
-            $itemQuantity = new ItemQuantity();
-
-            $itemQuantity->item = $this->askNullableItem('Enter an Item name to add', null);
-            if($itemQuantity->item === null)
+            $item = $this->askNullableItem('Enter an Item name to add', null);
+            if($item === null)
                 break;
 
-            $itemQuantity->quantity = $this->askInt('Enter a quantity', 1, fn(int $n) => $n >= 0);
+            $quantity = $this->askInt('Enter a quantity', 1, fn(int $n) => $n >= 0);
 
-            $quantities[] = $itemQuantity;
+            $quantities[] = new ItemQuantity($item, $quantity);
         }
 
         return $quantities;

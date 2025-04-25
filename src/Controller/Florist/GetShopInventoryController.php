@@ -26,6 +26,7 @@ use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -36,7 +37,7 @@ class GetShopInventoryController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getInventory(
         FloristService $floristService, ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

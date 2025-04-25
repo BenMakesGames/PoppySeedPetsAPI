@@ -98,7 +98,7 @@ final class SimpleStatement
         return $this->statement->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function getSingleValue()
+    public function getSingleValue(): mixed
     {
         return $this->statement->fetchColumn();
     }

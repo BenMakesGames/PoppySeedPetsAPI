@@ -28,6 +28,7 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -41,7 +42,7 @@ class GetSeedsController extends AbstractController
     public function getSeeds(
         ResponseService $responseService, InventoryRepository $inventoryRepository,
         string $type = PlantTypeEnum::EARTH
-    )
+    ): JsonResponse
     {
         if(!PlantTypeEnum::isAValue($type))
             throw new PSPFormValidationException('Must provide a valid seed type ("earth", "water", etc...)');

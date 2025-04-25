@@ -23,6 +23,7 @@ use App\Functions\ArrayFunctions;
 use App\Functions\DesignGoalRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -35,7 +36,7 @@ class UpdateController extends AdminController
     #[IsGranted("ROLE_ADMIN")]
     public function handle(
         Article $article, ResponseService $responseService, Request $request, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         $this->adminIPsOnly($request);
 

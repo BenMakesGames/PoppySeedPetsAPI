@@ -28,6 +28,7 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -40,7 +41,7 @@ class ApplyAuraController extends AbstractController
     public function applyAura(
         Request $request, TransactionService $transactionService, EntityManagerInterface $em,
         ResponseService $responseService
-    )
+    ): JsonResponse
     {
         $payWith = strtolower($request->request->getAlpha('payWith', 'moneys'));
 

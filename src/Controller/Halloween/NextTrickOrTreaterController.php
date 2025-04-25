@@ -37,6 +37,7 @@ use App\Service\PetActivity\EatingService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -49,7 +50,7 @@ class NextTrickOrTreaterController extends AbstractController
     #[Route("", methods: ["GET"])]
     public function getNextTrickOrTreater(
         HalloweenService $halloweenService, ResponseService $responseService, Clock $clock
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

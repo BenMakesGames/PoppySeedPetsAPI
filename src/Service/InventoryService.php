@@ -129,12 +129,11 @@ class InventoryService
         foreach($items as $item)
         {
             [$itemId, $quantity] = \explode(':', $item);
-            $itemQuantity = new ItemQuantity();
 
-            $itemQuantity->item = ItemRepository::findOneById($em, (int)$itemId);
-            $itemQuantity->quantity = (int)$quantity;
-
-            $quantities[] = $itemQuantity;
+            $quantities[] = new ItemQuantity(
+                ItemRepository::findOneById($em, (int)$itemId),
+                (int)$quantity
+            );
         }
 
         return $quantities;

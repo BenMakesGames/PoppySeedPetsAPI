@@ -19,6 +19,7 @@ use App\Controller\AdminController;
 use App\Entity\Article;
 use App\Service\RedditService;
 use App\Service\ResponseService;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -31,7 +32,7 @@ class SocialMediaController extends AdminController
     #[Route("/{article}/reddit", methods: ["POST"], requirements: ["article" => "\d+"])]
     public function redditArticle(
         Article $article, ResponseService $responseService, RedditService $redditService, Request $request
-    )
+    ): JsonResponse
     {
         $this->adminIPsOnly($request);
 

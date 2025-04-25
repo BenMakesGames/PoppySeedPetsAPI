@@ -19,6 +19,7 @@ use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\PetSpeciesFilterService;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -27,7 +28,9 @@ class SpeciesSearchController extends AbstractController
 {
     #[DoesNotRequireHouseHours]
     #[Route("/species", methods: ["GET"])]
-    public function speciesSearch(Request $request, PetSpeciesFilterService $petSpeciesFilterService, ResponseService $responseService)
+    public function speciesSearch(
+        Request $request, PetSpeciesFilterService $petSpeciesFilterService, ResponseService $responseService
+    ): JsonResponse
     {
         $petSpeciesFilterService->setUser($this->getUser());
 

@@ -30,20 +30,20 @@ class UserUnlockedAura
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'unlockedAuras')]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[Groups(["myAura"])]
     #[ORM\ManyToOne(targetEntity: Enchantment::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $aura;
+    private Enchantment $aura;
 
     #[Groups(["myAura"])]
     #[ORM\Column(type: 'datetime_immutable')]
-    private $unlockedOn;
+    private \DateTimeImmutable $unlockedOn;
 
     #[Groups(["myAura"])]
     #[ORM\Column(type: 'string', length: 255)]
-    private $comment;
+    private string $comment;
 
     public function __construct()
     {

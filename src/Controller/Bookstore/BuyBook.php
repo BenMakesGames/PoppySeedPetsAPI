@@ -28,6 +28,7 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -41,7 +42,7 @@ class BuyBook extends AbstractController
     public function buyBook(
         Item $item, BookstoreService $bookstoreService, InventoryService $inventoryService, EntityManagerInterface $em,
         ResponseService $responseService, TransactionService $transactionService
-    )
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

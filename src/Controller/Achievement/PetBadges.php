@@ -19,6 +19,7 @@ use App\Enum\PetBadgeEnum;
 use App\Functions\SimpleDb;
 use App\Service\ResponseService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -27,7 +28,7 @@ final class PetBadges extends AbstractController
 {
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/petBadges", methods: ["GET"])]
-    public function getPetBadges(ResponseService $responseService)
+    public function getPetBadges(ResponseService $responseService): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

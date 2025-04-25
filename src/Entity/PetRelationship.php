@@ -37,41 +37,41 @@ class PetRelationship
      */
     #[ORM\ManyToOne(targetEntity: Pet::class, inversedBy: 'petRelationships')]
     #[ORM\JoinColumn(nullable: false)]
-    private $pet;
+    private Pet $pet;
 
     #[Groups(["petFriend"])]
     #[ORM\ManyToOne(targetEntity: Pet::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $relationship;
+    private Pet $relationship;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $metDescription;
+    private string $metDescription;
 
     #[Groups(["petFriend"])]
     #[ORM\Column(type: 'datetime_immutable')]
-    private $metOn;
+    private \DateTimeImmutable $metOn;
 
     #[Groups(["petFriend"])]
     #[ORM\Column(type: 'string', length: 40)]
-    private $currentRelationship;
+    private string $currentRelationship;
 
     #[ORM\Column(type: 'string', length: 40)]
-    private $relationshipGoal;
+    private string $relationshipGoal;
 
     #[ORM\Column(type: 'integer')]
-    private $timeUntilChange;
+    private int $timeUntilChange;
 
     #[Groups(["petFriend"])]
     #[ORM\Column(type: 'datetime_immutable')]
-    private $lastMet;
+    private \DateTimeImmutable $lastMet;
 
     #[ORM\Column(type: 'integer')]
-    private $commitment;
+    private int $commitment = 0;
 
     #[Groups(["petFriend"])]
     #[SerializedName("commitment")]
     #[ORM\Column(type: 'smallint')]
-    private $rating = 0;
+    private int $rating = 0;
 
     public function __construct()
     {

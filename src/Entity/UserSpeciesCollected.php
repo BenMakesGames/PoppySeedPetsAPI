@@ -29,20 +29,20 @@ class UserSpeciesCollected
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[Groups(["zoologistCatalog"])]
     #[ORM\ManyToOne(targetEntity: PetSpecies::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $species;
+    private PetSpecies $species;
 
     #[Groups(["zoologistCatalog"])]
     #[ORM\Column(type: 'datetime_immutable')]
-    private $discoveredOn;
+    private \DateTimeImmutable $discoveredOn;
 
     #[Groups(["zoologistCatalog"])]
     #[ORM\Column(type: 'string', length: 40)]
-    private $petName;
+    private string $petName;
 
     #[Groups(["zoologistCatalog"])]
     #[ORM\Column(type: 'string', length: 6)]

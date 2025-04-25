@@ -138,17 +138,17 @@ class CreateMonstersOfTheWeekCommand extends Command
         return $monsterTypes[array_rand($monsterTypes)];
     }
 
-    private function selectEasyPrize(MonsterOfTheWeekEnum $monsterType)
+    private function selectEasyPrize(MonsterOfTheWeekEnum $monsterType): Item
     {
         return $this->selectPrizeItem(MonsterOfTheWeekHelpers::getEasyPrizes($monsterType));
     }
 
-    private function selectMediumPrize(MonsterOfTheWeekEnum $monsterType)
+    private function selectMediumPrize(MonsterOfTheWeekEnum $monsterType): Item
     {
         return $this->selectPrizeItem(MonsterOfTheWeekHelpers::getMediumPrizes($monsterType));
     }
 
-    private function selectHardPrize(MonsterOfTheWeekEnum $monsterType)
+    private function selectHardPrize(MonsterOfTheWeekEnum $monsterType): Item
     {
         return $this->selectPrizeItem(MonsterOfTheWeekHelpers::getHardPrizes($monsterType));
     }
