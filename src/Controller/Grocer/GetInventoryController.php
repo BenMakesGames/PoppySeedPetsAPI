@@ -14,27 +14,26 @@ declare(strict_types=1);
 
 namespace App\Controller\Grocer;
 
-use App\Entity\User;
 use App\Functions\UserQuestRepository;
 use App\Service\GrocerService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route('/grocer')]
-class GetInventoryController extends AbstractController
+class GetInventoryController
 {
     #[Route('', methods: ['GET'])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getInventory(
-        GrocerService $grocerService, ResponseService $responseService, EntityManagerInterface $em
+        GrocerService $grocerService, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
         $now = new \DateTimeImmutable();
 
         $grocerItemsQuantity = UserQuestRepository::findOrCreate($em, $user, 'Grocer Items Purchased Quantity', 0);

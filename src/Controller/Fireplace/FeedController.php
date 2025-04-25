@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Fireplace;
 
 use App\Entity\Fireplace;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
@@ -35,25 +34,25 @@ use App\Service\PetAssistantService;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/fireplace")]
-class FeedController extends AbstractController
+class FeedController
 {
     #[Route("/feed", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function feedFireplace(
         Request $request, InventoryRepository $inventoryRepository, ResponseService $responseService,
         EntityManagerInterface $em, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, Clock $clock
+        UserStatsService $userStatsRepository, Clock $clock,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace) || !$user->getFireplace())
             throw new PSPNotUnlockedException('Fireplace');

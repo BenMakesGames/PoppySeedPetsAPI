@@ -14,29 +14,28 @@ declare(strict_types=1);
 
 namespace App\Controller\Achievement;
 
-use App\Entity\User;
 use App\Entity\UserBadge;
 use App\Enum\BadgeEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\InMemoryCache;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/achievement")]
-final class Available extends AbstractController
+final class Available
 {
     #[Route("/available", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getAvailable(
-        ResponseService $responseService, EntityManagerInterface $em
+        ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $claimed = $em->getRepository(UserBadge::class)->createQueryBuilder('b')
             ->select('b.badge')

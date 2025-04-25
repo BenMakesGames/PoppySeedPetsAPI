@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Inventory;
 
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
@@ -23,25 +22,26 @@ use App\Repository\InventoryRepository;
 use App\Service\Filter\InventoryFilterService;
 use App\Service\ResponseService;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/inventory")]
-class GetController extends AbstractController
+class GetController
 {
     #[Route("/my", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getMyHouseInventory(
-        ResponseService $responseService, ManagerRegistry $doctrine
+        ResponseService $responseService, ManagerRegistry $doctrine,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
         $inventoryRepository = $doctrine->getRepository(Inventory::class, 'readonly');
 
         $inventory = $inventoryRepository->findBy([
-            'owner' => $this->getUser(),
+            'owner' => $userAccessor->getUserOrThrow(),
             'location' => LocationEnum::HOME
         ]);
 
@@ -52,14 +52,14 @@ class GetController extends AbstractController
     #[Route("/my/{location}", methods: ["GET"], requirements: ["location" => "\d+"])]
     public function getMyInventory(
         Request $request, ResponseService $responseService, InventoryFilterService $inventoryFilterService,
-        int $location
+        int $location,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
         if(!LocationEnum::isAValue($location))
             throw new PSPFormValidationException('Invalid location given.');
 
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $inventoryFilterService->addRequiredFilter('user', $user->getId());
         $inventoryFilterService->addRequiredFilter('location', $location);
@@ -74,11 +74,11 @@ class GetController extends AbstractController
     #[Route("/summary/{location}", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getSummary(
-        int $location, ResponseService $responseService, InventoryRepository $inventoryRepository
+        int $location, ResponseService $responseService, InventoryRepository $inventoryRepository,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $summary = $inventoryRepository->getInventoryQuantities($user, $location);
 

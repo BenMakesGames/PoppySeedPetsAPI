@@ -16,27 +16,26 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/keyRing")]
-class KeyRingController extends AbstractController
+class KeyRingController
 {
     #[Route("/{inventory}/takeIron", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function takeIronKeys(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService
+        InventoryService $inventoryService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'keyRing/#/takeIron');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -55,11 +54,11 @@ class KeyRingController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function takeSilverKeys(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService
+        InventoryService $inventoryService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'keyRing/#/takeSilver');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -78,11 +77,11 @@ class KeyRingController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function takeGoldKeys(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService
+        InventoryService $inventoryService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'keyRing/#/takeGold');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);

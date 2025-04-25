@@ -16,7 +16,6 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Entity\PetSpecies;
-use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
@@ -31,23 +30,22 @@ use App\Service\PetFactory;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/egg")]
-class EggController extends AbstractController
+class EggController
 {
     #[Route("/jellingPolyp/{inventory}/hatch", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function hatchPolyp(
         Inventory $inventory, ResponseService $responseService, IRandom $rng, EntityManagerInterface $em,
-        PetFactory $petFactory
+        PetFactory $petFactory, UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'egg/jellingPolyp/#/hatch');
 
@@ -125,11 +123,10 @@ class EggController extends AbstractController
     public function hatchWeirdBlueEgg(
         Inventory $inventory, ResponseService $responseService,
         EntityManagerInterface $em, PetFactory $petFactory, IRandom $rng,
-        InventoryService $inventoryService
+        InventoryService $inventoryService, UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'egg/weird-blue/#/hatch');
 
@@ -217,11 +214,11 @@ class EggController extends AbstractController
     public function openMetalBox(
         Inventory $inventory, ResponseService $responseService,
         EntityManagerInterface $em, PetFactory $petFactory, IRandom $rng,
-        InventoryService $inventoryService, TransactionService $transactionService
+        InventoryService $inventoryService, TransactionService $transactionService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'egg/metalBox/#/open');
 

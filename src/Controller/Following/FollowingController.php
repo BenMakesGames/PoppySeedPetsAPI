@@ -18,23 +18,24 @@ use App\Attributes\DoesNotRequireHouseHours;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\UserFilterService;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/following")]
-class FollowingController extends AbstractController
+class FollowingController
 {
     #[Route("", methods: ["GET"])]
     #[DoesNotRequireHouseHours]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function search(
-        Request $request, ResponseService $responseService, UserFilterService $userFilterService
+        Request $request, ResponseService $responseService, UserFilterService $userFilterService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $userFilterService->setUser($user);
         $userFilterService->addDefaultFilter('followedBy', $user->getId());

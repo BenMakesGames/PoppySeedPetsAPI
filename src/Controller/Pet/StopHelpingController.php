@@ -15,25 +15,24 @@ declare(strict_types=1);
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Service\PetAssistantService;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/pet")]
-class StopHelpingController extends AbstractController
+class StopHelpingController
 {
     #[Route("/{pet}/stopHelping", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function stopHelping(
-        Pet $pet, PetAssistantService $petAssistantService, ResponseService $responseService
+        Pet $pet, PetAssistantService $petAssistantService, ResponseService $responseService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $petAssistantService->stopAssisting($user, $pet);
 

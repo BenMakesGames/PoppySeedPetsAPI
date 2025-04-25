@@ -17,7 +17,6 @@ namespace App\Controller\Item\Scroll;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
@@ -30,24 +29,24 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/renamingScroll")]
-class RenamingController extends AbstractController
+class RenamingController
 {
     #[Route("/{inventory}/read", methods: ["PATCH"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function readRenamingScroll(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        UserStatsService $userStatsRepository
+        UserStatsService $userStatsRepository,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'renamingScroll');
 
@@ -72,11 +71,11 @@ class RenamingController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function renameSpiritCompanion(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        UserStatsService $userStatsRepository
+        UserStatsService $userStatsRepository,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'renamingScroll');
 
@@ -104,11 +103,11 @@ class RenamingController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function renameYourself(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        TransactionService $transactionService, UserStatsService $userStatsRepository
+        TransactionService $transactionService, UserStatsService $userStatsRepository,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $pointsRemaining = $user->getMuseumPoints() - $user->getMuseumPointsSpent();
 

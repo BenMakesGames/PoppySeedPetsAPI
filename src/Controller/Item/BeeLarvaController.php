@@ -16,7 +16,6 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Entity\PetSpecies;
-use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\PetLocationEnum;
 use App\Functions\ItemRepository;
@@ -28,23 +27,23 @@ use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/beeLarva")]
-class BeeLarvaController extends AbstractController
+class BeeLarvaController
 {
     #[Route("/{inventory}/hatch", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function hatch(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService, IRandom $rng, PetFactory $petFactory
+        InventoryService $inventoryService, IRandom $rng, PetFactory $petFactory,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'beeLarva/#/hatch');
 
@@ -109,11 +108,11 @@ class BeeLarvaController extends AbstractController
     #[Route("/{inventory}/returnToBeehive", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function returnToBeehive(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'beeLarva/#/returnToBeehive');
 
@@ -136,11 +135,11 @@ class BeeLarvaController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function giveToAntQueen(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService
+        InventoryService $inventoryService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'beeLarva/#/giveToAntQueen');
 

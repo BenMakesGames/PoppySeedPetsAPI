@@ -15,32 +15,30 @@ declare(strict_types=1);
 namespace App\Controller\Account;
 
 use App\Attributes\DoesNotRequireHouseHours;
-use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\UserStyleFunctions;
 use App\Service\PerformanceProfiler;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/account")]
-class GetAccountController extends AbstractController
+class GetAccountController
 {
     #[DoesNotRequireHouseHours]
     #[Route("", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getAccount(
         ResponseService $responseService, EntityManagerInterface $em,
-        PerformanceProfiler $performanceProfiler
+        PerformanceProfiler $performanceProfiler, UserAccessor $userAccessor
     ): JsonResponse
     {
         $time = microtime(true);
 
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $currentTheme = UserStyleFunctions::findCurrent($em, $user->getId());
 

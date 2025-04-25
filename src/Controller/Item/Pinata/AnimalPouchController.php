@@ -16,30 +16,29 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Functions\EnchantmentRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/animalPouch")]
-class AnimalPouchController extends AbstractController
+class AnimalPouchController
 {
     #[Route("/magpie/{inventory}/open", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openMagpiePouch(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService, IRandom $rng
+        ResponseService $responseService, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'animalPouch/magpie/#/open');
 
@@ -76,11 +75,11 @@ class AnimalPouchController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openRaccoonPouch(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService, IRandom $rng
+        ResponseService $responseService, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'animalPouch/raccoon/#/open');
 

@@ -16,7 +16,6 @@ namespace App\Controller\Item;
 
 use App\Entity\Dragon;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\DragonHelpers;
@@ -25,21 +24,21 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Service\UserAccessor;
 
 #[Route("/item")]
-class DragonTongueController extends AbstractController
+class DragonTongueController
 {
     #[Route("/dragonTongue/{inventory}/speech", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getSpeech(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'dragonTongue');
 
@@ -58,11 +57,10 @@ class DragonTongueController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function setSpeech(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        IRandom $rng
+        IRandom $rng, UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'dragonTongue');
 

@@ -18,30 +18,29 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Entity\SpiritCompanion;
-use App\Entity\User;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/spiritPolymorphPotion")]
-class SpiritPolymorphPotionController extends AbstractController
+class SpiritPolymorphPotionController
 {
     #[Route("/{inventory}/drink", methods: ["PATCH"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function drink(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        IRandom $rng
+        IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'spiritPolymorphPotion');
 

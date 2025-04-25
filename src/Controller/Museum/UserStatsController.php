@@ -21,23 +21,24 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Service\Filter\ItemFilterService;
 use App\Service\Filter\MuseumFilterService;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Service\UserAccessor;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/museum")]
-class UserStatsController extends AbstractController
+class UserStatsController
 {
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/{user}/items", methods: ["GET"], requirements: ["user" => "\d+"])]
     public function userDonatedItems(
         User $user,
-        Request $request, ResponseService $responseService, MuseumFilterService $museumFilterService
+        Request $request, ResponseService $responseService, MuseumFilterService $museumFilterService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        if(!$this->getUser()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
+        if(!$userAccessor->getUserOrThrow()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
             throw new PSPNotUnlockedException('Museum');
 
         $museumFilterService->addRequiredFilter('user', $user->getId());
@@ -52,10 +53,11 @@ class UserStatsController extends AbstractController
     #[Route("/{user}/nonItems", methods: ["GET"], requirements: ["user" => "\d+"])]
     public function userNonDonatedItems(
         User $user,
-        Request $request, ResponseService $responseService, ItemFilterService $itemFilterService
+        Request $request, ResponseService $responseService, ItemFilterService $itemFilterService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        if(!$this->getUser()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
+        if(!$userAccessor->getUserOrThrow()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
             throw new PSPNotUnlockedException('Museum');
 
         $itemFilterService->addRequiredFilter('notDonatedBy', $user->getId());
@@ -70,10 +72,11 @@ class UserStatsController extends AbstractController
     #[Route("/{user}/itemCount", methods: ["GET"], requirements: ["user" => "\d+"])]
     public function userItemCount(
         User $user,
-        Request $request, ResponseService $responseService, MuseumFilterService $museumFilterService
+        Request $request, ResponseService $responseService, MuseumFilterService $museumFilterService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        if(!$this->getUser()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
+        if(!$userAccessor->getUserOrThrow()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
             throw new PSPNotUnlockedException('Museum');
 
         $museumFilterService->addRequiredFilter('user', $user->getId());

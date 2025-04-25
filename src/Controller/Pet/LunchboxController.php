@@ -17,29 +17,28 @@ namespace App\Controller\Pet;
 use App\Entity\Inventory;
 use App\Entity\LunchboxItem;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/pet")]
-class LunchboxController extends AbstractController
+class LunchboxController
 {
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/{pet}/putInLunchbox/{inventory}", methods: ["POST"], requirements: ["pet" => "\d+", "inventory" => "\d+"])]
     public function putFoodInLunchbox(
-        Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
+        Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($inventory->getOwner()->getId() !== $user->getId())
             throw new PSPNotFoundException('That item does not exist.');
@@ -82,11 +81,11 @@ class LunchboxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/{pet}/takeOutOfLunchbox/{inventory}", methods: ["POST"], requirements: ["pet" => "\d+", "inventory" => "\d+"])]
     public function takeFoodOutOfLunchbox(
-        Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
+        Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($inventory->getOwner()->getId() !== $user->getId())
             throw new PSPNotFoundException('That item does not exist.');

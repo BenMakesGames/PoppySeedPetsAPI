@@ -17,19 +17,21 @@ namespace App\Controller\Item\Book;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/theBeginningOfTheArmadillos")]
-class ArmadillosController extends AbstractController
+class ArmadillosController
 {
     #[Route("/{inventory}/read", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function read(Inventory $inventory, ResponseService $responseService): JsonResponse
+    public function read(Inventory $inventory, ResponseService $responseService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'theBeginningOfTheArmadillos/#/read');
+        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'theBeginningOfTheArmadillos/#/read');
 
         return $responseService->itemActionSuccess('# The Beginning of the Armadillos
 

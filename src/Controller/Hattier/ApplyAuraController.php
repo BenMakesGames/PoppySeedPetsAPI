@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Hattier;
 
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Entity\UserUnlockedAura;
 use App\Enum\PetBadgeEnum;
 use App\Exceptions\PSPFormValidationException;
@@ -27,20 +26,21 @@ use App\Functions\PetBadgeHelpers;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/hattier")]
-class ApplyAuraController extends AbstractController
+class ApplyAuraController
 {
     #[Route("/buy", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function applyAura(
         Request $request, TransactionService $transactionService, EntityManagerInterface $em,
-        ResponseService $responseService
+        ResponseService $responseService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
         $payWith = strtolower($request->request->getAlpha('payWith', 'moneys'));
@@ -51,8 +51,7 @@ class ApplyAuraController extends AbstractController
         if(!$petId || !$auraId)
             throw new PSPInvalidOperationException('A pet and style must be selected.');
 
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($payWith === 'moneys')
         {

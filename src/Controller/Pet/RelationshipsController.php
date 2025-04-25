@@ -20,8 +20,8 @@ use App\Exceptions\PSPPetNotFoundException;
 use App\Repository\PetRelationshipRepository;
 use App\Service\Filter\PetRelationshipFilterService;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -29,7 +29,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 #[Route("/pet")]
-class RelationshipsController extends AbstractController
+class RelationshipsController
 {
     #[Route("/{pet}/relationships", methods: ["GET"], requirements: ["pet" => "\d+"])]
     public function getPetRelationships(
@@ -51,10 +51,11 @@ class RelationshipsController extends AbstractController
     #[Route("/{pet}/friends", methods: ["GET"], requirements: ["pet" => "\d+"])]
     public function getPetFriends(
         Pet $pet, ResponseService $responseService, NormalizerInterface $normalizer,
-        PetRelationshipRepository $petRelationshipRepository
+        PetRelationshipRepository $petRelationshipRepository,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        if($pet->getOwner()->getId() !== $this->getUser()->getId())
+        if($pet->getOwner()->getId() !== $userAccessor->getUserOrThrow()->getId())
             throw new PSPPetNotFoundException();
 
         $relationships = $petRelationshipRepository->getFriends($pet);

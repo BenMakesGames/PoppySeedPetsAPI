@@ -16,7 +16,6 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Exceptions\PSPNotFoundException;
 use App\Repository\InventoryRepository;
 use App\Service\InventoryService;
@@ -25,23 +24,23 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item")]
-class TripleChestController extends AbstractController
+class TripleChestController
 {
     #[Route("/tripleChest/{inventory}/openWithIronKey", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openWithIronKey(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'tripleChest/#/openWithIronKey');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -91,11 +90,11 @@ class TripleChestController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openWithSilverKey(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, TransactionService $transactionService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'tripleChest/#/openWithIronKey');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -145,11 +144,11 @@ class TripleChestController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openWithGoldKey(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
+        UserStatsService $userStatsRepository, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'tripleChest/#/openWithIronKey');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);

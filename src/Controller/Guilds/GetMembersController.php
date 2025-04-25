@@ -18,13 +18,12 @@ use App\Entity\Guild;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\GuildMemberFilterService;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/guild")]
-class GetMembersController extends AbstractController
+class GetMembersController
 {
     #[Route("/{guild}", methods: ["GET"])]
     public function getGuild(

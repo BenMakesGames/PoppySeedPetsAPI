@@ -33,14 +33,14 @@ use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/betaBug")]
-class BetaBugController extends AbstractController
+class BetaBugController
 {
     private const array ALLOWED_ITEMS = [
         'Cooking Buddy',
@@ -55,11 +55,11 @@ class BetaBugController extends AbstractController
     #[Route("/{inventory}/eligibleItems", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getEligibleItems(
-        Inventory $inventory, ResponseService $responseService, InventoryRepository $inventoryRepository
+        Inventory $inventory, ResponseService $responseService, InventoryRepository $inventoryRepository,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'betaBug');
 
@@ -82,11 +82,11 @@ class BetaBugController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function useBug(
         Inventory $inventory, Request $request, InventoryRepository $inventoryRepository,
-        ResponseService $responseService, EntityManagerInterface $em, PetFactory $petFactory, IRandom $rng
+        ResponseService $responseService, EntityManagerInterface $em, PetFactory $petFactory, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'betaBug');
 

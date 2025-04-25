@@ -16,7 +16,6 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\StatusEffectEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPPetNotFoundException;
@@ -26,25 +25,24 @@ use App\Service\AdoptionService;
 use App\Service\Clock;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/item/magicCrystalBall")]
-class MagicCrystalBallController extends AbstractController
+class MagicCrystalBallController
 {
     #[Route("/{inventory}/createFate", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     function createFate(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        Request $request, IRandom $rng
+        Request $request, IRandom $rng, UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'magicCrystalBall');
 
@@ -106,11 +104,10 @@ class MagicCrystalBallController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     function predictOffspring(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        Request $request
+        Request $request, UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'magicCrystalBall');
 
@@ -151,11 +148,11 @@ class MagicCrystalBallController extends AbstractController
     #[Route("/{inventory}/findNextRarePetDay", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     function findNextRarePetDay(
-        Inventory $inventory, ResponseService $responseService, Clock $clock, EntityManagerInterface $em
+        Inventory $inventory, ResponseService $responseService, Clock $clock, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'magicCrystalBall');
 

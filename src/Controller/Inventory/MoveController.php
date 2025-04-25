@@ -24,27 +24,27 @@ use App\Exceptions\PSPNotFoundException;
 use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/inventory")]
-class MoveController extends AbstractController
+class MoveController
 {
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/moveTo/{location}", methods: ["POST"], requirements: ["location" => "\d+"])]
     public function moveInventory(
         int $location, Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
         if(!LocationEnum::isAValue($location))
             throw new PSPFormValidationException('Invalid location given.');
 
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $allowedLocations = [ LocationEnum::HOME ];
 

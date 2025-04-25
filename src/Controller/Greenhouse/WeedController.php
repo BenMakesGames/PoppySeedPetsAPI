@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Greenhouse;
 
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -37,23 +36,23 @@ use App\Service\PetAssistantService;
 use App\Service\ResponseService;
 use App\Service\WeatherService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/greenhouse")]
-class WeedController extends AbstractController
+class WeedController
 {
     #[Route("/weed", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function weedPlants(
         ResponseService $responseService, EntityManagerInterface $em, InventoryService $inventoryService,
-        IRandom $rng, Clock $clock
+        IRandom $rng, Clock $clock,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $greenhouse = $user->getGreenhouse();
 

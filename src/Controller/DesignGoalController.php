@@ -19,12 +19,11 @@ use App\Entity\DesignGoal;
 use App\Enum\SerializationGroupEnum;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/designGoal")]
-class DesignGoalController extends AbstractController
+class DesignGoalController
 {
     #[DoesNotRequireHouseHours]
     #[Route("", methods: ["GET"])]

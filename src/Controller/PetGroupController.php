@@ -18,13 +18,12 @@ use App\Entity\PetGroup;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\PetGroupFilterService;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/petGroup")]
-class PetGroupController extends AbstractController
+class PetGroupController
 {
     #[Route("", methods: ["GET"])]
     public function getAllGroups(

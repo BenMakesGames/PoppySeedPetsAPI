@@ -16,30 +16,29 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Functions\EnchantmentRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/katsGift")]
-class KatsGiftController extends AbstractController
+class KatsGiftController
 {
     #[Route("/{inventory}/chocolates", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getChocolates(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService, IRandom $rng
+        ResponseService $responseService, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'katsGift/#/chocolates');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -72,11 +71,11 @@ class KatsGiftController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getGardeningSupplies(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService, IRandom $rng
+        ResponseService $responseService, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'katsGift/#/chocolates');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -115,11 +114,11 @@ class KatsGiftController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getFishingGear(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService, IRandom $rng
+        ResponseService $responseService, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'katsGift/#/fishingGear');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -164,11 +163,11 @@ class KatsGiftController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getLava(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService
+        ResponseService $responseService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'katsGift/#/lava');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);

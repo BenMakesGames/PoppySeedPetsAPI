@@ -23,7 +23,6 @@ use App\Functions\UserStyleFunctions;
 use App\Service\ResponseService;
 use App\Service\SessionService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -32,7 +31,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/account")]
-final class LogInController extends AbstractController
+final class LogInController
 {
     #[DoesNotRequireHouseHours]
     #[Route("/logIn", methods: ["POST"])]

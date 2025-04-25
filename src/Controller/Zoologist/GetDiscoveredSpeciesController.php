@@ -14,30 +14,30 @@ declare(strict_types=1);
 
 namespace App\Controller\Zoologist;
 
-use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
-use App\Service\Filter\PetSpeciesFilterService;
 use App\Service\Filter\UserSpeciesCollectedFilterService;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Service\UserAccessor;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/zoologist")]
-class GetDiscoveredSpeciesController extends AbstractController
+class GetDiscoveredSpeciesController
 {
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("", methods: ["GET"])]
     public function getDiscoveredSpecies(
-        UserSpeciesCollectedFilterService $userSpeciesCollectedFilterService, Request $request, ResponseService $responseService
+        UserSpeciesCollectedFilterService $userSpeciesCollectedFilterService, 
+        Request $request, 
+        ResponseService $responseService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Zoologist))
             throw new PSPNotUnlockedException('Zoologist');

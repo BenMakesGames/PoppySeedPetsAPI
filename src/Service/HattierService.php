@@ -115,9 +115,7 @@ class HattierService
 
             if(!$unlockedAura)
             {
-                $unlockedAura = (new UserUnlockedAura())
-                    ->setUser($user)
-                    ->setAura($enchantment)
+                $unlockedAura = (new UserUnlockedAura(user: $user, aura: $enchantment))
                     ->setComment($comment)
                 ;
 
@@ -162,9 +160,7 @@ class HattierService
         if($alreadyUnlocked)
             return $alreadyUnlocked;
 
-        $unlockedAura = (new UserUnlockedAura())
-            ->setUser($user)
-            ->setAura($enchantment)
+        $unlockedAura = (new UserUnlockedAura(user: $user, aura: $enchantment))
             ->setComment($comment)
         ;
 
@@ -209,9 +205,7 @@ class HattierService
             if($this->auraAlreadyUnlocked($user, $aura))
                 continue;
 
-            $unlockedAura = (new UserUnlockedAura())
-                ->setUser($user)
-                ->setAura($aura)
+            $unlockedAura = (new UserUnlockedAura(user: $user, aura: $aura))
                 ->setComment('The Hattier has made this style available to you as a courtesy.')
                 ->setUnlockedOn(\DateTimeImmutable::createFromFormat('Y-m-d', '2019-06-22'))
             ;

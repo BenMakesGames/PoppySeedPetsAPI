@@ -14,31 +14,30 @@ declare(strict_types=1);
 
 namespace App\Controller\Dragon;
 
-use App\Entity\User;
 use App\Functions\DragonHelpers;
 use App\Functions\RequestFunctions;
 use App\Service\DragonService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use App\Service\UserAccessor;
 
 #[Route("/dragon")]
-class MakeOfferingController extends AbstractController
+class MakeOfferingController
 {
     #[Route("/giveTreasure", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function giveTreasure(
         ResponseService $responseService, EntityManagerInterface $em,
-        Request $request, DragonService $dragonService, NormalizerInterface $normalizer
+        Request $request, DragonService $dragonService, NormalizerInterface $normalizer,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $itemIds = RequestFunctions::getUniqueIdsOrThrow($request, 'treasure', 'No items were selected to give???');
 

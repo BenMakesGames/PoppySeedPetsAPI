@@ -19,12 +19,11 @@ use App\Entity\PetSpecies;
 use App\Enum\SerializationGroupEnum;
 use App\Service\ResponseService;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/encyclopedia")]
-class GetSpeciesByFamilyController extends AbstractController
+class GetSpeciesByFamilyController
 {
     #[DoesNotRequireHouseHours]
     #[Route("/speciesByFamily/{familyName}", methods: ["GET"])]

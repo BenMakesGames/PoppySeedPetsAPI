@@ -26,23 +26,23 @@ use App\Service\GrocerService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use App\Service\UserAccessor;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/grocer')]
-class BuyController extends AbstractController
+class BuyController
 {
     #[Route('/buy', methods: ['POST'])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buy(
         Request $request, ResponseService $responseService, GrocerService $grocerService,
         TransactionService $transactionService, EntityManagerInterface $em,
-        UserStatsService $userStatsRepository
+        UserStatsService $userStatsRepository, UserAccessor $userAccessor
     ): JsonResponse
     {
         $buyTo = $request->request->getInt('location');
@@ -81,8 +81,7 @@ class BuyController extends AbstractController
             }
         }
 
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
         $now = new \DateTimeImmutable();
 
         $grocerItemsQuantity = UserQuestRepository::findOrCreate($em, $user, 'Grocer Items Purchased Quantity', 0);

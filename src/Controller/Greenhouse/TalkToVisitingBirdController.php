@@ -19,21 +19,22 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Service\GreenhouseService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/greenhouse")]
-class TalkToVisitingBirdController extends AbstractController
+class TalkToVisitingBirdController
 {
     #[Route("/talkToVisitingBird", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function talkToBird(
-        ResponseService $responseService, EntityManagerInterface $em, GreenhouseService $greenhouseService
+        ResponseService $responseService, EntityManagerInterface $em, GreenhouseService $greenhouseService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->getGreenhouse())
             throw new PSPNotUnlockedException('Greenhouse');

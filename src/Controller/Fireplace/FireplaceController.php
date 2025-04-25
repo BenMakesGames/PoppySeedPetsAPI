@@ -24,24 +24,24 @@ use App\Functions\DragonRepository;
 use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use App\Service\UserAccessor;
 
 #[Route("/fireplace")]
-class FireplaceController extends AbstractController
+class FireplaceController
 {
     #[Route("", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getFireplace(
         ResponseService $responseService, EntityManagerInterface $em,
-        NormalizerInterface $normalizer
+        NormalizerInterface $normalizer,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace) || !$user->getFireplace())
             throw new PSPNotUnlockedException('Fireplace');
@@ -65,11 +65,11 @@ class FireplaceController extends AbstractController
     #[Route("/fuel", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getFireplaceFuel(
-        InventoryRepository $inventoryRepository, ResponseService $responseService
+        InventoryRepository $inventoryRepository, ResponseService $responseService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace) || !$user->getFireplace())
             throw new PSPNotUnlockedException('Fireplace');
@@ -82,11 +82,11 @@ class FireplaceController extends AbstractController
     #[Route("/whelpFood", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getWhelpFood(
-        ResponseService $responseService, EntityManagerInterface $em
+        ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $whelp = DragonRepository::findWhelp($em, $user);
 

@@ -16,25 +16,24 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Service\CookingService;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/pieRecipes")]
-class PieRecipesController extends AbstractController
+class PieRecipesController
 {
     #[Route("/{inventory}/upload", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function upload(
-        Inventory $inventory, ResponseService $responseService, CookingService $cookingService
+        Inventory $inventory, ResponseService $responseService, CookingService $cookingService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'pieRecipes/#/upload');
 
@@ -54,9 +53,11 @@ class PieRecipesController extends AbstractController
 
     #[Route("/{inventory}/read", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function read(Inventory $inventory, ResponseService $responseService): JsonResponse
+    public function read(Inventory $inventory, ResponseService $responseService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'pieRecipes/#/read');
+        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'pieRecipes/#/read');
 
         return $responseService->itemActionSuccess('Who are you, and how did you come by a copy of my book, I wonder. Did you find it washed up on some strange shore? Pry it from the hands of a hungry Preta? Or perhaps you just bought it from a bookstore?
 

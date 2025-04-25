@@ -16,7 +16,6 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
@@ -24,23 +23,23 @@ use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/leprechaun")]
-class LeprechaunController extends AbstractController
+class LeprechaunController
 {
     #[Route("/potOfGold/{inventory}/loot", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function lootPotOfGold(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsService $userStatsRepository
+        EntityManagerInterface $em, UserStatsService $userStatsRepository,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'leprechaun/potOfGold/#/loot');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -69,11 +68,11 @@ class LeprechaunController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function readGreenScroll(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
-        ResponseService $responseService, UserStatsService $userStatsRepository
+        ResponseService $responseService, UserStatsService $userStatsRepository,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'leprechaun/greenScroll/#/read');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);

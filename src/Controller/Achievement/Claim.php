@@ -30,25 +30,25 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/achievement")]
-final class Claim extends AbstractController
+final class Claim
 {
     #[Route("/claim", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function claim(
         ResponseService $responseService, Request $request, EntityManagerInterface $em,
         UserStatsService $userStatsRepository, InventoryService $inventoryService,
-        TransactionService $transactionService, IRandom $rng
+        TransactionService $transactionService, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $badge = mb_trim($request->request->getString('achievement'));
 

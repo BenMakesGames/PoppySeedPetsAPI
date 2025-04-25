@@ -18,22 +18,23 @@ use App\Entity\MuseumItem;
 use App\Exceptions\PSPNotFoundException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/account")]
-class ChangeIconController extends AbstractController
+class ChangeIconController
 {
     #[Route("/changeIcon", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function setIcon(
-        Request $request, ResponseService $responseService, EntityManagerInterface $em
+        Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
         $itemId = $request->request->getInt('item');
 
         $donated = $em->getRepository(MuseumItem::class)->findOneBy([
@@ -53,9 +54,11 @@ class ChangeIconController extends AbstractController
 
     #[Route("/clearIcon", methods: ["PATCH"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function clearIcon(ResponseService $responseService, EntityManagerInterface $em): JsonResponse
+    public function clearIcon(
+        ResponseService $responseService, EntityManagerInterface $em, UserAccessor $userAccessor
+    ): JsonResponse
     {
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
         $user->setIcon(null);
         $em->flush();
 

@@ -16,25 +16,24 @@ namespace App\Controller\Article;
 
 use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\Article;
-use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Service\UserAccessor;
 
 #[Route("/article")]
-class GetLatestController extends AbstractController
+class GetLatestController
 {
     #[DoesNotRequireHouseHours]
     #[Route("/latest", methods: ["GET"])]
     public function getLatest(
-        ResponseService $responseService, EntityManagerInterface $em
+        ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User|null $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUser();
 
         if($user && $user->getUnreadNews() === 1)
         {

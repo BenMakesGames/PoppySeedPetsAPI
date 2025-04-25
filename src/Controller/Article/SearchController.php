@@ -19,24 +19,25 @@ use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\ArticleFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Service\UserAccessor;
 
 #[Route("/article")]
-class SearchController extends AbstractController
+class SearchController
 {
     #[Route("", methods: ["GET"])]
     #[DoesNotRequireHouseHours]
     public function handle(
         Request $request, ResponseService $responseService, ArticleFilterService $articleFilterService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        if($this->getUser() && $this->getUser()->getUnreadNews() > 0)
+        if($userAccessor->getUserOrThrow() && $userAccessor->getUserOrThrow()->getUnreadNews() > 0)
         {
-            $this->getUser()->setUnreadNews(0);
+            $userAccessor->getUserOrThrow()->setUnreadNews(0);
             $em->flush();
         }
 

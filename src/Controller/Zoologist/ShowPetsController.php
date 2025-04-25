@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Zoologist;
 
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Entity\UserSpeciesCollected;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
@@ -27,24 +26,24 @@ use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/zoologist")]
-class ShowPetsController extends AbstractController
+class ShowPetsController
 {
     #[Route("/showPets", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function showPets(
         EntityManagerInterface $em, Request $request,
-        UserStatsService $userStatsRepository, ResponseService $responseService, IRandom $rng
+        UserStatsService $userStatsRepository, ResponseService $responseService, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Zoologist))
             throw new PSPNotUnlockedException('Zoologist');

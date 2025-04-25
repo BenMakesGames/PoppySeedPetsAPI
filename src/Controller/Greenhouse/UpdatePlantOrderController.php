@@ -15,35 +15,28 @@ declare(strict_types=1);
 namespace App\Controller\Greenhouse;
 
 use App\Entity\GreenhousePlant;
-use App\Entity\Inventory;
-use App\Entity\User;
-use App\Enum\PlantTypeEnum;
-use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
-use App\Repository\InventoryRepository;
-use App\Service\GreenhouseService;
-use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use App\Service\UserAccessor;
 
 #[Route("/greenhouse")]
-class UpdatePlantOrderController extends AbstractController
+class UpdatePlantOrderController
 {
     #[Route("/updatePlantOrder", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function updatePlantOrder(
-        Request $request, ResponseService $responseService, EntityManagerInterface $em
+        Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
         $greenhouse = $user->getGreenhouse();
 
         if($greenhouse === null)

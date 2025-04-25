@@ -47,8 +47,9 @@ class PetHouseTime
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $canAttemptSocialHangoutAfter;
 
-    public function __construct()
+    public function __construct(Pet $pet)
     {
+        $this->pet = $pet;
         $this->canAttemptSocialHangoutAfter = new \DateTimeImmutable();
     }
 

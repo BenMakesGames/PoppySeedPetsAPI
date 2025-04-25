@@ -14,15 +14,22 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-abstract class AdminController extends AbstractController
+abstract class AdminController
 {
+    protected ParameterBagInterface $parameterBag;
+
+    public function __construct(ParameterBagInterface $parameterBag)
+    {
+        $this->parameterBag = $parameterBag;
+    }
+
     public function adminIPsOnly(Request $request): void
     {
-        if(!preg_match('/' . $this->getParameter('adminIpRegex') . '/', $request->getClientIp()))
+        if(!preg_match('/' . $this->parameterBag->get('adminIpRegex') . '/', $request->getClientIp()))
             throw new AccessDeniedHttpException('Sorry: the device you\'re using is not trusted to perform administrative actions.');
     }
 }

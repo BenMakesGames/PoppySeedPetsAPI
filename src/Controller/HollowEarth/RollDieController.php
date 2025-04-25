@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\HollowEarth;
 
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
@@ -27,24 +26,24 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/hollowEarth")]
-class RollDieController extends AbstractController
+class RollDieController
 {
     #[Route("/roll", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function rollDie(
         ResponseService $responseService, EntityManagerInterface $em, HollowEarthService $hollowEarthService,
-        Request $request, InventoryService $inventoryService, IRandom $rng
+        Request $request, InventoryService $inventoryService, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
         $player = $user->getHollowEarthPlayer();
         $now = new \DateTimeImmutable();
 

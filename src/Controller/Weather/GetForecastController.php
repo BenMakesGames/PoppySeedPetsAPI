@@ -14,30 +14,27 @@ declare(strict_types=1);
 
 namespace App\Controller\Weather;
 
-use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Model\AvailableHolidayBox;
 use App\Service\PlazaService;
 use App\Service\ResponseService;
 use App\Service\WeatherService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/weather")]
-class GetForecastController extends AbstractController
+class GetForecastController
 {
     #[Route("/forecast", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getForecast(
-        ResponseService $responseService, WeatherService $weatherService, PlazaService $plazaService
+        ResponseService $responseService, WeatherService $weatherService, PlazaService $plazaService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $data = [
             'forecast' => $weatherService->get6DayForecast(),

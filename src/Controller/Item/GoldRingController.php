@@ -16,7 +16,6 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Entity\PetSpecies;
-use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\UnlockableFeatureEnum;
@@ -31,22 +30,23 @@ use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/goldRing")]
-class GoldRingController extends AbstractController
+class GoldRingController
 {
     #[Route("/{inventory}/smash", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function smash(
         Inventory $inventory, ResponseService $responseService, IRandom $rng,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'goldRing/#/smash');
+        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'goldRing/#/smash');
 
         $inventory->changeItem(ItemRepository::findOneByName($em, 'Gold Bar'));
 
@@ -80,11 +80,11 @@ class GoldRingController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function collect100(
         Inventory $inventory, EntityManagerInterface $em, InventoryService $inventoryService,
-        ResponseService $responseService, PetFactory $petFactory, IRandom $rng, HattierService $hattierService
+        ResponseService $responseService, PetFactory $petFactory, IRandom $rng, HattierService $hattierService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'goldRing/#/collect100');
 

@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
@@ -23,23 +22,22 @@ use App\Service\HollowEarthService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/die")]
-class DieController extends AbstractController
+class DieController
 {
     #[Route("/{inventory}/roll", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function roll(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
-        HollowEarthService $hollowEarthService
+        HollowEarthService $hollowEarthService, UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'die/#/roll');
 
@@ -77,11 +75,11 @@ class DieController extends AbstractController
     #[Route("/{inventory}/changeYourFate", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function changeYourFate(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
-    )
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'die/#/changeYourFate');
 

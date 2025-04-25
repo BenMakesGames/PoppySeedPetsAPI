@@ -17,7 +17,6 @@ namespace App\Controller\Greenhouse;
 use App\Entity\GreenhousePlant;
 use App\Entity\Pet;
 use App\Entity\PlantYieldItem;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\MoonPhaseEnum;
@@ -43,13 +42,13 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/greenhouse")]
-class HarvestPlantController extends AbstractController
+class HarvestPlantController
 {
     #[Route("/{plant}/harvest", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
@@ -59,11 +58,11 @@ class HarvestPlantController extends AbstractController
         GreenhouseAdventureService $greenhouseAdventureService,
         GreenhouseService $greenhouseService, IRandom $rng, FieldGuideService $fieldGuideService,
         HattierService $hattierService, TransactionService $transactionService,
-        NoetalaAdventureService $noetalaAdventureService
+        NoetalaAdventureService $noetalaAdventureService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($plant->getOwner()->getId() !== $user->getId())
             throw new PSPNotFoundException('That plant does not exist.');

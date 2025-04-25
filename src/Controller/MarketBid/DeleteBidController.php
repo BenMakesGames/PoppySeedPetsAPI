@@ -14,29 +14,28 @@ declare(strict_types=1);
 
 namespace App\Controller\MarketBid;
 
-use App\Entity\User;
 use App\Exceptions\PSPNotFoundException;
 use App\Repository\MarketBidRepository;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/marketBid")]
-class DeleteBidController extends AbstractController
+class DeleteBidController
 {
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/{bidId}", methods: ["DELETE"], requirements: ["bidId" => "\d+"])]
     public function deleteBid(
         int $bidId, ResponseService $responseService, TransactionService $transactionService,
-        MarketBidRepository $marketBidRepository, EntityManagerInterface $em
+        MarketBidRepository $marketBidRepository, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
         $bid = $marketBidRepository->find($bidId);
 
         if(!$bid || $bid->getUser()->getId() !== $user->getId())

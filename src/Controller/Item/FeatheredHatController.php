@@ -18,14 +18,14 @@ use App\Entity\Inventory;
 use App\Functions\ItemRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/featheredHat")]
-class FeatheredHatController extends AbstractController
+class FeatheredHatController
 {
     private const array TWEAKS = [
         'Afternoon Hat' => 'Evening Hat',
@@ -34,10 +34,11 @@ class FeatheredHatController extends AbstractController
     #[Route("/{inventory}/tweak", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function tweakHat(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'featheredHat/#/tweak');
+        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'featheredHat/#/tweak');
 
         $oldItemName = $inventory->getItem()->getName();
 

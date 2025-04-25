@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Dragon;
 
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\DragonHelpers;
@@ -23,24 +22,24 @@ use App\Service\DragonHostageService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use App\Service\UserAccessor;
 
 #[Route("/dragon")]
-class DismissHostageController extends AbstractController
+class DismissHostageController
 {
     #[Route("/dismissHostage", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function dismissHostage(
         ResponseService $responseService, EntityManagerInterface $em, InventoryService $inventoryService,
-        DragonHostageService $dragonHostageService, NormalizerInterface $normalizer
+        DragonHostageService $dragonHostageService, NormalizerInterface $normalizer,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $dragon = DragonHelpers::getAdultDragon($em, $user);
 

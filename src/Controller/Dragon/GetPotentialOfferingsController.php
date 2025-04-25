@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Dragon;
 
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPNotFoundException;
@@ -22,23 +21,23 @@ use App\Functions\DragonHelpers;
 use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Service\UserAccessor;
 
 #[Route("/dragon")]
-class GetPotentialOfferingsController extends AbstractController
+class GetPotentialOfferingsController
 {
     #[Route("/offerings", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getOfferings(
         ResponseService $responseService, InventoryRepository $inventoryRepository,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $dragon = DragonHelpers::getAdultDragon($em, $user);
 

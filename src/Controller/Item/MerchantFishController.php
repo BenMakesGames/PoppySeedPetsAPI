@@ -16,7 +16,6 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Entity\TradesUnlocked;
-use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\StoryEnum;
 use App\Enum\UnlockableFeatureEnum;
@@ -27,24 +26,24 @@ use App\Service\ResponseService;
 use App\Service\StoryService;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/merchantFish")]
-class MerchantFishController extends AbstractController
+class MerchantFishController
 {
     #[Route("/{inventory}/talk", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function read(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
-        StoryService $storyService, Request $request, TraderService $traderService, InventoryService $inventoryService
+        StoryService $storyService, Request $request, TraderService $traderService, InventoryService $inventoryService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'merchantFish/#/talk');
 

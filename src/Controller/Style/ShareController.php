@@ -14,30 +14,29 @@ declare(strict_types=1);
 
 namespace App\Controller\Style;
 
-use App\Entity\User;
 use App\Entity\UserStyle;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\UserStyleFunctions;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/style")]
-class ShareController extends AbstractController
+class ShareController
 {
     #[Route("", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function shareTheme(
-        ResponseService $responseService, Request $request, EntityManagerInterface $em
+        ResponseService $responseService, Request $request, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
         $name = mb_trim($request->request->get('name'));
 
         if(strlen($name) < 1 || strlen($name) > 15)

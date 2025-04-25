@@ -20,7 +20,9 @@ use App\Entity\Article;
 use App\Exceptions\PSPFormValidationException;
 use App\Functions\DesignGoalRepository;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -29,6 +31,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/article")]
 class CreateController extends AdminController
 {
+    public function __construct(
+        ParameterBagInterface $parameterBag,
+        private UserAccessor $userAccessor
+    ) {
+        parent::__construct($parameterBag);
+    }
+
     #[DoesNotRequireHouseHours]
     #[Route("", methods: ["POST"])]
     #[IsGranted("ROLE_ADMIN")]
@@ -54,7 +63,7 @@ class CreateController extends AdminController
             ->setImageUrl($imageUrl == '' ? null : $imageUrl)
             ->setTitle($title)
             ->setBody($body)
-            ->setAuthor($this->getUser())
+            ->setAuthor($this->userAccessor->getUserOrThrow())
         ;
 
         foreach($designGoals as $designGoal)

@@ -16,25 +16,24 @@ namespace App\Controller\Item\Note;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Service\CookingService;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Service\UserAccessor;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/item/note/cobblers")]
-class CobblerRecipesController extends AbstractController
+class CobblerRecipesController
 {
     #[Route("/{inventory}/upload", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function upload(
-        Inventory $inventory, ResponseService $responseService, CookingService $cookingService
+        Inventory $inventory, ResponseService $responseService, CookingService $cookingService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'note/cobblers/#/upload');
 
@@ -48,9 +47,11 @@ class CobblerRecipesController extends AbstractController
 
     #[Route("/{inventory}/read", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function readCobblerRecipes(Inventory $inventory, ResponseService $responseService): JsonResponse
+    public function readCobblerRecipes(Inventory $inventory, ResponseService $responseService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'note/cobblers/#/read');
+        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'note/cobblers/#/read');
 
         return $responseService->itemActionSuccess('* flour
 * milk

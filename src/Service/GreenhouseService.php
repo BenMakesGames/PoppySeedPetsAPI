@@ -191,7 +191,7 @@ class GreenhouseService
         // must have at least 3 generally-pollinatable plants
         $availablePlants = array_filter($user->getGreenhousePlants()->toArray(), fn(GreenhousePlant $p) => !$p->getPlant()->getNoPollinators());
 
-        if($availablePlants < 3)
+        if(count($availablePlants) < 3)
             return false;
 
         // must have at least 1 plant available

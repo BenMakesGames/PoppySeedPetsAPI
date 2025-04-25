@@ -15,23 +15,21 @@ declare(strict_types=1);
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPPetNotFoundException;
+use App\Service\UserAccessor;
 use App\Service\Filter\PetFilterService;
 use App\Service\ResponseService;
-use App\Service\Typeahead\PetTypeaheadService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/pet")]
-class GetController extends AbstractController
+class GetController
 {
     #[Route("", methods: ["GET"])]
     public function searchPets(
@@ -46,10 +44,12 @@ class GetController extends AbstractController
 
     #[Route("/my", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getMyPets(ResponseService $responseService, ManagerRegistry $doctrine): JsonResponse
+    public function getMyPets(
+        ResponseService $responseService, ManagerRegistry $doctrine,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $petRepository = $doctrine->getRepository(Pet::class, 'readonly');
 
@@ -63,10 +63,12 @@ class GetController extends AbstractController
 
     #[Route("/my/{id}", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getMyPet(ResponseService $responseService, EntityManagerInterface $em, int $id): JsonResponse
+    public function getMyPet(
+        ResponseService $responseService, EntityManagerInterface $em, UserAccessor $userAccessor,
+        int $id
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $pet = $em->getRepository(Pet::class)->findOneBy([
             'id' => $id,
@@ -83,24 +85,5 @@ class GetController extends AbstractController
     public function profile(Pet $pet, ResponseService $responseService): JsonResponse
     {
         return $responseService->success($pet, [ SerializationGroupEnum::PET_PUBLIC_PROFILE ]);
-    }
-
-    #[Route("/typeahead", methods: ["GET"])]
-    #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function typeaheadSearch(
-        Request $request, ResponseService $responseService, PetTypeaheadService $petTypeaheadService
-    ): JsonResponse
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        $petTypeaheadService->setUser($user);
-
-        if($request->query->has('speciesId'))
-            $petTypeaheadService->setSpeciesId($request->query->getInt('speciesId'));
-
-        $suggestions = $petTypeaheadService->search('name', $request->query->get('search', ''));
-
-        return $responseService->success($suggestions, [ SerializationGroupEnum::MY_PET, SerializationGroupEnum::MY_PET_LOCATION ]);
     }
 }

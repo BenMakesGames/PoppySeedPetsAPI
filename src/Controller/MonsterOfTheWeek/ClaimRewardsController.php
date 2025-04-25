@@ -14,10 +14,8 @@ declare(strict_types=1);
 
 namespace App\Controller\MonsterOfTheWeek;
 
-use App\Entity\Inventory;
 use App\Entity\MonsterOfTheWeek;
 use App\Entity\MonsterOfTheWeekContribution;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MonsterOfTheWeekEnum;
 use App\Enum\UserStatEnum;
@@ -28,24 +26,23 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/monsterOfTheWeek")]
-class ClaimRewardsController extends AbstractController
+class ClaimRewardsController
 {
     #[Route("/{monsterId}/claimRewards", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function claimRewards(
         int $monsterId, InventoryService $inventoryService, ResponseService $responseService, EntityManagerInterface $em,
-        UserStatsService $userStatsService, Clock $clock
+        UserStatsService $userStatsService, Clock $clock,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $monster = $em->getRepository(MonsterOfTheWeek::class)->findOneBy([
             'id' => $monsterId

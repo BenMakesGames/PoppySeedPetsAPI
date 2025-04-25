@@ -16,22 +16,24 @@ namespace App\Controller\Account;
 
 use App\Functions\SimpleDb;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/account")]
-class GetStatsController extends AbstractController
+class GetStatsController
 {
     #[Route("/stats", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getStats(ResponseService $responseService): JsonResponse
+    public function getStats(ResponseService $responseService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
         $stats = SimpleDb::createReadOnlyConnection()
             ->query(
                 'SELECT stat,value,first_time AS firstTime,last_time AS lastTime FROM user_stats WHERE user_id = ?',
-                [ $this->getUser()->getId() ]
+                [ $userAccessor->getUserOrThrow()->getId() ]
             )
             ->getResults()
         ;

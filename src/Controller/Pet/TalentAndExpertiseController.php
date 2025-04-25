@@ -25,23 +25,24 @@ use App\Functions\MeritRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/pet")]
-class TalentAndExpertiseController extends AbstractController
+class TalentAndExpertiseController
 {
     #[Route("/{pet}/pickTalent", requirements: ["pet" => "\d+"], methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function pickTalent(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        if($pet->getOwner()->getId() !== $this->getUser()->getId())
+        if($pet->getOwner()->getId() !== $userAccessor->getUserOrThrow()->getId())
             throw new PSPPetNotFoundException();
 
         if($pet->getCanPickTalent() !== 'talent')
@@ -103,10 +104,11 @@ class TalentAndExpertiseController extends AbstractController
     #[Route("/{pet}/pickExpertise", requirements: ["pet" => "\d+"], methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function pickExpertise(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        if($pet->getOwner()->getId() !== $this->getUser()->getId())
+        if($pet->getOwner()->getId() !== $userAccessor->getUserOrThrow()->getId())
             throw new PSPPetNotFoundException();
 
         if($pet->getCanPickTalent() !== 'expertise')

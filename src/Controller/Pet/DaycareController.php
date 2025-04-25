@@ -16,7 +16,6 @@ namespace App\Controller\Pet;
 
 use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
@@ -27,23 +26,23 @@ use App\Service\Filter\PetFilterService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/pet")]
-class DaycareController extends AbstractController
+class DaycareController
 {
     #[Route("/daycare", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getMyDaycarePets(
-        ResponseService $responseService, PetFilterService $petFilterService, Request $request
+        ResponseService $responseService, PetFilterService $petFilterService, Request $request,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $petFilterService->addRequiredFilter('owner', $user->getId());
         $petFilterService->addRequiredFilter('location', [ PetLocationEnum::DAYCARE, PetLocationEnum::HOME ]);
@@ -60,16 +59,16 @@ class DaycareController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/daycare/arrange", methods: ["POST"])]
     public function arrangePets(
-        ResponseService $responseService, Request $request, EntityManagerInterface $em
-    )
+        ResponseService $responseService, Request $request, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
         $petIds = array_unique($request->request->all('pets'));
 
         if(ArrayFunctions::any($petIds, fn(int $id) => $id <= 0))
             throw new PSPFormValidationException('Invalid pet ID(s) provided.');
 
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $petsWantedAtHome = $em->getRepository(Pet::class)->findBy([
             'id' => $petIds,

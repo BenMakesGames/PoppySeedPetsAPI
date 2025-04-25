@@ -22,22 +22,23 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/cursedScissors")]
-class CursedScissorsController extends AbstractController
+class CursedScissorsController
 {
     #[Route("/{inventory}/cut", methods: ["PATCH"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function forgetRelationship(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'cursedScissors');
 
