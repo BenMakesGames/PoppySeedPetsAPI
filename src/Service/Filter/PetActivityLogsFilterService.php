@@ -53,7 +53,7 @@ class PetActivityLogsFilterService
         return $this->repository->createQueryBuilder('l');
     }
 
-    public function filterDate(QueryBuilder $qb, $value)
+    public function filterDate(QueryBuilder $qb, mixed $value): void
     {
         $date = \DateTimeImmutable::createFromFormat('Y-m-d', $value);
 

@@ -29,6 +29,7 @@ class UserStyleFilter
 
     private User $user;
 
+    /** @var EntityRepository<UserStyle> */
     private readonly EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $em)
