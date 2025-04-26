@@ -91,7 +91,7 @@ class FructalPlaneService
             return $activityLog;
         }
 
-        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% was thinking about what to do, when they were suddenly sucked into their ' . $pet->getTool()->getFullItemName() . ', and into the Fructal Plane! They quickly grabbed a few things before being ejected back to the physical world: ' . ArrayFunctions::list_nice_sorted($loot) . '.')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% was thinking about what to do, when they were suddenly sucked into their ' . $pet->getTool()->getFullItemName() . ', and into the Fructal Plane! They grabbed what they could before being ejected back to the physical world: ' . ArrayFunctions::list_nice_sorted($loot) . '.')
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                 PetActivityLogTagEnum::The_Umbra,
