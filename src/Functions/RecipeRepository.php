@@ -600,6 +600,8 @@ final class RecipeRepository
         [ 'name' => 'Rock Candy', 'ingredients' => '12:1,68:1', 'makes' => '382:1' ],
         [ 'name' => 'Royal PB&J', 'ingredients' => '112:1,424:1,512:1', 'makes' => '528:2' ],
         [ 'name' => 'Ruler', 'ingredients' => '503:1,1129:1', 'makes' => '502:1' ],
+        [ 'name' => 'Rusty Blunderbuss', 'ingredients' => '10:1,106:1', 'makes' => '105:1' ],
+        [ 'name' => 'Rusty Rapier', 'ingredients' => '10:1,107:1', 'makes' => '104:1' ],
         [ 'name' => 'S\'more', 'ingredients' => '325:1,668:1,1161:1', 'makes' => '1162:1' ],
         [ 'name' => 'Salsa', 'ingredients' => '7:1,133:1,248:1', 'makes' => '396:2' ],
         [ 'name' => 'Scroll of Dice', 'ingredients' => '950:1,1430:1', 'makes' => '1075:1' ],
