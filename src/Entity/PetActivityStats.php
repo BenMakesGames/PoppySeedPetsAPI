@@ -130,6 +130,11 @@ class PetActivityStats
     #[ORM\Column(type: 'integer')]
     private int $otherTime = 0;
 
+    public function __construct(Pet $pet)
+    {
+        $this->pet = $pet;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

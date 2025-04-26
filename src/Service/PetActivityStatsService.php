@@ -83,7 +83,7 @@ class PetActivityStatsService
 
         if($pet->getPetActivityStats() === null)
         {
-            $petActivityStats = new PetActivityStats();
+            $petActivityStats = new PetActivityStats($pet);
 
             $pet->setPetActivityStats($petActivityStats);
 
