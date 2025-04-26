@@ -44,17 +44,13 @@ use App\Model\ComputedPetSkills;
 use App\Model\FoodWithSpice;
 use App\Model\PetChanges;
 use App\Model\PetChangesSummary;
-use App\Service\PetActivity\BurntForestService;
 use App\Service\PetActivity\CachingMeritAdventureService;
-use App\Service\PetActivity\Caerbannog;
-use App\Service\PetActivity\ChocolateMansion;
 use App\Service\PetActivity\Crafting\MagicBindingService;
 use App\Service\PetActivity\Crafting\NotReallyCraftsService;
 use App\Service\PetActivity\Crafting\PlasticPrinterService;
 use App\Service\PetActivity\Crafting\ProgrammingService;
 use App\Service\PetActivity\Crafting\SmithingService;
 use App\Service\PetActivity\CraftingService;
-use App\Service\PetActivity\DeepSeaService;
 use App\Service\PetActivity\DokiDokiService;
 use App\Service\PetActivity\DreamingAndDaydreamingService;
 use App\Service\PetActivity\EatingService;
@@ -65,20 +61,25 @@ use App\Service\PetActivity\GatheringService;
 use App\Service\PetActivity\GenericAdventureService;
 use App\Service\PetActivity\GivingTreeGatheringService;
 use App\Service\PetActivity\GuildService;
-use App\Service\PetActivity\HeartDimensionService;
 use App\Service\PetActivity\HuntingService;
-use App\Service\PetActivity\IcyMoonService;
 use App\Service\PetActivity\JumpRopeService;
 use App\Service\PetActivity\KappaService;
 use App\Service\PetActivity\LetterService;
-use App\Service\PetActivity\LostInTownService;
-use App\Service\PetActivity\MagicBeanstalkService;
 use App\Service\PetActivity\PetCleaningSelfService;
 use App\Service\PetActivity\PetSummonedAwayService;
 use App\Service\PetActivity\PhilosophersStoneService;
 use App\Service\PetActivity\PoopingService;
 use App\Service\PetActivity\PregnancyService;
 use App\Service\PetActivity\Protocol7Service;
+use App\Service\PetActivity\SpecialLocations\BurntForestService;
+use App\Service\PetActivity\SpecialLocations\Caerbannog;
+use App\Service\PetActivity\SpecialLocations\ChocolateMansion;
+use App\Service\PetActivity\SpecialLocations\DeepSeaService;
+use App\Service\PetActivity\SpecialLocations\FructalPlaneService;
+use App\Service\PetActivity\SpecialLocations\HeartDimensionService;
+use App\Service\PetActivity\SpecialLocations\IcyMoonService;
+use App\Service\PetActivity\SpecialLocations\LostInTownService;
+use App\Service\PetActivity\SpecialLocations\MagicBeanstalkService;
 use App\Service\PetActivity\TreasureMapService;
 use App\Service\PetActivity\UmbraService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -131,7 +132,8 @@ class PetActivityService
         private readonly CachingMeritAdventureService $cachingMeritAdventureService,
         private readonly JumpRopeService $jumpRopeService,
         private readonly DokiDokiService $dokiDokiService,
-        private readonly LostInTownService $lostInTownService
+        private readonly LostInTownService $lostInTownService,
+        private readonly FructalPlaneService $fructalPlaneService
     )
     {
     }
@@ -796,6 +798,10 @@ class PetActivityService
                             return true;
                     }
                     break;
+
+                case 'Gooder':
+                    $this->fructalPlaneService->adventure($petWithSkills);
+                    return true;
             }
         }
 

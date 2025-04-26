@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 
 
-namespace App\Service\PetActivity;
+namespace App\Service\PetActivity\SpecialLocations;
 
 use App\Entity\PetActivityLog;
 use App\Enum\PetActivityLogInterestingnessEnum;

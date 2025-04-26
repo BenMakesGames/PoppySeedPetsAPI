@@ -114,4 +114,6 @@ class PetActivityLogTagEnum
     public const string Location_Abandoned_Quarry = 'Location: Abandoned Quarry';
     public const string Location_Hollow_Log = 'Location: Hollow Log';
     public const string Location_The_Deep_Sea = 'Location: The Deep Sea';
+    public const string Location_The_Fructal_Plane = 'Location: The Fructal Plane';
+    public const string Location_The_Burnt_Forest = 'Location: The Burnt Forest';
 }

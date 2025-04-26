@@ -109,7 +109,7 @@ class Item
 
     #[Groups(["myDonatableInventory"])]
     #[ORM\Column(type: 'smallint')]
-    private int $museumPoints = 0;
+    private int $museumPoints = 1;
 
     public function __construct()
     {

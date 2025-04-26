@@ -102,7 +102,7 @@ class BandService
     private const array PluralNounList = [
         'Aliens', 'Accords', 'Acts', 'Ashes', 'Arms and Legs', 'Acres', 'Armies',
         'Bananas', 'Boys and Girls', 'Blades', 'Blossoms',
-        'Children', 'Chemicals', 'Chains', 'Circles', 'Clowns', 'Cups', 'Circles', 'Countries', 'Clues', 'Crawlies',
+        'Children', 'Chemicals', 'Chains', 'Circles', 'Clowns', 'Cups', 'Countries', 'Clues', 'Crawlies',
         'Dancers', 'Depths', 'Devils', 'Dinosaurs', 'Doctors', 'Dogs and Cats', 'Dollars', 'Doors', 'Divers',
         'Embers', 'Explorers',
         'Faces', 'Favorites', 'Fighters', 'Fires', 'Fireflies', 'Foreigners',
