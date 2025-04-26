@@ -22,12 +22,12 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PetActivityStatsService
 {
-    public const array STATS_THAT_CANT_FAIL = [
+    public const array StatsThatCantFail = [
         PetActivityStatEnum::PARK_EVENT,
         PetActivityStatEnum::OTHER
     ];
 
-    public const array STAT_COLORS = [
+    public const array StatColors = [
         PetActivityStatEnum::UMBRA => '#9900FF', // purple
         PetActivityStatEnum::SMITH => '#FFCC00', // yellow
         PetActivityStatEnum::PLASTIC_PRINT => '#FFFFFF', // white
@@ -42,7 +42,7 @@ class PetActivityStatsService
         PetActivityStatEnum::OTHER => '#999999', // gray
     ];
 
-    public const array STAT_LABELS = [
+    public const array StatLabels = [
         PetActivityStatEnum::UMBRA => 'Umbra',
         PetActivityStatEnum::SMITH => 'Smithing',
         PetActivityStatEnum::PLASTIC_PRINT => '3D Printer',
@@ -67,7 +67,7 @@ class PetActivityStatsService
         if(!PetActivityStatEnum::isAValue($stat))
             throw new EnumInvalidValueException(PetActivityStatEnum::class, $stat);
 
-        $canFail = !in_array($stat, self::STATS_THAT_CANT_FAIL);
+        $canFail = !in_array($stat, self::StatsThatCantFail);
 
         if($canFail)
         {

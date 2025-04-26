@@ -55,16 +55,16 @@ class GetActivityStatsController
 
         foreach(PetActivityStatEnum::getValues() as $stat)
         {
-            if(in_array($stat, PetActivityStatsService::STATS_THAT_CANT_FAIL))
+            if(in_array($stat, PetActivityStatsService::StatsThatCantFail))
             {
                 $data['byActivity'][] = [
                     'value' => $stats->{'get' . $stat}(),
                     'deleted' => 0,
-                    'label' => PetActivityStatsService::STAT_LABELS[$stat],
-                    'color' => PetActivityStatsService::STAT_COLORS[$stat]
+                    'label' => PetActivityStatsService::StatLabels[$stat],
+                    'color' => PetActivityStatsService::StatColors[$stat]
                 ];
 
-                $data['byActivityCombined'][] = [ 'value' => $stats->{'get' . $stat}(), 'label' => PetActivityStatsService::STAT_LABELS[$stat], 'color' => PetActivityStatsService::STAT_COLORS[$stat] ];
+                $data['byActivityCombined'][] = [ 'value' => $stats->{'get' . $stat}(), 'label' => PetActivityStatsService::StatLabels[$stat], 'color' => PetActivityStatsService::StatColors[$stat] ];
 
                 $byActivityTotal += $stats->{'get' . $stat}();
                 $byActivityCombinedTotal += $stats->{'get' . $stat}();
@@ -77,17 +77,17 @@ class GetActivityStatsController
                 $data['byActivity'][] = [
                     'value' => $success + $failure,
                     'deleted' => $failure,
-                    'label' => PetActivityStatsService::STAT_LABELS[$stat],
-                    'color' => PetActivityStatsService::STAT_COLORS[$stat]
+                    'label' => PetActivityStatsService::StatLabels[$stat],
+                    'color' => PetActivityStatsService::StatColors[$stat]
                 ];
 
-                $data['byActivityCombined'][] = [ 'value' => $success + $failure, 'label' => PetActivityStatsService::STAT_LABELS[$stat], 'color' => PetActivityStatsService::STAT_COLORS[$stat] ];
+                $data['byActivityCombined'][] = [ 'value' => $success + $failure, 'label' => PetActivityStatsService::StatLabels[$stat], 'color' => PetActivityStatsService::StatColors[$stat] ];
 
                 $byActivityTotal += $success + $failure;
                 $byActivityCombinedTotal += $success + $failure;
             }
 
-            $data['byTime'][] = [ 'value' => $stats->{'get' . $stat . 'time'}(), 'label' => PetActivityStatsService::STAT_LABELS[$stat], 'color' => PetActivityStatsService::STAT_COLORS[$stat] ];
+            $data['byTime'][] = [ 'value' => $stats->{'get' . $stat . 'time'}(), 'label' => PetActivityStatsService::StatLabels[$stat], 'color' => PetActivityStatsService::StatColors[$stat] ];
 
             $byTimeTotal += $stats->{'get' . $stat . 'time'}();
         }
