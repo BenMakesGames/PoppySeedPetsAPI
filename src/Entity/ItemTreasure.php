@@ -27,22 +27,22 @@ class ItemTreasure
 
     #[Groups(["dragonTreasure"])]
     #[ORM\Column(type: 'integer')]
-    private $silver;
+    private int $silver = 0;
 
     #[Groups(["dragonTreasure"])]
     #[ORM\Column(type: 'integer')]
-    private $gold;
+    private int $gold = 0;
 
     #[Groups(["dragonTreasure"])]
     #[ORM\Column(type: 'integer')]
-    private $gems;
+    private int $gems = 0;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getSilver(): ?int
+    public function getSilver(): int
     {
         return $this->silver;
     }
@@ -54,7 +54,7 @@ class ItemTreasure
         return $this;
     }
 
-    public function getGold(): ?int
+    public function getGold(): int
     {
         return $this->gold;
     }
@@ -66,7 +66,7 @@ class ItemTreasure
         return $this;
     }
 
-    public function getGems(): ?int
+    public function getGems(): int
     {
         return $this->gems;
     }

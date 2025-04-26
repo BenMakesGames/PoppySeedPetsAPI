@@ -481,8 +481,7 @@ class InventoryService
         if(!$this->houseSimService->getState()->addInventory($i))
             $this->em->persist($i);
 
-        if($activityLog)
-            $activityLog->addCreatedItem($item);
+        $activityLog->addCreatedItem($item);
 
         $this->responseService->setReloadInventory();
 

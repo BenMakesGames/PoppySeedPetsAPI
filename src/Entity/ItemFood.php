@@ -31,92 +31,89 @@ class ItemFood
     private ?int $id = null;
 
     #[ORM\Column(type: 'integer')]
-    private $food = 0;
+    private int $food = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $love = 0;
+    private int $love = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $junk = 0;
+    private int $junk = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $alcohol = 0;
+    private int $alcohol = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $caffeine = 0;
+    private int $caffeine = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $psychedelic = 0;
+    private int $psychedelic = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $earthy = 0;
+    private int $earthy = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $fruity = 0;
+    private int $fruity = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $tannic = 0;
+    private int $tannic = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $spicy = 0;
+    private int $spicy = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $creamy = 0;
+    private int $creamy = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $meaty = 0;
+    private int $meaty = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $planty = 0;
+    private int $planty = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $fishy = 0;
+    private int $fishy = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $floral = 0;
+    private int $floral = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $fatty = 0;
+    private int $fatty = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $oniony = 0;
+    private int $oniony = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $chemically = 0;
+    private int $chemically = 0;
 
     #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
-    private $grantedSkill;
+    private ?string $grantedSkill = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
-    private $chanceForBonusItem;
+    private ?int $chanceForBonusItem = null;
 
     #[ORM\Column(type: 'integer')]
-    private $randomFlavor = 0;
+    private int $randomFlavor = 0;
 
     #[ORM\Column(type: 'boolean')]
-    private $containsTentacles = false;
+    private bool $containsTentacles = false;
 
     #[ORM\Column(type: 'string', length: 40, nullable: true)]
-    private $grantedStatusEffect = null;
+    private ?string $grantedStatusEffect = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
-    private $grantedStatusEffectDuration = null;
+    private ?int $grantedStatusEffectDuration = null;
 
     #[ORM\Column(type: 'boolean')]
-    private $isCandy;
+    private bool $isCandy = false;
 
     #[ORM\OneToOne(targetEntity: Spice::class, mappedBy: 'effects', cascade: ['persist', 'remove'])]
-    private $spice;
+    private ?Spice $spice = null;
 
     #[ORM\ManyToOne(targetEntity: Item::class)]
-    private $leftovers;
+    private ?Item $leftovers = null;
 
-    /**
-     * @var ItemGroup
-     */
     #[ORM\ManyToOne(targetEntity: ItemGroup::class)]
-    private $bonusItemGroup;
+    private ?ItemGroup $bonusItemGroup = null;
 
     public function getId(): ?int
     {
@@ -147,7 +144,7 @@ class ItemFood
         return $this;
     }
 
-    public function getJunk(): ?int
+    public function getJunk(): int
     {
         return $this->junk;
     }
@@ -159,7 +156,7 @@ class ItemFood
         return $this;
     }
 
-    public function getAlcohol(): ?int
+    public function getAlcohol(): int
     {
         return $this->alcohol;
     }
@@ -195,7 +192,7 @@ class ItemFood
         return $this;
     }
 
-    public function getEarthy(): ?int
+    public function getEarthy(): int
     {
         return $this->earthy;
     }
@@ -207,7 +204,7 @@ class ItemFood
         return $this;
     }
 
-    public function getFruity(): ?int
+    public function getFruity(): int
     {
         return $this->fruity;
     }
@@ -219,7 +216,7 @@ class ItemFood
         return $this;
     }
 
-    public function getTannic(): ?int
+    public function getTannic(): int
     {
         return $this->tannic;
     }
@@ -231,7 +228,7 @@ class ItemFood
         return $this;
     }
 
-    public function getSpicy(): ?int
+    public function getSpicy(): int
     {
         return $this->spicy;
     }
@@ -243,7 +240,7 @@ class ItemFood
         return $this;
     }
 
-    public function getCreamy(): ?int
+    public function getCreamy(): int
     {
         return $this->creamy;
     }
@@ -255,7 +252,7 @@ class ItemFood
         return $this;
     }
 
-    public function getMeaty(): ?int
+    public function getMeaty(): int
     {
         return $this->meaty;
     }
@@ -267,7 +264,7 @@ class ItemFood
         return $this;
     }
 
-    public function getPlanty(): ?int
+    public function getPlanty(): int
     {
         return $this->planty;
     }
@@ -279,7 +276,7 @@ class ItemFood
         return $this;
     }
 
-    public function getFishy(): ?int
+    public function getFishy(): int
     {
         return $this->fishy;
     }
@@ -291,7 +288,7 @@ class ItemFood
         return $this;
     }
 
-    public function getFloral(): ?int
+    public function getFloral(): int
     {
         return $this->floral;
     }
@@ -303,7 +300,7 @@ class ItemFood
         return $this;
     }
 
-    public function getFatty(): ?int
+    public function getFatty(): int
     {
         return $this->fatty;
     }
@@ -315,7 +312,7 @@ class ItemFood
         return $this;
     }
 
-    public function getOniony(): ?int
+    public function getOniony(): int
     {
         return $this->oniony;
     }
@@ -327,7 +324,7 @@ class ItemFood
         return $this;
     }
 
-    public function getChemically(): ?int
+    public function getChemically(): int
     {
         return $this->chemically;
     }
@@ -342,8 +339,6 @@ class ItemFood
     public function add(ItemFood $f): ItemFood
     {
         $added = clone $this;
-
-        if($f === null) return $added;
 
         $added->food += $f->food;
         $added->love += $f->love;
@@ -487,7 +482,7 @@ class ItemFood
     #[Groups(["myInventory", "itemEncyclopedia"])]
     public function getBringsLuck(): ?string
     {
-        return $this->bonusItemGroup ? $this->bonusItemGroup->getName() : null;
+        return $this->bonusItemGroup?->getName();
     }
 
     public function getRandomFlavor(): int
@@ -541,7 +536,7 @@ class ItemFood
 
     #[Groups(['myInventory', 'itemEncyclopedia'])]
     #[SerializedName('candy')]
-    public function getIsCandy(): ?bool
+    public function getIsCandy(): bool
     {
         return $this->isCandy;
     }
@@ -586,7 +581,7 @@ class ItemFood
     #[SerializedName('leftovers')]
     public function getLeftoversName(): ?string
     {
-        return $this->leftovers === null ? null : $this->getLeftovers()->getName();
+        return $this->getLeftovers()?->getName();
     }
 
     public function getBonusItemGroup(): ?ItemGroup
@@ -601,7 +596,7 @@ class ItemFood
         return $this;
     }
 
-    public function getGrantsSelfReflection()
+    public function getGrantsSelfReflection(): bool
     {
         return $this->id === 390;
     }

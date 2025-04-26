@@ -31,7 +31,7 @@ class InventoryFilterService
     public const int PageSize = 100;
 
     private readonly ObjectRepository $repository;
-    private ?User $user;
+    private ?User $user = null;
 
     public function __construct(ManagerRegistry $doctrine)
     {

@@ -223,10 +223,6 @@ class PetSummonedAwayService
     {
         $pet = $petWithSkills->getPet();
 
-        $location = null;
-        $description = null;
-        $loot = null;
-
         switch($this->rng->rngNextInt(1, 2))
         {
             case 1:
@@ -243,6 +239,9 @@ class PetSummonedAwayService
                 [$description, $descriptioning, $loot] = $this->getMiningDescriptionAndLoot();
                 $tags = [ 'Mining' ];
                 break;
+
+            default:
+                throw new UnreachableException();
         }
 
         $message = 'While ' . $pet->getName() . ' was thinking about what to do, they were magically summoned to ' . $location . '. The wizard that summoned them made them ' . $description . ' until the spell ended, and they were returned home! (At least they managed to pocket some ' . $loot . ' before the spell ended!)';

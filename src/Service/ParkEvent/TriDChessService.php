@@ -22,6 +22,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SpiritCompanionStarEnum;
+use App\Exceptions\UnreachableException;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
@@ -208,7 +209,7 @@ class TriDChessService implements ParkEventInterface
             return 1;
         }
         else
-            throw new \Exception('Neither player lost?? This is a terrible programming error.');
+            throw new UnreachableException('Neither player lost?? This is a terrible programming error.');
     }
 
     private function doPlay(TriDChessParticipant $participant, int $healthAdvantage, int $move): int

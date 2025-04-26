@@ -45,7 +45,7 @@ class Item
 
     #[Groups(["myInventory", "itemEncyclopedia"])]
     #[ORM\Column(type: 'json', nullable: true)]
-    private $useActions = [];
+    private ?array $useActions = null;
 
     #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "itemEncyclopedia", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet"])]
     #[ORM\OneToOne(targetEntity: ItemTool::class)]
@@ -59,7 +59,7 @@ class Item
     private int $fertilizer = 0;
 
     #[ORM\ManyToOne(targetEntity: Plant::class, inversedBy: 'item', cascade: ['persist', 'remove'])]
-    private $plant;
+    private ?Plant $plant = null;
 
     #[ORM\OneToMany(targetEntity: MuseumItem::class, mappedBy: 'item', fetch: 'EXTRA_LAZY')]
     private Collection $museumDonations;
@@ -80,7 +80,7 @@ class Item
 
     #[Groups(["myInventory", "marketItem", "itemEncyclopedia"])]
     #[ORM\ManyToOne(targetEntity: 'App\Entity\Enchantment')]
-    private $enchants;
+    private ?Enchantment $enchants = null;
 
     #[ORM\OneToOne(targetEntity: ItemGrammar::class, mappedBy: 'item', cascade: ['persist', 'remove'], fetch: 'EAGER')]
     private ?ItemGrammar $grammar = null;
@@ -121,7 +121,7 @@ class Item
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -154,7 +154,7 @@ class Item
         return $this;
     }
 
-    public function getImage(): ?string
+    public function getImage(): string
     {
         return $this->image;
     }
@@ -251,7 +251,7 @@ class Item
         return $this;
     }
 
-    public function getFuel(): ?int
+    public function getFuel(): int
     {
         return $this->fuel;
     }
@@ -272,7 +272,7 @@ class Item
     #[Groups(["myInventory", "itemEncyclopedia"])]
     public function getGreenhouseType(): ?string
     {
-        return $this->getPlant() === null ? null : $this->getPlant()->getType();
+        return $this->getPlant()?->getType();
     }
 
     #[Groups(["myInventory", "itemEncyclopedia"])]
@@ -351,7 +351,7 @@ class Item
         return $this->treasure;
     }
 
-    public function setTreasure(ItemTreasure $treasure): self
+    public function setTreasure(?ItemTreasure $treasure): self
     {
         $this->treasure = $treasure;
 
@@ -383,7 +383,7 @@ class Item
     }
 
     /**
-     * @return Collection|ItemGroup[]
+     * @return Collection<int, ItemGroup>
      */
     public function getItemGroups(): Collection
     {
@@ -421,7 +421,7 @@ class Item
         return false;
     }
 
-    public function getCannotBeThrownOut(): ?bool
+    public function getCannotBeThrownOut(): bool
     {
         return $this->cannotBeThrownOut;
     }
@@ -433,7 +433,7 @@ class Item
         return $this;
     }
 
-    public function getMuseumPoints(): ?int
+    public function getMuseumPoints(): int
     {
         return $this->museumPoints;
     }

@@ -52,8 +52,8 @@ class KinBallService implements ParkEventInterface
     private int $designatedTeam;
 
     private array $teamWins = [ 0, 0, 0 ];
-    private $activeTeams;
-    private $teamPoints;
+    private array $activeTeams = [];
+    private array $teamPoints = [];
 
     public function __construct(
         private readonly EntityManagerInterface $em,

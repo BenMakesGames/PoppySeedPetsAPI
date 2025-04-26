@@ -21,6 +21,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
+use App\Exceptions\UnreachableException;
 use App\Functions\AdventureMath;
 use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
@@ -95,7 +96,7 @@ class GatheringHolidayAdventureService
             GatheringHolidayEnum::Easter => $plural ? 'plastic eggs' : 'plastic egg',
             GatheringHolidayEnum::SaintPatricks => $plural ? 'clovers' : 'clover',
             GatheringHolidayEnum::LunarNewYear => $plural ? 'moneys envelopes' : 'moneys envelope',
-            default => throw new EnumInvalidValueException(GatheringHolidayEnum::class, $holiday),
+            default => throw new UnreachableException()
         };
     }
 
@@ -202,7 +203,7 @@ class GatheringHolidayAdventureService
             }
         }
         else
-            throw new \Exception("Oops! Ben forgot to code holiday adventure logic for {$holiday}!");
+            throw new UnreachableException("Oops! Ben forgot to code holiday adventure logic for {$holiday}!");
 
         return $activityLog;
     }

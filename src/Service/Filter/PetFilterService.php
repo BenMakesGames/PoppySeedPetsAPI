@@ -65,7 +65,7 @@ class PetFilterService
             ->join('p.skills', 'skills');
     }
 
-    public function filterName(QueryBuilder $qb, $value, $filters): void
+    public function filterName(QueryBuilder $qb, mixed $value, array $filters): void
     {
         $name = mb_trim($value);
 

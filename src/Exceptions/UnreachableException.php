@@ -15,8 +15,8 @@ namespace App\Exceptions;
 
 class UnreachableException extends \RuntimeException
 {
-    public function __construct()
+    public function __construct(string $message = 'Unreachable code... was reached?!??')
     {
-        parent::__construct('Unreachable code... was reached?!??');
+        parent::__construct($message);
     }
 }
