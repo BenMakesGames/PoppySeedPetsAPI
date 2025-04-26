@@ -28,7 +28,7 @@ use App\Service\PetActivity\PregnancyService;
 use App\Service\PetActivity\Relationship\FriendlyRivalsService;
 use App\Service\PetActivity\Relationship\LoveService;
 use App\Service\PetActivity\Relationship\RelationshipChangeService;
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PetRelationshipService
@@ -97,17 +97,17 @@ class PetRelationshipService
     }
 
     /**
-     * @param ArrayCollection|Pet[] $pets
+     * @param Collection|Pet[] $pets
      */
     public function groupGathering(
-        $pets,
+        Collection|array $pets,
         string $hangOutDescription,
         string $enemyDescription,
         string $meetProfileText,
         string $meetActivityLogTemplate,
         array $groupTags,
         int $meetChance = 2
-    )
+    ): void
     {
         // array_values, because keys might not be sequential (members can leave), but we need to use array indices.
         // ->toArray, because we might have received a stupid ArrayCollection from Doctrine
@@ -124,7 +124,9 @@ class PetRelationshipService
         }
     }
 
-    public function seeAtGroupGathering(Pet $p1, Pet $p2, string $hangOutDescription, string $enemyDescription, string $meetSummary, string $meetActivityLogTemplate, array $groupTags, int $meetChance = 5)
+    public function seeAtGroupGathering(
+        Pet $p1, Pet $p2, string $hangOutDescription, string $enemyDescription, string $meetSummary, string $meetActivityLogTemplate, array $groupTags, int $meetChance = 5
+    ): void
     {
         if($p1->getId() === $p2->getId()) return;
 
@@ -327,7 +329,7 @@ class PetRelationshipService
         return $commitment;
     }
 
-    public static function calculateRelationshipDistance($initialRelationship, $targetRelationship): int
+    public static function calculateRelationshipDistance(string $initialRelationship, string $targetRelationship): int
     {
         $values = [
             RelationshipEnum::BROKE_UP => -2,
@@ -342,7 +344,13 @@ class PetRelationshipService
         return $values[$targetRelationship] - $values[$initialRelationship];
     }
 
-    public function hangOutPublicly(PetRelationship $p1, PetRelationship $p2, string $hangOutDescription, string $enemyDescription, array $groupTags)
+    public function hangOutPublicly(
+        PetRelationship $p1,
+        PetRelationship $p2,
+        string $hangOutDescription,
+        string $enemyDescription,
+        array $groupTags
+    ): void
     {
         $p1->decrementTimeUntilChange(0.5);
         $p2->decrementTimeUntilChange(0.5);

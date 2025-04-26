@@ -30,30 +30,30 @@ class MonthlyStoryAdventure
 
     #[Groups([ "starKindredStory" ])]
     #[ORM\Column(type: 'string', length: 255)]
-    private $title;
+    private string $title;
 
     #[Groups([ "starKindredStory" ])]
     #[ORM\Column(type: 'text')]
-    private $summary;
+    private string $summary;
 
     #[Groups([ "starKindredStory" ])]
     #[ORM\Column(type: 'integer')]
-    private $releaseNumber;
+    private int $releaseNumber;
 
     #[Groups([ "starKindredStory", "starKindredStoryDetails" ])]
     #[ORM\Column(type: 'integer')]
-    private $releaseYear;
+    private int $releaseYear;
 
     #[Groups([ "starKindredStory", "starKindredStoryDetails" ])]
     #[ORM\Column(type: 'integer')]
-    private $releaseMonth;
+    private int $releaseMonth;
 
     #[Groups([ "starKindredStoryDetails" ])]
     #[ORM\Column(type: 'boolean')]
-    private $isDark;
+    private bool $isDark;
 
     #[ORM\OneToMany(targetEntity: MonthlyStoryAdventureStep::class, mappedBy: 'adventure', orphanRemoval: true)]
-    private $steps;
+    private Collection $steps;
 
     public function __construct()
     {

@@ -76,7 +76,7 @@ class KinBallService implements ParkEventInterface
     /**
      * @param Pet[] $pets
      */
-    public function play($pets): ParkEvent
+    public function play(array $pets): ParkEvent
     {
         if(!$this->isGoodNumberOfPets(count($pets)))
             throw new \InvalidArgumentException('Exactly 12 pets are required to play Kin-Ball.');
@@ -180,7 +180,7 @@ class KinBallService implements ParkEventInterface
         return $parkEvent;
     }
 
-    private function awardExp()
+    private function awardExp(): void
     {
         $affectionTotal = 0;
 
@@ -254,7 +254,7 @@ class KinBallService implements ParkEventInterface
             $this->results .= '* ' . $participant->pet->getName() . "\n";
     }
 
-    private function assignDesignatedTeam()
+    private function assignDesignatedTeam(): void
     {
         if(count($this->activeTeams) === 2)
         {
@@ -278,7 +278,10 @@ class KinBallService implements ParkEventInterface
         $this->designatedTeam = $this->rng->rngNextFromArray($possibleTeams);
     }
 
-    private function getTeamsHavingScore(int $score)
+    /**
+     * @return int[]
+     */
+    private function getTeamsHavingScore(int $score): array
     {
         $teams = [];
 
@@ -291,7 +294,7 @@ class KinBallService implements ParkEventInterface
         return $teams;
     }
 
-    private function getHighestNonAttackingScore()
+    private function getHighestNonAttackingScore(): int
     {
         $highest = 0;
 
@@ -306,7 +309,7 @@ class KinBallService implements ParkEventInterface
         return $highest;
     }
 
-    private function getLowestScore()
+    private function getLowestScore(): int
     {
         $lowest = $this->teamPoints[0];
 
@@ -330,7 +333,7 @@ class KinBallService implements ParkEventInterface
         return null;
     }
 
-    private function checkForCriticalScores()
+    private function checkForCriticalScores(): void
     {
         // if we already eliminated a team, then there's nothing to do
         if(count($this->activeTeams) < 3)
@@ -357,7 +360,7 @@ class KinBallService implements ParkEventInterface
         $this->eliminateTeam($lowestScoringTeams[0]);
     }
 
-    private function eliminateTeam(int $team)
+    private function eliminateTeam(int $team): void
     {
         $this->activeTeams = array_filter($this->activeTeams, fn(int $t) => $t !== $team);
 
@@ -380,7 +383,7 @@ class KinBallService implements ParkEventInterface
         return null;
     }
 
-    private function playPeriod(int $period)
+    private function playPeriod(int $period): void
     {
         $this->results .= 'Period ' . $period . "\n---\n\n";
 
@@ -404,7 +407,7 @@ class KinBallService implements ParkEventInterface
         $this->teamWins[$winningTeamIndex]++;
     }
 
-    private function playRound(int $round)
+    private function playRound(int $round): void
     {
         $callingPet = $this->getRandomPetFromTeam($this->attackingTeam);
         $this->assignDesignatedTeam();
@@ -455,7 +458,7 @@ class KinBallService implements ParkEventInterface
         $this->attackingTeam = $this->designatedTeam;
     }
 
-    private function givePointToOtherTeams(int $team)
+    private function givePointToOtherTeams(int $team): void
     {
         foreach($this->activeTeams as $activeTeam)
         {

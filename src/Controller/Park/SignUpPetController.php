@@ -15,23 +15,26 @@ declare(strict_types=1);
 namespace App\Controller\Park;
 
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\ParkEventTypeEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/park")]
-class SignUpPetController extends AbstractController
+class SignUpPetController
 {
     #[Route("/signUpPet/{pet}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function changePetParkEventType(Pet $pet, Request $request, EntityManagerInterface $em, ResponseService $responseService)
+    public function changePetParkEventType(
+        Pet $pet, Request $request, EntityManagerInterface $em, ResponseService $responseService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
         $parkEventType = trim($request->request->getString('parkEventType'));
 
@@ -40,8 +43,7 @@ class SignUpPetController extends AbstractController
         if($parkEventType !== null && !ParkEventTypeEnum::isAValue($parkEventType))
             throw new PSPFormValidationException('"' . $parkEventType . '" is not a valid park event type!');
 
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();

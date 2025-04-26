@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Account;
 
-use App\Entity\User;
 use App\Entity\UserLink;
 use App\Enum\UserLinkVisibilityEnum;
 use App\Enum\UserLinkWebsiteEnum;
@@ -23,19 +22,21 @@ use App\Exceptions\PSPNotFoundException;
 use App\Functions\SimpleDb;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
-class MyLinksController extends AbstractController
+class MyLinksController
 {
     #[Route("/my/interwebs", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getMyInterwebs(ResponseService $responseService)
+    public function getMyInterwebs(ResponseService $responseService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $myLinks = SimpleDb::createReadOnlyConnection()
             ->query(
@@ -50,10 +51,12 @@ class MyLinksController extends AbstractController
 
     #[Route("/my/interwebs/{link}", methods: ["DELETE"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function deleteLink(UserLink $link, ResponseService $responseService, EntityManagerInterface $em)
+    public function deleteLink(
+        UserLink $link, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($link->getUser()->getId() !== $user->getId())
             throw new PSPNotFoundException('Link not found.');
@@ -67,11 +70,11 @@ class MyLinksController extends AbstractController
     #[Route("/my/interwebs", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function createLink(
-        Request $request, ResponseService $responseService, EntityManagerInterface $em
-    )
+        Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $website = trim($request->request->getString('website'));
         $nameOrId = trim($request->request->get('nameOrId'));

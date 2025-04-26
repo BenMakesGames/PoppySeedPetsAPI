@@ -17,7 +17,6 @@ namespace App\Controller\Item\PetAlteration;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Enum\StatusEffectEnum;
 use App\Exceptions\PSPFormValidationException;
@@ -31,23 +30,24 @@ use App\Service\HattierService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/iridescentHandCannon")]
-class IridescentHandCannonController extends AbstractController
+class IridescentHandCannonController
 {
     #[Route("/{inventory}/fire", methods: ["PATCH"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function fireHandCannon(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetColorFunctions $petColorChangingService, IRandom $rng, HattierService $hattierService
-    )
+        PetColorFunctions $petColorChangingService, IRandom $rng, HattierService $hattierService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'iridescentHandCannon');
 

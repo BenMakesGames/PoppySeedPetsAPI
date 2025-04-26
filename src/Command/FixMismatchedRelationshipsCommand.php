@@ -22,14 +22,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class FixMismatchedRelationshipsCommand extends Command
 {
-    private $em;
-    private $petRelationshipRepository;
-
-    public function __construct(EntityManagerInterface $em, PetRelationshipRepository $petRelationshipRepository)
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly PetRelationshipRepository $petRelationshipRepository
+    )
     {
-        $this->em = $em;
-        $this->petRelationshipRepository = $petRelationshipRepository;
-
         parent::__construct();
     }
 

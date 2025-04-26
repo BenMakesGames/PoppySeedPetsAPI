@@ -17,7 +17,6 @@ namespace App\Controller\Item\Pinata;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\StatusEffectEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
@@ -29,13 +28,14 @@ use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item")]
-class WolfsFavorController extends AbstractController
+class WolfsFavorController
 {
     private const string USER_STAT_NAME = 'Redeemed a Wolf\'s Favor';
 
@@ -43,11 +43,11 @@ class WolfsFavorController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function changePetWereform(
         Inventory $inventory, ResponseService $responseService, Request $request,
-        EntityManagerInterface $em, IRandom $rng
-    )
+        EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'changeWereform');
 
@@ -82,11 +82,11 @@ class WolfsFavorController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getFluffAndTalons(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng, UserStatsService $userStatsRepository
-    )
+        EntityManagerInterface $em, IRandom $rng, UserStatsService $userStatsRepository,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'wolfsFavor/#/furAndClaw');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -120,11 +120,11 @@ class WolfsFavorController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getMoonStuff(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, UserStatsService $userStatsRepository
-    )
+        EntityManagerInterface $em, UserStatsService $userStatsRepository,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'wolfsFavor/#/theMoon');
 

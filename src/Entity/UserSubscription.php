@@ -28,14 +28,14 @@ class UserSubscription
     private ?int $id = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $updatedOn;
+    private \DateTimeImmutable $updatedOn;
 
     #[ORM\Column(type: 'integer')]
-    private $patreonUserId;
+    private int $patreonUserId;
 
     #[Groups(["myAccount"])]
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
-    private $tier;
+    private ?string $tier = null;
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'subscription', cascade: ['persist', 'remove'])]
     private $user;

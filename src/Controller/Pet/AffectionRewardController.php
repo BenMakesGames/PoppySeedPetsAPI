@@ -17,7 +17,6 @@ namespace App\Controller\Pet;
 use App\Entity\Merit;
 use App\Entity\Pet;
 use App\Entity\SpiritCompanion;
-use App\Entity\User;
 use App\Enum\MeritEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SerializationGroupEnum;
@@ -32,20 +31,23 @@ use App\Functions\PetActivityLogFactory;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/pet")]
-class AffectionRewardController extends AbstractController
+class AffectionRewardController
 {
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/{pet}/availableMerits", methods: ["GET"], requirements: ["pet" => "\d+"])]
-    public function getAvailableMerits(Pet $pet, ResponseService $responseService, EntityManagerInterface $em)
+    public function getAvailableMerits(
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
@@ -58,11 +60,11 @@ class AffectionRewardController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/{pet}/chooseAffectionReward/merit", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function chooseAffectionRewardMerit(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
-    )
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
@@ -117,11 +119,11 @@ class AffectionRewardController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/{pet}/chooseAffectionReward/skill", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function chooseAffectionRewardSkill(
-        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em
-    )
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();

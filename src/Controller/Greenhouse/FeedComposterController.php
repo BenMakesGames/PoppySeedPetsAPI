@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Greenhouse;
 
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
@@ -34,14 +33,14 @@ use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/greenhouse")]
-class FeedComposterController extends AbstractController
+class FeedComposterController
 {
     public const array FORBIDDEN_COMPOST = [
         'Small Bag of Fertilizer',
@@ -55,11 +54,11 @@ class FeedComposterController extends AbstractController
     public function feedComposter(
         ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository,
         InventoryService $inventoryService, EntityManagerInterface $em, UserStatsService $userStatsRepository,
-        IRandom $rng, GreenhouseService $greenhouseService
+        IRandom $rng, GreenhouseService $greenhouseService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->getGreenhouse())
             throw new PSPNotUnlockedException('Greenhouse');

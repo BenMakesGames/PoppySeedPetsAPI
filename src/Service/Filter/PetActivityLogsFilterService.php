@@ -72,7 +72,7 @@ class PetActivityLogsFilterService
         ;
     }
 
-    public function filterPet(QueryBuilder $qb, $value)
+    public function filterPet(QueryBuilder $qb, $value): void
     {
         $qb
             ->andWhere('l.pet = :pet')
@@ -80,7 +80,7 @@ class PetActivityLogsFilterService
         ;
     }
 
-    public function filterUser(QueryBuilder $qb, $value)
+    public function filterUser(QueryBuilder $qb, $value): void
     {
         if(!in_array('pet', $qb->getAllAliases()))
             $qb->innerJoin('l.pet', 'pet');
@@ -93,7 +93,7 @@ class PetActivityLogsFilterService
         $qb->setParameter('userId', $value);
     }
 
-    public function filterTags(QueryBuilder $qb, $value)
+    public function filterTags(QueryBuilder $qb, $value): void
     {
         if(!in_array('tags', $qb->getAllAliases()))
             $qb->innerJoin('l.tags', 'tags');

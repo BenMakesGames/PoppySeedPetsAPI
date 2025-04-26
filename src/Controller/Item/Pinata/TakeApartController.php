@@ -16,27 +16,27 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Functions\ArrayFunctions;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Service\UserAccessor;
 
 #[Route("/item/takeApart")]
-class TakeApartController extends AbstractController
+class TakeApartController
 {
     #[Route("/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function doIt(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryService $inventoryService
-    )
+        InventoryService $inventoryService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'takeApart/#');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);

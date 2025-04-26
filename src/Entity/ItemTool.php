@@ -20,7 +20,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: 'App\Repository\ItemToolRepository')]
 class ItemTool
 {
-    public const array MODIFIER_FIELDS = [
+    public const array ModifierFields = [
         'arcana', 'brawl', 'climbing', 'crafts', 'fishing', 'gathering',
         'music', 'nature', 'science', 'smithing', 'stealth',
     ];
@@ -31,124 +31,124 @@ class ItemTool
     private ?int $id = null;
 
     #[ORM\Column(type: 'integer')]
-    private $stealth = 0;
+    private int $stealth = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $nature = 0;
+    private int $nature = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $brawl = 0;
+    private int $brawl = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $arcana = 0;
+    private int $arcana = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $crafts = 0;
+    private int $crafts = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $fishing = 0;
+    private int $fishing = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $gathering = 0;
+    private int $gathering = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $music = 0;
+    private int $music = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $smithing = 0;
+    private int $smithing = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $science = 0;
+    private int $science = 0;
 
     #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'float')]
-    private $gripX = 0.5;
+    private float $gripX = 0.5;
 
     #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'float')]
-    private $gripY = 0.5;
+    private float $gripY = 0.5;
 
     #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'integer')]
-    private $gripAngle = 0;
+    private int $gripAngle = 0;
 
     /**
      * A fixed grip angle means that the item will ALWAYS be rendered at this angle, regardless of the attributes of the pet that holds it
      */
     #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'boolean')]
-    private $gripAngleFixed = false;
+    private bool $gripAngleFixed = false;
 
     #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'float')]
-    private $gripScale = 1;
+    private float $gripScale = 1;
 
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
-    private $focusSkill;
+    private ?string $focusSkill = null;
 
     #[ORM\Column(type: 'boolean')]
-    private $providesLight = false;
+    private bool $providesLight = false;
 
     #[ORM\Column(type: 'boolean')]
-    private $protectionFromHeat = false;
+    private bool $protectionFromHeat = false;
 
     #[Groups(["myInventory", "myPet", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails", "helperPet", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'boolean')]
-    private $alwaysInFront = false;
+    private bool $alwaysInFront = false;
 
     #[ORM\Column(type: 'boolean')]
-    private $isRanged = false;
+    private bool $isRanged = false;
 
     #[ORM\ManyToOne(targetEntity: Item::class)]
-    private $whenGather;
+    private ?Item $whenGather = null;
 
     #[ORM\ManyToOne(targetEntity: Item::class)]
-    private $whenGatherAlsoGather;
+    private ?Item $whenGatherAlsoGather = null;
 
     #[ORM\Column(type: 'integer')]
-    private $climbing = 0;
+    private int $climbing = 0;
 
     #[ORM\Column(type: 'boolean')]
-    private $leadsToAdventure = false;
+    private bool $leadsToAdventure = false;
 
     #[ORM\Column(type: 'boolean')]
-    private $preventsBugs = false;
+    private bool $preventsBugs = false;
 
     #[ORM\Column(type: 'boolean')]
-    private $attractsBugs = false;
+    private bool $attractsBugs = false;
 
     #[ORM\OneToOne(targetEntity: 'App\Entity\Enchantment', mappedBy: 'effects', cascade: ['persist', 'remove'])]
     private $enchantment;
 
     #[ORM\Column(type: 'boolean')]
-    private $canBeNibbled = false;
+    private bool $canBeNibbled = false;
 
     #[ORM\Column(type: 'boolean')]
-    private $increasesPooping = false;
+    private bool $increasesPooping = false;
 
     #[ORM\Column(type: 'boolean')]
-    private $dreamcatcher = false;
+    private bool $dreamcatcher = false;
 
     #[ORM\Column(type: 'boolean')]
-    private $isGrayscaling = false;
+    private bool $isGrayscaling = false;
 
     #[ORM\Column(type: 'smallint')]
-    private $socialEnergyModifier = 0;
+    private int $socialEnergyModifier = 0;
 
     #[ORM\Column(type: 'smallint')]
-    private $sexDrive = 0;
+    private int $sexDrive = 0;
 
     #[ORM\Column(type: 'boolean')]
-    private $whenGatherPreventGather = false;
+    private bool $whenGatherPreventGather = false;
 
     #[ORM\Column(type: 'string', length: 40, nullable: true)]
-    private $adventureDescription;
+    private ?string $adventureDescription = null;
 
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
-    private $whenGatherApplyStatusEffect;
+    private ?string $whenGatherApplyStatusEffect = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
-    private $whenGatherApplyStatusEffectDuration;
+    private ?int $whenGatherApplyStatusEffectDuration = null;
 
     public function getId(): ?int
     {
@@ -330,7 +330,7 @@ class ItemTool
     {
         $modifiers = [];
 
-        foreach(self::MODIFIER_FIELDS as $modifier)
+        foreach(self::ModifierFields as $modifier)
         {
             $value = $this->{'get' . $modifier}();
 
@@ -576,7 +576,7 @@ class ItemTool
         return $this;
     }
 
-    public function getCanBeNibbled(): ?bool
+    public function getCanBeNibbled(): bool
     {
         return $this->canBeNibbled;
     }
@@ -588,7 +588,7 @@ class ItemTool
         return $this;
     }
 
-    public function getIncreasesPooping(): ?bool
+    public function getIncreasesPooping(): bool
     {
         return $this->increasesPooping;
     }
@@ -600,7 +600,7 @@ class ItemTool
         return $this;
     }
 
-    public function getDreamcatcher(): ?bool
+    public function getDreamcatcher(): bool
     {
         return $this->dreamcatcher;
     }
@@ -612,7 +612,7 @@ class ItemTool
         return $this;
     }
 
-    public function getIsGrayscaling(): ?bool
+    public function getIsGrayscaling(): bool
     {
         return $this->isGrayscaling;
     }
@@ -636,7 +636,7 @@ class ItemTool
         return $this;
     }
 
-    public function getSexDrive(): ?int
+    public function getSexDrive(): int
     {
         return $this->sexDrive;
     }
@@ -648,7 +648,7 @@ class ItemTool
         return $this;
     }
 
-    public function getWhenGatherPreventGather(): ?bool
+    public function getWhenGatherPreventGather(): bool
     {
         return $this->whenGatherPreventGather;
     }

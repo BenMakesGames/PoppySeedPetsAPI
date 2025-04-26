@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Museum;
 
 use App\Entity\MuseumItem;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
@@ -28,25 +27,25 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/museum")]
-class DonateController extends AbstractController
+class DonateController
 {
     #[Route("/donate", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function handle(
         ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository,
         EntityManagerInterface $em, UserStatsService $userStatsRepository,
-        TransactionService $transactionService
+        TransactionService $transactionService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
             throw new PSPNotUnlockedException('Museum');

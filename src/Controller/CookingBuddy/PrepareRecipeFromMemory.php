@@ -16,7 +16,6 @@ namespace App\Controller\CookingBuddy;
 
 use App\Entity\Inventory;
 use App\Entity\KnownRecipes;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UserStatEnum;
@@ -26,15 +25,16 @@ use App\Functions\RecipeRepository;
 use App\Service\CookingService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/cookingBuddy')]
-class PrepareRecipeFromMemory extends AbstractController
+class PrepareRecipeFromMemory
 {
     private const array ALLOWED_LOCATIONS = [
         LocationEnum::HOME,
@@ -46,11 +46,11 @@ class PrepareRecipeFromMemory extends AbstractController
     #[Route("/prepare/{knownRecipe}/{quantity}", methods: ["POST"], requirements: ["quantity" => "\d+"])]
     public function prepareRecipeFromMemory(
         KnownRecipes $knownRecipe, ResponseService $responseService, EntityManagerInterface $em,
-        UserStatsService $userStatsRepository, CookingService $cookingService, Request $request, int $quantity = 1
-    )
+        UserStatsService $userStatsRepository, CookingService $cookingService, Request $request,
+        UserAccessor $userAccessor, int $quantity = 1,
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->getCookingBuddy())
             throw new PSPNotFoundException('Cooking Buddy Not Found');

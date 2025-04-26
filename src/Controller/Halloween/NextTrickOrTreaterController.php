@@ -14,45 +14,27 @@ declare(strict_types=1);
 
 namespace App\Controller\Halloween;
 
-use App\Entity\Inventory;
-use App\Entity\User;
-use App\Enum\LocationEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
-use App\Enum\PetActivityLogTagEnum;
-use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPInvalidOperationException;
-use App\Exceptions\PSPNotFoundException;
 use App\Functions\CalendarFunctions;
-use App\Functions\GrammarFunctions;
-use App\Functions\PetActivityLogFactory;
-use App\Functions\PetActivityLogTagHelpers;
-use App\Functions\PlayerLogFactory;
-use App\Functions\UserQuestRepository;
-use App\Model\FoodWithSpice;
 use App\Service\Clock;
-use App\Service\FieldGuideService;
 use App\Service\Holidays\HalloweenService;
-use App\Service\IRandom;
-use App\Service\PetActivity\EatingService;
 use App\Service\ResponseService;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use App\Service\UserAccessor;
 
 #[Route("/halloween")]
-class NextTrickOrTreaterController extends AbstractController
+class NextTrickOrTreaterController
 {
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("", methods: ["GET"])]
     public function getNextTrickOrTreater(
-        HalloweenService $halloweenService, ResponseService $responseService, Clock $clock
-    )
+        HalloweenService $halloweenService, ResponseService $responseService, Clock $clock,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!CalendarFunctions::isHalloween($clock->now))
             throw new PSPInvalidOperationException('It isn\'t Halloween!');

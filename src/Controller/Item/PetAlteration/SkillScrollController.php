@@ -17,92 +17,98 @@ namespace App\Controller\Item\PetAlteration;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\PetSkillEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetActivityLogFactory;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/item")]
-class SkillScrollController extends AbstractController
+class SkillScrollController
 {
     #[Route("/brawlSkillScroll/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseBrawl(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
-    )
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::BRAWL);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::BRAWL, $userAccessor);
     }
 
     #[Route("/craftsSkillScroll/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseCrafts(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
-    )
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::CRAFTS);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::CRAFTS, $userAccessor);
     }
 
     #[Route("/musicSkillScroll/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseMusic(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
-    )
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::MUSIC);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::MUSIC, $userAccessor);
     }
 
     #[Route("/natureSkillScroll/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseNature(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
-    )
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::NATURE);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::NATURE, $userAccessor);
     }
 
     #[Route("/scienceSkillScroll/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseScience(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
-    )
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::SCIENCE);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::SCIENCE, $userAccessor);
     }
 
     #[Route("/stealthSkillScroll/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseStealth(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
-    )
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::STEALTH);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::STEALTH, $userAccessor);
     }
 
     #[Route("/arcanaSkillScroll/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function increaseArcana(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request
-    )
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::ARCANA);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::ARCANA, $userAccessor);
     }
 
     private function doSkillScroll(
-        Inventory $inventory, Request $request, EntityManagerInterface $em, ResponseService $responseService, string $skill
+        Inventory $inventory, Request $request, EntityManagerInterface $em, ResponseService $responseService, string $skill,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, $skill . 'SkillScroll');
 

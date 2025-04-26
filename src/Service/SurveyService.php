@@ -41,6 +41,9 @@ class SurveyService
         ;
     }
 
+    /**
+     * @return SurveyQuestion[]|null
+     */
     public function getSurveyQuestions(string $guid, \DateTimeImmutable $dateTime): ?array
     {
         $survey = $this->getActiveSurvey($guid, $dateTime);
@@ -81,19 +84,21 @@ class SurveyService
 
         if($answer == null)
         {
-            $answer = new SurveyQuestionAnswer();
-            $answer->setUser($user);
-            $answer->setQuestion($question);
+            $answer = new SurveyQuestionAnswer(
+                user: $user,
+                question: $question,
+                answer: $answerText
+            );
 
             $this->em->persist($answer);
         }
-
-        $answer->setAnswer($answerText);
+        else
+            $answer->setAnswer($answerText);
 
         return $answer;
     }
 
-    public function deleteAnswer(SurveyQuestion $question, User $user)
+    public function deleteAnswer(SurveyQuestion $question, User $user): void
     {
         $answer = $this->em->getRepository(SurveyQuestionAnswer::class)->findOneBy([
             'user' => $user,

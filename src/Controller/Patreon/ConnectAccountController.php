@@ -19,19 +19,18 @@ use App\Entity\User;
 use App\Entity\UserSubscription;
 use App\Exceptions\PSPFormValidationException;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/patreon")]
-class ConnectAccountController extends AbstractController
+class ConnectAccountController
 {
     #[DoesNotRequireHouseHours]
     #[Route("/connectAccount", methods: ["GET"])]
     public function connectPatreonAccount(
         Request $request, EntityManagerInterface $em
-    )
+    ): RedirectResponse
     {
         $code = $request->query->get('code');
         $userId = $request->query->get('state');

@@ -19,13 +19,14 @@ use App\Functions\ItemRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/reversable")]
-class ReversableController extends AbstractController
+class ReversableController
 {
     private const array FLIPS = [
         'Small Plastic Bucket' => 'Upside-down Plastic Bucket',
@@ -39,10 +40,11 @@ class ReversableController extends AbstractController
     #[Route("/{inventory}/flip", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function flipIt(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng
-    )
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'reversable/#/flip');
+        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'reversable/#/flip');
 
         $oldItemName = $inventory->getItem()->getName();
 

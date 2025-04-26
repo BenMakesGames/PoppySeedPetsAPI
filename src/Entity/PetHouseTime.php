@@ -32,23 +32,24 @@ class PetHouseTime
 
     #[ORM\OneToOne(targetEntity: Pet::class, inversedBy: 'houseTime', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private $pet;
+    private Pet $pet;
 
     #[ORM\Column(type: 'integer')]
     #[Groups(['myPet'])]
-    private $activityTime = 59;
+    private int $activityTime = 59;
 
     #[ORM\Column(type: 'integer')]
-    private $socialEnergy = 0;
+    private int $socialEnergy = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $timeSpent = 0;
+    private int $timeSpent = 0;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $canAttemptSocialHangoutAfter;
+    private \DateTimeImmutable $canAttemptSocialHangoutAfter;
 
-    public function __construct()
+    public function __construct(Pet $pet)
     {
+        $this->pet = $pet;
         $this->canAttemptSocialHangoutAfter = new \DateTimeImmutable();
     }
 

@@ -33,7 +33,7 @@ final class ActivityHelpers
         throw new \Exception('No light source found! (Bad game logic!)');
     }
 
-    public static function SourceOfHeatProtection(ComputedPetSkills $petWithSkills)
+    public static function SourceOfHeatProtection(ComputedPetSkills $petWithSkills): string
     {
         if($petWithSkills->getPet()->hasStatusEffect(StatusEffectEnum::HEAT_RESISTANT))
             return 'heat-resistance';

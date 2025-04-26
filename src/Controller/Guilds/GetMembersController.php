@@ -12,24 +12,38 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller;
+namespace App\Controller\Guilds;
 
-use App\Entity\DailyStats;
+use App\Entity\Guild;
 use App\Enum\SerializationGroupEnum;
+use App\Service\Filter\GuildMemberFilterService;
 use App\Service\ResponseService;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route("/globalStats")]
-class GlobalStatsController extends AbstractController
+#[Route("/guild")]
+class GetMembersController
 {
-    #[Route("/today", methods: ["GET"])]
-    public function getToday(EntityManagerInterface $em, ResponseService $responseService)
+    #[Route("/{guild}", methods: ["GET"])]
+    public function getGuild(
+        Guild $guild, ResponseService $responseService, GuildMemberFilterService $guildMemberFilterService, Request $request
+    ): JsonResponse
     {
+        $guildMemberFilterService->addRequiredFilter('guild', $guild->getId());
+
+        $members = $guildMemberFilterService->getResults($request->query);
+
         return $responseService->success(
-            $em->getRepository(DailyStats::class)->findBy([], [ 'id' => 'desc' ], 30),
-            [ SerializationGroupEnum::GLOBAL_STATS ]
+            [
+                'guild' => $guild,
+                'members' => $members
+            ],
+            [
+                SerializationGroupEnum::FILTER_RESULTS,
+                SerializationGroupEnum::GUILD_MEMBER,
+                SerializationGroupEnum::GUILD_ENCYCLOPEDIA,
+            ]
         );
     }
 }

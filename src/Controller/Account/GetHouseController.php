@@ -16,29 +16,28 @@ namespace App\Controller\Account;
 
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 #[Route("/account")]
-class GetHouseController extends AbstractController
+class GetHouseController
 {
     #[Route("/myHouse", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getHouse(
         ManagerRegistry $doctrine, ResponseService $responseService,
-        NormalizerInterface $normalizer
-    )
+        NormalizerInterface $normalizer, UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $petRepository = $doctrine->getRepository(Pet::class, 'readonly');
         $inventoryRepository = $doctrine->getRepository(Inventory::class, 'readonly');
@@ -49,7 +48,7 @@ class GetHouseController extends AbstractController
         ]);
 
         $inventory = $inventoryRepository->findBy([
-            'owner' => $this->getUser(),
+            'owner' => $user,
             'location' => LocationEnum::HOME
         ]);
 

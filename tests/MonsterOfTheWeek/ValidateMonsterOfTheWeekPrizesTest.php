@@ -28,7 +28,7 @@ class ValidateMonsterOfTheWeekPrizesTest extends KernelTestCase
     /**
      * @group requiresDatabase
      */
-    public function testMonsterOfTheWeekPrizesAreValid()
+    public function testMonsterOfTheWeekPrizesAreValid(): void
     {
         self::bootKernel();
 
@@ -48,7 +48,10 @@ class ValidateMonsterOfTheWeekPrizesTest extends KernelTestCase
         }
     }
 
-    private static function validateItemNames(EntityManagerInterface $em, array|string $itemNames)
+    /**
+     * @param string[]|string $itemNames
+     */
+    private static function validateItemNames(EntityManagerInterface $em, array|string $itemNames): void
     {
         if(!is_array($itemNames))
             $itemNames = [ $itemNames ];

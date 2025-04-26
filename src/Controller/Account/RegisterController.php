@@ -30,13 +30,13 @@ use App\Service\PetFactory;
 use App\Service\ResponseService;
 use App\Service\SessionService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/account")]
-class RegisterController extends AbstractController
+class RegisterController
 {
     #[DoesNotRequireHouseHours]
     #[Route("/register", methods: ["POST"])]
@@ -44,7 +44,7 @@ class RegisterController extends AbstractController
         Request $request, EntityManagerInterface $em, ResponseService $responseService, SessionService $sessionService,
         UserPasswordHasherInterface $userPasswordEncoder, InventoryService $inventoryService, PetFactory $petFactory,
         IRandom $rng
-    )
+    ): JsonResponse
     {
         $theme = $request->request->all('theme');
         $petName = ProfanityFilterFunctions::filter(trim($request->request->getString('petName')));

@@ -16,27 +16,27 @@ namespace App\Controller;
 
 use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\PetActivityLogTag;
-use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Service\UserAccessor;
 
 #[Route("/petActivityLogs")]
-class PetActivityLogsController extends AbstractController
+class PetActivityLogsController
 {
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("", methods: ["GET"])]
     public function history(
-        Request $request, ResponseService $responseService, PetActivityLogsFilterService $petActivityLogsFilterService
-    )
+        Request $request, ResponseService $responseService, PetActivityLogsFilterService $petActivityLogsFilterService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $petActivityLogsFilterService->addRequiredFilter('user', $user->getId());
 
@@ -48,7 +48,7 @@ class PetActivityLogsController extends AbstractController
     #[DoesNotRequireHouseHours]
     #[Route("/getAllTags", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getAllTags(ResponseService $responseService, EntityManagerInterface $em)
+    public function getAllTags(ResponseService $responseService, EntityManagerInterface $em): JsonResponse
     {
         $tags = $em->getRepository(PetActivityLogTag::class)->findAll();
 

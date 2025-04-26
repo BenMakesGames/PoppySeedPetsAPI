@@ -265,7 +265,7 @@ class PlasticPrinterService
             $this->houseSimService->getState()->loseItem('Plastic', 1);
             $this->houseSimService->getState()->loseItem('String', 2);
 
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Jump Rope.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Jump Rope.')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     '3D Printing',

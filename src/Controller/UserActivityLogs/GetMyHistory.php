@@ -12,46 +12,33 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller;
+namespace App\Controller\UserActivityLogs;
 
-use App\Attributes\DoesNotRequireHouseHours;
-use App\Entity\User;
-use App\Entity\UserActivityLogTag;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\UserActivityLogsFilterService;
 use App\Service\ResponseService;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/userActivityLogs")]
-class UserActivityLogsController extends AbstractController
+class GetMyHistory
 {
     #[Route("", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function history(
-        Request $request, ResponseService $responseService, UserActivityLogsFilterService $userActivityLogsFilterService
-    )
+        Request $request, ResponseService $responseService, UserActivityLogsFilterService $userActivityLogsFilterService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $userActivityLogsFilterService->addRequiredFilter('user', $user->getId());
 
         $logs = $userActivityLogsFilterService->getResults($request->query);
 
         return $responseService->success($logs, [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::USER_ACTIVITY_LOGS ]);
-    }
-
-    #[DoesNotRequireHouseHours]
-    #[Route("/getAllTags", methods: ["GET"])]
-    #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getAllTags(ResponseService $responseService, EntityManagerInterface $em)
-    {
-        $tags = $em->getRepository(UserActivityLogTag::class)->findAll();
-
-        return $responseService->success($tags, [ SerializationGroupEnum::USER_ACTIVITY_LOGS ]);
     }
 }

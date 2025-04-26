@@ -15,29 +15,28 @@ declare(strict_types=1);
 namespace App\Controller\Item;
 
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route("/item/cookingBuddy")]
-class CookingBuddy extends AbstractController
+class CookingBuddy
 {
     #[Route("/{inventory}/addOrReplace", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function addOrReplace(
         Inventory $inventory, EntityManagerInterface $em, ResponseService $responseService,
-        IRandom $rng
-    )
+        IRandom $rng, UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'cookingBuddy/#/addOrReplace');
 

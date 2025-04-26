@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Florist;
 
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
@@ -27,24 +26,25 @@ use App\Service\ResponseService;
 use App\Service\TransactionService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/florist")]
-class RollSatyrDiceController extends AbstractController
+class RollSatyrDiceController
 {
     #[Route("/rollSatyrDice", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function rollEm(
         ResponseService $responseService, EntityManagerInterface $em, InventoryService $inventoryService,
         Request $request, IRandom $rng, TransactionService $transactionService, Clock $clock,
-        UserStatsService $userStatsService
-    )
+        UserStatsService $userStatsService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Florist))
             throw new PSPNotUnlockedException('Florist');

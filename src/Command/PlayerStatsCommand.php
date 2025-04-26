@@ -19,12 +19,8 @@ use Doctrine\ORM\Query;
 
 class PlayerStatsCommand extends PoppySeedPetsCommand
 {
-    private $em;
-
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(private readonly EntityManagerInterface $em)
     {
-        $this->em = $em;
-
         parent::__construct();
     }
 
@@ -64,7 +60,7 @@ class PlayerStatsCommand extends PoppySeedPetsCommand
         return self::SUCCESS;
     }
 
-    private function getCount(Query $query, string $argument)
+    private function getCount(Query $query, string $argument): int
     {
         return (int)$query->execute([ $argument ])[0][1];
     }

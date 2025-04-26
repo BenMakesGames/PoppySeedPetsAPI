@@ -24,19 +24,23 @@ use App\Service\HollowEarthService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/hollowEarth")]
-class TradesController extends AbstractController
+class TradesController
 {
     #[Route("/trades", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getTrades(ResponseService $responseService, HollowEarthService $hollowEarthService)
+    public function getTrades(
+        ResponseService $responseService, HollowEarthService $hollowEarthService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
         $player = $user->getHollowEarthPlayer();
         $tile = $player->getCurrentTile();
 
@@ -55,11 +59,11 @@ class TradesController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function makeExchange(
         string $tradeId, Request $request, ResponseService $responseService, EntityManagerInterface $em,
-        HollowEarthService $hollowEarthService, InventoryService $inventoryService
-    )
+        HollowEarthService $hollowEarthService, InventoryService $inventoryService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
         $player = $user->getHollowEarthPlayer();
         $tile = $player->getCurrentTile();
 

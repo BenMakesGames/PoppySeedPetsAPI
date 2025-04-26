@@ -18,29 +18,28 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPInvalidOperationException;
-use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Functions\PlayerLogFactory;
 use App\Repository\InventoryRepository;
-use App\Service\GreenhouseService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/greenhouse")]
-class CleanBirdBathController extends AbstractController
+class CleanBirdBathController
 {
     #[Route("/cleanBirdBath", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function cleanBirdBath(
-        ResponseService $responseService, EntityManagerInterface $em
-    )
+        ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->getGreenhouse())
             throw new PSPNotUnlockedException('Greenhouse');

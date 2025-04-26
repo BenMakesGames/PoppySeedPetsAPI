@@ -70,7 +70,7 @@ class PetFactory
             ->addMerit($startingMerit)
         ;
 
-        $petHouseTime = (new PetHouseTime())
+        $petHouseTime = (new PetHouseTime($pet))
             ->setSocialEnergy((int)ceil(PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * (4 + $pet->getExtroverted()) / 4))
         ;
 

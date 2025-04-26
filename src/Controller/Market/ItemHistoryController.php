@@ -17,16 +17,16 @@ namespace App\Controller\Market;
 use App\Entity\Item;
 use App\Functions\SimpleDb;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/market")]
-class ItemHistoryController extends AbstractController
+class ItemHistoryController
 {
     #[Route("/history/{itemId}", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getItemHistory(int $itemId, ResponseService $responseService)
+    public function getItemHistory(int $itemId, ResponseService $responseService): JsonResponse
     {
         $maxAge = \DateInterval::createFromDateString('7 days');
 

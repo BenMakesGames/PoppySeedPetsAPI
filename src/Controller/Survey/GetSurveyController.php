@@ -12,28 +12,27 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller;
+namespace App\Controller\Survey;
 
-use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Service\ResponseService;
 use App\Service\SurveyService;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use App\Service\UserAccessor;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 #[Route("/survey")]
-class SurveyController extends AbstractController
+class GetSurveyController
 {
     #[Route("/{guid}", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getSurveyQuestions(
-        string $guid, SurveyService $surveyService, ResponseService $responseService, NormalizerInterface $normalizer
-    )
+        string $guid, SurveyService $surveyService, ResponseService $responseService, NormalizerInterface $normalizer,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
         $now = new \DateTimeImmutable();
 
@@ -43,8 +42,7 @@ class SurveyController extends AbstractController
         if(!$questions)
             throw new PSPNotFoundException('Survey not found.');
 
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $answers = $surveyService->getSurveyQuestionAnswers($guid, $user);
 
@@ -53,37 +51,5 @@ class SurveyController extends AbstractController
             'questions' => $normalizer->normalize($questions, null, [ 'groups' => [ SerializationGroupEnum::SURVEY_QUESTION ] ]),
             'answers' => $normalizer->normalize($answers, null, [ 'groups' => [ SerializationGroupEnum::SURVEY_QUESTION_ANSWER ] ])
         ]);
-    }
-
-    #[Route("/{guid}", methods: ["POST"])]
-    #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function submitSurvey(
-        string $guid, SurveyService $surveyService, Request $request, ResponseService $responseService,
-        EntityManagerInterface $em
-    )
-    {
-        $now = new \DateTimeImmutable();
-
-        $questions = $surveyService->getSurveyQuestions($guid, $now);
-
-        if(!$questions)
-            throw new PSPNotFoundException('Survey not found.');
-
-        /** @var User $user */
-        $user = $this->getUser();
-
-        foreach($questions as $question)
-        {
-            $answer = trim($request->request->get($question->getId()));
-
-            if($answer)
-                $surveyService->upsertAnswer($question, $user, $answer);
-            else
-                $surveyService->deleteAnswer($question, $user);
-        }
-
-        $em->flush();
-
-        return $responseService->success();
     }
 }

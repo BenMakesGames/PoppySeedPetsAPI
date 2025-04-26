@@ -52,7 +52,7 @@ class ResponseService
     {
     }
 
-    public function setSessionId(?string $sessionId)
+    public function setSessionId(?string $sessionId): void
     {
         $this->sessionId = $sessionId;
     }
@@ -195,7 +195,7 @@ class ResponseService
         );
     }
 
-    private function injectUserData(array &$responseData)
+    private function injectUserData(array &$responseData): void
     {
         $user = $this->getUser();
 
@@ -217,7 +217,7 @@ class ResponseService
         ;
     }
 
-    public function setReloadPets($reload = true): self
+    public function setReloadPets(bool $reload = true): self
     {
         $this->reloadPets = $reload;
         return $this;
@@ -228,7 +228,7 @@ class ResponseService
         return $this->reloadPets;
     }
 
-    public function setReloadInventory($reload = true): self
+    public function setReloadInventory(bool $reload = true): self
     {
         $this->reloadInventory = $reload;
         return $this;

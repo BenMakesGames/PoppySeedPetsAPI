@@ -67,7 +67,7 @@ class UmbraService
     {
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills)
+    public function adventure(ComputedPetSkills $petWithSkills): void
     {
         $pet = $petWithSkills->getPet();
 
@@ -807,7 +807,7 @@ class UmbraService
         return $activityLog;
     }
 
-    private function foundVampireCastle(ComputedPetSkills $petWithSkills)
+    private function foundVampireCastle(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 

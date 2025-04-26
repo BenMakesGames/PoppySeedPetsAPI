@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
  */
 class PetShelterPetNamesTest extends TestCase
 {
-    public function testPetNamesAreUnique()
+    public function testPetNamesAreUnique(): void
     {
         // TODO: it'd be nice to tell the user which name(s) are duplicates.
         $petNames = PetShelterPet::PetNames;
@@ -33,7 +33,7 @@ class PetShelterPetNamesTest extends TestCase
         self::assertCount(count($petNames), $uniquePetNames, "There are duplicate pet names.");
     }
 
-    public function testPetNamesAreInAlphabeticalOrder()
+    public function testPetNamesAreInAlphabeticalOrder(): void
     {
         $collator = \Collator::create('en_US');
 

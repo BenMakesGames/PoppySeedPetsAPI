@@ -268,7 +268,7 @@ class LeonidsService
         ;
     }
 
-    private function getActivityLogPrefix(Pet $pet)
+    private function getActivityLogPrefix(Pet $pet): string
     {
         return '%pet:' . $pet->getId() . '.name% went into the Umbra, and followed the Leonids to where they were falling!';
     }

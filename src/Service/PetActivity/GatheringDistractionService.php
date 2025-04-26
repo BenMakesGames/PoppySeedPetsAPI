@@ -41,20 +41,17 @@ class GatheringDistractionService
     {
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills, string $location, string $whileDoingDescription): PetActivityLog
+    public function adventure(ComputedPetSkills $petWithSkills, DistractionLocationEnum $location, string $whileDoingDescription): PetActivityLog
     {
-        if(!DistractionLocationEnum::isAValue($location))
-            throw new EnumInvalidValueException(DistractionLocationEnum::class, $location);
-
         $pet = $petWithSkills->getPet();
 
         $distraction = $this->rng->rngNextFromArray($this->getPossibleDistractions($petWithSkills, $location));
 
         $description = 'While %pet:' . $pet->getId() . '.name% was ' . $whileDoingDescription . ', ' . $distraction['description'];
 
-        if($location === DistractionLocationEnum::VOLCANO)
+        if($location === DistractionLocationEnum::Volcano)
         {
-            $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Île Volcan', '%pet:' . $pet->getId() . '.name% went out ' . $location . '...');
+            $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Île Volcan', '%pet:' . $pet->getId() . '.name% went out ' . $whileDoingDescription . '...');
         }
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $description)
@@ -67,7 +64,7 @@ class GatheringDistractionService
         return $activityLog;
     }
 
-    private function getPossibleDistractions(ComputedPetSkills $petWithSkills, string $location): array
+    private function getPossibleDistractions(ComputedPetSkills $petWithSkills, DistractionLocationEnum $location): array
     {
         $weather = WeatherService::getWeather(new \DateTimeImmutable(), $petWithSkills->getPet());
         $distractions = [];
@@ -76,9 +73,9 @@ class GatheringDistractionService
         $isNight = $weather->isNight;
 
         if(
-            ($location === DistractionLocationEnum::WOODS && !$anyRain) ||
-            ($location === DistractionLocationEnum::IN_TOWN && !$anyRain) ||
-            $location === DistractionLocationEnum::UNDERGROUND
+            ($location === DistractionLocationEnum::Woods && !$anyRain) ||
+            ($location === DistractionLocationEnum::InTown && !$anyRain) ||
+            $location === DistractionLocationEnum::Underground
         )
         {
             $distractions[] = [
@@ -87,7 +84,7 @@ class GatheringDistractionService
             ];
         }
 
-        if(($location === DistractionLocationEnum::WOODS || $location === DistractionLocationEnum::IN_TOWN) && !$anyRain)
+        if(($location === DistractionLocationEnum::Woods || $location === DistractionLocationEnum::InTown) && !$anyRain)
         {
             $description = $isNight
                 ? 'they saw an army of ants attacking a beehive! (A sneak attack at night?!) They watched for a while before returning home.'
@@ -100,7 +97,7 @@ class GatheringDistractionService
             ];
         }
 
-        if(($location === DistractionLocationEnum::WOODS || $location === DistractionLocationEnum::IN_TOWN) && !$anyRain)
+        if(($location === DistractionLocationEnum::Woods || $location === DistractionLocationEnum::InTown) && !$anyRain)
         {
             $winner = $this->rng->rngNextFromArray([
                 'mantis', 'spider'
@@ -112,7 +109,7 @@ class GatheringDistractionService
             ];
         }
 
-        if($location === DistractionLocationEnum::IN_TOWN && !$anyRain && $isNight)
+        if($location === DistractionLocationEnum::InTown && !$anyRain && $isNight)
         {
             $description = $this->rng->rngNextInt(1, 4) === 1
                 ? 'they saw a praying mantis sitting on a street light, snatching up gnats and other small insects. It seemed like a pretty OP strat until a bat swooped by and nabbed the mantis!'
@@ -125,7 +122,7 @@ class GatheringDistractionService
             ];
         }
 
-        if($location === DistractionLocationEnum::WOODS || $location === DistractionLocationEnum::BEACH)
+        if($location === DistractionLocationEnum::Woods || $location === DistractionLocationEnum::Beach)
         {
             $distractions[] = [
                 'description' => 'they saw a HUGE turtle on the edge of the woods, just chillin\' and grazin\'.',
@@ -133,9 +130,9 @@ class GatheringDistractionService
             ];
         }
 
-        if(($location === DistractionLocationEnum::WOODS || $location === DistractionLocationEnum::IN_TOWN) && $isNight)
+        if(($location === DistractionLocationEnum::Woods || $location === DistractionLocationEnum::InTown) && $isNight)
         {
-            $rummageTarget = $this->rng->rngNextFromArray($location === DistractionLocationEnum::WOODS
+            $rummageTarget = $this->rng->rngNextFromArray($location === DistractionLocationEnum::Woods
                 ? [ 'around a bush', 'around a fallen log' ]
                 : [ 'through some trash', 'around a bush' ]
             );
@@ -148,7 +145,7 @@ class GatheringDistractionService
             ];
         }
 
-        if($location === DistractionLocationEnum::BEACH && !$isNight)
+        if($location === DistractionLocationEnum::Beach && !$isNight)
         {
             $distractions[] = [
                 'description' => 'they saw some seagulls smashing clams against the rocks' . ($anyRain ? ' in the rain' : '') . '! They watched for a while - from a safe distance - before returning home.',
@@ -156,7 +153,7 @@ class GatheringDistractionService
             ];
         }
 
-        if($location === DistractionLocationEnum::BEACH && !$isNight)
+        if($location === DistractionLocationEnum::Beach && !$isNight)
         {
             $distractions[] = [
                 'description' => 'they saw a pair of crabs under a rock, grooming one another, and eating the various bits picked off one another!',
@@ -164,7 +161,7 @@ class GatheringDistractionService
             ];
         }
 
-        if($location === DistractionLocationEnum::UNDERGROUND)
+        if($location === DistractionLocationEnum::Underground)
         {
             $distractions[] = [
                 'description' => 'they saw an army of ants traveling through the tunnels. They followed for a while, but never found out where the army was headed...',
@@ -172,7 +169,7 @@ class GatheringDistractionService
             ];
         }
 
-        if($location === DistractionLocationEnum::UNDERGROUND)
+        if($location === DistractionLocationEnum::Underground)
         {
             $prey = $this->rng->rngNextFromArray([
                 'slug',
@@ -185,7 +182,7 @@ class GatheringDistractionService
             ];
         }
 
-        if($location === DistractionLocationEnum::UNDERGROUND && $this->rng->rngNextInt(1, 5) === 1)
+        if($location === DistractionLocationEnum::Underground && $this->rng->rngNextInt(1, 5) === 1)
         {
             $distractions[] = [
                 'description' => 'they saw a really funny stalagmite formation-- or, wait, are they stalactites? ("Stalagmites might make it..." but what does _that_ mean?!? Stupid, useless mnemonic!)',
@@ -193,7 +190,7 @@ class GatheringDistractionService
             ];
         }
 
-        if($location === DistractionLocationEnum::IN_TOWN)
+        if($location === DistractionLocationEnum::InTown)
         {
             if($anyRain)
                 $description = 'they spotted a family of raccoons taking shelter from the rain under someone\'s back porch. They watched for a while as the raccoons talked and cleaned each other, but eventually got bored and returned home.';
@@ -206,7 +203,7 @@ class GatheringDistractionService
             ];
         }
 
-        if($location === DistractionLocationEnum::IN_TOWN && !$isNight)
+        if($location === DistractionLocationEnum::InTown && !$isNight)
         {
             $retreatingAnimals = $this->rng->rngNextFromArray([
                 'A large raccoon',
@@ -220,7 +217,7 @@ class GatheringDistractionService
             ];
         }
 
-        if($location === DistractionLocationEnum::IN_TOWN && !$anyRain && !$isNight)
+        if($location === DistractionLocationEnum::InTown && !$anyRain && !$isNight)
         {
             $distractions[] = [
                 'description' => 'they spotted a couple scientists chatting over a meal. They listened for a while before returning home.',
@@ -228,9 +225,9 @@ class GatheringDistractionService
             ];
         }
 
-        if($location === DistractionLocationEnum::WOODS || $location === DistractionLocationEnum::UNDERGROUND)
+        if($location === DistractionLocationEnum::Woods || $location === DistractionLocationEnum::Underground)
         {
-            if($location === DistractionLocationEnum::WOODS)
+            if($location === DistractionLocationEnum::Woods)
             {
                 if($anyRain)
                     $description = 'they caught a glimpse of a shadowy figure moving through the rain!';
@@ -246,7 +243,7 @@ class GatheringDistractionService
             ];
         }
 
-        if(($location === DistractionLocationEnum::BEACH || $location === DistractionLocationEnum::WOODS) && !$anyRain && !$anyClouds && !$isNight)
+        if(($location === DistractionLocationEnum::Beach || $location === DistractionLocationEnum::Woods) && !$anyRain && !$anyClouds && !$isNight)
         {
             $distractions[] = [
                 'description' => 'they saw a family of huge lizards bathing in a pool. They watched for a while - from a safe distance - before returning home.',
@@ -254,7 +251,7 @@ class GatheringDistractionService
             ];
         }
 
-        if($location === DistractionLocationEnum::VOLCANO && !$isNight)
+        if($location === DistractionLocationEnum::Volcano && !$isNight)
         {
             $distractions[] = [
                 'description' => 'they saw a family of huge lizards lounging on steaming rocks' . ($anyRain ? ', apparently completely unconcerned about the rain' : '') . '. They watched for a while - from a safe distance - before returning home.',
@@ -262,7 +259,7 @@ class GatheringDistractionService
             ];
         }
 
-        if($location === DistractionLocationEnum::VOLCANO)
+        if($location === DistractionLocationEnum::Volcano)
         {
             $distractions[] = [
                 'description' => 'they saw an army of ants traveling amidst steaming rocks. They followed for a while, but never found out where the army was headed...',
@@ -275,7 +272,7 @@ class GatheringDistractionService
             ];
         }
 
-        if($location === DistractionLocationEnum::BEACH && !$isNight)
+        if($location === DistractionLocationEnum::Beach && !$isNight)
         {
             $distractions[] = [
                 'description' => 'they saw a seagull flying low over the ocean. Suddenly, a shark jumped out, and snatched it!',
@@ -283,7 +280,7 @@ class GatheringDistractionService
             ];
         }
 
-        if($location === DistractionLocationEnum::BEACH)
+        if($location === DistractionLocationEnum::Beach)
         {
             $distractions[] = [
                 'description' => 'they saw a fox running into the woods, seagull egg in maw! Sneaky thief!',
@@ -291,7 +288,7 @@ class GatheringDistractionService
             ];
         }
 
-        if($location === DistractionLocationEnum::BEACH)
+        if($location === DistractionLocationEnum::Beach)
         {
             if($anyRain)
                 $description = 'through the rain they saw some breaching whales out on the ocean. They watched for a while before returning home.';

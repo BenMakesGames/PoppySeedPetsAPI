@@ -32,7 +32,7 @@ class DreamingServiceTest extends KernelTestCase
     /**
      * @group requiresDatabase
      */
-    public function testDreamDescriptions()
+    public function testDreamDescriptions(): void
     {
         self::bootKernel();
 

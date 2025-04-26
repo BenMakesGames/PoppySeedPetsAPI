@@ -16,24 +16,24 @@ namespace App\Controller\Item\Book;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Service\CookingService;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/SOUP")]
-class SoupController extends AbstractController
+class SoupController
 {
     #[Route("/{inventory}/UPLOAD", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function upload(
-        Inventory $inventory, ResponseService $responseService, CookingService $cookingService
-    )
+        Inventory $inventory, ResponseService $responseService, CookingService $cookingService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'SOUP/#/UPLOAD');
 
@@ -62,9 +62,11 @@ class SoupController extends AbstractController
 
     #[Route("/{inventory}/READ", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function read(Inventory $inventory, ResponseService $responseService)
+    public function read(Inventory $inventory, ResponseService $responseService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'SOUP/#/READ');
+        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'SOUP/#/READ');
 
         return $responseService->itemActionSuccess('# SOUP
 

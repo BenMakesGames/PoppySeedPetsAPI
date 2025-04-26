@@ -21,11 +21,11 @@ use Symfony\Bundle\SecurityBundle\Security;
 
 class CommentFormatter
 {
-    public const array ALLOWED_PET_PROPERTIES = [
+    public const array AllowedPetProperties = [
         'name'
     ];
 
-    public const array ALLOWED_USER_PROPERTIES = [
+    public const array AllowedUserProperties = [
         'name', 'Name', 'name\'s', 'Name\'s'
     ];
 
@@ -58,7 +58,7 @@ class CommentFormatter
         return $text;
     }
 
-    private function doReplace(string $text, string $match)
+    private function doReplace(string $text, string $match): string
     {
         $parts = preg_split('/[:\\.]/', $match);
 
@@ -70,9 +70,9 @@ class CommentFormatter
         };
     }
 
-    private function doReplacePetPart(string $text, string $match, int $petId, string $property)
+    private function doReplacePetPart(string $text, string $match, int $petId, string $property): string
     {
-        if(!in_array($property, self::ALLOWED_PET_PROPERTIES))
+        if(!in_array($property, self::AllowedPetProperties))
             return $text;
 
         $pet = $this->em->getRepository(Pet::class)->find($petId);
@@ -80,9 +80,9 @@ class CommentFormatter
         return str_replace($match, $pet->{'get' . $property}(), $text);
     }
 
-    private function doReplaceUserPart(string $text, string $match, int $userId, string $property)
+    private function doReplaceUserPart(string $text, string $match, int $userId, string $property): string
     {
-        if(!in_array($property, self::ALLOWED_USER_PROPERTIES))
+        if(!in_array($property, self::AllowedUserProperties))
             return $text;
 
         $userIsCurrentUser = $this->security->getUser() && $this->security->getUser()->getId() === $userId;

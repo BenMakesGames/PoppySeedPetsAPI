@@ -20,18 +20,18 @@ use App\Enum\PatreonTierEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/patreon")]
-class LiveUpdatesController extends AbstractController
+class LiveUpdatesController
 {
     #[DoesNotRequireHouseHours]
     #[Route("/liveUpdates", methods: ["POST"])]
     public function connectPatreonAccount(
         Request $request, ResponseService $responseService, EntityManagerInterface $em
-    )
+    ): JsonResponse
     {
         $signature = $request->headers->get('X-Patreon-Signature');
         $event = $request->headers->get('X-Patreon-Event');

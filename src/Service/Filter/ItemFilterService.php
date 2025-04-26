@@ -72,7 +72,7 @@ class ItemFilterService
         );
     }
 
-    public function setUser(?User $user)
+    public function setUser(?User $user): void
     {
         $this->user = $user;
     }
@@ -82,7 +82,7 @@ class ItemFilterService
         return $this->repository->createQueryBuilder('i');
     }
 
-    public function filterName(QueryBuilder $qb, $value, $filters)
+    public function filterName(QueryBuilder $qb, $value, $filters): void
     {
         $name = mb_trim($value);
 
@@ -104,7 +104,7 @@ class ItemFilterService
         }
     }
 
-    public function filterNotDonatedBy(QueryBuilder $qb, $value)
+    public function filterNotDonatedBy(QueryBuilder $qb, $value): void
     {
         $qb
             ->leftJoin('i.museumDonations', 'm', Join::WITH, 'm.user=:user')
@@ -115,7 +115,7 @@ class ItemFilterService
         $this->useResultCache = false;
     }
 
-    public function filterCandy(QueryBuilder $qb, $value)
+    public function filterCandy(QueryBuilder $qb, $value): void
     {
         if((int)(new \DateTimeImmutable())->format('n') !== 10)
             return;
@@ -129,7 +129,7 @@ class ItemFilterService
             $qb->andWhere('food.isCandy=1');
     }
 
-    public function filterEdible(QueryBuilder $qb, $value)
+    public function filterEdible(QueryBuilder $qb, $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('i.food IS NULL');
@@ -137,7 +137,7 @@ class ItemFilterService
             $qb->andWhere('i.food IS NOT NULL');
     }
 
-    public function filterFoodFlavors(QueryBuilder $qb, $value)
+    public function filterFoodFlavors(QueryBuilder $qb, $value): void
     {
         if(!is_array($value)) $value = [ $value ];
 
@@ -165,7 +165,7 @@ class ItemFilterService
         );
     }
 
-    public function filterBonus(QueryBuilder $qb, $value)
+    public function filterBonus(QueryBuilder $qb, $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('i.enchants IS NULL');
@@ -173,7 +173,7 @@ class ItemFilterService
             $qb->andWhere('i.enchants IS NOT NULL');
     }
 
-    public function filterSpice(QueryBuilder $qb, $value)
+    public function filterSpice(QueryBuilder $qb, $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('i.spice IS NULL');
@@ -181,7 +181,7 @@ class ItemFilterService
             $qb->andWhere('i.spice IS NOT NULL');
     }
 
-    public function filterAHat(QueryBuilder $qb, $value)
+    public function filterAHat(QueryBuilder $qb, $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('i.hat IS NULL');
@@ -189,7 +189,7 @@ class ItemFilterService
             $qb->andWhere('i.hat IS NOT NULL');
     }
 
-    public function filterEquipable(QueryBuilder $qb, $value)
+    public function filterEquipable(QueryBuilder $qb, $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('i.tool IS NULL');
@@ -197,12 +197,12 @@ class ItemFilterService
             $qb->andWhere('i.tool IS NOT NULL');
     }
 
-    public function filterEquipStats(QueryBuilder $qb, $value)
+    public function filterEquipStats(QueryBuilder $qb, $value): void
     {
         if(!is_array($value)) $value = [ $value ];
 
         $value = array_map('strtolower', $value);
-        $value = array_intersect($value, ItemTool::MODIFIER_FIELDS);
+        $value = array_intersect($value, ItemTool::ModifierFields);
 
         if(count($value) === 0) return;
 
@@ -219,7 +219,7 @@ class ItemFilterService
         }
     }
 
-    public function filterHasDonated(QueryBuilder $qb, $value)
+    public function filterHasDonated(QueryBuilder $qb, $value): void
     {
         if(!$this->user)
             return;
@@ -239,7 +239,7 @@ class ItemFilterService
         $this->useResultCache = false;
     }
 
-    public function filterItemGroup(QueryBuilder $qb, $value)
+    public function filterItemGroup(QueryBuilder $qb, $value): void
     {
         if(!in_array('itemGroups', $qb->getAllAliases()))
             $qb->leftJoin('i.itemGroups', 'itemGroup');
@@ -250,7 +250,7 @@ class ItemFilterService
         ;
     }
 
-    public function filterIsFuel(QueryBuilder $qb, $value)
+    public function filterIsFuel(QueryBuilder $qb, $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('i.fuel = 0');
@@ -258,7 +258,7 @@ class ItemFilterService
             $qb->andWhere('i.fuel > 0');
     }
 
-    public function filterIsFertilizer(QueryBuilder $qb, $value)
+    public function filterIsFertilizer(QueryBuilder $qb, $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('i.fertilizer = 0');
@@ -266,7 +266,7 @@ class ItemFilterService
             $qb->andWhere('i.fertilizer > 0');
     }
 
-    public function filterIsTreasure(QueryBuilder $qb, $value)
+    public function filterIsTreasure(QueryBuilder $qb, $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('i.treasure IS NULL');
@@ -274,7 +274,7 @@ class ItemFilterService
             $qb->andWhere('i.treasure IS NOT NULL');
     }
 
-    public function filterIsRecyclable(QueryBuilder $qb, $value)
+    public function filterIsRecyclable(QueryBuilder $qb, $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('i.recycleValue = 0');

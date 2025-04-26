@@ -21,7 +21,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class BeehiveService
 {
-    public const array DESIRED_ITEMS = [
+    public const array DesiredItems = [
         'Red Clover' => 18,
         'Wheat Flower' => 18,
         'Orange' => 12,
@@ -36,7 +36,7 @@ class BeehiveService
         'Creamy Milk' => 12,
     ];
 
-    public const array ALT_DESIRED_ITEMS = [
+    public const array AlternateDesiredItems = [
         'Slice of Bread' => 8,
         'Really Big Leaf' => 16,
         'Corn' => 10,
@@ -58,15 +58,15 @@ class BeehiveService
     {
     }
 
-    public function createBeehive(User $user)
+    public function createBeehive(User $user): void
     {
         if($user->getBeehive())
             throw new \Exception('Player #' . $user->getId() . ' already has a beehive!');
 
         $beehive = (new Beehive())
-            ->setQueenName($this->rng->rngNextFromArray(self::QUEEN_NAMES))
-            ->setRequestedItem(ItemRepository::findOneByName($this->em, array_rand(self::DESIRED_ITEMS)))
-            ->setAlternateRequestedItem(ItemRepository::findOneByName($this->em, array_rand(self::ALT_DESIRED_ITEMS)))
+            ->setQueenName($this->rng->rngNextFromArray(self::QueenNames))
+            ->setRequestedItem(ItemRepository::findOneByName($this->em, array_rand(self::DesiredItems)))
+            ->setAlternateRequestedItem(ItemRepository::findOneByName($this->em, array_rand(self::AlternateDesiredItems)))
         ;
 
         $this->em->persist($beehive);
@@ -74,17 +74,17 @@ class BeehiveService
         $user->setBeehive($beehive);
     }
 
-    public function fedRequestedItem(Beehive $beehive, bool $feedAlternate)
+    public function fedRequestedItem(Beehive $beehive, bool $feedAlternate): void
     {
         if($feedAlternate)
         {
             $item = $beehive->getAlternateRequestedItem();
-            $power = self::ALT_DESIRED_ITEMS[$item->getName()];
+            $power = self::AlternateDesiredItems[$item->getName()];
         }
         else
         {
             $item = $beehive->getRequestedItem();
-            $power = self::DESIRED_ITEMS[$item->getName()];
+            $power = self::DesiredItems[$item->getName()];
         }
 
         $beehive->setFlowerPower($power);
@@ -92,17 +92,17 @@ class BeehiveService
         $this->rerollRequest($beehive);
     }
 
-    public function reRollRequest(Beehive $beehive)
+    public function reRollRequest(Beehive $beehive): void
     {
         // get the current items
         $requestedItem = $beehive->getRequestedItem()->getName();
         $altRequestedItem = $beehive->getAlternateRequestedItem()->getName();
 
         // remove the current item from the list of possibilities
-        $possibleItems = self::DESIRED_ITEMS;
+        $possibleItems = self::DesiredItems;
         unset($possibleItems[$requestedItem]);
 
-        $possibleAltItems = self::ALT_DESIRED_ITEMS;
+        $possibleAltItems = self::AlternateDesiredItems;
         unset($possibleAltItems[$altRequestedItem]);
 
         // pick a new requested item
@@ -113,7 +113,7 @@ class BeehiveService
     }
 
     // a couple of these are princesses; sorry about the non-semantic variable name:
-    public const array QUEEN_NAMES = [
+    public const array QueenNames = [
         'Acropolitissa', 'Adelaide', 'Adélina', 'Adosinda', 'Ædgyth', 'Ælfthryth', 'Aénor', 'Afzan', 'Agafiya',
         'Allogia', 'Amalia', 'Anglesia', 'Andregoto', 'Anka', 'Ansi', 'Aphainuchit', 'Aregund', 'Aremburga',
         'Argentaela', 'Argyra', 'Ashina', 'Aspasia', 'Astrid', 'Aud', 'Austerchild',

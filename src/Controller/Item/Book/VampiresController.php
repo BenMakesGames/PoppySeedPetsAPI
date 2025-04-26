@@ -17,18 +17,21 @@ namespace App\Controller\Item\Book;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/onVampires")]
-class VampiresController extends AbstractController
+class VampiresController
 {
     #[Route("/{inventory}/read", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function read(Inventory $inventory, ResponseService $responseService)
+    public function read(Inventory $inventory, ResponseService $responseService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'onVampires/#/read');
+        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'onVampires/#/read');
 
         return $responseService->itemActionSuccess(<<<EOBOOK
 ### The Monster

@@ -28,15 +28,15 @@ class SurveyQuestion
 
     #[Groups(["surveyQuestion"])]
     #[ORM\Column(type: 'text')]
-    private $title;
+    private string $title;
 
     #[Groups(["surveyQuestion"])]
     #[ORM\Column(type: 'string', length: 40)]
-    private $type;
+    private string $type;
 
     #[ORM\ManyToOne(targetEntity: Survey::class, inversedBy: 'questions')]
     #[ORM\JoinColumn(nullable: false)]
-    private $survey;
+    private Survey $survey;
 
     public function getId(): ?int
     {

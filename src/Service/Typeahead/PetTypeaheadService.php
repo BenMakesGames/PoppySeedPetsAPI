@@ -29,12 +29,12 @@ class PetTypeaheadService extends TypeaheadService
         parent::__construct($em->getRepository(Pet::class));
     }
 
-    public function setUser(User $user)
+    public function setUser(User $user): void
     {
         $this->user = $user;
     }
 
-    public function setSpeciesId(int $speciesId)
+    public function setSpeciesId(int $speciesId): void
     {
         $this->speciesId = $speciesId;
     }

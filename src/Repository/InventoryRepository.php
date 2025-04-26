@@ -79,7 +79,7 @@ class InventoryRepository extends ServiceEntityRepository
      * @param int[] $inventoryIds
      * @return Inventory[]
      */
-    public static function findFertilizers(EntityManagerInterface $em, User $user, ?array $inventoryIds = null)
+    public static function findFertilizers(EntityManagerInterface $em, User $user, ?array $inventoryIds = null): array
     {
         $qb = $em->getRepository(Inventory::class)->createQueryBuilder('i')
             ->andWhere('i.owner=:owner')
@@ -163,7 +163,7 @@ class InventoryRepository extends ServiceEntityRepository
     /**
      * @return ItemQuantity[]
      */
-    public function getInventoryQuantities(User $user, int $location, $indexBy = null)
+    public function getInventoryQuantities(User $user, int $location, ?string $indexBy = null): array
     {
         $query = $this->getEntityManager()->createQueryBuilder()
             ->from(Inventory::class, 'inventory')
@@ -182,9 +182,10 @@ class InventoryRepository extends ServiceEntityRepository
 
         foreach($results as $result)
         {
-            $quantity = new ItemQuantity();
-            $quantity->item = $result[0];
-            $quantity->quantity = (int)$result['quantity'];
+            $quantity = new ItemQuantity(
+                $result[0],
+                (int)$result['quantity'],
+            );
 
             if($indexBy)
             {

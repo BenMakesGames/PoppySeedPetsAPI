@@ -14,28 +14,28 @@ declare(strict_types=1);
 
 namespace App\Controller\Style;
 
-use App\Entity\User;
 use App\Entity\UserStyle;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\UserStyleFunctions;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/style")]
-class SetCurrentController extends AbstractController
+class SetCurrentController
 {
     #[Route("/{theme}/setCurrent", methods: ["PATCH"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function setCurrent(
-        UserStyle $theme, ResponseService $responseService, EntityManagerInterface $em
-    )
+        UserStyle $theme, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($theme->getName() === UserStyle::Current)
             throw new PSPInvalidOperationException('You\'re already using that theme!');

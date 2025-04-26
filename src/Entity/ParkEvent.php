@@ -57,14 +57,17 @@ class ParkEvent
     }
 
     /**
-     * @return Collection|Pet[]
+     * @return Collection<int, Pet>
      */
     public function getParticipants(): Collection
     {
         return $this->participants;
     }
 
-    public function addParticipants($pets): self
+    /**
+     * @param Pet[] $pets
+     */
+    public function addParticipants(array $pets): self
     {
         foreach($pets as $pet)
             $this->addParticipant($pet);

@@ -16,7 +16,6 @@ namespace App\Controller\HollowEarth;
 
 use App\Entity\HollowEarthPlayer;
 use App\Entity\HollowEarthPlayerTile;
-use App\Entity\User;
 use App\Enum\HollowEarthActionTypeEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
@@ -30,25 +29,26 @@ use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/hollowEarth")]
-class PlayController extends AbstractController
+class PlayController
 {
     #[Route("/continue", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function continueActing(
         HollowEarthService $hollowEarthService, ResponseService $responseService, EntityManagerInterface $em,
         Request $request, InventoryRepository $inventoryRepository, TransactionService $transactionService,
-        IRandom $rng
-    )
+        IRandom $rng,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
         $player = $user->getHollowEarthPlayer();
 
         if($player === null)
@@ -126,7 +126,7 @@ class PlayController extends AbstractController
 
     private function continueActingChooseOne(
         array $action, HollowEarthPlayer $player, ParameterBag $params, HollowEarthService $hollowEarthService
-    )
+    ): void
     {
         if(!$params->has('choice') || !is_numeric($params->get('choice')))
             throw new PSPFormValidationException('You must choose one.');
@@ -145,7 +145,7 @@ class PlayController extends AbstractController
     private function continueActingPayItem(
         array $action, HollowEarthPlayer $player, ParameterBag $params, HollowEarthService $hollowEarthService,
         EntityManagerInterface $em
-    )
+    ): void
     {
         if(!$params->has('payUp'))
             throw new PSPFormValidationException('Will you give up a ' . $action['item'] . ', or no?');
@@ -182,7 +182,7 @@ class PlayController extends AbstractController
     private function continueActingPayItemAndMoney(
         array $action, HollowEarthPlayer $player, ParameterBag $params, HollowEarthService $hollowEarthService,
         EntityManagerInterface $em, TransactionService $transactionService
-    )
+    ): void
     {
         if(!$params->has('payUp'))
             throw new PSPFormValidationException('Will you give up a ' . $action['item'] . ' and ' . $action['amount'] . '~~m~~, or no?');
@@ -224,7 +224,7 @@ class PlayController extends AbstractController
     private function continueActingPayMoney(
         array $action, HollowEarthPlayer $player, ParameterBag $params, HollowEarthService $hollowEarthService,
         TransactionService $transactionService
-    )
+    ): void
     {
         if(!$params->has('payUp'))
             throw new PSPFormValidationException('Will you give up ' . $action['amount'] . '~~m~~, or no?');
@@ -259,7 +259,7 @@ class PlayController extends AbstractController
     private function continueActingPetChallenge(
         array $action, HollowEarthPlayer $player, ParameterBag $params, HollowEarthService $hollowEarthService,
         IRandom $rng, EntityManagerInterface $em
-    )
+    ): void
     {
         if(!array_key_exists('ifSuccess', $action))
         {

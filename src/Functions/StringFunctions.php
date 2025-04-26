@@ -16,7 +16,7 @@ namespace App\Functions;
 
 final class StringFunctions
 {
-    public static function isTruthy($v): bool
+    public static function isTruthy(mixed $v): bool
     {
         if(is_bool($v)) return $v;
 

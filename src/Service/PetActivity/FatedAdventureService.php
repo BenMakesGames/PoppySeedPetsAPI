@@ -220,7 +220,7 @@ class FatedAdventureService
     /**
      * @throws EnumInvalidValueException
      */
-    private function doElectricFate(ComputedPetSkills $petWithSkills)
+    private function doElectricFate(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
 

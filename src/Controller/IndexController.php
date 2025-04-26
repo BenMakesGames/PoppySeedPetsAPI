@@ -16,15 +16,15 @@ namespace App\Controller;
 
 use App\Attributes\DoesNotRequireHouseHours;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("")]
-class IndexController extends AbstractController
+class IndexController
 {
     #[DoesNotRequireHouseHours]
     #[Route("/about")]
-    public function about(ResponseService $responseService)
+    public function about(ResponseService $responseService): JsonResponse
     {
         return $responseService->success([
             'design' => [ 'Ben Hendel-Doying' ],

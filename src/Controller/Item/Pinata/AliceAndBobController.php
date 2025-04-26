@@ -16,29 +16,28 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Functions\EnchantmentRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/box")]
-class AliceAndBobController extends AbstractController
+class AliceAndBobController
 {
     #[Route("/alicesSecret/{inventory}/teaTime", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function alicesSecretTeaTime(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
-        UserStatsService $userStatsRepository, ResponseService $responseService
-    )
+        UserStatsService $userStatsRepository, ResponseService $responseService, UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/alicesSecret/#/teaTime');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -85,11 +84,10 @@ class AliceAndBobController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function alicesSecretHourglass(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        UserStatsService $userStatsRepository, ResponseService $responseService
-    )
+        UserStatsService $userStatsRepository, ResponseService $responseService, UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/alicesSecret/#/hourglass');
 
@@ -102,11 +100,11 @@ class AliceAndBobController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function alicesSecretCards(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
-        UserStatsService $userStatsRepository, ResponseService $responseService
-    )
+        UserStatsService $userStatsRepository, ResponseService $responseService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/alicesSecret/#/cards');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -127,11 +125,10 @@ class AliceAndBobController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function bobsSecretFish(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
-        UserStatsService $userStatsRepository, ResponseService $responseService
-    )
+        UserStatsService $userStatsRepository, ResponseService $responseService, UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/bobsSecret/#/fish');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -170,11 +167,11 @@ class AliceAndBobController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function bobsTool(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em, IRandom $rng,
-        UserStatsService $userStatsRepository, ResponseService $responseService
-    )
+        UserStatsService $userStatsRepository, ResponseService $responseService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/bobsSecret/#/tool');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -202,11 +199,11 @@ class AliceAndBobController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function bobsBBQ(
         Inventory $inventory, InventoryService $inventoryService, EntityManagerInterface $em,
-        UserStatsService $userStatsRepository, ResponseService $responseService
-    )
+        UserStatsService $userStatsRepository, ResponseService $responseService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/bobsSecret/#/bbq');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);

@@ -16,7 +16,6 @@ namespace App\Controller\Item\Pinata;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Functions\EnchantmentRepository;
 use App\Functions\ItemRepository;
 use App\Functions\SpiceRepository;
@@ -24,22 +23,23 @@ use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/wrappedSword")]
-class WrappedSwordController extends AbstractController
+class WrappedSwordController
 {
     #[Route("/{inventory}/unwrap", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function unwrap(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        IRandom $rng, EntityManagerInterface $em
-    )
+        IRandom $rng, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'wrappedSword/#/unwrap');
 

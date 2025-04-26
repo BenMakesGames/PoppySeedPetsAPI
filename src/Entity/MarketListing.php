@@ -30,11 +30,17 @@ class MarketListing
     #[Groups(['marketItem'])]
     #[ORM\ManyToOne(targetEntity: Item::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $item;
+    private Item $item;
 
     #[Groups(['marketItem'])]
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $minimumSellPrice;
+
+    public function __construct(Item $item, ?int $minimumSellPrice = null)
+    {
+        $this->item = $item;
+        $this->minimumSellPrice = $minimumSellPrice;
+    }
 
     public function getId(): ?int
     {

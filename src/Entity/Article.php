@@ -30,20 +30,20 @@ class Article
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Groups(['article'])]
-    private $title;
+    private string $title;
 
     #[ORM\Column(type: 'text')]
     #[Groups(['article'])]
-    private $body;
+    private string $body;
 
     #[ORM\Column(type: 'datetime_immutable')]
     #[Groups(['article'])]
-    private $createdOn;
+    private \DateTimeImmutable $createdOn;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['article'])]
-    private $author;
+    private User $author;
 
     #[ORM\ManyToMany(targetEntity: DesignGoal::class, inversedBy: 'articles')]
     #[Groups(['article'])]

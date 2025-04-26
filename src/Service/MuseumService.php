@@ -32,7 +32,7 @@ class MuseumService
     {
     }
 
-    private $donatedItemsThisRequest = [];
+    private array $donatedItemsThisRequest = [];
 
     public function forceDonateItem(User $user, string|int|Item $item, ?string $comment, ?User $createdBy = null): bool
     {
@@ -74,7 +74,6 @@ class MuseumService
     {
         $inventory = [];
 
-        /** @var ItemGroup[] $groups */
         $groups = $this->em->getRepository(ItemGroup::class)->findBy([
             'isGiftShop' => true
         ]);

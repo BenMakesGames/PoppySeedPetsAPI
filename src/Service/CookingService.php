@@ -64,9 +64,7 @@ class CookingService
                 $quantities[$item->getId()]->quantity++;
             else
             {
-                $quantities[$item->getId()] = new ItemQuantity();
-                $quantities[$item->getId()]->item = $item;
-                $quantities[$item->getId()]->quantity = 1;
+                $quantities[$item->getId()] = new ItemQuantity($item, 1);
             }
         }
 
@@ -89,10 +87,10 @@ class CookingService
 
         if(!$attempt)
         {
-            $attempt = (new RecipeAttempted())
-                ->setUser($user)
-                ->setRecipe($ingredientList)
-            ;
+            $attempt = new RecipeAttempted(
+                user: $user,
+                recipe: $ingredientList,
+            );
 
             $this->em->persist($attempt);
         }
@@ -208,10 +206,10 @@ class CookingService
         if(!ArrayFunctions::any(RecipeRepository::RECIPES, fn($recipe) => $recipe['name'] === $recipeName))
             throw new \Exception('Cannot learn recipe "' . $recipeName . '" - it doesn\'t exist!');
 
-        $knownRecipe = (new KnownRecipes())
-            ->setUser($user)
-            ->setRecipe($recipeName)
-        ;
+        $knownRecipe = new KnownRecipes(
+            user: $user,
+            recipe: $recipeName
+        );
 
         $this->em->persist($knownRecipe);
 

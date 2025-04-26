@@ -42,10 +42,10 @@ class MarketListingRepository
         if($lowestPrice == null)
             return;
 
-        $newRecord = (new MarketListing())
-            ->setItem($item)
-            ->setMinimumSellPrice($lowestPrice)
-        ;
+        $newRecord = new MarketListing(
+            item: $item,
+            minimumSellPrice: $lowestPrice,
+        );
 
         $em->persist($newRecord);
     }

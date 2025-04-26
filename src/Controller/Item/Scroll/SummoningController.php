@@ -17,7 +17,6 @@ namespace App\Controller\Item\Scroll;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\PetLocationEnum;
 use App\Enum\UserStatEnum;
 use App\Model\SummoningScrollMonster;
@@ -26,23 +25,23 @@ use App\Service\PetActivity\HouseMonsterService;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route('/item/summoningScroll')]
-class SummoningController extends AbstractController
+class SummoningController
 {
     #[Route("/{inventory}/unfriendly", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function summonSomethingUnfriendly(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        HouseMonsterService $houseMonsterService, IRandom $rng, UserStatsService $userStatsRepository
+        HouseMonsterService $houseMonsterService, IRandom $rng, UserStatsService $userStatsRepository,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'summoningScroll/#/unfriendly');
 
@@ -80,11 +79,11 @@ class SummoningController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function summonSomethingFromDeepSpace(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        HouseMonsterService $houseMonsterService, IRandom $rng
+        HouseMonsterService $houseMonsterService, IRandom $rng,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'summoningScroll/#/unfriendly2');
 

@@ -24,22 +24,24 @@ use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/museum")]
-class TopDonorsController extends AbstractController
+class TopDonorsController
 {
     #[Route("/topDonors", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getTopDonors(
-        Request $request, ResponseService $responseService, EntityManagerInterface $em
-    )
+        Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        if(!$this->getUser()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
+        if(!$userAccessor->getUserOrThrow()->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
             throw new PSPNotUnlockedException('Museum');
 
         $qb = $em->getRepository(User::class)->createQueryBuilder('u')

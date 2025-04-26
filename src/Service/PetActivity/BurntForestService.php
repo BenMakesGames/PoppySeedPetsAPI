@@ -52,7 +52,7 @@ class BurntForestService
     {
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills)
+    public function adventure(ComputedPetSkills $petWithSkills): void
     {
         $pet = $petWithSkills->getPet();
         $maxSkill = 10

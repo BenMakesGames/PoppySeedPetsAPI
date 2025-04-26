@@ -14,9 +14,7 @@ declare(strict_types=1);
 
 namespace App\Controller\CookingBuddy;
 
-use App\Entity\Inventory;
 use App\Entity\KnownRecipes;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPInvalidOperationException;
@@ -28,13 +26,14 @@ use App\Repository\InventoryRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route('/cookingBuddy')]
-class GetKnownRecipes extends AbstractController
+class GetKnownRecipes
 {
     private const array AllowedLocations = [
         LocationEnum::HOME,
@@ -46,11 +45,11 @@ class GetKnownRecipes extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getKnownRecipes(
         EntityManagerInterface $em, Request $request, ResponseService $responseService,
-        InventoryRepository $inventoryRepository
-    )
+        InventoryRepository $inventoryRepository,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->getCookingBuddy())
             throw new PSPNotFoundException('Cooking Buddy Not Found');

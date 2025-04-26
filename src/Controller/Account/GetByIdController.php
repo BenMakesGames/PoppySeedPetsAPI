@@ -27,19 +27,21 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserLinkVisibilityEnum;
 use App\Functions\UserStyleFunctions;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 #[Route("/account")]
-class GetByIdController extends AbstractController
+class GetByIdController
 {
     #[DoesNotRequireHouseHours]
     #[Route("/{user}", methods: ["GET"], requirements: ["user" => "\d+"])]
     public function getProfile(
-        User $user, ResponseService $responseService, NormalizerInterface $normalizer, EntityManagerInterface $em
-    )
+        User $user, ResponseService $responseService, NormalizerInterface $normalizer, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
         $pets = $em->getRepository(Pet::class)->findBy([ 'owner' => $user, 'location' => PetLocationEnum::HOME ]);
         $theme = UserStyleFunctions::findCurrent($em, $user->getId());
@@ -55,7 +57,7 @@ class GetByIdController extends AbstractController
             $data['stocking'] = $user->getFireplace()->getStocking();
         }
 
-        $data['links'] = $this->getLinks($user, $em);
+        $data['links'] = $this->getLinks($userAccessor, $user, $em);
 
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace))
         {
@@ -67,10 +69,9 @@ class GetByIdController extends AbstractController
         return $responseService->success($data);
     }
 
-    private function getLinks(User $user, EntityManagerInterface $em)
+    private function getLinks(UserAccessor $userAccessor, User $user, EntityManagerInterface $em): array
     {
-        /** @var User|null $currentUser */
-        $currentUser = $this->getUser();
+        $currentUser = $userAccessor->getUserOrThrow();
 
         if(!$currentUser)
             return [];
@@ -103,7 +104,7 @@ class GetByIdController extends AbstractController
 
     #[DoesNotRequireHouseHours]
     #[Route("/{user}/minimal", methods: ["GET"], requirements: ["user" => "\d+"])]
-    public function getProfileMinimal(User $user, ResponseService $responseService)
+    public function getProfileMinimal(User $user, ResponseService $responseService): JsonResponse
     {
         return $responseService->success($user, [ SerializationGroupEnum::USER_PUBLIC_PROFILE ]);
     }

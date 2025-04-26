@@ -19,15 +19,15 @@ use App\Entity\DesignGoal;
 use App\Enum\SerializationGroupEnum;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/designGoal")]
-class DesignGoalController extends AbstractController
+class DesignGoalController
 {
     #[DoesNotRequireHouseHours]
     #[Route("", methods: ["GET"])]
-    public function getAll(EntityManagerInterface $em, ResponseService $responseService)
+    public function getAll(EntityManagerInterface $em, ResponseService $responseService): JsonResponse
     {
         return $responseService->success(
             $em->getRepository(DesignGoal::class)->findAll(),
@@ -37,7 +37,7 @@ class DesignGoalController extends AbstractController
 
     #[DoesNotRequireHouseHours]
     #[Route("/{designGoal}", methods: ["GET"])]
-    public function getDetails(DesignGoal $designGoal, ResponseService $responseService)
+    public function getDetails(DesignGoal $designGoal, ResponseService $responseService): JsonResponse
     {
         return $responseService->success([
             'id' => $designGoal->getId(),

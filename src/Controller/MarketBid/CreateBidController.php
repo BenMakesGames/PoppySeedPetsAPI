@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\MarketBid;
 
-use App\Entity\Inventory;
 use App\Entity\InventoryForSale;
 use App\Entity\MarketBid;
 use App\Entity\User;
@@ -24,7 +23,6 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
-use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ItemRepository;
 use App\Functions\MarketListingRepository;
@@ -33,23 +31,24 @@ use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/marketBid")]
-class CreateBidController extends AbstractController
+class CreateBidController
 {
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("", methods: ["POST"])]
     public function createBid(
         Request $request, ResponseService $responseService, TransactionService $transactionService,
-        MarketBidRepository $marketBidRepository, EntityManagerInterface $em
-    )
+        MarketBidRepository $marketBidRepository, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Market))
             throw new PSPNotUnlockedException('Market');

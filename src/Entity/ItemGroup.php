@@ -29,19 +29,20 @@ class ItemGroup
 
     #[Groups(["itemEncyclopedia", "myInventory"])]
     #[ORM\Column(type: 'string', length: 40, unique: true)]
-    private $name;
+    private string $name;
 
     #[ORM\ManyToMany(targetEntity: Item::class, inversedBy: 'itemGroups')]
-    private $items;
+    private Collection $items;
 
     #[ORM\Column(type: 'boolean')]
-    private $isCraving = false;
+    private bool $isCraving = false;
 
     #[ORM\Column(type: 'boolean')]
-    private $isGiftShop = false;
+    private bool $isGiftShop = false;
 
-    public function __construct()
+    public function __construct(string $name)
     {
+        $this->name = $name;
         $this->items = new ArrayCollection();
     }
 
@@ -55,15 +56,8 @@ class ItemGroup
         return $this->name;
     }
 
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
     /**
-     * @return Collection|Item[]
+     * @return Collection<int, Item>
      */
     public function getItems(): Collection
     {

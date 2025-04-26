@@ -19,13 +19,12 @@ use App\Entity\SpiritCompanion;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\SpiritCompanionFilterService;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/spiritCompanion")]
-class SpiritCompanionController extends AbstractController
+class SpiritCompanionController
 {
     #[DoesNotRequireHouseHours]
     #[Route("/find/{spiritCompanion}", methods: ["GET"], requirements: ["spiritCompanion" => "\d+"])]

@@ -20,21 +20,23 @@ use App\Entity\UserFollowing;
 use App\Exceptions\PSPNotFoundException;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/following")]
-class UnFollowController extends AbstractController
+class UnFollowController
 {
     #[DoesNotRequireHouseHours]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/{following}", methods: ["DELETE"])]
     public function handle(
-        User $following, ResponseService $responseService, EntityManagerInterface $em
-    )
+        User $following, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $followingRecord = $em->getRepository(UserFollowing::class)->findOneBy([
             'user' => $user,

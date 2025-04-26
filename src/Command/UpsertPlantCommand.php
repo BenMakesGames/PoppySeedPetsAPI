@@ -139,7 +139,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
         return self::SUCCESS;
     }
 
-    private function editType(Plant $plant)
+    private function editType(Plant $plant): void
     {
         $type = $this->askString(ArrayFunctions::list_nice(PlantTypeEnum::getValues(), ', ', ', or ') . '?', $plant->getType(), function(string $s) {
             return in_array(strtolower($s), PlantTypeEnum::getValues());
@@ -148,7 +148,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
         $plant->setType(strtolower($type));
     }
 
-    private function editGrowingTimes(Plant $plant)
+    private function editGrowingTimes(Plant $plant): void
     {
         $timeToAdult = $this->askInt('Time to adult', (int)$plant->getTimeToAdult());
         $timeToFruit = $this->askInt('Time to fruit', (int)$plant->getTimeToFruit());
@@ -157,7 +157,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
         $plant->setTimeToFruit($timeToFruit);
     }
 
-    private function editImages(Plant $plant)
+    private function editImages(Plant $plant): void
     {
         $sprout = $this->askString('Sprout', $plant->getSproutImage());
         $medium = $this->askString('Medium', $plant->getMediumImage());
@@ -170,7 +170,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
         $plant->setHarvestableImage($fruiting);
     }
 
-    private function selectYieldToEdit(Plant $plant)
+    private function selectYieldToEdit(Plant $plant): void
     {
         $yieldIndex = $this->askInt('Which yield?', 1, fn($n) => $n >= 1 && $n <= count($plant->getPlantYields()));
         $yield = $plant->getPlantYields()[$yieldIndex - 1];
@@ -178,7 +178,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
         $this->editYield($yield);
     }
 
-    private function editYield(PlantYield $yield)
+    private function editYield(PlantYield $yield): void
     {
         while(true)
         {
@@ -236,7 +236,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
         }
     }
 
-    private function addYieldItem(PlantYield $yield)
+    private function addYieldItem(PlantYield $yield): void
     {
         $item = $this->askItem('Item', null);
         $percent = $this->askInt('% Chance', 100, function($n) { return $n > 0 && $n <= 100; });
@@ -251,7 +251,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
         $this->em->persist($yieldItem);
     }
 
-    private function editYieldItem(PlantYieldItem $yieldItem)
+    private function editYieldItem(PlantYieldItem $yieldItem): void
     {
         $item = $this->askItem('Item', $yieldItem->getItem());
         $percent = $this->askInt('% Chance', $yieldItem->getPercentChance(), function($n) { return $n > 0 && $n <= 100; });
@@ -262,7 +262,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
         ;
     }
 
-    private function deleteYield(Plant $plant)
+    private function deleteYield(Plant $plant): void
     {
         $yieldIndex = $this->askInt('Which yield?', 1, fn(int $n) => $n >= 1 && $n <= count($plant->getPlantYields()));
 
@@ -272,7 +272,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
         $this->em->remove($yieldToDelete);
     }
 
-    private function editYieldQuantities(PlantYield $yield)
+    private function editYieldQuantities(PlantYield $yield): void
     {
         $min = $this->askInt('Minimum yield:', $yield->getMin(), function(int $n) { return $n >= 1; });
         $max = $this->askInt('Maximum yield:', max($min, $yield->getMax()), fn(int $n) => $n >= $min);
@@ -283,7 +283,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
         ;
     }
 
-    private function addYield(Plant $plant)
+    private function addYield(Plant $plant): void
     {
         $newYield = (new PlantYield())
             ->setMin(1)

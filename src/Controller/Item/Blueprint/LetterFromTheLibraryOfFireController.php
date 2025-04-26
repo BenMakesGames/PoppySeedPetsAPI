@@ -17,29 +17,30 @@ namespace App\Controller\Item\Blueprint;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Dragon;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Functions\ColorFunctions;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetAssistantService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/letterFromTheLibraryOfFire")]
-class LetterFromTheLibraryOfFireController extends AbstractController
+class LetterFromTheLibraryOfFireController
 {
     #[Route("/{inventory}/read", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function readNote(
-        Inventory $inventory, ResponseService $responseService
-    )
+        Inventory $inventory, ResponseService $responseService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'letterFromTheLibraryOfFire/#/read');
+        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'letterFromTheLibraryOfFire/#/read');
 
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($user->getFireplace() === null)
         {
@@ -74,13 +75,13 @@ The Library of Fire is always open. We look forward to seeing you!');
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function meltSeal(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng, PetAssistantService $petAssistantService
-    )
+        EntityManagerInterface $em, IRandom $rng, PetAssistantService $petAssistantService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'letterFromTheLibraryOfFire/#/meltSeal');
+        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'letterFromTheLibraryOfFire/#/meltSeal');
 
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
         $fireplace = $user->getFireplace();
         $dragon = $em->getRepository(Dragon::class)->findOneBy([ 'owner' => $user ]);
 

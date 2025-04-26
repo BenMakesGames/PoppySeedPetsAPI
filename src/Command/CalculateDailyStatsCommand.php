@@ -119,7 +119,7 @@ class CalculateDailyStatsCommand extends Command
         return self::SUCCESS;
     }
 
-    public function getNewPlayerCount(string $firstDate)
+    public function getNewPlayerCount(string $firstDate): array
     {
         return $this->em->getConnection()
             ->executeQuery('
@@ -131,7 +131,7 @@ class CalculateDailyStatsCommand extends Command
         ;
     }
 
-    public function getAverages(string $firstDate)
+    public function getAverages(string $firstDate): array
     {
         return $this->em->getConnection()
             ->executeQuery('
@@ -173,7 +173,7 @@ class CalculateDailyStatsCommand extends Command
         ;
     }
 
-    public function getLifeTime()
+    public function getLifeTime(): array
     {
         return $this->em->getConnection()
             ->executeQuery('

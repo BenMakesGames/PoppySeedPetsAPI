@@ -18,18 +18,22 @@ use App\Attributes\DoesNotRequireHouseHours;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\PetSpeciesFilterService;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Service\UserAccessor;
 
 #[Route("/encyclopedia")]
-class SpeciesSearchController extends AbstractController
+class SpeciesSearchController
 {
     #[DoesNotRequireHouseHours]
     #[Route("/species", methods: ["GET"])]
-    public function speciesSearch(Request $request, PetSpeciesFilterService $petSpeciesFilterService, ResponseService $responseService)
+    public function speciesSearch(
+        Request $request, PetSpeciesFilterService $petSpeciesFilterService, ResponseService $responseService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        $petSpeciesFilterService->setUser($this->getUser());
+        $petSpeciesFilterService->setUser($userAccessor->getUserOrThrow());
 
         return $responseService->success(
             $petSpeciesFilterService->getResults($request->query),

@@ -12,29 +12,29 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller;
+namespace App\Controller\FieldGuide;
 
-use App\Entity\User;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\SimpleDb;
 use App\Service\CommentFormatter;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/fieldGuide")]
-class FieldGuideController extends AbstractController
+class GetUnlockedEntriesController
 {
     #[Route("", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getUnlockedEntries(
-        ResponseService $responseService, CommentFormatter $commentFormatter
-    )
+        ResponseService $responseService, CommentFormatter $commentFormatter,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::FieldGuide))
             throw new PSPNotUnlockedException('Field Guide');

@@ -203,7 +203,7 @@ class InventoryFilterService
         if(!is_array($value)) $value = [ $value ];
 
         $value = array_map('strtolower', $value);
-        $value = array_intersect($value, ItemTool::MODIFIER_FIELDS);
+        $value = array_intersect($value, ItemTool::ModifierFields);
 
         if(count($value) === 0) return;
 

@@ -32,12 +32,12 @@ trait FilterService
         return $this->filterer->filter($this, $parameters);
     }
 
-    public function addDefaultFilter(string $key, $value)
+    public function addDefaultFilter(string $key, $value): void
     {
         $this->filterer->addDefaultFilter($key, $value);
     }
 
-    public function addRequiredFilter(string $key, $value)
+    public function addRequiredFilter(string $key, $value): void
     {
         $this->filterer->addRequiredFilter($key, $value);
     }

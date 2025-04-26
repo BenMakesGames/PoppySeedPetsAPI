@@ -14,25 +14,26 @@ declare(strict_types=1);
 
 namespace App\Controller\MarketBid;
 
-use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Repository\MarketBidRepository;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/marketBid")]
-class MyBidsController extends AbstractController
+class MyBidsController
 {
     #[Route("", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getMyBids(ResponseService $responseService, MarketBidRepository $marketBidRepository)
+    public function getMyBids(ResponseService $responseService, MarketBidRepository $marketBidRepository,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Market))
             throw new PSPNotUnlockedException('Market');

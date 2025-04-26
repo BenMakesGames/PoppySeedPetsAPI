@@ -17,18 +17,21 @@ namespace App\Controller\Item\Book;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Service\UserAccessor;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/item/fourFunctionCalculator")]
-class FourFunctionCalculatorController extends AbstractController
+class FourFunctionCalculatorController
 {
     #[Route("/{inventory}/read", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function read(Inventory $inventory, ResponseService $responseService)
+    public function read(Inventory $inventory, ResponseService $responseService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'fourFunctionCalculator/#/read');
+        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'fourFunctionCalculator/#/read');
 
         return $responseService->itemActionSuccess('
 | Basic Operations |

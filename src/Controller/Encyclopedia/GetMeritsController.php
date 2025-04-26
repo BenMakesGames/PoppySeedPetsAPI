@@ -18,18 +18,18 @@ use App\Attributes\DoesNotRequireHouseHours;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\MeritFilterService;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/encyclopedia")]
-class GetMeritsController extends AbstractController
+class GetMeritsController
 {
     #[DoesNotRequireHouseHours]
     #[Route("/merit", methods: ["GET"])]
     public function getMerits(
         ResponseService $responseService, MeritFilterService $meritFilterService, Request $request
-    )
+    ): JsonResponse
     {
         return $responseService->success(
             $meritFilterService->getResults($request->query),

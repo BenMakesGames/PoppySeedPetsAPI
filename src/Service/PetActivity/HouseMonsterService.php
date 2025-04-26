@@ -49,7 +49,7 @@ class HouseMonsterService
     /**
      * @param Pet[] $petsAtHome
      */
-    public function doFight(string $userSummonedDescription, array $petsAtHome, SummoningScrollMonster $monster)
+    public function doFight(string $userSummonedDescription, array $petsAtHome, SummoningScrollMonster $monster): string
     {
         $user = $petsAtHome[0]->getOwner();
 
@@ -64,7 +64,7 @@ class HouseMonsterService
             $petWithSkills = $pet->getComputedSkills();
             $totalSkill += $petWithSkills->getBrawl()->getTotal() + max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getStamina()->getTotal()) + $petWithSkills->getDexterity()->getTotal();
 
-            if($monster->element === SummoningScrollMonsterElementEnum::FIRE)
+            if($monster->element === SummoningScrollMonsterElementEnum::Fire)
             {
                 if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
                     $totalSkill += 2;
@@ -74,7 +74,7 @@ class HouseMonsterService
                     $unprotectedPetNames[] = $pet->getName();
                 }
             }
-            else if($monster->element === SummoningScrollMonsterElementEnum::ELECTRICITY)
+            else if($monster->element === SummoningScrollMonsterElementEnum::Electricity)
             {
                 if($petWithSkills->getHasProtectionFromElectricity()->getTotal() > 0)
                     $totalSkill += 2;
@@ -84,7 +84,7 @@ class HouseMonsterService
                     $unprotectedPetNames[] = $pet->getName();
                 }
             }
-            else if($monster->element === SummoningScrollMonsterElementEnum::DARKNESS)
+            else if($monster->element === SummoningScrollMonsterElementEnum::Darkness)
             {
                 if($petWithSkills->getCanSeeInTheDark()->getTotal() > 0)
                     $totalSkill += 2;
@@ -182,11 +182,11 @@ class HouseMonsterService
 
         if(count($unprotectedPets) > 0)
         {
-            if($monster->element === SummoningScrollMonsterElementEnum::FIRE)
+            if($monster->element === SummoningScrollMonsterElementEnum::Fire)
                 $result .= "\n\n" . ArrayFunctions::list_nice($unprotectedPetNames) . ' ' . (count($unprotectedPetNames) === 1 ? 'was' : 'were') . ' unprotected from the ' . $monster->name . '\'s flames, and got singed!';
-            else if($monster->element === SummoningScrollMonsterElementEnum::ELECTRICITY)
+            else if($monster->element === SummoningScrollMonsterElementEnum::Electricity)
                 $result .= "\n\n" . ArrayFunctions::list_nice($unprotectedPetNames) . ' ' . (count($unprotectedPetNames) === 1 ? 'was' : 'were') . ' unprotected from the ' . $monster->name . '\'s sparks, and got zapped!';
-            else if($monster->element === SummoningScrollMonsterElementEnum::DARKNESS)
+            else if($monster->element === SummoningScrollMonsterElementEnum::Darkness)
                 $result .= "\n\n" . ArrayFunctions::list_nice($unprotectedPetNames) . ' ' . (count($unprotectedPetNames) === 1 ? 'was' : 'were') . ' consumed by ' . $monster->name . '\'s darkness, and became terrified!';
 
             foreach($unprotectedPets as $pet)

@@ -18,7 +18,6 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\ItemGroup;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
@@ -38,22 +37,23 @@ use App\Service\PetExperienceService;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/box")]
-class BoxController extends AbstractController
+class BoxController
 {
     #[Route("/twilight/{box}/open", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openTwilightBox(
         Inventory $box, ResponseService $responseService,
-        EntityManagerInterface $em, InventoryService $inventoryService
-    )
+        EntityManagerInterface $em, InventoryService $inventoryService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $box, 'box/twilight/#/open');
         ItemControllerHelpers::validateLocationSpace($box, $em);
@@ -91,11 +91,11 @@ class BoxController extends AbstractController
     public function openOreBox(
         Inventory $box, ResponseService $responseService, InventoryService $inventoryService,
         PetExperienceService $petExperienceService, UserStatsService $userStatsRepository, EntityManagerInterface $em,
-        IRandom $rng
-    )
+        IRandom $rng,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $box, 'box/ores/#/loot');
         ItemControllerHelpers::validateLocationSpace($box, $em);
@@ -159,11 +159,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openSmallOreBox(
         Inventory $box, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng
-    )
+        EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $box, 'box/smallOres/#/loot');
         ItemControllerHelpers::validateLocationSpace($box, $em);
@@ -196,11 +196,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openBoxBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+        UserStatsService $userStatsRepository, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/box/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -269,11 +269,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openCerealBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, Clock $clock
-    )
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, Clock $clock,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/cereal/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -300,11 +300,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openBakers(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, Clock $clock
-    )
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, Clock $clock,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/bakers/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -350,11 +350,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openFruitsNVeggies(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+        UserStatsService $userStatsRepository, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/fruits-n-veggies/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -396,11 +396,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openNatureBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, Clock $clock
-    )
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, Clock $clock,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/nature/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -440,11 +440,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openMonsterBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+        UserStatsService $userStatsRepository, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/monster/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -482,11 +482,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openHandicrafts(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+        UserStatsService $userStatsRepository, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/handicrafts/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -520,11 +520,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openGamingBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+        UserStatsService $userStatsRepository, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/gaming/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -565,11 +565,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openBagOfBeans(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+        UserStatsService $userStatsRepository, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/bagOfBeans/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -595,11 +595,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function disassemblePepperbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, IRandom $rng
-    )
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/pepperbox/#/disassemble');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -629,11 +629,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function listenToJukebox(
         Inventory $inventory, ResponseService $responseService, PetExperienceService $petExperienceService,
-        EntityManagerInterface $em
-    )
+        EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/jukebox/#/listen');
 
@@ -678,11 +678,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function raidSandbox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+        UserStatsService $userStatsRepository, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/sandbox/#/raid');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -749,11 +749,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openPaperBag(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, Clock $clock
-    )
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, Clock $clock,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/paperBag/#/open');
 
@@ -831,11 +831,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function open4thOfJulyBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+        UserStatsService $userStatsRepository, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/july4/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -861,11 +861,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openBastilleDayBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em, IRandom $rng
-    )
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/bastille/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -896,11 +896,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openCincoDeMayoBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+        UserStatsService $userStatsRepository, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/may5/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -926,11 +926,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openNewYearBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+        UserStatsService $userStatsRepository, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/newYear/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -963,11 +963,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openLunarNewYearBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+        UserStatsService $userStatsRepository, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/lunarNewYear/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -992,11 +992,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openGoldChest(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+        UserStatsService $userStatsRepository, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/goldChest/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -1037,11 +1037,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openRubyChest(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+        UserStatsService $userStatsRepository, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/rubyChest/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -1075,11 +1075,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openTowerBox(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+        UserStatsService $userStatsRepository, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/tower/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -1108,11 +1108,11 @@ class BoxController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openFishBag(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em
-    )
+        UserStatsService $userStatsRepository, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/fishBag/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -1154,11 +1154,11 @@ class BoxController extends AbstractController
     public function openChocolateChest(
         Inventory $box, ResponseService $responseService, InventoryService $inventoryService,
         UserStatsService $userStatsRepository, EntityManagerInterface $em,
-        IRandom $rng
-    )
+        IRandom $rng,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $box, 'box/chocolate/#/open');
         ItemControllerHelpers::validateLocationSpace($box, $em);

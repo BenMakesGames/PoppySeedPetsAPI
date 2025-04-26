@@ -16,7 +16,6 @@ namespace App\Controller\Pet;
 
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\SerializationGroupEnum;
@@ -27,21 +26,22 @@ use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\EquipmentFunctions;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/pet")]
-class EquipController extends AbstractController
+class EquipController
 {
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/{pet}/equip/{inventory}", methods: ["POST"], requirements: ["pet" => "\d+", "inventory" => "\d+"])]
     public function equipPet(
-        Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
-    )
+        Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($inventory->getOwner()->getId() !== $user->getId())
             throw new PSPNotFoundException('That item does not exist.');
@@ -101,11 +101,11 @@ class EquipController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/{pet}/hat/{inventory}", methods: ["POST"], requirements: ["pet" => "\d+", "inventory" => "\d+"])]
     public function hatPet(
-        Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em
-    )
+        Pet $pet, Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($inventory->getOwner()->getId() !== $user->getId())
             throw new PSPNotFoundException('That item does not exist.');
@@ -168,11 +168,11 @@ class EquipController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/{pet}/unequip", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function unequipPet(
-        Pet $pet, ResponseService $responseService, EntityManagerInterface $em
-    )
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();
@@ -191,10 +191,11 @@ class EquipController extends AbstractController
 
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/{pet}/unhat", methods: ["POST"], requirements: ["pet" => "\d+"])]
-    public function unhatPet(Pet $pet, ResponseService $responseService, EntityManagerInterface $em)
+    public function unhatPet(Pet $pet, ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();

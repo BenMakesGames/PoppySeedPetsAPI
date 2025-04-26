@@ -28,21 +28,24 @@ class SurveyQuestionAnswer
     #[Groups(["surveyQuestionAnswer"])]
     #[ORM\ManyToOne(targetEntity: SurveyQuestion::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $question;
+    private SurveyQuestion $question;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[Groups(["surveyQuestionAnswer"])]
     #[ORM\Column(type: 'text')]
-    private $answer;
+    private string $answer;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $createdOn;
+    private \DateTimeImmutable $createdOn;
 
-    public function __construct()
+    public function __construct(User $user, SurveyQuestion $question, string $answer)
     {
+        $this->user = $user;
+        $this->question = $question;
+        $this->answer = $answer;
         $this->createdOn = new \DateTimeImmutable();
     }
 
@@ -56,26 +59,19 @@ class SurveyQuestionAnswer
         return $this->question;
     }
 
-    public function setQuestion(?SurveyQuestion $question): self
-    {
-        $this->question = $question;
-
-        return $this;
-    }
-
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(User $user): self
     {
         $this->user = $user;
 
         return $this;
     }
 
-    public function getAnswer(): ?string
+    public function getAnswer(): string
     {
         return $this->answer;
     }
@@ -87,15 +83,8 @@ class SurveyQuestionAnswer
         return $this;
     }
 
-    public function getCreatedOn(): ?\DateTimeImmutable
+    public function getCreatedOn(): \DateTimeImmutable
     {
         return $this->createdOn;
-    }
-
-    public function setCreatedOn(\DateTimeImmutable $createdOn): self
-    {
-        $this->createdOn = $createdOn;
-
-        return $this;
     }
 }

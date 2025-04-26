@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
@@ -29,23 +28,24 @@ use App\Functions\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/pet")]
-class GuessFavoriteFlavorController extends AbstractController
+class GuessFavoriteFlavorController
 {
     #[Route("/{pet}/guessFavoriteFlavor", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function guessFavoriteFlavor(
         Pet $pet, Request $request, ResponseService $responseService,
-        InventoryService $inventoryService, EntityManagerInterface $em
-    )
+        InventoryService $inventoryService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if($pet->getOwner()->getId() !== $user->getId())
             throw new PSPPetNotFoundException();

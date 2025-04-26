@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller;
+namespace App\Controller\Grocer;
 
 use App\Entity\Inventory;
 use App\Entity\User;
@@ -26,48 +26,24 @@ use App\Service\GrocerService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use App\Service\UserAccessor;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/grocer')]
-class GrocerController extends AbstractController
+class BuyController
 {
-    #[Route('', methods: ['GET'])]
-    #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getInventory(
-        GrocerService $grocerService, ResponseService $responseService, EntityManagerInterface $em
-    )
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-        $now = new \DateTimeImmutable();
-
-        $grocerItemsQuantity = UserQuestRepository::findOrCreate($em, $user, 'Grocer Items Purchased Quantity', 0);
-        $grocerItemsDay = UserQuestRepository::findOrCreate($em, $user, 'Grocer Items Purchased Date', $now->format('Y-m-d'));
-
-        if($now->format('Y-m-d') === $grocerItemsDay->getValue())
-            $maxCanPurchase = GrocerService::MAX_CAN_PURCHASE_PER_DAY - $grocerItemsQuantity->getValue();
-        else
-            $maxCanPurchase = GrocerService::MAX_CAN_PURCHASE_PER_DAY;
-
-        return $responseService->success([
-            'inventory' => $grocerService->getInventory(),
-            'maxPerDay' => GrocerService::MAX_CAN_PURCHASE_PER_DAY,
-            'maxRemainingToday' => $maxCanPurchase,
-        ]);
-    }
-
     #[Route('/buy', methods: ['POST'])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buy(
         Request $request, ResponseService $responseService, GrocerService $grocerService,
         TransactionService $transactionService, EntityManagerInterface $em,
-        UserStatsService $userStatsRepository
-    )
+        UserStatsService $userStatsRepository, UserAccessor $userAccessor
+    ): JsonResponse
     {
         $buyTo = $request->request->getInt('location');
         $payWith = strtolower($request->request->getAlpha('payWith', 'moneys'));
@@ -105,8 +81,7 @@ class GrocerController extends AbstractController
             }
         }
 
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
         $now = new \DateTimeImmutable();
 
         $grocerItemsQuantity = UserQuestRepository::findOrCreate($em, $user, 'Grocer Items Purchased Quantity', 0);

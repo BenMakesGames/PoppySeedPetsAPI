@@ -82,9 +82,10 @@ class HouseSimService
         }
         else
         {
-            $ingredient = new ItemQuantity();
-            $ingredient->item = ItemRepository::findOneByName($this->em, $itemName);
-            $ingredient->quantity = $quantity;
+            $ingredient = new ItemQuantity(
+                ItemRepository::findOneByName($this->em, $itemName),
+                $quantity
+            );
         }
 
         return $this->getState()->hasInventory(new HouseSimRecipe([ $ingredient ]));

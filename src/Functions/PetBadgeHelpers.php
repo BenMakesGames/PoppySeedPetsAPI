@@ -25,7 +25,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class PetBadgeHelpers
 {
-    public static function awardBadge(EntityManagerInterface $em, Pet $pet, string $badgeName, PetActivityLog $log)
+    public static function awardBadge(EntityManagerInterface $em, Pet $pet, string $badgeName, PetActivityLog $log): void
     {
         if(!PetBadgeEnum::isAValue($badgeName))
             throw new EnumInvalidValueException(PetBadgeEnum::class, $badgeName);

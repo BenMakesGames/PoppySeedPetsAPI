@@ -52,7 +52,7 @@ class WeatherService
         return $year * 8760 + $hourOfYear;
     }
 
-    public static function getWeather(\DateTimeImmutable $dt, ?Pet $pet, $getHolidays = true): WeatherData
+    public static function getWeather(\DateTimeImmutable $dt, ?Pet $pet, bool $getHolidays = true): WeatherData
     {
         if($pet)
             $dt = $dt->modify('-' . max(0, $pet->getHouseTime()->getActivityTime()) . ' minutes');
@@ -96,7 +96,7 @@ class WeatherService
         return $temp;
     }
 
-    public static function getNoise($hourOfYear, $p1, $p2, $p3, $p4, $p5)
+    public static function getNoise(float $hourOfYear, float $p1, float $p2, float $p3, float $p4, float $p5): float
     {
         return (
             sin($p1 * M_E * $hourOfYear) +
@@ -175,7 +175,10 @@ class WeatherService
         );
     }
 
-    private static function compute24HourForecast()
+    /**
+     * @return WeatherData[]
+     */
+    private static function compute24HourForecast(): array
     {
         $forecast = [];
         $now = new \DateTimeImmutable();

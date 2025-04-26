@@ -19,17 +19,19 @@ use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\UserFilterService;
 use App\Service\ResponseService;
 use App\Service\Typeahead\UserTypeaheadService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/account")]
-class SearchController extends AbstractController
+class SearchController
 {
     #[DoesNotRequireHouseHours]
     #[Route("/search", methods: ["GET"])]
-    public function search(Request $request, UserFilterService $userFilterService, ResponseService $responseService)
+    public function search(
+        Request $request, UserFilterService $userFilterService, ResponseService $responseService
+    ): JsonResponse
     {
         return $responseService->success(
             $userFilterService->getResults($request->query),
@@ -42,7 +44,7 @@ class SearchController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function typeaheadSearch(
         Request $request, ResponseService $responseService, UserTypeaheadService $userTypeaheadService
-    )
+    ): JsonResponse
     {
         $suggestions = $userTypeaheadService->search('name', $request->query->get('search', ''), 5);
 

@@ -16,30 +16,28 @@ namespace App\Controller\MonsterOfTheWeek;
 
 use App\Entity\Inventory;
 use App\Entity\MonsterOfTheWeek;
-use App\Entity\MonsterOfTheWeekContribution;
-use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Service\Clock;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/monsterOfTheWeek")]
-class GetFoodController extends AbstractController
+class GetFoodController
 {
     #[Route("/{monsterId}/getFood", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getFood(
         int $monsterId, ResponseService $responseService, EntityManagerInterface $em,
-        Clock $clock
-    )
+        Clock $clock,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $monster = $em->getRepository(MonsterOfTheWeek::class)->findOneBy([
             'id' => $monsterId

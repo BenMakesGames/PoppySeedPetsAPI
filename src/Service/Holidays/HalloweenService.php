@@ -77,7 +77,7 @@ class HalloweenService
 
         $offset = $this->rng->rngNextInt(0, $numberOfPets - 1);
 
-        $pet = $this->em->getRepository(Pet::class)->createQueryBuilder('p')
+        return $this->em->getRepository(Pet::class)->createQueryBuilder('p')
             ->andWhere('p.tool IS NOT NULL')
             ->andWhere('p.hat IS NOT NULL')
             ->andWhere('p.lastInteracted >= :oneDayAgo')
@@ -89,11 +89,9 @@ class HalloweenService
             ->getQuery()
             ->getSingleResult()
         ;
-
-        return $pet;
     }
 
-    public function resetTrickOrTreater(User $user)
+    public function resetTrickOrTreater(User $user): void
     {
         UserQuestRepository::findOrCreate($this->em, $user, 'Trick-or-Treater', 0)
             ->setValue(0)

@@ -11,7 +11,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -30,23 +29,25 @@ class UserUnlockedAura
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'unlockedAuras')]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[Groups(["myAura"])]
     #[ORM\ManyToOne(targetEntity: Enchantment::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $aura;
+    private Enchantment $aura;
 
     #[Groups(["myAura"])]
     #[ORM\Column(type: 'datetime_immutable')]
-    private $unlockedOn;
+    private \DateTimeImmutable $unlockedOn;
 
     #[Groups(["myAura"])]
     #[ORM\Column(type: 'string', length: 255)]
-    private $comment;
+    private string $comment;
 
-    public function __construct()
+    public function __construct(User $user, Enchantment $aura)
     {
+        $this->user = $user;
+        $this->aura = $aura;
         $this->unlockedOn = new \DateTimeImmutable();
     }
 
@@ -60,23 +61,9 @@ class UserUnlockedAura
         return $this->user;
     }
 
-    public function setUser(User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
     public function getAura(): Enchantment
     {
         return $this->aura;
-    }
-
-    public function setAura(Enchantment $aura): self
-    {
-        $this->aura = $aura;
-
-        return $this;
     }
 
     public function getUnlockedOn(): \DateTimeImmutable

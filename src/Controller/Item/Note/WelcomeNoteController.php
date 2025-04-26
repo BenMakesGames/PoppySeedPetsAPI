@@ -17,18 +17,21 @@ namespace App\Controller\Item\Note;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/note")]
-class WelcomeNoteController extends AbstractController
+class WelcomeNoteController
 {
     #[Route("/welcome/{inventory}/read", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function readWelcomeNote(Inventory $inventory, ResponseService $responseService)
+    public function readWelcomeNote(Inventory $inventory, ResponseService $responseService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        ItemControllerHelpers::validateInventory($this->getUser(), $inventory, 'note/welcome/#/read');
+        ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'note/welcome/#/read');
 
         return $responseService->itemActionSuccess('# Welcome!
 

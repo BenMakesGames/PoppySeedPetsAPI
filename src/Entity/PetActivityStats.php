@@ -26,109 +26,114 @@ class PetActivityStats
 
     #[ORM\OneToOne(targetEntity: Pet::class, inversedBy: 'petActivityStats', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private $pet;
+    private Pet $pet;
 
     #[ORM\Column(type: 'integer')]
-    private $craftSuccess = 0;
+    private int $craftSuccess = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $craftFailure = 0;
+    private int $craftFailure = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $craftTime = 0;
+    private int $craftTime = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $magicBindSuccess = 0;
+    private int $magicBindSuccess = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $magicBindFailure = 0;
+    private int $magicBindFailure = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $magicBindTime = 0;
+    private int $magicBindTime = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $smithSuccess = 0;
+    private int $smithSuccess = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $smithFailure = 0;
+    private int $smithFailure = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $smithTime = 0;
+    private int $smithTime = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $plasticPrintSuccess = 0;
+    private int $plasticPrintSuccess = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $plasticPrintFailure = 0;
+    private int $plasticPrintFailure = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $plasticPrintTime = 0;
+    private int $plasticPrintTime = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $fishSuccess = 0;
+    private int $fishSuccess = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $fishFailure = 0;
+    private int $fishFailure = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $fishTime = 0;
+    private int $fishTime = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $gatherSuccess = 0;
+    private int $gatherSuccess = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $gatherFailure = 0;
+    private int $gatherFailure = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $gatherTime = 0;
+    private int $gatherTime = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $huntSuccess = 0;
+    private int $huntSuccess = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $huntFailure = 0;
+    private int $huntFailure = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $huntTime = 0;
+    private int $huntTime = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $protocol7Success = 0;
+    private int $protocol7Success = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $protocol7Failure = 0;
+    private int $protocol7Failure = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $protocol7Time = 0;
+    private int $protocol7Time = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $programSuccess = 0;
+    private int $programSuccess = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $programFailure = 0;
+    private int $programFailure = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $programTime = 0;
+    private int $programTime = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $umbraSuccess = 0;
+    private int $umbraSuccess = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $umbraFailure = 0;
+    private int $umbraFailure = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $umbraTime = 0;
+    private int $umbraTime = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $parkEvent = 0;
+    private int $parkEvent = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $parkEventTime = 0;
+    private int $parkEventTime = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $other = 0;
+    private int $other = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $otherTime = 0;
+    private int $otherTime = 0;
+
+    public function __construct(Pet $pet)
+    {
+        $this->pet = $pet;
+    }
 
     public function getId(): ?int
     {

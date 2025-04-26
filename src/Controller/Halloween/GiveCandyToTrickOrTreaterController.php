@@ -34,23 +34,24 @@ use App\Service\IRandom;
 use App\Service\PetActivity\EatingService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/halloween")]
-class GiveCandyToTrickOrTreaterController extends AbstractController
+class GiveCandyToTrickOrTreaterController
 {
     #[Route("/trickOrTreater/giveCandy", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function giveCandy(
         ResponseService $responseService, EntityManagerInterface $em, HalloweenService $halloweenService,
-        Request $request, Clock $clock, IRandom $rng, FieldGuideService $fieldGuideService
-    )
+        Request $request, Clock $clock, IRandom $rng, FieldGuideService $fieldGuideService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!CalendarFunctions::isHalloween($clock->now))
             throw new PSPInvalidOperationException('It isn\'t Halloween!');

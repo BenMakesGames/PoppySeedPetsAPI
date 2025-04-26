@@ -14,30 +14,30 @@ declare(strict_types=1);
 
 namespace App\Controller\MonthlyStoryAdventure;
 
-use App\Entity\User;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Service\Filter\MonthlyStoryAdventureFilterService;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/monthlyStoryAdventure")]
-class Search extends AbstractController
+class Search
 {
     #[Route("/", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function handle(
         MonthlyStoryAdventureFilterService $filterService,
         Request $request,
-        ResponseService $responseService
-    )
+        ResponseService $responseService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::StarKindred))
             throw new PSPNotUnlockedException('★Kindred');

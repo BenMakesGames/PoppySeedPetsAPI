@@ -26,7 +26,7 @@ class SummoningScrollMonster
     /** @var string[] */
     public array $minorRewards;
 
-    public ?string $element = null;
+    public ?SummoningScrollMonsterElementEnum $element = null;
     public ?string $petBadge = null;
     public ?string $fieldGuideEntry = null;
 
@@ -38,7 +38,7 @@ class SummoningScrollMonster
         $monster->nameWithArticle = 'a Dragon';
         $monster->majorReward = 'Dragon Vase';
         $monster->minorRewards = [ 'Scales', 'Gold Bar' ];
-        $monster->element = SummoningScrollMonsterElementEnum::FIRE;
+        $monster->element = SummoningScrollMonsterElementEnum::Fire;
 
         return $monster;
     }
@@ -51,7 +51,7 @@ class SummoningScrollMonster
         $monster->nameWithArticle = 'a Balrog';
         $monster->majorReward = 'Blackonite';
         $monster->minorRewards = [ 'Quintessence', 'Talon' ];
-        $monster->element = SummoningScrollMonsterElementEnum::FIRE;
+        $monster->element = SummoningScrollMonsterElementEnum::Fire;
 
         return $monster;
     }
@@ -64,7 +64,7 @@ class SummoningScrollMonster
         $monster->nameWithArticle = 'a Basabasa';
         $monster->majorReward = 'Black Feathers';
         $monster->minorRewards = [ 'Feathers', 'Talon' ];
-        $monster->element = SummoningScrollMonsterElementEnum::FIRE;
+        $monster->element = SummoningScrollMonsterElementEnum::Fire;
 
         return $monster;
     }
@@ -77,7 +77,7 @@ class SummoningScrollMonster
         $monster->nameWithArticle = 'Ifrit';
         $monster->majorReward = 'Gold Crown';
         $monster->minorRewards = [ 'Quintessence', 'Super-wrinkled Cloth' ];
-        $monster->element = SummoningScrollMonsterElementEnum::FIRE;
+        $monster->element = SummoningScrollMonsterElementEnum::Fire;
 
         return $monster;
     }
@@ -90,7 +90,7 @@ class SummoningScrollMonster
         $monster->nameWithArticle = 'Cherufe';
         $monster->majorReward = 'Meteorite';
         $monster->minorRewards = [ 'Liquid-hot Magma', 'Iron Ore' ];
-        $monster->element = SummoningScrollMonsterElementEnum::FIRE;
+        $monster->element = SummoningScrollMonsterElementEnum::Fire;
 
         return $monster;
     }
@@ -103,7 +103,7 @@ class SummoningScrollMonster
         $monster->nameWithArticle = 'a Crystalline Entity';
         $monster->majorReward = 'Forgetting Scroll';
         $monster->minorRewards = [ 'Fiberglass', 'Gypsum' ];
-        $monster->element = SummoningScrollMonsterElementEnum::ELECTRICITY;
+        $monster->element = SummoningScrollMonsterElementEnum::Electricity;
         $monster->petBadge = PetBadgeEnum::DEFEATED_CRYSTALLINE_ENTITY;
 
         return $monster;
@@ -117,7 +117,7 @@ class SummoningScrollMonster
         $monster->nameWithArticle = 'Bivu\'s Release';
         $monster->majorReward = 'Collimated Lance';
         $monster->minorRewards = [ 'Photon', 'Gravitational Waves' ];
-        $monster->element = SummoningScrollMonsterElementEnum::FIRE;
+        $monster->element = SummoningScrollMonsterElementEnum::Fire;
         $monster->petBadge = PetBadgeEnum::DEFEATED_BIVUS_RELEASE;
         $monster->fieldGuideEntry = 'Bivu';
 
@@ -132,7 +132,7 @@ class SummoningScrollMonster
         $monster->nameWithArticle = 'an Intergalactic Space Jelly';
         $monster->majorReward = 'Transparent Bow';
         $monster->minorRewards = [ 'Pectin', 'Jellyfish Jelly' ];
-        $monster->element = SummoningScrollMonsterElementEnum::ELECTRICITY;
+        $monster->element = SummoningScrollMonsterElementEnum::Electricity;
 
         return $monster;
     }
@@ -145,7 +145,7 @@ class SummoningScrollMonster
         $monster->nameWithArticle = 'a Disciple of Hun-Came';
         $monster->majorReward = 'Blackonite';
         $monster->minorRewards = [ 'Scales', 'Quintessence' ];
-        $monster->element = SummoningScrollMonsterElementEnum::DARKNESS;
+        $monster->element = SummoningScrollMonsterElementEnum::Darkness;
 
         $monster->fieldGuideEntry = 'Hun-Came';
 
@@ -154,11 +154,9 @@ class SummoningScrollMonster
 
 }
 
-class SummoningScrollMonsterElementEnum
+enum SummoningScrollMonsterElementEnum: string
 {
-    use FakeEnum;
-
-    public const string FIRE = 'Fire';
-    public const string ELECTRICITY = 'Electricity';
-    public const string DARKNESS = 'Darkness';
+    case Fire = 'Fire';
+    case Electricity = 'Electricity';
+    case Darkness = 'Darkness';
 }

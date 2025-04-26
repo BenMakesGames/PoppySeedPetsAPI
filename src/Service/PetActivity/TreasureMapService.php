@@ -63,7 +63,7 @@ class TreasureMapService
     {
     }
 
-    public function doCetguelisTreasureMap(ComputedPetSkills $petWithSkills)
+    public function doCetguelisTreasureMap(ComputedPetSkills $petWithSkills): void
     {
         $pet = $petWithSkills->getPet();
         $changes = new PetChanges($pet);
@@ -110,7 +110,7 @@ class TreasureMapService
             $this->inventoryService->petAttractsRandomBug($pet);
     }
 
-    public function doGoldIdol(Pet $pet)
+    public function doGoldIdol(Pet $pet): void
     {
         $changes = new PetChanges($pet);
 
@@ -136,7 +136,7 @@ class TreasureMapService
             $this->inventoryService->petAttractsRandomBug($pet);
     }
 
-    public function doAbundantiasVault(Pet $pet)
+    public function doAbundantiasVault(Pet $pet): void
     {
         $changes = new PetChanges($pet);
 
@@ -168,7 +168,7 @@ class TreasureMapService
         $activityLog->setChanges($changes->compare($pet));
     }
 
-    public function doKeybladeTower(ComputedPetSkills $petWithSkills)
+    public function doKeybladeTower(ComputedPetSkills $petWithSkills): void
     {
         $pet = $petWithSkills->getPet();
 
@@ -525,7 +525,10 @@ class TreasureMapService
         return $activityLog;
     }
 
-    public static function getFluffmongerFlavorFoods($flavor)
+    /**
+     * @return string[]
+     */
+    public static function getFluffmongerFlavorFoods(string $flavor): array
     {
         return match ($flavor)
         {
@@ -545,7 +548,7 @@ class TreasureMapService
         };
     }
 
-    public function doToastSkeweredMarshmallow(Pet $pet)
+    public function doToastSkeweredMarshmallow(Pet $pet): void
     {
         $changes = new PetChanges($pet);
 

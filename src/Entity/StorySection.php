@@ -26,7 +26,7 @@ class StorySection
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 20)]
-    private $style;
+    private string $style;
 
     #[ORM\Column(type: 'string', length: 40, nullable: true)]
     private ?string $background = null;
@@ -35,14 +35,14 @@ class StorySection
     private ?string $image = null;
 
     #[ORM\Column(type: 'text')]
-    private $content;
+    private string $content;
 
     #[ORM\Column(type: 'json')]
     private $choices = [];
 
     #[ORM\ManyToOne(targetEntity: 'App\Entity\Story')]
     #[ORM\JoinColumn(nullable: false)]
-    private $story;
+    private Story $story;
 
     public function getId(): ?int
     {

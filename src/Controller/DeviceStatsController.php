@@ -16,16 +16,16 @@ namespace App\Controller;
 
 use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\DeviceStats;
-use App\Entity\User;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/deviceStats")]
-class DeviceStatsController extends AbstractController
+class DeviceStatsController
 {
     #[DoesNotRequireHouseHours]
     #[Route("", methods: ["PUT"])]
@@ -33,10 +33,11 @@ class DeviceStatsController extends AbstractController
     public function create(
         ResponseService $responseService,
         #[MapRequestPayload] DeviceStatsRequest $dto,
-        EntityManagerInterface $em
-    ) {
-        /** @var User $user */
-        $user = $this->getUser();
+        EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
+    {
+        $user = $userAccessor->getUserOrThrow();
 
         if($dto->userAgent && $dto->language && $dto->windowWidth && $dto->screenWidth)
         {

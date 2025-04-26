@@ -30,7 +30,7 @@ class NoHouseSim implements IHouseSim
         NoHouseSim::throwException();
     }
 
-    public function loseItem(Item|string $item, int $quantity = 1)
+    public function loseItem(Item|string $item, int $quantity = 1): void
     {
         NoHouseSim::throwException();
     }
@@ -59,7 +59,7 @@ class NoHouseSim implements IHouseSim
         NoHouseSim::throwException();
     }
 
-    private static function throwException()
+    private static function throwException(): never
     {
         throw new \Exception('Ben did a bad programming thing. He\'s been emailed...');
     }

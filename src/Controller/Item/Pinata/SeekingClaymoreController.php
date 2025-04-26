@@ -20,30 +20,27 @@ use App\Entity\User;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ArrayFunctions;
 use App\Functions\ItemRepository;
-use App\Model\ItemQuantity;
-use App\Model\Music;
 use App\Repository\InventoryRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
-use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/item/seekingClaymore")]
-class SeekingClaymoreController extends AbstractController
+class SeekingClaymoreController
 {
     #[Route("/{inventory}/tune", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function tune(
-        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng
-    )
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'seekingClaymore/#/tune');
 
@@ -97,11 +94,11 @@ class SeekingClaymoreController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function seekMeat(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng
-    )
+        EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'seekingClaymore/#/seekMeat');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -137,11 +134,11 @@ class SeekingClaymoreController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function seekSweet(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng
-    )
+        EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'seekingClaymore/#/seekSweet');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -188,11 +185,11 @@ class SeekingClaymoreController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function seekWheat(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng
-    )
+        EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'seekingClaymore/#/seekWheat');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -226,11 +223,11 @@ class SeekingClaymoreController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function seekBeat(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng
-    )
+        EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'seekingClaymore/#/seekBeat');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -265,11 +262,11 @@ class SeekingClaymoreController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function seekSheet(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng
-    )
+        EntityManagerInterface $em, IRandom $rng,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'seekingClaymore/#/seekSheet');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
@@ -319,11 +316,11 @@ class SeekingClaymoreController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function seekPeat(
         Inventory $inventory, ResponseService $responseService, InventoryService $inventoryService,
-        EntityManagerInterface $em, IRandom $rng
-    )
+        EntityManagerInterface $em,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'seekingClaymore/#/seekPeat');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);

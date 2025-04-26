@@ -18,18 +18,22 @@ use App\Attributes\DoesNotRequireHouseHours;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\ItemFilterService;
 use App\Service\ResponseService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Service\UserAccessor;
 
 #[Route("/encyclopedia")]
-class ItemSearchController extends AbstractController
+class ItemSearchController
 {
     #[DoesNotRequireHouseHours]
     #[Route("/item", methods: ["GET"])]
-    public function itemSearch(Request $request, ItemFilterService $itemFilterService, ResponseService $responseService)
+    public function itemSearch(
+        Request $request, ItemFilterService $itemFilterService, ResponseService $responseService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        $itemFilterService->setUser($this->getUser());
+        $itemFilterService->setUser($userAccessor->getUserOrThrow());
 
         return $responseService->success(
             $itemFilterService->getResults($request->query),

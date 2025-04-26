@@ -75,7 +75,7 @@ class GatheringService
     {
     }
 
-    public function adventure(ComputedPetSkills $petWithSkills)
+    public function adventure(ComputedPetSkills $petWithSkills): void
     {
         $pet = $petWithSkills->getPet();
         $maxSkill = 10 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() - $pet->getAlcohol() - $pet->getPsychedelic();
@@ -443,7 +443,7 @@ class GatheringService
     private function foundHollowLog(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'exploring the nearby woods');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Woods, 'exploring the nearby woods');
 
         $pet = $petWithSkills->getPet();
 
@@ -554,7 +554,7 @@ class GatheringService
     private function foundBirdNest(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'exploring the nearby woods');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Woods, 'exploring the nearby woods');
 
         $pet = $petWithSkills->getPet();
 
@@ -619,7 +619,7 @@ class GatheringService
     private function foundBeach(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::BEACH, 'exploring the beach');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Beach, 'exploring the beach');
 
         $pet = $petWithSkills->getPet();
 
@@ -706,7 +706,7 @@ class GatheringService
     private function foundOvergrownGarden(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'exploring the woods');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Woods, 'exploring the woods');
 
         $pet = $petWithSkills->getPet();
 
@@ -824,7 +824,7 @@ class GatheringService
         }
 
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::UNDERGROUND, 'exploring an iron mine');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Underground, 'exploring an iron mine');
 
         if($this->rng->rngNextInt(1, 20) + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getStamina()->getTotal() >= 10)
         {
@@ -947,7 +947,7 @@ class GatheringService
     private function doNormalMicroJungle(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'exploring the jungle');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Woods, 'exploring the jungle');
 
         $pet = $petWithSkills->getPet();
 
@@ -1011,7 +1011,7 @@ class GatheringService
     private function foundWildHedgemaze(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'exploring the woods');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Woods, 'exploring the woods');
 
         $pet = $petWithSkills->getPet();
 
@@ -1157,7 +1157,7 @@ class GatheringService
     private function foundVolcano(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::VOLCANO, 'exploring the island\'s volcano');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Volcano, 'exploring the island\'s volcano');
 
         $pet = $petWithSkills->getPet();
         $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
@@ -1212,7 +1212,7 @@ class GatheringService
     private function foundGypsumCave(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::UNDERGROUND, 'exploring a gypsum cave');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Underground, 'exploring a gypsum cave');
 
         $pet = $petWithSkills->getPet();
         $eideticMemory = $pet->hasMerit(MeritEnum::EIDETIC_MEMORY);
@@ -1307,7 +1307,7 @@ class GatheringService
     private function doNormalDeepMicroJungle(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::UNDERGROUND, 'exploring the deep jungle');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Underground, 'exploring the deep jungle');
 
         $pet = $petWithSkills->getPet();
 
@@ -1376,7 +1376,7 @@ class GatheringService
     private function foundOldSettlement(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         if($this->rng->rngNextInt(1, 20) === 1)
-            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::WOODS, 'exploring the deep jungle');
+            return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Woods, 'exploring the deep jungle');
 
         $pet = $petWithSkills->getPet();
 
@@ -1434,9 +1434,14 @@ class GatheringService
         return $activityLog;
     }
 
-    private function maybeGetHeatstroke(ComputedPetSkills $petWithSkills, PetActivityLog $activityLog, int $difficulty, string $locationName)
+    private function maybeGetHeatstroke(
+        ComputedPetSkills $petWithSkills,
+        PetActivityLog $activityLog,
+        int $difficulty,
+        string $locationName
+    ): void
     {
-        if($this->rng->rngNextInt(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
+        if($this->rng->rngNextInt(1, 10 + $petWithSkills->getStamina()->getTotal()) < $difficulty)
         {
             $pet = $petWithSkills->getPet();
 

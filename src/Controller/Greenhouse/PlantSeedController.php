@@ -16,7 +16,6 @@ namespace App\Controller\Greenhouse;
 
 use App\Entity\GreenhousePlant;
 use App\Entity\Inventory;
-use App\Entity\User;
 use App\Enum\PlantTypeEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
@@ -28,23 +27,24 @@ use App\Repository\InventoryRepository;
 use App\Service\GreenhouseService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/greenhouse")]
-class PlantSeedController extends AbstractController
+class PlantSeedController
 {
     #[Route("/plantSeed", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function plantSeed(
         ResponseService $responseService, InventoryRepository $inventoryRepository, Request $request,
-        EntityManagerInterface $em, GreenhouseService $greenhouseService
-    )
+        EntityManagerInterface $em, GreenhouseService $greenhouseService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
         $greenhouse = $user->getGreenhouse();
 
         if($greenhouse === null)

@@ -114,7 +114,7 @@ class EatingService
         return $favoriteFlavorStrength;
     }
 
-    public function applyFoodEffects(Pet $pet, FoodWithSpice $food)
+    public function applyFoodEffects(Pet $pet, FoodWithSpice $food): void
     {
         $pet->increaseAlcohol($food->alcohol);
 

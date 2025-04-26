@@ -18,18 +18,18 @@ use App\Attributes\DoesNotRequireHouseHours;
 use App\Enum\SerializationGroupEnum;
 use App\Service\ResponseService;
 use App\Service\Typeahead\ItemTypeaheadService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/encyclopedia")]
-class ItemTypeaheadController extends AbstractController
+class ItemTypeaheadController
 {
     #[DoesNotRequireHouseHours]
     #[Route("/typeahead/item", methods: ["GET"])]
     public function typeaheadSearch(
         Request $request, ResponseService $responseService, ItemTypeaheadService $itemTypeaheadService
-    )
+    ): JsonResponse
     {
         $suggestions = $itemTypeaheadService->search('name', $request->query->get('search', ''), 5);
 

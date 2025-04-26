@@ -19,17 +19,19 @@ use App\Entity\PetSpecies;
 use App\Enum\SerializationGroupEnum;
 use App\Service\ResponseService;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route("/encyclopedia")]
-class GetSpeciesByFamilyController extends AbstractController
+class GetSpeciesByFamilyController
 {
     #[DoesNotRequireHouseHours]
     #[Route("/speciesByFamily/{familyName}", methods: ["GET"])]
-    public function speciesByFamily(string $familyName,
+    public function speciesByFamily(
+        string $familyName,
         ManagerRegistry $doctrine,
-        ResponseService $responseService)
+        ResponseService $responseService
+    ): JsonResponse
     {
         $species = $doctrine->getRepository(PetSpecies::class, 'readonly')
             ->createQueryBuilder('s')

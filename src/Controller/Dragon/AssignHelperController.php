@@ -15,28 +15,28 @@ declare(strict_types=1);
 namespace App\Controller\Dragon;
 
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Functions\DragonHelpers;
 use App\Service\PetAssistantService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use App\Service\UserAccessor;
 
 #[Route("/dragon")]
-class AssignHelperController extends AbstractController
+class AssignHelperController
 {
     #[Route("/assignHelper/{pet}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function assignHelper(
         Pet $pet, ResponseService $responseService, EntityManagerInterface $em,
-        PetAssistantService $petAssistantService, NormalizerInterface $normalizer
-    )
+        PetAssistantService $petAssistantService, NormalizerInterface $normalizer,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $petAssistantService->helpDragon($user, $pet);
 

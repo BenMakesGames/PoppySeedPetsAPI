@@ -27,20 +27,22 @@ use App\Service\MuseumService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserAccessor;
 
 #[Route("/museum")]
-class GiftShopController extends AbstractController
+class GiftShopController
 {
     #[Route("/giftShop", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getGiftShop(ResponseService $responseService, MuseumService $museumService)
+    public function getGiftShop(ResponseService $responseService, MuseumService $museumService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $giftShop = $museumService->getGiftShopInventory($user);
 
@@ -54,11 +56,11 @@ class GiftShopController extends AbstractController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buyFromGiftShop(
         Request $request, ResponseService $responseService, MuseumService $museumService,
-        InventoryService $inventoryService, EntityManagerInterface $em, TransactionService $transactionService
-    )
+        InventoryService $inventoryService, EntityManagerInterface $em, TransactionService $transactionService,
+        UserAccessor $userAccessor
+    ): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $userAccessor->getUserOrThrow();
 
         $categoryName = $request->request->getString('category');
         $itemName = $request->request->getString('item');
