@@ -189,7 +189,9 @@ class WeedController
                 ->addTags(PetActivityLogTagHelpers::findByNames($em, [ 'Add-on Assistance', 'Greenhouse' ]))
             ;
 
-            if($extraItem === 'Scales' || $foundItem2 === 'Scales' || $foundItem2 === 'Freshly-squeezed Fish Oil')
+            $foundItem2Name = $foundItem2?->getItem()?->getName();
+
+            if($extraItem === 'Scales' || $foundItem2Name === 'Scales' || $foundItem2Name === 'Freshly-squeezed Fish Oil')
                 PetBadgeHelpers::awardBadge($em, $helper, PetBadgeEnum::GREENHOUSE_FISHER, $activityLogEntry);
         }
 
