@@ -6,11 +6,13 @@ use App\Entity\PetActivityLog;
 use App\Entity\PetActivityLogTag;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
+use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\PetBadgeHelpers;
 use App\Model\ComputedPetSkills;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -71,6 +73,8 @@ class FructalPlaneService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
             $this->petExperienceService->spendTime($pet, 2, PetActivityStatEnum::UMBRA, false);
 
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PLANESWALKER_FRUCTAL_PLANE, $activityLog);
+
             return $activityLog;
         }
 
@@ -89,6 +93,8 @@ class FructalPlaneService
         $this->petExperienceService->spendTime($pet, 2, PetActivityStatEnum::UMBRA, true);
 
         $pet->getTool()->setEnchantment(null);
+
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PLANESWALKER_FRUCTAL_PLANE, $activityLog);
 
         return $activityLog;
     }
