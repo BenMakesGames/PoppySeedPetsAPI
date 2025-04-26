@@ -18,6 +18,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
+use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
@@ -119,7 +120,12 @@ class BurntForestService
 
         if($activityLog)
         {
-            $activityLog->setChanges($changes->compare($pet));
+            $activityLog
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Location_The_Burnt_Forest
+                ]))
+                ->setChanges($changes->compare($pet))
+            ;
 
             $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Burnt Forest', ActivityHelpers::PetName($pet) . ' used their ' . $pet->getTool()->getFullItemName() . ' to visit the Burnt Forest.');
 
