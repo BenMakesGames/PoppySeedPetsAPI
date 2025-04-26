@@ -22,6 +22,7 @@ use App\Enum\LocationEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\UnreachableException;
 use App\Functions\InMemoryCache;
 use App\Model\TraderOfferCostOrYield;
 use App\Service\InventoryService;
@@ -99,10 +100,10 @@ final class Claim
     {
         return match ($yield->type)
         {
-            CostOrYieldTypeEnum::ITEM => $yield->quantity . '× ' . $yield->item->getName(),
-            CostOrYieldTypeEnum::MONEY => $yield->quantity . '~~m~~',
-            CostOrYieldTypeEnum::RECYCLING_POINTS => $yield->quantity . ' Recycling Points',
-            default => throw new \Exception('Unexpected reward type "' . $yield->type . '"!? Weird! Ben should fix this!'),
+            CostOrYieldTypeEnum::Item => $yield->quantity . '× ' . $yield->item->getName(),
+            CostOrYieldTypeEnum::Money => $yield->quantity . '~~m~~',
+            CostOrYieldTypeEnum::RecyclingPoints => $yield->quantity . ' Recycling Points',
+            default => throw new UnreachableException()
         };
     }
 
@@ -113,22 +114,22 @@ final class Claim
     {
         switch($yield->type)
         {
-            case CostOrYieldTypeEnum::ITEM:
+            case CostOrYieldTypeEnum::Item:
                 for($i = 0; $i < $yield->quantity; $i++)
                     $inventoryService->receiveItem($yield->item, $user, $user, 'Received by claiming an Achievement.', LocationEnum::HOME, true);
 
                 break;
 
-            case CostOrYieldTypeEnum::MONEY:
+            case CostOrYieldTypeEnum::Money:
                 $transactionService->getMoney($user, $yield->quantity, 'Received by claiming an Achievement.');
                 break;
 
-            case CostOrYieldTypeEnum::RECYCLING_POINTS:
+            case CostOrYieldTypeEnum::RecyclingPoints:
                 $transactionService->getRecyclingPoints($user, $yield->quantity, 'Received by claiming an Achievement.');
                 break;
 
             default:
-                throw new \Exception('Unexpected reward type "' . $yield->type . '"!? Weird! Ben should fix this!');
+                throw new UnreachableException();
         }
     }
 }

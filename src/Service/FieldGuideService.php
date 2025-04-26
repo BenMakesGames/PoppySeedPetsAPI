@@ -62,7 +62,7 @@ class FieldGuideService
         return $this->doesExist($user, $entry);
     }
 
-    private $userEntryPerRequestCache = [];
+    private array $userEntryPerRequestCache = [];
 
     public function findOrCreate(User $user, FieldGuideEntry $entry, string $comment): FindOrCreateResponse
     {
@@ -101,7 +101,7 @@ class FieldGuideService
         return $record;
     }
 
-    public function doesExist(User $user, FieldGuideEntry $entry)
+    public function doesExist(User $user, FieldGuideEntry $entry): bool
     {
         $cacheKey = $user->getId() . '-' . $entry->getId();
 

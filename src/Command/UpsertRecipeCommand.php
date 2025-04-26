@@ -27,16 +27,10 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
 {
     use AskItemTrait;
 
-    private EntityManagerInterface $em;
-    private InventoryService $inventoryService;
-
     public function __construct(
-        EntityManagerInterface $em, InventoryService $inventoryService
+        private readonly EntityManagerInterface $em
     )
     {
-        $this->em = $em;
-        $this->inventoryService = $inventoryService;
-
         parent::__construct();
     }
 
@@ -117,7 +111,7 @@ class UpsertRecipeCommand extends PoppySeedPetsCommand
         return self::SUCCESS;
     }
 
-    private function askName(string $prompt, array $recipe, string $name)
+    private function askName(string $prompt, array $recipe, string $name): string
     {
         $question = new Question($prompt . ' (' . $name . ') ', $name);
         $question->setValidator(function($answer) use($recipe) {

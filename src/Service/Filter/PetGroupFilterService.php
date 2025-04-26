@@ -27,6 +27,7 @@ class PetGroupFilterService
 
     public const int PageSize = 20;
 
+    /** @var EntityRepository<PetGroup> */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $em)
@@ -53,7 +54,7 @@ class PetGroupFilterService
         return $this->repository->createQueryBuilder('g');
     }
 
-    public function filterType(QueryBuilder $qb, $value): void
+    public function filterType(QueryBuilder $qb, mixed $value): void
     {
         $qb
             ->andWhere('g.type = :type')
@@ -61,7 +62,7 @@ class PetGroupFilterService
         ;
     }
 
-    public function filterName(QueryBuilder $qb, $value): void
+    public function filterName(QueryBuilder $qb, mixed $value): void
     {
         $qb
             ->andWhere('g.name LIKE :name')
@@ -69,7 +70,7 @@ class PetGroupFilterService
         ;
     }
 
-    public function filterWithPetsOwnedBy(QueryBuilder $qb, $value): void
+    public function filterWithPetsOwnedBy(QueryBuilder $qb, mixed $value): void
     {
         if(is_numeric($value) && (int)$value == $value)
         {

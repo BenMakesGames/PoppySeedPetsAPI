@@ -27,11 +27,9 @@ class UserStyleFilter
 
     public const int PageSize = 12;
 
-    /**
-     * @var User
-     */
     private User $user;
 
+    /** @var EntityRepository<UserStyle> */
     private readonly EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $em)
@@ -68,7 +66,7 @@ class UserStyleFilter
         ;
     }
 
-    public function filterFollowing(QueryBuilder $qb, $value): QueryBuilder
+    public function filterFollowing(QueryBuilder $qb, mixed $value): QueryBuilder
     {
         if(strtolower($value) === 'true' || (int)$value > 0)
         {

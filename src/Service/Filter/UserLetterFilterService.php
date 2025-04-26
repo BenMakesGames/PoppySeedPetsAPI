@@ -26,6 +26,7 @@ class UserLetterFilterService
 
     public const int PageSize = 20;
 
+    /** @var EntityRepository<UserLetter> */
     private readonly EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $em)
@@ -50,7 +51,7 @@ class UserLetterFilterService
         ;
     }
 
-    public function filterUser(QueryBuilder $qb, $value): void
+    public function filterUser(QueryBuilder $qb, mixed $value): void
     {
         $qb
             ->andWhere('l.user = :userId')

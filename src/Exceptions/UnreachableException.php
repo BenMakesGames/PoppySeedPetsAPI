@@ -11,11 +11,12 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace App\Enum;
+namespace App\Exceptions;
 
-enum CostOrYieldTypeEnum: string
+class UnreachableException extends \RuntimeException
 {
-    case Item = 'item';
-    case Money = 'money';
-    case RecyclingPoints = 'recyclingPoints';
+    public function __construct()
+    {
+        parent::__construct('Unreachable code... was reached?!??');
+    }
 }

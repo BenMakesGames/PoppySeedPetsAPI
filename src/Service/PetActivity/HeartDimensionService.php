@@ -21,6 +21,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
+use App\Exceptions\UnreachableException;
 use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
@@ -373,6 +374,7 @@ class HeartDimensionService
             1 => $this->doCelestePlusShortHike($pet),
             2 => $this->doBalatro($pet),
             3 => $this->doEverything($pet),
+            default => throw new UnreachableException()
         };
     }
 

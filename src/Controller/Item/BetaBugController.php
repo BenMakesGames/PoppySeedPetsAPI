@@ -132,7 +132,7 @@ class BetaBugController
     private static function makeGlitchedOutRainbowsaber(
         ResponseService $responseService, EntityManagerInterface $em,
         User $user, Inventory $rainbowsaber
-    )
+    ): void
     {
         $rainbowsaber->changeItem(ItemRepository::findOneByName($em, 'Glitched-out Rainbowsaber'));
         $rainbowsaber->addComment($user->getName() . ' introduced a Beta Bug into the Rainbowsaber, glitching it out!');
@@ -185,7 +185,7 @@ class BetaBugController
         }
         else
         {
-            $responseService->setReloadPets(true);
+            $responseService->setReloadPets();
         }
 
         $responseService->addFlashMessage($message);

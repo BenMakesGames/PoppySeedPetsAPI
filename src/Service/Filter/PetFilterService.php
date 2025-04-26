@@ -87,7 +87,7 @@ class PetFilterService
         }
     }
 
-    public function filterSpecies(QueryBuilder $qb, $value): void
+    public function filterSpecies(QueryBuilder $qb, mixed $value): void
     {
         $qb
             ->andWhere('p.species=:speciesId')
@@ -95,7 +95,7 @@ class PetFilterService
         ;
     }
 
-    public function filterOwner(QueryBuilder $qb, $value): void
+    public function filterOwner(QueryBuilder $qb, mixed $value): void
     {
         $qb
             ->andWhere('p.owner = :userId')
@@ -103,7 +103,7 @@ class PetFilterService
         ;
     }
 
-    public function filterLocation(QueryBuilder $qb, $value): void
+    public function filterLocation(QueryBuilder $qb, mixed $value): void
     {
         if(is_array($value))
         {
@@ -121,7 +121,7 @@ class PetFilterService
         }
     }
 
-    public function filterGuild(QueryBuilder $qb, $value): void
+    public function filterGuild(QueryBuilder $qb, mixed $value): void
     {
         if(!in_array('guildMembership', $qb->getAllAliases()))
             $qb->join('p.guildMembership', 'guildMembership');
@@ -132,7 +132,7 @@ class PetFilterService
         ;
     }
 
-    public function filterMerit(QueryBuilder $qb, $value): void
+    public function filterMerit(QueryBuilder $qb, mixed $value): void
     {
         if(!in_array('merits', $qb->getAllAliases()))
             $qb->join('p.merits', 'merits');
@@ -143,7 +143,7 @@ class PetFilterService
         ;
     }
 
-    public function filterIsPregnant(QueryBuilder $qb, $value): void
+    public function filterIsPregnant(QueryBuilder $qb, mixed $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('p.pregnancy IS NULL');
@@ -151,7 +151,7 @@ class PetFilterService
             $qb->andWhere('p.pregnancy IS NOT NULL');
     }
 
-    public function filterBadge(QueryBuilder $qb, $value): void
+    public function filterBadge(QueryBuilder $qb, mixed $value): void
     {
         if(!in_array('badges', $qb->getAllAliases()))
             $qb->leftJoin('p.badges', 'badges');
@@ -162,7 +162,7 @@ class PetFilterService
         ;
     }
 
-    public function filterToolOrHat(QueryBuilder $qb, $value): void
+    public function filterToolOrHat(QueryBuilder $qb, mixed $value): void
     {
         if(!in_array('hat', $qb->getAllAliases()))
             $qb->leftJoin('p.hat', 'hat');

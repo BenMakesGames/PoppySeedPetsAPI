@@ -17,6 +17,7 @@ namespace App\Controller\MonsterOfTheWeek;
 use App\Entity\Item;
 use App\Enum\MonsterOfTheWeekEnum;
 use App\Enum\PetSkillEnum;
+use App\Exceptions\UnreachableException;
 
 final class MonsterOfTheWeekHelpers
 {
@@ -30,7 +31,7 @@ final class MonsterOfTheWeekHelpers
             MonsterOfTheWeekEnum::Dionysus => 'Blueberries',
             MonsterOfTheWeekEnum::Huehuecoyotl => 'Music Note',
             MonsterOfTheWeekEnum::EiriPersona => 'Pointer',
-            default => throw new \InvalidArgumentException("Invalid monster")
+            default => throw new UnreachableException()
         };
     }
 
@@ -45,7 +46,7 @@ final class MonsterOfTheWeekHelpers
             MonsterOfTheWeekEnum::Dionysus => [ 100, 425, 750 ],
             MonsterOfTheWeekEnum::Huehuecoyotl => [ 10, 45, 75 ],
             MonsterOfTheWeekEnum::EiriPersona => [ 25, 110, 200 ],
-            default => throw new \InvalidArgumentException("Invalid monster")
+            default => throw new UnreachableException()
         };
     }
 
@@ -65,7 +66,7 @@ final class MonsterOfTheWeekHelpers
             MonsterOfTheWeekEnum::Cardea => 'Cardea\'s Lockbearer',
             MonsterOfTheWeekEnum::Dionysus => 'Dionysus\'s Hunger',
             MonsterOfTheWeekEnum::Huehuecoyotl => 'Huehuecoyotl\'s Folly',
-            default => throw new \InvalidArgumentException("Invalid monster"),
+            default => throw new UnreachableException()
         };
     }
 
@@ -79,7 +80,7 @@ final class MonsterOfTheWeekHelpers
             MonsterOfTheWeekEnum::Dionysus => [ 'Essence d\'Assortiment', 'Potion of Nature' ],
             MonsterOfTheWeekEnum::Huehuecoyotl => [ 'Potion of Music', 'Dancing Sword', 'LP' ],
             MonsterOfTheWeekEnum::EiriPersona => [ 'Magic Smoke', 'Lightning in a Bottle', 'Potion of Science' ],
-            default => throw new \InvalidArgumentException("Invalid monster")
+            default => throw new UnreachableException()
         };
     }
 
@@ -107,7 +108,7 @@ final class MonsterOfTheWeekHelpers
             MonsterOfTheWeekEnum::Dionysus => [ 'Skill Scroll: Nature' ],
             MonsterOfTheWeekEnum::Huehuecoyotl => [ 'Skill Scroll: Music' ],
             MonsterOfTheWeekEnum::EiriPersona => [ 'Skill Scroll: Science' ],
-            default => throw new \InvalidArgumentException("Invalid monster"),
+            default => throw new UnreachableException()
         };
     }
 

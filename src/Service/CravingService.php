@@ -51,7 +51,7 @@ class CravingService
         return true;
     }
 
-    public function maybeRemoveCraving(Pet $pet)
+    public function maybeRemoveCraving(Pet $pet): void
     {
         if(
             CravingService::petHasCraving($pet) &&
@@ -64,7 +64,7 @@ class CravingService
         }
     }
 
-    public function maybeAddCraving(Pet $pet)
+    public function maybeAddCraving(Pet $pet): void
     {
         if(
             (!$pet->hasMerit(MeritEnum::AFFECTIONLESS) || $pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE)) &&
@@ -114,7 +114,7 @@ class CravingService
         );
     }
 
-    public function satisfyCraving(Pet $pet, Item $food)
+    public function satisfyCraving(Pet $pet, Item $food): void
     {
         if(!$pet->getCraving() || $pet->getCraving()->isSatisfied())
             return;

@@ -42,12 +42,12 @@ class Filterer
         $this->pageSize = $pageSize;
     }
 
-    public function addDefaultFilter(string $key, $value): void
+    public function addDefaultFilter(string $key, mixed $value): void
     {
         $this->defaultFilters[$key] = $value;
     }
 
-    public function addRequiredFilter(string $key, $value): void
+    public function addRequiredFilter(string $key, mixed $value): void
     {
         $this->requiredFilters[$key] = $value;
     }

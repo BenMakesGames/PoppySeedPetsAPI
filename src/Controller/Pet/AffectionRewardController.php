@@ -79,7 +79,7 @@ class AffectionRewardController
 
         $availableMerits = $em->getRepository(Merit::class)->findBy([ 'name' => MeritFunctions::getAvailableMerits($pet) ]);
 
-        /** @var Merit $merit */
+        /** @var Merit|null $merit */
         $merit = ArrayFunctions::find_one($availableMerits, fn(Merit $m) => $m->getName() === $meritName);
 
         if(!$merit)

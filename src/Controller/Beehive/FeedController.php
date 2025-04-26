@@ -62,9 +62,6 @@ class FeedController
 
         if($inventoryService->loseItem($user, $itemToFeed->getId(), LocationEnum::HOME, 1) === 0)
         {
-            if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Beehive))
-                throw new PSPNotFoundException('You do not have ' . $itemToFeed->getNameWithArticle() . ' in your house!');
-
             if($inventoryService->loseItem($user, $itemToFeed->getId(), LocationEnum::BASEMENT, 1) === 0)
                 throw new PSPNotFoundException('You do not have ' . $itemToFeed->getNameWithArticle() . ' in your house, or your basement!');
             else

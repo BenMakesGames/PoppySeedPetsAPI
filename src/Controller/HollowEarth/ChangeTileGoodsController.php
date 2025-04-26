@@ -41,7 +41,7 @@ class ChangeTileGoodsController
 
         $tile = $player->getCurrentTile();
 
-        if(!$tile || !$tile->getGoods() || count($tile->getGoods()) === 0)
+        if($tile->getGoods() === null || count($tile->getGoods()) === 0)
             throw new PSPInvalidOperationException('You are not on a tile that produces goods.');
 
         if($player->getCurrentAction() || $player->getMovesRemaining() > 0)

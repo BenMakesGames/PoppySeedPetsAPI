@@ -28,7 +28,6 @@ use App\Functions\PetActivityLogFactory;
 use App\Functions\UserMenuFunctions;
 use App\Model\PetChangesSummary;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -46,8 +45,8 @@ class ResponseService
         private readonly SerializerInterface $serializer,
         private readonly NormalizerInterface $normalizer,
         private readonly EntityManagerInterface $em,
-        private readonly Security $security,
-        private readonly WeatherService $weatherService
+        private readonly WeatherService $weatherService,
+        private readonly UserAccessor $userAccessor
     )
     {
     }
@@ -57,7 +56,7 @@ class ResponseService
         $this->sessionId = $sessionId;
     }
 
-    public function itemActionSuccess($markdown, $data = []): JsonResponse
+    public function itemActionSuccess(?string $markdown, array $data = []): JsonResponse
     {
         $data = array_merge($data, [
             'text' => $markdown
@@ -66,18 +65,12 @@ class ResponseService
         return $this->success($data);
     }
 
-    private function getUser(): ?User
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->security->getUser();
-    }
-
     /**
      * @param string[] $groups
      */
-    public function success($data = null, array $groups = []): JsonResponse
+    public function success(mixed $data = null, array $groups = []): JsonResponse
     {
-        $user = $this->getUser();
+        $user = $this->userAccessor->getUser();
 
         $responseData = [
             'success' => true,
@@ -197,7 +190,7 @@ class ResponseService
 
     private function injectUserData(array &$responseData): void
     {
-        $user = $this->getUser();
+        $user = $this->userAccessor->getUser();
 
         if($user)
         {

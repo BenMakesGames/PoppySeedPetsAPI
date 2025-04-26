@@ -29,6 +29,7 @@ class PetSpeciesFilterService
 
     public const int PageSize = 20;
 
+    /** @var EntityRepository<PetSpecies> */
     private EntityRepository $repository;
     private ?User $user;
 
@@ -61,7 +62,7 @@ class PetSpeciesFilterService
         $this->user = $user;
     }
 
-    public function filterHasPet(QueryBuilder $qb, $value): void
+    public function filterHasPet(QueryBuilder $qb, mixed $value): void
     {
         if(!$this->user || $value === null)
             return;
@@ -74,7 +75,7 @@ class PetSpeciesFilterService
         $qb->setParameter('user', $this->user);
     }
 
-    public function filterHasDiscovered(QueryBuilder $qb, $value): void
+    public function filterHasDiscovered(QueryBuilder $qb, mixed $value): void
     {
         if(!$this->user || $value === null)
             return;
@@ -87,7 +88,7 @@ class PetSpeciesFilterService
         $qb->setParameter('user', $this->user);
     }
 
-    public function filterName(QueryBuilder $qb, $value): void
+    public function filterName(QueryBuilder $qb, mixed $value): void
     {
         if(!$value)
             return;
@@ -98,7 +99,7 @@ class PetSpeciesFilterService
         ;
     }
 
-    public function filterFamily(QueryBuilder $qb, $value): void
+    public function filterFamily(QueryBuilder $qb, mixed $value): void
     {
         $qb
             ->andWhere('s.family=:family')

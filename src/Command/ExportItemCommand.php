@@ -169,7 +169,7 @@ class ExportItemCommand extends PoppySeedPetsCommand
         return $sql;
     }
 
-    private static function encodeValueToSql($value)
+    private static function encodeValueToSql(mixed $value): mixed
     {
         if($value === true)
             return 1;

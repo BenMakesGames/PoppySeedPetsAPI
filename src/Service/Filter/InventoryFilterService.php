@@ -84,7 +84,7 @@ class InventoryFilterService
         ;
     }
 
-    public function filterUser(QueryBuilder $qb, $value): void
+    public function filterUser(QueryBuilder $qb, mixed $value): void
     {
         $qb
             ->andWhere('i.owner = :userId')
@@ -92,7 +92,7 @@ class InventoryFilterService
         ;
     }
 
-    public function filterLocation(QueryBuilder $qb, $value): void
+    public function filterLocation(QueryBuilder $qb, mixed $value): void
     {
         $qb
             ->andWhere('i.location = :location')
@@ -100,7 +100,7 @@ class InventoryFilterService
         ;
     }
 
-    public function filterName(QueryBuilder $qb, $value, $filters): void
+    public function filterName(QueryBuilder $qb, mixed $value, array $filters): void
     {
         $name = mb_trim($value);
 
@@ -122,7 +122,7 @@ class InventoryFilterService
         }
     }
 
-    public function filterEdible(QueryBuilder $qb, $value): void
+    public function filterEdible(QueryBuilder $qb, mixed $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('item.food IS NULL');
@@ -130,7 +130,7 @@ class InventoryFilterService
             $qb->andWhere('item.food IS NOT NULL');
     }
 
-    public function filterCandy(QueryBuilder $qb, $value): void
+    public function filterCandy(QueryBuilder $qb, mixed $value): void
     {
         if((int)(new \DateTimeImmutable())->format('n') !== 10)
             return;
@@ -144,7 +144,7 @@ class InventoryFilterService
             $qb->andWhere('food.isCandy=1');
     }
 
-    public function filterFoodFlavors(QueryBuilder $qb, $value): void
+    public function filterFoodFlavors(QueryBuilder $qb, mixed $value): void
     {
         if(!is_array($value)) $value = [ $value ];
 
@@ -166,7 +166,7 @@ class InventoryFilterService
         }
     }
 
-    public function filterAHat(QueryBuilder $qb, $value): void
+    public function filterAHat(QueryBuilder $qb, mixed $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('item.hat IS NULL');
@@ -174,7 +174,7 @@ class InventoryFilterService
             $qb->andWhere('item.hat IS NOT NULL');
     }
 
-    public function filterBonus(QueryBuilder $qb, $value): void
+    public function filterBonus(QueryBuilder $qb, mixed $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('item.enchants IS NULL');
@@ -182,7 +182,7 @@ class InventoryFilterService
             $qb->andWhere('item.enchants IS NOT NULL');
     }
 
-    public function filterSpice(QueryBuilder $qb, $value): void
+    public function filterSpice(QueryBuilder $qb, mixed $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('item.spice IS NULL');
@@ -190,7 +190,7 @@ class InventoryFilterService
             $qb->andWhere('item.spice IS NOT NULL');
     }
 
-    public function filterEquipable(QueryBuilder $qb, $value): void
+    public function filterEquipable(QueryBuilder $qb, mixed $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('item.tool IS NULL');
@@ -198,7 +198,7 @@ class InventoryFilterService
             $qb->andWhere('item.tool IS NOT NULL');
     }
 
-    public function filterEquipStats(QueryBuilder $qb, $value): void
+    public function filterEquipStats(QueryBuilder $qb, mixed $value): void
     {
         if(!is_array($value)) $value = [ $value ];
 
@@ -220,7 +220,7 @@ class InventoryFilterService
         }
     }
 
-    public function filterHasDonated(QueryBuilder $qb, $value): void
+    public function filterHasDonated(QueryBuilder $qb, mixed $value): void
     {
         if(!$this->user)
             return;
@@ -236,7 +236,7 @@ class InventoryFilterService
             $qb->andWhere('donations.id IS NOT NULL');
     }
 
-    public function filterIsFuel(QueryBuilder $qb, $value): void
+    public function filterIsFuel(QueryBuilder $qb, mixed $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('item.fuel = 0');
@@ -244,7 +244,7 @@ class InventoryFilterService
             $qb->andWhere('item.fuel > 0');
     }
 
-    public function filterIsFertilizer(QueryBuilder $qb, $value): void
+    public function filterIsFertilizer(QueryBuilder $qb, mixed $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('item.fertilizer = 0');
@@ -252,7 +252,7 @@ class InventoryFilterService
             $qb->andWhere('item.fertilizer > 0');
     }
 
-    public function filterIsTreasure(QueryBuilder $qb, $value): void
+    public function filterIsTreasure(QueryBuilder $qb, mixed $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('item.treasure IS NULL');
@@ -260,7 +260,7 @@ class InventoryFilterService
             $qb->andWhere('item.treasure IS NOT NULL');
     }
 
-    public function filterIsRecyclable(QueryBuilder $qb, $value): void
+    public function filterIsRecyclable(QueryBuilder $qb, mixed $value): void
     {
         if(strtolower($value) === 'false' || !$value)
             $qb->andWhere('item.recycleValue = 0');

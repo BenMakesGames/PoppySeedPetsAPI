@@ -35,8 +35,7 @@ class BasementBlueprintController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, Request $request,
-        PetExperienceService $petExperienceService,
-        UserAccessor $userAccessor
+        PetExperienceService $petExperienceService, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();

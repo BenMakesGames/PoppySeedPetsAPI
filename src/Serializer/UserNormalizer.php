@@ -35,7 +35,7 @@ class UserNormalizer implements NormalizerInterface
     {
     }
 
-    private static function getUnreadUserLetterCount(EntityManagerInterface $em, User $user)
+    private static function getUnreadUserLetterCount(EntityManagerInterface $em, User $user): int
     {
         return (int)$em->getRepository(UserLetter::class)->createQueryBuilder('ul')
             ->select('COUNT(ul.id)')

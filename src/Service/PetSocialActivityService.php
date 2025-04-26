@@ -89,9 +89,11 @@ class PetSocialActivityService
         if($pet->getFood() > 0 && $weather->isHoliday(HolidayEnum::AWA_ODORI) && $this->awaOdoriService->adventure($pet))
             return true;
 
-        $wants = [];
+        $availableGroups = [];
 
-        $wants[] = [ 'activity' => SocialTimeWantEnum::HANG_OUT, 'weight' => 60 ];
+        $wants = [
+            [ 'activity' => SocialTimeWantEnum::HANG_OUT, 'weight' => 60 ]
+        ];
 
         if(!$pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
         {

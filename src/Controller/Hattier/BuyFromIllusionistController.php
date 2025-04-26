@@ -18,6 +18,7 @@ use App\Enum\LocationEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotFoundException;
+use App\Exceptions\UnreachableException;
 use App\Functions\ItemRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
@@ -47,8 +48,7 @@ class BuyFromIllusionistController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buy(
         Request $request, TransactionService $transactionService, InventoryService $inventoryService,
-        EntityManagerInterface $em, ResponseService $responseService,
-        UserAccessor $userAccessor
+        EntityManagerInterface $em, ResponseService $responseService, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -65,7 +65,7 @@ class BuyFromIllusionistController
         $cost = self::Inventory[$item][$payWith];
 
         if($cost < 1)
-            throw new \Exception('Cost should not be less than 1! Ben made a mistake!');
+            throw new UnreachableException();
 
         if($payWith === 'moneys')
         {
@@ -89,7 +89,7 @@ class BuyFromIllusionistController
                 throw new PSPNotFoundException('You do not have enough Blood Wine.');
         }
         else
-            throw new \Exception('This should never happen. Ben made a boo-boo.');
+            throw new UnreachableException();
 
         $inventoryService->receiveItem($item, $user, $user, 'Purchased from the Illusionist.', LocationEnum::HOME);
 

@@ -26,6 +26,7 @@ class ArticleFilterService
 
     public const int PageSize = 10;
 
+    /** @var EntityRepository<Article> */
     private readonly EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $em)
@@ -48,7 +49,7 @@ class ArticleFilterService
         return $this->repository->createQueryBuilder('a');
     }
 
-    public function filterDesignGoal(QueryBuilder $qb, $value): void
+    public function filterDesignGoal(QueryBuilder $qb, mixed $value): void
     {
         if(!in_array('designGoals', $qb->getAllAliases()))
             $qb->join('a.designGoals', 'designGoals');
