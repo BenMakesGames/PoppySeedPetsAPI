@@ -26,6 +26,7 @@ class MuseumFilterService
 
     public const int PageSize = 20;
 
+    /** @var EntityRepository<MuseumItem> */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $em)

@@ -26,6 +26,7 @@ class UserLetterFilterService
 
     public const int PageSize = 20;
 
+    /** @var EntityRepository<UserLetter> */
     private readonly EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $em)

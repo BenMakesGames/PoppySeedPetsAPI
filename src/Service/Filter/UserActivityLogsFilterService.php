@@ -26,6 +26,7 @@ class UserActivityLogsFilterService
 
     public const int PageSize = 20;
 
+    /** @var EntityRepository<UserActivityLog> */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $em)

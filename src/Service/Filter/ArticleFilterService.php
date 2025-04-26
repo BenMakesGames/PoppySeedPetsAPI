@@ -26,6 +26,7 @@ class ArticleFilterService
 
     public const int PageSize = 10;
 
+    /** @var EntityRepository<Article> */
     private readonly EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $em)

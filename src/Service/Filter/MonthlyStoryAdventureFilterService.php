@@ -26,6 +26,7 @@ class MonthlyStoryAdventureFilterService
 
     public const int PageSize = 12;
 
+    /** @var EntityRepository<MonthlyStoryAdventure> */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $em)

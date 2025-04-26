@@ -28,6 +28,8 @@ class ParkEventHistoryFilterService
     public const int PageSize = 20;
 
     private ?User $user;
+
+    /** @var EntityRepository<ParkEvent> */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $em)

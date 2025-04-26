@@ -26,6 +26,7 @@ class GuildMemberFilterService
 
     public const int PageSize = 12;
 
+    /** @var EntityRepository<Pet> */
     private readonly EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $em)

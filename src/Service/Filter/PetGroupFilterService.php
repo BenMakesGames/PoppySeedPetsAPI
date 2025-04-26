@@ -27,6 +27,7 @@ class PetGroupFilterService
 
     public const int PageSize = 20;
 
+    /** @var EntityRepository<PetGroup> */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $em)

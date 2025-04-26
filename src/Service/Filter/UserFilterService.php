@@ -29,6 +29,7 @@ class UserFilterService
 
     private ?User $user = null;
 
+    /** @var EntityRepository<User> */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $em)
