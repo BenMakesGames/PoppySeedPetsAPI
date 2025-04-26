@@ -51,7 +51,7 @@ final class UserMenuFunctions
         $userSortOrderEntity->setMenuOrder($order);
     }
 
-    private static function maybeAddMenuItem(array &$menuItems, string $name, User $user, array $userSortOrders, ?string $feature): bool
+    private static function maybeAddMenuItem(array &$menuItems, string $name, User $user, array $userSortOrders, ?UnlockableFeatureEnum $feature): bool
     {
         if(!$feature)
         {

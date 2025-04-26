@@ -91,7 +91,7 @@ class PetColorFunctions
         ;
     }
 
-    public static function generateRandomPetColors(IRandom $rng, $maxSaturation = 1): array
+    public static function generateRandomPetColors(IRandom $rng, float $maxSaturation = 1): array
     {
         $h = $rng->rngNextInt(0, 1000) / 1000.0;
         $s = PetColorFunctions::randomSaturation($rng) * $maxSaturation;

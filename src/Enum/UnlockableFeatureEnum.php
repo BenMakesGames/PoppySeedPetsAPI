@@ -14,27 +14,25 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-final class UnlockableFeatureEnum
+enum UnlockableFeatureEnum: string
 {
-    use FakeEnum;
-
-    public const string Florist = 'Florist';
-    public const string Bookstore = 'Bookstore';
-    public const string Museum = 'Museum';
-    public const string Park = 'Park';
-    public const string Greenhouse = 'Greenhouse';
-    public const string CookingBuddy = 'Cooking Buddy';
-    public const string Basement = 'Basement';
-    public const string HollowEarth = 'Hollow Earth';
-    public const string Market = 'Market';
-    public const string Fireplace = 'Fireplace';
-    public const string Beehive = 'Beehive';
-    public const string Trader = 'Trader';
-    public const string Mailbox = 'Mailbox';
-    public const string DragonDen = 'Dragon Den';
-    public const string BulkSelling = 'Bulk Selling';
-    public const string Hattier = 'Hattier';
-    public const string FieldGuide = 'Field Guide';
-    public const string StarKindred = 'Star Kindred';
-    public const string Zoologist = 'Zoologist';
+    case Florist = 'Florist';
+    case Bookstore = 'Bookstore';
+    case Museum = 'Museum';
+    case Park = 'Park';
+    case Greenhouse = 'Greenhouse';
+    case CookingBuddy = 'Cooking Buddy';
+    case Basement = 'Basement';
+    case HollowEarth = 'Hollow Earth';
+    case Market = 'Market';
+    case Fireplace = 'Fireplace';
+    case Beehive = 'Beehive';
+    case Trader = 'Trader';
+    case Mailbox = 'Mailbox';
+    case DragonDen = 'Dragon Den';
+    case BulkSelling = 'Bulk Selling';
+    case Hattier = 'Hattier';
+    case FieldGuide = 'Field Guide';
+    case StarKindred = 'Star Kindred';
+    case Zoologist = 'Zoologist';
 }

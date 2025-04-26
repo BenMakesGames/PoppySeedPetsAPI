@@ -145,7 +145,7 @@ class CalculateDailyStatsCommand extends Command
         ;
     }
 
-    public function getUnlocked(string $featureFieldSuffix, string $firstDate): int
+    public function getUnlocked(UnlockableFeatureEnum $featureFieldSuffix, string $firstDate): int
     {
         return (int)$this->em->getConnection()
             ->executeQuery('
@@ -153,21 +153,21 @@ class CalculateDailyStatsCommand extends Command
                 FROM user_unlocked_feature
                 LEFT JOIN user ON user.id=user_unlocked_feature.user_id
                 WHERE
-                    user_unlocked_feature.feature="' . $featureFieldSuffix . '"
+                    user_unlocked_feature.feature="' . $featureFieldSuffix->value . '"
                     AND user.last_activity>="' . $firstDate . '"
             ')
             ->fetchAssociative()['qty']
         ;
     }
 
-    public function getLifetimeUnlocked(string $featureFieldSuffix): int
+    public function getLifetimeUnlocked(UnlockableFeatureEnum $featureFieldSuffix): int
     {
         return (int)$this->em->getConnection()
             ->executeQuery('
                 SELECT COUNT(user_unlocked_feature.id) AS qty
                 FROM user_unlocked_feature
                 WHERE
-                    user_unlocked_feature.feature="' . $featureFieldSuffix . '"
+                    user_unlocked_feature.feature="' . $featureFieldSuffix->value . '"
             ')
             ->fetchAssociative()['qty']
         ;

@@ -19,6 +19,7 @@ use App\Entity\HollowEarthTileCard;
 use App\Entity\Item;
 use App\Enum\HollowEarthActionTypeEnum;
 use App\Enum\PetSkillEnum;
+use App\Exceptions\PSPNotFoundException;
 use App\Functions\HollowEarthTileRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -296,10 +297,15 @@ class UpdateHollowEarthTileEventCommand extends PoppySeedPetsCommand
         while(!$tile)
         {
             $tileId = $this->askInt('Destination tile ID', 0);
-            $tile = HollowEarthTileRepository::findOneById($this->em, $tileId);
 
-            if(!$tile)
+            try
+            {
+                $tile = HollowEarthTileRepository::findOneById($this->em, $tileId);
+            }
+            catch(PSPNotFoundException)
+            {
                 $this->output->writeln('There is no tile with ID ' . $tileId . '.');
+            }
         }
 
         $event['id'] = $tile->getId();

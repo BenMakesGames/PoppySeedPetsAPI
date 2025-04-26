@@ -18,13 +18,13 @@ class PatreonTierEnum
 {
     use FakeEnum;
 
-    public const string DAPPER_SWAN = 'DapperSwan';
+    public const string DapperSwan = 'DapperSwan';
 
-    public static function getByRewardId(int $rewardId)
+    public static function getByRewardId(int $rewardId): string
     {
         switch($rewardId)
         {
-            case 9967352: return self::DAPPER_SWAN;
+            case 9967352: return self::DapperSwan;
             default: throw new \InvalidArgumentException('Invalid rewardId.');
         }
     }

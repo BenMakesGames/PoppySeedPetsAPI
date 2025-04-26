@@ -28,55 +28,41 @@ class UserMonthlyStoryAdventureStepCompleted
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[Groups([ "starKindredStoryStepComplete" ])]
     #[ORM\ManyToOne(targetEntity: MonthlyStoryAdventureStep::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $adventureStep;
+    private MonthlyStoryAdventureStep $adventureStep;
 
     #[Groups([ "starKindredStoryStepComplete" ])]
     #[ORM\Column(type: 'datetime_immutable')]
-    private $completedOn;
+    private \DateTimeImmutable $completedOn;
+
+    public function __construct(User $user, MonthlyStoryAdventureStep $adventureStep)
+    {
+        $this->user = $user;
+        $this->adventureStep = $adventureStep;
+        $this->completedOn = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    public function getAdventureStep(): ?MonthlyStoryAdventureStep
+    public function getAdventureStep(): MonthlyStoryAdventureStep
     {
         return $this->adventureStep;
     }
 
-    public function setAdventureStep(?MonthlyStoryAdventureStep $adventureStep): self
-    {
-        $this->adventureStep = $adventureStep;
-
-        return $this;
-    }
-
-    public function getCompletedOn(): ?\DateTimeImmutable
+    public function getCompletedOn(): \DateTimeImmutable
     {
         return $this->completedOn;
-    }
-
-    public function setCompletedOn(\DateTimeImmutable $completedOn): self
-    {
-        $this->completedOn = $completedOn;
-
-        return $this;
     }
 }

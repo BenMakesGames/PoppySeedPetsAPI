@@ -30,11 +30,11 @@ class FoodWithSpice
     public int $alcohol;
     public int $caffeine;
     public int $psychedelic;
-    public $randomFlavor;
+    public int $randomFlavor;
     public int $containsTentacles;
     /** @var BonusItemChance[] */ public array $bonusItems = [];
-    public $grantedSkills = [];
-    public $grantedStatusEffects = [];
+    public array $grantedSkills = [];
+    public array $grantedStatusEffects = [];
     public bool $grantsSelfReflection = false;
     public int $earthy;
     public int $fruity;
@@ -48,7 +48,7 @@ class FoodWithSpice
     public int $fatty;
     public int $oniony;
     public int $chemically;
-    /** @var Item[] */ public $leftovers = [];
+    /** @var Item[] */ public array $leftovers = [];
 
     public function __construct(Item $item, ?Spice $spice)
     {

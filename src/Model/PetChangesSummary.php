@@ -19,38 +19,38 @@ use Symfony\Component\Serializer\Attribute\Groups;
 class PetChangesSummary
 {
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
-    public string|null $food = null;
+    public ?string $food = null;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
-    public string|null $safety = null;
+    public ?string $safety = null;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
-    public string|null $love = null;
+    public ?string $love = null;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
-    public string|null $esteem = null;
+    public ?string $esteem = null;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
-    public string|null $exp = null;
+    public ?string $exp = null;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
-    public string|null $level = null;
+    public ?string $level = null;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
-    public string|null $affection = null;
+    public ?string $affection = null;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
-    public string|null $affectionLevel = null;
+    public ?string $affectionLevel = null;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
-    public string|null $scrollLevel = null;
+    public ?string $scrollLevel = null;
 
     public function containsLevelUp(): bool
     {
         return $this->level !== null && str_contains($this->level, '+');
     }
 
-    public static function rate($value): ?string
+    public static function rate(int $value): ?string
     {
         if($value > 20)
             return '++++';
