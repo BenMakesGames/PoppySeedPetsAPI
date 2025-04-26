@@ -19,11 +19,17 @@ final class Version20250426202654 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
+        // pets can now crave Circles - just like irl
+        $this->addSql(<<<EOSQL
+        UPDATE `item_group` SET `is_craving` = '1' WHERE `item_group`.`id` = 28; 
+        EOSQL);
+
         // new location tags
         $this->addSql(<<<EOSQL
         INSERT INTO `pet_activity_log_tag` (`id`, `title`, `color`, `emoji`) VALUES
         (96, 'Location: The Burnt Forest', 'a0461c', 'fa-solid fa-trees'),
-        (97, 'Location: The Fructal Plane', 'f95d09', 'fa-solid fa-strawberry');
+        (97, 'Location: The Fructal Plane', 'f95d09', 'fa-solid fa-strawberry')
+        ON DUPLICATE KEY UPDATE id=id;
         EOSQL);
 
         // gooderberry:
