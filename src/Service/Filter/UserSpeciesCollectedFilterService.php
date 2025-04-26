@@ -56,7 +56,7 @@ class UserSpeciesCollectedFilterService
             ->innerJoin('d.species', 'species');
     }
 
-    public function filterUser(QueryBuilder $qb, $value): void
+    public function filterUser(QueryBuilder $qb, mixed $value): void
     {
         $qb
             ->andWhere('d.user = :userId')

@@ -49,7 +49,7 @@ class UserActivityLogsFilterService
         return $this->repository->createQueryBuilder('l');
     }
 
-    public function filterUser(QueryBuilder $qb, $value): void
+    public function filterUser(QueryBuilder $qb, mixed $value): void
     {
         $qb
             ->andWhere('l.user=:userId')
@@ -57,7 +57,7 @@ class UserActivityLogsFilterService
         ;
     }
 
-    public function filterTags(QueryBuilder $qb, $value): void
+    public function filterTags(QueryBuilder $qb, mixed $value): void
     {
         if(!in_array('tags', $qb->getAllAliases()))
             $qb->leftJoin('l.tags', 'tags');

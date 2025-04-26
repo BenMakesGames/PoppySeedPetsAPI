@@ -52,7 +52,7 @@ class ViewMonsterFoodsCommand extends Command
         return 0;
     }
 
-    private function showInfo(OutputInterface $output, array $everyItem, MonsterOfTheWeekEnum $monsterType)
+    private function showInfo(OutputInterface $output, array $everyItem, MonsterOfTheWeekEnum $monsterType): void
     {
         $thresholds = MonsterOfTheWeekHelpers::getBasePrizeValues($monsterType);
 

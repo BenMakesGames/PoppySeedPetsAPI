@@ -51,7 +51,7 @@ class GuildMemberFilterService
         ;
     }
 
-    public function filterGuild(QueryBuilder $qb, $value): void
+    public function filterGuild(QueryBuilder $qb, mixed $value): void
     {
         $qb
             ->andWhere('guildMembership.guild=:guild')

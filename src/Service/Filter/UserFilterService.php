@@ -61,7 +61,7 @@ class UserFilterService
         $this->user = $user;
     }
 
-    public function filterName(QueryBuilder $qb, $value): void
+    public function filterName(QueryBuilder $qb, mixed $value): void
     {
         $qb
             ->andWhere('u.name LIKE :nameLike')
@@ -69,7 +69,7 @@ class UserFilterService
         ;
     }
 
-    public function filterFollowedBy(QueryBuilder $qb, $value): void
+    public function filterFollowedBy(QueryBuilder $qb, mixed $value): void
     {
         if($this->user && ($value === $this->user->getId() || $this->user->hasRole('ROLE_ADMIN')))
         {
@@ -83,7 +83,7 @@ class UserFilterService
         }
     }
 
-    public function filterFollowing(QueryBuilder $qb, $value): void
+    public function filterFollowing(QueryBuilder $qb, mixed $value): void
     {
         if($this->user && ($value === $this->user->getId() || $this->user->hasRole('ROLE_ADMIN')))
         {

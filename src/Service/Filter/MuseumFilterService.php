@@ -51,7 +51,7 @@ class MuseumFilterService
         ;
     }
 
-    public function filterUser(QueryBuilder $qb, $value): void
+    public function filterUser(QueryBuilder $qb, mixed $value): void
     {
         $qb
             ->andWhere('m.user = :userId')
