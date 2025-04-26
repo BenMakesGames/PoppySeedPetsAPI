@@ -12,12 +12,11 @@ declare(strict_types=1);
  */
 
 
-namespace App\Service\PetActivity;
+namespace App\Service\PetActivity\SpecialLocations;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\Spice;
-use App\Enum\EnumInvalidValueException;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
@@ -25,10 +24,8 @@ use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
-use App\Exceptions\PSPNotFoundException;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
-use App\Functions\ItemRepository;
 use App\Functions\NumberFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;

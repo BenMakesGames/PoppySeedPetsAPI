@@ -12,29 +12,26 @@ declare(strict_types=1);
  */
 
 
-namespace App\Service\PetActivity;
+namespace App\Service\PetActivity\SpecialLocations;
 
 use App\Entity\PetActivityLog;
-use App\Entity\PetBadge;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
-use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Exceptions\UnreachableException;
 use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
+use App\Functions\EquipmentFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
-use App\Functions\PetBadgeHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Functions\EquipmentFunctions;
 
 class LostInTownService
 {
