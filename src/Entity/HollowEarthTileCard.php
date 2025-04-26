@@ -33,7 +33,7 @@ class HollowEarthTileCard
     private string $name;
 
     #[ORM\Column(type: 'json')]
-    private $event = [];
+    private array $event = [];
 
     #[ORM\Column(type: 'integer')]
     private int $requiredAction = 0;

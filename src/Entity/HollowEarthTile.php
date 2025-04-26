@@ -29,15 +29,15 @@ class HollowEarthTile
 
     #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'integer')]
-    private $x;
+    private int $x = 0;
 
     #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'integer')]
-    private $y;
+    private int $y = 0;
 
     #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'string', length: 1)]
-    private $moveDirection;
+    private string $moveDirection = '';
 
     #[ORM\ManyToMany(targetEntity: HollowEarthTileType::class)]
     private $types;
@@ -47,13 +47,13 @@ class HollowEarthTile
 
     #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
-    private $goodsSide;
+    private ?string $goodsSide = null;
 
     #[ORM\Column(type: 'simple_array', nullable: true)]
-    private $goods = [];
+    private ?array $goods = [];
 
     #[ORM\Column(type: 'boolean')]
-    private $isTradingDepot;
+    private bool $isTradingDepot = false;
 
     public function __construct()
     {
@@ -65,7 +65,7 @@ class HollowEarthTile
         return $this->id;
     }
 
-    public function getX(): ?int
+    public function getX(): int
     {
         return $this->x;
     }
@@ -77,7 +77,7 @@ class HollowEarthTile
         return $this;
     }
 
-    public function getY(): ?int
+    public function getY(): int
     {
         return $this->y;
     }
@@ -102,7 +102,7 @@ class HollowEarthTile
     }
 
     /**
-     * @return Collection|HollowEarthTileType[]
+     * @return Collection<HollowEarthTileType>
      */
     public function getTypes(): Collection
     {
@@ -161,7 +161,7 @@ class HollowEarthTile
         return $this;
     }
 
-    public function getIsTradingDepot(): ?bool
+    public function getIsTradingDepot(): bool
     {
         return $this->isTradingDepot;
     }

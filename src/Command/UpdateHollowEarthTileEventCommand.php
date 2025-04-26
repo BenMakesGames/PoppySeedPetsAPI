@@ -20,7 +20,6 @@ use App\Entity\Item;
 use App\Enum\HollowEarthActionTypeEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\HollowEarthTileRepository;
-use App\Functions\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 

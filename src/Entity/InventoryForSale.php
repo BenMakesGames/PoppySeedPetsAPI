@@ -29,14 +29,20 @@ class InventoryForSale
 
     #[ORM\OneToOne(inversedBy: 'forSale')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Inventory $inventory = null;
+    private Inventory $inventory;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(["myInventory", "fireplaceFuel", "myGreenhouse", "myPet", "dragonTreasure", "myHollowEarthTiles"])]
-    private $sellPrice;
+    private ?int $sellPrice;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private $sellListDate;
+    private ?\DateTimeImmutable $sellListDate = null;
+
+    public function __construct(Inventory $inventory, int $sellPrice)
+    {
+        $this->inventory = $inventory;
+        $this->sellPrice = $sellPrice;
+    }
 
     public function getId(): ?int
     {
