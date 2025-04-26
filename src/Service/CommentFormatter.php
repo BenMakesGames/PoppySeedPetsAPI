@@ -29,7 +29,10 @@ class CommentFormatter
         'name', 'Name', 'name\'s', 'Name\'s'
     ];
 
-    public function __construct(private readonly EntityManagerInterface $em, private readonly Security $security)
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly UserAccessor $userAccessor
+    )
     {
     }
 
@@ -85,10 +88,10 @@ class CommentFormatter
         if(!in_array($property, self::AllowedUserProperties))
             return $text;
 
-        $userIsCurrentUser = $this->security->getUser() && $this->security->getUser()->getId() === $userId;
+        $userIsCurrentUser = $this->userAccessor->getUser() && $this->userAccessor->getUser()->getId() === $userId;
 
         if($userIsCurrentUser)
-            $user = $this->security->getUser();
+            $user = $this->userAccessor->getUser();
         else
             $user = $this->em->getRepository(User::class)->find($userId);
 

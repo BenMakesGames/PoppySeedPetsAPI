@@ -33,7 +33,7 @@ class PetQuestRepository extends ServiceEntityRepository
         parent::__construct($registry, PetQuest::class);
     }
 
-    private $petQuestPerRequestCache = [];
+    private array $petQuestPerRequestCache = [];
 
     public function exists(Pet $pet, string $name): bool
     {
