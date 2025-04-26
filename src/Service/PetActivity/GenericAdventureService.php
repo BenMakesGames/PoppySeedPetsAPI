@@ -311,7 +311,7 @@ class GenericAdventureService
         return $activityLog;
     }
 
-    public function discoverFeature(Pet $pet, string $feature, string $description): PetActivityLog
+    public function discoverFeature(Pet $pet, UnlockableFeatureEnum $feature, string $description): PetActivityLog
     {
         UserUnlockedFeatureHelpers::create($this->em, $pet->getOwner(), $feature);
 

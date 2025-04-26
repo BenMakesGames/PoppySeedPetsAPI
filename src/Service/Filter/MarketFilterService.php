@@ -30,7 +30,7 @@ class MarketFilterService
 
     public const int PageSize = 20;
 
-    private ?User $user;
+    private ?User $user = null;
 
     private ObjectRepository $repository;
 

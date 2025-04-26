@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Exceptions\PSPAccountLocked;
-use App\Exceptions\PSPException;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPHoursMustBeRun;
 use App\Exceptions\PSPInvalidOperationException;
@@ -24,9 +23,7 @@ use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Exceptions\PSPSessionExpired;
 use App\Exceptions\PSPTooManyRequests;
-use App\Functions\StringFunctions;
 use App\Service\ResponseService;
-use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\OptimisticLockException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -38,17 +35,14 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class ExceptionEventSubscriber implements EventSubscriberInterface
 {
-    private LoggerInterface $logger;
-    private ResponseService $responseService;
-    private KernelInterface $kernel;
-
     private const string GenericErrorMessage = 'Hrm: something\'s gone awry. Reload and try again; if the problem persists, let Ben know, so he can fix it!';
 
-    public function __construct(ResponseService $responseService, KernelInterface $kernel, LoggerInterface $logger)
+    public function __construct(
+        private readonly ResponseService $responseService,
+        private readonly KernelInterface $kernel,
+        private readonly LoggerInterface $logger
+    )
     {
-        $this->responseService = $responseService;
-        $this->kernel = $kernel;
-        $this->logger = $logger;
     }
 
     public static function getSubscribedEvents(): array
@@ -58,7 +52,7 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
         ];
     }
 
-    private function getGenericErrorCodeString(HttpException $exception)
+    private function getGenericErrorCodeString(HttpException $exception): string
     {
         $errorString = (string)$exception->getStatusCode();
         $lastChar = substr($errorString, -1);
@@ -66,7 +60,7 @@ class ExceptionEventSubscriber implements EventSubscriberInterface
         return 'Generic ' . $errorString . str_repeat($lastChar, mt_rand(6, 10)) . '!!1!';
     }
 
-    public function onKernelException(ExceptionEvent $event)
+    public function onKernelException(ExceptionEvent $event): void
     {
         $e = $event->getThrowable();
 

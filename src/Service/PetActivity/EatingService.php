@@ -294,7 +294,7 @@ class EatingService
             if($isThirsty && !$gotAColdDrink && ArrayFunctions::any($i->getItem()->getItemGroups(), fn(ItemGroup $ig) => $ig->getName() === 'Cold Drink'))
                 $gotAColdDrink = $i->getItem();
 
-            if($isJaune && !$gotButter && strpos(strtolower($i->getItem()->getName()), 'butter') !== false)
+            if($isJaune && !$gotButter && str_contains(strtolower($i->getItem()->getName()), 'butter'))
                 $gotButter = $i->getItem();
 
             $pet

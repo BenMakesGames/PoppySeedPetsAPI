@@ -416,15 +416,18 @@ class JoustingService implements ParkEventInterface
         $changes = new PetChanges($pet);
 
         $exp = 1;
-        $trophyItem = null;
+        $trophy = null;
 
         if($team->wins === $this->round)
         {
             $exp++;
 
-            $comment = $pet->getName() . ' earned this by getting 1st place in a Jousting tournament with ' . $teamMate->getName() . '!';
-            $this->transactionService->getMoney($pet->getOwner(), $firstPlaceMoneys, $comment);
-            $trophyItem = 'Jousting Gold Trophy';
+            $trophy = [
+                'item' => 'Jousting Gold Trophy',
+                'comment' => $pet->getName() . ' earned this by getting 1st place in a Jousting tournament with ' . $teamMate->getName() . '!'
+            ];
+
+            $this->transactionService->getMoney($pet->getOwner(), $firstPlaceMoneys, $trophy['comment']);
             $this->userStatsRepository->incrementStat($pet->getOwner(), 'Gold Trophies Earned', 1);
 
             $log = $pet->getName() . ' played in a Jousting tournament with ' . $teamMate->getName() . ', and won! The whole thing!';
@@ -442,9 +445,12 @@ class JoustingService implements ParkEventInterface
         {
             $exp++;
 
-            $comment = $pet->getName() . ' earned this by getting 2nd place in a Jousting tournament with ' . $teamMate->getName() . '!';
-            $this->transactionService->getMoney($pet->getOwner(), $secondPlaceMoneys, $comment);
-            $trophyItem = 'Jousting Silver Trophy';
+            $trophy = [
+                'item' => 'Jousting Silver Trophy',
+                'comment' => $pet->getName() . ' earned this by getting 2nd place in a Jousting tournament with ' . $teamMate->getName() . '!'
+            ];
+
+            $this->transactionService->getMoney($pet->getOwner(), $secondPlaceMoneys, $trophy['comment']);
             $this->userStatsRepository->incrementStat($pet->getOwner(), 'Silver Trophies Earned', 1);
         }
 
@@ -456,8 +462,8 @@ class JoustingService implements ParkEventInterface
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Park Event', 'Jousting' ]))
         ;
 
-        if($trophyItem)
-            $this->inventoryService->petCollectsItem($trophyItem, $pet, $comment, $log);
+        if($trophy)
+            $this->inventoryService->petCollectsItem($trophy['item'], $pet, $trophy['comment'], $log);
 
         if($team->wins === $this->round)
             PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FIRST_PLACE_JOUSTING, $log);

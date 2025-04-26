@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Enum\EnumInvalidValueException;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ArrayFunctions;
 use App\Service\TransactionService;
@@ -711,21 +710,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function hasUnlockedFeature(string $feature): bool
+    public function hasUnlockedFeature(UnlockableFeatureEnum $feature): bool
     {
-        if(!UnlockableFeatureEnum::isAValue($feature))
-            throw new EnumInvalidValueException(UnlockableFeatureEnum::class, $feature);
-
         return $this->unlockedFeatures->exists(
             fn($key, UserUnlockedFeature $unlockedFeature) => $unlockedFeature->getFeature() === $feature
         );
     }
 
-    public function getUnlockedFeatureDate(string $feature)
+    public function getUnlockedFeatureDate(UnlockableFeatureEnum $feature): ?\DateTimeImmutable
     {
-        if(!UnlockableFeatureEnum::isAValue($feature))
-            throw new EnumInvalidValueException(UnlockableFeatureEnum::class, $feature);
-
         $unlockedFeature = ArrayFunctions::find_one(
             $this->unlockedFeatures,
             fn(UserUnlockedFeature $unlockedFeature) => $unlockedFeature->getFeature() === $feature

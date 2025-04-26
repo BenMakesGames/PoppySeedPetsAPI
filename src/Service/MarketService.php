@@ -145,8 +145,10 @@ class MarketService
             }
             else
             {
-                $forSale = (new InventoryForSale())
-                    ->setSellPrice($price);
+                $forSale = new InventoryForSale(
+                    inventory: $inventory,
+                    sellPrice: $price
+                );
 
                 $inventory->setForSale($forSale);
 

@@ -67,11 +67,11 @@ class RemoveTileCardController
         }
         else
         {
-            $playerTile = (new HollowEarthPlayerTile())
-                ->setPlayer($user)
-                ->setTile($tile)
-                ->setCard(null)
-            ;
+            $playerTile = new HollowEarthPlayerTile(
+                player: $user,
+                tile: $tile,
+                card: null,
+            );
 
             $em->persist($playerTile);
         }

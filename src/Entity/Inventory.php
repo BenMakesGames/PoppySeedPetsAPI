@@ -522,7 +522,7 @@ class Inventory
         return $this;
     }
 
-    public function getTotalFertilizerValue()
+    public function getTotalFertilizerValue(): int
     {
         $value = $this->getItem()->getFertilizer();
 
@@ -599,7 +599,7 @@ class Inventory
     }
 
     #[Groups(["myInventory", "fireplaceFuel", "myGreenhouse", "myPet", "dragonTreasure", "myHollowEarthTiles"])]
-    public function getSellPrice()
+    public function getSellPrice(): ?int
     {
         return $this->getForSale()?->getSellPrice();
     }

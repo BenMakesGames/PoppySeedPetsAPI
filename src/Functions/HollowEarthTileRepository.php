@@ -22,7 +22,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class HollowEarthTileRepository
 {
-    public static function findOneById(EntityManagerInterface $em, int $tileId): ?HollowEarthTile
+    public static function findOneById(EntityManagerInterface $em, int $tileId): HollowEarthTile
     {
         $tile = $em->getRepository(HollowEarthTile::class)->createQueryBuilder('t')
             ->andWhere('t.id = :id')
@@ -51,7 +51,7 @@ final class HollowEarthTileRepository
         ;
     }
 
-    public static function findRandom(EntityManagerInterface $em, IRandom $rng): HollowEarthTile
+    public static function findRandom(EntityManagerInterface $em, IRandom $rng): ?HollowEarthTile
     {
         $numberOfTiles = (int)$em->getRepository(HollowEarthTile::class)->createQueryBuilder('t')
             ->select('COUNT(t.id)')

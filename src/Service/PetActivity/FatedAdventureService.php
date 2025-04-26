@@ -55,7 +55,7 @@ class FatedAdventureService
     {
         $pet = $petWithSkills->getPet();
 
-        /** @var StatusEffect $fatedStatusEffect */
+        /** @var StatusEffect|null $fatedStatusEffect */
         $fatedStatusEffect = ArrayFunctions::find_one($pet->getStatusEffects()->toArray(), fn(StatusEffect $se) =>
             in_array($se->getStatus(), [
                 StatusEffectEnum::FATED_DELICIOUSNESS,

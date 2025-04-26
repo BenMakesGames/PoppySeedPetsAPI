@@ -118,10 +118,7 @@ class UpsertItemCommand extends PoppySeedPetsCommand
         {
             $article = $this->askNullableString('Article?', 'a');
 
-            $grammar = (new ItemGrammar())
-                ->setItem($item)
-                ->setArticle($article)
-            ;
+            $grammar = new ItemGrammar($item, $article);
 
             $this->em->persist($grammar);
         }

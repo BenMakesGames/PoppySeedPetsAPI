@@ -26,10 +26,16 @@ class ItemGrammar
 
     #[ORM\OneToOne(targetEntity: Item::class, inversedBy: 'grammar', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private $item;
+    private Item $item;
 
     #[ORM\Column(type: 'string', length: 10, nullable: true)]
-    private $article;
+    private ?string $article;
+
+    public function __construct(Item $item, ?string $article)
+    {
+        $this->item = $item;
+        $this->article = $article;
+    }
 
     public function getId(): ?int
     {

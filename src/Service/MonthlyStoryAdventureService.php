@@ -100,11 +100,7 @@ class MonthlyStoryAdventureService
 
     private function markStepComplete(User $user, MonthlyStoryAdventureStep $step): void
     {
-        $completedStep = (new UserMonthlyStoryAdventureStepCompleted())
-            ->setUser($user)
-            ->setAdventureStep($step)
-            ->setCompletedOn(new \DateTimeImmutable())
-        ;
+        $completedStep = new UserMonthlyStoryAdventureStepCompleted($user, $step);
 
         $this->em->persist($completedStep);
     }

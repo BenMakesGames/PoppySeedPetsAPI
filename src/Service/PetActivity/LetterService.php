@@ -338,11 +338,11 @@ class LetterService
         if(!$nextLetter)
             throw new \InvalidArgumentException('The user already has every letter from that sender!');
 
-        $newLetter = (new UserLetter())
-            ->setUser($user)
-            ->setLetter($nextLetter)
-            ->setComment($comment)
-        ;
+        $newLetter = new UserLetter(
+            user: $user,
+            letter: $nextLetter,
+            comment: $comment
+        );
 
         if($nextLetter->getAttachment())
         {

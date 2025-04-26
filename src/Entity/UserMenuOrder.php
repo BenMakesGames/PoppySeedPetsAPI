@@ -29,7 +29,7 @@ class UserMenuOrder
     private User $user;
 
     #[ORM\Column(type: 'simple_array')]
-    private $menuOrder = [];
+    private array $menuOrder = [];
 
     public function __construct(User $user)
     {

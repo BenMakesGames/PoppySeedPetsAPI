@@ -318,7 +318,7 @@ class PetActivityService
         {
             $petChanges = new PetChanges($pet);
 
-            /** @var $sortedLunchboxItems LunchboxItem[] */
+            /** @var LunchboxItem[] $sortedLunchboxItems */
             $sortedLunchboxItems = $pet->getLunchboxItems()->filter(function(LunchboxItem $i) {
                 return $i->getInventoryItem()->getItem()->getFood() !== null;
             })->toArray();
@@ -396,13 +396,15 @@ class PetActivityService
             if($this->rng->rngNextInt(1, 10) === 1)
                 $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::WEREFORM));
         }
-        else if(
-            $pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_WERECREATURE) &&
-            $this->rng->rngNextInt(1, max(20, 50 + $pet->getFood() + $pet->getSafety() * 2 + $pet->getLove() + $pet->getEsteem())) === 1 &&
-            !$pet->hasStatusEffect(StatusEffectEnum::WEREFORM)
-        )
+        else
         {
-            StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::WEREFORM, 1);
+            if(
+                $pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_WERECREATURE) &&
+                $this->rng->rngNextInt(1, max(20, 50 + $pet->getFood() + $pet->getSafety() * 2 + $pet->getLove() + $pet->getEsteem())) === 1
+            )
+            {
+                StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::WEREFORM, 1);
+            }
         }
 
         if($pet->hasMerit(MeritEnum::CACHING) && $pet->getFullnessPercent() < -0.25)

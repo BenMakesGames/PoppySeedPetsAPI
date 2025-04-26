@@ -61,12 +61,13 @@ class ChangeTileGoodsController
         }
         else
         {
-            $playerTile = (new HollowEarthPlayerTile())
-                ->setPlayer($user)
-                ->setTile($tile)
-                ->setGoods($selectedGoods)
-                ->setCard($tile->getCard())
-            ;
+            $playerTile = new HollowEarthPlayerTile(
+                player: $user,
+                tile: $tile,
+                card: $tile->getCard()
+            );
+
+            $playerTile->setGoods($selectedGoods);
 
             $em->persist($playerTile);
         }

@@ -28,27 +28,30 @@ class UserLetter
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[Groups(["myLetters"])]
     #[ORM\ManyToOne(targetEntity: Letter::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $letter;
+    private Letter $letter;
 
     #[Groups(["myLetters"])]
     #[ORM\Column(type: 'datetime_immutable')]
-    private $receivedOn;
+    private \DateTimeImmutable $receivedOn;
 
     #[Groups(["myLetters"])]
     #[ORM\Column(type: 'string', length: 255)]
-    private $comment;
+    private string $comment;
 
     #[Groups(["myLetters"])]
     #[ORM\Column(type: 'boolean')]
     private $isRead = false;
 
-    public function __construct()
+    public function __construct(User $user, Letter $letter, string $comment)
     {
+        $this->user = $user;
+        $this->letter = $letter;
+        $this->comment = $comment;
         $this->receivedOn = new \DateTimeImmutable();
     }
 
@@ -57,16 +60,9 @@ class UserLetter
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
     }
 
     public function getLetter(): Letter
@@ -74,14 +70,7 @@ class UserLetter
         return $this->letter;
     }
 
-    public function setLetter(Letter $letter): self
-    {
-        $this->letter = $letter;
-
-        return $this;
-    }
-
-    public function getReceivedOn(): ?\DateTimeImmutable
+    public function getReceivedOn(): \DateTimeImmutable
     {
         return $this->receivedOn;
     }
@@ -89,13 +78,6 @@ class UserLetter
     public function getComment(): string
     {
         return $this->comment;
-    }
-
-    public function setComment(string $comment): self
-    {
-        $this->comment = $comment;
-
-        return $this;
     }
 
     public function getIsRead(): bool

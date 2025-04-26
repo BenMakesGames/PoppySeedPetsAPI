@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Enum\EnumInvalidValueException;
 use App\Enum\UnlockableFeatureEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -31,18 +30,20 @@ class UserUnlockedFeature
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'unlockedFeatures')]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[Groups(["myAccount"])]
-    #[ORM\Column(type: 'string', length: 40)]
-    private $feature;
+    #[ORM\Column(type: 'string', length: 40, enumType: UnlockableFeatureEnum::class)]
+    private UnlockableFeatureEnum $feature;
 
     #[Groups(["myAccount"])]
     #[ORM\Column(type: 'datetime_immutable')]
-    private $unlockedOn;
+    private \DateTimeImmutable $unlockedOn;
 
-    public function __construct()
+    public function __construct(User $user, UnlockableFeatureEnum $feature)
     {
+        $this->user = $user;
+        $this->feature = $feature;
         $this->unlockedOn = new \DateTimeImmutable();
     }
 
@@ -63,16 +64,13 @@ class UserUnlockedFeature
         return $this;
     }
 
-    public function getFeature(): string
+    public function getFeature(): UnlockableFeatureEnum
     {
         return $this->feature;
     }
 
-    public function setFeature(string $feature): self
+    public function setFeature(UnlockableFeatureEnum $feature): self
     {
-        if(!UnlockableFeatureEnum::isAValue($feature))
-            throw new EnumInvalidValueException(UnlockableFeatureEnum::class, $feature);
-
         $this->feature = $feature;
 
         return $this;

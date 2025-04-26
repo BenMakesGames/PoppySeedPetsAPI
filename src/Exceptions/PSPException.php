@@ -16,7 +16,7 @@ namespace App\Exceptions;
 
 class PSPException extends \Exception
 {
-    protected function __construct($clientMessage)
+    protected function __construct(string $clientMessage)
     {
         parent::__construct($clientMessage);
     }
