@@ -25,6 +25,7 @@ use App\Enum\TradeGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotFoundException;
+use App\Exceptions\UnreachableException;
 use App\Functions\ArrayFunctions;
 use App\Functions\CalendarFunctions;
 use App\Functions\ColorFunctions;
@@ -938,6 +939,7 @@ class TraderService
             10 => [ 'Tile: Bats!', 1 ],
             11 => [ 'Regular-sized Pumpkin', 1 ],
             12 => [ 'Wand of Lightning', 1 ],
+            default => throw new \InvalidArgumentException('Invalid month: ' . $month),
         };
     }
 
@@ -1440,7 +1442,7 @@ class TraderService
         {
             switch ($cost->type)
             {
-                case CostOrYieldTypeEnum::ITEM:
+                case CostOrYieldTypeEnum::Item:
                     $quantity = InventoryService::countInventory($this->em, $user->getId(), $cost->item->getId(), $location);
 
                     if($quantity < $cost->quantity)
@@ -1448,20 +1450,20 @@ class TraderService
 
                     break;
 
-                case CostOrYieldTypeEnum::MONEY:
+                case CostOrYieldTypeEnum::Money:
                     if($user->getMoneys() < $cost->quantity)
                         return false;
 
                     break;
 
-                case CostOrYieldTypeEnum::RECYCLING_POINTS:
+                case CostOrYieldTypeEnum::RecyclingPoints:
                     if($user->getRecyclePoints() < $cost->quantity)
                         return false;
 
                     break;
 
                 default:
-                    throw new \Exception('Unexpected cost type "' . $cost->type . '"!? Weird! Ben should fix this!');
+                    throw new UnreachableException();
             }
         }
 
@@ -1483,7 +1485,7 @@ class TraderService
         {
             switch ($cost->type)
             {
-                case CostOrYieldTypeEnum::ITEM:
+                case CostOrYieldTypeEnum::Item:
                     $itemQuantity = $this->inventoryService->loseItem($user, $cost->item->getId(), $location, $cost->quantity * $quantity);
 
                     if($itemQuantity < $cost->quantity * $quantity)
@@ -1491,7 +1493,7 @@ class TraderService
 
                     break;
 
-                case CostOrYieldTypeEnum::MONEY:
+                case CostOrYieldTypeEnum::Money:
                     if($user->getMoneys() < $cost->quantity * $quantity)
                         throw new PSPNotEnoughCurrencyException($cost->quantity * $quantity . '~~m~~', $user->getMoneys() . '~~m~~');
 
@@ -1502,7 +1504,7 @@ class TraderService
 
                     break;
 
-                case CostOrYieldTypeEnum::RECYCLING_POINTS:
+                case CostOrYieldTypeEnum::RecyclingPoints:
                     if($user->getRecyclePoints() < $cost->quantity * $quantity)
                         throw new PSPNotEnoughCurrencyException($cost->quantity * $quantity . '♺', $user->getRecyclePoints() . '♺');
 
@@ -1511,7 +1513,7 @@ class TraderService
                     break;
 
                 default:
-                    throw new \Exception('Unexpected cost type "' . $cost->type . '"!? Weird! Ben should fix this!');
+                    throw new UnreachableException();
             }
         }
 
@@ -1519,7 +1521,7 @@ class TraderService
         {
             switch ($yield->type)
             {
-                case CostOrYieldTypeEnum::ITEM:
+                case CostOrYieldTypeEnum::Item:
                     for($i = 0; $i < $yield->quantity * $quantity; $i++)
                         $this->inventoryService->receiveItem($yield->item, $user, null, $itemDescription, $location, $exchange->lockedToAccount);
 
@@ -1528,7 +1530,7 @@ class TraderService
 
                     break;
 
-                case CostOrYieldTypeEnum::MONEY:
+                case CostOrYieldTypeEnum::Money:
                     if($this->rng->rngNextInt(1, 50) === 1)
                         $this->transactionService->getMoney($user, $yield->quantity * $quantity, 'Traded for at the Trader. (That\'s usually just called "selling", right?)', [ 'Trader' ]);
                     else
@@ -1536,12 +1538,12 @@ class TraderService
 
                     break;
 
-                case CostOrYieldTypeEnum::RECYCLING_POINTS:
+                case CostOrYieldTypeEnum::RecyclingPoints:
                     $this->transactionService->getRecyclingPoints($user, $yield->quantity * $quantity, 'Traded for at the Trader.', [ 'Trader' ]);
                     break;
 
                 default:
-                    throw new \Exception('Unexpected yield type "' . $yield->type . '"!? Weird! Ben should fix this!');
+                    throw new UnreachableException();
             }
         }
     }

@@ -19,16 +19,19 @@ interface IRandom
 
     /**
      * @return int A random integer >= 0
+     * @phpstan-impure
      */
     function rngNext(): int;
 
     /**
      * @return float A random float >= 0.0 and < 1.0
+     * @phpstan-impure
      */
     function rngNextFloat(): float;
 
     /**
      * @return bool A random boolean
+     * @phpstan-impure
      */
     function rngNextBool(): bool;
 
@@ -36,12 +39,14 @@ interface IRandom
      * @param int $min The minimum value (inclusive)
      * @param int $inclusiveMax The maximum value (inclusive)
      * @return int A random integer between $min and $inclusiveMax
+     * @phpstan-impure
      */
     function rngNextInt(int $min, int $inclusiveMax): int;
 
     /**
      * @param array $array
      * @return mixed A random element from the array
+     * @phpstan-impure
      */
     function rngNextFromArray(array $array): mixed;
 
@@ -54,6 +59,7 @@ interface IRandom
      * @param array $array The array to select a subset from
      * @param int $number The number of elements to select
      * @return array A random subset of the array with the specified number of elements
+     * @phpstan-impure
      */
     function rngNextSubsetFromArray(array $array, int $number): array;
 
@@ -61,6 +67,7 @@ interface IRandom
      * @param string $color The base color in hex format, WITHOUT # prefix (e.g., 'FF0000')
      * @param int $radius The range of adjustment possible for each of the red, green, and blue components of the color
      * @return string A new, adjusted color, in hex format, WITHOUT # prefix
+     * @phpstan-impure
      */
     function rngNextTweakedColor(string $color, int $radius = 12): string;
 }

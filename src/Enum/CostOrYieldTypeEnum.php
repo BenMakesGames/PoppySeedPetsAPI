@@ -11,14 +11,11 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Enum;
 
-final class CostOrYieldTypeEnum
+enum CostOrYieldTypeEnum: string
 {
-    use FakeEnum;
-
-    public const string ITEM = 'item';
-    public const string MONEY = 'money';
-    public const string RECYCLING_POINTS = 'recyclingPoints';
+    case Item = 'item';
+    case Money = 'money';
+    case RecyclingPoints = 'recyclingPoints';
 }
