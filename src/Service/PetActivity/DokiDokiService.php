@@ -21,6 +21,7 @@ use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
+use App\Exceptions\UnreachableException;
 use App\Functions\ActivityHelpers;
 use App\Functions\AdventureMath;
 use App\Functions\ArrayFunctions;
@@ -59,6 +60,7 @@ class DokiDokiService
             1 => $this->hit1Enemy($petWithSkills),
             2, 3, 4, 5, 6 => $this->hitManyEnemies($petWithSkills),
             7, 8, 9, 10 => $this->defeatWeirdBird($petWithSkills),
+            default => throw new UnreachableException(),
         };
 
         $activityLog

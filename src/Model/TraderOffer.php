@@ -66,16 +66,16 @@ class TraderOffer
 
         foreach($costs as $cost)
         {
-            if($cost->type === CostOrYieldTypeEnum::ITEM)
+            if($cost->type === CostOrYieldTypeEnum::Item)
             {
                 if(!array_key_exists($cost->item->getName(), $houseInventoryQuantitiesByName))
                     return 0;
 
                 $maxQuantity = min($maxQuantity, (int)($houseInventoryQuantitiesByName[$cost->item->getName()]->quantity /  $cost->quantity));
             }
-            else if($cost->type === CostOrYieldTypeEnum::MONEY)
+            else if($cost->type === CostOrYieldTypeEnum::Money)
                 $maxQuantity = min($maxQuantity, (int)($user->getMoneys() / $cost->quantity));
-            else if($cost->type === CostOrYieldTypeEnum::RECYCLING_POINTS)
+            else if($cost->type === CostOrYieldTypeEnum::RecyclingPoints)
                 $maxQuantity = min($maxQuantity, (int)($user->getRecyclePoints() / $cost->quantity));
 
             if($maxQuantity == 0)

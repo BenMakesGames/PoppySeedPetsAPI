@@ -26,6 +26,7 @@ class UserSpeciesCollectedFilterService
 
     public const int PageSize = 20;
 
+    /** @var EntityRepository<UserSpeciesCollected> */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $em)
@@ -56,7 +57,7 @@ class UserSpeciesCollectedFilterService
             ->innerJoin('d.species', 'species');
     }
 
-    public function filterUser(QueryBuilder $qb, $value): void
+    public function filterUser(QueryBuilder $qb, mixed $value): void
     {
         $qb
             ->andWhere('d.user = :userId')

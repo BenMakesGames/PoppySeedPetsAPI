@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 class TraderOfferCostOrYield
 {
     #[Groups(['traderOffer'])]
-    public string $type;
+    public CostOrYieldTypeEnum $type;
 
     #[Groups(['traderOffer'])]
     public ?Item $item;
@@ -33,7 +33,7 @@ class TraderOfferCostOrYield
     {
         $costOrYield = new TraderOfferCostOrYield();
 
-        $costOrYield->type = CostOrYieldTypeEnum::ITEM;
+        $costOrYield->type = CostOrYieldTypeEnum::Item;
         $costOrYield->item = $item;
         $costOrYield->quantity = $quantity;
 
@@ -44,7 +44,7 @@ class TraderOfferCostOrYield
     {
         $costOrYield = new TraderOfferCostOrYield();
 
-        $costOrYield->type = CostOrYieldTypeEnum::MONEY;
+        $costOrYield->type = CostOrYieldTypeEnum::Money;
         $costOrYield->item = null;
         $costOrYield->quantity = $quantity;
 
@@ -55,7 +55,7 @@ class TraderOfferCostOrYield
     {
         $costOrYield = new TraderOfferCostOrYield();
 
-        $costOrYield->type = CostOrYieldTypeEnum::RECYCLING_POINTS;
+        $costOrYield->type = CostOrYieldTypeEnum::RecyclingPoints;
         $costOrYield->item = null;
         $costOrYield->quantity = $quantity;
 

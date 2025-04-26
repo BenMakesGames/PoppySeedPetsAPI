@@ -129,7 +129,7 @@ class BoxController
         {
             $pets = $em->getRepository(Pet::class)->findBy([ 'owner' => $user, 'location' => PetLocationEnum::HOME ]);
 
-            /** @var Pet $pet */
+            /** @var Pet|null $pet */
             $pet = count($pets) == 0 ? null : $rng->rngNextFromArray($pets);
 
             $message .= "\n\nWait, what!? One of the rocks moved!";

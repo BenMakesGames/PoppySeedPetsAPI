@@ -26,6 +26,7 @@ class MeritFilterService
 
     private const int DefaultPageSize = 100;
 
+    /** @var EntityRepository<Merit> */
     private readonly EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $em)

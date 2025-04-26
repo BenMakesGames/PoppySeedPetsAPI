@@ -26,6 +26,7 @@ class GuildMemberFilterService
 
     public const int PageSize = 12;
 
+    /** @var EntityRepository<Pet> */
     private readonly EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $em)
@@ -51,7 +52,7 @@ class GuildMemberFilterService
         ;
     }
 
-    public function filterGuild(QueryBuilder $qb, $value): void
+    public function filterGuild(QueryBuilder $qb, mixed $value): void
     {
         $qb
             ->andWhere('guildMembership.guild=:guild')

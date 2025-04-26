@@ -140,7 +140,7 @@ class BookstoreService
             return null;
     }
 
-    public function advanceBookstoreQuest(User $user, string $itemToGive)
+    public function advanceBookstoreQuest(User $user, string $itemToGive): void
     {
         if(!$this->renamingScrollAvailable($user))
             throw new PSPNotUnlockedException('Bookstore Renaming Scrolls');

@@ -20,6 +20,7 @@ use App\Enum\LocationEnum;
 use App\Enum\MonsterOfTheWeekEnum;
 use App\Enum\UserStatEnum;
 use App\Exceptions\PSPInvalidOperationException;
+use App\Exceptions\UnreachableException;
 use App\Functions\ArrayFunctions;
 use App\Service\Clock;
 use App\Service\InventoryService;
@@ -101,7 +102,8 @@ class ClaimRewardsController
             1 => '. (The spirit was 0% impressed by the island\'s offerings.)',
             2 => '!',
             3 => '! :)',
-            4 => '! :D'
+            4 => '! :D',
+            default => throw new UnreachableException()
         };
 
         return $responseService->success('You received ' . ArrayFunctions::list_nice($rewards) . $punctuation);

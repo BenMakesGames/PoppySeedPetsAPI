@@ -35,9 +35,11 @@ class SearchController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        if($userAccessor->getUserOrThrow() && $userAccessor->getUserOrThrow()->getUnreadNews() > 0)
+        $user = $userAccessor->getUser();
+
+        if($user && $userAccessor->getUserOrThrow()->getUnreadNews() > 0)
         {
-            $userAccessor->getUserOrThrow()->setUnreadNews(0);
+            $user->setUnreadNews(0);
             $em->flush();
         }
 

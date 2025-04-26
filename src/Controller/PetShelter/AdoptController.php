@@ -79,7 +79,7 @@ class AdoptController
 
         [$pets, $dialog] = $adoptionService->getDailyPets($user);
 
-        /** @var PetShelterPet $petToAdopt */
+        /** @var PetShelterPet|null $petToAdopt */
         $petToAdopt = ArrayFunctions::find_one($pets, fn(PetShelterPet $p) => $p->id === $id);
 
         if($petToAdopt === null)

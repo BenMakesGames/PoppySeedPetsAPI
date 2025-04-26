@@ -25,15 +25,11 @@ use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
 use App\Model\ComputedPetSkills;
 use App\Model\MonthlyStoryAdventure\AdventureResult;
-use App\Repository\MonthlyStoryAdventureStepRepository;
-use App\Repository\UserMonthlyStoryAdventureStepCompletedRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class MonthlyStoryAdventureService
 {
     public function __construct(
-        private readonly MonthlyStoryAdventureStepRepository $monthlyStoryAdventureStepRepository,
-        private readonly UserMonthlyStoryAdventureStepCompletedRepository $userMonthlyStoryAdventureStepCompletedRepository,
         private readonly InventoryService $inventoryService,
         private readonly EntityManagerInterface $em,
         private readonly IRandom $rng,
@@ -45,7 +41,7 @@ class MonthlyStoryAdventureService
 
     public function isStepCompleted(User $user, MonthlyStoryAdventureStep $step): bool
     {
-        $completedStep = $this->userMonthlyStoryAdventureStepCompletedRepository->createQueryBuilder('c')
+        $completedStep = $this->em->getRepository(UserMonthlyStoryAdventureStepCompleted::class)->createQueryBuilder('c')
             ->select('COUNT(c.id) AS qty')
             ->andWhere('c.user=:user')
             ->andWhere('c.adventureStep=:adventureStep')
@@ -59,7 +55,7 @@ class MonthlyStoryAdventureService
 
     public function isPreviousStepCompleted(User $user, MonthlyStoryAdventureStep $step): bool
     {
-        $previousStep = $this->monthlyStoryAdventureStepRepository->createQueryBuilder('s')
+        $previousStep = $this->em->getRepository(MonthlyStoryAdventureStep::class)->createQueryBuilder('s')
             ->andWhere('s.step=:step')
             ->andWhere('s.adventure=:adventure')
             ->setParameter('step', $step->getPreviousStep())
@@ -326,7 +322,7 @@ class MonthlyStoryAdventureService
             'Tentacat Figurine',
         ]);
 
-        $recruitName = $this->rng->rngNextFromArray(self::STAR_KINDRED_NAMES);
+        $recruitName = $this->rng->rngNextFromArray(self::StarKindredNames);
 
         $text = $step->getNarrative() ?? '';
 
@@ -343,7 +339,7 @@ class MonthlyStoryAdventureService
         {
             $auraText = $this->awardAura($pets, $step);
 
-            if($text && $auraText) $text .= "\n\n" . $auraText;
+            if($auraText) $text .= "\n\n" . $auraText;
         }
 
         return new AdventureResult($text, $loot);
@@ -393,7 +389,7 @@ class MonthlyStoryAdventureService
     }
 
     // these names were copied from the StarKindred API code on 2022-08-28
-    private const array STAR_KINDRED_NAMES = [
+    private const array StarKindredNames = [
         "Adaddu-Shalum", // from textsynth.com, with a prompt for Babylonian and Assyrian names
         "Aho",
         "Akitu", // Babylonian New Year holiday

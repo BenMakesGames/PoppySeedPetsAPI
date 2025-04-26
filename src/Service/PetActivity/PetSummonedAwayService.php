@@ -18,6 +18,7 @@ use App\Entity\PetActivityLog;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
+use App\Exceptions\UnreachableException;
 use App\Functions\DateFunctions;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogTagHelpers;
@@ -57,6 +58,7 @@ class PetSummonedAwayService
             2 => $this->doSummonedToCleanAndHost($petWithSkills),
             3 => $this->doSummonedToAssistWithRitual($petWithSkills),
             4 => $this->doSummonedToAssistWithGathering($petWithSkills),
+            default => throw new UnreachableException(),
         };
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);

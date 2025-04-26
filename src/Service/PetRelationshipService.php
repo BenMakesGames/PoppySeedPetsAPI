@@ -97,7 +97,7 @@ class PetRelationshipService
     }
 
     /**
-     * @param Collection|Pet[] $pets
+     * @param Collection<int, Pet>|Pet[] $pets
      */
     public function groupGathering(
         Collection|array $pets,

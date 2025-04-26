@@ -128,7 +128,7 @@ class HouseFairyController
     public function buildBasement(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         UserStatsService $userStatsRepository, IRandom $rng, UserAccessor $userAccessor
-    )
+    ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
 
@@ -197,7 +197,7 @@ class HouseFairyController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function askAboutQuintessence(
         Inventory $inventory, ResponseService $responseService, UserAccessor $userAccessor
-    )
+    ): JsonResponse
     {
         ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'fairy/#/quintessence');
 
@@ -211,7 +211,7 @@ class HouseFairyController
     public function makeFairyFloss(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         InventoryRepository $inventoryRepository, IRandom $rng, UserAccessor $userAccessor
-    )
+    ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
 

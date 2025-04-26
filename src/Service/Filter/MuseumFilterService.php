@@ -26,6 +26,7 @@ class MuseumFilterService
 
     public const int PageSize = 20;
 
+    /** @var EntityRepository<MuseumItem> */
     private EntityRepository $repository;
 
     public function __construct(EntityManagerInterface $em)
@@ -51,7 +52,7 @@ class MuseumFilterService
         ;
     }
 
-    public function filterUser(QueryBuilder $qb, $value): void
+    public function filterUser(QueryBuilder $qb, mixed $value): void
     {
         $qb
             ->andWhere('m.user = :userId')
