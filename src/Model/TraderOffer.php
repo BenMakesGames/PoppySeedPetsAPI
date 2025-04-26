@@ -90,7 +90,7 @@ class TraderOffer
         $costsAndYields = array_merge($cost, $yield);
 
         return sha1(implode('&', array_map(function(TraderOfferCostOrYield $coy) {
-            return $coy->quantity . 'x' . ($coy->item ? $coy->item->getName() : $coy->type);
+            return $coy->quantity . 'x' . ($coy->item ? $coy->item->getName() : $coy->type->value);
         }, $costsAndYields)));
     }
 }
