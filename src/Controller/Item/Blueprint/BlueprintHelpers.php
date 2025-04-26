@@ -43,7 +43,7 @@ class BlueprintHelpers
     public static function rewardHelper(
         PetExperienceService $petExperienceService, ResponseService $responseService,
         EntityManagerInterface $em, Pet $pet, ?string $skill, string $flashMessage, string $logMessage
-    )
+    ): void
     {
         $rng = new Xoshiro();
         $changes = new PetChanges($pet);
