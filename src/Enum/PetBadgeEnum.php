@@ -56,7 +56,7 @@ final class PetBadgeEnum
     public const string CRAFTED_WITH_A_FULL_HOUSE = 'craftedWithAFullHouse';
     public const string CLIMBED_THE_TOWER_OF_TRIALS = 'climbedTheTowerOfTrials';
     public const string FOUND_A_CHOCOLATE_FEATHER_BONNET = 'foundAChocolateFeatherBonnet';
-    public const string PLANESWALKER_FRUCTAL_PLANE = 'planeswalkerFructalPlane';
+    public const string VISITED_THE_FRUCTAL_PLANE = 'visitedTheFructalPlane';
 
     // add-on helper activities
     public const string WAS_AN_ACCOUNTANT = 'increasedADragonsHoard';

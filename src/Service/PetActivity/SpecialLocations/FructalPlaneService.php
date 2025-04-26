@@ -73,7 +73,7 @@ class FructalPlaneService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
             $this->petExperienceService->spendTime($pet, 2, PetActivityStatEnum::UMBRA, false);
 
-            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PLANESWALKER_FRUCTAL_PLANE, $activityLog);
+            PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::VISITED_THE_FRUCTAL_PLANE, $activityLog);
 
             return $activityLog;
         }
@@ -94,7 +94,7 @@ class FructalPlaneService
 
         $pet->getTool()->setEnchantment(null);
 
-        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PLANESWALKER_FRUCTAL_PLANE, $activityLog);
+        PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::VISITED_THE_FRUCTAL_PLANE, $activityLog);
 
         return $activityLog;
     }
