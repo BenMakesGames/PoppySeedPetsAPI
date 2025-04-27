@@ -91,4 +91,11 @@ class PetActivityLogPet
 
         return $this;
     }
+    
+    public function addInterestingness(int $interestingness): static
+    {
+        $this->activityLog->addInterestingness($interestingness);
+
+        return $this;
+    }
 }

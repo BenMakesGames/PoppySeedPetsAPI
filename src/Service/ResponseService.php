@@ -201,7 +201,7 @@ class ResponseService
     }
 
     /**
-     * @deprecated Use {@see PetActivityLogFactory::createLog}, instead
+     * @deprecated Use {@see PetActivityLogFactory::createUnreadLog()} or {@see PetActivityLogFactory::createReadLog()}, instead
      */
     public function createActivityLog(Pet $pet, string $entry, string $icon, ?PetChangesSummary $changes = null): PetActivityLog
     {

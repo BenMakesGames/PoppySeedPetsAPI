@@ -22,6 +22,68 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class PetActivityLogFactory
 {
+    public static function createUnreadPetLog(EntityManagerInterface $em, Pet $pet, string $message): PetActivityLogPet
+    {
+        $log = self::createReadPetLog($em, $pet, $message);
+
+        $unreadLog = new UnreadPetActivityLog($log);
+        $em->persist($unreadLog);
+
+        return $log;
+    }
+
+    public static function createReadPetLog(EntityManagerInterface $em, Pet $pet, string $message): PetActivityLogPet
+    {
+        $log = new PetActivityLog($message);
+
+        $petLog = new PetActivityLogPet($pet, $log);
+
+        $em->persist($log);
+        $em->persist($petLog);
+
+        return $petLog;
+    }
+
+    /**
+     * @param Pet[] $pets
+     * @return PetActivityLogPet[]
+     */
+    public static function createUnreadGroupLogs(EntityManagerInterface $em, array $pets, string $message): array
+    {
+        $logs = self::createReadGroupLogs($em, $pets, $message);
+
+        foreach($logs as $log)
+        {
+            $unreadLog = new UnreadPetActivityLog($log);
+            $em->persist($unreadLog);
+        }
+
+        return $logs;
+    }
+
+    /**
+     * @param Pet[] $pets
+     * @return PetActivityLogPet[]
+     */
+    public static function createReadGroupLogs(EntityManagerInterface $em, array $pets, string $message): array
+    {
+        $log = new PetActivityLog($message);
+        $em->persist($log);
+
+        $petLogs = [];
+
+        foreach ($pets as $pet) {
+            $petLog = new PetActivityLogPet($pet, $log);
+            $em->persist($petLog);
+            $petLogs[] = $petLog;
+        }
+
+        return $petLogs;
+    }
+
+    /**
+     * @deprecated Use {@see createUnreadPetLog} or {@see createUnreadGroupLogs} instead
+     */
     public static function createUnreadLog(EntityManagerInterface $em, Pet $pet, string $message): PetActivityLog
     {
         $log = self::createReadLog($em, $pet, $message);
@@ -35,7 +97,7 @@ final class PetActivityLogFactory
     }
 
     /**
-     * Create a log which is already marked as having been read.
+     * @deprecated Use {@see createReadPetLog} or {@see createReadGroupLogs} instead
      */
     public static function createReadLog(EntityManagerInterface $em, Pet $pet, string $message): PetActivityLog
     {
