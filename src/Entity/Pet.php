@@ -52,11 +52,11 @@ class Pet
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'pets')]
     #[Groups(['petPublicProfile', 'parkEvent'])]
-    private $owner;
+    private User $owner;
 
     #[ORM\Column(type: 'string', length: 40)]
     #[Groups([SerializationGroupEnum::MY_PET, 'userPublicProfile', 'petPublicProfile', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'spiritCompanionPublicProfile', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet'])]
-    private $name;
+    private string $name = '';
 
     #[ORM\Column(type: 'integer')]
     private int $food = 0;
@@ -290,8 +290,14 @@ class Pet
     #[ORM\OneToMany(mappedBy: 'pet', targetEntity: PetBadge::class, orphanRemoval: true)]
     private Collection $badges;
 
-    public function __construct()
+    public function __construct(User $owner, string $name, PetSpecies $species, string $colorA, string $colorB)
     {
+        $this->owner = $owner;
+        $this->name = $name;
+        $this->species = $species;
+        $this->colorA = $colorA;
+        $this->colorB = $colorB;
+
         $rng = new Xoshiro();
 
         $this->birthDate = new \DateTimeImmutable();

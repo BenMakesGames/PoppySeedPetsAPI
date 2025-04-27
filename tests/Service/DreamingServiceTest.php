@@ -18,6 +18,7 @@ use App\Entity\Dream;
 use App\Entity\Item;
 use App\Entity\Pet;
 use App\Entity\PetSpecies;
+use App\Entity\User;
 use App\Service\PetActivity\DreamingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -50,11 +51,16 @@ class DreamingServiceTest extends KernelTestCase
         $dummyItem = new Item();
         $dummyItem->setName('Dummy Item');
 
-        $dummyDreamer = new Pet();
-        $dummyDreamer->setName('Dreamer');
-
         $dummySpecies = new PetSpecies();
         $dummySpecies->setName('Dummy Species');
+
+        $dummyDreamer = new Pet(
+            new User('Owner', 'any@any.com'),
+            'Dreamer',
+            $dummySpecies,
+            'ffffff',
+            '000000'
+        );
 
         $replacements = $dreamingService->generateReplacementsDictionary($dummyItem, $dummyDreamer, $dummySpecies);
 
