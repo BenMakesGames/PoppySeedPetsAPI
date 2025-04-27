@@ -98,7 +98,7 @@ class PetCleaningSelfService
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
 
-        $activityLog->setChanges($changes->compare($pet));
+        $activityLog->setChanges($pet, $changes->compare($pet));
 
         PlayerLogFactory::create(
             $this->em,
@@ -151,7 +151,7 @@ class PetCleaningSelfService
         $this->petExperienceService->spendTime($pet, 5, PetActivityStatEnum::OTHER, null);
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% eats the ' . $itemOnBody . ' off their body in no time flat! (Ah~! A true Gourmand!)')
-            ->setChanges($changes->compare($pet))
+            ->setChanges($pet, $changes->compare($pet))
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating', 'Gourmand' ]))
         ;
 
@@ -172,7 +172,7 @@ class PetCleaningSelfService
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
 
-        $activityLog->setChanges($changes->compare($pet));
+        $activityLog->setChanges($pet, $changes->compare($pet));
     }
 
     /**
@@ -189,7 +189,7 @@ class PetCleaningSelfService
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
-        $activityLog->setChanges($changes->compare($pet));
+        $activityLog->setChanges($pet, $changes->compare($pet));
     }
 
 }

@@ -185,7 +185,7 @@ class WeedController
 
             $activityLogEntry
                 ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
-                ->setChanges($changes->compare($helper))
+                ->setChanges($helper, $changes->compare($helper))
                 ->addTags(PetActivityLogTagHelpers::findByNames($em, [ 'Add-on Assistance', 'Greenhouse' ]))
             ;
 

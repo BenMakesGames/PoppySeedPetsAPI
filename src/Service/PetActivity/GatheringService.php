@@ -154,7 +154,7 @@ class GatheringService
 
         if($activityLog)
         {
-            $activityLog->setChanges($changes->compare($pet));
+            $activityLog->setChanges($pet, $changes->compare($pet));
         }
 
         if(AdventureMath::petAttractsBug($this->rng, $pet, 75))

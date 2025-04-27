@@ -65,7 +65,7 @@ class PetSummonedAwayService
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
-            ->setChanges($changes->compare($pet))
+            ->setChanges($pet, $changes->compare($pet))
         ;
 
         return $activityLog;

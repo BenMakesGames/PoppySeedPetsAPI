@@ -278,7 +278,7 @@ class GamingGroupService
                 );
             }
 
-            $activityLog->setChanges($petChanges->compare($member));
+            $activityLog->setChanges($member, $petChanges->compare($member));
         }
 
         $this->petRelationshipService->groupGathering(

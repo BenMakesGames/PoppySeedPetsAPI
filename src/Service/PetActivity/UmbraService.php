@@ -169,7 +169,7 @@ class UmbraService
 
         if($activityLog)
         {
-            $activityLog->setChanges($changes->compare($pet));
+            $activityLog->setChanges($pet, $changes->compare($pet));
         }
     }
 

@@ -243,7 +243,7 @@ class KinBallService implements ParkEventInterface
                     $log
                 );
 
-                $log->setChanges($state->compare($participant->pet));
+                $log->setChanges($participant->pet, $state->compare($participant->pet));
 
                 $participant->activityLog = $log;
             }

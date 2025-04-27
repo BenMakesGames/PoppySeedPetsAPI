@@ -17,7 +17,7 @@ namespace App\Entity;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Serializer\Attribute\SerializedName;
 
 #[ORM\Table]

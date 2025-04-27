@@ -157,7 +157,7 @@ class PetActivityService
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% nibbled on their ' . InventoryModifierFunctions::getNameWithModifiers($pet->getTool()) . '.')
                 ->setIcon('icons/activity-logs/just-the-fork')
-                ->setChanges($changes)
+                ->setChanges($pet, $changes)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating' ]))
             ;
         }
@@ -270,7 +270,7 @@ class PetActivityService
 
                 $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% threw up :(')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Sick ]))
-                    ->setChanges($changes->compare($pet));
+                    ->setChanges($pet, $changes->compare($pet));
 
                 PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::POOPED_SHED_OR_BATHED, $log);
 
@@ -386,7 +386,7 @@ class PetActivityService
 
             $lunchboxLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
                 ->setIcon('icons/activity-logs/lunchbox')
-                ->setChanges($petChanges->compare($pet))
+                ->setChanges($pet, $petChanges->compare($pet))
                 ->addInterestingness($itemsLeftInLunchbox === 0 ? PetActivityLogInterestingnessEnum::LUNCHBOX_EMPTY : 1)
             ;
 
@@ -431,7 +431,7 @@ class PetActivityService
         {
             $changes = new PetChanges($pet);
             $activityLog = $this->huntingService->huntedTurkeyDragon($petWithSkills);
-            $activityLog->setChanges($changes->compare($pet));
+            $activityLog->setChanges($pet, $changes->compare($pet));
             return;
         }
 
@@ -439,7 +439,7 @@ class PetActivityService
         {
             $changes = new PetChanges($pet);
             $activityLog = $this->umbraService->speakToBunnySpirit($pet);
-            $activityLog->setChanges($changes->compare($pet));
+            $activityLog->setChanges($pet, $changes->compare($pet));
             $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::LAPINE_WHISPERS));
             return;
         }
@@ -1140,7 +1140,7 @@ class PetActivityService
 
             $this->petExperienceService->spendTime($pet, 15, PetActivityStatEnum::OTHER, null);
 
-            $activityLog->setChanges($changes->compare($pet));
+            $activityLog->setChanges($pet, $changes->compare($pet));
 
             return true;
         }
@@ -1202,7 +1202,7 @@ class PetActivityService
         $this->inventoryService->petCollectsItem($randomGoody, $pet, $pet->getName() . ' received this from their Fairy Godmother!', $activityLog);
         $this->petExperienceService->spendTime($pet, 90, PetActivityStatEnum::OTHER, null);
 
-        $activityLog->setChanges($changes->compare($pet));
+        $activityLog->setChanges($pet, $changes->compare($pet));
 
         return true;
     }

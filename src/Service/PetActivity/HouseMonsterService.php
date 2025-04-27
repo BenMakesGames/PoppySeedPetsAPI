@@ -223,7 +223,7 @@ class HouseMonsterService
 
             $activityLog
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags))
-                ->setChanges($changes);
+                ->setChanges($pet, $changes);
 
             if($monster->petBadge && $won)
                 PetBadgeHelpers::awardBadge($this->em, $pet, $monster->petBadge, $activityLog);

@@ -17,7 +17,7 @@ namespace App\Entity;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\StatusEffectEnum;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Table]
 #[ORM\Index(name: 'time_remaining_idx', columns: ['time_remaining'])]

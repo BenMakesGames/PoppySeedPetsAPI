@@ -148,7 +148,7 @@ class SportsBallService
                 $this->inventoryService->petCollectsItem($loot, $member, $this->formatMessage($message, $member, $group), $activityLog);
             }
 
-            $activityLog->setChanges($petChanges->compare($member));
+            $activityLog->setChanges($member, $petChanges->compare($member));
         }
 
         $this->petRelationshipService->groupGathering(

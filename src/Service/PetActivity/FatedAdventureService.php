@@ -96,7 +96,7 @@ class FatedAdventureService
         $pet->removeStatusEffect($fatedStatusEffect);
 
         $log
-            ->setChanges($changes->compare($pet))
+            ->setChanges($pet, $changes->compare($pet))
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
         ;
 

@@ -79,7 +79,7 @@ class HoliService
         }
 
         $activityLog
-            ->setChanges($changes->compare($pet))
+            ->setChanges($pet, $changes->compare($pet))
             ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
             // tags set in other methods
         ;
@@ -142,7 +142,7 @@ class HoliService
         $otherPetLog
             ->setIcon(self::HOLI_ACTIVITY_LOG_ICON)
             ->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION)
-            ->setChanges($otherPetChanges->compare($otherPet))
+            ->setChanges($otherPet, $otherPetChanges->compare($otherPet))
             ->addTags($tags)
         ;
 

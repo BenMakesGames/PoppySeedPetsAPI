@@ -66,7 +66,7 @@ class DokiDokiService
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
-            ->setChanges($changes->compare($pet))
+            ->setChanges($pet, $changes->compare($pet))
         ;
 
         if(AdventureMath::petAttractsBug($this->rng, $pet, 50))

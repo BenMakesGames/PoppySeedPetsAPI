@@ -215,7 +215,7 @@ class BandService
             PetActivityLogFactory::createUnreadLog($this->em, $pet, $group->getName() . ' received some fan mail! %pet:' . $pet->getId() . '.name% was ' . $feels)
                 ->setIcon(self::ActivityIcon)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->setChanges($changes->compare($pet))
+                ->setChanges($pet, $changes->compare($pet))
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Band' ]))
             ;
         }
@@ -238,7 +238,7 @@ class BandService
             PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% got royalties from ' . $group->getName() . ' sales!')
                 ->setIcon(self::ActivityIcon)
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                ->setChanges($changes->compare($pet))
+                ->setChanges($pet, $changes->compare($pet))
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Band', 'Moneys' ]))
             ;
         }
@@ -304,7 +304,7 @@ class BandService
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $group->getName() . ($this->rng->rngNextInt(1, 5) === 1 ? ' finally' : '') . ' released a new ' . $item . '!')
                     ->setIcon(self::ActivityIcon)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                    ->setChanges($petChanges[$member->getId()]->compare($member))
+                    ->setChanges($member, $petChanges[$member->getId()]->compare($member))
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Band' ]))
                 ;
 
@@ -332,7 +332,7 @@ class BandService
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $member->getName() . ' jammed with ' . $group->getName() . '. ' . self::BandActivitySentimentMessages[$sentiment])
                     ->setIcon(self::ActivityIcon)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM)
-                    ->setChanges($petChanges[$member->getId()]->compare($member))
+                    ->setChanges($member, $petChanges[$member->getId()]->compare($member))
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Band' ]))
                 ;
 

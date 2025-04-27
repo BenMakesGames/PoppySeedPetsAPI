@@ -79,7 +79,7 @@ class GatheringHolidayAdventureService
         };
 
         $activityLog
-            ->setChanges($changes->compare($pet))
+            ->setChanges($pet, $changes->compare($pet))
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Special Event', self::HolidayTags[$holiday->value] ]))
         ;
 

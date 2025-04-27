@@ -94,7 +94,7 @@ class KappaService
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
         }
 
-        $activityLog->setChanges($changes->compare($pet));
+        $activityLog->setChanges($pet, $changes->compare($pet));
 
         return $activityLog;
     }
@@ -171,7 +171,7 @@ class KappaService
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
         }
 
-        $activityLog->setChanges($changes->compare($pet));
+        $activityLog->setChanges($pet, $changes->compare($pet));
 
         return $activityLog;
     }

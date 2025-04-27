@@ -124,7 +124,7 @@ class BurntForestService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Location_The_Burnt_Forest
                 ]))
-                ->setChanges($changes->compare($pet))
+                ->setChanges($pet, $changes->compare($pet))
             ;
 
             $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Burnt Forest', ActivityHelpers::PetName($pet) . ' used their ' . $pet->getTool()->getFullItemName() . ' to visit the Burnt Forest.');

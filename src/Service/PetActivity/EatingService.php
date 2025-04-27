@@ -171,7 +171,7 @@ class EatingService
                     PetActivityLogTagEnum::Eating,
                     PetActivityLogTagEnum::Leftovers,
                 ]))
-                ->setChanges($changes->compare($pet));
+                ->setChanges($pet, $changes->compare($pet));
         }
 
         $bonusItems = [];
@@ -216,7 +216,7 @@ class EatingService
             }
 
             $activityLog
-                ->setChanges($changes->compare($pet))
+                ->setChanges($pet, $changes->compare($pet))
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Lucky_Food ]))
             ;
         }
@@ -381,7 +381,7 @@ class EatingService
 
             return PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
                 ->setIcon($icon)
-                ->setChanges($petChanges->compare($pet))
+                ->setChanges($pet, $petChanges->compare($pet))
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Eating' ]))
             ;
         }

@@ -136,7 +136,7 @@ class AstronomyClubService
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $this->formatMessage($messageTemplate, $member, $group, ''))
                     ->setIcon(self::ActivityIcon)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
-                    ->setChanges($petChanges[$member->getId()]->compare($member))
+                    ->setChanges($member, $petChanges[$member->getId()]->compare($member))
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Astronomy Lab', 'Special Event', 'Leonids' ]))
                 ;
 
@@ -223,7 +223,7 @@ class AstronomyClubService
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $this->formatMessage($messageTemplate, $member, $group, $description))
                     ->setIcon(self::ActivityIcon)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-                    ->setChanges($petChanges[$member->getId()]->compare($member))
+                    ->setChanges($member, $petChanges[$member->getId()]->compare($member))
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Astronomy Lab' ]))
                 ;
 
@@ -248,7 +248,7 @@ class AstronomyClubService
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member,  $member->getName() . ' explored the cosmos with ' . $group->getName() . '.')
                     ->setIcon(self::ActivityIcon)
                     ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM)
-                    ->setChanges($petChanges[$member->getId()]->compare($member))
+                    ->setChanges($member, $petChanges[$member->getId()]->compare($member))
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Astronomy Lab' ]))
                 ;
 

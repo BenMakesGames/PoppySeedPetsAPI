@@ -470,7 +470,7 @@ class JoustingService implements ParkEventInterface
 
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ], $log);
 
-        $log->setChanges($changes->compare($pet));
+        $log->setChanges($pet, $changes->compare($pet));
 
         $this->individualParticipants[$pet->getId()]->activityLog = $log;
         $this->individualParticipants[$pet->getId()]->isWinner = $team->wins === $this->round;

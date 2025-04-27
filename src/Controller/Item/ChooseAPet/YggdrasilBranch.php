@@ -84,7 +84,7 @@ class YggdrasilBranch
 
         PetActivityLogFactory::createReadLog($em, $pet, "%pet:{$pet->getId()}.name% {$itemActionDescription}")
             ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
-            ->setChanges($petChanges->compare($pet))
+            ->setChanges($pet, $petChanges->compare($pet))
         ;
 
         $em->remove($inventory);

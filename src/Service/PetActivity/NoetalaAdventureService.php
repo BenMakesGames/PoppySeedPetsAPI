@@ -120,7 +120,7 @@ class NoetalaAdventureService
                 $this->inventoryService->petCollectsItem('Quintessence', $pet, ArrayFunctions::list_nice($names) . ' defeated Noetala\'s Wing, and received this.', $log);
 
                 $log
-                    ->setChanges($petChanges[$pet->getId()]->compare($pet))
+                    ->setChanges($pet, $petChanges[$pet->getId()]->compare($pet))
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting' ]))
                 ;
 

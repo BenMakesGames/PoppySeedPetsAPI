@@ -532,7 +532,7 @@ class PetSocialActivityService
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
             ->setIcon('companions/' . $companion->getImage())
-            ->setChanges($changes->compare($pet))
+            ->setChanges($pet, $changes->compare($pet))
             ->addInterestingness($activityInterestingness)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $activityTags))
         ;
@@ -584,12 +584,12 @@ class PetSocialActivityService
         }
 
         $petLog
-            ->setChanges($petChanges->compare($pet->getPet()))
+            ->setChanges($pet->getPet(), $petChanges->compare($pet->getPet()))
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::One_on_One_Hangout ]))
         ;
 
         $friendLog
-            ->setChanges($friendChanges->compare($friend->getPet()))
+            ->setChanges($friend->getPet(), $friendChanges->compare($friend->getPet()))
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::One_on_One_Hangout ]))
         ;
     }

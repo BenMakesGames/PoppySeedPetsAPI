@@ -22,7 +22,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Table]
 #[ORM\Index(name: 'name_idx', columns: ['name'])]
@@ -621,16 +621,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUnlockedAuras(): Collection
     {
         return $this->unlockedAuras;
-    }
-
-    public function addUnlockedAura(UserUnlockedAura $unlockedAura): self
-    {
-        if (!$this->unlockedAuras->contains($unlockedAura)) {
-            $this->unlockedAuras[] = $unlockedAura;
-            $unlockedAura->setUser($this);
-        }
-
-        return $this;
     }
 
     public function getMuseumPoints(): int

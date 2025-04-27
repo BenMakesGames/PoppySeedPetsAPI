@@ -91,7 +91,7 @@ class GreenhouseAdventureService
 
         $activityLog
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Greenhouse' ]))
-            ->setChanges($changes->compare($pet))
+            ->setChanges($pet, $changes->compare($pet))
         ;
 
         return $activityLog;

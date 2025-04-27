@@ -78,7 +78,7 @@ class PetAndPraiseService
 
         PetActivityLogFactory::createUnreadLog($this->em, $pet, '%user:' . $petter->getId() . '.Name% pet ' . '%pet:' . $pet->getId() . '.name%.')
             ->setIcon('ui/affection')
-            ->setChanges($changes->compare($pet))
+            ->setChanges($pet, $changes->compare($pet))
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Petting ]))
         ;
 

@@ -17,7 +17,7 @@ namespace App\Entity;
 use App\Functions\NumberFunctions;
 use App\Service\PetExperienceService;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Table]
 #[ORM\Index(name: 'activity_time_idx', columns: ['activity_time'])]

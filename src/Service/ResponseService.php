@@ -31,7 +31,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use App\Functions\JsonResponseFactory;
 
 class ResponseService
@@ -205,7 +205,7 @@ class ResponseService
     public function createActivityLog(Pet $pet, string $entry, string $icon, ?PetChangesSummary $changes = null): PetActivityLog
     {
         return PetActivityLogFactory::createUnreadLog($this->em, $pet, $entry)
-            ->setChanges($changes)
+            ->setChanges($pet, $changes)
             ->setIcon($icon)
         ;
     }

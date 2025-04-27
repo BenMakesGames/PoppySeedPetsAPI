@@ -94,7 +94,7 @@ class HornOfPlentyController
             ->increaseEsteem(4);
 
         PetActivityLogFactory::createReadLog($em, $helperPet, ActivityHelpers::PetName($helperPet) . ' found ' . $lootDescription . ' in a Horn of Plenty.')
-            ->setChanges($changes->compare($helperPet))
+            ->setChanges($helperPet, $changes->compare($helperPet))
             ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE);
 
         if($rng->rngNextInt(2, 6) <= $numberOfTosses)

@@ -19,7 +19,7 @@ use App\Model\PetChangesSummary;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Table]
 #[ORM\Index(name: 'created_on_idx', columns: ['created_on'])]
@@ -31,11 +31,6 @@ class PetActivityLog
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[Groups(["petActivityLogAndPublicPet"])]
-    #[ORM\ManyToOne(targetEntity: Pet::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private Pet $pet;
-
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'text')]
     private string $entry;
@@ -45,20 +40,12 @@ class PetActivityLog
     private \DateTimeImmutable $createdOn;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
-    #[ORM\Column(type: 'object', nullable: true)]
-    private $changes;
-
-    #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'string', length: 100)]
     private string $icon = '';
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'integer')]
     private int $interestingness = 0;
-
-    #[Groups(["petActivityLogAndPublicPet"])]
-    #[ORM\ManyToOne(targetEntity: Item::class)]
-    private ?Item $equippedItem = null;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\ManyToMany(targetEntity: PetActivityLogTag::class)]
@@ -68,33 +55,24 @@ class PetActivityLog
     #[ORM\OneToMany(mappedBy: 'log', targetEntity: PetActivityLogItem::class, orphanRemoval: true, cascade: ['persist'])]
     private Collection $createdItems;
 
-    public function __construct(Pet $pet, string $entry)
+    /**
+     * @var Collection<int, PetActivityLogPet>
+     */
+    #[ORM\OneToMany(mappedBy: 'activityLog', targetEntity: PetActivityLogPet::class, orphanRemoval: true)]
+    private Collection $petActivityLogPets;
+
+    public function __construct(string $entry)
     {
-        $this->pet = $pet;
         $this->entry = $entry;
         $this->createdOn = new \DateTimeImmutable();
         $this->tags = new ArrayCollection();
         $this->createdItems = new ArrayCollection();
+        $this->petActivityLogPets = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getPet(): ?Pet
-    {
-        return $this->pet;
-    }
-
-    public function setPet(?Pet $pet): self
-    {
-        $this->pet = $pet;
-
-        if($pet && $pet->getTool())
-            $this->equippedItem = $pet->getTool()->getItem();
-
-        return $this;
     }
 
     public function getEntry(): ?string
@@ -114,14 +92,21 @@ class PetActivityLog
         return $this->createdOn;
     }
 
-    public function getChanges(): ?PetChangesSummary
+    /** @deprecated Use {@see PetActivityLogPet::getChanges()}, instead. */
+    public function getChanges(Pet $pet): ?PetChangesSummary
     {
-        return $this->changes;
+        return $this->petActivityLogPets
+            ->findFirst(fn(PetActivityLogPet $petLog) => $petLog->getPet()->getId() === $pet->getId())
+            ?->getChanges();
     }
 
-    public function setChanges(?PetChangesSummary $changes): self
+    /** @deprecated Use {@see PetActivityLogPet::setChanges()}, instead. */
+    public function setChanges(Pet $pet, ?PetChangesSummary $changes): self
     {
-        $this->changes = $changes;
+        $petLog = $this->petActivityLogPets
+            ->findFirst(fn(PetActivityLogPet $petLog) => $petLog->getPet()->getId() === $pet->getId());
+
+        $petLog->setChanges($changes);
 
         if($changes !== null && (!!$changes->level || !!$changes->affectionLevel))
             $this->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP);
@@ -152,24 +137,6 @@ class PetActivityLog
             $this->interestingness = $interestingness;
 
         return $this;
-    }
-
-    public function getEquippedItem(): ?Item
-    {
-        return $this->equippedItem;
-    }
-
-    public function setEquippedItem(?Item $equippedItem): self
-    {
-        $this->equippedItem = $equippedItem;
-
-        return $this;
-    }
-
-    #[Groups(["petActivityLogs"])]
-    public function getIsPetActivity(): bool
-    {
-        return $this->pet !== null;
     }
 
     /**
@@ -219,6 +186,24 @@ class PetActivityLog
         ;
 
         $this->createdItems->add($createdItem);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PetActivityLogPet>
+     */
+    public function getPetActivityLogPets(): Collection
+    {
+        return $this->petActivityLogPets;
+    }
+
+    public function addPetActivityLogPet(PetActivityLogPet $petActivityLogPet): static
+    {
+        if (!$this->petActivityLogPets->contains($petActivityLogPet)) {
+            $this->petActivityLogPets->add($petActivityLogPet);
+            $petActivityLogPet->setActivityLog($this);
+        }
 
         return $this;
     }

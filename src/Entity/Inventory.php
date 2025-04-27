@@ -19,7 +19,7 @@ use App\Enum\LocationEnum;
 use App\Functions\InventoryModifierFunctions;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Table]
 #[ORM\Index(name: 'modified_on_idx', columns: ['modified_on'])]

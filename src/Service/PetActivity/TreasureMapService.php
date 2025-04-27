@@ -102,7 +102,7 @@ class TreasureMapService
         }
 
         $activityLog
-            ->setChanges($changes->compare($pet))
+            ->setChanges($pet, $changes->compare($pet))
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
         ;
 
@@ -130,7 +130,7 @@ class TreasureMapService
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::OUTSMARTED_A_THIEVING_MAGPIE, $activityLog);
 
-        $activityLog->setChanges($changes->compare($pet));
+        $activityLog->setChanges($pet, $changes->compare($pet));
 
         if(AdventureMath::petAttractsBug($this->rng, $pet, 20))
             $this->inventoryService->petAttractsRandomBug($pet);
@@ -165,7 +165,7 @@ class TreasureMapService
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
         $this->petExperienceService->spendTime($pet, 120, PetActivityStatEnum::OTHER, null);
 
-        $activityLog->setChanges($changes->compare($pet));
+        $activityLog->setChanges($pet, $changes->compare($pet));
     }
 
     public function doKeybladeTower(ComputedPetSkills $petWithSkills): void
@@ -244,7 +244,7 @@ class TreasureMapService
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY + $floor)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting', 'Adventure!' ]))
-            ->setChanges($changes->compare($pet))
+            ->setChanges($pet, $changes->compare($pet))
         ;
 
         if(AdventureMath::petAttractsBug($this->rng, $pet, 20))
@@ -417,7 +417,7 @@ class TreasureMapService
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
 
-        $activityLog->setChanges($changes->compare($pet));
+        $activityLog->setChanges($pet, $changes->compare($pet));
 
         return $activityLog;
     }
@@ -518,7 +518,7 @@ class TreasureMapService
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         $activityLog
-            ->setChanges($changes->compare($pet))
+            ->setChanges($pet, $changes->compare($pet))
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
         ;
 
@@ -570,7 +570,7 @@ class TreasureMapService
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
 
-        $activityLog->setChanges($changes->compare($pet));
+        $activityLog->setChanges($pet, $changes->compare($pet));
 
         if(AdventureMath::petAttractsBug($this->rng, $pet, 20))
             $this->inventoryService->petAttractsRandomBug($pet);

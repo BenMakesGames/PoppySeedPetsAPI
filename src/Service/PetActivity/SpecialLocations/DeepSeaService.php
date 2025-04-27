@@ -80,7 +80,7 @@ class DeepSeaService
             default => $this->findSunkenShip($petWithSkills),
         };
 
-        $activityLog->setChanges($changes->compare($pet));
+        $activityLog->setChanges($pet, $changes->compare($pet));
 
         if(AdventureMath::petAttractsBug($this->rng, $pet, 75))
             $this->inventoryService->petAttractsRandomBug($pet);

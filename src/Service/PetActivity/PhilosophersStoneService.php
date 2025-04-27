@@ -154,7 +154,7 @@ class PhilosophersStoneService
         }
 
         $activityLog
-            ->setChanges($changes->compare($pet))
+            ->setChanges($pet, $changes->compare($pet))
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
         ;
 
@@ -252,7 +252,7 @@ class PhilosophersStoneService
         }
 
         $activityLog
-            ->setChanges($changes->compare($pet))
+            ->setChanges($pet, $changes->compare($pet))
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
         ;
 
@@ -356,7 +356,7 @@ class PhilosophersStoneService
         }
 
         $activityLog
-            ->setChanges($changes->compare($pet))
+            ->setChanges($pet, $changes->compare($pet))
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
         ;
 
@@ -400,7 +400,7 @@ class PhilosophersStoneService
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
-            ->setChanges($changes->compare($pet))
+            ->setChanges($pet, $changes->compare($pet))
         ;
 
         return $activityLog;

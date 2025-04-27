@@ -413,7 +413,7 @@ class HollowEarthService
             $player->setCurrentAction($event);
 
         if($activityLog)
-            $activityLog->setChanges($petChanges->compare($pet));
+            $activityLog->setChanges($pet, $petChanges->compare($pet));
     }
 
     /**
@@ -431,7 +431,7 @@ class HollowEarthService
             $activityLog = PetActivityLogFactory::createReadLog($this->em, $player->getChosenPet(), 'While exploring the Hollow Earth, ' . $player->getChosenPet()->getName() . ' received ' . ArrayFunctions::list_nice_sorted($items) . '.')
                 ->setIcon(($currentCard && $currentCard->getImage()) ? ('hollow-earth/tile/' . $currentCard->getImage()) : '')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Hollow Earth' ]))
-                ->setChanges($petChanges->compare($pet))
+                ->setChanges($pet, $petChanges->compare($pet))
             ;
         }
 

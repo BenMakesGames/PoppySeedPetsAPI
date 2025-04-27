@@ -390,7 +390,7 @@ class CraftingService
         /** @var PetActivityLog $activityLog */
         $activityLog = $method->getCallable()($petWithSkills);
 
-        $activityLog->setChanges($changes->compare($petWithSkills->getPet()));
+        $activityLog->setChanges($petWithSkills->getPet(), $changes->compare($petWithSkills->getPet()));
 
         return $activityLog;
     }

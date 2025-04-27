@@ -16,6 +16,7 @@ namespace App\Functions;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
+use App\Entity\PetActivityLogPet;
 use App\Entity\UnreadPetActivityLog;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -25,11 +26,10 @@ final class PetActivityLogFactory
     {
         $log = self::createReadLog($em, $pet, $message);
 
-        $unreadLog = (new UnreadPetActivityLog())
-            ->setPet($pet)
-            ->setPetActivityLog($log);
-
-        $em->persist($unreadLog);
+        foreach($log->getPetActivityLogPets() as $petLog) {
+            $unreadLog = new UnreadPetActivityLog($petLog);
+            $em->persist($unreadLog);
+        }
 
         return $log;
     }
@@ -39,9 +39,12 @@ final class PetActivityLogFactory
      */
     public static function createReadLog(EntityManagerInterface $em, Pet $pet, string $message): PetActivityLog
     {
-        $log = new PetActivityLog(pet: $pet, entry: $message);
+        $log = new PetActivityLog($message);
+
+        $petLog = new PetActivityLogPet($pet, $log);
 
         $em->persist($log);
+        $em->persist($petLog);
 
         return $log;
     }

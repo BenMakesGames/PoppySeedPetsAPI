@@ -124,7 +124,7 @@ class GuildService
         if($activityLog !== null)
         {
             $activityLog
-                ->setChanges($changes->compare($petWithSkills->getPet()))
+                ->setChanges($petWithSkills->getPet(), $changes->compare($petWithSkills->getPet()))
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Guild' ]))
             ;
         }

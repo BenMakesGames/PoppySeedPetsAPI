@@ -18,7 +18,7 @@ use App\Enum\EnumInvalidValueException;
 use App\Enum\HollowEarthActionTypeEnum;
 use App\Enum\HollowEarthMoveDirectionEnum;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: 'App\Repository\HollowEarthPlayerRepository')]
 class HollowEarthPlayer

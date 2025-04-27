@@ -97,7 +97,7 @@ class Molly
 
         $petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
 
-        $activityLog->setChanges($petChanges->compare($pet));
+        $activityLog->setChanges($pet, $petChanges->compare($pet));
 
         $em->remove($inventory);
         $em->flush();

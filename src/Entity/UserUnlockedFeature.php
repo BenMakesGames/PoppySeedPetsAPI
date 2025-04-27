@@ -16,7 +16,7 @@ namespace App\Entity;
 
 use App\Enum\UnlockableFeatureEnum;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Table]
 #[ORM\UniqueConstraint(name: 'user_id_feature_idx', columns: ['user_id', 'feature'])]

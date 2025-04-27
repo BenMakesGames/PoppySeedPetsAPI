@@ -70,7 +70,7 @@ class JumpRopeService
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
-            ->setChanges($changes->compare($pet))
+            ->setChanges($pet, $changes->compare($pet))
         ;
 
         $bugChance = $pet->getBadges()->exists(Fn(int $i, PetBadge $p) => $p->getBadge() === PetBadgeEnum::JUMPED_ROPE_WITH_A_BUG)

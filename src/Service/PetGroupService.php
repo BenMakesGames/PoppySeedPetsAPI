@@ -171,7 +171,7 @@ class PetGroupService
                 : PetActivityLogFactory::createUnreadLog($this->em, $member, $message);
 
             $log
-                ->setChanges($changes->compare($member))
+                ->setChanges($member, $changes->compare($member))
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout' ]))
             ;
@@ -276,7 +276,7 @@ class PetGroupService
             ;
 
             PetActivityLogFactory::createUnreadLog($this->em, $member, $group->getName() . ' tried to recruit another member, but couldn\'t find anyone. They decided to disband :(')
-                ->setChanges($changes->compare($member))
+                ->setChanges($member, $changes->compare($member))
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout' ]))
             ;
@@ -330,7 +330,7 @@ class PetGroupService
                 : PetActivityLogFactory::createUnreadLog($this->em, $member, $message);
 
             $log
-                ->setChanges($changes->compare($member))
+                ->setChanges($member, $changes->compare($member))
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout' ]))
             ;

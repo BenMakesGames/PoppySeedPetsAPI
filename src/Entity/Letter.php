@@ -16,7 +16,7 @@ namespace App\Entity;
 
 use App\Repository\LetterRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Table]
 #[ORM\Index(name: 'sender_idx', columns: ['sender'])]

@@ -244,7 +244,7 @@ class LetterService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Guild', 'Mail' ]))
             ;
 
-            $courierActivity->setChanges($courierChanges->compare($courier));
+            $courierActivity->setChanges($courier, $courierChanges->compare($courier));
         }
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
@@ -254,7 +254,7 @@ class LetterService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Mail' ]))
         ;
 
-        $activityLog->setChanges($petChanges->compare($pet));
+        $activityLog->setChanges($pet, $petChanges->compare($pet));
 
         $letterDescription = '%pet:' . $pet->getId() . '.name% was delivered this letter by a courier: ' . $descriptionForPet;
 

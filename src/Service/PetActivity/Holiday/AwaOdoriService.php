@@ -127,7 +127,7 @@ class AwaOdoriService
 
         $log
             ->setIcon('calendar/holidays/awa-odori')
-            ->setChanges($changes->compare($pet))
+            ->setChanges($pet, $changes->compare($pet))
             ->addTags($activityLogTags)
             ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
         ;

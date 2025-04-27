@@ -102,7 +102,7 @@ class DragonVaseController
             $petExperienceService->gainExp($pet, 1, [ $skill ], $activityLog);
 
             $activityLog
-                ->setChanges($changes->compare($pet))
+                ->setChanges($pet, $changes->compare($pet))
                 ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
             ;
 

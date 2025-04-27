@@ -75,7 +75,7 @@ class IcyMoonService
             default => throw new \Exception('Unexpected roll in Icy Moon adventure.'),
         };
 
-        $activityLog->setChanges($changes->compare($pet));
+        $activityLog->setChanges($pet, $changes->compare($pet));
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::EXPLORED_AN_ICY_MOON, $activityLog);
 

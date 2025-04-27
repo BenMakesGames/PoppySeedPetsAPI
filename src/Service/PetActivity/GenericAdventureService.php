@@ -96,7 +96,7 @@ class GenericAdventureService
             }
 
             return PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name%, having become a grandparent, has been thinking about their life up until this point, and adopted a new philosophy: ' . $newMerit . '!')
-                ->setChanges($changes->compare($pet))
+                ->setChanges($pet, $changes->compare($pet))
                 ->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP)
             ;
         }
@@ -123,7 +123,7 @@ class GenericAdventureService
 
             $pet->increaseEsteem(4);
 
-            $activityLog->setChanges($changes->compare($pet));
+            $activityLog->setChanges($pet, $changes->compare($pet));
 
             return $activityLog;
         }
@@ -304,7 +304,7 @@ class GenericAdventureService
         }
 
         $activityLog
-            ->setChanges($changes->compare($pet))
+            ->setChanges($pet, $changes->compare($pet))
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
         ;
 

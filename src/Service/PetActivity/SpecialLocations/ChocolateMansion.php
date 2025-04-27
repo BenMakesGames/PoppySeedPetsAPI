@@ -90,7 +90,7 @@ class ChocolateMansion
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
-            ->setChanges($changes->compare($pet))
+            ->setChanges($pet, $changes->compare($pet))
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Le Manoir de Chocolat', 'Adventure!' ]))
         ;
 

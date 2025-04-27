@@ -62,7 +62,7 @@ class NotReallyCraftsService
         /** @var PetActivityLog $activityLog */
         $activityLog = $method->getCallable()($petWithSkills);
 
-        $activityLog->setChanges($changes->compare($pet));
+        $activityLog->setChanges($pet, $changes->compare($pet));
 
         return $activityLog;
     }

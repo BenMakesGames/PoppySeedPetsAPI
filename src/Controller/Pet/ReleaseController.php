@@ -96,7 +96,7 @@ class ReleaseController
         }
 
         PetActivityLogFactory::createUnreadLog($em, $pet, $user->getName() . ' gave up ' . ActivityHelpers::PetName($pet) . ', releasing them to The Wilds.')
-            ->setChanges($state->compare($pet));
+            ->setChanges($pet, $state->compare($pet));
 
         $em->flush();
 
