@@ -166,7 +166,7 @@ class Pet
     private Collection $statusEffects;
 
     #[ORM\Column(type: 'smallint')]
-    private $sexDrive;
+    private int $sexDrive;
 
     #[ORM\OneToOne(targetEntity: PetBaby::class, inversedBy: 'parent', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
