@@ -27,15 +27,20 @@ class PetActivityLogTag
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'string', length: 40, unique: true)]
-    private string $title;
+    private string $title = '';
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private string $color;
+    private string $color = '';
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'string', length: 100)]
-    private string $emoji;
+    private string $emoji = '';
+
+    // static-ish data; not intended to be changed at runtime
+    private function __construct()
+    {
+    }
 
     public function getId(): ?int
     {
@@ -56,6 +61,4 @@ class PetActivityLogTag
     {
         return $this->emoji;
     }
-
-
 }
