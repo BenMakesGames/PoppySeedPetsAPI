@@ -104,7 +104,7 @@ class PetActivityLog
     public function setChanges(Pet $pet, ?PetChangesSummary $changes): self
     {
         $petLog = $this->petActivityLogPets
-            ->findFirst(fn(PetActivityLogPet $petLog) => $petLog->getPet()->getId() === $pet->getId());
+            ->findFirst(fn(int $key, PetActivityLogPet $petLog) => $petLog->getPet()->getId() === $pet->getId());
 
         $petLog->setChanges($changes);
 

@@ -35,7 +35,6 @@ final class PetActivityLogFactory
     public static function createReadPetLog(EntityManagerInterface $em, Pet $pet, string $message): PetActivityLogPet
     {
         $log = new PetActivityLog($message);
-
         $petLog = new PetActivityLogPet($pet, $log);
 
         $em->persist($log);
@@ -102,7 +101,6 @@ final class PetActivityLogFactory
     public static function createReadLog(EntityManagerInterface $em, Pet $pet, string $message): PetActivityLog
     {
         $log = new PetActivityLog($message);
-
         $petLog = new PetActivityLogPet($pet, $log);
 
         $em->persist($log);

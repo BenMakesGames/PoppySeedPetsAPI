@@ -46,8 +46,9 @@ class PetActivityLogPet
     public function __construct(Pet $pet, PetActivityLog $activityLog)
     {
         $this->pet = $pet;
-        $this->equippedItem = $pet->getTool()->getItem();
+        $this->equippedItem = $pet->getTool()?->getItem();
         $this->activityLog = $activityLog;
+        $this->activityLog->addPetActivityLogPet($this);
     }
 
     public function getId(): ?int
