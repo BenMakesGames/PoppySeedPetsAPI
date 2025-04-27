@@ -157,10 +157,11 @@ class ResponseService
      */
     public function findUnreadForUser(User $user): array
     {
-        $logs = $this->em->getRepository(UnreadPetActivityLog::class)->createQueryBuilder('a')
-            ->select('a')
-            ->join('a.pet', 'p')
-            ->join('a.petActivityLog', 'l')
+        $logs = $this->em->getRepository(UnreadPetActivityLog::class)
+            ->createQueryBuilder('u')
+            ->select('u')
+            ->join('u.petActivityLog', 'l')
+            ->join('l.pet', 'p')
             ->where('p.owner = :user')
             ->setParameter('user', $user)
             ->getQuery()
@@ -170,17 +171,17 @@ class ResponseService
             function(UnreadPetActivityLog $l) {
                 $message = new FlashMessage(
                     $l->getPetActivityLog()->getId(),
-                    $l->getPetActivityLog()->getEntry(),
-                    $l->getPetActivityLog()->getIcon(),
+                    $l->getPetActivityLog()->getActivityLog()->getEntry(),
+                    $l->getPetActivityLog()->getActivityLog()->getIcon(),
                     $l->getPetActivityLog()->getChanges(),
-                    $l->getPetActivityLog()->getInterestingness()
+                    $l->getPetActivityLog()->getActivityLog()->getInterestingness()
                 );
 
                 $message
                     ->setPet($l->getPet())
                     ->setEquippedItem($l->getPetActivityLog()->getEquippedItem())
-                    ->setTags($l->getPetActivityLog()->getTags()->toArray())
-                    ->setCreatedItems($l->getPetActivityLog()->getCreatedItems()->toArray());
+                    ->setTags($l->getPetActivityLog()->getActivityLog()->getTags()->toArray())
+                    ->setCreatedItems($l->getPetActivityLog()->getActivityLog()->getCreatedItems()->toArray());
 
                 return $message;
             },
