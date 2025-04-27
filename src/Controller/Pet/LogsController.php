@@ -19,7 +19,7 @@ use App\Entity\PetActivityLog;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPPetNotFoundException;
-use App\Service\Filter\PetActivityLogsFilterService;
+use App\Service\Filter\PetActivityLogPetFilterService;
 use App\Service\ResponseService;
 use App\Service\UserAccessor;
 use Doctrine\ORM\AbstractQuery;
@@ -97,7 +97,7 @@ class LogsController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/{pet}/logs", methods: ["GET"], requirements: ["pet" => "\d+"])]
     public function logs(
-        Pet $pet, ResponseService $responseService, PetActivityLogsFilterService $petActivityLogsFilterService,
+        Pet $pet, ResponseService $responseService, PetActivityLogPetFilterService $petActivityLogsFilterService,
         Request $request,
         UserAccessor $userAccessor
     ): JsonResponse

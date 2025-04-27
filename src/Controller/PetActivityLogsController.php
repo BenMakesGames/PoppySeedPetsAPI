@@ -17,7 +17,7 @@ namespace App\Controller;
 use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\PetActivityLogTag;
 use App\Enum\SerializationGroupEnum;
-use App\Service\Filter\PetActivityLogsFilterService;
+use App\Service\Filter\PetActivityLogPetFilterService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,7 +32,7 @@ class PetActivityLogsController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("", methods: ["GET"])]
     public function history(
-        Request $request, ResponseService $responseService, PetActivityLogsFilterService $petActivityLogsFilterService,
+        Request $request, ResponseService $responseService, PetActivityLogPetFilterService $petActivityLogsFilterService,
         UserAccessor $userAccessor
     ): JsonResponse
     {

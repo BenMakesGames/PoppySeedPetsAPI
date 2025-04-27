@@ -14,14 +14,14 @@ declare(strict_types=1);
 
 namespace App\Service\Filter;
 
-use App\Entity\PetActivityLog;
+use App\Entity\PetActivityLogPet;
 use App\Exceptions\PSPFormValidationException;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectRepository;
 
-class PetActivityLogsFilterService
+class PetActivityLogPetFilterService
 {
     use FilterService;
 
@@ -31,7 +31,7 @@ class PetActivityLogsFilterService
 
     public function __construct(ManagerRegistry $doctrine)
     {
-        $this->repository = $doctrine->getRepository(PetActivityLog::class, 'readonly');
+        $this->repository = $doctrine->getRepository(PetActivityLogPet::class, 'readonly');
 
         $this->filterer = new Filterer(
             self::PageSize,
@@ -50,7 +50,8 @@ class PetActivityLogsFilterService
 
     public function createQueryBuilder(): QueryBuilder
     {
-        return $this->repository->createQueryBuilder('l');
+        return $this->repository->createQueryBuilder('p')
+            ->join('p.activityLog', 'l');
     }
 
     public function filterDate(QueryBuilder $qb, mixed $value): void
@@ -75,7 +76,7 @@ class PetActivityLogsFilterService
     public function filterPet(QueryBuilder $qb, mixed $value): void
     {
         $qb
-            ->andWhere('l.pet = :pet')
+            ->andWhere('p.pet = :pet')
             ->setParameter('pet', (int)$value)
         ;
     }
@@ -83,7 +84,7 @@ class PetActivityLogsFilterService
     public function filterUser(QueryBuilder $qb, mixed $value): void
     {
         if(!in_array('pet', $qb->getAllAliases()))
-            $qb->innerJoin('l.pet', 'pet');
+            $qb->innerJoin('p.pet', 'pet');
 
         if(is_array($value))
             $qb->andWhere('pet.owner IN (:userId)');
