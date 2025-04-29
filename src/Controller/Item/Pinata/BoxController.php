@@ -498,13 +498,16 @@ class BoxController
             $inventoryService->receiveItem('Fluff', $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner())
         ];
 
-        for($i = 0; $i < 4; $i++)
-            $newInventory[] = $inventoryService->receiveItem($rng->rngNextFromArray(['Fluff', 'Plastic', 'Green Dye', 'Yellow Dye', 'Paper', 'Glue']), $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner());
+        $additionalItems = $rng->rngNextSubsetFromArray(
+            [
+                'Fluff', 'Plastic', 'Green Dye', 'Yellow Dye', 'Paper', 'Glue',
+                'Limestone', 'Glass', 'Iron Bar', 'Iron Ore', 'Silver Ore'
+            ],
+            7
+        );
 
-        for($i = 0; $i < 3; $i++)
+        foreach($additionalItems as $itemName)
         {
-            $itemName = $rng->rngNextFromArray([ 'Limestone', 'Glass', 'Iron Bar', 'Iron Ore', 'Silver Ore' ]);
-
             if($itemName === 'Limestone')
                 $description = $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '. I don\'t know how it fit in there, either. Your guess is as good as mine.';
             else
