@@ -493,17 +493,13 @@ class BoxController
 
         $location = $inventory->getLocation();
 
-        $newInventory = [
-            $inventoryService->receiveItem('Crooked Stick', $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner()),
-            $inventoryService->receiveItem('Fluff', $user, $user, $user->getName() . ' got this from ' . $inventory->getItem()->getNameWithArticle() . '.', $location, $inventory->getLockedToOwner())
-        ];
-
         $additionalItems = $rng->rngNextSubsetFromArray(
             [
+                'Crooked Stick', 'String',
                 'Fluff', 'Plastic', 'Green Dye', 'Yellow Dye', 'Paper', 'Glue',
                 'Limestone', 'Glass', 'Iron Bar', 'Iron Ore', 'Silver Ore'
             ],
-            7
+            8
         );
 
         foreach($additionalItems as $itemName)
