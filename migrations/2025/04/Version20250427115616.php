@@ -50,6 +50,8 @@ final class Version20250427115616 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
+        $this->addSql('TRUNCATE TABLE unread_pet_activity_log');
+
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
             ALTER TABLE unread_pet_activity_log DROP FOREIGN KEY FK_879B06F49F3A396D

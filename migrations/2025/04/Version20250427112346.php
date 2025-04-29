@@ -51,6 +51,11 @@ final class Version20250427112346 extends AbstractMigration
         $this->addSql(<<<'SQL'
             ALTER TABLE pet_activity_log ADD pet_id INT NOT NULL
         SQL);
+
+        $this->addSql(<<<'SQL'
+            UPDATE pet_activity_log SET pet_id = (SELECT pet_id FROM pet_activity_log_pet WHERE pet_activity_log_pet.activity_log_id = pet_activity_log.id)
+        SQL);
+
         $this->addSql(<<<'SQL'
             ALTER TABLE pet_activity_log ADD CONSTRAINT FK_198EED16966F7FB6 FOREIGN KEY (pet_id) REFERENCES pet (id) ON UPDATE NO ACTION ON DELETE NO ACTION
         SQL);
