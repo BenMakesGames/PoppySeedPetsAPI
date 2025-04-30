@@ -18,7 +18,7 @@ namespace DoctrineMigrations;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-final class Version20250429154000 extends AbstractMigration
+final class Version20250429220600 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -29,12 +29,12 @@ final class Version20250429154000 extends AbstractMigration
     {
         // hat data for Gypsum Dragon:
         $this->addSql(<<<EOSQL
-        INSERT INTO `item_hat` (`id`, `head_x`, `head_y`, `head_angle`, `head_angle_fixed`, `head_scale`) VALUES (286, '0.45', '0.865', '-5', '1', '0.5')
+        INSERT INTO `item_hat` (`id`, `head_x`, `head_y`, `head_angle`, `head_angle_fixed`, `head_scale`) VALUES (288, '0.45', '0.865', '-5', '1', '0.5')
         ON DUPLICATE KEY UPDATE `id` = `id`;
         EOSQL);
 
         // add hat id for Gypsum Dragon:
-        $this->addSql('UPDATE `item` SET `hat_id` = 286 WHERE `item`.`id` = 1297;');
+        $this->addSql('UPDATE `item` SET `hat_id` = 288 WHERE `item`.`id` = 1297;');
     }
 
     public function down(Schema $schema): void
