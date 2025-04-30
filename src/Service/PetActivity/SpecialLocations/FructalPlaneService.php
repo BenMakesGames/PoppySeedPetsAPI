@@ -48,7 +48,7 @@ class FructalPlaneService
             $petWithSkills->getArcana()->getTotal() +
             max(
                 $petWithSkills->getGatheringBonus()->getTotal(),
-                $petWithSkills->getExploreUmbraBonus()->getTotal()
+                $petWithSkills->getUmbraBonus()->getTotal()
             )
         );
 
