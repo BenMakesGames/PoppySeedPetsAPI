@@ -303,11 +303,11 @@ class ComputedPetSkills
     }
 
     #[Groups(['myPet'])]
-    public function getExploreUmbraBonus(): TotalPetSkill
+    public function getUmbraBonus(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
 
-        $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->exploreUmbraBonus() : 0;
+        $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->umbraBonus() : 0;
         $skill->statusEffects =
             ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 3 : 0)
         ;
@@ -348,6 +348,15 @@ class ComputedPetSkills
     {
         $skill = new TotalPetSkill();
         $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->hackingBonus() : 0;
+
+        return $skill;
+    }
+
+    #[Groups(['myPet'])]
+    public function getMiningBonus(): TotalPetSkill
+    {
+        $skill = new TotalPetSkill();
+        $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->miningBonus() : 0;
 
         return $skill;
     }

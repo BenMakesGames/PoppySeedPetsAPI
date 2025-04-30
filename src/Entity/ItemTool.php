@@ -25,8 +25,8 @@ class ItemTool
         'arcana', 'brawl', 'crafts', 'music', 'nature', 'science', 'stealth',
 
         // secondary (in alphabetical order)
-        'climbing', 'electronics', 'exploreUmbra', 'fishing', 'gathering',
-        'hacking', 'magicBinding', 'physics', 'smithing',
+        'climbing', 'electronics', 'fishing', 'gathering', 'hacking',
+        'magicBinding', 'mining', 'physics', 'smithing', 'umbra',
     ];
 
     #[ORM\Id]
@@ -164,10 +164,13 @@ class ItemTool
     private int $hacking = 0;
 
     #[ORM\Column]
-    private int $exploreUmbra = 0;
+    private int $umbra = 0;
 
     #[ORM\Column]
     private int $magicBinding = 0;
+
+    #[ORM\Column]
+    private int $mining = 0;
 
     public function getId(): ?int
     {
@@ -751,14 +754,14 @@ class ItemTool
         return $this;
     }
 
-    public function getExploreUmbra(): int
+    public function getUmbra(): int
     {
-        return $this->exploreUmbra;
+        return $this->umbra;
     }
 
-    public function setExploreUmbra(int $exploreUmbra): static
+    public function setUmbra(int $umbra): static
     {
-        $this->exploreUmbra = $exploreUmbra;
+        $this->umbra = $umbra;
 
         return $this;
     }
@@ -771,6 +774,18 @@ class ItemTool
     public function setMagicBinding(int $magicBinding): static
     {
         $this->magicBinding = $magicBinding;
+
+        return $this;
+    }
+
+    public function getMining(): int
+    {
+        return $this->mining;
+    }
+
+    public function setMining(int $mining): static
+    {
+        $this->mining = $mining;
 
         return $this;
     }

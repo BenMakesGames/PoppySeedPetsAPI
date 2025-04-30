@@ -19,7 +19,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250430015239 extends AbstractMigration
+final class Version20250430024649 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -29,14 +29,14 @@ final class Version20250430015239 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $this->addSql(<<<'SQL'
-            ALTER TABLE item_tool ADD physics INT NOT NULL, ADD electronics INT NOT NULL, ADD hacking INT NOT NULL, ADD umbra INT NOT NULL, ADD magic_binding INT NOT NULL
+            ALTER TABLE item_tool ADD mining INT NOT NULL
         SQL);
     }
 
     public function down(Schema $schema): void
     {
         $this->addSql(<<<'SQL'
-            ALTER TABLE item_tool DROP physics, DROP electronics, DROP hacking, DROP umbra, DROP magic_binding
+            ALTER TABLE item_tool DROP mining
         SQL);
     }
 }

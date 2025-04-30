@@ -986,10 +986,10 @@ class PetActivityService
     public function generateExploreUmbraDesire(ComputedPetSkills $petWithSkills): int
     {
         $pet = $petWithSkills->getPet();
-        $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getExploreUmbraBonus()->getTotal();
+        $desire = $petWithSkills->getStamina()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getUmbraBonus()->getTotal();
 
         if($pet->getTool() && $pet->getTool()->getItem()->getTool())
-            $desire += $pet->getTool()->getItem()->getTool()->getArcana() + $pet->getTool()->getItem()->getTool()->getExploreUmbra();
+            $desire += $pet->getTool()->getItem()->getTool()->getArcana() + $pet->getTool()->getItem()->getTool()->getUmbra();
 
         if($petWithSkills->getPet()->hasActivityPersonality(ActivityPersonalityEnum::UMBRA))
             $desire += 4;

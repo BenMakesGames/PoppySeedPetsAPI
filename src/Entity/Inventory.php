@@ -476,11 +476,11 @@ class Inventory
         ;
     }
 
-    public function exploreUmbraBonus(): int
+    public function umbraBonus(): int
     {
         return
-            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getExploreUmbra() : 0) +
-            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getExploreUmbra() : 0)
+            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getUmbra() : 0) +
+            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getUmbra() : 0)
         ;
     }
 
@@ -489,6 +489,14 @@ class Inventory
         return
             ($this->getItem()->getTool() ? $this->getItem()->getTool()->getMagicBinding() : 0) +
             ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getMagicBinding() : 0)
+        ;
+    }
+
+    public function miningBonus(): int
+    {
+        return
+            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getMining() : 0) +
+            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getMining() : 0)
         ;
     }
 
