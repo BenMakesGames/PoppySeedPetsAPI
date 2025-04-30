@@ -121,6 +121,9 @@ class SmithingService
             $possibilities[] = new ActivityCallback($this->ironSmithingService->createIronKey(...), $weight);
             $possibilities[] = new ActivityCallback($this->ironSmithingService->createBasicIronCraft(...), $weight);
 
+            if($this->houseSimService->hasInventory('Snail Shell') && $this->houseSimService->hasInventory('Grappling Hook'))
+                $possibilities[] = new ActivityCallback($this->ironSmithingService->createSnailpplingHook(...), 10);
+
             if($this->houseSimService->hasInventory('Plastic'))
             {
                 if($this->houseSimService->hasInventory('Yellow Dye'))
