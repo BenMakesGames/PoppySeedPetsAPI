@@ -491,5 +491,11 @@ class Music
 
         // Abracadabra, by Lady Gaga
         'Abracadabra, amor-oo-nana! Abracadabra, morta-oo-gaga!',
+
+        // The Walker, by Fitz and the Tantrums
+        'Oh! Here we gooo! Feel it in my soul! Really need it - need it - so go!',
+
+        // Danger! High Voltage, by Electric Six
+        'Danger, danger! High voltage-- when we touch! When we kiss! When we touch! When we kiss! Lover!'
     ];
 }
