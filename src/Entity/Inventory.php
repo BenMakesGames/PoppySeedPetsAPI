@@ -452,6 +452,46 @@ class Inventory
         ;
     }
 
+    public function physicsBonus(): int
+    {
+        return
+            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getPhysics() : 0) +
+            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getPhysics() : 0)
+        ;
+    }
+
+    public function electronicsBonus(): int
+    {
+        return
+            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getElectronics() : 0) +
+            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getElectronics() : 0)
+        ;
+    }
+
+    public function hackingBonus(): int
+    {
+        return
+            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getHacking() : 0) +
+            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getHacking() : 0)
+        ;
+    }
+
+    public function exploreUmbraBonus(): int
+    {
+        return
+            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getExploreUmbra() : 0) +
+            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getExploreUmbra() : 0)
+        ;
+    }
+
+    public function magicBindingBonus(): int
+    {
+        return
+            ($this->getItem()->getTool() ? $this->getItem()->getTool()->getMagicBinding() : 0) +
+            ($this->getEnchantment() ? $this->getEnchantment()->getEffects()->getMagicBinding() : 0)
+        ;
+    }
+
     public function focusesSkill(string $skill): bool
     {
         return

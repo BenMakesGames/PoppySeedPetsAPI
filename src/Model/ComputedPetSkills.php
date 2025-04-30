@@ -307,6 +307,7 @@ class ComputedPetSkills
     {
         $skill = new TotalPetSkill();
 
+        $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->exploreUmbraBonus() : 0;
         $skill->statusEffects =
             ($this->pet->hasStatusEffect(StatusEffectEnum::WEREFORM) ? 3 : 0)
         ;
@@ -318,6 +319,35 @@ class ComputedPetSkills
     public function getMagicBindingBonus(): TotalPetSkill
     {
         $skill = new TotalPetSkill();
+
+        $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->magicBindingBonus() : 0;
+
+        return $skill;
+    }
+
+    #[Groups(['myPet'])]
+    public function getPhysicsBonus(): TotalPetSkill
+    {
+        $skill = new TotalPetSkill();
+        $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->physicsBonus() : 0;
+
+        return $skill;
+    }
+
+    #[Groups(['myPet'])]
+    public function getElectronicsBonus(): TotalPetSkill
+    {
+        $skill = new TotalPetSkill();
+        $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->electronicsBonus() : 0;
+
+        return $skill;
+    }
+
+    #[Groups(['myPet'])]
+    public function getHackingBonus(): TotalPetSkill
+    {
+        $skill = new TotalPetSkill();
+        $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->hackingBonus() : 0;
 
         return $skill;
     }

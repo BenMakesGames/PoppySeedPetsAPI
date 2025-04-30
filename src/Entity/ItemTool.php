@@ -21,8 +21,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class ItemTool
 {
     public const array ModifierFields = [
-        'arcana', 'brawl', 'climbing', 'crafts', 'fishing', 'gathering',
-        'music', 'nature', 'science', 'smithing', 'stealth',
+        // primary (in alphabetical order)
+        'arcana', 'brawl', 'crafts', 'music', 'nature', 'science', 'stealth',
+
+        // secondary (in alphabetical order)
+        'climbing', 'electronics', 'exploreUmbra', 'fishing', 'gathering',
+        'hacking', 'magicBinding', 'physics', 'smithing',
     ];
 
     #[ORM\Id]
@@ -149,6 +153,21 @@ class ItemTool
 
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $whenGatherApplyStatusEffectDuration = null;
+
+    #[ORM\Column]
+    private int $physics = 0;
+
+    #[ORM\Column]
+    private int $electronics = 0;
+
+    #[ORM\Column]
+    private int $hacking = 0;
+
+    #[ORM\Column]
+    private int $exploreUmbra = 0;
+
+    #[ORM\Column]
+    private int $magicBinding = 0;
 
     public function getId(): ?int
     {
@@ -692,6 +711,66 @@ class ItemTool
     public function setWhenGatherApplyStatusEffectDuration(?int $whenGatherApplyStatusEffectDuration): self
     {
         $this->whenGatherApplyStatusEffectDuration = $whenGatherApplyStatusEffectDuration;
+
+        return $this;
+    }
+
+    public function getPhysics(): int
+    {
+        return $this->physics;
+    }
+
+    public function setPhysics(int $physics): static
+    {
+        $this->physics = $physics;
+
+        return $this;
+    }
+
+    public function getElectronics(): int
+    {
+        return $this->electronics;
+    }
+
+    public function setElectronics(int $electronics): static
+    {
+        $this->electronics = $electronics;
+
+        return $this;
+    }
+
+    public function getHacking(): int
+    {
+        return $this->hacking;
+    }
+
+    public function setHacking(int $hacking): static
+    {
+        $this->hacking = $hacking;
+
+        return $this;
+    }
+
+    public function getExploreUmbra(): int
+    {
+        return $this->exploreUmbra;
+    }
+
+    public function setExploreUmbra(int $exploreUmbra): static
+    {
+        $this->exploreUmbra = $exploreUmbra;
+
+        return $this;
+    }
+
+    public function getMagicBinding(): int
+    {
+        return $this->magicBinding;
+    }
+
+    public function setMagicBinding(int $magicBinding): static
+    {
+        $this->magicBinding = $magicBinding;
 
         return $this;
     }
