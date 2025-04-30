@@ -19,6 +19,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ItemRepository;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Service\Clock;
@@ -684,6 +685,43 @@ class IronSmithingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make a sword using a Toadstool, but couldn\'t figure it out...', 'icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing', 'Crafting' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::SMITH, false);
+        }
+
+        return $activityLog;
+    }
+
+    public function createSnailpplingHook(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($roll >= 18)
+        {
+            $this->houseSimService->getState()->loseItem('Iron Bar', 1);
+            $this->houseSimService->getState()->loseItem('Snail Shell', 1);
+            $this->houseSimService->getState()->loseItem('Grappling Hook', 1);
+
+            $pet->increaseEsteem(2);
+
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made a Snailppling Hook!')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing', 'Crafting' ]))
+            ;
+
+            $this->inventoryService->petCollectsItem('Snailppling Hook', $pet, $pet->getName() . ' created by spring-loading a Grappling Hook inside a Snail Shell.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+        }
+        else
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% wanted to make a combine the spirals of a Grappling Hook with those of Snail Shell, but couldn\'t figure anything out...')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing', 'Crafting' ]))
             ;
 

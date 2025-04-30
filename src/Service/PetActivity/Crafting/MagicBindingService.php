@@ -336,6 +336,9 @@ class MagicBindingService
             if($this->houseSimService->hasInventory('Snakebite') && $this->houseSimService->hasInventory('Hebenon'))
                 $possibilities[] = new ActivityCallback($this->createMalice(...), 8);
 
+            if($this->houseSimService->hasInventory('Painted Whorl Staff'))
+                $possibilities[] = new ActivityCallback($this->createGyre(...), 8);
+
             $magicSmokeWeight = 1;
         }
         else
@@ -3352,6 +3355,46 @@ class MagicBindingService
                 ]))
             ;
             $this->inventoryService->petCollectsItem('Malice', $pet, $pet->getName() . ' bound this.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+
+            return $activityLog;
+        }
+    }
+
+    public function createGyre(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $umbraCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+
+        if($umbraCheck < 20)
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Painted Whorl Staff, but the staff started to get all slimy.')
+                ->setIcon('icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+
+            return $activityLog;
+        }
+        else // success!
+        {
+            $this->houseSimService->getState()->loseItem('Quintessence', 1);
+            $this->houseSimService->getState()->loseItem('Painted Whorl Staff', 1);
+            $pet->increaseEsteem(3);
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound a Gyre!')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addTags(
+                    PetActivityLogTagHelpers::findByNames($this->em, [
+                        PetActivityLogTagEnum::Magic_binding,
+                        PetActivityLogTagEnum::Location_At_Home,
+                    ])
+                )
+            ;
+            $this->inventoryService->petCollectsItem('Gyre', $pet, $pet->getName() . ' bound this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);

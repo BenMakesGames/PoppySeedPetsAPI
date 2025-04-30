@@ -826,7 +826,7 @@ class GatheringService
         if($this->rng->rngNextInt(1, 20) === 1)
             return $this->gatheringDistractions->adventure($petWithSkills, DistractionLocationEnum::Underground, 'exploring an iron mine');
 
-        if($this->rng->rngNextInt(1, 20) + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getStamina()->getTotal() >= 10)
+        if($this->rng->rngNextInt(1, 20) + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getMiningBonus()->getTotal() >= 10)
         {
             $pet->increaseFood(-1);
             $tags = [ 'Mining', 'Dark' ];
@@ -1216,7 +1216,7 @@ class GatheringService
 
         $pet = $petWithSkills->getPet();
         $eideticMemory = $pet->hasMerit(MeritEnum::EIDETIC_MEMORY);
-        $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getNature()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getMiningBonus()->getTotal());
 
         if($check >= 15 || $eideticMemory)
         {

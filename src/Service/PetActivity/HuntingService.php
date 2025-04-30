@@ -90,7 +90,6 @@ class HuntingService
         $changes = new PetChanges($pet);
 
         $weather = WeatherService::getWeather($this->clock->now, $pet);
-        $isRaining = $weather->getRainfall() > 0;
 
         if(DateFunctions::moonPhase($this->clock->now) === MoonPhaseEnum::FullMoon && $this->rng->rngNextInt(1, 100) === 1)
         {
@@ -105,15 +104,16 @@ class HuntingService
                     $activityLog = $this->failedToHunt($petWithSkills);
                     break;
                 case 3:
+                    $activityLog = $this->huntedSnail($petWithSkills);
+                    break;
                 case 4:
+                    $activityLog = $this->huntedDustBunny($petWithSkills);
+                    break;
                 case 5:
-                    if($isRaining && $this->rng->rngNextBool())
-                        $activityLog = $this->huntedLargeToad($petWithSkills);
-                    else
-                        $activityLog = $this->huntedDustBunny($petWithSkills);
+                    $activityLog = $this->huntedPlasticBag($petWithSkills);
                     break;
                 case 6:
-                    $activityLog = $this->huntedPlasticBag($petWithSkills);
+                    $activityLog = $this->huntedLargeToad($petWithSkills);
                     break;
                 case 7:
                 case 8:
@@ -130,33 +130,33 @@ class HuntingService
                     $activityLog = $this->huntedDoughGolem($petWithSkills);
                     break;
                 case 10:
-                case 11:
                     if($useThanksgivingPrey)
                         $activityLog = $this->huntedTurkey($petWithSkills);
                     else
                         $activityLog = $this->huntedLargeToad($petWithSkills);
                     break;
-                case 12:
+                case 11:
                     $activityLog = $this->huntedScarecrow($petWithSkills);
                     break;
+                case 12:
+                    $activityLog = $this->huntedOnionBoy($petWithSkills);
+                    break;
                 case 13:
-                    if($this->rng->rngNextBool())
-                        $activityLog = $this->huntedOnionBoy($petWithSkills);
-                    else
-                        $activityLog = $this->huntedBeaver($petWithSkills);
+                    $activityLog = $this->huntedBeaver($petWithSkills);
                     break;
                 case 14:
                 case 15:
                     $activityLog = $this->huntedThievingMagpie($petWithSkills);
                     break;
                 case 16:
+                case 17:
                     if($useThanksgivingPrey)
                         $activityLog = $this->huntedPossessedTurkey($petWithSkills);
                     else
                         $activityLog = $this->huntedGhosts($petWithSkills);
                     break;
-                case 17:
                 case 18:
+                case 19:
                     if($useThanksgivingPrey)
                         $activityLog = $this->huntedPossessedTurkey($petWithSkills);
                     else if($usePassoverPrey)
@@ -166,7 +166,6 @@ class HuntingService
                     else
                         $this->huntedPaperGolem($petWithSkills); // fallback, in case none of the above are good
                     break;
-                case 19:
                 case 20:
                     $activityLog = $this->huntedPaperGolem($petWithSkills);
                     break;
@@ -308,6 +307,25 @@ class HuntingService
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::HUNT, false);
         }
+
+        return $activityLog;
+    }
+
+    private function huntedSnail(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'After looking around a bit for something interesting to hunt, ' . ActivityHelpers::PetName($pet) . ' spotted a snail outside. They ate it, then took the shell back home.')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                PetActivityLogTagEnum::Hunting,
+                PetActivityLogTagEnum::Location_Neighborhood,
+            ]))
+        ;
+
+        $pet->increaseFood(2);
+
+        $this->inventoryService->petCollectsItem('Snail Shell', $pet, 'The skeletal remains of a snail that ' . $pet->getName() . ' ate.', $activityLog);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::HUNT, false);
 
         return $activityLog;
     }

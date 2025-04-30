@@ -66,7 +66,7 @@ class BurntForestService
                 ) / 2
             )
             - $pet->getAlcohol()
-            + $petWithSkills->getExploreUmbraBonus()->getTotal()
+            + $petWithSkills->getUmbraBonus()->getTotal()
         ;
 
         $maxSkill = NumberFunctions::clamp($maxSkill, 1, 15);

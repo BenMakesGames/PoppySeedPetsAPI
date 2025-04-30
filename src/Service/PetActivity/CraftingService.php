@@ -169,7 +169,13 @@ class CraftingService
 
             if($this->houseSimService->hasInventory('Sweet Beet') && $this->houseSimService->hasInventory('Glue'))
                 $possibilities[] = new ActivityCallback($this->stickCraftingService->createSweetBeat(...), 10);
+
+            if($this->houseSimService->hasInventory('Snail Shell') && $this->houseSimService->hasInventory('Glue'))
+                $possibilities[] = new ActivityCallback($this->stickCraftingService->createWhorlStaff(...), 10);
         }
+
+        if($this->houseSimService->hasInventory('Whorl Staff') && $this->houseSimService->hasInventory('Quinacridone Magenta Dye'))
+            $possibilities[] = new ActivityCallback($this->createPaintedWhorlStaff(...), 10);
 
         if($this->houseSimService->hasInventory('Glue'))
         {
@@ -290,17 +296,15 @@ class CraftingService
         {
             if($this->houseSimService->hasInventory('Plastic Idol'))
                 $possibilities[] = new ActivityCallback($this->createGoldIdol(...), 10);
-            else
-            {
-                if($this->houseSimService->hasInventory('Small Plastic Bucket'))
-                    $possibilities[] = new ActivityCallback($this->createYellowBucket(...), 10);
 
-                if($this->houseSimService->hasInventory('Dumbbell'))
-                    $possibilities[] = new ActivityCallback($this->createPaintedDumbbell(...), 10);
+            if($this->houseSimService->hasInventory('Small Plastic Bucket'))
+                $possibilities[] = new ActivityCallback($this->createYellowBucket(...), 10);
 
-                if($this->houseSimService->hasInventory('Digital Camera'))
-                    $possibilities[] = new ActivityCallback($this->createPaintedCamera(...), 10);
-            }
+            if($this->houseSimService->hasInventory('Dumbbell'))
+                $possibilities[] = new ActivityCallback($this->createPaintedDumbbell(...), 10);
+
+            if($this->houseSimService->hasInventory('Digital Camera'))
+                $possibilities[] = new ActivityCallback($this->createPaintedCamera(...), 10);
         }
 
         if($this->houseSimService->hasInventory('Fiberglass'))
@@ -2313,6 +2317,25 @@ class CraftingService
             ]))
         ;
         $this->inventoryService->petCollectsItem('Painted Boomerang', $pet, $pet->getName() . ' painted this, using Quinacridone Magenta Dye.', $activityLog);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
+        return $activityLog;
+    }
+
+    private function createPaintedWhorlStaff(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 90), PetActivityStatEnum::CRAFT, true);
+        $this->houseSimService->getState()->loseItem('Whorl Staff', 1);
+        $this->houseSimService->getState()->loseItem('Quinacridone Magenta Dye', 1);
+        $pet->increaseEsteem(1);
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Painted Whorl Staff.')
+            ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                PetActivityLogTagEnum::Painting,
+                PetActivityLogTagEnum::Location_At_Home,
+            ]))
+        ;
+        $this->inventoryService->petCollectsItem('Painted Whorl Staff', $pet, $pet->getName() . ' painted this, using some Quinacridone Magenta Dye.', $activityLog);
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
         return $activityLog;
     }

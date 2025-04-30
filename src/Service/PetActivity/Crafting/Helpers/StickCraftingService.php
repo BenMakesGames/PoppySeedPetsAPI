@@ -650,7 +650,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Sweet Beet', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(2);
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Sweet Beat.', 'items/resource/string')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Sweet Beat.')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
@@ -665,7 +665,47 @@ class StickCraftingService
         }
         else
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to create a Sweet Beat, but wasn\'t able to make any meaningful progress.', 'icons/activity-logs/confused')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started to create a Sweet Beat, but wasn\'t able to make any meaningful progress.')
+                ->setIcon('icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+        }
+
+        return $activityLog;
+    }
+
+    public function createWhorlStaff(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
+
+        if($roll >= 10)
+        {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::CRAFT, true);
+            $this->houseSimService->getState()->loseItem('Glue', 1);
+            $this->houseSimService->getState()->loseItem('Snail Shell', 1);
+            $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
+            $pet->increaseEsteem(2);
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% glued together a Whorl Staff.')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Crafting,
+                    PetActivityLogTagEnum::Location_At_Home,
+                ]))
+            ;
+
+            $exp = $this->maybeSpotAStickBug($petWithSkills, $activityLog) ? 3 : 2;
+
+            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::CRAFTS ], $activityLog);
+            $this->inventoryService->petCollectsItem('Whorl Staff', $pet, $pet->getName() . ' created this by gluing a Snail Shell to a Stick.', $activityLog);
+        }
+        else
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to create a Whorl Staff, but only managed to get glue all over themselves.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
 
