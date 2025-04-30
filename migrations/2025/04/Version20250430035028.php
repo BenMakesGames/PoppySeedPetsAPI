@@ -35,7 +35,7 @@ final class Version20250430035028 extends AbstractMigration
 
         // graveling hook enchantment
         $this->addSql(<<<EOSQL
-        UPDATE `item_tool` SET `brawl` = '1', `mining` = '1' WHERE `item_tool`.`id` = 333; 
+        UPDATE `item_tool` SET `brawl` = 0, `mining` = '3' WHERE `item_tool`.`id` = 333; 
         EOSQL);
 
     }
