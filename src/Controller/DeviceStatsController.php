@@ -45,7 +45,7 @@ class DeviceStatsController
                 ->setUser($user)
                 ->setUserAgent($dto->userAgent)
                 ->setLanguage($dto->language)
-                ->setTouchPoints($dto->touchPoints)
+                ->setTouchPoints($dto->touchPoints ?? 0)
                 ->setWindowWidth($dto->windowWidth)
                 ->setScreenWidth($dto->screenWidth)
             ;
@@ -61,11 +61,11 @@ class DeviceStatsController
 class DeviceStatsRequest
 {
     public function __construct(
-        public readonly string $userAgent,
-        public readonly string $language,
-        public readonly int $touchPoints,
-        public readonly int $windowWidth,
-        public readonly int $screenWidth,
+        public readonly ?string $userAgent,
+        public readonly ?string $language,
+        public readonly ?int $touchPoints,
+        public readonly ?int $windowWidth,
+        public readonly ?int $screenWidth,
     )
     {
     }

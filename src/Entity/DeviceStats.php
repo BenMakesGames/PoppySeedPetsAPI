@@ -28,25 +28,25 @@ class DeviceStats
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $time;
+    private \DateTimeImmutable $time;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $userAgent;
+    private string $userAgent;
 
     #[ORM\Column(type: 'string', length: 10)]
-    private $language;
+    private string $language;
 
     #[ORM\Column(type: 'integer')]
-    private $touchPoints;
+    private int $touchPoints;
 
     #[ORM\Column(type: 'integer')]
-    private $windowWidth;
+    private int $windowWidth;
 
     #[ORM\Column(type: 'integer')]
-    private $screenWidth;
+    private int $screenWidth;
 
     public function __construct()
     {
@@ -58,7 +58,7 @@ class DeviceStats
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
@@ -75,7 +75,7 @@ class DeviceStats
         return $this->time;
     }
 
-    public function getUserAgent(): ?string
+    public function getUserAgent(): string
     {
         return $this->userAgent;
     }
@@ -87,7 +87,7 @@ class DeviceStats
         return $this;
     }
 
-    public function getLanguage(): ?string
+    public function getLanguage(): string
     {
         return $this->language;
     }
@@ -99,7 +99,7 @@ class DeviceStats
         return $this;
     }
 
-    public function getTouchPoints(): ?int
+    public function getTouchPoints(): int
     {
         return $this->touchPoints;
     }
@@ -111,7 +111,7 @@ class DeviceStats
         return $this;
     }
 
-    public function getWindowWidth(): ?int
+    public function getWindowWidth(): int
     {
         return $this->windowWidth;
     }
@@ -123,7 +123,7 @@ class DeviceStats
         return $this;
     }
 
-    public function getScreenWidth(): ?int
+    public function getScreenWidth(): int
     {
         return $this->screenWidth;
     }
