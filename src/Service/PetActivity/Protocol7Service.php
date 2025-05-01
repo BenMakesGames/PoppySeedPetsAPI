@@ -55,7 +55,7 @@ class Protocol7Service
     public function adventure(ComputedPetSkills $petWithSkills): void
     {
         $pet = $petWithSkills->getPet();
-        $maxSkill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() - $pet->getAlcohol();
+        $maxSkill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal() - $pet->getAlcohol();
 
         // protocol 7 is weird; we do a modulo here.
         // we don't do "distraction" encounters for protocol 7; instead, we rely on the modulo, which has the
@@ -155,7 +155,7 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
 
         if($roll >= 15)
         {
@@ -204,7 +204,7 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->rng->rngNextInt(1, 30 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
+        $roll = $this->rng->rngNextInt(1, 30 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal() + $petWithSkills->getMiningBonus()->getTotal());
 
         if($roll < 10)
         {
@@ -394,7 +394,7 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
 
         $monster = $this->rng->rngNextFromArray([
             [
@@ -441,7 +441,7 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
 
         $monster = $this->rng->rngNextFromArray([
             [
@@ -557,7 +557,7 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
 
         $monster = $this->rng->rngNextFromArray([
             [
@@ -625,7 +625,7 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal());
+        $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
 
         if($check < 15)
         {
@@ -636,7 +636,7 @@ class Protocol7Service
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
         }
-        else if($this->rng->rngNextInt(1, max(10, 50 - $pet->getSkills()->getIntelligence())) === 1)
+        else if($this->rng->rngNextInt(1, max(10, 50 - $pet->getSkills()->getIntelligence() - $petWithSkills->getElectronicsBonus()->getTotal())) === 1)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name%\'s line was suddenly shorted while they were exploring Project-E. %pet:' . $pet->getId() . '.name% managed to capture some Lightning in a Bottle before being forcefully disconnected!')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Physics' ]))
@@ -684,17 +684,26 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + min($petWithSkills->getScience()->getTotal(), $petWithSkills->getStealth()->getTotal()) + $petWithSkills->getClimbingBonus()->getTotal());
 
-        if($petWithSkills->getClimbingBonus()->getTotal() > 0)
+        $sneakSkill = $petWithSkills->getStealth()->getTotal() + $petWithSkills->getClimbingBonus()->getTotal();
+        $hackSkill = $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal();
+
+        $check = $this->rng->rngNextInt(
+            1,
+            20 +
+            $petWithSkills->getIntelligence()->getTotal() +
+            max($sneakSkill, $hackSkill)
+        );
+
+        if($sneakSkill > $hackSkill)
         {
             $toSneak = 'to climb';
             $snuck = 'climbed';
         }
         else
         {
-            $toSneak = 'to sneak';
-            $snuck = 'snuck';
+            $toSneak = 'to break';
+            $snuck = 'broke';
         }
 
         if($this->rng->rngNextInt(1, 100) === 1)
@@ -741,11 +750,11 @@ class Protocol7Service
 
         if($pet->isInGuild(GuildEnum::TAPESTRIES))
         {
-            $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + max($petWithSkills->getArcana()->getTotal(), $petWithSkills->getScience()->getTotal()));
+            $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + max($petWithSkills->getArcana()->getTotal(), $petWithSkills->getScience()->getTotal()) + $petWithSkills->getHackingBonus()->getTotal());
         }
         else
         {
-            $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal());
+            $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
         }
 
         $lucky = $pet->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 100) === 1;
