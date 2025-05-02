@@ -50,10 +50,7 @@ class PlasticBottleController
 
         if($bottlesOpened->getValue() > 3 && $rng->rngNextInt(1, 50) === 1)
         {
-            $worms = $rng->rngNextInt(4, 12);
-
-            for($i = 0; $i < $worms; $i++)
-                $inventoryService->receiveItem('Lightning in a Bottle', $user, $user, $user->getName() . ' found this in a Plastic Bottle.', $location, $lockedToOwner);
+            $inventoryService->receiveItem('Lightning in a Bottle', $user, $user, $user->getName() . ' found this in a Plastic Bottle.', $location, $lockedToOwner);
 
             $message = 'You open the can - OMG! THERE\'S LIGHTNING IN THIS BOTTLE! (Despite this, you do also recycle the bottle, and get 1♺. Woo?)';
         }
