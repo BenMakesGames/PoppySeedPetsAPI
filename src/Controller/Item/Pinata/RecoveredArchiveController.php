@@ -100,6 +100,7 @@ class RecoveredArchiveController
             'Pie Recipes',
             'Piece of Cetgueli\'s Map',
             'Plastic',
+            'Plastic Bottle',
             'Poker',
             'Puddin\' Rec\'pes',
             'Purple Balloon',

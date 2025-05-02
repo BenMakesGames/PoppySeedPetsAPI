@@ -318,15 +318,30 @@ class FishingService
         }
         else if($this->rng->rngNextInt(1, 4) === 1)
         {
-            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing Under a Bridge, but all they got was an old can of food...', '')
-                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
-                    PetActivityLogTagEnum::Fishing,
-                    PetActivityLogTagEnum::Location_Under_a_Bridge,
-                ]))
-            ;
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
+            if($this->rng->rngNextBool())
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing Under a Bridge, but all they got was an old can of food...', '')
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                        PetActivityLogTagEnum::Fishing,
+                        PetActivityLogTagEnum::Location_Under_a_Bridge,
+                    ]))
+                ;
 
-            $this->inventoryService->petCollectsItem('Canned Food', $pet, $pet->getName() . ' fished this out of a river under a bridge...', $activityLog);
+                $this->inventoryService->petCollectsItem('Canned Food', $pet, $pet->getName() . ' fished this out of a river under a bridge...', $activityLog);
+            }
+            else
+            {
+                $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing Under a Bridge, but all they got was an old bottle of... something!', '')
+                    ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                        PetActivityLogTagEnum::Fishing,
+                        PetActivityLogTagEnum::Location_Under_a_Bridge,
+                    ]))
+                ;
+
+                $this->inventoryService->petCollectsItem('Plastic Bottle', $pet, $pet->getName() . ' fished this out of a river under a bridge...', $activityLog);
+            }
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
         }

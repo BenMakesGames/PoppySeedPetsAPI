@@ -51,6 +51,8 @@ final class BadgeEnum
     public const string OPENED_CAN_OF_FOOD_100 = 'OpenedCanOfFood100';
     public const string OPENED_PAPER_BAG_10 = 'OpenedPaperBag10';
     public const string OPENED_PAPER_BAG_100 = 'OpenedPaperBag100';
+    public const string OPENED_PLASTIC_BOTTLE_10 = 'OpenedPlasticBottle10';
+    public const string OPENED_PLASTIC_BOTTLE_100 = 'OpenedPlasticBottle100';
     public const string OPENED_CAN_OF_FOOD_PAPER_BAG_100 = 'OpenedCerealBoxCanOfFoodPaperBag100';
 
     public const string HORRIBLE_EGGPLANT_1 = 'HorribleEggplant1';

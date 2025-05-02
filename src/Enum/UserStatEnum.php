@@ -49,6 +49,7 @@ final class UserStatEnum
     public const string LARGE_BIRDS_APPROACHED = 'Large Birds Approached in Greenhouse';
     public const string TREASURES_GIVEN_TO_DRAGON_HOARD = 'Treasures Given to Dragon';
     public const string CANS_OF_FOOD_OPENED = 'Cans of Food Opened';
+    public const string PLASTIC_BOTTLES_OPENED = 'Plastic Bottles Opened';
     public const string LOOTED_A_POT_OF_GOLD = 'Looted a Pot of Gold';
     public const string STRANGE_FIELDS_COLLAPSED = 'Strange Fields Collapsed';
     public const string COMPLETED_A_SAGA_SAGA = 'Completed a Sága Saga';

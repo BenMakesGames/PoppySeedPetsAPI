@@ -337,8 +337,9 @@ class Music
         // Crystal Gems
         'If you\'re evil and you\'re on the rise... you can count on the four of us takin\' you down...',
 
-        // Canopée, by Polo & Pan
+        // Polo & Pan
         'Jungle sauvaaage ouvre tes bras... il en faut peuuu-u pour toi et moi...',
+        'I\'ll take my chaaance, take a glaaance at supernovas, like a magic shooow. I think it\'s time to gooo...',
 
         // Moon (And It Went Like)
         'And it went like: mm-mm... mm-mm... mm-hm-m-m-mm-mm mm-mm... mm-mm... mm-mm, mm...',
@@ -500,5 +501,14 @@ class Music
 
         // Strangers, by Kenya Grace
         'Always eeends the same. When it was me and yoo-ou. But every time I meet somebody new. It\'s like déjà vu (déjà vu (déjà vu))...',
+
+        // The Fox, by Ylvis
+        'Fraka-kaka-kaka-kaka-kow! Fraka-kaka-kaka-kaka-kow! Fraka-kaka-kaka-kaka-kow! What the fox say?!',
+
+        // Yeah Yeah Yeahs
+        'Off-- off with your head! Dance-- dance \'til your dead! Dead! Heads will roll! Heads will roll! Heads will roll... on the floor!',
+
+        // Foreign Language, by Flight Facilities
+        'Boy, it\'s just a puzzle, and the pieces they have scattered on the floor (ooh-ooh.. nah ooh-ooh...)',
     ];
 }
