@@ -33,7 +33,7 @@ class ItemSearchController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        $itemFilterService->setUser($userAccessor->getUserOrThrow());
+        $itemFilterService->setUser($userAccessor->getUser());
 
         return $responseService->success(
             $itemFilterService->getResults($request->query),

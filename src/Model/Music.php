@@ -496,6 +496,9 @@ class Music
         'Oh! Here we gooo! Feel it in my soul! Really need it - need it - so go!',
 
         // Danger! High Voltage, by Electric Six
-        'Danger, danger! High voltage-- when we touch! When we kiss! When we touch! When we kiss! Lover!'
+        'Danger, danger! High voltage-- when we touch! When we kiss! When we touch! When we kiss! Lover!',
+
+        // Strangers, by Kenya Grace
+        'Always eeends the same. When it was me and yoo-ou. But every time I meet somebody new. It\'s like déjà vu (déjà vu (déjà vu))...',
     ];
 }

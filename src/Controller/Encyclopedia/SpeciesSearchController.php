@@ -33,7 +33,7 @@ class SpeciesSearchController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        $petSpeciesFilterService->setUser($userAccessor->getUserOrThrow());
+        $petSpeciesFilterService->setUser($userAccessor->getUser());
 
         return $responseService->success(
             $petSpeciesFilterService->getResults($request->query),
