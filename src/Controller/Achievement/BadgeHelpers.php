@@ -241,6 +241,16 @@ final class BadgeHelpers
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Scroll of Resources'), 10);
                 break;
 
+            case BadgeEnum::OPENED_PLASTIC_BOTTLE_10:
+                $progress = [ 'target' => 10, 'current' => self::getStatTotal($user, [ 'Plastic Bottles Opened' ], $em, $cache) ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Lightning in a Bottle'), 1);
+                break;
+
+            case BadgeEnum::OPENED_PLASTIC_BOTTLE_100:
+                $progress = [ 'target' => 100, 'current' => self::getStatTotal($user, [ 'Plastic Bottles Opened' ], $em, $cache) ];
+                $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, 'Cucumber Water'), 10);
+                break;
+
             case BadgeEnum::OPENED_CAN_OF_FOOD_PAPER_BAG_100:
                 $progress = [ 'target' => 3, 'current' => self::getCompletedBadges($user, [ BadgeEnum::OPENED_CEREAL_BOX, BadgeEnum::OPENED_CAN_OF_FOOD_100, BadgeEnum::OPENED_PAPER_BAG_100 ]) ];
                 $reward = TraderOfferCostOrYield::createItem(ItemRepository::findOneByName($em, '5-leaf Clover'), 1);

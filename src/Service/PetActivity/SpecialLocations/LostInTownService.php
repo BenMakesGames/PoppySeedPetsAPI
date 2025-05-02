@@ -78,7 +78,7 @@ class LostInTownService
         EquipmentFunctions::destroyPetTool($this->em, $pet);
         
         $items = [
-            $this->rng->rngNextFromArray([ 'Canned Food', 'Onion Rings', 'Spicy Tuna Salad Sammy', 'Soy Sauce', 'Korean Rice Cakes' ]),
+            $this->rng->rngNextFromArray([ 'Canned Food', 'Spicy Tuna Salad Sammy', 'Soy Sauce', 'Korean Rice Cakes', 'Plastic Bottle' ]),
             $this->rng->rngNextFromArray([ 'Gold Ring', 'Key Ring', 'Laser Pointer' ]),
             $this->rng->rngNextFromArray([ 'Fluff', 'Iron Bar', 'Plastic', 'Glass', 'Tiny Scroll of Resources' ]),
         ];
