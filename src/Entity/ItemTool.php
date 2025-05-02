@@ -347,6 +347,11 @@ class ItemTool
         return $this;
     }
 
+    private static function modifierName(string $name): string
+    {
+        return $name === 'magicBinding' ? 'Magic-binding' : ucfirst($name);
+    }
+
     #[Groups(["myInventory", "itemEncyclopedia", "marketItem", "myPet"])]
     public function getModifiers(): array
     {
@@ -357,7 +362,7 @@ class ItemTool
             $value = $this->{'get' . $modifier}();
 
             if($value !== 0)
-                $modifiers[] = ($value > 0 ? '+' : '') . $value . ' ' . $modifier;
+                $modifiers[] = ($value > 0 ? '+' : '') . $value . ' ' . self::modifierName($modifier);
         }
 
         if($this->getIsRanged())

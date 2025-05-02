@@ -104,8 +104,14 @@ class ProgrammingService
                 $possibilities[] = new ActivityCallback($this->createBruteForce(...), 10);
         }
 
-        if($this->houseSimService->hasInventory('Brute Force') && $this->houseSimService->hasInventory('XOR') && $this->houseSimService->hasInventory('Gold Bar'))
-            $possibilities[] = new ActivityCallback($this->createL33tH4xx0r(...), 10);
+        if($this->houseSimService->hasInventory('Brute Force'))
+        {
+            if($this->houseSimService->hasInventory('XOR') && $this->houseSimService->hasInventory('Gold Bar'))
+                $possibilities[] = new ActivityCallback($this->createL33tH4xx0r(...), 10);
+
+            if($this->houseSimService->hasInventory('Lightning in a Bottle') && $this->houseSimService->hasInventory('Paper'))
+                $possibilities[] = new ActivityCallback($this->createZawinskisLaw(...), 10);
+        }
 
         if($this->houseSimService->hasInventory('Hash Table'))
         {
@@ -759,6 +765,39 @@ class ProgrammingService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to become a l33t h4xx0r, but didn\'t have the right stuff. (Figuratively speaking.)', 'icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+        }
+
+        return $activityLog;
+    }
+
+    private function createZawinskisLaw(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal());
+
+        if($roll >= 19)
+        {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->houseSimService->getState()->loseItem('Brute Force', 1);
+            $this->houseSimService->getState()->loseItem('Lightning in a Bottle', 1);
+            $this->houseSimService->getState()->loseItem('Paper', 1);
+            $pet->increaseEsteem(1);
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% discovered Zawinski\'s Law.', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 19)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
+            ;
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->inventoryService->petCollectsItem('Zawinski\'s Law', $pet, $pet->getName() . ' made this.', $activityLog);
+        }
+        else
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% started jotting some ideas down on a piece of Paper, but ended up doodling a bunch of squiggles instead. ' . $pet->getName() . ' ended up erasing it all.')
+                ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
 
