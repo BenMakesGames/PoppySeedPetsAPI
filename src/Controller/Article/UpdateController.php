@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Article;
 
 use App\Attributes\DoesNotRequireHouseHours;
-use App\Controller\AdminController;
 use App\Entity\Article;
 use App\Entity\DesignGoal;
 use App\Exceptions\PSPFormValidationException;
@@ -23,22 +22,24 @@ use App\Functions\ArrayFunctions;
 use App\Functions\DesignGoalRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/article")]
-class UpdateController extends AdminController
+class UpdateController
 {
     #[DoesNotRequireHouseHours]
     #[Route("/{article}", methods: ["POST"], requirements: ["article" => "\d+"])]
     #[IsGranted("ROLE_ADMIN")]
     public function handle(
-        Article $article, ResponseService $responseService, Request $request, EntityManagerInterface $em
+        Article $article, ResponseService $responseService, Request $request, EntityManagerInterface $em,
+        ParameterBagInterface $parameterBag
     ): JsonResponse
     {
-        $this->adminIPsOnly($request);
+        AdminOnly::adminIPsOnly($parameterBag, $request);
 
         $title = trim($request->request->getString('title'));
         $body = trim($request->request->getString('body'));

@@ -12,37 +12,27 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller;
+namespace App\Controller\PetActivityLogs;
 
 use App\Attributes\DoesNotRequireHouseHours;
-use App\Entity\DesignGoal;
+use App\Entity\PetActivityLogTag;
 use App\Enum\SerializationGroupEnum;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route("/designGoal")]
-class DesignGoalController
+#[Route("/petActivityLogs")]
+class GetTagsController
 {
     #[DoesNotRequireHouseHours]
-    #[Route("", methods: ["GET"])]
-    public function getAll(EntityManagerInterface $em, ResponseService $responseService): JsonResponse
+    #[Route("/getAllTags", methods: ["GET"])]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
+    public function getAllTags(ResponseService $responseService, EntityManagerInterface $em): JsonResponse
     {
-        return $responseService->success(
-            $em->getRepository(DesignGoal::class)->findAll(),
-            [ SerializationGroupEnum::DESIGN_GOAL ]
-        );
-    }
+        $tags = $em->getRepository(PetActivityLogTag::class)->findAll();
 
-    #[DoesNotRequireHouseHours]
-    #[Route("/{designGoal}", methods: ["GET"])]
-    public function getDetails(DesignGoal $designGoal, ResponseService $responseService): JsonResponse
-    {
-        return $responseService->success([
-            'id' => $designGoal->getId(),
-            'name' => $designGoal->getName(),
-            'description' => $designGoal->getDescription()
-        ]);
+        return $responseService->success($tags, [ SerializationGroupEnum::PET_ACTIVITY_LOGS ]);
     }
 }

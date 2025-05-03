@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace App\Controller\Article;
 
 use App\Attributes\DoesNotRequireHouseHours;
-use App\Controller\AdminController;
 use App\Entity\Article;
 use App\Exceptions\PSPFormValidationException;
 use App\Functions\DesignGoalRepository;
@@ -29,23 +28,17 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/article")]
-class CreateController extends AdminController
+class CreateController
 {
-    public function __construct(
-        ParameterBagInterface $parameterBag,
-        private UserAccessor $userAccessor
-    ) {
-        parent::__construct($parameterBag);
-    }
-
     #[DoesNotRequireHouseHours]
     #[Route("", methods: ["POST"])]
     #[IsGranted("ROLE_ADMIN")]
     public function createNew(
-        Request $request, ResponseService $responseService, EntityManagerInterface $em
+        Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        ParameterBagInterface $parameterBag, UserAccessor $userAccessor
     ): JsonResponse
     {
-        $this->adminIPsOnly($request);
+        AdminOnly::adminIPsOnly($parameterBag, $request);
 
         $title = trim($request->request->getString('title'));
         $body = trim($request->request->getString('body'));
@@ -63,7 +56,7 @@ class CreateController extends AdminController
             ->setImageUrl($imageUrl == '' ? null : $imageUrl)
             ->setTitle($title)
             ->setBody($body)
-            ->setAuthor($this->userAccessor->getUserOrThrow())
+            ->setAuthor($userAccessor->getUserOrThrow())
         ;
 
         foreach($designGoals as $designGoal)

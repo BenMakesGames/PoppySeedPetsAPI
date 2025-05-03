@@ -12,24 +12,27 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller;
+namespace App\Controller\PetGroup;
 
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use App\Entity\PetGroup;
+use App\Enum\SerializationGroupEnum;
+use App\Service\Filter\PetGroupFilterService;
+use App\Service\ResponseService;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Routing\Attribute\Route;
 
-abstract class AdminController
+#[Route("/petGroup")]
+class SearchController
 {
-    protected ParameterBagInterface $parameterBag;
-
-    public function __construct(ParameterBagInterface $parameterBag)
+    #[Route("", methods: ["GET"])]
+    public function getAllGroups(
+        ResponseService $responseService, PetGroupFilterService $petGroupFilterService, Request $request
+    ): JsonResponse
     {
-        $this->parameterBag = $parameterBag;
-    }
-
-    public function adminIPsOnly(Request $request): void
-    {
-        if(!preg_match('/' . $this->parameterBag->get('adminIpRegex') . '/', $request->getClientIp()))
-            throw new AccessDeniedHttpException('Sorry: the device you\'re using is not trusted to perform administrative actions.');
+        return $responseService->success(
+            $petGroupFilterService->getResults($request->query),
+            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::PET_GROUP_INDEX ]
+        );
     }
 }

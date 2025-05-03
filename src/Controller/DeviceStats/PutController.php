@@ -25,7 +25,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Service\UserAccessor;
 
 #[Route("/deviceStats")]
-class DeviceStatsController
+class PutController
 {
     #[DoesNotRequireHouseHours]
     #[Route("", methods: ["PUT"])]
