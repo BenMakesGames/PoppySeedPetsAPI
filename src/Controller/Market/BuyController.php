@@ -149,6 +149,7 @@ class BuyController
             }
 
             $em->remove($itemToBuy);
+            $inventory->setForSale(null);
 
             $em->flush();
         }
