@@ -21,14 +21,14 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
-use App\Repository\InventoryRepository;
+use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
 
 #[Route("/inventory")]
 class MoveController
@@ -36,9 +36,8 @@ class MoveController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/moveTo/{location}", methods: ["POST"], requirements: ["location" => "\d+"])]
     public function moveInventory(
-        int $location, Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
-        EntityManagerInterface $em,
-        UserAccessor $userAccessor
+        int $location, Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        InventoryService $inventoryService, UserAccessor $userAccessor
     ): JsonResponse
     {
         if(!LocationEnum::isAValue($location))
@@ -63,7 +62,8 @@ class MoveController
             throw new PSPFormValidationException('Oh, goodness, please don\'t try to move more than 200 items at a time. Sorry.');
 
         /** @var Inventory[] $inventory */
-        $inventory = $inventoryRepository->createQueryBuilder('i')
+        $inventory = $em->createQueryBuilder()
+            ->select('i')->from(Inventory::class, 'i')
             ->andWhere('i.owner=:user')
             ->andWhere('i.id IN (:inventoryIds)')
             ->andWhere('i.location IN (:allowedLocations)')
@@ -77,7 +77,7 @@ class MoveController
         if(count($inventory) !== count($inventoryIds))
             throw new PSPNotFoundException('Some of the items could not be found??');
 
-        $itemsInTargetLocation = InventoryRepository::countItemsInLocation($em, $user, $location);
+        $itemsInTargetLocation = $inventoryService->countItemsInLocation($user, $location);
 
         if($location === LocationEnum::HOME)
         {

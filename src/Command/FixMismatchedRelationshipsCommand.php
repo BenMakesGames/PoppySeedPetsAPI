@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Repository\PetRelationshipRepository;
+use App\Entity\PetRelationship;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,7 +24,6 @@ class FixMismatchedRelationshipsCommand extends Command
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly PetRelationshipRepository $petRelationshipRepository
     )
     {
         parent::__construct();
@@ -66,7 +65,7 @@ class FixMismatchedRelationshipsCommand extends Command
 
             $completed[] = $uniqueKey;
 
-            $relationships = $this->petRelationshipRepository->findBy([
+            $relationships = $this->em->getRepository(PetRelationship::class)->findBy([
                 'id' => [ $result[0], $result[8] ],
             ]);
 

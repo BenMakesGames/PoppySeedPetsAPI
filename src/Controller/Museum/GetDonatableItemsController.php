@@ -14,13 +14,14 @@ declare(strict_types=1);
 
 namespace App\Controller\Museum;
 
+use App\Entity\Inventory;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Model\FilterResults;
-use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,7 +35,7 @@ class GetDonatableItemsController
     #[Route("/donatable", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getDonatable(
-        ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository,
+        ResponseService $responseService, Request $request, EntityManagerInterface $em,
         UserAccessor $userAccessor
     ): JsonResponse
     {
@@ -43,7 +44,8 @@ class GetDonatableItemsController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Museum))
             throw new PSPNotUnlockedException('Museum');
 
-        $qb = $inventoryRepository->createQueryBuilder('i')
+        $qb = $em->createQueryBuilder()
+            ->select('i')->from(Inventory::class, 'i')
             ->andWhere('i.owner=:user')
             ->leftJoin('i.item', 'item')
             ->andWhere('i.location IN (:locations)')
@@ -81,7 +83,9 @@ class GetDonatableItemsController
         $results->results = $paginator->getQuery()->execute();
 
         return $responseService->success($results, [
-            SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::MY_INVENTORY, SerializationGroupEnum::MY_DONATABLE_INVENTORY
+            SerializationGroupEnum::FILTER_RESULTS,
+            SerializationGroupEnum::MY_INVENTORY,
+            SerializationGroupEnum::MY_DONATABLE_INVENTORY
         ]);
     }
 }

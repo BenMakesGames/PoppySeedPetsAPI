@@ -15,12 +15,12 @@ declare(strict_types=1);
 namespace App\Controller\MonthlyStoryAdventure;
 
 use App\Entity\MonthlyStoryAdventure;
+use App\Entity\UserMonthlyStoryAdventureStepCompleted;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\UserQuestRepository;
 use App\Repository\MonthlyStoryAdventureStepRepository;
-use App\Repository\UserMonthlyStoryAdventureStepCompletedRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -36,7 +36,6 @@ class GetById
     public function handle(
         MonthlyStoryAdventure $story,
         MonthlyStoryAdventureStepRepository $monthlyStoryAdventureStepRepository,
-        UserMonthlyStoryAdventureStepCompletedRepository $userMonthlyStoryAdventureStepCompletedRepository,
         ResponseService $responseService, EntityManagerInterface $em,
         UserAccessor $userAccessor
     ): JsonResponse
@@ -46,7 +45,16 @@ class GetById
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::StarKindred))
             throw new PSPNotUnlockedException('★Kindred');
 
-        $complete = $userMonthlyStoryAdventureStepCompletedRepository->findComplete($user, $story);
+        $complete = $em->getRepository(UserMonthlyStoryAdventureStepCompleted::class)
+            ->createQueryBuilder('c')
+            ->join('c.adventureStep', 's')
+            ->andWhere('c.user = :user')
+            ->andWhere('s.adventure = :adventure')
+            ->setParameter('user', $user)
+            ->setParameter('adventure', $story)
+            ->getQuery()
+            ->execute();
+
         $available = $monthlyStoryAdventureStepRepository->findAvailable($story, $complete);
         $playedStarKindred = UserQuestRepository::findOrCreate($em, $user, 'Played ★Kindred', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
 

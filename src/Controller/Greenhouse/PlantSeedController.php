@@ -23,7 +23,6 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
-use App\Repository\InventoryRepository;
 use App\Service\GreenhouseService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -39,7 +38,7 @@ class PlantSeedController
     #[Route("/plantSeed", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function plantSeed(
-        ResponseService $responseService, InventoryRepository $inventoryRepository, Request $request,
+        ResponseService $responseService, Request $request,
         EntityManagerInterface $em, GreenhouseService $greenhouseService,
         UserAccessor $userAccessor
     ): JsonResponse
@@ -55,7 +54,7 @@ class PlantSeedController
         if($seedId <= 0)
             throw new PSPFormValidationException('"seed" is missing, or invalid.');
 
-        $seed = $inventoryRepository->findOneBy([
+        $seed = $em->getRepository(Inventory::class)->findOneBy([
             'id' => $seedId,
             'owner' => $user->getId(),
             'location' => Inventory::CONSUMABLE_LOCATIONS,

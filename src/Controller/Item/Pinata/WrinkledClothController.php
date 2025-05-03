@@ -17,17 +17,17 @@ namespace App\Controller\Item\Pinata;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Exceptions\PSPNotFoundException;
+use App\Functions\InventoryHelpers;
 use App\Functions\ItemRepository;
-use App\Repository\InventoryRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
 
 #[Route("/item/wrinkledCloth")]
 class WrinkledClothController
@@ -45,7 +45,7 @@ class WrinkledClothController
         ItemControllerHelpers::validateInventory($user, $inventory, 'wrinkledCloth/#/iron');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $ironBar = InventoryRepository::findOneToConsume($em, $user, 'Iron Bar');
+        $ironBar = InventoryHelpers::findOneToConsume($em, $user, 'Iron Bar');
 
         if(!$ironBar)
             throw new PSPNotFoundException('You\'ll need an Iron (... Bar) to do that!');

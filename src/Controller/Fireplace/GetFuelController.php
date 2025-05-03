@@ -12,50 +12,35 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller\Beehive;
+namespace App\Controller\Fireplace;
 
-use App\Entity\Inventory;
-use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
-use App\Service\HollowEarthService;
+use App\Service\FireplaceService;
 use App\Service\ResponseService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Service\UserAccessor;
 
-#[Route("/beehive")]
-class DiceController
+#[Route("/fireplace")]
+class GetFuelController
 {
-    #[Route("/dice", methods: ["GET"])]
+    #[Route("/fuel", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getDice(
-        EntityManagerInterface $em, ResponseService $responseService,
+    public function getFireplaceFuel(
+        FireplaceService $fireplaceService, ResponseService $responseService,
         UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
 
-        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Beehive) || !$user->getBeehive())
-            throw new PSPNotUnlockedException('Beehive');
+        if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace) || !$user->getFireplace())
+            throw new PSPNotUnlockedException('Fireplace');
 
-        $inventory = $em->createQueryBuilder()
-            ->select('i')->from(Inventory::class, 'i')
-            ->andWhere('i.owner=:owner')
-            ->andWhere('i.location IN (:home)')
-            ->leftJoin('i.item', 'item')
-            ->andWhere('item.name IN (:diceItemNames)')
-            ->addOrderBy('item.name', 'ASC')
-            ->setParameter('owner', $user->getId())
-            ->setParameter('home', LocationEnum::HOME)
-            ->setParameter('diceItemNames', array_keys(HollowEarthService::DICE_ITEMS))
-            ->getQuery()
-            ->getResult()
-        ;
+        $fuel = $fireplaceService->findFuel($user);
 
-        return $responseService->success($inventory, [ SerializationGroupEnum::MY_INVENTORY ]);
+        return $responseService->success($fuel, [ SerializationGroupEnum::FIREPLACE_FUEL ]);
     }
 }

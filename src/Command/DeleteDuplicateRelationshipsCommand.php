@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Repository\PetRelationshipRepository;
+use App\Entity\PetRelationship;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,14 +22,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DeleteDuplicateRelationshipsCommand extends Command
 {
-    private EntityManagerInterface $em;
-    private PetRelationshipRepository $petRelationshipRepository;
-
-    public function __construct(EntityManagerInterface $em, PetRelationshipRepository $petRelationshipRepository)
+    public function __construct(
+        private readonly EntityManagerInterface $em
+    )
     {
-        $this->em = $em;
-        $this->petRelationshipRepository = $petRelationshipRepository;
-
         parent::__construct();
     }
 
@@ -56,7 +52,7 @@ class DeleteDuplicateRelationshipsCommand extends Command
 
         foreach($results as $result)
         {
-            $relationships = $this->petRelationshipRepository->findBy([
+            $relationships = $this->em->getRepository(PetRelationship::class)->findBy([
                 'pet' => $result['pet_id'],
                 'relationship' => $result['relationship_id']
             ]);

@@ -667,4 +667,62 @@ class InventoryService
     {
         return $rng->rngNextFromArray($itemGroup->getItems()->toArray());
     }
+
+    /**
+     * @return ItemQuantity[]
+     */
+    public function getInventoryQuantities(User $user, int $location, ?string $indexBy = null): array
+    {
+        $query = $this->em->createQueryBuilder()
+            ->from(Inventory::class, 'inventory')
+            ->select('item,COUNT(inventory.id) AS quantity')
+            ->leftJoin(Item::class, 'item', 'WITH', 'inventory.item = item.id')
+            ->andWhere('inventory.owner=:user')
+            ->andwhere('inventory.location=:location')
+            ->groupBy('item.id')
+            ->setParameter('user', $user->getId())
+            ->setParameter('location', $location)
+        ;
+
+        $results = $query->getQuery()->execute();
+
+        $quantities = [];
+
+        foreach($results as $result)
+        {
+            $quantity = new ItemQuantity(
+                $result[0],
+                (int)$result['quantity'],
+            );
+
+            if($indexBy)
+            {
+                $getter = 'get' . $indexBy;
+                $quantities[$quantity->item->$getter()] = $quantity;
+            }
+            else
+                $quantities[] = $quantity;
+        }
+
+        return $quantities;
+    }
+
+    /**
+     * @throws EnumInvalidValueException
+     */
+    public function countItemsInLocation(User $user, int $location): int
+    {
+        if(!LocationEnum::isAValue($location))
+            throw new EnumInvalidValueException(LocationEnum::class, $location);
+
+        return (int)$this->em->createQueryBuilder()
+            ->select('COUNT(i.id)')->from(Inventory::class, 'i')
+            ->andWhere('i.owner=:user')
+            ->andWhere('i.location=:location')
+            ->setParameter('user', $user)
+            ->setParameter('location', $location)
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+    }
 }

@@ -26,18 +26,17 @@ use App\Functions\ItemRepository;
 use App\Functions\PlayerLogFactory;
 use App\Functions\RequestFunctions;
 use App\Functions\SpiceRepository;
-use App\Repository\InventoryRepository;
 use App\Service\GreenhouseService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
 
 #[Route("/greenhouse")]
 class FeedComposterController
@@ -52,10 +51,9 @@ class FeedComposterController
     #[Route("/composter/feed", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function feedComposter(
-        ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository,
-        InventoryService $inventoryService, EntityManagerInterface $em, UserStatsService $userStatsRepository,
-        IRandom $rng, GreenhouseService $greenhouseService,
-        UserAccessor $userAccessor
+        ResponseService $responseService, Request $request, InventoryService $inventoryService,
+        EntityManagerInterface $em, UserStatsService $userStatsRepository, IRandom $rng,
+        GreenhouseService $greenhouseService, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -68,7 +66,7 @@ class FeedComposterController
 
         $itemIds = RequestFunctions::getUniqueIdsOrThrow($request, 'food', 'No items were selected as fuel???');
 
-        $items = InventoryRepository::findFertilizers($em, $user, $itemIds);
+        $items = $greenhouseService->findFertilizers($user, $itemIds);
 
         $items = array_filter($items, function(Inventory $i)  {
             return !in_array($i->getItem()->getName(), self::FORBIDDEN_COMPOST) && $i->getTotalFertilizerValue() > 0;

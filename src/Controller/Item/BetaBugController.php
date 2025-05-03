@@ -28,7 +28,6 @@ use App\Exceptions\PSPNotFoundException;
 use App\Functions\ItemRepository;
 use App\Functions\MeritRepository;
 use App\Functions\PetRepository;
-use App\Repository\InventoryRepository;
 use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
@@ -55,7 +54,7 @@ class BetaBugController
     #[Route("/{inventory}/eligibleItems", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getEligibleItems(
-        Inventory $inventory, ResponseService $responseService, InventoryRepository $inventoryRepository,
+        Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
         UserAccessor $userAccessor
     ): JsonResponse
     {
@@ -63,8 +62,8 @@ class BetaBugController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'betaBug');
 
-        $qb = $inventoryRepository->createQueryBuilder('i');
-        $items = $qb
+        $items = $em->createQueryBuilder()
+            ->select('i')->from(Inventory::class, 'i')
             ->join('i.item', 'item')
             ->andWhere('i.owner=:ownerId')
             ->andWhere('item.name IN (:allowedItemNames)')
@@ -81,16 +80,15 @@ class BetaBugController
     #[Route("/{inventory}/use", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function useBug(
-        Inventory $inventory, Request $request, InventoryRepository $inventoryRepository,
-        ResponseService $responseService, EntityManagerInterface $em, PetFactory $petFactory, IRandom $rng,
-        UserAccessor $userAccessor
+        Inventory $inventory, Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        PetFactory $petFactory, IRandom $rng, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'betaBug');
 
-        $item = $inventoryRepository->findOneBy([
+        $item = $em->getRepository(Inventory::class)->findOneBy([
             'id' => $request->request->getInt('item'),
             'owner' => $user,
             'location' => LocationEnum::HOME

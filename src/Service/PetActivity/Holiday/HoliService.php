@@ -27,7 +27,6 @@ use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\PetChanges;
 use App\Repository\PetQuestRepository;
-use App\Repository\PetRelationshipRepository;
 use App\Service\PetExperienceService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -36,7 +35,6 @@ class HoliService
     public const string HOLI_ACTIVITY_LOG_ICON = 'calendar/holidays/holi';
 
     public function __construct(
-        private readonly PetRelationshipRepository $petRelationshipRepository,
         private readonly PetQuestRepository $petQuestRepository,
         private readonly EntityManagerInterface $em,
         private readonly PetExperienceService $petExperienceService
@@ -62,7 +60,7 @@ class HoliService
         // okay, let's go:
         $changes = new PetChanges($pet);
 
-        $dislikedPets = $this->petRelationshipRepository->getDislikedRelationships($pet);
+        $dislikedPets = $this->getDislikedRelationships($pet);
 
         // if the pet doesn't dislike any pets, they will not participate this year
         if(count($dislikedPets) === 0)
@@ -85,6 +83,24 @@ class HoliService
         ;
 
         return $activityLog;
+    }
+
+    /**
+     * @return PetRelationship[]
+     */
+    private function getDislikedRelationships(Pet $pet): array
+    {
+        $qb = $this->em->getRepository(PetRelationship::class)
+            ->createQueryBuilder('r')
+            ->leftJoin('r.pet', 'pet')
+            ->leftJoin('r.relationship', 'friend')
+            ->andWhere('r.currentRelationship IN (:dislikedRelationshipTypes)')
+            ->andWhere('pet.id=:petId')
+            ->setParameter('petId', $pet->getId())
+            ->setParameter('dislikedRelationshipTypes', [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ])
+        ;
+
+        return $qb->getQuery()->execute();
     }
 
     private function doPetNoParticipation(Pet $pet): PetActivityLog

@@ -20,17 +20,17 @@ use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\CalendarFunctions;
-use App\Repository\InventoryRepository;
+use App\Functions\InventoryHelpers;
 use App\Service\HollowEarthService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
 
 #[Route("/hollowEarth")]
 class RollDieController
@@ -61,7 +61,7 @@ class RollDieController
         if(!array_key_exists($itemName, HollowEarthService::DICE_ITEMS))
             throw new PSPFormValidationException('You must specify a die to roll.');
 
-        $inventory = InventoryRepository::findOneToConsume($em, $user, $itemName);
+        $inventory = InventoryHelpers::findOneToConsume($em, $user, $itemName);
 
         if(!$inventory)
             throw new PSPNotFoundException('You do not have a ' . $itemName . '!');

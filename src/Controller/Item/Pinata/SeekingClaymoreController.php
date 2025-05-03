@@ -19,16 +19,16 @@ use App\Entity\Inventory;
 use App\Entity\User;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Functions\ArrayFunctions;
+use App\Functions\InventoryHelpers;
 use App\Functions\ItemRepository;
-use App\Repository\InventoryRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
 
 #[Route("/item/seekingClaymore")]
 class SeekingClaymoreController
@@ -341,7 +341,7 @@ class SeekingClaymoreController
 
     private static function getBucketOrThrow(EntityManagerInterface $em, User $user, int $location): Inventory
     {
-        $bucket = InventoryRepository::findAnyOneFromItemGroup($em, $user, 'Bucket', [ $location ]);
+        $bucket = InventoryHelpers::findAnyOneFromItemGroup($em, $user, 'Bucket', [ $location ]);
 
         if(!$bucket)
             throw new PSPInvalidOperationException('The claymore seems confused. You get the impression it\'s looking for some kind of _bucket_ to help it carry back whatever it finds...');

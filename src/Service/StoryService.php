@@ -31,7 +31,6 @@ use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\ItemQuantity;
 use App\Model\StoryStep;
 use App\Model\StoryStepChoice;
-use App\Repository\InventoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
@@ -50,7 +49,6 @@ class StoryService
         private readonly InventoryService $inventoryService,
         private readonly JsonLogicParserService $jsonLogicParserService,
         private readonly UserStatsService $userStatsRepository,
-        private readonly InventoryRepository $inventoryRepository,
         private readonly ResponseService $responseService,
         private readonly MuseumService $museumService
     )
@@ -212,7 +210,7 @@ class StoryService
     private function getUserInventory(): array
     {
         if(!$this->userInventory)
-            $this->userInventory = $this->inventoryRepository->getInventoryQuantities($this->user, LocationEnum::HOME, 'name');
+            $this->userInventory = $this->inventoryService->getInventoryQuantities($this->user, LocationEnum::HOME, 'name');
 
         return $this->userInventory;
     }

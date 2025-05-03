@@ -18,7 +18,6 @@ use App\Entity\Inventory;
 use App\Functions\ItemRepository;
 use App\Model\TraderOffer;
 use App\Model\TraderOfferCostOrYield;
-use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
 use App\Service\TraderService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,8 +33,7 @@ class SharuminyinkaController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function createHope(
         Inventory $inventory, ResponseService $responseService, TraderService $traderService,
-        EntityManagerInterface $em, InventoryRepository $inventoryRepository,
-        UserAccessor $userAccessor
+        EntityManagerInterface $em, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();

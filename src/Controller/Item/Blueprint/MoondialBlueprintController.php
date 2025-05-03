@@ -18,15 +18,15 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\PetSkillEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Repository\InventoryRepository;
+use App\Functions\InventoryHelpers;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
 
 #[Route("/item")]
 class MoondialBlueprintController
@@ -51,8 +51,8 @@ class MoondialBlueprintController
 
         $pet = BlueprintHelpers::getPet($em, $user, $request);
 
-        $blackonite = InventoryRepository::findOneToConsume($em, $user, 'Blackonite');
-        $rock = InventoryRepository::findOneToConsume($em, $user, 'Rock');
+        $blackonite = InventoryHelpers::findOneToConsume($em, $user, 'Blackonite');
+        $rock = InventoryHelpers::findOneToConsume($em, $user, 'Rock');
 
         if(!$blackonite || !$rock)
             return $responseService->error(422, [ 'Hm... you\'re going to need a Rock, and some Blackonite to make this...' ]);

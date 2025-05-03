@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Museum;
 
+use App\Entity\Inventory;
 use App\Entity\MuseumItem;
 use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
@@ -22,16 +23,15 @@ use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
-use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use App\Service\UserAccessor;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
 
 #[Route("/museum")]
 class DonateController
@@ -39,7 +39,7 @@ class DonateController
     #[Route("/donate", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function handle(
-        ResponseService $responseService, Request $request, InventoryRepository $inventoryRepository,
+        ResponseService $responseService, Request $request,
         EntityManagerInterface $em, UserStatsService $userStatsRepository,
         TransactionService $transactionService,
         UserAccessor $userAccessor
@@ -55,7 +55,7 @@ class DonateController
         if(count($inventoryIds) > 20)
             throw new PSPFormValidationException('You may only donate up to 20 items at a time.');
 
-        $inventory = $inventoryRepository->findBy([
+        $inventory = $em->getRepository(Inventory::class)->findBy([
             'id' => $inventoryIds,
             'owner' => $user,
             'location' => [ LocationEnum::HOME, LocationEnum::BASEMENT ]

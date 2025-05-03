@@ -18,8 +18,8 @@ use App\Entity\Inventory;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
-use App\Repository\InventoryRepository;
 use App\Service\Filter\InventoryFilterService;
+use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -74,13 +74,13 @@ class GetController
     #[Route("/summary/{location}", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getSummary(
-        int $location, ResponseService $responseService, InventoryRepository $inventoryRepository,
+        int $location, ResponseService $responseService, InventoryService $inventoryService,
         UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
 
-        $summary = $inventoryRepository->getInventoryQuantities($user, $location);
+        $summary = $inventoryService->getInventoryQuantities($user, $location);
 
         return $responseService->success($summary, [ SerializationGroupEnum::MY_INVENTORY ]);
     }

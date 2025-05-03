@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Entity\Pet;
-use App\Repository\PetRelationshipRepository;
+use App\Service\PetSocialActivityService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -25,7 +25,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GetRelationshipsToHangOutWithCommand extends Command
 {
     public function __construct(
-        private readonly PetRelationshipRepository $petRelationshipRepository,
+        private readonly PetSocialActivityService $petSocialActivityService,
         private readonly EntityManagerInterface $em
     )
     {
@@ -56,7 +56,7 @@ class GetRelationshipsToHangOutWithCommand extends Command
         $output->writeln($pet->getName() . ' (#' . $petId . ')');
 
         $time = microtime(true);
-        $relationships = $this->petRelationshipRepository->getRelationshipsToHangOutWith($pet);
+        $relationships = $this->petSocialActivityService->getRelationshipsToHangOutWith($pet);
         $time = microtime(true) - $time;
 
         $output->writeln('Found ' . count($relationships) . ' in ' . round($time, 2) . 's:');

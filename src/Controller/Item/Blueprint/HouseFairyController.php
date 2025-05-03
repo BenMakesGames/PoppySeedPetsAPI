@@ -23,11 +23,11 @@ use App\Enum\PetLocationEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
+use App\Functions\InventoryHelpers;
 use App\Functions\ItemRepository;
 use App\Functions\PetColorFunctions;
 use App\Functions\UserQuestRepository;
 use App\Functions\UserUnlockedFeatureHelpers;
-use App\Repository\InventoryRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\UserAccessor;
@@ -154,7 +154,7 @@ class HouseFairyController
         }
         else
         {
-            $quint = InventoryRepository::findOneToConsume($em, $user, 'Quintessence');
+            $quint = InventoryHelpers::findOneToConsume($em, $user, 'Quintessence');
 
             if($quint === null)
             {
@@ -210,7 +210,7 @@ class HouseFairyController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function makeFairyFloss(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em,
-        InventoryRepository $inventoryRepository, IRandom $rng, UserAccessor $userAccessor
+        IRandom $rng, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -219,7 +219,7 @@ class HouseFairyController
 
         $sugarItem = ItemRepository::findOneByName($em, 'Sugar');
 
-        $sugarToTransform = $inventoryRepository->findOneBy([
+        $sugarToTransform = $em->getRepository(Inventory::class)->findOneBy([
             'item' => $sugarItem,
             'owner' => $user->getId(),
             'location' => $inventory->getLocation()

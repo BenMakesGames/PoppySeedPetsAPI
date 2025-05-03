@@ -32,7 +32,6 @@ use App\Functions\ColorFunctions;
 use App\Functions\ItemRepository;
 use App\Model\TraderOffer;
 use App\Model\TraderOfferCostOrYield;
-use App\Repository\InventoryRepository;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -104,7 +103,6 @@ class TraderService
         private readonly InventoryService $inventoryService,
         private readonly TransactionService $transactionService,
         private readonly IRandom $rng,
-        private readonly InventoryRepository $inventoryRepository,
         private readonly Clock $clock,
         private readonly EntityManagerInterface $em,
         private readonly CacheHelper $cache,
@@ -150,7 +148,7 @@ class TraderService
 
     public function getOffers(User $user): array
     {
-        $quantities = $this->inventoryRepository->getInventoryQuantities($user, LocationEnum::HOME, 'name');
+        $quantities = $this->inventoryService->getInventoryQuantities($user, LocationEnum::HOME, 'name');
 
         $offers = [
             [

@@ -23,7 +23,6 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\GrammarFunctions;
 use App\Functions\PlayerLogFactory;
-use App\Repository\InventoryRepository;
 use App\Service\GreenhouseService;
 use App\Service\ResponseService;
 use App\Service\UserStatsService;
@@ -41,9 +40,7 @@ class FertilizePlantController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function fertilizePlant(
         GreenhousePlant $plant, ResponseService $responseService, Request $request, EntityManagerInterface $em,
-        InventoryRepository $inventoryRepository, UserStatsService $userStatsRepository,
-        GreenhouseService $greenhouseService,
-        UserAccessor $userAccessor
+        UserStatsService $userStatsRepository, GreenhouseService $greenhouseService, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -56,7 +53,7 @@ class FertilizePlantController
 
         $fertilizerId = $request->request->getInt('fertilizer', 0);
 
-        $fertilizer = $inventoryRepository->findOneBy([
+        $fertilizer = $em->getRepository(Inventory::class)->findOneBy([
             'id' => $fertilizerId,
             'owner' => $user->getId(),
             'location' => Inventory::CONSUMABLE_LOCATIONS,
@@ -83,7 +80,11 @@ class FertilizePlantController
 
         return $responseService->success(
             $greenhouseService->getGreenhouseResponseData($user),
-            [ SerializationGroupEnum::GREENHOUSE_PLANT, SerializationGroupEnum::MY_GREENHOUSE, SerializationGroupEnum::HELPER_PET ]
+            [
+                SerializationGroupEnum::GREENHOUSE_PLANT,
+                SerializationGroupEnum::MY_GREENHOUSE,
+                SerializationGroupEnum::HELPER_PET
+            ]
         );
     }
 }

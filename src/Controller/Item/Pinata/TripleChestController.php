@@ -17,17 +17,17 @@ namespace App\Controller\Item\Pinata;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Exceptions\PSPNotFoundException;
-use App\Repository\InventoryRepository;
+use App\Functions\InventoryHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use App\Service\UserAccessor;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
 
 #[Route("/item")]
 class TripleChestController
@@ -45,7 +45,7 @@ class TripleChestController
         ItemControllerHelpers::validateInventory($user, $inventory, 'tripleChest/#/openWithIronKey');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $key = InventoryRepository::findOneToConsume($em, $user, 'Iron Key');
+        $key = InventoryHelpers::findOneToConsume($em, $user, 'Iron Key');
 
         if(!$key)
             throw new PSPNotFoundException('You need an Iron Key to do that.');
@@ -99,7 +99,7 @@ class TripleChestController
         ItemControllerHelpers::validateInventory($user, $inventory, 'tripleChest/#/openWithIronKey');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $key = InventoryRepository::findOneToConsume($em, $user, 'Silver Key');
+        $key = InventoryHelpers::findOneToConsume($em, $user, 'Silver Key');
 
         if(!$key)
             throw new PSPNotFoundException('You need a Silver Key to do that.');
@@ -153,7 +153,7 @@ class TripleChestController
         ItemControllerHelpers::validateInventory($user, $inventory, 'tripleChest/#/openWithIronKey');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $key = InventoryRepository::findOneToConsume($em, $user, 'Gold Key');
+        $key = InventoryHelpers::findOneToConsume($em, $user, 'Gold Key');
 
         if(!$key)
             throw new PSPNotFoundException('You need a Gold Key to do that.');

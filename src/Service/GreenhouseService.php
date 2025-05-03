@@ -36,7 +36,6 @@ use App\Functions\PlayerLogFactory;
 use App\Functions\SpiceRepository;
 use App\Functions\UserQuestRepository;
 use App\Model\MeritInfo;
-use App\Repository\InventoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -210,7 +209,7 @@ class GreenhouseService
 
     public function getGreenhouseResponseData(User $user): array
     {
-        $fertilizers = InventoryRepository::findFertilizers($this->em, $user);
+        $fertilizers = $this->findFertilizers($user);
 
         return [
             'greenhouse' => $user->getGreenhouse(),
@@ -218,6 +217,42 @@ class GreenhouseService
             'plants' => $this->em->getRepository(GreenhousePlant::class)->findBy([ 'owner' => $user->getId() ]),
             'fertilizer' => $this->normalizer->normalize($fertilizers, null, [ 'groups' => [ SerializationGroupEnum::GREENHOUSE_FERTILIZER ] ]),
         ];
+    }
+
+    /**
+     * @param int[] $inventoryIds
+     * @return Inventory[]
+     */
+    public function findFertilizers(User $user, ?array $inventoryIds = null): array
+    {
+        $qb = $this->em->getRepository(Inventory::class)->createQueryBuilder('i')
+            ->andWhere('i.owner=:owner')
+            ->andWhere('i.location = :home')
+            ->leftJoin('i.item', 'item')
+            ->leftJoin('i.spice', 'spice')
+            ->leftJoin('spice.effects', 'effects')
+
+            // has positive fertilizer - DON'T care about spices or whatever, we definitely want to show it
+            // has 0 or negative fertilizer - only show if it has food or love greater than negative fertilizer (food + love exceeds badness of fertilizer)
+            ->andWhere('item.fertilizer > 0 OR (effects.food + effects.love > -item.fertilizer)')
+
+            ->addOrderBy('item.name', 'ASC')
+            ->setParameter('owner', $user->getId())
+            ->setParameter('home', LocationEnum::HOME)
+        ;
+
+        if($inventoryIds)
+        {
+            $qb
+                ->andWhere('i.id IN (:inventoryIds)')
+                ->setParameter('inventoryIds', $inventoryIds)
+            ;
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult()
+        ;
     }
 
     public function getWeedText(User $user): ?string

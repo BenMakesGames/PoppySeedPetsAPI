@@ -18,15 +18,15 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\PetSkillEnum;
 use App\Enum\UnlockableFeatureEnum;
-use App\Repository\InventoryRepository;
+use App\Functions\InventoryHelpers;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
 
 #[Route("/item")]
 class BirdBathBlueprintController
@@ -51,7 +51,7 @@ class BirdBathBlueprintController
 
         $pet = BlueprintHelpers::getPet($em, $user, $request);
 
-        $ironBar = InventoryRepository::findOneToConsume($em, $user, 'Iron Bar');
+        $ironBar = InventoryHelpers::findOneToConsume($em, $user, 'Iron Bar');
 
         if(!$ironBar)
             return $responseService->error(422, [ 'Hm... you\'re going to need an Iron Bar to make this...' ]);

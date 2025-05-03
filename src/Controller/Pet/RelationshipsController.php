@@ -15,10 +15,11 @@ declare(strict_types=1);
 namespace App\Controller\Pet;
 
 use App\Entity\Pet;
+use App\Entity\PetRelationship;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPPetNotFoundException;
-use App\Repository\PetRelationshipRepository;
 use App\Service\Filter\PetRelationshipFilterService;
+use App\Service\PetSocialActivityService;
 use App\Service\ResponseService;
 use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
@@ -51,19 +52,27 @@ class RelationshipsController
     #[Route("/{pet}/friends", methods: ["GET"], requirements: ["pet" => "\d+"])]
     public function getPetFriends(
         Pet $pet, ResponseService $responseService, NormalizerInterface $normalizer,
-        PetRelationshipRepository $petRelationshipRepository,
+        PetSocialActivityService $petSocialActivityService, EntityManagerInterface $em,
         UserAccessor $userAccessor
     ): JsonResponse
     {
         if($pet->getOwner()->getId() !== $userAccessor->getUserOrThrow()->getId())
             throw new PSPPetNotFoundException();
 
-        $relationships = $petRelationshipRepository->getFriends($pet);
+        $relationships = $petSocialActivityService->getFriends($pet);
+
+        $relationshipCount = (int)$em->createQueryBuilder()
+            ->select('COUNT(r)')->from(PetRelationship::class, 'r')
+            ->andWhere('r.pet=:pet')
+            ->setParameter('pet', $pet)
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
 
         return $responseService->success([
             'spiritCompanion' => $normalizer->normalize($pet->getSpiritCompanion(), null, [ 'groups' => [ SerializationGroupEnum::MY_PET ]]),
             'groups' => $normalizer->normalize($pet->getGroups(), null, [ 'groups' => [ SerializationGroupEnum::PET_GROUP ]]),
-            'relationshipCount' => $petRelationshipRepository->countRelationships($pet),
+            'relationshipCount' => $relationshipCount,
             'friends' => $normalizer->normalize($relationships, null, [ 'groups' => [ SerializationGroupEnum::PET_FRIEND ]]),
             'guild' => $normalizer->normalize($pet->getGuildMembership(), null, [ 'groups' => [ SerializationGroupEnum::PET_GUILD ]])
         ]);

@@ -17,17 +17,17 @@ namespace App\Controller\Item\Pinata;
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Exceptions\PSPNotFoundException;
-use App\Repository\InventoryRepository;
+use App\Functions\InventoryHelpers;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use App\Service\UserAccessor;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
 
 #[Route("/item/cryptocurrencyWallet")]
 class CryptocurrencyWalletController
@@ -45,7 +45,7 @@ class CryptocurrencyWalletController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'cryptocurrencyWallet/#/unlock');
 
-        $key = InventoryRepository::findOneToConsume($em, $user, 'Password');
+        $key = InventoryHelpers::findOneToConsume($em, $user, 'Password');
 
         if(!$key)
             throw new PSPNotFoundException('It\'s locked! (It\'s got a little lock on it, and everything!) You\'ll need a Password to open it...');

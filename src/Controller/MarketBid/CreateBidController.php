@@ -26,7 +26,6 @@ use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ItemRepository;
 use App\Functions\MarketListingRepository;
-use App\Repository\MarketBidRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
@@ -44,8 +43,7 @@ class CreateBidController
     #[Route("", methods: ["POST"])]
     public function createBid(
         Request $request, ResponseService $responseService, TransactionService $transactionService,
-        MarketBidRepository $marketBidRepository, EntityManagerInterface $em,
-        UserAccessor $userAccessor
+        EntityManagerInterface $em, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -88,7 +86,14 @@ class CreateBidController
         if($quantity < 1)
             throw new PSPFormValidationException('You can\'t bid on ' . $quantity . ' items! That\'s just silly!');
 
-        $currentQuantity = $marketBidRepository->getTotalQuantity($user);
+        $currentQuantity = (int)$em->getRepository(MarketBid::class)
+            ->createQueryBuilder('m')
+            ->select('SUM(m.quantity)')
+            ->andWhere('m.user=:userId')
+            ->setParameter('userId', $user->getId())
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
 
         if($currentQuantity + $quantity > $user->getMaxMarketBids())
             throw new PSPInvalidOperationException('You can only have bids out on ' . $user->getMaxMarketBids() . ' items at a time.');

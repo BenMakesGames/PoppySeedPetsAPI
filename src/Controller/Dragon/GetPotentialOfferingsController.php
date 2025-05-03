@@ -14,17 +14,17 @@ declare(strict_types=1);
 
 namespace App\Controller\Dragon;
 
+use App\Entity\Inventory;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\DragonHelpers;
-use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Service\UserAccessor;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route("/dragon")]
 class GetPotentialOfferingsController
@@ -32,7 +32,7 @@ class GetPotentialOfferingsController
     #[Route("/offerings", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getOfferings(
-        ResponseService $responseService, InventoryRepository $inventoryRepository,
+        ResponseService $responseService,
         EntityManagerInterface $em,
         UserAccessor $userAccessor
     ): JsonResponse
@@ -44,7 +44,8 @@ class GetPotentialOfferingsController
         if(!$dragon)
             throw new PSPNotFoundException('You don\'t have an adult dragon!');
 
-        $treasures = $inventoryRepository->createQueryBuilder('i')
+        $treasures = $em->createQueryBuilder()
+            ->select('i')->from(Inventory::class, 'i')
             ->leftJoin('i.item', 'item')
             ->leftJoin('item.treasure', 'treasure')
             ->andWhere('i.owner=:user')

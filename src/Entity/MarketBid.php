@@ -16,11 +16,10 @@ namespace App\Entity;
 
 use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
-use App\Repository\MarketBidRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: MarketBidRepository::class)]
+#[ORM\Entity]
 class MarketBid
 {
     #[Groups(["myBids"])]

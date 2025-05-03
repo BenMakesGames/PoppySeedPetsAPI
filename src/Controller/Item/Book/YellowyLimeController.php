@@ -18,14 +18,14 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Enum\LocationEnum;
 use App\Exceptions\PSPInvalidOperationException;
-use App\Repository\InventoryRepository;
+use App\Functions\InventoryHelpers;
 use App\Service\CookingService;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
 
 #[Route("/item/yellowyLime")]
 class YellowyLimeController
@@ -65,7 +65,7 @@ class YellowyLimeController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'yellowyLime/#/read');
 
-        $magnifyingGlass = InventoryRepository::findAnyOneFromItemGroup($em, $user, 'Magnifying Glass', [
+        $magnifyingGlass = InventoryHelpers::findAnyOneFromItemGroup($em, $user, 'Magnifying Glass', [
             LocationEnum::HOME,
             LocationEnum::BASEMENT,
             LocationEnum::MANTLE,

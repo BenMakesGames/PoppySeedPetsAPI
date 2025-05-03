@@ -26,8 +26,8 @@ use App\Functions\CalendarFunctions;
 use App\Functions\PlayerLogFactory;
 use App\Functions\RequestFunctions;
 use App\Functions\UserQuestRepository;
-use App\Repository\InventoryRepository;
 use App\Service\Clock;
+use App\Service\FireplaceService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetAssistantService;
@@ -46,7 +46,7 @@ class FeedController
     #[Route("/feed", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function feedFireplace(
-        Request $request, InventoryRepository $inventoryRepository, ResponseService $responseService,
+        Request $request, FireplaceService $fireplaceService, ResponseService $responseService,
         EntityManagerInterface $em, InventoryService $inventoryService, IRandom $rng,
         UserStatsService $userStatsRepository, Clock $clock,
         UserAccessor $userAccessor
@@ -59,7 +59,7 @@ class FeedController
 
         $itemIds = RequestFunctions::getUniqueIdsOrThrow($request, 'fuel', 'No items were selected as fuel???');
 
-        $items = $inventoryRepository->findFuel($user, $itemIds);
+        $items = $fireplaceService->findFuel($user, $itemIds);
 
         if(count($items) < count($itemIds))
             throw new PSPNotFoundException('Some of the fuel items selected could not be found. That shouldn\'t happen. Reload and try again, maybe?');
