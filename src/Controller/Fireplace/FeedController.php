@@ -48,8 +48,7 @@ class FeedController
     public function feedFireplace(
         Request $request, FireplaceService $fireplaceService, ResponseService $responseService,
         EntityManagerInterface $em, InventoryService $inventoryService, IRandom $rng,
-        UserStatsService $userStatsRepository, Clock $clock,
-        UserAccessor $userAccessor
+        UserStatsService $userStatsRepository, Clock $clock, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -67,7 +66,6 @@ class FeedController
         $fireplace = $user->getFireplace();
 
         $fuelNotUsed = [];
-
         $fuelUsed = [];
 
         foreach($items as $item)
