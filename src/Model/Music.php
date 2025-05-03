@@ -281,8 +281,9 @@ class Music
         // Hey Ya!, by OutKast
         'You think you\'ve got it - oh, you think you\'ve got it - but "got it" just don\'t get it when there\'s nothin\'t at aaa a-aaa a-aaa a-aaa a-a-all!',
 
-        // Steven Universe
+        // Rebecca Sugar
         'The odds are against us, it won\'t be easy, but: we\'re not gonna do it alone!',
+        'Look at you go, I just adore you; I wish that I knew... what makes... you think I\'m so speeecial.',
 
         // Out of my Mind, by Jamie Berry
         'I keep thinkin\' \'bou-- \'bou-- \'bou-- \'bou-- \'bou-- \'bou-- out of my mi-- mi-- mi-- mi-- mi-- mi-- I keep thinkin\'!',
@@ -457,9 +458,6 @@ class Music
 
         // Akihabara Cruise, by flippy 19XX
         'Let me show you all the glamor and the gold... seeecret fantasies in the show biz world...',
-
-        // Love Like You, by Aivi & Surasshu
-        'Look at you go, I just adore you; I wish that I knew... what makes... you think I\'m so speeecial.',
 
         // Back to Me, by KSHMR
         'Paaaiiint my roses red, riiight before the end, I will let the raindrop caarry me...',
