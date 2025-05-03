@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Controller\PetGroup;
 
-use App\Entity\PetGroup;
 use App\Enum\SerializationGroupEnum;
 use App\Service\Filter\PetGroupFilterService;
 use App\Service\ResponseService;
