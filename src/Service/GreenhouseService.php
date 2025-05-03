@@ -88,10 +88,9 @@ class GreenhouseService
                 break;
 
             case BirdBathBirdEnum::TOUCAN:
-                $this->inventoryService->receiveItem('Cereal Box', $user, $user, 'Left behind by a huge toucan that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
-                $this->inventoryService->receiveItem('Scroll of Fruit', $user, $user, 'Left behind by a huge toucan that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
-                $message = 'As you approach the toucan, it turns to face you. You freeze, and stare at each other for a few seconds before the toucan flies off, leaving behind a Cereal Box, and a Scroll of Fruit! (Presumably as part of a complete breakfast!)';
-                $activityLogMessage = 'You approached a toucan in your birdbath! It flew off, leaving behind a Cereal Box, and a Scroll of Fruit! (Presumably as part of a complete breakfast!)';
+                $this->inventoryService->receiveItem('Imperturbable Toucan', $user, $user, 'Found at ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
+                $message = 'As you approach the toucan, it turns to face you. You freeze, and stare at each other for a few seconds before it hops right into your arms!';
+                $activityLogMessage = 'You approached a toucan in your birdbath, and it hopped into your arms!';
                 break;
 
             default:

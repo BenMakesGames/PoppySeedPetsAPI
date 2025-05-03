@@ -62,6 +62,7 @@ final class UserStatEnum
     public const string FOODS_DIPPED_IN_A_HOT_POT = 'Foods Dipped in a Hot Pot';
     public const string ROLLED_SATYR_DICE = 'Rolled Satyr Dice';
     public const string SHATTERED_ICE_MANGO = 'Shattered an Ice "Mango"';
+    public const string SET_A_TOUCAN_FREE = 'Set a Toucan Free';
 
     public const string RECEIVED_A_MINOR_PRIZE_FROM_A_GREAT_SPIRIT = 'Received a Minor Reward from a Great Spirit';
     public const string RECEIVED_A_MODERATE_PRIZE_FROM_A_GREAT_SPIRIT = 'Received a Moderate Reward from a Great Spirit';
