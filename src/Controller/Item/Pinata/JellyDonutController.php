@@ -67,7 +67,9 @@ class JellyDonutController
 
         $message = 'You scoop the jelly out of the donut... Ah! ' . $filling . '!';
 
-        $inventory->changeItem(ItemRepository::findOneByName($em, 'Chocolate-frosted Donut'));
+        $inventory
+            ->changeItem(ItemRepository::findOneByName($em, 'Chocolate-frosted Donut'))
+            ->addComment($user->getName() . ' scooped the jelly out of a Jelly-filled Donut; this is what remains.');
 
         $em->flush();
 
