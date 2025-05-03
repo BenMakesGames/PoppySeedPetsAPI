@@ -27,9 +27,16 @@ class IndexController
     public function about(ResponseService $responseService): JsonResponse
     {
         return $responseService->success([
-            'design' => [ 'Ben Hendel-Doying' ],
-            'programming' => [ 'Ben Hendel-Doying' ],
-            'art' => [
+            'lead developer & game designer' => [
+                'Ben Hendel-Doying'
+            ],
+            'developers' => [
+                'chiknluvr',
+                'erinmclaughlin',
+                'GrimmestSnarl',
+                'nibkind',
+            ],
+            'artists' => [
                 'Aileen MacKay',
                 'Ben Hendel-Doying',
                 'Sabrina Silli',

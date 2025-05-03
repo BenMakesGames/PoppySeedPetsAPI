@@ -12,33 +12,36 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller;
+namespace App\Controller\PetActivityLogs;
 
-use App\Entity\PetGroup;
 use App\Enum\SerializationGroupEnum;
-use App\Service\Filter\PetGroupFilterService;
+use App\Service\Filter\PetActivityLogsFilterService;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route("/petGroup")]
-class PetGroupController
+#[Route("/petActivityLogs")]
+class SearchController
 {
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("", methods: ["GET"])]
-    public function getAllGroups(
-        ResponseService $responseService, PetGroupFilterService $petGroupFilterService, Request $request
+    public function history(
+        Request $request, ResponseService $responseService, PetActivityLogsFilterService $petActivityLogsFilterService,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        return $responseService->success(
-            $petGroupFilterService->getResults($request->query),
-            [ SerializationGroupEnum::FILTER_RESULTS, SerializationGroupEnum::PET_GROUP_INDEX ]
-        );
-    }
+        $user = $userAccessor->getUserOrThrow();
 
-    #[Route("/{group}", methods: ["GET"])]
-    public function getGroup(PetGroup $group, ResponseService $responseService): JsonResponse
-    {
-        return $responseService->success($group, [ SerializationGroupEnum::PET_GROUP_DETAILS ]);
+        $petActivityLogsFilterService->addRequiredFilter('user', $user->getId());
+
+        $logs = $petActivityLogsFilterService->getResults($request->query);
+
+        return $responseService->success($logs, [
+            SerializationGroupEnum::FILTER_RESULTS,
+            SerializationGroupEnum::PET_ACTIVITY_LOGS_AND_PUBLIC_PET
+        ]);
     }
 }

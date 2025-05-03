@@ -12,40 +12,25 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller\Article;
+namespace App\Controller\DesignGoal;
 
 use App\Attributes\DoesNotRequireHouseHours;
-use App\Entity\Article;
-use App\Service\RedditService;
+use App\Entity\DesignGoal;
 use App\Service\ResponseService;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route("/article")]
-class SocialMediaController
+#[Route("/designGoal")]
+class DetailsController
 {
     #[DoesNotRequireHouseHours]
-    #[IsGranted("ROLE_ADMIN")]
-    #[Route("/{article}/reddit", methods: ["POST"], requirements: ["article" => "\d+"])]
-    public function redditArticle(
-        Article $article, ResponseService $responseService, RedditService $redditService, Request $request,
-        ParameterBagInterface $parameterBag
-    ): JsonResponse
+    #[Route("/{designGoal}", methods: ["GET"])]
+    public function getDetails(DesignGoal $designGoal, ResponseService $responseService): JsonResponse
     {
-        AdminOnly::adminIPsOnly($parameterBag, $request);
-
-        try
-        {
-            $redditService->postArticle($article);
-        }
-        catch(\Exception $e)
-        {
-            return $responseService->error(500, [ $e->getMessage() ]);
-        }
-
-        return $responseService->success();
+        return $responseService->success([
+            'id' => $designGoal->getId(),
+            'name' => $designGoal->getName(),
+            'description' => $designGoal->getDescription()
+        ]);
     }
 }

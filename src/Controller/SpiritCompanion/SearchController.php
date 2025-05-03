@@ -12,40 +12,33 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller\Article;
+namespace App\Controller\SpiritCompanion;
 
 use App\Attributes\DoesNotRequireHouseHours;
-use App\Entity\Article;
-use App\Service\RedditService;
+use App\Enum\SerializationGroupEnum;
+use App\Service\Filter\SpiritCompanionFilterService;
 use App\Service\ResponseService;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route("/article")]
-class SocialMediaController
+#[Route("/spiritCompanion")]
+class SearchController
 {
     #[DoesNotRequireHouseHours]
-    #[IsGranted("ROLE_ADMIN")]
-    #[Route("/{article}/reddit", methods: ["POST"], requirements: ["article" => "\d+"])]
-    public function redditArticle(
-        Article $article, ResponseService $responseService, RedditService $redditService, Request $request,
-        ParameterBagInterface $parameterBag
+    #[Route("/search", methods: ["GET"])]
+    public function search(
+        Request $request, ResponseService $responseService, SpiritCompanionFilterService $spiritCompanionFilterService
     ): JsonResponse
     {
-        AdminOnly::adminIPsOnly($parameterBag, $request);
+        $results = $spiritCompanionFilterService->getResults($request->query);
 
-        try
-        {
-            $redditService->postArticle($article);
-        }
-        catch(\Exception $e)
-        {
-            return $responseService->error(500, [ $e->getMessage() ]);
-        }
-
-        return $responseService->success();
+        return $responseService->success(
+            $results,
+            [
+                SerializationGroupEnum::FILTER_RESULTS,
+                SerializationGroupEnum::SPIRIT_COMPANION_PUBLIC_PROFILE
+            ]
+        );
     }
 }
