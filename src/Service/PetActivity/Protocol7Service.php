@@ -521,6 +521,10 @@ class Protocol7Service
             [
                 'subject' => 'about blockchains',
                 'loot' => [ 'Password', 'Hash Table', 'Cryptocurrency Wallet' ],
+            ],
+            [
+                'subject' => 'about city planning',
+                'loot' => [ 'Traffic Light', 'Traffic Cone' ],
             ]
         ]);
 
@@ -683,7 +687,6 @@ class Protocol7Service
     private function exploreWalledGarden(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-
 
         $sneakSkill = $petWithSkills->getStealth()->getTotal() + $petWithSkills->getClimbingBonus()->getTotal();
         $hackSkill = $petWithSkills->getScience()->getTotal() + $petWithSkills->getHackingBonus()->getTotal();

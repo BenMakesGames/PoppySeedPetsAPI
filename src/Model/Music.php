@@ -232,8 +232,12 @@ class Music
         // Lush, De-Luxe
         'Some say I\'m vaaauuuge... and I\'d easily faaade... foolish paraaade ooof faaantaaasyyyy...',
 
-        // The Seatbelts, Yo Pumpkin Head
+        // The Seatbelts
         'In the dream that pulls you along, won\'t go carry a jelly bean. In your dream they\'re never on top. Let\'s get funky, Pumpkinheeeeeaaaaad! Yo, Pumpkinheeeeeaaaaad! Yo, Pumpkinheeeeeaaaaad! Yo, Pumpkinheeeeeaaaaad!',
+        'La la la la la la la laaa laaaaa... la la la la la la la la laaaaa... la la la la laaa laaa! La la la la laaa laaa la la! We are the doggy-doggy dogs! We are the doggy-doggy dogs!',
+
+        // Don't Bother None, by Mai Yamane
+        'Reading my paper in Ray\'s cafeee... the old guy next to me is loud as dayyy... rimble and ramble, while eatin\' his piiie... he dropped his wallet - now it\'s miii-ine...',
 
         // Birthday Massacre
         'I know you\'re just pretending; there\'s no window for escape. I know you see right through me; there\'s no promise left to brea-eak.',
@@ -485,7 +489,7 @@ class Music
         'COME to me; don\'t be shy, I want LOVE, truly. Something that\'ll make SENSE to me. RUSH upon me and SAY something - BREAK something.',
 
         // A Little Something for the Weekend, Franc Moody
-        'The key to life ... Divine inspiration ... Stimulation ... The true purpose ... A little pick me up!',
+        'The key to life ... Divine inspiration ... Stimulation~ ... The true purpose ... A little pick me up!',
 
         // Put a Banana in your Ear
         'Puuut aaa bananaaa in your eeeaaarrr! (A banana in my ear?) Put a ripe banana right into your favorite ear!',
