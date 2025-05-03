@@ -149,7 +149,10 @@ class BuyController
             }
 
             $em->remove($itemToBuy);
-            $inventory->setForSale(null);
+
+            $marketService->updateLowestPriceForItem(
+                $inventory->getItem(),
+            );
 
             $em->flush();
         }
@@ -157,12 +160,6 @@ class BuyController
         {
             $cache->deleteItem('Trading For Sale #' . $itemToBuy->getId());
         }
-
-        $marketService->updateLowestPriceForItem(
-            $inventory->getItem(),
-        );
-
-        $em->flush();
 
         return $responseService->success($itemToBuy, [ SerializationGroupEnum::MY_INVENTORY ]);
     }
