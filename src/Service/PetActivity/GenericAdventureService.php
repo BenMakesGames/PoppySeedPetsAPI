@@ -270,6 +270,12 @@ class GenericAdventureService
         }
         else if($event === 3)
         {
+            if($this->rng->rngNextInt(1, 10) === 1)
+            {
+                $reward = [ 'a ', 'Traffic Light' ];
+                $describeReward = 'a Traffic Light';
+            }
+
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw ' . $describeReward . ' poking out of a bag near a dumpster! %pet:' . $pet->getId() . '.name% took the ' . $reward[1] . ', and returned home.')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Dumpster-diving' ]))
             ;
