@@ -492,7 +492,11 @@ class MagicBeanstalkService
             $wheatFlourOrCorn = DateFunctions::isCornMoon($this->clock->now) ? 'Corn' : 'Wheat Flour';
 
             $possibleLoot = [
-                $wheatFlourOrCorn, 'Gold Bar', 'Linens and Things', 'Pamplemousse', 'Cheese', 'Fig', 'Puddin\' Rec\'pes',
+                $wheatFlourOrCorn,
+                $this->rng->rngNextFromArray([ 'Gold Bar', 'Linens and Things' ]),
+                $this->rng->rngNextFromArray([ 'Pamplemousse', 'Fig' ]),
+                'Jelly-filled Donut',
+                'Puddin\' Rec\'pes',
             ];
 
             $loot = [

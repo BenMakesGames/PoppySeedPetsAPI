@@ -219,7 +219,7 @@ class GenericAdventureService
 
             if($level >= 20)
             {
-                $possibleRewards[] = [ '', 'Silver Ore' ];
+                $possibleRewards[] = [ '', 'Silver Bar' ];
 
                 if($pet->hasMerit(MeritEnum::BEHATTED))
                     $possibleRewards[] = [ 'a ', 'Tinfoil Hat' ];
@@ -229,13 +229,13 @@ class GenericAdventureService
 
             if($level >= 25)
             {
-                $possibleRewards[] = [ '', 'Gold Ore' ];
+                $possibleRewards[] = [ '', 'Gold Bar' ];
                 $possibleRewards[] = [ 'a ', 'Fruit Basket' ];
             }
 
             if($level >= 30)
             {
-                $possibleRewards[] = [ 'a chunk of ', 'Dark Matter' ];
+                $possibleRewards[] = [ 'a ', 'Jelly-filled Donut' ];
 
                 if($this->rng->rngNextInt(1, 20) === 1)
                     $possibleRewards[] = [ 'a ', 'Species Transmigration Serum' ];
