@@ -18,6 +18,7 @@ use App\Entity\DailyMarketInventoryTransaction;
 use App\Entity\Inventory;
 use App\Entity\InventoryForSale;
 use App\Entity\Item;
+use App\Entity\MarketBid;
 use App\Entity\User;
 use App\Enum\LocationEnum;
 use App\Enum\UnlockableFeatureEnum;
@@ -25,7 +26,6 @@ use App\Enum\UserStatEnum;
 use App\Functions\InventoryModifierFunctions;
 use App\Functions\MarketListingRepository;
 use App\Functions\UserQuestRepository;
-use App\Repository\MarketBidRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class MarketService
@@ -33,7 +33,6 @@ class MarketService
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly UserStatsService $userStatsRepository,
-        private readonly MarketBidRepository $marketBidRepository,
         private readonly TransactionService $transactionService
     )
     {
@@ -135,7 +134,7 @@ class MarketService
         if($price <= 0)
             throw new \InvalidArgumentException('Price must be greater than 0.');
 
-        $highestBid = $this->marketBidRepository->findHighestBidForItem($inventory, InventoryForSale::calculateBuyPrice($price));
+        $highestBid = $this->findHighestBidForItem($inventory, InventoryForSale::calculateBuyPrice($price));
 
         if(!$highestBid)
         {
@@ -194,6 +193,24 @@ class MarketService
             $this->em->remove($highestBid);
 
         return true;
+    }
+
+    public function findHighestBidForItem(Inventory $inventory, int $minPrice): ?MarketBid
+    {
+        return $this->em->getRepository(MarketBid::class)
+            ->createQueryBuilder('m')
+            ->andWhere('m.item=:item')
+            ->andWhere('m.user!=:seller')
+            ->andWhere('m.bid>=:minPrice')
+            ->setParameter('item', $inventory->getItem())
+            ->setParameter('seller', $inventory->getOwner())
+            ->setParameter('minPrice', $minPrice)
+            ->addOrderBy('m.bid', 'DESC')
+            ->addOrderBy('m.createdOn', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
     }
 
     public function removeMarketListingForItem(int $itemId): void

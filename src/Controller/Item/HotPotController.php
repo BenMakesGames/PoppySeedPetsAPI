@@ -24,16 +24,15 @@ use App\Functions\GrammarFunctions;
 use App\Functions\InventoryModifierFunctions;
 use App\Functions\SpiceRepository;
 use App\Functions\UserQuestRepository;
-use App\Repository\InventoryRepository;
 use App\Service\IRandom;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
 
 #[Route("/item/hotPot")]
 class HotPotController
@@ -42,8 +41,7 @@ class HotPotController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function dipAFood(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
-        Request $request, InventoryRepository $inventoryRepository, UserStatsService $userStatsRepository,
-        UserAccessor $userAccessor
+        Request $request, UserStatsService $userStatsRepository, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -55,7 +53,7 @@ class HotPotController
         if($itemId <= 0)
             throw new PSPFormValidationException('You forgot to select a food!');
 
-        $dippedItem = $inventoryRepository->findOneBy([
+        $dippedItem = $em->getRepository(Inventory::class)->findOneBy([
             'id' => $itemId,
             'owner' => $user,
             'location' => LocationEnum::HOME

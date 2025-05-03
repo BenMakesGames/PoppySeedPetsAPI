@@ -22,7 +22,6 @@ use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\InventoryModifierFunctions;
-use App\Repository\InventoryRepository;
 use App\Service\CookingService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -40,9 +39,8 @@ class CookAndCombineController
     #[Route("/prepare", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function prepareRecipe(
-        Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
-        EntityManagerInterface $em, CookingService $cookingService, IRandom $rng,
-        UserAccessor $userAccessor
+        Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        CookingService $cookingService, IRandom $rng, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -52,7 +50,7 @@ class CookAndCombineController
         if(count($inventoryIds) > 100)
             throw new PSPFormValidationException('Oh, goodness, please don\'t try to Cook or Combine more than 100 items at a time! (Sorry for the inconvenience...)');
 
-        $inventory = $inventoryRepository->findBy([
+        $inventory = $em->getRepository(Inventory::class)->findBy([
             'owner' => $user,
             'id' => $inventoryIds
         ]);

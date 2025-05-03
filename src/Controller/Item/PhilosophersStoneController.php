@@ -23,17 +23,16 @@ use App\Enum\PetLocationEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\MeritRepository;
 use App\Functions\PetRepository;
-use App\Repository\InventoryRepository;
 use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
 
 #[Route("/item/philosophersStone")]
 class PhilosophersStoneController
@@ -50,8 +49,7 @@ class PhilosophersStoneController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function useStone(
         Inventory $inventory, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
-        PetFactory $petFactory, Request $request, InventoryRepository $inventoryRepository,
-        UserStatsService $userStatsRepository,
+        PetFactory $petFactory, Request $request, UserStatsService $userStatsRepository,
         UserAccessor $userAccessor
     ): JsonResponse
     {
@@ -61,7 +59,7 @@ class PhilosophersStoneController
 
         $itemId = $request->request->getInt('plushy');
 
-        $plushy = $inventoryRepository->findOneBy([
+        $plushy = $em->getRepository(Inventory::class)->findOneBy([
             'id' => $itemId,
             'owner' => $user,
             'location' => LocationEnum::HOME

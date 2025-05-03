@@ -22,7 +22,6 @@ use App\Exceptions\PSPNotFoundException;
 use App\Functions\RecipeRepository;
 use App\Functions\StringFunctions;
 use App\Model\ItemQuantity;
-use App\Repository\InventoryRepository;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -45,8 +44,7 @@ class GetKnownRecipes
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getKnownRecipes(
         EntityManagerInterface $em, Request $request, ResponseService $responseService,
-        InventoryRepository $inventoryRepository,
-        UserAccessor $userAccessor
+        InventoryService $inventoryService, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -81,7 +79,7 @@ class GetKnownRecipes
 
         $page = max(0, min($request->query->getInt('page', 0), $pageCount));
 
-        $quantities = $inventoryRepository->getInventoryQuantities($user, $location, 'name');
+        $quantities = $inventoryService->getInventoryQuantities($user, $location, 'name');
 
         // this feels kinda' gross, but I'm not sure how else to do it...
         $recipes = [];

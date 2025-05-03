@@ -14,11 +14,10 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Repository\UserMonthlyStoryAdventureStepCompletedRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: UserMonthlyStoryAdventureStepCompletedRepository::class)]
+#[ORM\Entity]
 class UserMonthlyStoryAdventureStepCompleted
 {
     #[ORM\Id]

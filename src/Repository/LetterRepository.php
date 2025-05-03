@@ -47,14 +47,4 @@ class LetterRepository extends ServiceEntityRepository
             ->getSingleScalarResult()
         ;
     }
-
-    public function findBySenderIndex(string $sender, int $index): ?Letter
-    {
-        if(!LetterSenderEnum::isAValue($sender))
-            throw new EnumInvalidValueException(LetterSenderEnum::class, $sender);
-
-        $results = $this->findBy([ 'sender' => $sender ], [ 'id' => 'ASC' ], 1, $index);
-
-        return count($results) === 0 ? null : $results[0];
-    }
 }

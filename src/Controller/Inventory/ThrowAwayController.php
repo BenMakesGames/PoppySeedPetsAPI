@@ -14,9 +14,9 @@ declare(strict_types=1);
 
 namespace App\Controller\Inventory;
 
+use App\Entity\Inventory;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
-use App\Repository\InventoryRepository;
 use App\Service\RecyclingService;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,9 +32,8 @@ class ThrowAwayController
     #[Route("/throwAway", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function throwAway(
-        Request $request, ResponseService $responseService, InventoryRepository $inventoryRepository,
-        EntityManagerInterface $em, RecyclingService $recyclingService,
-        UserAccessor $userAccessor
+        Request $request, ResponseService $responseService, EntityManagerInterface $em,
+        RecyclingService $recyclingService, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -44,7 +43,7 @@ class ThrowAwayController
         if(count($inventoryIds) > 200)
             throw new PSPFormValidationException('Oh, goodness, please don\'t try to recycle more than 200 items at a time. Sorry.');
 
-        $inventory = $inventoryRepository->findBy([
+        $inventory = $em->getRepository(Inventory::class)->findBy([
             'owner' => $user,
             'id' => $inventoryIds
         ]);

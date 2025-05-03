@@ -24,7 +24,7 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 #[ORM\Table]
 #[ORM\Index(name: 'commitment_idx', columns: ['commitment'])]
 #[ORM\Index(name: 'current_relationship_idx', columns: ['current_relationship'])]
-#[ORM\Entity(repositoryClass: 'App\Repository\PetRelationshipRepository')]
+#[ORM\Entity]
 class PetRelationship
 {
     #[ORM\Id]

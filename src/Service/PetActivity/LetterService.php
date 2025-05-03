@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace App\Service\PetActivity;
 
+use App\Entity\Letter;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\User;
@@ -333,7 +334,7 @@ class LetterService
     {
         $existingLetters = self::getNumberOfLettersFromSender($this->em, $user, $sender);
 
-        $nextLetter = $this->letterRepository->findBySenderIndex($sender, $existingLetters);
+        $nextLetter = $this->findBySenderIndex($sender, $existingLetters);
 
         if(!$nextLetter)
             throw new \InvalidArgumentException('The user already has every letter from that sender!');
@@ -358,6 +359,21 @@ class LetterService
             UserUnlockedFeatureHelpers::create($this->em, $user, UnlockableFeatureEnum::Mailbox);
 
         return $newLetter;
+    }
+
+    private function findBySenderIndex(string $sender, int $index): ?Letter
+    {
+        if(!LetterSenderEnum::isAValue($sender))
+            throw new EnumInvalidValueException(LetterSenderEnum::class, $sender);
+
+        $results = $this->em->getRepository(Letter::class)->findBy(
+            [ 'sender' => $sender ],
+            [ 'id' => 'ASC' ],
+            1,
+            $index
+        );
+
+        return count($results) === 0 ? null : $results[0];
     }
 }
 

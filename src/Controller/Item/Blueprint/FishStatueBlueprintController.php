@@ -19,17 +19,17 @@ use App\Entity\Inventory;
 use App\Enum\LocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\UnlockableFeatureEnum;
+use App\Functions\InventoryHelpers;
 use App\Functions\ItemRepository;
-use App\Repository\InventoryRepository;
 use App\Service\InventoryService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
 
 #[Route("/item")]
 class FishStatueBlueprintController
@@ -59,7 +59,7 @@ class FishStatueBlueprintController
         if(InventoryService::countInventory($em, $user->getId(), $threeDeePrinterId, LocationEnum::HOME) < 1)
             return $responseService->itemActionSuccess('The statue appears to be a fountain! You and ' . $pet->getName() . ' are going to need a 3D Printer at home, and some Plastic to make some pipes...');
 
-        $plastic = InventoryRepository::findOneToConsume($em, $user, 'Plastic');
+        $plastic = InventoryHelpers::findOneToConsume($em, $user, 'Plastic');
 
         if(!$plastic)
             return $responseService->itemActionSuccess('The statue appears to be a fountain! You and ' . $pet->getName() . ' are going to need a 3D Printer at home, and some Plastic to make some pipes...');

@@ -20,7 +20,7 @@ use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ItemRepository;
 use App\Model\TraderOffer;
 use App\Model\TraderOfferCostOrYield;
-use App\Repository\InventoryRepository;
+use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\TraderService;
 use App\Service\UserStatsService;
@@ -36,7 +36,7 @@ class TradeForKatsGiftPackageController
     #[Route("/tradeForGiftPackage", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function makeTrade(
-        InventoryRepository $inventoryRepository, ResponseService $responseService,
+        InventoryService $inventoryService, ResponseService $responseService,
         EntityManagerInterface $em, TraderService $traderService, UserStatsService $userStatsService,
         UserAccessor $userAccessor
     ): JsonResponse
@@ -46,7 +46,7 @@ class TradeForKatsGiftPackageController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Florist))
             throw new PSPNotUnlockedException('Florist');
 
-        $quantities = $inventoryRepository->getInventoryQuantities($user, LocationEnum::HOME, 'name');
+        $quantities = $inventoryService->getInventoryQuantities($user, LocationEnum::HOME, 'name');
 
         $exchange = TraderOffer::createTradeOffer(
             [

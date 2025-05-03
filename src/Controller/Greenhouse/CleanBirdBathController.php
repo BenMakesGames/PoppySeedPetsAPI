@@ -21,13 +21,13 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\ArrayFunctions;
 use App\Functions\PlayerLogFactory;
-use App\Repository\InventoryRepository;
+use App\Service\InventoryService;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
 
 #[Route("/greenhouse")]
 class CleanBirdBathController
@@ -35,7 +35,7 @@ class CleanBirdBathController
     #[Route("/cleanBirdBath", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function cleanBirdBath(
-        ResponseService $responseService, EntityManagerInterface $em,
+        ResponseService $responseService, EntityManagerInterface $em, InventoryService $inventoryService,
         UserAccessor $userAccessor
     ): JsonResponse
     {
@@ -59,7 +59,7 @@ class CleanBirdBathController
         if(count($itemsInBirdBath) === 0)
             throw new PSPInvalidOperationException('There\'s nothing to clean!');
 
-        $itemsAtHome = InventoryRepository::countItemsInLocation($em, $user, LocationEnum::HOME);
+        $itemsAtHome = $inventoryService->countItemsInLocation($user, LocationEnum::HOME);
 
         if($itemsAtHome >= User::MAX_HOUSE_INVENTORY)
             throw new PSPInvalidOperationException('You don\'t have enough room in your house for all these items!');

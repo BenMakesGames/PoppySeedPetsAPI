@@ -24,23 +24,23 @@ use App\Enum\PetSkillEnum;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\DateFunctions;
+use App\Functions\InventoryHelpers;
 use App\Functions\ItemRepository;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\SpiceRepository;
 use App\Functions\UserQuestRepository;
 use App\Model\PetChanges;
-use App\Repository\InventoryRepository;
 use App\Service\Clock;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use App\Service\UserStatsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
 
 #[Route("/item/box")]
 class BoxController
@@ -1000,7 +1000,7 @@ class BoxController
         ItemControllerHelpers::validateInventory($user, $inventory, 'box/goldChest/#/open');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $key = InventoryRepository::findOneToConsume($em, $user, 'Gold Key');
+        $key = InventoryHelpers::findOneToConsume($em, $user, 'Gold Key');
 
         if(!$key)
             throw new PSPNotFoundException('You need a Gold Key to unlock a Gold Chest!');

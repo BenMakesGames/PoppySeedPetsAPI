@@ -26,7 +26,6 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetActivityLogFactory;
-use App\Repository\PetRelationshipRepository;
 use App\Service\IRandom;
 use App\Service\PetRelationshipService;
 use App\Service\ResponseService;
@@ -44,9 +43,7 @@ class SelfReflectionController
     #[Route("/{pet}/selfReflection", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getGuildMembership(
-        Pet $pet, ResponseService $responseService, PetRelationshipRepository $petRelationshipRepository,
-        PetRelationshipService $petRelationshipService, EntityManagerInterface $em,
-        UserAccessor $userAccessor
+        Pet $pet, ResponseService $responseService, EntityManagerInterface $em, UserAccessor $userAccessor
     ): JsonResponse
     {
         // just to prevent scraping (this endpoint is currently - 2020-06-29 - used only for changing a pet's guild)
@@ -63,28 +60,30 @@ class SelfReflectionController
             $em->getRepository(Guild::class)->findAll()
         );
 
-        $numberDisliked = $petRelationshipRepository->countRelationships($pet, [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ]);
+        $numberDisliked = (int)$em->createQueryBuilder()
+            ->select('COUNT(r)')->from(PetRelationship::class, 'r')
+            ->andWhere('r.pet=:pet')
+            ->andWhere('r.currentRelationship IN (:currentRelationship)')
+            ->setParameter('pet', $pet)
+            ->setParameter('currentRelationship', [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ])
+            ->getQuery()
+            ->getSingleScalarResult();
 
         if($numberDisliked <= 5)
         {
-            $relationships = $petRelationshipRepository->findBy([
+            $relationships = $em->getRepository(PetRelationship::class)->findBy([
                 'pet' => $pet,
                 'currentRelationship' => [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ],
             ], [], $numberDisliked);
 
             $troubledRelationships = array_map(
-                function(PetRelationship $r) use($petRelationshipService)
-                {
-                    $possibleRelationships = PetRelationshipService::getRelationshipsBetween(
+                fn(PetRelationship $r) => [
+                    'pet' => $r->getRelationship(),
+                    'possibleRelationships' => PetRelationshipService::getRelationshipsBetween(
                         PetRelationshipService::max(RelationshipEnum::FRIEND, $r->getRelationshipGoal()),
                         PetRelationshipService::max(RelationshipEnum::FRIEND, $r->getRelationship()->getRelationshipWith($r->getPet())->getRelationshipGoal())
-                    );
-
-                    return [
-                        'pet' => $r->getRelationship(),
-                        'possibleRelationships' => $possibleRelationships
-                    ];
-                },
+                    )
+                ],
                 $relationships
             );
         }
@@ -155,8 +154,7 @@ class SelfReflectionController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     #[Route("/{pet}/selfReflection/reconcile", methods: ["POST"], requirements: ["pet" => "\d+"])]
     public function reconcileWithAnotherPet(
-        Pet $pet, Request $request, ResponseService $responseService, PetRelationshipRepository $petRelationshipRepository,
-        EntityManagerInterface $em, IRandom $rng,
+        Pet $pet, Request $request, ResponseService $responseService, EntityManagerInterface $em, IRandom $rng,
         UserAccessor $userAccessor
     ): JsonResponse
     {
@@ -176,7 +174,7 @@ class SelfReflectionController
         if(!$friendId)
             throw new PSPFormValidationException('You gotta\' choose a pet to reconcile with!');
 
-        $relationship = $petRelationshipRepository->findOneBy([
+        $relationship = $em->getRepository(PetRelationship::class)->findOneBy([
             'pet' => $pet->getId(),
             'relationship' => $friendId
         ]);
@@ -189,7 +187,7 @@ class SelfReflectionController
 
         $friend = $relationship->getRelationship();
 
-        $otherSide = $petRelationshipRepository->findOneBy([
+        $otherSide = $em->getRepository(PetRelationship::class)->findOneBy([
             'pet' => $friend,
             'relationship' => $pet
         ]);

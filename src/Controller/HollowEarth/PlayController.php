@@ -23,18 +23,18 @@ use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotFoundException;
 use App\Exceptions\PSPNotUnlockedException;
-use App\Repository\InventoryRepository;
+use App\Functions\InventoryHelpers;
 use App\Service\HollowEarthService;
 use App\Service\IRandom;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
 
 #[Route("/hollowEarth")]
 class PlayController
@@ -43,9 +43,7 @@ class PlayController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function continueActing(
         HollowEarthService $hollowEarthService, ResponseService $responseService, EntityManagerInterface $em,
-        Request $request, InventoryRepository $inventoryRepository, TransactionService $transactionService,
-        IRandom $rng,
-        UserAccessor $userAccessor
+        Request $request, TransactionService $transactionService, IRandom $rng, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -154,7 +152,7 @@ class PlayController
 
         if($payUp)
         {
-            $itemToPay = InventoryRepository::findOneToConsume($em, $player->getUser(), $action['item']);
+            $itemToPay = InventoryHelpers::findOneToConsume($em, $player->getUser(), $action['item']);
 
             if(!$itemToPay)
                 throw new PSPNotFoundException('You do not have a ' . $action['item'] . '...');
@@ -191,7 +189,7 @@ class PlayController
 
         if($payUp)
         {
-            $itemToPay = InventoryRepository::findOneToConsume($em, $player->getUser(), $action['item']);
+            $itemToPay = InventoryHelpers::findOneToConsume($em, $player->getUser(), $action['item']);
 
             if(!$itemToPay)
                 throw new PSPNotFoundException('You do not have a ' . $action['item'] . '...');

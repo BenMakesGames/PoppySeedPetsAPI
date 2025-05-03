@@ -20,17 +20,17 @@ use App\Enum\LocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPInvalidOperationException;
+use App\Functions\InventoryHelpers;
 use App\Functions\UserUnlockedFeatureHelpers;
-use App\Repository\InventoryRepository;
 use App\Service\BeehiveService;
 use App\Service\PetExperienceService;
 use App\Service\ResponseService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
 
 #[Route("/item")]
 class BeehiveBlueprintController
@@ -50,7 +50,7 @@ class BeehiveBlueprintController
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::Beehive))
             throw new PSPInvalidOperationException('You\'ve already got a Beehive!');
 
-        $magnifyingGlass = InventoryRepository::findAnyOneFromItemGroup($em, $user, 'Magnifying Glass', [
+        $magnifyingGlass = InventoryHelpers::findAnyOneFromItemGroup($em, $user, 'Magnifying Glass', [
             LocationEnum::HOME,
             LocationEnum::BASEMENT,
             LocationEnum::MANTLE,

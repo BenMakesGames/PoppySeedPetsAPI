@@ -25,18 +25,18 @@ use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ArrayFunctions;
 use App\Functions\InventoryModifierFunctions;
-use App\Repository\InventoryRepository;
+use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\MarketService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Service\UserAccessor;
 
 #[Route("/market")]
 class BuyController
@@ -46,7 +46,7 @@ class BuyController
     public function buy(
         Request $request, ResponseService $responseService, CacheItemPoolInterface $cache, EntityManagerInterface $em,
         IRandom $rng, TransactionService $transactionService, MarketService $marketService,
-        UserAccessor $userAccessor
+        InventoryService $inventoryService, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -60,7 +60,7 @@ class BuyController
         if(InventoryForSale::calculateBuyPrice($price) > $user->getMoneys())
             throw new PSPNotEnoughCurrencyException(InventoryForSale::calculateBuyPrice($price) . '~~m~~', $user->getMoneys() . '~~m~~');
 
-        $itemsAtHome = InventoryRepository::countItemsInLocation($em, $user, LocationEnum::HOME);
+        $itemsAtHome = $inventoryService->countItemsInLocation($user, LocationEnum::HOME);
 
         $placeItemsIn = LocationEnum::HOME;
 
@@ -69,7 +69,7 @@ class BuyController
             if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
                 throw new PSPInvalidOperationException('Your house has ' . $itemsAtHome . ' items; you\'ll need to make some space, first!');
 
-            $itemsInBasement = InventoryRepository::countItemsInLocation($em, $user, LocationEnum::BASEMENT);
+            $itemsInBasement = $inventoryService->countItemsInLocation($user, LocationEnum::BASEMENT);
 
             $dang = $rng->rngNextFromArray([
                 'Dang!',
@@ -150,18 +150,16 @@ class BuyController
 
             $em->remove($itemToBuy);
 
+            $marketService->updateLowestPriceForItem(
+                $inventory->getItem(),
+            );
+
             $em->flush();
         }
         finally
         {
             $cache->deleteItem('Trading For Sale #' . $itemToBuy->getId());
         }
-
-        $marketService->updateLowestPriceForItem(
-            $inventory->getItem(),
-        );
-
-        $em->flush();
 
         return $responseService->success($itemToBuy, [ SerializationGroupEnum::MY_INVENTORY ]);
     }

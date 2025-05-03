@@ -23,6 +23,7 @@ use App\Enum\MeritEnum;
 use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\RelationshipEnum;
 use App\Enum\SocialTimeWantEnum;
 use App\Enum\SpiritCompanionStarEnum;
 use App\Enum\StatusEffectEnum;
@@ -31,7 +32,6 @@ use App\Functions\GrammarFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\PetChanges;
-use App\Repository\PetRelationshipRepository;
 use App\Service\PetActivity\Holiday\AwaOdoriService;
 use App\Service\PetActivity\Holiday\HoliService;
 use App\Service\PetActivity\PregnancyService;
@@ -46,7 +46,6 @@ class PetSocialActivityService
         private readonly PetGroupService $petGroupService,
         private readonly PetExperienceService $petExperienceService,
         private readonly HoliService $holiService,
-        private readonly PetRelationshipRepository $petRelationshipRepository,
         private readonly PregnancyService $pregnancyService,
         private readonly AwaOdoriService $awaOdoriService
     )
@@ -141,7 +140,7 @@ class PetSocialActivityService
 
     public function recomputeFriendRatings(Pet $pet): void
     {
-        $friends = $this->petRelationshipRepository->getFriends($pet);
+        $friends = $this->getFriends($pet);
 
         if(count($friends) == 0)
             return;
@@ -158,9 +157,26 @@ class PetSocialActivityService
             $friend->setRating($interpolate($friend->getCommitment()));
     }
 
+    /**
+     * @return PetRelationship[]
+     */
+    public function getFriends(Pet $pet): array
+    {
+        $qb = $this->em->createQueryBuilder()
+            ->select('r')->from(PetRelationship::class, 'r')
+            ->leftJoin('r.relationship', 'friend')
+            ->andWhere('r.pet=:pet')
+            ->addOrderBy('r.commitment', 'DESC')
+            ->setMaxResults($pet->getMaximumFriends())
+            ->setParameter('pet', $pet)
+        ;
+
+        return $qb->getQuery()->execute();
+    }
+
     private function hangOutWithFriend(Pet $pet): bool
     {
-        $relationships = $this->petRelationshipRepository->getRelationshipsToHangOutWith($pet);
+        $relationships = $this->getRelationshipsToHangOutWith($pet);
 
         $spiritCompanionAvailable = $pet->hasMerit(MeritEnum::SPIRIT_COMPANION) && ($pet->getSpiritCompanion()->getLastHangOut() === null || $pet->getSpiritCompanion()->getLastHangOut() < (new \DateTimeImmutable())->modify('-12 hours'));
 
@@ -202,12 +218,31 @@ class PetSocialActivityService
         // hang out with selected pet
         $this->hangOutWithOtherPet($chosenRelationship, $friendRelationship);
 
-        $dislikedRelationships = $this->petRelationshipRepository->getDislikedRelationshipsWithCommitment($pet);
+        $dislikedRelationships = $this->getDislikedRelationshipsWithCommitment($pet);
 
         foreach($dislikedRelationships as $r)
             $r->increaseCommitment(-2);
 
         return true;
+    }
+
+    /**
+     * @return PetRelationship[]
+     */
+    public function getDislikedRelationshipsWithCommitment(Pet $pet): array
+    {
+        $qb = $this->em->getRepository(PetRelationship::class)
+            ->createQueryBuilder('r')
+            ->leftJoin('r.pet', 'pet')
+            ->leftJoin('r.relationship', 'friend')
+            ->andWhere('r.currentRelationship IN (:dislikedRelationshipTypes)')
+            ->andWhere('r.commitment>0')
+            ->andWhere('pet.id=:petId')
+            ->setParameter('petId', $pet->getId())
+            ->setParameter('dislikedRelationshipTypes', [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ])
+        ;
+
+        return $qb->getQuery()->execute();
     }
 
     /**
@@ -217,7 +252,7 @@ class PetSocialActivityService
     private function getFriendRelationships(Pet $pet, array $relationships): array
     {
         /** @var PetRelationship[] $friendRelationships */
-        $friendRelationships = $this->petRelationshipRepository->findBy([
+        $friendRelationships = $this->em->getRepository(PetRelationship::class)->findBy([
             'pet' => array_map(fn(PetRelationship $r) => $r->getRelationship(), $relationships),
             'relationship' => $pet
         ]);
@@ -620,5 +655,49 @@ class PetSocialActivityService
         }
 
         return $metNewPet;
+    }
+
+    /**
+     * @return PetRelationship[]
+     */
+    public function getRelationshipsToHangOutWith(Pet $pet): array
+    {
+        $maxFriendsToConsider = $pet->getMaximumFriends();
+
+        $qb = $this->em->getRepository(PetRelationship::class)
+            ->createQueryBuilder('r')
+            ->leftJoin('r.pet', 'pet')
+            ->leftJoin('r.relationship', 'friend')
+            ->leftJoin('friend.houseTime', 'friendHouseTime')
+            ->leftJoin('friend.statusEffects', 'friendStatusEffects')
+            ->andWhere('pet.id=:petId')
+            ->andWhere('friend.food + friend.alcohol + friend.junk > 0')
+            ->andWhere('r.currentRelationship NOT IN (:excludedRelationshipTypes)')
+            ->andWhere('friendHouseTime.socialEnergy >= :minimumFriendSocialEnergy')
+            ->addOrderBy('r.commitment', 'DESC')
+            ->setMaxResults($maxFriendsToConsider)
+            ->setParameter('petId', $pet->getId())
+            ->setParameter('excludedRelationshipTypes', [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ])
+            ->setParameter('minimumFriendSocialEnergy', (PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * 3) / 2)
+        ;
+
+        $friends = $qb->getQuery()->execute();
+
+        if($pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
+        {
+            // pets in Wereform only hang out with other pets in Wereform
+            $friends = array_values(array_filter($friends, function(PetRelationship $r) {
+                return $r->getRelationship()->hasStatusEffect(StatusEffectEnum::WEREFORM);
+            }));
+        }
+        else
+        {
+            // pets NOT in Wereform only hang out with other pets NOT in Wereform
+            $friends = array_values(array_filter($friends, function(PetRelationship $r) {
+                return !$r->getRelationship()->hasStatusEffect(StatusEffectEnum::WEREFORM);
+            }));
+        }
+
+        return $friends;
     }
 }

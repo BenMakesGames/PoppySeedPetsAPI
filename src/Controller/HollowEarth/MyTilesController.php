@@ -14,12 +14,13 @@ declare(strict_types=1);
 
 namespace App\Controller\HollowEarth;
 
+use App\Entity\Inventory;
 use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotUnlockedException;
-use App\Repository\InventoryRepository;
 use App\Service\ResponseService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -32,7 +33,7 @@ class MyTilesController
     #[Route("/myTiles", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getMyTiles(
-        InventoryRepository $inventoryRepository, ResponseService $responseService, Request $request,
+        EntityManagerInterface $em, ResponseService $responseService, Request $request,
         UserAccessor $userAccessor
     ): JsonResponse
     {
@@ -47,7 +48,8 @@ class MyTilesController
         if(count($types) === 0)
             throw new PSPFormValidationException('The types of tiles to look for were not specified.');
 
-        $tiles = $inventoryRepository->createQueryBuilder('i')
+        $tiles = $em->createQueryBuilder()
+            ->select('i')->from(Inventory::class, 'i')
             ->leftJoin('i.item', 'item')
             ->leftJoin('item.hollowEarthTileCard', 'tileCard')
             ->leftJoin('tileCard.type', 'type')

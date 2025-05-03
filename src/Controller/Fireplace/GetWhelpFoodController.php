@@ -12,12 +12,13 @@ declare(strict_types=1);
  */
 
 
-namespace App\Controller\Greenhouse;
+namespace App\Controller\Fireplace;
 
 use App\Entity\Inventory;
-use App\Enum\PlantTypeEnum;
+use App\Enum\LocationEnum;
 use App\Enum\SerializationGroupEnum;
-use App\Exceptions\PSPFormValidationException;
+use App\Exceptions\PSPNotUnlockedException;
+use App\Functions\DragonRepository;
 use App\Service\ResponseService;
 use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,37 +26,34 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route("/greenhouse")]
-class GetSeedsController
+#[Route("/fireplace")]
+class GetWhelpFoodController
 {
-    #[Route("/seeds/{type}", methods: ["GET"])]
+    #[Route("/whelpFood", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function getSeeds(
-        ResponseService $responseService, EntityManagerInterface $em, UserAccessor $userAccessor,
-        string $type = PlantTypeEnum::EARTH,
+    public function getWhelpFood(
+        ResponseService $responseService, EntityManagerInterface $em,
+        UserAccessor $userAccessor
     ): JsonResponse
     {
-        if(!PlantTypeEnum::isAValue($type))
-            throw new PSPFormValidationException('Must provide a valid seed type ("earth", "water", etc...)');
-
         $user = $userAccessor->getUserOrThrow();
 
-        $seeds = $em->createQueryBuilder()
-            ->select('i')->from(Inventory::class, 'i')
-            ->andWhere('i.owner=:owner')
-            ->andWhere('i.location IN (:consumableLocations)')
-            ->leftJoin('i.item', 'item')
-            ->leftJoin('item.plant', 'plant')
-            ->andWhere('item.plant IS NOT NULL')
-            ->andWhere('plant.type=:plantType')
+        $whelp = DragonRepository::findWhelp($em, $user);
+
+        if(!$whelp)
+            throw new PSPNotUnlockedException('Dragon Whelp');
+
+        $food = $em->getRepository(Inventory::class)->createQueryBuilder('i')
+            ->andWhere('i.owner=:user')->setParameter('user', $user->getId())
+            ->andWhere('i.location=:home')->setParameter('home', LocationEnum::HOME)
+            ->join('i.item', 'item')
+            ->join('item.food', 'food')
+            ->andWhere('(food.spicy > 0 OR food.meaty > 0 OR food.fishy > 0)')
             ->addOrderBy('item.name', 'ASC')
-            ->setParameter('owner', $user->getId())
-            ->setParameter('consumableLocations', Inventory::CONSUMABLE_LOCATIONS)
-            ->setParameter('plantType', $type)
             ->getQuery()
-            ->getResult()
+            ->execute()
         ;
 
-        return $responseService->success($seeds, [ SerializationGroupEnum::MY_SEEDS ]);
+        return $responseService->success($food, [ SerializationGroupEnum::MY_INVENTORY ]);
     }
 }

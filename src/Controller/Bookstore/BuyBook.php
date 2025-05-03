@@ -21,17 +21,16 @@ use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotEnoughCurrencyException;
 use App\Exceptions\PSPNotUnlockedException;
-use App\Repository\InventoryRepository;
 use App\Service\BookstoreService;
 use App\Service\InventoryService;
 use App\Service\ResponseService;
 use App\Service\TransactionService;
+use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-use App\Service\UserAccessor;
 // allows player to buy books; inventory grows based on various criteria
 
 #[Route("/bookstore")]
@@ -41,8 +40,7 @@ class BuyBook
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function buyBook(
         Item $item, BookstoreService $bookstoreService, InventoryService $inventoryService, EntityManagerInterface $em,
-        ResponseService $responseService, TransactionService $transactionService,
-        UserAccessor $userAccessor
+        ResponseService $responseService, TransactionService $transactionService, UserAccessor $userAccessor
     ): JsonResponse
     {
         $user = $userAccessor->getUserOrThrow();
@@ -62,7 +60,7 @@ class BuyBook
         if($user->getMoneys() < $allPrices[$item->getName()])
             throw new PSPNotEnoughCurrencyException($allPrices[$item->getName()] . '~~m~~', $user->getMoneys() . '~~m~~');
 
-        $itemsAtHome = InventoryRepository::countItemsInLocation($em, $user, LocationEnum::HOME);
+        $itemsAtHome = $inventoryService->countItemsInLocation($user, LocationEnum::HOME);
 
         if($itemsAtHome >= User::MAX_HOUSE_INVENTORY)
             throw new PSPFormValidationException('Your house is already overflowing with items! (The usual max is ' . User::MAX_HOUSE_INVENTORY . ' items - you\'ve got ' . $itemsAtHome . '!)');
