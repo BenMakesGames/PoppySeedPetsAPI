@@ -38,6 +38,9 @@ class FieldGuideEntry
     #[ORM\Column(type: 'text')]
     private $description;
 
+    #[ORM\Column(nullable: true)]
+    private ?array $actionRequirements = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +93,18 @@ class FieldGuideEntry
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getActionRequirements(): ?array
+    {
+        return $this->actionRequirements;
+    }
+
+    public function setActionRequirements(?array $actionRequirements): static
+    {
+        $this->actionRequirements = $actionRequirements;
 
         return $this;
     }

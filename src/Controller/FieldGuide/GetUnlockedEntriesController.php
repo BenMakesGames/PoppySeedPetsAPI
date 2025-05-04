@@ -41,14 +41,14 @@ class GetUnlockedEntriesController
 
         $entries = SimpleDb::createReadOnlyConnection()
             ->query(
-                'SELECT ue.discovered_on,ue.comment,e.type,e.name,e.image,e.description
+                'SELECT ue.discovered_on,ue.comment,e.type,e.name,e.image,e.description,e.action_requirements
                 FROM user_field_guide_entry AS ue
                 INNER JOIN field_guide_entry AS e ON e.id = ue.entry_id
                 WHERE ue.user_id = ?
                 ORDER BY e.name ASC',
                 [ $user->getId() ]
             )
-            ->mapResults(fn($discoveredOn, $comment, $type, $name, $image, $description) =>
+            ->mapResults(fn($discoveredOn, $comment, $type, $name, $image, $description, $actionRequirements) =>
                 [
                     'discoveredOn' => $discoveredOn,
                     'comment' => $commentFormatter->format($comment),
@@ -57,6 +57,7 @@ class GetUnlockedEntriesController
                         'name' => $name,
                         'image' => $image,
                         'description' => $description,
+                        'actionRequirements' => $actionRequirements === null ? null : \json_decode($actionRequirements, flags: JSON_THROW_ON_ERROR),
                     ]
                 ]
             );
