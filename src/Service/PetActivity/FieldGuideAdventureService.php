@@ -33,7 +33,7 @@ class FieldGuideAdventureService
     /**
      * @param ComputedPetSkills[] $petsWithSkills
      */
-    public function adventure(UserFieldGuideEntry $fieldGuideEntry, array $petsWithSkills): AdventureResults
+    public function adventure(UserFieldGuideEntry $fieldGuideEntry, array $petsWithSkills): FieldGuideAdventureResults
     {
         $handler = $this->container->get(match($fieldGuideEntry->getEntry()->getName())
         {
