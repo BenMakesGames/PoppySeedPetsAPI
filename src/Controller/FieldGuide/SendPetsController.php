@@ -98,6 +98,9 @@ class SendPetsController
      */
     private static function petMeetsRequirements(ComputedPetSkills $petWithSkills, array $keyItems, array $requirements): bool
     {
+        if($petWithSkills->getPet()->getHouseTime()->getActionPoints() < 1)
+            return false;
+
         foreach($requirements as $requirement)
         {
             switch($requirement)
