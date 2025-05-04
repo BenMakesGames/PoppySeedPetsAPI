@@ -23,10 +23,13 @@ use App\Enum\MeritEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Model\ComputedPetSkills;
+use App\Service\PetActivity\FieldGuide\CosmicGoat;
+use App\Service\PetActivity\FieldGuideAdventureService;
 use App\Service\ResponseService;
 use App\Service\UserAccessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Exclude;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -40,11 +43,13 @@ class SendPetsController
     public function sendPets(
         #[MapQueryString] SendPetsRequest $request,
 
-        UserAccessor $userAccessor, EntityManagerInterface $em, ResponseService $responseService
+        UserAccessor $userAccessor, EntityManagerInterface $em, ResponseService $responseService,
+        FieldGuideAdventureService $fieldGuideAdventureService,
     )
     {
         $user = $userAccessor->getUserOrThrow();
 
+        /** @var UserFieldGuideEntry $fieldGuideEntry */
         $fieldGuideEntry = $em->getRepository(UserFieldGuideEntry::class)
             ->createQueryBuilder('e')
             ->join(FieldGuideEntry::class, 'f')
@@ -75,7 +80,7 @@ class SendPetsController
             ->select('DISTINCT(item.name)')
             ->join(Item::class, 'item')
             ->andWhere('inventory.owner=:user')
-            ->andwhere('inventory.location=:location')
+            ->andWhere('inventory.location=:location')
             ->andWhere('item.name IN (:items)')
             ->setParameter('user', $user->getId())
             ->setParameter('location', LocationEnum::HOME)
@@ -89,13 +94,18 @@ class SendPetsController
         if(!array_all($selectedPets, fn(ComputedPetSkills $pet) => self::petMeetsRequirements($pet, $keyItems, $requirements)))
             throw new PSPFormValidationException('Some pets do not meet the requirements.');
 
-        // TODO: the adventure!
-        // spend the AP & do the adventure
-        // mind the pet logs, and PetChanges!
+        $results = $fieldGuideAdventureService->adventure($fieldGuideEntry, $selectedPets);
 
         return $responseService->success([
-            'message' => '', // TODO: summary of the adventure?
-            'loot' => [], // TODO: list of items, to show the player
+            'message' => $results->message,
+            'loot' => array_map(
+                fn(Inventory $i) => [
+                    'id' => $i->getItem()->getId(),
+                    'name' => $i->getItem()->getName(),
+                    'image' => $i->getItem()->getImage(),
+                ],
+                $results->loot
+            )
         ]);
     }
 

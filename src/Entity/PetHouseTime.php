@@ -153,9 +153,9 @@ class PetHouseTime
         return $this->actionPointsSpent;
     }
 
-    public function setActionPointsSpent(int $actionPointsSpent): static
+    public function increaseActionPointsSpent(int $amount): static
     {
-        $this->actionPointsSpent = $actionPointsSpent;
+        $this->actionPointsSpent += $amount;
 
         return $this;
     }
