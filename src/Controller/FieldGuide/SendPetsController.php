@@ -20,6 +20,7 @@ use App\Entity\Pet;
 use App\Entity\UserFieldGuideEntry;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
+use App\Enum\PetLocationEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Model\ComputedPetSkills;
@@ -69,6 +70,7 @@ class SendPetsController
             $em->getRepository(Pet::class)->findBy([
                 'id' => $request->petIds,
                 'owner' => $user,
+                'location' => PetLocationEnum::HOME,
             ])
         );
 
