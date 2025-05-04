@@ -4,7 +4,7 @@ This is the Poppy Seed Pets API (server code). It is available under the [GPL 3.
 
 More info about this project can be found in the `docs/` directory:
 
-* [How to Contribute](docs/How%20to%20Contribute.md)
+* [How to Contribute](docs/how%20to/How%20to%20Contribute.md)
 * [Installing and Running](docs/Installing%20and%20Running.md)
 * [TODO](docs/TODO.md)
 * [Architecture Decisions](docs/Architecture%20Decisions.md)

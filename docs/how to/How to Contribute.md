@@ -12,7 +12,7 @@ Please don't be personally offended if I take a long time to review your changes
 
 Refer to the following for some of the guiding principles behind Poppy Seed Pets development:
 * [Design Goals](https://poppyseedpets.com/poppyopedia/designGoal) (on poppyseedpets.com)
-* [Architecture Decisions](Architecture%20Decisions.md)
+* [Architecture Decisions](../Architecture%20Decisions.md)
 
 ## The super-simple way, for super-simple changes
 
@@ -47,6 +47,6 @@ Depending on how deep you're going, you might also need to be familiar with:
 * Apache
 
 Refer to:
-1. [Installing and Running](Installing%20and%20Running.md) for information on how to run Poppy Seed Pets locally
+1. [Installing and Running](../Installing%20and%20Running.md) for information on how to run Poppy Seed Pets locally
 2. [Fork a repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) (on GitHub Docs)
 3. [Creating a pull request from a fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) (on GitHub Docs)
