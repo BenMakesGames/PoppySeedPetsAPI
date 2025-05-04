@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace App\Controller\FieldGuide;
 
+use App\Entity\FieldGuideEntry;
 use App\Entity\Inventory;
 use App\Entity\Item;
 use App\Entity\Pet;
-use App\Entity\User;
 use App\Entity\UserFieldGuideEntry;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
@@ -46,7 +46,14 @@ class SendPetsController
         $user = $userAccessor->getUserOrThrow();
 
         $fieldGuideEntry = $em->getRepository(UserFieldGuideEntry::class)
-            ->findOneBy([ 'id' => $request->entryId, 'user' => $user ])
+            ->createQueryBuilder('e')
+            ->join(FieldGuideEntry::class, 'f')
+            ->andWhere('e.user = :user')
+            ->andWhere('f.name = :entryName')
+            ->setParameter('user', $user->getId())
+            ->setParameter('entryName', $request->entry)
+            ->getQuery()
+            ->getOneOrNullResult()
             ?? throw new PSPNotFoundException('Field Guide entry not found.');
 
         $requirements = $fieldGuideEntry->getEntry()->getActionRequirements()
@@ -155,5 +162,5 @@ final class SendPetsRequest
     #[Assert\Count(min: 1, max: 3)]
     public array $petIds = [];
 
-    public int $entryId = 0;
+    public string $entry;
 }
