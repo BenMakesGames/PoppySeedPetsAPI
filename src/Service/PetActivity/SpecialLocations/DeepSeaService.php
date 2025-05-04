@@ -115,7 +115,7 @@ class DeepSeaService
 
     private function failedToUseSubmarine(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::FISH, false);
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to get the Submarine started, but forgot one of the steps, causing the whole thing to freak out and shut down :|', 'icons/activity-logs/confused')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine' ]))
@@ -128,7 +128,7 @@ class DeepSeaService
 
     private function foundAlgae(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::FISH, true);
 
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% took the Submarine out to sea, but didn\'t really get anywhere... some Algae got stuck to the hull, though, so there\'s that!', 'items/tool/submarine')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine' ]))
@@ -148,7 +148,7 @@ class DeepSeaService
 
         if($roll >= 10)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::FISH, true);
 
             if($this->rng->rngNextInt(1, 100) === 1)
             {
@@ -179,7 +179,7 @@ class DeepSeaService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the shelf sea using the Submarine. (Pretty!)', 'items/tool/submarine')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fishing' ]))
@@ -200,7 +200,7 @@ class DeepSeaService
 
         if($roll >= 12)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::FISH, true);
 
             if($this->rng->rngNextInt(1, 200) === 1)
             {
@@ -228,7 +228,7 @@ class DeepSeaService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the shelf sea using the Submarine. A smack of jellyfish swam by; ' . $pet->getName() . ' watched in wonder...', 'items/tool/submarine')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fishing' ]))
@@ -249,7 +249,7 @@ class DeepSeaService
 
         if($roll >= 13)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::FISH, true);
 
             $loot = $this->rng->rngNextFromArray([
                 'Crown Coral',
@@ -271,7 +271,7 @@ class DeepSeaService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::FISH, false);
 
             if($this->rng->rngNextInt(1, 2) === 1)
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started exploring the Coral Reef using the Submarine, but was chased off by some Hammerheads...', '');
@@ -295,7 +295,7 @@ class DeepSeaService
 
         if($petWithSkills->getCanSeeInTheDark()->getTotal() <= 0)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::FISH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine, but it was too dark to see anything...', 'icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fishing', 'Dark' ]))
@@ -303,7 +303,7 @@ class DeepSeaService
         }
         else if($roll >= 14)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::FISH, true);
 
             if($this->rng->rngNextInt(1, 10) === 1)
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% used the Submarine (and their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ') and found a hexactinellid deep in the ocean... and took some of its Glass. (Rude?!)', 'items/tool/submarine');
@@ -321,7 +321,7 @@ class DeepSeaService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine (and their ' . ActivityHelpers::SourceOfLight($petWithSkills) . '), but didn\'t find anything...', 'icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fishing', 'Dark' ]))
@@ -343,7 +343,7 @@ class DeepSeaService
 
         if($roll >= 16)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::FISH, true);
 
             $tentacles = 2;
 
@@ -374,7 +374,7 @@ class DeepSeaService
         }
         else if($pet->isInGuild(GuildEnum::HIGH_IMPACT))
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::FISH, false);
 
             $pet->increaseSafety(-$this->rng->rngNextInt(2, 4));
 
@@ -386,7 +386,7 @@ class DeepSeaService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Giant Squid while exploring the deep sea! They got away as quickly as they could!', '')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fighting' ]))
@@ -400,7 +400,7 @@ class DeepSeaService
 
     private function meetFriendlyWhale(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::FISH, true);
 
         $activityLog = $this->responseService->createActivityLog($pet, 'While exploring the deep sea, %pet:' . $pet->getId() . '.name% watched a pod of whales go by! ' . $pet->getName() . ' swam and sang along with them for a while...', 'items/tool/submarine')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
@@ -426,7 +426,7 @@ class DeepSeaService
 
         if($petWithSkills->getCanSeeInTheDark()->getTotal() <= 0)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::FISH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::FISH, false);
 
             return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine, but it was too dark to see anything...', 'icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Gathering', 'Dark' ]))
@@ -437,7 +437,7 @@ class DeepSeaService
 
         if($roll >= 17)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::FISH, true);
 
             $loot = [
                 $this->rng->rngNextFromArray([ 'Liquid-hot Magma', 'Glass', 'Silica Grounds' ]),
@@ -455,7 +455,7 @@ class DeepSeaService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine (and their ' . ActivityHelpers::SourceOfLight($petWithSkills) . '), and found a submarine volcano! They had to resurface before they could collect anything, though.', 'icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Gathering', 'Dark' ]))
@@ -496,7 +496,7 @@ class DeepSeaService
 
         if($roll >= 18)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::FISH, true);
 
             $lucky = $pet->hasMerit(MeritEnum::LUCKY) && $this->rng->rngNextInt(1, 50) === 1;
 
@@ -569,7 +569,7 @@ class DeepSeaService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::FISH, false);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started exploring a coral reef using the Submarine, but was chased off by some sharks...', '')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Gathering' ]))

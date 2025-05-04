@@ -116,7 +116,7 @@ class JumpRopeService
 
         $this->doBreakCheck($petWithSkills, 5, $log);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $log);
 
         return $log;
@@ -139,7 +139,7 @@ class JumpRopeService
 
         $this->doBreakCheck($petWithSkills, 7, $log);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $log);
 
         return $log;
@@ -172,7 +172,7 @@ class JumpRopeService
 
         $this->doBreakCheck($petWithSkills, 9, $log);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $log);
 
         return $log;
@@ -207,7 +207,7 @@ class JumpRopeService
 
         $this->doBreakCheck($petWithSkills, 13, $log);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL, PetSkillEnum::CRAFTS ], $log);
 
         return $log;
@@ -234,7 +234,7 @@ class JumpRopeService
 
         $this->doBreakCheck($petWithSkills, 15, $log);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $log);
 
         return $log;
@@ -271,7 +271,7 @@ class JumpRopeService
 
         $this->doBreakCheck($petWithSkills, 17, $log);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL, PetSkillEnum::SCIENCE ], $log);
 
         return $log;
@@ -298,7 +298,7 @@ class JumpRopeService
 
         $this->doBreakCheck($petWithSkills, 20, $log);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
         $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL, PetSkillEnum::SCIENCE ], $log);
 
         return $log;
@@ -324,7 +324,7 @@ class JumpRopeService
 
         $this->doBreakCheck($petWithSkills, 23, $log);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
         $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL, PetSkillEnum::SCIENCE ], $log);
 
         return $log;
@@ -349,7 +349,7 @@ class JumpRopeService
 
         $this->doBreakCheck($petWithSkills, 26, $log);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
         $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::BRAWL, PetSkillEnum::STEALTH, PetSkillEnum::ARCANA ], $log);
 
         return $log;
@@ -375,7 +375,7 @@ class JumpRopeService
 
         $this->doBreakCheck($petWithSkills, 30, $log);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
         $this->petExperienceService->gainExp($pet, 5, [ PetSkillEnum::BRAWL, PetSkillEnum::SCIENCE ], $log);
 
         return $log;

@@ -106,7 +106,7 @@ class HouseService
         /** @var Pet[] $petsWithTime */
         // array_filter preserves keys, so we use array_values to reset them, because PHP...
         $petsWithTime = array_values(array_filter($petsAtHome, fn(Pet $pet) =>
-            $pet->getHouseTime()->getActivityTime() >= 60 ||
+            $pet->getHouseTime()->getActivityTime() >= 120 ||
             (
                 $pet->getHouseTime()->getSocialEnergy() >= PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT &&
                 $pet->getHouseTime()->getCanAttemptSocialHangoutAfter() < $now
@@ -145,7 +145,7 @@ class HouseService
 
         foreach($petsWithTime as $pet)
         {
-            if($pet->getHouseTime()->getActivityTime() >= 60)
+            if($pet->getHouseTime()->getActivityTime() >= 120)
             {
                 $time = microtime(true);
                 $this->petActivityService->runHour($pet);
@@ -194,10 +194,10 @@ class HouseService
         if(!$pet->isAtHome())
             return false;
 
-        if($pet->getHouseTime()->getActivityTime() < 60 && $pet->getHouseTime()->getSocialEnergy() < PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
+        if($pet->getHouseTime()->getActivityTime() < 120 && $pet->getHouseTime()->getSocialEnergy() < PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT)
             return false;
 
-        if($pet->getHouseTime()->getActivityTime() < 60 && !$hungOut)
+        if($pet->getHouseTime()->getActivityTime() < 120 && !$hungOut)
             return false;
 
         return true;

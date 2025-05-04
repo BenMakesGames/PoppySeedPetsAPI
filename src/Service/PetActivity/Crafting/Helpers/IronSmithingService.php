@@ -58,7 +58,7 @@ class IronSmithingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::SMITH, false);
         }
         else if($roll >= 25)
         {
@@ -78,7 +78,7 @@ class IronSmithingService
             $this->inventoryService->petCollectsItem('Meat-seeking Claymore', $pet, $pet->getName() . ' created this from ' . $article . ' Laser-guided Sword!', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::SMITH, true);
         }
         else
         {
@@ -87,7 +87,7 @@ class IronSmithingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::SMITH, false);
         }
 
         return $activityLog;
@@ -107,11 +107,11 @@ class IronSmithingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::SMITH, false);
         }
         else if($roll >= 12)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::SMITH, true);
             $this->houseSimService->getState()->loseItem('Iron Bar', 1);
 
             $keys = $roll >= 27 ? 2 : 1;
@@ -138,7 +138,7 @@ class IronSmithingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::SMITH, false);
         }
 
         return $activityLog;
@@ -167,11 +167,11 @@ class IronSmithingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::SMITH, false);
         }
         else if($roll >= $making['difficulty'] + 10)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::SMITH, true);
             $this->houseSimService->getState()->loseItem('Iron Bar', 1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged ' . $making['description'] . ' from an Iron Bar with enough left over to make a Nail File, as well!.', $making['image'])
@@ -187,7 +187,7 @@ class IronSmithingService
         }
         else if($roll >= $making['difficulty'])
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::SMITH, true);
             $this->houseSimService->getState()->loseItem('Iron Bar', 1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged ' . $making['description'] . ' from an Iron Bar.', $making['image'])
@@ -207,7 +207,7 @@ class IronSmithingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::SMITH, false);
         }
 
         return $activityLog;
@@ -234,7 +234,7 @@ class IronSmithingService
             $this->inventoryService->petCollectsItem('Water Strider', $pet, $pet->getName() . ' created this from a simple Bug-catcher\'s Net.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::SMITH, true);
         }
         else
         {
@@ -253,7 +253,7 @@ class IronSmithingService
             }
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::SMITH, false);
         }
 
         return $activityLog;
@@ -266,7 +266,7 @@ class IronSmithingService
 
         if($roll >= 13)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::SMITH, true);
             $this->houseSimService->getState()->loseItem('Iron Bar', 1);
             $this->houseSimService->getState()->loseItem('Plastic', 1);
             $this->houseSimService->getState()->loseItem('Yellow Dye', 1);
@@ -312,7 +312,7 @@ class IronSmithingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::SMITH, false);
 
             return $activityLog;
         }
@@ -325,7 +325,7 @@ class IronSmithingService
 
         if($roll >= 13)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::SMITH, true);
             $this->houseSimService->getState()->loseItem('Iron Bar', 1);
             $this->houseSimService->getState()->loseItem('Plastic', 1);
             $this->houseSimService->getState()->loseItem('Green Dye', 1);
@@ -371,7 +371,7 @@ class IronSmithingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::SMITH, false);
 
             return $activityLog;
         }
@@ -384,7 +384,7 @@ class IronSmithingService
 
         if($roll >= 10)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::SMITH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::SMITH, true);
 
             $this->houseSimService->getState()->loseItem('Iron Bar', 1);
             $this->houseSimService->getState()->loseItem('Plastic', 1);
@@ -422,7 +422,7 @@ class IronSmithingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::SMITH, false);
         }
 
         return $activityLog;
@@ -440,7 +440,7 @@ class IronSmithingService
 
         if($roll >= 13)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::SMITH, true);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $this->houseSimService->getState()->loseItem('Iron Bar', 1);
 
@@ -499,7 +499,7 @@ class IronSmithingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::SMITH, false);
         }
 
         return $activityLog;
@@ -512,7 +512,7 @@ class IronSmithingService
 
         if($roll >= 15)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::SMITH, true);
             $this->houseSimService->getState()->loseItem('String', 1);
             $this->houseSimService->getState()->loseItem('Iron Bar', 1);
 
@@ -548,7 +548,7 @@ class IronSmithingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::SMITH, false);
         }
 
         return $activityLog;
@@ -566,7 +566,7 @@ class IronSmithingService
 
         if($petWithSkills->getStrength()->getTotal() < 3)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 90), PetActivityStatEnum::SMITH, false);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% wanted to make ' . $makes->getNameWithArticle() . ', but they aren\'t strong enough... (The Dark Matter is WAY too heavy!)', '')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
             ;
@@ -584,7 +584,7 @@ class IronSmithingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::SMITH, false);
         }
         else if($roll <= 17)
         {
@@ -593,7 +593,7 @@ class IronSmithingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::SMITH, false);
         }
         else
         {
@@ -609,7 +609,7 @@ class IronSmithingService
             $this->inventoryService->petCollectsItem($makes, $pet, $pet->getName() . ' created this from an Iron Bar and some Dark Matter!', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::SMITH, true);
         }
 
         return $activityLog;
@@ -628,7 +628,7 @@ class IronSmithingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::SMITH, false);
         }
         else if($roll >= 15)
         {
@@ -643,7 +643,7 @@ class IronSmithingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::SMITH, true);
 
             $this->inventoryService->petCollectsItem('Mirror Shield', $pet, $pet->getName() . ' created this from Iron Bar, and a Mirror.', $activityLog);
         }
@@ -654,7 +654,7 @@ class IronSmithingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::SMITH, false);
         }
 
         return $activityLog;
@@ -680,7 +680,7 @@ class IronSmithingService
             $this->inventoryService->petCollectsItem('Mushketeer', $pet, $pet->getName() . ' created this from Iron Bar, and a Toadstool.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::SMITH, true);
         }
         else
         {
@@ -689,7 +689,7 @@ class IronSmithingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::SMITH, false);
         }
 
         return $activityLog;
@@ -716,7 +716,7 @@ class IronSmithingService
             $this->inventoryService->petCollectsItem('Snailppling Hook', $pet, $pet->getName() . ' created by spring-loading a Grappling Hook inside a Snail Shell.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::SMITH, true);
         }
         else
         {
@@ -726,7 +726,7 @@ class IronSmithingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::SMITH, false);
         }
 
         return $activityLog;

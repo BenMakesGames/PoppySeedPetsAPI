@@ -54,7 +54,7 @@ class CoinSmithingService
         ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::SMITH, false);
 
         return $activityLog;
     }
@@ -74,7 +74,7 @@ class CoinSmithingService
         ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(75, 90), PetActivityStatEnum::SMITH, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(150, 180), PetActivityStatEnum::SMITH, true);
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::MINTED_MONEYS, $activityLog);
 
@@ -96,7 +96,7 @@ class CoinSmithingService
         ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(75, 90), PetActivityStatEnum::SMITH, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(150, 180), PetActivityStatEnum::SMITH, true);
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::MINTED_MONEYS, $activityLog);
 

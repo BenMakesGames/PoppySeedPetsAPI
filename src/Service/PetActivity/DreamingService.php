@@ -148,7 +148,7 @@ class DreamingService
 
         $this->inventoryService->receiveItem($itemName, $pet->getOwner(), $pet->getOwner(), $itemDescription, LocationEnum::HOME);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
 
         $log = $this->responseService->createActivityLog($pet, $eventDescription, '')
             ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)

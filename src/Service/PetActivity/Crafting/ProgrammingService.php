@@ -186,7 +186,7 @@ class ProgrammingService
 
         if($roll <= 2)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
             $this->houseSimService->getState()->loseItem('Pointer', 1);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to dereference a String from a Pointer, but encountered a null exception :(', 'icons/activity-logs/null')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
@@ -196,7 +196,7 @@ class ProgrammingService
         }
         else if($roll >= 10)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Pointer', 1);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% dereferenced a String from a Pointer.', 'items/resource/string')
@@ -213,7 +213,7 @@ class ProgrammingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
         }
 
         return $activityLog;
@@ -226,7 +226,7 @@ class ProgrammingService
 
         if($roll >= 14)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Pointer', 1);
             $this->houseSimService->getState()->loseItem('Finite State Machine', 1);
             $pet->increaseEsteem(1);
@@ -244,7 +244,7 @@ class ProgrammingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
         }
 
         return $activityLog;
@@ -262,14 +262,14 @@ class ProgrammingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
 
             return $activityLog;
         }
         else if($roll >= 16)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Pointer', 1);
             $this->houseSimService->getState()->loseItem('Wings', 1);
             $this->houseSimService->getState()->loseItem('Quinacridone Magenta Dye', 1);
@@ -287,7 +287,7 @@ class ProgrammingService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to program a Dragondrop, but the Wings kept shaking the dye off...', 'icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
             return $activityLog;
         }
@@ -306,14 +306,14 @@ class ProgrammingService
             ;
             $this->inventoryService->petCollectsItem('Pointer', $pet, $pet->getName() . ' accidentally de-allocated a String; all that remains is this Pointer.', $activityLog);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
 
             return $activityLog;
         }
         else if($roll >= 16)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Hash Table', 1);
             $this->houseSimService->getState()->loseItem('Finite State Machine', 1);
             $this->houseSimService->getState()->loseItem('String', 1);
@@ -332,7 +332,7 @@ class ProgrammingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
         }
         return $activityLog;
     }
@@ -344,7 +344,7 @@ class ProgrammingService
 
         if($roll >= 16)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Hash Table', 1);
             $this->houseSimService->getState()->loseItem('Elvish Magnifying Glass', 1);
             $pet->increaseEsteem(1);
@@ -362,7 +362,7 @@ class ProgrammingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
         }
         return $activityLog;
     }
@@ -383,7 +383,7 @@ class ProgrammingService
             {
                 $whereFound = $this->getDescriptionOfRummageLocation();
 
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::PROGRAM, true);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::PROGRAM, true);
                 $this->houseSimService->getState()->loseItem('Hash Table', 1);
                 $this->houseSimService->getState()->loseItem('Ruler', 1);
                 $pet->increaseEsteem(3);
@@ -399,7 +399,7 @@ class ProgrammingService
             }
             else
             {
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, true);
                 $this->houseSimService->getState()->loseItem('Hash Table', 1);
                 $this->houseSimService->getState()->loseItem('Ruler', 1);
                 $pet->increaseEsteem(1);
@@ -424,7 +424,7 @@ class ProgrammingService
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, false);
 
                 return $activityLog;
             }
@@ -447,7 +447,7 @@ class ProgrammingService
             {
                 $whereFound = $this->getDescriptionOfRummageLocation();
 
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::PROGRAM, true);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::PROGRAM, true);
                 $this->houseSimService->getState()->loseItem('Regex', 1);
                 $this->houseSimService->getState()->loseItem('Hash Table', 1);
                 $pet->increaseEsteem(3);
@@ -462,7 +462,7 @@ class ProgrammingService
             }
             else
             {
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, true);
                 $this->houseSimService->getState()->loseItem('Regex', 1);
                 $this->houseSimService->getState()->loseItem('Hash Table', 1);
                 $pet->increaseEsteem(1);
@@ -487,7 +487,7 @@ class ProgrammingService
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, false);
 
                 return $activityLog;
             }
@@ -510,7 +510,7 @@ class ProgrammingService
             {
                 $whereFound = $this->getDescriptionOfRummageLocation();
 
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::PROGRAM, true);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::PROGRAM, true);
                 $this->houseSimService->getState()->loseItem('Imaginary Number', 1);
                 $this->houseSimService->getState()->loseItem('Painted Boomerang', 1);
                 $pet->increaseEsteem(5);
@@ -525,7 +525,7 @@ class ProgrammingService
             }
             else
             {
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, true);
                 $this->houseSimService->getState()->loseItem('Imaginary Number', 1);
                 $this->houseSimService->getState()->loseItem('Painted Boomerang', 1);
                 $pet->increaseEsteem(3);
@@ -549,7 +549,7 @@ class ProgrammingService
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
                 ;
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
 
                 return $activityLog;
             }
@@ -576,7 +576,7 @@ class ProgrammingService
 
         if($this->rng->rngNextInt(1, 50) == 1 || $isLucky)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::PROGRAM, false);
             $activityLog = $this->responseService->createActivityLog($pet, $impDiscovery . ' %pet:' . $pet->getId() . '.name% was able to subdue the creature, and tossed it in to your daycare!', 'icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming', PetActivityLogTagEnum::Physics, 'Fighting' ]))
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
@@ -599,7 +599,7 @@ class ProgrammingService
         {
             if($scienceRoll >= 20)
             {
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, false);
                 $activityLog = $this->responseService->createActivityLog($pet, $impDiscovery . ' During the fight, %pet:' . $pet->getId() . '.name% exploited a divergence in the imp\'s construction, and unraveled it, receiving ' . $loot . '!', 'icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming', PetActivityLogTagEnum::Physics ]))
                 ;
@@ -612,7 +612,7 @@ class ProgrammingService
         {
             if($brawlRoll >= 20)
             {
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, false);
                 $activityLog = $this->responseService->createActivityLog($pet, $impDiscovery . ' %pet:' . $pet->getId() . '.name% slew the creature outright, and claimed its ' . $loot . '!', 'icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming', 'Fighting' ]))
                 ;
@@ -627,7 +627,7 @@ class ProgrammingService
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::WRANGLED_WITH_INFINITIES, $activityLog);
 
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, false);
 
         return $activityLog;
     }
@@ -702,7 +702,7 @@ class ProgrammingService
 
         if($roll >= 14)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Regex', 1);
             $this->houseSimService->getState()->loseItem('Password', 1);
             $pet->increaseEsteem(1);
@@ -720,7 +720,7 @@ class ProgrammingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
         }
 
         return $activityLog;
@@ -733,7 +733,7 @@ class ProgrammingService
 
         if($roll >= 17)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Brute Force', 1);
             $this->houseSimService->getState()->loseItem('XOR', 1);
             $this->houseSimService->getState()->loseItem('Gold Bar', 1);
@@ -769,7 +769,7 @@ class ProgrammingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
         }
 
         return $activityLog;
@@ -782,7 +782,7 @@ class ProgrammingService
 
         if($roll >= 19)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Brute Force', 1);
             $this->houseSimService->getState()->loseItem('Lightning in a Bottle', 1);
             $this->houseSimService->getState()->loseItem('Paper', 1);
@@ -802,7 +802,7 @@ class ProgrammingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
         }
 
         return $activityLog;
@@ -815,7 +815,7 @@ class ProgrammingService
 
         if($roll >= 16)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Plastic Fishing Rod', 1);
             $this->houseSimService->getState()->loseItem('Pointer', 1);
             $this->houseSimService->getState()->loseItem('NUL', 1);
@@ -834,7 +834,7 @@ class ProgrammingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
         }
 
         return $activityLog;
@@ -847,7 +847,7 @@ class ProgrammingService
 
         if($roll >= 13)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Gold Key', 1);
             $this->houseSimService->getState()->loseItem('Pointer', 1);
             $this->houseSimService->getState()->loseItem('NUL', 1);
@@ -866,7 +866,7 @@ class ProgrammingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
         }
 
         return $activityLog;
@@ -879,7 +879,7 @@ class ProgrammingService
 
         if($roll <= 2)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
 
             $this->houseSimService->getState()->loseItem('Weird Beetle', 1);
             $pet->increaseEsteem(-$this->rng->rngNextInt(4, 8));
@@ -890,7 +890,7 @@ class ProgrammingService
         }
         else if($roll >= 24)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Lightning in a Bottle', 1);
             $this->houseSimService->getState()->loseItem('Weird Beetle', 1);
             $pet->increaseEsteem(3);
@@ -910,7 +910,7 @@ class ProgrammingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
         }
 
         return $activityLog;
@@ -923,7 +923,7 @@ class ProgrammingService
 
         if($roll >= 16)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Macintosh', 1);
 
             $loot = [
@@ -949,7 +949,7 @@ class ProgrammingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
         }
 
         return $activityLog;

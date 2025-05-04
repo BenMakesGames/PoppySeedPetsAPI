@@ -36,7 +36,7 @@ class PetHouseTime
 
     #[ORM\Column(type: 'integer')]
     #[Groups(['myPet'])]
-    private int $activityTime = 59;
+    private int $activityTime = 119;
 
     #[ORM\Column(type: 'integer')]
     private int $socialEnergy = 0;
@@ -46,6 +46,12 @@ class PetHouseTime
 
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $canAttemptSocialHangoutAfter;
+
+    #[ORM\Column]
+    private int $actionPointMinutes = 0;
+
+    #[ORM\Column]
+    private int $actionPointsSpent = 0;
 
     public function __construct(Pet $pet)
     {
@@ -82,6 +88,7 @@ class PetHouseTime
         return $this;
     }
 
+    /** @deprecated Do not call this method; it should only be called by PetExperienceService */
     public function spendActivityTime(int $amount): self
     {
         $this->activityTime -= $amount;
@@ -112,12 +119,12 @@ class PetHouseTime
         return $this;
     }
 
-    public function getTimeSpent(): ?int
+    public function getTimeSpent(): int
     {
         return $this->timeSpent;
     }
 
-    public function getCanAttemptSocialHangoutAfter(): ?\DateTimeImmutable
+    public function getCanAttemptSocialHangoutAfter(): \DateTimeImmutable
     {
         return $this->canAttemptSocialHangoutAfter;
     }
@@ -127,5 +134,34 @@ class PetHouseTime
         $this->canAttemptSocialHangoutAfter = $dateTime;
 
         return $this;
+    }
+
+    #[Groups(['myPet'])]
+    public function getActionPoints(): int
+    {
+        return $this->getActionPointsEarned() - $this->getActionPointsSpent();
+    }
+
+    public function getActionPointsEarned(): int
+    {
+        // one point per 6 hours... and pets start with 1 point
+        return (int)floor($this->actionPointMinutes / (60 * 6)) + 1;
+    }
+
+    public function getActionPointsSpent(): int
+    {
+        return $this->actionPointsSpent;
+    }
+
+    public function setActionPointsSpent(int $actionPointsSpent): static
+    {
+        $this->actionPointsSpent = $actionPointsSpent;
+
+        return $this;
+    }
+
+    public function getActionPointMinutes(): int
+    {
+        return $this->actionPointMinutes;
     }
 }

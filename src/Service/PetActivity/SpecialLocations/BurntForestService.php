@@ -137,7 +137,7 @@ class BurntForestService
     {
         $pet = $petWithSkills->getPet();
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::UMBRA, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::UMBRA, false);
 
         return PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, but all they found were ashes...')
             ->setIcon('icons/activity-logs/confused')
@@ -175,7 +175,7 @@ class BurntForestService
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::UMBRA, true);
 
         return $activityLog;
     }
@@ -198,7 +198,7 @@ class BurntForestService
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
             $pet->increaseEsteem($this->rng->rngNextInt(1, 2));
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::UMBRA, true);
 
             // triggers Hyssop letter #1
             $oldValue = UserQuestRepository::findOrCreate($this->em, $pet->getOwner(), 'Can Receive Letters from Fairies', 0);
@@ -213,7 +213,7 @@ class BurntForestService
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::UMBRA, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 90), PetActivityStatEnum::UMBRA, false);
         }
 
         return $activityLog;
@@ -249,7 +249,7 @@ class BurntForestService
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::UMBRA, true);
         }
         else
         {
@@ -270,7 +270,7 @@ class BurntForestService
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::UMBRA, false);
         }
 
         return $activityLog;
@@ -318,7 +318,7 @@ class BurntForestService
                 $pet->increaseLove($this->rng->rngNextInt(2, 4));
                 $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::ARCANA ], $activityLog);
 
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::UMBRA, true);
 
                 if($pet->hasMerit(MeritEnum::BEHATTED))
                 {
@@ -349,7 +349,7 @@ class BurntForestService
                 ;
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
 
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::UMBRA, false);
             }
         }
         else
@@ -376,7 +376,7 @@ class BurntForestService
                 $pet->increaseLove($this->rng->rngNextInt(2, 4));
                 $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ], $activityLog);
 
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::UMBRA, true);
             }
             else
             {
@@ -386,7 +386,7 @@ class BurntForestService
                 $pet->increaseEsteem(-$this->rng->rngNextInt(2, 4));
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
 
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::UMBRA, false);
             }
         }
 
@@ -419,7 +419,7 @@ class BurntForestService
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::UMBRA, true);
         }
         else
         {
@@ -438,7 +438,7 @@ class BurntForestService
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::UMBRA, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 90), PetActivityStatEnum::UMBRA, false);
         }
 
         return $activityLog;
@@ -454,7 +454,7 @@ class BurntForestService
 
         $this->inventoryService->petCollectsItem('Fairy\'s Scroll', $pet, 'This slipped out of a crack of light in ' . $pet->getName() . '\'s ' . $pet->getTool()->getItem()->getName() . '...', $activityLog);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::OTHER, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 90), PetActivityStatEnum::OTHER, true);
 
         $pet->getTool()->setEnchantment(null);
 
@@ -493,7 +493,7 @@ class BurntForestService
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $activityLog);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::UMBRA, true);
         }
         else
         {
@@ -514,7 +514,7 @@ class BurntForestService
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::UMBRA, false);
         }
 
         return $activityLog;

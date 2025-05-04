@@ -65,7 +65,7 @@ class HeartDimensionService
 
     public function notEnoughAffectionAdventure(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name%\'s Affection Level must be increased before they can venture into the Heart Dimension again.')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Heart Dimension', 'Adventure!' ]))
@@ -125,7 +125,7 @@ class HeartDimensionService
     {
         $pet = $petWithSkills->getPet();
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
 
         if($pet->getFood() <= 4)
         {
@@ -181,7 +181,7 @@ class HeartDimensionService
     {
         $pet = $petWithSkills->getPet();
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
 
         if($pet->getFood() <= 4)
         {
@@ -234,7 +234,7 @@ class HeartDimensionService
     {
         $pet = $petWithSkills->getPet();
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
 
         if($pet->getFood() <= 4)
         {
@@ -271,7 +271,7 @@ class HeartDimensionService
     {
         $pet = $petWithSkills->getPet();
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
 
         $pet->incrementAffectionAdventures();
 
@@ -367,7 +367,7 @@ class HeartDimensionService
 
     private function randomAdventure(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
 
         return match($this->rng->rngNextInt(1, 3))
         {

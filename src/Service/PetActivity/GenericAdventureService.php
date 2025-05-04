@@ -63,7 +63,7 @@ class GenericAdventureService
     {
         $pet = $petWithSkills->getPet();
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::OTHER, null);
 
         if($pet->getHat() && $pet->getHat()->getItem()->getName() === 'Red')
         {

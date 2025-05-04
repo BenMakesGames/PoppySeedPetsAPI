@@ -84,7 +84,7 @@ class IcyMoonService
 
     private function lostInBlizzard(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, false);
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to explore an Icy Moon, but a blizzard started up, and they were unable to make any progress.')
             ->setIcon('icons/activity-logs/confused')
@@ -106,7 +106,7 @@ class IcyMoonService
 
     private function foundEverice(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, true);
 
         if($this->rng->rngNextInt(1, 100) === 1)
         {
@@ -140,7 +140,7 @@ class IcyMoonService
 
     private function foundRock(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, true);
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% explored an Icy Moon. They found a field of rocks that poked up out of the moon\'s icy surface, and grabbed a sample to take home.')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Location: Icy Moon', 'Gathering' ]))
@@ -162,7 +162,7 @@ class IcyMoonService
 
         if($roll >= 15)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, true);
 
             if($roll >= 25)
             {
@@ -192,7 +192,7 @@ class IcyMoonService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, false);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% explored an Icy Moon, and found a Cryovolcano! The water was scary-cold, so they watched it from a distance for a while before finally moving on...')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Location_Icy_Moon, PetActivityLogTagEnum::Location_Cryovolcano, 'Gathering' ]))
@@ -220,7 +220,7 @@ class IcyMoonService
 
         if($roll >= 20)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::HUNT, true);
 
             $pieces = 1;
 
@@ -251,7 +251,7 @@ class IcyMoonService
         }
         else if($pet->isInGuild(GuildEnum::HIGH_IMPACT))
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::HUNT, false);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% was attacked by a Mini Crystalline Entity while exploring an Icy Moon! As a member of High Impact, they immediately stepped up to the challenge, but the creature was wildly throwing sparks and electricity, and ' . $pet->getName() . ' was forced to retreat...')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Location_Icy_Moon, 'Fighting', 'Guild' ]))
@@ -271,7 +271,7 @@ class IcyMoonService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::HUNT, false);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% was attacked by a Mini Crystalline Entity while exploring an Icy Moon! The creature was wildly throwing sparks and electricity, and ' . $pet->getName() . ' was forced to retreat...')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Location_Icy_Moon, 'Fighting' ]))
@@ -300,7 +300,7 @@ class IcyMoonService
 
         if($petWithSkills->getCanSeeInTheDark()->getTotal() <= 0)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::GATHER, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::GATHER, false);
 
             return PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found an entrance to the core of an Icy Moon, but it was too dark to see anything...')
                 ->setIcon('icons/activity-logs/confused')
@@ -314,7 +314,7 @@ class IcyMoonService
 
         if($roll >= 20)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, true);
 
             $loot = [
                 $this->rng->rngNextFromArray([ 'Liquid-hot Magma', 'Glass', 'Silica Grounds' ]),
@@ -384,7 +384,7 @@ class IcyMoonService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::GATHER, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::GATHER, false);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found the entrance to the core of an Icy Moon! It was dark inside, and even with their ' . ActivityHelpers::SourceOfLight($petWithSkills) . ' they were unable to find anything...')
                 ->setIcon('icons/activity-logs/confused')

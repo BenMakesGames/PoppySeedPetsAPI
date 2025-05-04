@@ -82,7 +82,7 @@ class GizubisGardenService
         $activityLog = $this->responseService->createActivityLog($pet, $message, '');
 
         $this->petExperienceService->gainExp($pet, 1, [ $skill ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $activityLog;
     }
@@ -97,7 +97,7 @@ class GizubisGardenService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went to water the Tree of Life for Gizubi\'s Garden, but tripped and spilled the sacred water!', '');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::GATHER, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::GATHER, false);
             $pet->increaseEsteem(-$this->rng->rngNextInt(2, 4));
 
             return $activityLog;
@@ -113,7 +113,7 @@ class GizubisGardenService
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while watering the Tree of Life for Gizubi\'s Garden.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, true);
 
             return $activityLog;
         }
@@ -122,7 +122,7 @@ class GizubisGardenService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% watered the Tree of Life for Gizubi\'s Garden.', '');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::GATHER, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::GATHER, false);
 
             return $activityLog;
         }
@@ -167,7 +167,7 @@ class GizubisGardenService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to help ' . $cook . ' for a feast for Gizubi\'s Garden, but ' . $howRuined . ' the ' . $loot . '! :(', '');
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
             $pet->increaseEsteem(-$this->rng->rngNextInt(2, 4));
 
             return $activityLog;
@@ -178,7 +178,7 @@ class GizubisGardenService
 
             $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::CRAFT, false);
 
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' made this while ' . $cooking . ' for a feast for Gizubi\'s Garden!', $activityLog);
 
@@ -190,7 +190,7 @@ class GizubisGardenService
 
             $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
 
             return $activityLog;
         }

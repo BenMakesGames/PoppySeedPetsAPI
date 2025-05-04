@@ -54,7 +54,7 @@ class TwuWuvCraftingService
 
         if($roll >= 14)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('Red Balloon', 1);
             $this->houseSimService->getState()->loseItem('Twu Wuv', 1);
             $pet->increaseEsteem(2);
@@ -73,7 +73,7 @@ class TwuWuvCraftingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
         }
 
         return $activityLog;
@@ -100,7 +100,7 @@ class TwuWuvCraftingService
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
                 ;
 
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
                 $this->petExperienceService->gainExp($pet, 1, [PetSkillEnum::CRAFTS], $activityLog);
 
                 return $activityLog;
@@ -117,7 +117,7 @@ class TwuWuvCraftingService
         }
         else if($roll >= 16)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('String', 1);
             $this->houseSimService->getState()->loseItem('Silver Bar', 1);
             $this->houseSimService->getState()->loseItem('Twu Wuv', 1);
@@ -138,7 +138,7 @@ class TwuWuvCraftingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
 
             return $activityLog;
         }

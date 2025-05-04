@@ -61,7 +61,7 @@ class PetSummonedAwayService
             default => throw new UnreachableException(),
         };
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)

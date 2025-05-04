@@ -30,23 +30,19 @@ class IncreaseTimeCommand extends Command
     {
         $this
             ->setName('app:increase-time')
-            ->setDescription('Increases Time of all Pets by 1, to a maximum of 2880 minutes (48 hours).')
+            ->setDescription('Progress pet, pet group, and fireplace times; deletes expired sessions and old device stats.')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        // pet logic...
+        // pets & pet groups...
         $this->em->getConnection()->executeQuery('
             START TRANSACTION;
             UPDATE pet_house_time LEFT JOIN pet ON pet_id=pet.id SET `activity_time` = `activity_time` + 1 WHERE location = \'home\' AND `activity_time` < 2880;
+            UPDATE pet_house_time LEFT JOIN pet ON pet_id=pet.id SET `action_point_minutes` = `action_point_minutes` + 1 WHERE location = \'home\' AND `action_point_minutes` < 2880;
             UPDATE pet_house_time SET `social_energy` = `social_energy` + 1 WHERE `social_energy` < 2880;
-            COMMIT;
-        ');
 
-        // pet group logic...
-        $this->em->getConnection()->executeQuery('
-            START TRANSACTION;
             UPDATE pet_group SET `social_energy` = `social_energy` + 1 WHERE `social_energy` < 2880;
             COMMIT;
         ');

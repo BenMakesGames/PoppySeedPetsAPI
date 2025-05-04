@@ -130,7 +130,7 @@ class Caerbannog
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting' ]))
             ;
             $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::HUNT, true);
         }
         else
         {
@@ -142,7 +142,7 @@ class Caerbannog
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::HUNT, false);
         }
 
         foreach($loot as $lootName)

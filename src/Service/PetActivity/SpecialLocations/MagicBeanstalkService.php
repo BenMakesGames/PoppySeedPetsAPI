@@ -128,7 +128,7 @@ class MagicBeanstalkService
         ;
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, false);
 
         return $activityLog;
     }
@@ -146,7 +146,7 @@ class MagicBeanstalkService
         $this->inventoryService->petCollectsItem('Beans', $pet, $pet->getName() . ' harvested this from your magic bean-stalk.', $activityLog);
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, true);
 
         return $activityLog;
     }
@@ -162,7 +162,7 @@ class MagicBeanstalkService
         $this->inventoryService->petCollectsItem('Really Big Leaf', $pet, $pet->getName() . ' harvested this from your magic bean-stalk.', $activityLog);
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, true);
 
         return $activityLog;
     }
@@ -189,7 +189,7 @@ class MagicBeanstalkService
         }
 
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, true);
 
         return $activityLog;
     }
@@ -220,7 +220,7 @@ class MagicBeanstalkService
             $pet->increaseEsteem($this->rng->rngNextInt(1, 2));
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ], $activityLog);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, true);
         }
         else if($pet->isInGuild(GuildEnum::HIGH_IMPACT))
         {
@@ -246,7 +246,7 @@ class MagicBeanstalkService
                 $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ], $activityLog);
 
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::HUNT, true);
             }
             else
             {
@@ -259,7 +259,7 @@ class MagicBeanstalkService
 
                 $pet->increaseEsteem(-$this->rng->rngNextInt(2, 4));
 
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::HUNT, false);
             }
         }
         else
@@ -270,7 +270,7 @@ class MagicBeanstalkService
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ], $activityLog);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, false);
         }
 
         return $activityLog;
@@ -302,7 +302,7 @@ class MagicBeanstalkService
         $pet->increaseSafety(-$this->rng->rngNextInt(2, 8));
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, true);
 
         return $activityLog;
     }
@@ -323,7 +323,7 @@ class MagicBeanstalkService
         $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
 
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::GATHER, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::GATHER, true);
 
         return $activityLog;
     }
@@ -352,7 +352,7 @@ class MagicBeanstalkService
             $pet->increaseEsteem($this->rng->rngNextInt(1, 2));
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ], $activityLog);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::GATHER, true);
         }
         else
         {
@@ -362,7 +362,7 @@ class MagicBeanstalkService
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ], $activityLog);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::GATHER, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::GATHER, false);
         }
 
         return $activityLog;
@@ -390,7 +390,7 @@ class MagicBeanstalkService
             $pet->getGuildMembership()->increaseReputation();
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::HUNT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::HUNT, true);
         }
         else
         {
@@ -400,7 +400,7 @@ class MagicBeanstalkService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::HUNT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::HUNT, false);
         }
 
         return $activityLog;
@@ -423,7 +423,7 @@ class MagicBeanstalkService
             $pet->increaseEsteem($this->rng->rngNextInt(1, 2));
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::GATHER, true);
         }
         else
         {
@@ -432,7 +432,7 @@ class MagicBeanstalkService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::GATHER, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::GATHER, false);
         }
 
         return $activityLog;
@@ -466,7 +466,7 @@ class MagicBeanstalkService
             $pet->increaseEsteem(3);
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::GATHER, true);
         }
         else
         {
@@ -477,7 +477,7 @@ class MagicBeanstalkService
             $pet->increaseSafety(-$this->rng->rngNextInt(4, 8));
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::GATHER, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::GATHER, false);
         }
 
         return $activityLog;
@@ -522,7 +522,7 @@ class MagicBeanstalkService
 
             $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ], $activityLog);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::GATHER, true);
         }
         else
         {
@@ -532,7 +532,7 @@ class MagicBeanstalkService
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ], $activityLog);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::GATHER, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::GATHER, false);
         }
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::CLIMB_TO_TOP_OF_BEANSTALK, $activityLog);

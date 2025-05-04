@@ -59,7 +59,7 @@ class HalloweenSmithingService
 
         if($roll >= 15)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::SMITH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::SMITH, true);
 
             $itemUsed = $this->houseSimService->getState()->loseOneOf($this->rng, $buckets);
             $itemUsedItem = ItemRepository::findOneByName($this->em, $itemUsed);
@@ -83,7 +83,7 @@ class HalloweenSmithingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::SMITH, false);
         }
 
         return $activityLog;

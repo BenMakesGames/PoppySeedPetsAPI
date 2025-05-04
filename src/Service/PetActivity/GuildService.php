@@ -50,7 +50,7 @@ class GuildService
 
     public function joinGuildProjectE(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, false);
 
         $activityLog = $this->joinGuild(
             $pet,
@@ -74,7 +74,7 @@ class GuildService
     public function joinGuildUmbra(ComputedPetSkills $petWithSkills): PetActivityLog
     {
         $pet = $petWithSkills->getPet();
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::UMBRA, false);
 
         $activityLog = $this->joinGuild(
             $pet,
@@ -179,7 +179,7 @@ class GuildService
 
         $member->increaseReputation();
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, true);
 
         $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message);
 
@@ -204,7 +204,7 @@ class GuildService
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message);
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $activityLog;
     }
@@ -224,7 +224,7 @@ class GuildService
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message);
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $activityLog;
     }
@@ -244,7 +244,7 @@ class GuildService
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message);
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $activityLog;
     }
@@ -297,7 +297,7 @@ class GuildService
 
         $member->increaseReputation();
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, true);
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message);
 
@@ -321,7 +321,7 @@ class GuildService
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message);
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $activityLog;
     }
@@ -345,7 +345,7 @@ class GuildService
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message);
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $activityLog;
     }
@@ -365,7 +365,7 @@ class GuildService
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message);
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $activityLog;
     }
@@ -389,7 +389,7 @@ class GuildService
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message);
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $activityLog;
     }

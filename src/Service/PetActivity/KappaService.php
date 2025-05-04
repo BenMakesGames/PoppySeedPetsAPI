@@ -69,7 +69,7 @@ class KappaService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting', 'Adventure!' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::HUNT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::HUNT, true);
 
             $this->inventoryService->petCollectsItem('Shirikodama', $pet, $pet->getName() . ' reclaimed this from a Kappa.', $activityLog);
         }
@@ -80,7 +80,7 @@ class KappaService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting', 'Adventure!' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::HUNT, true);
 
             $this->inventoryService->petCollectsItem('Shirikodama', $pet, $pet->getName() . ' reclaimed this from a Kappa.', $activityLog);
         }
@@ -91,7 +91,7 @@ class KappaService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting', 'Adventure!' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::HUNT, false);
         }
 
         $activityLog->setChanges($changes->compare($pet));
@@ -125,7 +125,7 @@ class KappaService
             ;
             $pet->increaseLove(4)->increaseEsteem(4);
             $this->petExperienceService->gainAffection($pet, 2);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
             PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::RETURNED_A_SHIRIKODAMA, $activityLog);
 
             $this->userStatsRepository->incrementStat($owner, UserStatEnum::PETTED_A_PET, 1);
@@ -151,7 +151,7 @@ class KappaService
             ;
             $pet->increaseLove(4)->increaseEsteem(4);
             $this->petExperienceService->gainAffection($pet, 2);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
             PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::RETURNED_A_SHIRIKODAMA, $activityLog);
 
             $this->userStatsRepository->incrementStat($owner, UserStatEnum::PETTED_A_PET, 1);
@@ -168,7 +168,7 @@ class KappaService
                 ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
             ;
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
         }
 
         $activityLog->setChanges($changes->compare($pet));

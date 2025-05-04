@@ -118,7 +118,7 @@ class ChocolateMansion
         {
             if($combatRoll >= 20)
             {
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::HUNT, true);
                 $expAmount = 3;
                 $expStats = [ PetSkillEnum::BRAWL ];
 
@@ -137,7 +137,7 @@ class ChocolateMansion
             }
             else
             {
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::HUNT, false);
                 $expAmount = 2;
                 $expStats = [ PetSkillEnum::BRAWL ];
 
@@ -148,7 +148,7 @@ class ChocolateMansion
         {
             if($magicRoll >= 20)
             {
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::UMBRA, true);
                 $expAmount = 3;
                 $expStats = [ PetSkillEnum::ARCANA ];
 
@@ -167,7 +167,7 @@ class ChocolateMansion
             }
             else
             {
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::UMBRA, false);
                 $expAmount = 2;
                 $expStats = [ PetSkillEnum::ARCANA ];
 
@@ -205,7 +205,7 @@ class ChocolateMansion
 
         if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::OTHER, true);
             $expAmount = 1;
             $expStats = [ PetSkillEnum::STEALTH ];
 
@@ -224,7 +224,7 @@ class ChocolateMansion
         }
         else if($pet->getTool() && $pet->getTool()->isGrayscaling())
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::OTHER, true);
             $expAmount = 1;
             $expStats = [ PetSkillEnum::STEALTH ];
 
@@ -242,7 +242,7 @@ class ChocolateMansion
         }
         else if($pet->hasStatusEffect(StatusEffectEnum::CORDIAL))
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(20, 40), PetActivityStatEnum::OTHER, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(40, 80), PetActivityStatEnum::OTHER, true);
             $expAmount = 0;
             $expStats = [ ];
 
@@ -257,7 +257,7 @@ class ChocolateMansion
         }
         else if($roll >= 20)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::HUNT, true);
             $expAmount = 3;
             $expStats = [ PetSkillEnum::BRAWL ];
 
@@ -277,7 +277,7 @@ class ChocolateMansion
         }
         else if($roll < 2 && $this->clock->getMonthAndDay() >= 1000 && $this->clock->getMonthAndDay() < 1200)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::HUNT, false);
             $expAmount = 2;
             $expStats = [ PetSkillEnum::BRAWL ];
 
@@ -291,7 +291,7 @@ class ChocolateMansion
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::HUNT, false);
             $expAmount = 2;
             $expStats = [ PetSkillEnum::BRAWL ];
 
@@ -327,7 +327,7 @@ class ChocolateMansion
         $searchRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
         $success = $searchRoll >= 15;
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, $success);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, $success);
 
         if($success)
         {
@@ -368,14 +368,14 @@ class ChocolateMansion
 
             if($scienceRoll <= 2)
             {
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(5, 10), PetActivityStatEnum::PROGRAM, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(10, 20), PetActivityStatEnum::PROGRAM, false);
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
                 $chemistryDescription .= 'They weren\'t sure what to make of it.';
             }
             else if($scienceRoll >= 15)
             {
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::PROGRAM, true);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 90), PetActivityStatEnum::PROGRAM, true);
 
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
                 $pet->increaseEsteem(8);
@@ -385,7 +385,7 @@ class ChocolateMansion
             }
             else
             {
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::PROGRAM, true);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 90), PetActivityStatEnum::PROGRAM, true);
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
                 $chemistryDescription .= 'They looked over the notes, and realized it was some kind of "dungeon puzzle", but after following the instructions, they were left with some Useless Fizz. (Must have messed something up!)';
@@ -412,7 +412,7 @@ class ChocolateMansion
         $searchRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() * 2 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
         $success = $searchRoll >= 20;
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, $success);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, $success);
 
         if($success)
         {
@@ -453,7 +453,7 @@ class ChocolateMansion
 
         $searchRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() * 2 + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, true);
 
         if($this->rng->rngNextBool())
         {
@@ -484,14 +484,14 @@ class ChocolateMansion
 
             if($musicRoll <= 2)
             {
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(5, 10), PetActivityStatEnum::OTHER, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(10, 20), PetActivityStatEnum::OTHER, false);
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::MUSIC ], $activityLog);
                 $musicDescription .= ', but the music was crazy-complicated, so %pet:' . $pet->getId() . '.name% left it alone.';
             }
             else if($musicRoll >= 15)
             {
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::PROGRAM, true);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 90), PetActivityStatEnum::PROGRAM, true);
 
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
                 $musicDescription .= '. %pet:' . $pet->getId() . '.name% played it, producing a Music Note; when they had finished, a strange "click" was heard from elsewhere in the mansion. (A dungeon puzzle!?)';
@@ -501,7 +501,7 @@ class ChocolateMansion
             }
             else
             {
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::PROGRAM, true);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, true);
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
                 $musicDescription .= '. %pet:' . $pet->getId() . '.name% tried to play it, but couldn\'t get past a tricky part in the middle. They produced a Music Note, but ultimately had to give up, and move on.';
@@ -535,7 +535,7 @@ class ChocolateMansion
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStealth()->getTotal() + $petWithSkills->getGatheringBonus()->getTotal());
         $difficulty = 16;
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, $roll >= $difficulty);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, $roll >= $difficulty);
 
         if($roll <= 2)
         {
@@ -603,14 +603,14 @@ class ChocolateMansion
 
         if($petWithSkills->getClimbingBonus()->getTotal() > 0)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::GATHER, true);
 
             $description .= 'They explored the mansion\'s chocolate hedge maze, climbing over its walls and making directly for the center! ';
             $success = true;
         }
         else if($pet->hasMerit(MeritEnum::EIDETIC_MEMORY))
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::GATHER, true);
 
             $description .= 'They explored the mansion\'s chocolate hedge maze, which was super-easy thanks to their Eidetic Memory! ';
             $usedMerit = true;
@@ -618,7 +618,7 @@ class ChocolateMansion
         }
         else if($pet->hasMerit(MeritEnum::GOURMAND) && $pet->getFood() <= $pet->getStomachSize() * 3 / 4)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 90), PetActivityStatEnum::GATHER, true);
 
             $pet->increaseFood($this->rng->rngNextInt(4, 8));
 
@@ -634,7 +634,7 @@ class ChocolateMansion
             $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getPerception()->getTotal() + $petWithSkills->getIntelligence()->getTotal());
             $success = $roll > 15;
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, $success);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, $success);
 
             if($success)
             {
@@ -703,7 +703,7 @@ class ChocolateMansion
 
         if($climbing)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, true);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $description)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
@@ -715,7 +715,7 @@ class ChocolateMansion
         }
         else if($this->rng->rngNextBool())
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, true);
 
             $loot = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
                 'Cocoa Powder', 'Sugar',
@@ -740,7 +740,7 @@ class ChocolateMansion
             $combatRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getStamina()->getTotal());
             $success = $combatRoll > 15;
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, true);
 
             if($success)
             {

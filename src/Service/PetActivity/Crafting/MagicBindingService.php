@@ -386,11 +386,11 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Witch\'s Broom', 1);
             $this->houseSimService->getState()->loseItem('Wood\'s Metal', 1);
             $pet->increaseEsteem($this->rng->rngNextInt(3, 6));
@@ -420,11 +420,11 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Witch\'s Broom', 1);
             $this->houseSimService->getState()->loseItem('Evil Feather Duster', 1);
             $pet->increaseEsteem($this->rng->rngNextInt(3, 6));
@@ -453,7 +453,7 @@ class MagicBindingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
             return $activityLog;
         }
         else if($umbraCheck < 13)
@@ -472,7 +472,7 @@ class MagicBindingService
             }
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -489,7 +489,7 @@ class MagicBindingService
             ;
             $this->inventoryService->petCollectsItem('Crazy-hot Torch', $pet, $pet->getName() . ' enchanted this.', $activityLog);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
             return $activityLog;
         }
     }
@@ -515,7 +515,7 @@ class MagicBindingService
             }
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -557,7 +557,7 @@ class MagicBindingService
             }
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
 
             return $activityLog;
         }
@@ -580,7 +580,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else if($umbraCheck >= 32)
         {
@@ -600,7 +600,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' extracted this from some Thaumatoxic Cookies.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 5, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(65, 80), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(130, 160), PetActivityStatEnum::MAGIC_BIND, true);
         }
         else if($umbraCheck >= 22)
         {
@@ -617,7 +617,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' extracted this from some Thaumatoxic Cookies.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(55, 70), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(110, 140), PetActivityStatEnum::MAGIC_BIND, true);
         }
         else
         {
@@ -633,7 +633,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' extracted this from some Thaumatoxic Cookies.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
         return $activityLog;
@@ -651,7 +651,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
@@ -667,7 +667,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' extracted this from a Mermaid Egg.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
         return $activityLog;
@@ -688,7 +688,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA, PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else if($umbraCheck < 12)
         {
@@ -697,7 +697,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA, PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
@@ -714,7 +714,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' extracted this from Magic Smoke.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA, PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
         return $activityLog;
@@ -741,7 +741,7 @@ class MagicBindingService
             }
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
@@ -758,7 +758,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Magic Hourglass', $pet, $pet->getName() . ' enchanted this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
         return $activityLog;
@@ -776,7 +776,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
@@ -794,7 +794,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Nephthys', $pet, $pet->getName() . ' enchanted this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
         return $activityLog;
@@ -813,7 +813,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else if($umbraCheck < 18)
         {
@@ -822,7 +822,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
@@ -837,7 +837,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Temperance', $pet, $pet->getName() . ' made this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
         return $activityLog;
@@ -860,7 +860,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else if($umbraCheck < 20)
         {
@@ -878,7 +878,7 @@ class MagicBindingService
             }
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(46, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
@@ -899,7 +899,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem($makes, $pet, $pet->getName() . ' made this real.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
         return $activityLog;
@@ -933,7 +933,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(46, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::CRAFT, false);
         }
         else if($umbraCheck < 16)
         {
@@ -951,11 +951,11 @@ class MagicBindingService
             }
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(46, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Blunderbuss', 1);
             $this->houseSimService->getState()->loseItem('Moon Pearl', 1);
@@ -989,7 +989,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(46, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::CRAFT, false);
         }
         else if($umbraCheck < 18)
         {
@@ -1007,11 +1007,11 @@ class MagicBindingService
             }
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(46, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Gravitational Waves', 1);
             $this->houseSimService->getState()->loseItem('Moon Pearl', 1);
@@ -1044,7 +1044,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(46, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -1081,7 +1081,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Invisible Shovel', $pet, $pet->getName() . ' made this by binding a Moon Pearl to Plastic Shovel!', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::MAGIC_BIND, true);
 
             return $activityLog;
         }
@@ -1100,7 +1100,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(46, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::CRAFT, false);
         }
         else if($umbraCheck < 16)
         {
@@ -1112,11 +1112,11 @@ class MagicBindingService
             $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Crafting' ]));
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(46, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Wings', 1);
             $this->houseSimService->getState()->loseItem('Glass', 1);
             $this->houseSimService->getState()->loseItem('Quinacridone Magenta Dye', 1);
@@ -1149,11 +1149,11 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Smallish Pumpkin', 1);
             $this->houseSimService->getState()->loseItem('Farmer\'s Multi-tool', 1);
@@ -1185,11 +1185,11 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Dark Scales', 1);
             $this->houseSimService->getState()->loseItem('Double Scythe', 1);
@@ -1222,11 +1222,11 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Sunflower', 1);
             $this->houseSimService->getState()->loseItem('Dark Matter', 1);
@@ -1260,11 +1260,11 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Scales', 1);
             $this->houseSimService->getState()->loseItem('Tentacle', 1);
@@ -1292,7 +1292,7 @@ class MagicBindingService
 
         if($umbraCheck === 1)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             $pet->increaseEsteem(-2);
 
@@ -1314,11 +1314,11 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA, PetSkillEnum::MUSIC ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Musical Scales', 1);
             $this->houseSimService->getState()->loseItem('Iron Sword', 1);
@@ -1353,11 +1353,11 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Lightning in a Bottle', 1);
             $this->houseSimService->getState()->loseItem('Poker', 1);
@@ -1392,7 +1392,7 @@ class MagicBindingService
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::MAGIC_BIND, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 90), PetActivityStatEnum::MAGIC_BIND, false);
             }
             else
             {
@@ -1403,7 +1403,7 @@ class MagicBindingService
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
             }
 
             return $activityLog;
@@ -1432,7 +1432,7 @@ class MagicBindingService
             }
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -1453,7 +1453,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Mjölnir', $pet, $pet->getName() . ' enchanted this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
 
             return $activityLog;
         }
@@ -1491,7 +1491,7 @@ class MagicBindingService
             }
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -1511,7 +1511,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('The Dark Knight', $pet, $pet->getName() . ' enchanted this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
 
             return $activityLog;
         }
@@ -1538,7 +1538,7 @@ class MagicBindingService
             }
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -1558,7 +1558,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Witch\'s Broom', $pet, $pet->getName() . ' enchanted this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
 
             return $activityLog;
         }
@@ -1587,7 +1587,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -1597,7 +1597,7 @@ class MagicBindingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
             return $activityLog;
         }
         else // success!
@@ -1636,7 +1636,7 @@ class MagicBindingService
                 $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT);
 
             $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60) + $additionalTime, PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120) + $additionalTime, PetActivityStatEnum::MAGIC_BIND, true);
 
             if($extraItem)
                 $this->inventoryService->petCollectsItem($extraItem, $pet, $extraItemMessage, $activityLog);
@@ -1715,7 +1715,7 @@ class MagicBindingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
             return $activityLog;
         }
         else // success!
@@ -1724,7 +1724,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('White Feathers', 1);
             $pet->increaseEsteem(2);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound Armor!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
@@ -1748,7 +1748,7 @@ class MagicBindingService
 
         if($umbraCheck === 1)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             $reRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
 
@@ -1764,13 +1764,13 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Gold Bar', 1);
             $this->houseSimService->getState()->loseItem('Rainbow', 1);
             $this->houseSimService->getState()->loseItem('Blunderbuss', 1);
@@ -1799,7 +1799,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -1811,13 +1811,13 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Rainbow', 1);
             $this->houseSimService->getState()->loseItem('Wings', 1);
             $pet->increaseEsteem($this->rng->rngNextInt(4, 8));
@@ -1848,7 +1848,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else
         {
@@ -1864,7 +1864,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' created this!', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
         return $activityLog;
@@ -1882,11 +1882,11 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Armor', 1);
             $this->houseSimService->getState()->loseItem('Ruby Feather', 1);
             $pet->increaseEsteem(5);
@@ -1933,14 +1933,14 @@ class MagicBindingService
             }
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Gold Tuning Fork', 1);
             $pet->increaseEsteem(2);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a regular old Gold Tuning Fork; now it\'s an _Astral_ Tuning Fork!', '')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
@@ -1977,13 +1977,13 @@ class MagicBindingService
             }
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Compass', 1);
             $pet->increaseEsteem(2);
@@ -2014,7 +2014,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
@@ -2031,7 +2031,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Whisper Stone', $pet, $pet->getName() . ' bound this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
         return $activityLog;
@@ -2049,13 +2049,13 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
             $getQuill = 20 < $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getCrafts()->getTotal());
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Feathers', 1);
             $pet->increaseEsteem(2);
@@ -2108,7 +2108,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else if($umbraCheck < 14)
         {
@@ -2126,7 +2126,7 @@ class MagicBindingService
             }
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
@@ -2143,7 +2143,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Gold Triskaidecta', $pet, $pet->getName() . ' enchanted this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
         return $activityLog;
@@ -2166,11 +2166,11 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA, PetSkillEnum::NATURE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Mint', 1);
             $this->houseSimService->getState()->loseItem('Leaf Spear', 1);
@@ -2203,7 +2203,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA, PetSkillEnum::MUSIC ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
@@ -2222,7 +2222,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Kokopelli', $pet, $pet->getName() . ' bound this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA, PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
         return $activityLog;
@@ -2244,7 +2244,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA, PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else if($umbraCheck < 20)
         {
@@ -2253,11 +2253,11 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA, PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $this->houseSimService->getState()->loseItem('Blackberries', 1);
@@ -2304,7 +2304,7 @@ class MagicBindingService
             }
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA, PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
@@ -2324,7 +2324,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Ambrotypic Solvent', $pet, $pet->getName() . ' mixed this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA, PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
         return $activityLog;
@@ -2337,7 +2337,7 @@ class MagicBindingService
 
         if($roll >= 20)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Crystal Ball', 1);
             $this->houseSimService->getState()->loseItem('Tachyon', 1);
             $this->houseSimService->getState()->loseItem('Gold Bar', 1);
@@ -2361,7 +2361,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA, PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
 
         return $activityLog;
@@ -2374,7 +2374,7 @@ class MagicBindingService
 
         if($roll >= 18)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Crystal Ball', 1);
             $this->houseSimService->getState()->loseItem('Quinacridone Magenta Dye', 1);
             $this->houseSimService->getState()->loseItem('Meteorite', 1);
@@ -2416,7 +2416,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -2429,7 +2429,7 @@ class MagicBindingService
 
         if($roll >= 24)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Crystal Ball', 1);
             $this->houseSimService->getState()->loseItem('Lotus Flower', 1);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
@@ -2452,7 +2452,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
 
         return $activityLog;
@@ -2470,7 +2470,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -2490,7 +2490,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Cool Mint Scepter', $pet, $pet->getName() . ' made this by infusing a Wand of Ice with Mint.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
 
             return $activityLog;
         }
@@ -2510,7 +2510,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
@@ -2528,7 +2528,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Magic Pinecone', $pet, $pet->getName() . ' made this by binding Everice to a Pinecone.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
         return $activityLog;
@@ -2548,7 +2548,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
@@ -2581,7 +2581,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Sleet', $pet, $pet->getName() . ' made this by binding Everice to an Invisible Shovel.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
         return $activityLog;
@@ -2601,7 +2601,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else if($skillCheck < 16)
         {
@@ -2612,7 +2612,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
@@ -2631,7 +2631,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Frostbite', $pet, $pet->getName() . ' made this by binding Everice to a Scythe, and making a grip with wound String.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
         return $activityLog;
@@ -2651,7 +2651,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else if($skillCheck < 16)
         {
@@ -2662,7 +2662,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
@@ -2681,7 +2681,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Hexicle', $pet, $pet->getName() . ' made this transmuting its plastic into ice.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
         return $activityLog;
@@ -2699,7 +2699,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
@@ -2717,7 +2717,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Moon Pearl', $pet, $pet->getName() . ' created this by binding a moonbeam to a Crystal Ball...', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
         return $activityLog;
@@ -2737,7 +2737,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else if($umbraCheck < 16)
         {
@@ -2746,7 +2746,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
@@ -2769,7 +2769,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Aubergine Commander', $pet, $pet->getName() . ' enchanted this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
         return $activityLog;
@@ -2787,7 +2787,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -2811,7 +2811,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem($makes, $pet, $pet->getName() . ' enchanted this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
             return $activityLog;
         }
     }
@@ -2845,12 +2845,12 @@ class MagicBindingService
                 ;
             }
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::ARCANA ], $activityLog);
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Paper', 1);
             $this->houseSimService->getState()->loseItem($uniqueIngredient, 1);
@@ -2915,7 +2915,7 @@ class MagicBindingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::ARCANA ], $activityLog);
         }
         else // success!
@@ -2933,7 +2933,7 @@ class MagicBindingService
             ;
             $this->inventoryService->petCollectsItem('Mericarp', $pet, $pet->getName() . ' bound this.', $activityLog);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::CRAFTS, PetSkillEnum::ARCANA ], $activityLog);
         }
 
@@ -2961,11 +2961,11 @@ class MagicBindingService
             }
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS, PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Wings', 1);
             $this->houseSimService->getState()->loseItem('Paper', 1);
             $this->houseSimService->getState()->loseItem('Talon', 1);
@@ -2995,11 +2995,11 @@ class MagicBindingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Wings', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $this->houseSimService->getState()->loseItem('Potato', 1);
@@ -3030,11 +3030,11 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Wings', 1);
             $this->houseSimService->getState()->loseItem('White Feathers', 1);
             $this->houseSimService->getState()->loseItem('Rapier', 1);
@@ -3064,7 +3064,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
@@ -3081,7 +3081,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Flying Bindle', $pet, $pet->getName() . ' bound this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
         return $activityLog;
@@ -3099,7 +3099,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
@@ -3116,7 +3116,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Flying Grappling Hook', $pet, $pet->getName() . ' bound this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
         }
         return $activityLog;
     }
@@ -3133,12 +3133,12 @@ class MagicBindingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Physics' ]))
             ;
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA, PetSkillEnum::SCIENCE ], $activityLog);
         }
         else // success!
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Gravitational Waves', 1);
             $this->houseSimService->getState()->loseItem('Grappling Hook', 1);
@@ -3170,7 +3170,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -3190,7 +3190,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Yggdrasil Branch', $pet, $pet->getName() . ' bound this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
 
             return $activityLog;
         }
@@ -3211,7 +3211,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -3222,7 +3222,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -3242,7 +3242,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Lullablade', $pet, $pet->getName() . ' bound this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
 
             return $activityLog;
         }
@@ -3261,7 +3261,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -3281,7 +3281,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Praxilla', $pet, $pet->getName() . ' blessed this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
 
             return $activityLog;
         }
@@ -3299,7 +3299,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -3319,7 +3319,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Cattail', $pet, $pet->getName() . ' created this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
 
             return $activityLog;
         }
@@ -3337,7 +3337,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -3357,7 +3357,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Malice', $pet, $pet->getName() . ' bound this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
 
             return $activityLog;
         }
@@ -3376,7 +3376,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -3397,7 +3397,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Gyre', $pet, $pet->getName() . ' bound this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
 
             return $activityLog;
         }
@@ -3420,7 +3420,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -3440,7 +3440,7 @@ class MagicBindingService
             }
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -3460,7 +3460,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Molly', $pet, $pet->getName() . ' created this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
 
             return $activityLog;
         }
@@ -3480,7 +3480,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else if($skillCheck < 22)
         {
@@ -3492,7 +3492,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else // success!
         {
@@ -3510,7 +3510,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Fimbulvetr', $pet, $pet->getName() . ' made this by binding Everice to a Heavy Hammer.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
         return $activityLog;
@@ -3549,7 +3549,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Lightning Axe', $pet, $pet->getName() . ' created this by adding a silver-iron blade to a Wand of Lightning.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
         }
         else
         {
@@ -3558,7 +3558,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
 
         return $activityLog;
@@ -3584,7 +3584,7 @@ class MagicBindingService
             $this->inventoryService->petCollectsItem('Sunless Mericarp', $pet, $pet->getName() . ' created this by binding a Tiny Black Hole to a Mericarp.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, true);
         }
         else if($roll == 1)
         {
@@ -3596,7 +3596,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, false);
         }
         else
         {
@@ -3605,7 +3605,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::MAGIC_BIND, false);
         }
 
         return $activityLog;
@@ -3626,7 +3626,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -3640,7 +3640,7 @@ class MagicBindingService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, false);
 
             return $activityLog;
         }
@@ -3661,7 +3661,7 @@ class MagicBindingService
         $this->inventoryService->petCollectsItem('Terror Seed', $pet, $pet->getName() . ' created this by enchanting a Mysterious Seed during the month of ' . $this->clock->now->format('F') . '.', $activityLog);
 
         $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::ARCANA ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::MAGIC_BIND, false);
 
         return $activityLog;
     }

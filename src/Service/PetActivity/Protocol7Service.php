@@ -144,7 +144,7 @@ class Protocol7Service
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Project-E, but got lost.', 'icons/activity-logs/confused');
 
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::SCIENCE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, false);
 
         $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]));
 
@@ -185,7 +185,7 @@ class Protocol7Service
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' found this while ' . $actioning . ' in Project-E.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, false);
         }
         else
         {
@@ -194,7 +194,7 @@ class Protocol7Service
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, false);
         }
 
         return $activityLog;
@@ -213,7 +213,7 @@ class Protocol7Service
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, false);
 
             return $activityLog;
         }
@@ -262,7 +262,7 @@ class Protocol7Service
         $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while digging at a Dwarfcraft excavation site.', $activityLog);
 
         $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::SCIENCE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(40, 55) + $exp * 5, PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(80, 110) + $exp * 10, PetActivityStatEnum::PROTOCOL_7, true);
 
         return $activityLog;
     }
@@ -283,7 +283,7 @@ class Protocol7Service
 
         $pet->getGuildMembership()->increaseReputation();
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% accessed Project-E. Correspondence had some message-delivery jobs, so %pet:' . $pet->getId() . '.name% picked a couple up, earning ' . $moneys . '~~m~~ for their trouble.', '')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Guild', 'Moneys' ]))
@@ -314,7 +314,7 @@ class Protocol7Service
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
         ;
         $this->inventoryService->petCollectsItem('Black Bow', $pet, $pet->getName() . ' received this from a girl named ' . $name . ' in Project-E.', $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, true);
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::MET_A_FAMOUS_VIDEO_GAME_CHARACTER, $activityLog);
 
@@ -366,7 +366,7 @@ class Protocol7Service
             }
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, true);
         }
         else
         {
@@ -384,7 +384,7 @@ class Protocol7Service
             }
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, false);
         }
 
         return $activityLog;
@@ -432,7 +432,7 @@ class Protocol7Service
         }
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::PROTOCOL_7, $success);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::PROTOCOL_7, $success);
 
         return $activityLog;
     }
@@ -504,7 +504,7 @@ class Protocol7Service
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
         }
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::PROTOCOL_7, $success);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::PROTOCOL_7, $success);
 
         return $activityLog;
     }
@@ -542,7 +542,7 @@ class Protocol7Service
             $this->inventoryService->petCollectsItem($lootItem, $pet, $pet->getName() . ' got this by watching a video ' . $video['subject'] . ' in Project-E.' , $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, true);
         }
         else
         {
@@ -551,7 +551,7 @@ class Protocol7Service
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, false);
         }
 
         return $activityLog;
@@ -620,7 +620,7 @@ class Protocol7Service
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
         }
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::PROTOCOL_7, $success);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::PROTOCOL_7, $success);
 
         return $activityLog;
     }
@@ -638,7 +638,7 @@ class Protocol7Service
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Physics' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, false);
         }
         else if($this->rng->rngNextInt(1, max(10, 50 - $pet->getSkills()->getIntelligence() - $petWithSkills->getElectronicsBonus()->getTotal())) === 1)
         {
@@ -649,7 +649,7 @@ class Protocol7Service
             $this->inventoryService->petCollectsItem('Lightning in a Bottle', $pet, $pet->getName() . ' captured this on a shorted line of Project-E!', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::PROTOCOL_7, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::PROTOCOL_7, true);
         }
         else
         {
@@ -661,7 +661,7 @@ class Protocol7Service
             $this->inventoryService->petCollectsItem('Pointer', $pet, $pet->getName() . ' captured this on a shorted line of Project-E!', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, true);
         }
 
         if($this->rng->rngNextInt(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
@@ -721,7 +721,7 @@ class Protocol7Service
             $this->inventoryService->petCollectsItem('Jolliest Roger', $pet, $pet->getName() . ' fought off a Pirate in a Walled Garden within Project-E, and took this from it!', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE, PetSkillEnum::STEALTH, PetSkillEnum::BRAWL ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, false);
         }
         else if($check < 15)
         {
@@ -730,7 +730,7 @@ class Protocol7Service
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Stealth' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::STEALTH ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, false);
         }
         else
         {
@@ -741,7 +741,7 @@ class Protocol7Service
             $this->inventoryService->petCollectsItem('Macintosh', $pet, $pet->getName() . ' found this growing in a Walled Garden within Project-E!', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::STEALTH ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, true);
         }
 
         return $activityLog;
@@ -769,7 +769,7 @@ class Protocol7Service
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, false);
         }
         else if($lucky)
         {
@@ -852,7 +852,7 @@ class Protocol7Service
             $this->inventoryService->petCollectsItem($loot, $pet, $itemComment, $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, true);
         }
 
         return $activityLog;

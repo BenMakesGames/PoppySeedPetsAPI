@@ -107,23 +107,23 @@ class DaycareController
     {
         $hoursInDayCare = (\time() - $pet->getLocationMoveDate()->getTimestamp()) / (60 * 60);
 
-        if($hoursInDayCare >= 4)
+        if($hoursInDayCare >= 8)
         {
-            $fourHoursInDayCare = (int)($hoursInDayCare / 4);
+            $eightHoursInDaycare = (int)($hoursInDayCare / 8);
 
-            PetExperienceService::spendTimeOnStatusEffects($pet, $fourHoursInDayCare);
+            PetExperienceService::spendTimeOnStatusEffects($pet, $eightHoursInDaycare);
 
             $pet
-                ->increasePoison(-$fourHoursInDayCare)
-                ->increaseCaffeine(-$fourHoursInDayCare)
-                ->increaseAlcohol(-$fourHoursInDayCare)
-                ->increasePsychedelic(-$fourHoursInDayCare)
-                ->increasePoison(-$fourHoursInDayCare)
+                ->increasePoison(-$eightHoursInDaycare)
+                ->increaseCaffeine(-$eightHoursInDaycare)
+                ->increaseAlcohol(-$eightHoursInDaycare)
+                ->increasePsychedelic(-$eightHoursInDaycare)
+                ->increasePoison(-$eightHoursInDaycare)
 
-                ->increaseFood($fourHoursInDayCare, 12)
-                ->increaseSafety($fourHoursInDayCare, 10)
-                ->increaseLove($fourHoursInDayCare, 8)
-                ->increaseEsteem($fourHoursInDayCare, 6)
+                ->increaseFood($eightHoursInDaycare, 12)
+                ->increaseSafety($eightHoursInDaycare, 10)
+                ->increaseLove($eightHoursInDaycare, 8)
+                ->increaseEsteem($eightHoursInDaycare, 6)
             ;
         }
 

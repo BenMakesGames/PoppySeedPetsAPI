@@ -77,7 +77,7 @@ class PhilosophersStoneService
 
         if($skill < 20)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::HUNT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::HUNT, false);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em,
                 $pet,
@@ -90,7 +90,7 @@ class PhilosophersStoneService
         {
             $roll = $this->rng->rngNextInt(1, $skill);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(50, 70), PetActivityStatEnum::HUNT, $roll >= 20);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(100, 140), PetActivityStatEnum::HUNT, $roll >= 20);
 
             if($roll >= 20)
             {
@@ -179,7 +179,7 @@ class PhilosophersStoneService
 
         if(!$pet->hasMerit(MeritEnum::NATURAL_CHANNEL))
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(5, 10), PetActivityStatEnum::HUNT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(10, 20), PetActivityStatEnum::HUNT, false);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em,
                 $pet,
@@ -192,7 +192,7 @@ class PhilosophersStoneService
         }
         else if($skill < 20)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::HUNT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::HUNT, false);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em,
                 $pet,
@@ -205,7 +205,7 @@ class PhilosophersStoneService
         {
             $roll = $this->rng->rngNextInt(1, $skill);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(50, 70), PetActivityStatEnum::UMBRA, $roll >= 20);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(100, 140), PetActivityStatEnum::UMBRA, $roll >= 20);
 
             if($roll >= 20)
             {
@@ -287,7 +287,7 @@ class PhilosophersStoneService
 
         if($skill < 20)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::HUNT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::HUNT, false);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em,
                 $pet,
@@ -300,7 +300,7 @@ class PhilosophersStoneService
         {
             $roll = $this->rng->rngNextInt(1, $skill);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(50, 70), PetActivityStatEnum::HUNT, $roll >= 20);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(100, 140), PetActivityStatEnum::HUNT, $roll >= 20);
 
             if($roll >= 20)
             {
@@ -375,7 +375,7 @@ class PhilosophersStoneService
 
         $changes = new PetChanges($pet);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 120), PetActivityStatEnum::OTHER, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 240), PetActivityStatEnum::OTHER, false);
 
         $pet
             ->increaseEsteem(12)

@@ -84,7 +84,7 @@ class StrangeUmbralEncounters
         ;
 
         $this->petExperienceService->gainExp($pet, 1, $encounter['skills'], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::UMBRA, false);
 
         return $activityLog;
     }
@@ -160,7 +160,7 @@ class StrangeUmbralEncounters
         StatusEffectHelpers::applyStatusEffect($this->em, $pet, $fate, 1);
 
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::UMBRA, false);
 
         return $activityLog;
     }
@@ -179,7 +179,7 @@ class StrangeUmbralEncounters
         ;
 
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::UMBRA, false);
 
         $cosmic = SpiceRepository::findOneByName($this->em, 'Cosmic');
 

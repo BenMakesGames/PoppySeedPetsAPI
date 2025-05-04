@@ -117,7 +117,7 @@ class GatheringHolidayAdventureService
         {
             if(!$petWithSkills->getHasProtectionFromHeat()->getTotal() > 0 && $this->rng->rngNextInt(1, 10) > $petWithSkills->getStamina()->getTotal())
             {
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, false);
 
                 $pet->increaseSafety(-$this->rng->rngNextInt(2, 4));
                 return PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% went looking for '. GatheringHolidayAdventureService::searchingFor($holiday, true) . ' ' . $where . ', but it was way too hot; they couldn\'t find anything before they had to leave :(');
@@ -154,7 +154,7 @@ class GatheringHolidayAdventureService
                 $message .= ', and found ' . $numItems . '!';
         }
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, $numItems > 0);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, $numItems > 0);
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message);
 
@@ -242,7 +242,7 @@ class GatheringHolidayAdventureService
 
         if($skillCheck >= $difficulty)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::HUNT, true);
 
             $pet->increaseEsteem($level);
 
@@ -268,7 +268,7 @@ class GatheringHolidayAdventureService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::HUNT, false);
 
             $pet->increaseSafety(-$level);
 

@@ -149,7 +149,7 @@ class PetActivityService
         if(!$pet->isAtHome())
             throw new \InvalidArgumentException('Trying to run activities for a pet that is not at home! (Ben did something horrible; please let him know.)');
 
-        if($pet->getHouseTime()->getActivityTime() < 60)
+        if($pet->getHouseTime()->getActivityTime() < 120)
             throw new \InvalidArgumentException('Trying to run activities for a pet that does not have enough time! (Ben did something horrible; please let him know.)');
 
         $this->responseService->setReloadPets();
@@ -270,7 +270,7 @@ class PetActivityService
                 $pet->increaseSafety(-$this->rng->rngNextInt(1, $safetyVom));
                 $pet->increaseEsteem(-$this->rng->rngNextInt(1, $safetyVom));
 
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
 
                 $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% threw up :(')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Sick ]))
@@ -484,7 +484,7 @@ class PetActivityService
                 === 0
             )
             {
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
 
                 PetActivityLogFactory::createUnreadLog($this->em, $pet, $description . ' %pet:' . $pet->getId() . '.name% wanted to make something, but couldn\'t find any materials to work with.')
                     ->setIcon('icons/activity-logs/house-too-full')
@@ -823,7 +823,7 @@ class PetActivityService
 
     private function doNothing(Pet $pet): void
     {
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::OTHER, null);
         PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% hung around the house.');
     }
 
@@ -1193,7 +1193,7 @@ class PetActivityService
 
             $pet->removeStatusEffect($pet->getStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE));
 
-            $this->petExperienceService->spendTime($pet, 15, PetActivityStatEnum::OTHER, null);
+            $this->petExperienceService->spendTime($pet, 30, PetActivityStatEnum::OTHER, null);
 
             $activityLog->setChanges($changes->compare($pet));
 
@@ -1255,7 +1255,7 @@ class PetActivityService
         ;
 
         $this->inventoryService->petCollectsItem($randomGoody, $pet, $pet->getName() . ' received this from their Fairy Godmother!', $activityLog);
-        $this->petExperienceService->spendTime($pet, 90, PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, 180, PetActivityStatEnum::OTHER, null);
 
         $activityLog->setChanges($changes->compare($pet));
 
@@ -1279,7 +1279,7 @@ class PetActivityService
         ;
 
         $this->inventoryService->petCollectsItem('Handicrafts Supply Box', $pet, $pet->getName() . ' received this - a gift from the gods!', $activityLog);
-        $this->petExperienceService->spendTime($pet, 30, PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, 60, PetActivityStatEnum::OTHER, null);
 
         return true;
     }

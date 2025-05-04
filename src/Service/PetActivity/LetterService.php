@@ -248,7 +248,7 @@ class LetterService
             $courierActivity->setChanges($courierChanges->compare($courier));
         }
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::OTHER, null);
 
         $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a courier delivered them a Letter from ' . $sender . '! The courier was ' . $descriptionForPet, 'icons/activity-logs/letter')
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)

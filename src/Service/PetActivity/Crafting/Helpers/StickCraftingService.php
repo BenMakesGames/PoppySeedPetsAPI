@@ -52,7 +52,7 @@ class StickCraftingService
 
         if($roll >= 12)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('String', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(2);
@@ -75,7 +75,7 @@ class StickCraftingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
         }
 
         return $activityLog;
@@ -88,7 +88,7 @@ class StickCraftingService
 
         if($roll >= 10)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('Marshmallows', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(2);
@@ -112,7 +112,7 @@ class StickCraftingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
         }
 
         return $activityLog;
@@ -125,7 +125,7 @@ class StickCraftingService
 
         if($roll >= 10)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('Sunflower', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(2);
@@ -147,7 +147,7 @@ class StickCraftingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
         }
 
         return $activityLog;
@@ -165,7 +165,7 @@ class StickCraftingService
 
         if($roll >= 8)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 90), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('White Cloth', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(2);
@@ -189,7 +189,7 @@ class StickCraftingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 45), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 90), PetActivityStatEnum::CRAFT, false);
         }
 
         return $activityLog;
@@ -202,7 +202,7 @@ class StickCraftingService
 
         if($roll >= 13)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('String', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $this->houseSimService->getState()->loseItem('Talon', 1);
@@ -226,7 +226,7 @@ class StickCraftingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
         }
 
         return $activityLog;
@@ -246,11 +246,11 @@ class StickCraftingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
         }
         else if($roll >= 13)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('String', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $this->houseSimService->getState()->loseItem('Red', 1);
@@ -275,7 +275,7 @@ class StickCraftingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
         }
 
         return $activityLog;
@@ -308,7 +308,7 @@ class StickCraftingService
 
         if($craftsCheck >= 13)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('Glue', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
 
@@ -334,7 +334,7 @@ class StickCraftingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
         }
 
         return $activityLog;
@@ -347,7 +347,7 @@ class StickCraftingService
 
         if($craftsCheck >= 13)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('Cobweb', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
 
@@ -371,7 +371,7 @@ class StickCraftingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
         }
 
         return $activityLog;
@@ -390,11 +390,11 @@ class StickCraftingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home, 'Eating' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
         }
         else if($craftsCheck >= 15)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('String', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $this->houseSimService->getState()->loseItem('Rice', 1);
@@ -420,7 +420,7 @@ class StickCraftingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
         }
 
         return $activityLog;
@@ -448,7 +448,7 @@ class StickCraftingService
 
             $this->inventoryService->petCollectsItem('Overly-long Spear', $pet, $pet->getName() . ' created this.', $activityLog);
             $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::CRAFT, true);
         }
         else
         {
@@ -457,7 +457,7 @@ class StickCraftingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
         }
 
         return $activityLog;
@@ -486,7 +486,7 @@ class StickCraftingService
 
             $this->inventoryService->petCollectsItem('This is Getting Ridiculous', $pet, $pet->getName() . ' created this.', $activityLog);
             $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::CRAFT, true);
         }
         else
         {
@@ -495,7 +495,7 @@ class StickCraftingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
         }
 
         return $activityLog;
@@ -508,7 +508,7 @@ class StickCraftingService
 
         if($roll >= 15)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $this->houseSimService->getState()->loseItem('Toadstool', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
@@ -534,7 +534,7 @@ class StickCraftingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::ARCANA ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
         }
 
         return $activityLog;
@@ -547,7 +547,7 @@ class StickCraftingService
 
         if($roll >= 12)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::CRAFT, true);
             $itemLost = $this->houseSimService->getState()->loseOneOf($this->rng, [ 'String', 'Glue' ]);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(2);
@@ -584,7 +584,7 @@ class StickCraftingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::BRAWL ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
         }
 
         return $activityLog;
@@ -604,11 +604,11 @@ class StickCraftingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
         }
         else if($roll >= 13)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $this->houseSimService->getState()->loseItem('Glass', 1);
             $pet->increaseEsteem(2);
@@ -632,7 +632,7 @@ class StickCraftingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
         }
 
         return $activityLog;
@@ -645,7 +645,7 @@ class StickCraftingService
 
         if($roll >= 15)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('Glue', 1);
             $this->houseSimService->getState()->loseItem('Sweet Beet', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
@@ -671,7 +671,7 @@ class StickCraftingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
         }
 
         return $activityLog;
@@ -684,7 +684,7 @@ class StickCraftingService
 
         if($roll >= 10)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('Glue', 1);
             $this->houseSimService->getState()->loseItem('Snail Shell', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
@@ -710,7 +710,7 @@ class StickCraftingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
         }
 
         return $activityLog;
@@ -723,7 +723,7 @@ class StickCraftingService
 
         if($roll >= 12)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::CRAFT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::CRAFT, true);
             $this->houseSimService->getState()->loseItem('Small, Yellow Plastic Bucket', 1);
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(2);
@@ -747,7 +747,7 @@ class StickCraftingService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::CRAFT, false);
         }
         return $activityLog;
     }

@@ -96,7 +96,7 @@ class PetCleaningSelfService
         $this->inventoryService->receiveItem($itemOnBody, $greenhouse->getOwner(), null, $pet->getName() . ' used your birdbath to clean this off of themselves.', LocationEnum::BIRD_BATH);
         $this->inventoryService->receiveItem($pet->getSpecies()->getSheds(), $greenhouse->getOwner(), null, $pet->getName() . ' used your birdbath to clean themselves off, and incidentally left this behind...', LocationEnum::BIRD_BATH);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 90), PetActivityStatEnum::OTHER, null);
 
         $activityLog->setChanges($changes->compare($pet));
 
@@ -148,7 +148,7 @@ class PetCleaningSelfService
             ->increaseEsteem($this->rng->rngNextInt(2, 4))
         ;
 
-        $this->petExperienceService->spendTime($pet, 5, PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, 10, PetActivityStatEnum::OTHER, null);
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% eats the ' . $itemOnBody . ' off their body in no time flat! (Ah~! A true Gourmand!)')
             ->setChanges($changes->compare($pet))
@@ -170,7 +170,7 @@ class PetCleaningSelfService
 
         $this->inventoryService->petCollectsItem($itemOnBody, $pet, $pet->getName() . ' cleaned this off their body with the help of the rain...', $activityLog);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
 
         $activityLog->setChanges($changes->compare($pet));
     }
@@ -187,7 +187,7 @@ class PetCleaningSelfService
 
         $this->inventoryService->petCollectsItem($itemOnBody, $pet, $pet->getName() . ' cleaned this off their body...', $activityLog);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
 
         $activityLog->setChanges($changes->compare($pet));
     }

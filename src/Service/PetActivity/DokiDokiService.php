@@ -82,7 +82,7 @@ class DokiDokiService
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' went out and threw their Giant Radish at some enemies, but only managed to hit one. The radish was lost in the process... and with nothing to show for it!');
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(50, 60), PetActivityStatEnum::HUNT, false);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(100, 120), PetActivityStatEnum::HUNT, false);
 
         return $activityLog;
     }
@@ -119,7 +119,7 @@ class DokiDokiService
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' went out and threw their Giant Radish at some enemies, hitting ' . $numEnemies . ' in a row! The radish was lost in the process... but they were rewarded with ' . ArrayFunctions::list_nice_sorted($loot) . '!');
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(50, 60), PetActivityStatEnum::HUNT, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(100, 120), PetActivityStatEnum::HUNT, true);
 
         foreach($loot as $item)
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' received for tossing a Giant Radish at some enemies.', $activityLog);
@@ -134,7 +134,7 @@ class DokiDokiService
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' went out and threw their Giant Radish at a weird bird monster, defeating it! The radish was lost in the process... but they were rewarded with a couple Eggs, and a Crystal Ball!');
 
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(50, 60), PetActivityStatEnum::HUNT, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(100, 120), PetActivityStatEnum::HUNT, true);
 
         $items = [
             'Egg', 'Egg', 'Crystal Ball'

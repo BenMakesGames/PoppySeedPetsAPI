@@ -63,7 +63,7 @@ class PizzaDaydream
 
         $log = $this->rng->rngNextFromArray($adventures)($petWithSkills);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
 
         $log
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Dream' ]))

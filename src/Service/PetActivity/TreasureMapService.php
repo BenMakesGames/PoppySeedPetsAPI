@@ -79,7 +79,7 @@ class TreasureMapService
             $pet->increaseEsteem(-1);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 90), PetActivityStatEnum::GATHER, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 180), PetActivityStatEnum::GATHER, false);
         }
         else {
             $prize = 'Cetgueli\'s Treasure';
@@ -96,7 +96,7 @@ class TreasureMapService
 
             $this->inventoryService->petCollectsItem($prize, $pet, $pet->getName() . ' found this by following Cetgueli\'s Treasure Map!', $activityLog);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 90), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 180), PetActivityStatEnum::GATHER, true);
 
             PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FOUND_CETGUELIS_TREASURE, $activityLog);
         }
@@ -126,7 +126,7 @@ class TreasureMapService
 
         $this->inventoryService->petCollectsItem('Magpie\'s Deal', $pet, $pet->getName() . ' got this from a Thieving Magpie in exchange for a "Gold" Idol!', $activityLog);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 90), PetActivityStatEnum::OTHER, null);
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::OUTSMARTED_A_THIEVING_MAGPIE, $activityLog);
 
@@ -163,7 +163,7 @@ class TreasureMapService
         $pet->increaseFood(-1);
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-        $this->petExperienceService->spendTime($pet, 120, PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, 240, PetActivityStatEnum::OTHER, null);
 
         $activityLog->setChanges($changes->compare($pet));
     }
@@ -239,7 +239,7 @@ class TreasureMapService
             PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::CLIMBED_THE_TOWER_OF_TRIALS, $activityLog);
         }
 
-        $this->petExperienceService->spendTime($pet, 20 + (int)floor($floor / 1.8), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, 40 + (int)floor($floor / 0.9), PetActivityStatEnum::OTHER, null);
 
         $activityLog
             ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY + $floor)
@@ -284,14 +284,14 @@ class TreasureMapService
         $pet->setTool($newInventory);
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
 
         return $activityLog;
     }
 
     public function doEggplantCurse(Pet $pet): PetActivityLog
     {
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 90), PetActivityStatEnum::OTHER, null);
 
         $agk = $this->rng->rngNextFromArray([ 'Agk!', 'Oh dang!', 'Noooo!', 'Quel dommage!', 'Welp!' ]);
 
@@ -323,7 +323,7 @@ class TreasureMapService
             '"Acorn Fugu"'
         ]);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 90), PetActivityStatEnum::OTHER, null);
 
         $tags = [ 'Adventure!' ];
 
@@ -354,7 +354,7 @@ class TreasureMapService
 
             EquipmentFunctions::unequipPet($pet);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::PROTOCOL_7, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROTOCOL_7, false);
 
             return $activityLog;
         }
@@ -372,7 +372,7 @@ class TreasureMapService
         $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this in Project-E by using a Diffie-H Key.', $activityLog);
 
         $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $activityLog;
     }
@@ -415,7 +415,7 @@ class TreasureMapService
 
         $this->petExperienceService->gainExp($pet, 1, [ $skillTrained ], $activityLog);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::GATHER, true);
 
         $activityLog->setChanges($changes->compare($pet));
 
@@ -515,7 +515,7 @@ class TreasureMapService
             EquipmentFunctions::unequipPet($pet);
         }
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::OTHER, null);
 
         $activityLog
             ->setChanges($changes->compare($pet))
@@ -568,7 +568,7 @@ class TreasureMapService
             ->addComment($pet->getName() . ' toasted this at the foot of the island\'s volcano!')
         ;
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 90), PetActivityStatEnum::OTHER, null);
 
         $activityLog->setChanges($changes->compare($pet));
 

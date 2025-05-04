@@ -87,7 +87,7 @@ class LostInTownService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]));
 
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::GATHER, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 90), PetActivityStatEnum::GATHER, true);
 
         foreach($items as $item)
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' found this in a back alley in town.', $activityLog);
@@ -113,7 +113,7 @@ class LostInTownService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]));
 
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::GATHER, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::GATHER, true);
 
         foreach($items as $item)
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' found this in a ruined settlement deep in the island\'s Micro-jungle.', $activityLog);
@@ -134,7 +134,7 @@ class LostInTownService
                     PetActivityLogTagEnum::Dark
                 ]));
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(20, 40), PetActivityStatEnum::GATHER, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(40, 80), PetActivityStatEnum::GATHER, false);
         }
         else
         {
@@ -153,7 +153,7 @@ class LostInTownService
                 ]));
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::GATHER, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::GATHER, true);
 
             foreach($items as $item)
                 $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' found this in a locker at the end of a long sewer pipe.', $activityLog);
@@ -179,7 +179,7 @@ class LostInTownService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]));
 
         $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::GATHER, true);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 90), PetActivityStatEnum::GATHER, true);
 
         foreach($items as $item)
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' found this in an abandoned pocket dimension behind a strange door somewhere in town.', $activityLog);

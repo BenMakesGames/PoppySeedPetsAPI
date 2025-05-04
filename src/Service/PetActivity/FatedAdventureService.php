@@ -127,7 +127,7 @@ class FatedAdventureService
 
             $pet->increaseEsteem(-4);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::OTHER, null);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::OTHER, null);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $log);
         }
         else
@@ -146,7 +146,7 @@ class FatedAdventureService
             foreach($loot as $item)
                 $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' found this in a mysterious puzzle room beneath the town, and in so doing fulfilled their delicious fate.', $log);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::OTHER, null);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::OTHER, null);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $log);
         }
 
@@ -170,7 +170,7 @@ class FatedAdventureService
 
             $pet->increaseEsteem(-4);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::OTHER, null);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::OTHER, null);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $log);
         }
         else
@@ -210,7 +210,7 @@ class FatedAdventureService
                 $this->inventoryService->petCollectsEnhancedItem($item, $enchantment, null, $pet, $pet->getName() . ' found this in safe in a sunken ship, and in so doing fulfilled their watery fate.', $log);
             }
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::OTHER, null);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::OTHER, null);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $log);
         }
 
@@ -232,7 +232,7 @@ class FatedAdventureService
         StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::OUT_OF_THIS_WORLD, 24 * 60);
         StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::VIVACIOUS, 24 * 60);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(10, 20), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(20, 40), PetActivityStatEnum::OTHER, null);
         $this->petExperienceService->gainExp($pet, 5, [ PetSkillEnum::SCIENCE ], $log);
 
         return $log;
@@ -254,7 +254,7 @@ class FatedAdventureService
         for($i = 0; $i < $moths; $i++)
             $this->inventoryService->petCollectsItem('Moth', $pet, $pet->getName() . ' met this moth (and several of its friends!) in the woods, and in so doing apparently fulfilled their moon-y fate.', $log);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
         $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE ], $log);
 
         return $log;
@@ -274,7 +274,7 @@ class FatedAdventureService
         $this->inventoryService->petCollectsItem('Cheese', $pet, $pet->getName() . ' found this in an abstract dimension of pure cheese, and in so doing apparently fulfilled their cheesewardly fate.', $log);
         $this->inventoryService->petCollectsItem('Cheese', $pet, $pet->getName() . ' found this in an abstract dimension of pure cheese, and in so doing apparently fulfilled their cheesewardly fate.', $log);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(5, 10), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(10, 20), PetActivityStatEnum::OTHER, null);
         $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE ], $log);
 
         return $log;
@@ -296,7 +296,7 @@ class FatedAdventureService
 
             $pet->increaseEsteem(-4);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::OTHER, null);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::OTHER, null);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $log);
         }
         else
@@ -307,7 +307,7 @@ class FatedAdventureService
 
             $this->inventoryService->petCollectsItem('Wolf\'s Favor', $pet, $pet->getName() . ' was given this by an enormous lone wolf they met in the woods, and in so doing fulfilled their furry, feral fate.', $log);
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::OTHER, null);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::OTHER, null);
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $log);
         }
 

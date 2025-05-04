@@ -70,7 +70,7 @@ class GivingTreeGatheringService
 
         if($pet->isInGuild(GuildEnum::GIZUBIS_GARDEN, 1))
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(20, 30), PetActivityStatEnum::OTHER, null);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(40, 60), PetActivityStatEnum::OTHER, null);
 
             $pet->getGuildMembership()->increaseReputation();
 
@@ -82,7 +82,7 @@ class GivingTreeGatheringService
         }
         else
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(10, 20), PetActivityStatEnum::OTHER, null);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(20, 40), PetActivityStatEnum::OTHER, null);
 
             return PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited The Giving Tree, and picked up several items that other players had discarded.')
                 ->setIcon('icons/activity-logs/giving-tree')

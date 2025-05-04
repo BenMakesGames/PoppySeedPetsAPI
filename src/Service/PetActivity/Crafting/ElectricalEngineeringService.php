@@ -164,7 +164,7 @@ class ElectricalEngineeringService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PLASTIC_PRINT, false);
         }
         else if($roll > 15)
         {
@@ -179,7 +179,7 @@ class ElectricalEngineeringService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PLASTIC_PRINT, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PLASTIC_PRINT, true);
 
             $this->inventoryService->petCollectsItem('Laser Pointer', $pet, $pet->getName() . ' 3D printed & wired this up.', $activityLog);
         }
@@ -190,7 +190,7 @@ class ElectricalEngineeringService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PLASTIC_PRINT, false);
         }
 
         return $activityLog;
@@ -216,11 +216,11 @@ class ElectricalEngineeringService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PLASTIC_PRINT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PLASTIC_PRINT, false);
         }
         else if($roll > 15)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, true);
 
             $this->houseSimService->getState()->loseItem('Plastic', 1);
             $this->houseSimService->getState()->loseItem('Magic Smoke', 1);
@@ -258,7 +258,7 @@ class ElectricalEngineeringService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
         }
 
         return $activityLog;
@@ -271,7 +271,7 @@ class ElectricalEngineeringService
 
         if($roll >= 18)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::CRAFT, false);
 
             $this->houseSimService->getState()->loseItem('Gold Bar', 1);
             $this->houseSimService->getState()->loseOneOf($this->rng, [ 'Fiberglass', 'Fiberglass Flute' ]);
@@ -291,7 +291,7 @@ class ElectricalEngineeringService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::CRAFT, false);
         }
 
         return $activityLog;
@@ -304,7 +304,7 @@ class ElectricalEngineeringService
 
         if($roll >= 18)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::PROGRAM, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Hash Table', 1);
             $this->houseSimService->getState()->loseItem('Laser Pointer', 1);
             $this->houseSimService->getState()->loseItem('Bass Guitar', 1);
@@ -322,7 +322,7 @@ class ElectricalEngineeringService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics' ]))
             ;
 
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
         }
 
@@ -336,7 +336,7 @@ class ElectricalEngineeringService
 
         if($roll <= 2)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Glass Pendulum', 1);
 
             $pet->increaseEsteem(-3);
@@ -352,7 +352,7 @@ class ElectricalEngineeringService
         }
         else if($roll >= 20)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::PROGRAM, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(120, 150), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Hash Table', 1);
             $this->houseSimService->getState()->loseItem('Lightning Sword', 1);
             $this->houseSimService->getState()->loseItem('Glass Pendulum', 1);
@@ -372,7 +372,7 @@ class ElectricalEngineeringService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
         }
 
         return $activityLog;
@@ -385,7 +385,7 @@ class ElectricalEngineeringService
 
         if($roll >= 18)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Hash Table', 1);
             $this->houseSimService->getState()->loseItem('XOR', 1);
             $this->houseSimService->getState()->loseItem('Fiberglass Bow', 1);
@@ -417,7 +417,7 @@ class ElectricalEngineeringService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, false);
         }
 
         return $activityLog;
@@ -430,7 +430,7 @@ class ElectricalEngineeringService
 
         if($roll >= 19)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Laser Pointer', 1);
             $this->houseSimService->getState()->loseItem('Alien Tissue', 1);
             $this->houseSimService->getState()->loseItem('Sylvan Fishing Rod', 1);
@@ -449,7 +449,7 @@ class ElectricalEngineeringService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
         }
 
         return $activityLog;
@@ -470,7 +470,7 @@ class ElectricalEngineeringService
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ], $activityLog);
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::SMITH, false);
             }
             else
             {
@@ -480,7 +480,7 @@ class ElectricalEngineeringService
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ], $activityLog);
-                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+                $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::SMITH, false);
             }
         }
         else if($roll >= 18)
@@ -497,7 +497,7 @@ class ElectricalEngineeringService
             $this->inventoryService->petCollectsItem('Buggerang', $pet, $description, $activityLog);
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::SMITH, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::SMITH, true);
         }
         else
         {
@@ -506,7 +506,7 @@ class ElectricalEngineeringService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::SMITH, false);
         }
 
         return $activityLog;
@@ -528,11 +528,11 @@ class ElectricalEngineeringService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
         }
         else if($roll >= 15)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Magic Smoke', 1);
             $this->houseSimService->getState()->loseItem('Laser Pointer', 1);
             $this->houseSimService->getState()->loseItem('Toy Alien Gun', 1);
@@ -551,7 +551,7 @@ class ElectricalEngineeringService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
         }
 
         return $activityLog;
@@ -572,11 +572,11 @@ class ElectricalEngineeringService
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
         }
         else if($roll >= 20)
         {
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 120), PetActivityStatEnum::PROGRAM, true);
             $this->houseSimService->getState()->loseItem('Magic Smoke', 1);
             $this->houseSimService->getState()->loseItem('Lightning Sword', 1);
             $this->houseSimService->getState()->loseItem('Alien Tissue', 1);
@@ -595,7 +595,7 @@ class ElectricalEngineeringService
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
-            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 120), PetActivityStatEnum::PROGRAM, false);
         }
 
         return $activityLog;

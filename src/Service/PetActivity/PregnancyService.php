@@ -274,7 +274,7 @@ class PregnancyService
 
         $this->em->remove($pregnancy);
 
-        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::OTHER, null);
+        $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(90, 150), PetActivityStatEnum::OTHER, null);
 
         // applied in a slightly weird order, because I-dunno
         $pet
