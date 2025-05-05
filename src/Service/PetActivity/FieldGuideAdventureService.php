@@ -29,7 +29,6 @@ use App\Service\PetActivity\FieldGuide\ShipwreckedFleet;
 use App\Service\PetActivity\FieldGuide\Whales;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Exclude;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class FieldGuideAdventureService
 {
