@@ -129,8 +129,8 @@ class SendPetsController
                     if(
                         !$petWithSkills->getPet()->hasMerit(MeritEnum::NATURAL_CHANNEL) &&
                         $petWithSkills->getPet()->getHallucinogenLevel() === 'none' &&
-                        $petWithSkills->getPet()->getTool()->getItem()->getTool()->getAdventureDescription() !== 'The Umbra' &&
-                        $petWithSkills->getPet()->getTool()->getEnchantment()->getEffects()->getAdventureDescription() !== 'The Umbra'
+                        $petWithSkills->getPet()->getTool()?->getItem()->getTool()->getAdventureDescription() !== 'The Umbra' &&
+                        $petWithSkills->getPet()->getTool()?->getEnchantment()?->getEffects()->getAdventureDescription() !== 'The Umbra'
                     )
                     {
                         return false;
@@ -140,8 +140,8 @@ class SendPetsController
                 case 'access to Project-E':
                     if(
                         !$petWithSkills->getPet()->hasMerit(MeritEnum::PROTOCOL_7) &&
-                        $petWithSkills->getPet()->getTool()->getItem()->getTool()->getAdventureDescription() !== 'Project-E' &&
-                        $petWithSkills->getPet()->getTool()->getEnchantment()->getEffects()->getAdventureDescription() !== 'Project-E'
+                        $petWithSkills->getPet()->getTool()?->getItem()->getTool()->getAdventureDescription() !== 'Project-E' &&
+                        $petWithSkills->getPet()->getTool()?->getEnchantment()?->getEffects()->getAdventureDescription() !== 'Project-E'
                     )
                     {
                         return false;
