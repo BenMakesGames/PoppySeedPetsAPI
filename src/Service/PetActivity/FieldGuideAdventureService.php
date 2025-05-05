@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace App\Service\PetActivity;
 
-use App\Entity\Inventory;
 use App\Entity\UserFieldGuideEntry;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
@@ -22,13 +21,13 @@ use App\Model\PetChanges;
 use App\Service\PetActivity\FieldGuide\Abandondero;
 use App\Service\PetActivity\FieldGuide\Argopelter;
 use App\Service\PetActivity\FieldGuide\CosmicGoat;
+use App\Service\PetActivity\FieldGuide\FieldGuideAdventureResults;
 use App\Service\PetActivity\FieldGuide\HugeToad;
 use App\Service\PetActivity\FieldGuide\IleVolcan;
 use App\Service\PetActivity\FieldGuide\OnionBoy;
 use App\Service\PetActivity\FieldGuide\ShipwreckedFleet;
 use App\Service\PetActivity\FieldGuide\Whales;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\DependencyInjection\Attribute\Exclude;
 
 class FieldGuideAdventureService
 {
@@ -88,22 +87,5 @@ class FieldGuideAdventureService
         }
 
         return $results;
-    }
-}
-
-#[Exclude]
-final class FieldGuideAdventureResults
-{
-    public function __construct(
-        public readonly string $message,
-
-        /** @var string[] */
-        public readonly array $tags,
-
-        /** @var Inventory[] */
-        public readonly array $loot
-    )
-    {
-
     }
 }

@@ -15,9 +15,8 @@ namespace App\Service\PetActivity\FieldGuide;
 
 use App\Entity\User;
 use App\Model\ComputedPetSkills;
-use App\Service\PetActivity\FieldGuideAdventureResults;
 
-class IleVolcan
+class IleVolcan implements FieldGuideAdventureInterface
 {
     /**
      * @param ComputedPetSkills[] $petsWithSkills

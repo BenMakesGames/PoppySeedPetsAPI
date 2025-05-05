@@ -13,16 +13,27 @@ declare(strict_types=1);
 
 namespace App\Service\PetActivity\FieldGuide;
 
+use App\Entity\Inventory;
 use App\Entity\User;
-use App\Model\ComputedPetSkills;
+use Symfony\Component\DependencyInjection\Attribute\Exclude;
 
-class OnionBoy implements FieldGuideAdventureInterface
+interface FieldGuideAdventureInterface
 {
-    /**
-     * @param ComputedPetSkills[] $petsWithSkills
-     */
-    public function adventure(User $user, array $petsWithSkills): FieldGuideAdventureResults
-    {
+    function adventure(User $user, array $petsWithSkills): FieldGuideAdventureResults;
+}
 
+#[Exclude]
+final class FieldGuideAdventureResults
+{
+    public function __construct(
+        public readonly string $message,
+
+        /** @var Inventory[] */
+        public readonly array $loot,
+
+        /** @var string[] */
+        public readonly array $tags,
+    )
+    {
     }
 }

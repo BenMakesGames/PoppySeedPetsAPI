@@ -14,16 +14,86 @@ declare(strict_types=1);
 namespace App\Service\PetActivity\FieldGuide;
 
 use App\Entity\User;
+use App\Enum\PetActivityLogTagEnum;
+use App\Functions\ActivityHelpers;
+use App\Functions\ArrayFunctions;
+use App\Functions\ItemRepository;
+use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
+use App\Functions\SpiceRepository;
 use App\Model\ComputedPetSkills;
-use App\Service\PetActivity\FieldGuideAdventureResults;
+use App\Service\InventoryService;
+use App\Service\IRandom;
+use Doctrine\ORM\EntityManagerInterface;
 
-class CosmicGoat
+class CosmicGoat implements FieldGuideAdventureInterface
 {
+    public function __construct(
+        private readonly IRandom $rng,
+        private readonly InventoryService $inventoryService,
+        private readonly EntityManagerInterface $em,
+    )
+    {
+    }
+
     /**
      * @param ComputedPetSkills[] $petsWithSkills
      */
     public function adventure(User $user, array $petsWithSkills): FieldGuideAdventureResults
     {
+        $loot = [];
 
+        $listOfPets = ArrayFunctions::list_nice(array_map(
+            fn (ComputedPetSkills $pet) => ActivityHelpers::PetName($pet->getPet()),
+            $petsWithSkills
+        ));
+
+        $cosmic = SpiceRepository::findOneByName($this->em, 'Cosmic');
+        $creamyMilk = ItemRepository::findOneByName($this->em, 'Creamy Milk');
+
+        foreach($petsWithSkills as $pet)
+        {
+            $skillRoll = $this->rng->rngNextInt(1, 20 + $pet->getArcana()->getTotal() + $pet->getDexterity()->getTotal() + $pet->getGatheringBonus()->getTotal() + $pet->getUmbraBonus()->getTotal());
+
+            if($skillRoll >= 25)
+                $milkCount = 3;
+            else if($skillRoll >= 15)
+                $milkCount = 2;
+            else
+                $milkCount = 1;
+
+            $logText = count($petsWithSkills) === 1
+                ? "$listOfPets went to one of the rivers that flows from the Cosmic Goat and collected $milkCount Creamy Milk!"
+                : $listOfPets . ' went to one of the rivers that flows from the Cosmic Goat. ' . ActivityHelpers::PetName($pet->getPet()) . " collected $milkCount Creamy Milk!";
+
+            $log = PetActivityLogFactory::createReadLog($this->em, $pet->getPet(), $logText)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::The_Umbra,
+                    PetActivityLogTagEnum::Gathering,
+                ]))
+            ;
+
+            for($i = 0; $i < $milkCount; $i++)
+            {
+                $item = $this->inventoryService->petCollectsEnhancedItem($creamyMilk, null, $cosmic, $pet->getPet(), $listOfPets . ' collected this from one of the rivers that flows from the Cosmic Goat.', $log, mayImmediatelyEatIfHungry: false);
+
+                if($item)
+                    $loot[] = $item;
+            }
+        }
+
+        $lootList = ArrayFunctions::list_nice(array_map(
+            fn($item) => $item->getItem()->getName(),
+            $loot
+        ));
+
+        return new FieldGuideAdventureResults(
+            message: "$listOfPets went to one of the rivers that flows from the Cosmic Goat and scooped up some milk, collecting $lootList!",
+            loot: $loot,
+            tags: [
+                PetActivityLogTagEnum::The_Umbra,
+                PetActivityLogTagEnum::Gathering,
+            ]
+        );
     }
 }

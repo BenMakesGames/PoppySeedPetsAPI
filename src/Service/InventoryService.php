@@ -182,7 +182,15 @@ class InventoryService
      * @throws PSPNotFoundException
      * @throws EnumInvalidValueException
      */
-    public function petCollectsEnhancedItem(string|Item $item, ?Enchantment $bonus, ?Spice $spice, Pet $pet, string $comment, PetActivityLog $activityLog): ?Inventory
+    public function petCollectsEnhancedItem(
+        string|Item $item,
+        ?Enchantment $bonus,
+        ?Spice $spice,
+        Pet $pet,
+        string $comment,
+        PetActivityLog $activityLog,
+        bool $mayImmediatelyEatIfHungry = true
+    ): ?Inventory
     {
         $item = $this->getItemWithChanceForLuckyTransformation($item);
 
@@ -462,7 +470,7 @@ class InventoryService
             return null;
         }
 
-        if($item->getFood() !== null && count($pet->getLunchboxItems()) === 0 && $this->rng->rngNextInt(1, 20) < 10 - $pet->getFood() - $pet->getJunk() / 2)
+        if($mayImmediatelyEatIfHungry && $item->getFood() !== null && count($pet->getLunchboxItems()) === 0 && $this->rng->rngNextInt(1, 20) < 10 - $pet->getFood() - $pet->getJunk() / 2)
         {
             if($this->eatingService->doEat($pet, new FoodWithSpice($item, $spice), $activityLog))
                 return null;
