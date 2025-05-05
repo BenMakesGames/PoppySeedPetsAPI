@@ -17,6 +17,7 @@ namespace App\Functions;
 use App\Entity\Merit;
 use App\Entity\Pet;
 use App\Enum\MeritEnum;
+use App\Enum\PetPregnancyStyleEnum;
 use App\Model\MeritInfo;
 
 class MeritFunctions
@@ -58,7 +59,7 @@ class MeritFunctions
 
             // some merits have additional requirements:
             $available = match($merit) {
-                MeritEnum::VOLAGAMY => $petAgeInDays >= 14,
+                MeritEnum::VOLAGAMY => $petAgeInDays >= 14 && $pet->getSpecies()->getPregnancyStyle() !== PetPregnancyStyleEnum::IMPOSSIBLE,
                 MeritEnum::INTROSPECTIVE => $pet->getRelationshipCount() >= 3,
 
                 // stat-based merits:

@@ -37,12 +37,15 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/item/philosophersStone")]
 class PhilosophersStoneController
 {
+    // should be kept in-sync with the list in philosophers-stone.component.ts
+    // (or make a new endpoint to get eligible plushies... that'd be cool)
     private const array PLUSHIES = [
         'Bulbun Plushy' => [ 'species' => 'Bulbun', 'colorA' => 'f8d592', 'colorB' => 'd4b36e' ],
         'Peacock Plushy' => [ 'species' => 'Peacock', 'colorA' => 'ffe9d9', 'colorB' => 'a47dd7' ],
         'Rainbow Dolphin Plushy' => [ 'species' => 'Rainbow Dolphin', 'colorA' => '64ea74', 'colorB' => 'ea64de' ],
         'Sneqo Plushy' => [ 'species' => 'Sneqo', 'colorA' => '269645', 'colorB' => 'c8bb67' ],
         'Phoenix Plushy' => [ 'species' => 'Phoenix', 'colorA' => 'b03d3d', 'colorB' => 'f5e106' ],
+        'Dancing Sword' => [ 'species' => 'Dancing Sword', 'colorA' => '846b38', 'colorB' => '843838' ],
     ];
 
     #[Route("/{inventory}/use", methods: ["POST"])]
