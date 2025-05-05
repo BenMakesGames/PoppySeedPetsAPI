@@ -24,6 +24,7 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetLocationEnum;
+use App\Enum\PetPregnancyStyleEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\UserStatEnum;
 use App\Functions\MeritRepository;
@@ -55,6 +56,12 @@ class PregnancyService
 
     public function getPregnant(Pet $pet1, Pet $pet2): void
     {
+        if(
+            $pet1->getSpecies()->getPregnancyStyle() === PetPregnancyStyleEnum::IMPOSSIBLE ||
+            $pet2->getSpecies()->getPregnancyStyle() === PetPregnancyStyleEnum::IMPOSSIBLE
+        )
+            return;
+
         if ($pet1->getIsFertile() && $pet1->hasMerit(MeritEnum::VOLAGAMY) && !$pet1->getPregnancy())
             $this->createPregnancy($pet1, $pet2);
 
