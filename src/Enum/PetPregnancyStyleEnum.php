@@ -18,6 +18,7 @@ final class PetPregnancyStyleEnum
 {
     use FakeEnum;
 
+    public const int IMPOSSIBLE = -1;
     public const int EGG = 0;
     public const int WOMB = 1;
 }
