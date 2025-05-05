@@ -16,9 +16,15 @@ namespace App\Service\PetActivity\FieldGuide;
 use App\Entity\User;
 use App\Model\ComputedPetSkills;
 use App\Service\PetActivity\FieldGuideAdventureResults;
+use Doctrine\ORM\EntityManagerInterface;
 
 class HugeToad
 {
+    public function __construct(private readonly EntityManagerInterface $em)
+    {
+        
+    }
+
     /**
      * @param ComputedPetSkills[] $petsWithSkills
      */

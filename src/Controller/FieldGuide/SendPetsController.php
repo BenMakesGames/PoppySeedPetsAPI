@@ -32,6 +32,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Exclude;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -39,10 +40,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[Route("/fieldGuide")]
 class SendPetsController
 {
-    #[Route("/sendPets", methods: ["GET"])]
+    #[Route("/sendPets", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function sendPets(
-        #[MapQueryString] SendPetsRequest $request,
+        #[MapRequestPayload] SendPetsRequest $request,
 
         UserAccessor $userAccessor, EntityManagerInterface $em, ResponseService $responseService,
         FieldGuideAdventureService $fieldGuideAdventureService,
@@ -53,7 +54,7 @@ class SendPetsController
         /** @var UserFieldGuideEntry $fieldGuideEntry */
         $fieldGuideEntry = $em->getRepository(UserFieldGuideEntry::class)
             ->createQueryBuilder('e')
-            ->join(FieldGuideEntry::class, 'f')
+            ->leftJoin('e.entry', 'f')
             ->andWhere('e.user = :user')
             ->andWhere('f.name = :entryName')
             ->setParameter('user', $user->getId())
@@ -168,11 +169,11 @@ class SendPetsController
     }
 }
 
-#[Exclude]
 final class SendPetsRequest
 {
-    #[Assert\Count(min: 1, max: 3)]
+    #[Assert\Count(min: 1, max: 4)]
     public array $petIds = [];
 
+    #[Assert\NotBlank]
     public string $entry;
 }

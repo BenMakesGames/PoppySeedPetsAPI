@@ -34,8 +34,16 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class FieldGuideAdventureService
 {
     public function __construct(
-        private readonly ContainerInterface $container,
         private readonly EntityManagerInterface $em,
+
+        private readonly Abandondero $abandondero,
+        private readonly Argopelter $argopelter,
+        private readonly CosmicGoat $cosmicGoat,
+        private readonly HugeToad $hugeToad,
+        private readonly IleVolcan $ileVolcan,
+        private readonly OnionBoy $onionBoy,
+        private readonly ShipwreckedFleet $shipwreckedFleet,
+        private readonly Whales $whales,
     )
     {
     }
@@ -45,17 +53,17 @@ class FieldGuideAdventureService
      */
     public function adventure(UserFieldGuideEntry $fieldGuideEntry, array $petsWithSkills): FieldGuideAdventureResults
     {
-        $handler = $this->container->get(match($fieldGuideEntry->getEntry()->getName())
+        $handler = match($fieldGuideEntry->getEntry()->getName())
         {
-            'Abandondero' => Abandondero::class,
-            'Argopelter' => Argopelter::class,
-            'Cosmic Goat' => CosmicGoat::class,
-            'Huge Toad' => HugeToad::class,
-            'Île Volcan' => IleVolcan::class,
-            'Onion Boy' => OnionBoy::class,
-            'Shipwrecked Fleet' => ShipwreckedFleet::class,
-            'Whales' => Whales::class,
-        });
+            'Abandondero' => $this->abandondero,
+            'Argopelter' => $this->argopelter,
+            'Cosmic Goat' => $this->cosmicGoat,
+            'Huge Toad' => $this->hugeToad,
+            'Île Volcan' => $this->ileVolcan,
+            'Onion Boy' => $this->onionBoy,
+            'Shipwrecked Fleet' => $this->shipwreckedFleet,
+            'Whales' => $this->whales,
+        };
 
         $petChanges = [];
 
@@ -65,7 +73,6 @@ class FieldGuideAdventureService
             $petChanges[$pet->getPet()->getId()] = new PetChanges($pet->getPet());
         }
 
-        /** @var FieldGuideAdventureResults $results */
         $results = $handler->adventure($fieldGuideEntry->getUser(), $petsWithSkills);
 
         $tags = PetActivityLogTagHelpers::findByNames($this->em, $results->tags);
