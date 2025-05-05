@@ -14,12 +14,23 @@ declare(strict_types=1);
 namespace App\Service\PetActivity\FieldGuide;
 
 use App\Entity\User;
+use App\Enum\PetActivityLogTagEnum;
+use App\Functions\ActivityHelpers;
+use App\Functions\ArrayFunctions;
+use App\Functions\PetActivityLogFactory;
+use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
+use App\Service\InventoryService;
+use App\Service\IRandom;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HugeToad implements FieldGuideAdventureInterface
 {
-    public function __construct(private readonly EntityManagerInterface $em)
+    public function __construct(
+        private readonly IRandom $rng,
+        private readonly InventoryService $inventoryService,
+        private readonly EntityManagerInterface $em,
+    )
     {
         
     }
@@ -29,6 +40,62 @@ class HugeToad implements FieldGuideAdventureInterface
      */
     public function adventure(User $user, array $petsWithSkills): FieldGuideAdventureResults
     {
+        $loot = [];
 
+        $listOfPets = ArrayFunctions::list_nice(array_map(
+            fn (ComputedPetSkills $pet) => ActivityHelpers::PetName($pet->getPet()),
+            $petsWithSkills
+        ));
+
+        foreach($petsWithSkills as $pet)
+        {
+            $individualLoot = [];
+            $skillRoll = $this->rng->rngNextInt(1, 20 + $pet->getArcana()->getTotal() + $pet->getDexterity()->getTotal() + $pet->getGatheringBonus()->getTotal() + $pet->getUmbraBonus()->getTotal());
+
+            if($skillRoll >= 25)
+                $individualLoot[] = 'Toad Legs';
+            else if($skillRoll >= 15)
+                $individualLoot[] = $this->rng->rngNextFromArray([ 'Toad Legs', 'Toadstool' ]);
+            else
+                $individualLoot[] = 'Toadstool';
+
+            $logText = count($petsWithSkills) === 1
+                ? $listOfPets . ' went into the woods and wrestled a Giant Toad. They got ' . ArrayFunctions::list_nice($individualLoot) . '.'
+                : $listOfPets . ' went into the woods and wrestled a Giant Toad. ' . ActivityHelpers::PetName($pet->getPet()) . ' got ' . ArrayFunctions::list_nice($individualLoot) . '.';
+
+            $log = PetActivityLogFactory::createReadLog($this->em, $pet->getPet(), $logText)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::The_Umbra,
+                    PetActivityLogTagEnum::Gathering,
+                ]))
+            ;
+
+            foreach($individualLoot as $itemName)
+            {
+                $item = $this->inventoryService->petCollectsItem($itemName, $pet->getPet(), $listOfPets . ' collected this from one of the rivers that flows from the Cosmic Goat.', $log, mayImmediatelyEatIfHungry: false);
+
+                if($item)
+                    $loot[] = $item;
+            }
+        }
+
+        $lootList = ArrayFunctions::list_nice(array_map(
+            fn($item) => $item->getItem()->getName(),
+            $loot
+        ));
+
+        $petNames = ArrayFunctions::list_nice(array_map(
+            fn (ComputedPetSkills $pet) => $pet->getPet()->getName(),
+            $petsWithSkills
+        ));
+
+        return new FieldGuideAdventureResults(
+            message: "$petNames went into the woods and wrestled a Giant Toad, collecting $lootList!",
+            loot: $loot,
+            tags: [
+                PetActivityLogTagEnum::The_Umbra,
+                PetActivityLogTagEnum::Gathering,
+            ]
+        );
     }
 }

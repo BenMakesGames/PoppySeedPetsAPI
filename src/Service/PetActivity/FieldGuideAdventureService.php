@@ -79,7 +79,7 @@ class FieldGuideAdventureService
         {
             $log = PetActivityLogFactory::createReadLog($this->em, $pet->getPet(), $results->message)
                 ->addTags($tags)
-                ->setChanges($petChanges[$pet->getPet()->getId()])
+                ->setChanges($petChanges[$pet->getPet()->getId()]->compare($pet->getPet()))
             ;
 
             foreach($results->loot as $loot)

@@ -507,9 +507,15 @@ class InventoryService
         return $i;
     }
 
-    public function petCollectsItem(Item|string $item, Pet $pet, string $comment, PetActivityLog $activityLog): ?Inventory
+    public function petCollectsItem(
+        Item|string $item,
+        Pet $pet,
+        string $comment,
+        PetActivityLog $activityLog,
+        bool $mayImmediatelyEatIfHungry = true
+    ): ?Inventory
     {
-        return $this->petCollectsEnhancedItem($item, null, null, $pet, $comment, $activityLog);
+        return $this->petCollectsEnhancedItem($item, null, null, $pet, $comment, $activityLog, $mayImmediatelyEatIfHungry);
     }
 
     public function petAttractsRandomBug(Pet $pet, string $bugName = null): ?Inventory

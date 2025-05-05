@@ -87,8 +87,13 @@ class CosmicGoat implements FieldGuideAdventureInterface
             $loot
         ));
 
+        $petNames = ArrayFunctions::list_nice(array_map(
+            fn (ComputedPetSkills $pet) => $pet->getPet()->getName(),
+            $petsWithSkills
+        ));
+
         return new FieldGuideAdventureResults(
-            message: "$listOfPets went to one of the rivers that flows from the Cosmic Goat and scooped up some milk, collecting $lootList!",
+            message: "$petNames went to one of the rivers that flows from the Cosmic Goat and scooped up some milk, collecting $lootList!",
             loot: $loot,
             tags: [
                 PetActivityLogTagEnum::The_Umbra,
