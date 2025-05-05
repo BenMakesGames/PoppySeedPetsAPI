@@ -20,34 +20,34 @@ use Symfony\Component\Serializer\Attribute\Groups;
 final class PetShelterPet
 {
     public const array PetNames = [
-        'Aalina', 'Aaron', 'Abrahil', 'Addy', 'Aedoc', 'Aelfric', 'Aimery', 'Alain', 'Alda', 'Aldreda', 'Aldus',
+        'Aalina', 'Aaron', 'Alcubierre', 'Abrahil', 'Addy', 'Aedoc', 'Aelfric', 'Aimery', 'Alain', 'Alda', 'Aldreda', 'Aldus',
         'Alienora', 'Aliette', 'Amée', 'Amis', 'Amphelise', 'Arlotto', 'Artaca', 'Auberi', 'Aureliana',
 
-        'Batu', 'Belka', 'Berislav', 'Bezzhen', 'Biedeluue', 'Blicze', 'Bogdan', 'Bogdana', 'Bogumir', 'Borscht', 'Bradan',
+        'Batu', 'Belka', 'Berislav', 'Bezzhen', 'Biedeluue', 'Blaise', 'Blicze', 'Bogdan', 'Bogdana', 'Bogumir', 'Bohr', 'Borscht', 'Bradan',
         'Bratomil',
 
-        'Cat', 'Cateline', 'Ceinguled', 'Ceri', 'Ceslinus', 'Chedomir', 'Christien', 'Clement', 'Coilean', 'Col', 'Cookie', 'Cynbel',
+        'Cat', 'Cateline', 'Ceinguled', 'Ceri', 'Ceslinus', 'Chedomir', 'Christien', 'Clement', 'Coilean', 'Col', 'Cookie', 'Curie', 'Cynbel',
         'Cyra', 'Czestobor',
 
-        'Dagena', 'Dalibor', 'Denyw', 'Dicun', 'Disideri', 'Dmitrei', 'Dog', 'Dragomir', 'Dye',
+        'Dagena', 'Dalibor', 'Denyw', 'Dicun', 'Disideri', 'Dmitrei', 'Dog', 'Dorothy', 'Dragomir', 'Dye',
 
-        'Eda', 'Eileve', 'Elena', 'Elis', 'Elric', 'Emilija', 'Enguerrand', 'Enim', 'Enynny', 'Erasmus', 'Estienne',
+        'Eda', 'Eileve', 'Elena', 'Elis', 'Elric', 'Emilija', 'Enguerrand', 'Enim', 'Enynny', 'Erasmus', 'Estienne', 'Euler',
         'Eve',
 
-        'Felix', 'Fennel', 'Fiora', 'Firmin', 'Fluri', 'Frotlildis',
+        'Felix', 'Fennel', 'Fiora', 'Firmin', 'Fluri', 'Francis', 'Fritz', 'Frotlildis',
 
         'Galine', 'Garnier', 'Garsea', 'Gene', 'Gennoveus', 'Genoveva', 'Geoffroi', 'Gidie', 'Giliana', 'Godelive', 'Gomes',
         'Gosse', 'Gregory', 'Gubin', 'Guiscard', 'Gwennan',
 
-        'Hamon', 'Hippu', 'Honey', 'Hopcyn', 'Hunfrid',
+        'Hamon', 'Hans', 'Hideki', 'Hippu', 'Honey', 'Hopcyn', 'Hunfrid',
 
         'Ibb', 'Idzi', 'Ingot', 'Ink', 'Iron', 'Isle', 'Ismo',
 
-        'Jadviga', 'Jehanne', 'Jocosa', 'Josse', 'Juniper', 'Jurian',
+        'Jadviga', 'Jehanne', 'Jocosa', 'Johannes', 'Josse', 'Juniper', 'Jurian',
 
-        'Kaija', 'Kain', 'Kale', 'Karma', 'Kazimir', 'Kima', 'Kinborough', 'Kint', 'Kirik', 'Klara', 'Kryspin', 'Kukka',
+        'Kaija', 'Kain', 'Kale', 'Karma', 'Kazimir', 'Kepler', 'Kima', 'Kinborough', 'Kint', 'Kirik', 'Klara', 'Kryspin', 'Kukka',
 
-        'Larkin', 'Leodhild', 'Leon', 'Levi', 'Lorencio', 'Lowri', 'Lucass', 'Ludmila', 'Lumi',
+        'Larkin', 'Leland', 'Leodhild', 'Leon', 'Levi', 'Lorencio', 'Lowri', 'Lucass', 'Ludmila', 'Lumi',
 
         'Maccos', 'Maeldoi', 'Magdalena', 'Makrina', 'Malik', 'Margaret', 'Marsley', 'Masayasu', 'Mateline',
         'Mathias', 'Matty', 'Maurifius', 'Mayonnaise', 'Meduil', 'Melita', 'Meoure', 'Merewen', 'Milian', 'Millicent', 'Mold',
@@ -55,11 +55,11 @@ final class PetShelterPet
 
         'Nascimbene', 'Nate', 'Newt', 'Nicholina', 'Nilus', 'Noe', 'Noll', 'Nuño',
 
-        'Onfroi', 'Orchid', 'Oregano', 'Origami', 'Oswyn', 'Owen',
+        'Octavio', 'Onfroi', 'Orchid', 'Oregano', 'Origami', 'Oswyn', 'Otto', 'Owen',
 
-        'Paperclip', 'Perkhta', 'Pesczek', 'Poppy', 'Pridbjørn', 'Pyry',
+        'Pascal', 'Paperclip', 'Perkhta', 'Pesczek', 'Poppy', 'Pridbjørn', 'Pyry',
 
-        'Radomil', 'Raven', 'Regina', 'Reina', 'Rihanna', 'Rimoete', 'Rocatos', 'Roger', 'Rosehip', 'Rostislav', 'Rozalia', 'Rum', 'Runne', 'Ryd',
+        'Radomil', 'Raven', 'Raymond', 'Regina', 'Reina', 'Rihanna', 'Rimoete', 'Rocatos', 'Roger', 'Rosalind', 'Rosehip', 'Rostislav', 'Rozalia', 'Rum', 'Runne', 'Ryd',
 
         'Saewine', 'Sancha', 'Sandivoi', 'Schmitty', 'Seppo', 'Sisu', 'Skenfrith', 'Sulimir', 'Sunnifa', 'Sybil',
 
@@ -69,7 +69,7 @@ final class PetShelterPet
 
         'Vasilii', 'Venceslaus', 'Vesi', 'Vine', 'Vitseslav', 'Vivka',
 
-        'Wallace', 'Wilkin', 'Wilmot', 'Wrexham', 'Wybert', 'Wymond',
+        'Wallace', 'Walter', 'Wilkin', 'Wilmot', 'Wolfgang', 'Wrexham', 'Wybert', 'Wymond',
 
         'Xanadu', 'Xi', 'Ximeno', 'Xoxo',
 
