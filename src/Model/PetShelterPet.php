@@ -57,7 +57,7 @@ final class PetShelterPet
 
         'Octavio', 'Onfroi', 'Orchid', 'Oregano', 'Origami', 'Oswyn', 'Otto', 'Owen',
 
-        'Pascal', 'Paperclip', 'Perkhta', 'Pesczek', 'Poppy', 'Pridbjørn', 'Pyry',
+        'Paperclip', 'Pascal', 'Perkhta', 'Pesczek', 'Poppy', 'Pridbjørn', 'Pyry',
 
         'Radomil', 'Raven', 'Raymond', 'Regina', 'Reina', 'Rihanna', 'Rimoete', 'Rocatos', 'Roger', 'Rosalind', 'Rosehip', 'Rostislav', 'Rozalia', 'Rum', 'Runne', 'Ryd',
 
