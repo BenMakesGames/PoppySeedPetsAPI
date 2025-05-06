@@ -182,6 +182,9 @@ class MagicBindingService
 
                 if($this->houseSimService->hasInventory('Blackberries') && $this->houseSimService->hasInventory('Goodberries'))
                     $possibilities[] = new ActivityCallback($this->createTwiggenBerries(...), 16);
+
+                if($this->houseSimService->hasInventory('Glass Pendulum'))
+                    $possibilities[] = new ActivityCallback($this->createAosSi(...), 8);
             }
 
             if($this->houseSimService->hasInventory('Leaf Spear') && $this->houseSimService->hasInventory('Mint'))
@@ -346,6 +349,9 @@ class MagicBindingService
             // no quint??
             $magicSmokeWeight = 6;
         }
+
+        if($this->houseSimService->hasInventory('Aos Sí') && $this->houseSimService->hasInventory('Blackonite'))
+            $possibilities[] = new ActivityCallback($this->createBeanSidhe(...), 8);
 
         if($this->houseSimService->hasInventory('Cattail') && $this->houseSimService->hasInventory('Moon Pearl') && $this->houseSimService->hasInventory('Fish'))
             $possibilities[] = new ActivityCallback($this->createMolly(...), 8);
@@ -2221,7 +2227,7 @@ class MagicBindingService
 
             $this->inventoryService->petCollectsItem('Kokopelli', $pet, $pet->getName() . ' bound this.', $activityLog);
 
-            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA, PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA, PetSkillEnum::MUSIC ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
         }
 
@@ -3662,6 +3668,79 @@ class MagicBindingService
 
         $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::ARCANA ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, false);
+
+        return $activityLog;
+    }
+
+    public function createAosSi(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $skillCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+
+        if($skillCheck < 20)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Glass Pendulum, but couldn\'t get the enchantment to stick...', 'icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+        }
+        else // success!
+        {
+            $this->houseSimService->getState()->loseItem('Quintessence', 1);
+            $this->houseSimService->getState()->loseItem('Glass Pendulum', 1);
+            $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a Glass Pendulum, creating an Aos Sí!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Magic_binding,
+                    PetActivityLogTagEnum::Location_At_Home,
+                ]))
+            ;
+
+            $this->inventoryService->petCollectsItem('Aos Sí', $pet, $pet->getName() . ' bound this.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+        }
+
+        return $activityLog;
+    }
+
+    public function createBeanSidhe(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $skillCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+
+        if($skillCheck < 27)
+        {
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to cast a spell with an Aos Sí, but wasn\'t able to get anywhere...', 'icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+        }
+        else // success!
+        {
+            $this->houseSimService->getState()->loseItem('Aos Sí', 1);
+            $this->houseSimService->getState()->loseItem('Blackonite', 1);
+
+            $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% used an Aos Sí to absorb a piece of Blackonite, creating a Bean Sídhe!', '')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 27)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Magic_binding,
+                    PetActivityLogTagEnum::Location_At_Home,
+                ]))
+            ;
+
+            $this->inventoryService->petCollectsItem('Bean Sídhe', $pet, $pet->getName() . ' created this.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+        }
 
         return $activityLog;
     }
