@@ -15,6 +15,7 @@ namespace App\Service\PetActivity\FieldGuide;
 
 use App\Entity\User;
 use App\Enum\PetActivityLogTagEnum;
+use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
@@ -22,6 +23,7 @@ use App\Functions\PetActivityLogTagHelpers;
 use App\Model\ComputedPetSkills;
 use App\Service\InventoryService;
 use App\Service\IRandom;
+use App\Service\PetExperienceService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HugeToad implements FieldGuideAdventureInterface
@@ -30,6 +32,7 @@ class HugeToad implements FieldGuideAdventureInterface
         private readonly IRandom $rng,
         private readonly InventoryService $inventoryService,
         private readonly EntityManagerInterface $em,
+        private readonly PetExperienceService $petExperienceService,
     )
     {
         
@@ -65,10 +68,12 @@ class HugeToad implements FieldGuideAdventureInterface
 
             $log = PetActivityLogFactory::createReadLog($this->em, $pet->getPet(), $logText)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
-                    PetActivityLogTagEnum::The_Umbra,
-                    PetActivityLogTagEnum::Gathering,
+                    PetActivityLogTagEnum::Fighting,
+                    PetActivityLogTagEnum::Hunting,
                 ]))
             ;
+
+            $this->petExperienceService->gainExp($pet->getPet(), count($individualLoot), [ PetSkillEnum::BRAWL ], $log);
 
             foreach($individualLoot as $itemName)
             {
@@ -93,8 +98,8 @@ class HugeToad implements FieldGuideAdventureInterface
             message: "$petNames went into the woods and wrestled a Giant Toad, collecting $lootList!",
             loot: $loot,
             tags: [
-                PetActivityLogTagEnum::The_Umbra,
-                PetActivityLogTagEnum::Gathering,
+                PetActivityLogTagEnum::Fighting,
+                PetActivityLogTagEnum::Hunting,
             ]
         );
     }

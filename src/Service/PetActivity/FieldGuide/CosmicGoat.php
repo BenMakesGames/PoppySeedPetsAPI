@@ -15,6 +15,7 @@ namespace App\Service\PetActivity\FieldGuide;
 
 use App\Entity\User;
 use App\Enum\PetActivityLogTagEnum;
+use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ArrayFunctions;
 use App\Functions\ItemRepository;
@@ -24,6 +25,7 @@ use App\Functions\SpiceRepository;
 use App\Model\ComputedPetSkills;
 use App\Service\InventoryService;
 use App\Service\IRandom;
+use App\Service\PetExperienceService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class CosmicGoat implements FieldGuideAdventureInterface
@@ -32,6 +34,7 @@ class CosmicGoat implements FieldGuideAdventureInterface
         private readonly IRandom $rng,
         private readonly InventoryService $inventoryService,
         private readonly EntityManagerInterface $em,
+        private readonly PetExperienceService $petExperienceService,
     )
     {
     }
@@ -72,6 +75,8 @@ class CosmicGoat implements FieldGuideAdventureInterface
                     PetActivityLogTagEnum::Gathering,
                 ]))
             ;
+
+            $this->petExperienceService->gainExp($pet->getPet(), $milkCount, [ PetSkillEnum::ARCANA ], $log);
 
             for($i = 0; $i < $milkCount; $i++)
             {
