@@ -196,7 +196,7 @@ class PhilosophersStoneService
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em,
                 $pet,
-                'The Ceremony of Fire lead ' . ActivityHelpers::PetName($pet) . ' to an ice cave in the frozen quag in the Umbra, blocked by huge, Everice icicles. The Ceremony of Fire quivered in ' . ActivityHelpers::PetName($pet) . '\'s hands, but they had no idea how to use it, so returned home and put it away. (Perhaps more Umbra skill would help?)'
+                'The Ceremony of Fire lead ' . ActivityHelpers::PetName($pet) . ' to an ice cave in the frozen quag in the Umbra, blocked by huge, Everice icicles. The Ceremony of Fire quivered in ' . ActivityHelpers::PetName($pet) . '\'s hands, but they had no idea how to use it, so returned home and put it away. (Perhaps more Arcana skill would help?)'
             );
 
             EquipmentFunctions::unequipPet($pet);
