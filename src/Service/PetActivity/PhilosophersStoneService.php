@@ -173,7 +173,7 @@ class PhilosophersStoneService
 
         $changes = new PetChanges($pet);
 
-        $skill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getArcana()->getTotal();
+        $skill = 10 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getUmbraBonus()->getTotal();
 
         $gotTheThing = $pet->hasMerit(MeritEnum::ICHTHYASTRA);
 
