@@ -761,10 +761,11 @@ class BoxController
         $item = ItemRepository::findOneByName($em, $rng->rngNextFromArray([
             'Apricot', 'Baking Soda', 'Beans', 'Blackberry Lassi', 'Blueberries', 'Butter', 'Canned Food', 'Celery',
             'Cockroach', 'Corn', 'Cream of Tartar', 'Creamy Milk', 'Egg', 'Fish', 'Fluff', 'Glowing Four-sided Die',
-            'Grandparoot', 'Honeydont', 'Hot Dog', 'Iron Ore', 'Kombucha', 'Melon Bun', 'Mint', 'Mixed Nuts', 'Naner',
-            'Oil', 'Onion', 'Orange', 'Pamplemousse', 'Plain Yogurt', 'Quintessence', 'Red', 'Red Clover', 'Rice',
-            'Seaweed', 'Secret Seashell', 'Silica Grounds', 'Smallish Pumpkin', 'Sugar', 'Toad Legs', 'Tomato',
-            $wheatFlourOrCorn, 'World\'s Best Sugar Cookie', 'Yeast', 'Yellowy Lime', 'Ponzu', 'Plastic Bottle',
+            'Grandparoot', 'Honeydont', 'Hot Dog', 'Iron Ore', 'Jelly-filled Donut', 'Kombucha', 'Melon Bun', 'Mint',
+            'Mixed Nuts', 'Naner', 'Oil', 'Onion', 'Orange', 'Pamplemousse', 'Plain Yogurt', 'Quintessence', 'Red',
+            'Red Clover', 'Rice', 'Seaweed', 'Secret Seashell', 'Silica Grounds', 'Smallish Pumpkin', 'Sugar',
+            'Toad Legs', 'Tomato', $wheatFlourOrCorn, 'World\'s Best Sugar Cookie', 'Yeast', 'Yellowy Lime', 'Ponzu',
+            'Plastic Bottle',
         ]));
 
         $openedStat = $userStatsRepository->incrementStat($user, 'Opened ' . $inventory->getItem()->getNameWithArticle());
