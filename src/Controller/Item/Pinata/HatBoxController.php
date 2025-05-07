@@ -47,19 +47,20 @@ class HatBoxController
 
         $hatItem = ItemRepository::findOneByName($em, $rng->rngNextFromArray([
             'Bright Top Hat',
-            'Masquerade Mask',
-            'Merchant\'s Cap',
-            'Wizarding Hat',
-            'Gray Bow',
             'Cool Sunglasses',
-            'Sombrero',
-            'Judy',
-            'Propeller Beanie',
             'Crabhat',
-            'Horsey Hat',
             'Dark Horsey Hat',
             'Eccentric Top Hat',
+            'Gray Bow',
+            'Horsey Hat',
+            'Judy',
+            'Masquerade Mask',
+            'Merchant\'s Cap',
+            'Merchant\'s Other Cap',
             'Pizzaface',
+            'Propeller Beanie',
+            'Sombrero',
+            'Wizarding Hat',
         ]));
 
         $userStatsRepository->incrementStat($user, 'Opened ' . $box->getItem()->getNameWithArticle());
@@ -73,13 +74,6 @@ class HatBoxController
         {
             $itemComment = 'Found inside ' . $box->getItem()->getNameWithArticle() . '.';
             $message = 'You open the hat box... ta-da! It\'s... ' . $hatItem->getNameWithArticle() . '? (Is that a hat?)';
-        }
-        else if($hatItem->getName() === 'Wings')
-        {
-            $itemComment = 'Found inside ' . $box->getItem()->getNameWithArticle() . '.';
-            $message = 'You open the hat box... ta-da! It\'s... two ' . $hatItem->getName() . '! (Which are each already two wings, so it\'s kinda\' like getting four, I guess?)';
-
-            $inventoryService->receiveItem($hatItem, $user, $box->getCreatedBy(), $itemComment, $location, $lockedToOwner);
         }
         else
         {
