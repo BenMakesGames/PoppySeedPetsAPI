@@ -45,8 +45,14 @@ final class Version20250508180543 extends AbstractMigration
         OR item.name IN (
             'Tri-color Scissors',
             'Hyperchromatic Prism',
-            'Less-heavy Heavy Hammer'
-        );
+            'Less-heavy Heavy Hammer',
+            'Macintosh',
+            'Lunchbox Paint',
+            'Propeller Beanie',
+            'Stardust',
+            'The Unicorn'
+        )
+        ON DUPLICATE KEY UPDATE `item_group_id` = `item_group_id`;
         EOSQL);
     }
 
