@@ -291,7 +291,7 @@ class UpdateHollowEarthTileEventCommand extends PoppySeedPetsCommand
         $event['description'] = $this->askString('Description', null);
         $event['buttonText'] = $this->askString('Button text', 'OK');
 
-        /** @var HollowEarthTile $tile */
+        /** @var HollowEarthTile|null $tile */
         $tile = null;
 
         while(!$tile)
@@ -331,9 +331,6 @@ class UpdateHollowEarthTileEventCommand extends PoppySeedPetsCommand
         $event['type'] = HollowEarthActionTypeEnum::PAY_ITEM;
         $event['description'] = $this->askString('Description', null);
 
-        /** @var Item $item */
-        $item = null;
-
         while(true)
         {
             $itemName = $this->askString('Item to pay', null);
@@ -363,9 +360,6 @@ class UpdateHollowEarthTileEventCommand extends PoppySeedPetsCommand
         {
             $event['amount'] = $this->askInt('Amount to pay', 1);
         } while($event['amount'] < 1);
-
-        /** @var Item $item */
-        $item = null;
 
         while(true)
         {

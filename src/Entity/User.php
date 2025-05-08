@@ -623,16 +623,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->unlockedAuras;
     }
 
-    public function addUnlockedAura(UserUnlockedAura $unlockedAura): self
-    {
-        if (!$this->unlockedAuras->contains($unlockedAura)) {
-            $this->unlockedAuras[] = $unlockedAura;
-            $unlockedAura->setUser($this);
-        }
-
-        return $this;
-    }
-
     public function getMuseumPoints(): int
     {
         return $this->museumPoints;

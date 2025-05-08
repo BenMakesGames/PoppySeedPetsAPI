@@ -66,7 +66,7 @@ class MoonPearlController
         {
             $message = 'You shatter the Moon Pearl, yielding a couple lumps of Moon Dust, and some Silica Grounds.';
 
-            /** @var Pet[] $helper */
+            /** @var Pet[] $availableHelpers */
             $availableHelpers = $em->getRepository(Pet::class)->findBy([
                 'owner' => $user->getId(),
                 'location' => PetLocationEnum::HOME

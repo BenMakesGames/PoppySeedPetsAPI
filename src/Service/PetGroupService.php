@@ -197,7 +197,7 @@ class PetGroupService
         if($numMembers >= $group->getMinimumSize() && $this->rng->rngNextInt(1, $numMembers * 20) > 1)
             return false;
 
-        /** @var Pet[] $recruit */
+        /** @var Pet[] $recruits */
         $recruits = $this->em->getRepository(Pet::class)->createQueryBuilder('p')
             ->select('p2')
             ->distinct(true)

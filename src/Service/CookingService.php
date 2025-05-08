@@ -73,7 +73,6 @@ class CookingService
 
     /**
      * @param Inventory[] $inventory
-     * @return Inventory[]
      */
     public function logBadRecipeAttempt(User $user, array $inventory): RecipeAttempted
     {
