@@ -270,7 +270,7 @@ class SelfReflectionController
             RelationshipEnum::DISLIKE
         ]);
 
-        $suggestions = array_map(function(Pet $otherPet) use($petRelationshipService, $pet) {
+        $suggestions = array_map(function(Pet $otherPet) use($pet) {
             $possibleRelationships = PetRelationshipService::getRelationshipsBetween(
                 PetRelationshipService::max(RelationshipEnum::FRIEND, $otherPet->getRelationshipWith($pet)->getRelationshipGoal()),
                 PetRelationshipService::max(RelationshipEnum::FRIEND, $pet->getRelationshipWith($otherPet)->getRelationshipGoal())

@@ -502,6 +502,8 @@ class BoxController
             8
         );
 
+        $newInventory = [];
+
         foreach($additionalItems as $itemName)
         {
             if($itemName === 'Limestone')

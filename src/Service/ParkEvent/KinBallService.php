@@ -202,6 +202,7 @@ class KinBallService implements ParkEventInterface
             foreach($team->pets as $participant)
             {
                 $expGain = 1;
+                $comment = null;
                 $trophyItem = null;
 
                 $state = new PetChanges($participant->pet);

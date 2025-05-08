@@ -787,7 +787,7 @@ class ProgrammingService
             $this->houseSimService->getState()->loseItem('Lightning in a Bottle', 1);
             $this->houseSimService->getState()->loseItem('Paper', 1);
             $pet->increaseEsteem(1);
-            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% discovered Zawinski\'s Law.', '')
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% discovered Zawinski\'s Law.')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 19)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
