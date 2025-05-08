@@ -359,6 +359,9 @@ class MagicBindingService
         if($this->houseSimService->hasInventory('Magic Smoke'))
             $possibilities[] = new ActivityCallback($this->magicSmokeToQuint(...), $magicSmokeWeight);
 
+        if($this->houseSimService->hasInventory('Rainbow Wings') && $this->houseSimService->hasInventory('Heavy Hammer'))
+            $possibilities[] = new ActivityCallback($this->createLessHeavyHeavyHammer(...), 8);
+
         if($this->houseSimService->hasInventory('Witch\'s Broom'))
         {
             if($this->houseSimService->hasInventory('Wood\'s Metal'))
@@ -3737,6 +3740,42 @@ class MagicBindingService
             ;
 
             $this->inventoryService->petCollectsItem('Bean Sídhe', $pet, $pet->getName() . ' created this.', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
+        }
+
+        return $activityLog;
+    }
+
+    public function createLessHeavyHeavyHammer(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $skillCheck = $this->rng->rngNextInt(1, 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getDexterity()->getTotal() + $petWithSkills->getMagicBindingBonus()->getTotal());
+
+        if($skillCheck < 21)
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to bind a pair of Rainbow Wings to a Heavy Hammer, but the wings kept flying off!')
+                ->setIcon('icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::MAGIC_BIND, false);
+        }
+        else // success!
+        {
+            $this->houseSimService->getState()->loseItem('Rainbow Wings', 1);
+            $this->houseSimService->getState()->loseItem('Heavy Hammer', 1);
+            $pet->increaseEsteem(4);
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound a pair of Rainbow Wings to a Heavy Hammer! Shiny!')
+                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 21)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
+                    PetActivityLogTagEnum::Magic_binding,
+                    PetActivityLogTagEnum::Location_At_Home,
+                ]))
+            ;
+            $this->inventoryService->petCollectsItem('Less-heavy Heavy Hammer', $pet, $pet->getName() . ' enchanted this.', $activityLog);
 
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
