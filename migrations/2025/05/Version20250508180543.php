@@ -28,6 +28,10 @@ final class Version20250508180543 extends AbstractMigration
         INSERT INTO item_grammar (`id`, `item_id`, `article`) VALUES (1550,1465,"a") ON DUPLICATE KEY UPDATE `id` = `id`;
         EOSQL);
 
+        $this->addSql(<<<EOSQL
+        UPDATE `item` SET `description` = 'It flies with the grace of an ill-shapen boulder, but hey: it didn\'t fly _at all_ before!' WHERE `item`.`id` = 1465; 
+        EOSQL);
+
         // Rainbow item group
         $this->addSql(<<<EOSQL
         INSERT INTO `item_group` (`id`, `name`, `is_craving`, `is_gift_shop`) VALUES (49, 'Rainbow', '0', '0')
@@ -40,7 +44,8 @@ final class Version20250508180543 extends AbstractMigration
         WHERE item.name LIKE '%Rainbow%'
         OR item.name IN (
             'Tri-color Scissors',
-            'Hyperchromatic Prism'
+            'Hyperchromatic Prism',
+            'Less-heavy Heavy Hammer'
         );
         EOSQL);
     }
