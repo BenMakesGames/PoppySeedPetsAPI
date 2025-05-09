@@ -50,7 +50,7 @@ class SmilingWandController
 
         $petId = $request->request->getInt('pet', 0);
 
-        /** @var Pet $pet */
+        /** @var Pet|null $pet */
         $pet = $em->getRepository(Pet::class)->findOneBy([
             'id' => $petId,
             'owner' => $user,

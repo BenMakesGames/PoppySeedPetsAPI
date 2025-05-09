@@ -24,7 +24,7 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectRepository;
 
-class MarketFilterService
+class MarketFilterService implements FilterServiceInterface
 {
     use FilterService;
 

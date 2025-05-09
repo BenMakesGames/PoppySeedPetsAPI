@@ -52,10 +52,7 @@ class Filterer
         $this->requiredFilters[$key] = $value;
     }
 
-    /**
-     * @param FilterService $filterService
-     */
-    public function filter($filterService, ParameterBag $params): FilterResults
+    public function filter(FilterServiceInterface $filterService, ParameterBag $params): FilterResults
     {
         // sanitize parameters:
 

@@ -23,7 +23,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
-class PetSpeciesFilterService
+class PetSpeciesFilterService implements FilterServiceInterface
 {
     use FilterService;
 

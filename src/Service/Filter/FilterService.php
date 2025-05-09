@@ -20,6 +20,16 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
+interface FilterServiceInterface
+{
+    public function getResults(ParameterBag $parameters): FilterResults;
+    public function addDefaultFilter(string $key, mixed $value): void;
+    public function addRequiredFilter(string $key, mixed $value): void;
+    public function createQueryBuilder(): QueryBuilder;
+    public function applyResultCache(Query $qb, string $cacheKey): AbstractQuery;
+    public function allowedPageSizes(): array;
+}
+
 trait FilterService
 {
     /**
@@ -41,10 +51,4 @@ trait FilterService
     {
         $this->filterer->addRequiredFilter($key, $value);
     }
-
-    abstract function createQueryBuilder(): QueryBuilder;
-
-    abstract function applyResultCache(Query $qb, string $cacheKey): AbstractQuery;
-
-    abstract public function allowedPageSizes(): array;
 }
