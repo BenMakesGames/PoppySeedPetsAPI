@@ -22,6 +22,7 @@ class PetActivityStats
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: Pet::class, inversedBy: 'petActivityStats', cascade: ['persist', 'remove'])]

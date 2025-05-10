@@ -27,6 +27,7 @@ class MonthlyStoryAdventureStep
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: MonthlyStoryAdventure::class, inversedBy: 'steps')]

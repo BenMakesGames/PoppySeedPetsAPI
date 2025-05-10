@@ -24,27 +24,28 @@ class Aura
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[Groups(["myInventory", "itemEncyclopedia", "marketItem"])]
     #[ORM\Column(type: 'string', length: 40)]
-    private $name;
+    private string $name;
 
     #[Groups(["myPet", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"])]
     #[ORM\Column(type: 'string', length: 40)]
-    private $image;
+    private string $image;
 
     #[Groups(["myPet", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"])]
     #[ORM\Column(type: 'float')]
-    private $size;
+    private float $size = 1.0;
 
     #[Groups(["myPet", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"])]
     #[ORM\Column(type: 'float')]
-    private $centerX;
+    private float $centerX = 0.5;
 
     #[Groups(["myPet", "myAura", "userPublicProfile", "petPublicProfile", "hollowEarth", "petGroupDetails"])]
     #[ORM\Column(type: 'float')]
-    private $centerY;
+    private float $centerY = 0.5;
 
     public function getId(): ?int
     {
