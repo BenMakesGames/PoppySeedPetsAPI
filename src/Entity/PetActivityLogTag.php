@@ -23,6 +23,7 @@ class PetActivityLogTag
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
@@ -36,6 +37,13 @@ class PetActivityLogTag
     #[Groups(["petActivityLogs", "petActivityLogAndPublicPet"])]
     #[ORM\Column(type: 'string', length: 100)]
     private string $emoji;
+
+    public function __construct(string $title, string $emoji, string $color)
+    {
+        $this->title = $title;
+        $this->emoji = $emoji;
+        $this->color = $color;
+    }
 
     public function getId(): ?int
     {

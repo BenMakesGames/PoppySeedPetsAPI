@@ -57,7 +57,7 @@ class ControllerActionSubscriber implements EventSubscriberInterface
 
     private function checkRateLimiters(ControllerEvent $event): void
     {
-        /** @var User $user */
+        /** @var User|null $user */
         $user = $this->security->getUser();
 
         if(!$user)
@@ -77,7 +77,7 @@ class ControllerActionSubscriber implements EventSubscriberInterface
         if($doesNotRequireHouseHours)
             return;
 
-        /** @var User $user */
+        /** @var User|null $user */
         $user = $this->security->getUser();
 
         if(!$user)

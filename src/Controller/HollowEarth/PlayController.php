@@ -261,7 +261,7 @@ class PlayController
     {
         if(!array_key_exists('ifSuccess', $action))
         {
-            /** @var HollowEarthPlayerTile $currentTile */
+            /** @var HollowEarthPlayerTile|null $currentTile */
             $currentTile = $em->getRepository(HollowEarthPlayerTile::class)->findOneBy([
                 'player' => $player,
                 'tile' => $player->getCurrentTile(),

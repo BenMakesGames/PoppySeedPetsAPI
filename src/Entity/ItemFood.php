@@ -22,12 +22,13 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 
 #[ORM\Table]
 #[ORM\Index(name: 'is_candy_idx', columns: ['is_candy'])]
-#[ORM\Entity(repositoryClass: 'App\Repository\ItemFoodRepository')]
+#[ORM\Entity]
 class ItemFood
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[ORM\Column(type: 'integer')]

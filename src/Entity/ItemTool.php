@@ -17,7 +17,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: 'App\Repository\ItemToolRepository')]
+#[ORM\Entity]
 class ItemTool
 {
     public const array ModifierFields = [
@@ -32,6 +32,7 @@ class ItemTool
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[ORM\Column(type: 'integer')]

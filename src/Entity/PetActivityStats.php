@@ -16,12 +16,13 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: 'App\Repository\PetActivityStatsRepository')]
+#[ORM\Entity]
 class PetActivityStats
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: Pet::class, inversedBy: 'petActivityStats', cascade: ['persist', 'remove'])]

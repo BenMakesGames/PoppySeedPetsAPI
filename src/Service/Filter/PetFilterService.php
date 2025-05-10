@@ -22,7 +22,7 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectRepository;
 
-class PetFilterService
+class PetFilterService implements FilterServiceInterface
 {
     use FilterService;
 

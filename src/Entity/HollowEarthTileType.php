@@ -25,6 +25,7 @@ class HollowEarthTileType
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[Groups(["myInventory", "itemEncyclopedia"])]
@@ -35,8 +36,10 @@ class HollowEarthTileType
     #[ORM\Column(type: 'string', length: 10)]
     private string $article;
 
-    public function __construct()
+    public function __construct(string $name, string $article)
     {
+        $this->name = $name;
+        $this->article = $article;
     }
 
     public function getId(): ?int

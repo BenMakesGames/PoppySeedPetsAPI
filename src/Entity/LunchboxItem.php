@@ -17,12 +17,13 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: 'App\Repository\LunchboxItemRepository')]
+#[ORM\Entity]
 class LunchboxItem
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Pet::class, inversedBy: 'lunchboxItems')]

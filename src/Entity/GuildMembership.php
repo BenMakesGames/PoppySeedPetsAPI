@@ -20,32 +20,33 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Table]
 #[ORM\Index(name: 'level_idx', columns: ['level'])]
 #[ORM\Index(name: 'joined_on_idx', columns: ['joined_on'])]
-#[ORM\Entity(repositoryClass: 'App\Repository\GuildMembershipRepository')]
+#[ORM\Entity]
 class GuildMembership
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: Pet::class, inversedBy: 'guildMembership', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private $pet;
+    private Pet $pet;
 
     #[Groups(["petGuild", "petPublicProfile"])]
     #[ORM\ManyToOne(targetEntity: 'App\Entity\Guild')]
     #[ORM\JoinColumn(nullable: false)]
-    private $guild;
+    private Guild $guild;
 
     #[Groups(["petGuild", "petPublicProfile", "guildMember"])]
     #[ORM\Column(type: 'datetime_immutable')]
-    private $joinedOn;
+    private \DateTimeImmutable $joinedOn;
 
     #[ORM\Column(type: 'integer')]
-    private $reputation = 0;
+    private int $reputation = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $level = 0;
+    private int $level = 0;
 
     public function __construct()
     {
@@ -74,7 +75,7 @@ class GuildMembership
         return $this->guild;
     }
 
-    public function setGuild(?Guild $guild): self
+    public function setGuild(Guild $guild): self
     {
         $this->guild = $guild;
         $this->joinedOn = new \DateTimeImmutable();
@@ -84,7 +85,7 @@ class GuildMembership
         return $this;
     }
 
-    public function getJoinedOn(): ?\DateTimeImmutable
+    public function getJoinedOn(): \DateTimeImmutable
     {
         return $this->joinedOn;
     }

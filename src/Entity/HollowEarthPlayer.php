@@ -20,12 +20,13 @@ use App\Enum\HollowEarthMoveDirectionEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: 'App\Repository\HollowEarthPlayerRepository')]
+#[ORM\Entity]
 class HollowEarthPlayer
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'hollowEarthPlayer')]

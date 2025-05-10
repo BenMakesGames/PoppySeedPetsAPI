@@ -20,7 +20,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
-class UserActivityLogsFilterService
+class UserActivityLogsFilterService implements FilterServiceInterface
 {
     use FilterService;
 

@@ -24,7 +24,7 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectRepository;
 
-class InventoryFilterService
+class InventoryFilterService implements FilterServiceInterface
 {
     use FilterService;
 

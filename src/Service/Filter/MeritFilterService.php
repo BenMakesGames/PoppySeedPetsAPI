@@ -20,7 +20,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
-class MeritFilterService
+class MeritFilterService implements FilterServiceInterface
 {
     use FilterService;
 

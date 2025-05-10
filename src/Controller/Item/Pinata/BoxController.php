@@ -1155,8 +1155,7 @@ class BoxController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function openChocolateChest(
         Inventory $box, ResponseService $responseService, InventoryService $inventoryService,
-        UserStatsService $userStatsRepository, EntityManagerInterface $em,
-        IRandom $rng,
+        UserStatsService $userStatsRepository, EntityManagerInterface $em, IRandom $rng,
         UserAccessor $userAccessor
     ): JsonResponse
     {
@@ -1168,13 +1167,16 @@ class BoxController
         $location = $box->getLocation();
         $lockedToOwner = $box->getLockedToOwner();
 
-        /** @var Pet $pet */
-        $pet = $rng->rngNextFromArray(
-            $em->getRepository(Pet::class)->findBy([ 'owner' => $user, 'location' => PetLocationEnum::HOME ])
-        );
+        $pets = $em->getRepository(Pet::class)->findBy([
+            'owner' => $user,
+            'location' => PetLocationEnum::HOME
+        ]);
 
-        if($pet)
+        if(count($pets) > 0)
         {
+            /** @var Pet $pet */
+            $pet = $rng->rngNextFromArray($pets);
+
             $description = 'The chest is locked. You struggle with it for a bit before ' . $pet->getName() . ' simply eats the lock. ';
             $pet
                 ->increaseFood($rng->rngNextInt(2, 4))

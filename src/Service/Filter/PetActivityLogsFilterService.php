@@ -21,7 +21,7 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectRepository;
 
-class PetActivityLogsFilterService
+class PetActivityLogsFilterService implements FilterServiceInterface
 {
     use FilterService;
 

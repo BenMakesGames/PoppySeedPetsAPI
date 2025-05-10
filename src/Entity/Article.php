@@ -26,6 +26,7 @@ class Article
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups(['article'])]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]

@@ -23,6 +23,7 @@ class SurveyQuestionAnswer
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[Groups(["surveyQuestionAnswer"])]

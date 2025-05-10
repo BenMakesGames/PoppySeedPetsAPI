@@ -16,12 +16,13 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: 'App\Repository\PlantYieldItemRepository')]
+#[ORM\Entity]
 class PlantYieldItem
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: 'App\Entity\PlantYield', inversedBy: 'items')]
@@ -29,11 +30,17 @@ class PlantYieldItem
     private $plantYield;
 
     #[ORM\Column(type: 'integer')]
-    private $percentChance;
+    private int $percentChance;
 
     #[ORM\ManyToOne(targetEntity: Item::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $item;
+    private Item $item;
+
+    public function __construct(Item $item, int $percentChance)
+    {
+        $this->item = $item;
+        $this->percentChance = $percentChance;
+    }
 
     public function getId(): ?int
     {
@@ -52,7 +59,7 @@ class PlantYieldItem
         return $this;
     }
 
-    public function getPercentChance(): ?int
+    public function getPercentChance(): int
     {
         return $this->percentChance;
     }
@@ -64,12 +71,12 @@ class PlantYieldItem
         return $this;
     }
 
-    public function getItem(): ?Item
+    public function getItem(): Item
     {
         return $this->item;
     }
 
-    public function setItem(?Item $item): self
+    public function setItem(Item $item): self
     {
         $this->item = $item;
 

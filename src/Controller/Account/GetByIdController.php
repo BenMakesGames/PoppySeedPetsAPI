@@ -71,7 +71,7 @@ class GetByIdController
 
     private function getLinks(UserAccessor $userAccessor, User $user, EntityManagerInterface $em): array
     {
-        $currentUser = $userAccessor->getUserOrThrow();
+        $currentUser = $userAccessor->getUser();
 
         if(!$currentUser)
             return [];

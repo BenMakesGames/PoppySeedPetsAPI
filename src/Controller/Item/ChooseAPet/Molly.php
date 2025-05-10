@@ -63,13 +63,10 @@ class Molly
         $milkQuantity = $quantity < 4 ? 1 : $rng->rngNextInt(1, (int)floor($quantity / 2));
         $fluffQuantity = max(1, $quantity - $milkQuantity);
 
-        $loot = [];
-
-        if($milkQuantity > 0)
-            $loot[] = "{$milkQuantity}× Milk";
-
-        if($fluffQuantity > 0)
-            $loot[] = "{$fluffQuantity}× Fluff";
+        $loot = [
+            "{$milkQuantity}× Milk",
+            "{$fluffQuantity}× Fluff"
+        ];
 
         $babies = $rng->rngNextInt(3, 5);
         $babyItem = $rng->rngNextBool() ? 'Catmouse Figurine' : 'Tentacat Figurine';

@@ -21,7 +21,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
-class UserStyleFilter
+class UserStyleFilter implements FilterServiceInterface
 {
     use FilterService;
 

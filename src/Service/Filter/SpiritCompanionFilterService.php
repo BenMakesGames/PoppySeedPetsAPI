@@ -20,7 +20,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
-class SpiritCompanionFilterService
+class SpiritCompanionFilterService implements FilterServiceInterface
 {
     use FilterService;
 
