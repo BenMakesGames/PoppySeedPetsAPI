@@ -20,7 +20,7 @@ use App\Enum\HollowEarthMoveDirectionEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: 'App\Repository\HollowEarthPlayerRepository')]
+#[ORM\Entity]
 class HollowEarthPlayer
 {
     #[ORM\Id]

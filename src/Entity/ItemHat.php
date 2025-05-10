@@ -17,7 +17,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: 'App\Repository\ItemHatRepository')]
+#[ORM\Entity]
 class ItemHat
 {
     #[ORM\Id]

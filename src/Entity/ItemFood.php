@@ -22,7 +22,7 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 
 #[ORM\Table]
 #[ORM\Index(name: 'is_candy_idx', columns: ['is_candy'])]
-#[ORM\Entity(repositoryClass: 'App\Repository\ItemFoodRepository')]
+#[ORM\Entity]
 class ItemFood
 {
     #[ORM\Id]
