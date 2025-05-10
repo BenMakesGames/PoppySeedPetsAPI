@@ -143,7 +143,7 @@ class PlasticBottleController
                 'Yellow Dye',
             ]);
 
-            $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' found this in a can. A Canned Food can.', $location, $lockedToOwner)
+            $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' found this in a bottle. A Plastic Bottle.', $location, $lockedToOwner)
                 ->setSpice($inventory->getSpice())
             ;
 
