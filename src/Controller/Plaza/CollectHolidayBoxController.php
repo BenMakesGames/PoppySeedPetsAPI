@@ -49,7 +49,7 @@ class CollectHolidayBoxController
         $availableBoxes = $plazaService->getAvailableHolidayBoxes($user);
         $requestedBox = $request->request->get('box');
 
-        /** @var AvailableHolidayBox $box */
+        /** @var AvailableHolidayBox|null $box */
         $box = ArrayFunctions::find_one($availableBoxes, fn(AvailableHolidayBox $box) => $box->nameWithQuantity === $requestedBox);
 
         if(!$box)
@@ -58,7 +58,7 @@ class CollectHolidayBoxController
         if($box->userQuestEntity)
             $box->userQuestEntity->setValue(true);
 
-        if(strpos($box->itemName, 'Box') !== false || strpos($box->itemName, 'Bag') !== false)
+        if(str_contains($box->itemName, 'Box') || str_contains($box->itemName, 'Bag'))
             $userStatsRepository->incrementStat($user, UserStatEnum::PLAZA_BOXES_RECEIVED, $box->quantity);
 
         for($i = 0; $i < $box->quantity; $i++)

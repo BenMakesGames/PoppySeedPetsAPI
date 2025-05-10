@@ -33,11 +33,7 @@ trait AskItemTrait
             if($itemName === '' || $itemName === '~')
                 throw new \RuntimeException('Must select an item.');
 
-            $item = ItemRepository::findOneByName($this->em, $itemName);
-            if($item === null)
-                throw new \RuntimeException('There is no Item called "' . $itemName . '".');
-
-            return $item;
+            return ItemRepository::findOneByName($this->em, $itemName);
         });
 
         return $this->ask($question);
@@ -55,11 +51,7 @@ trait AskItemTrait
 
             if($itemName === '~') return null;
 
-            $item = ItemRepository::findOneByName($this->em, $itemName);
-            if($item === null)
-                throw new \RuntimeException('There is no Item called "' . $itemName . '".');
-
-            return $item;
+            return ItemRepository::findOneByName($this->em, $itemName);
         });
 
         return $this->ask($question);

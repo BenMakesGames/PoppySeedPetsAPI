@@ -35,8 +35,10 @@ class HollowEarthTileType
     #[ORM\Column(type: 'string', length: 10)]
     private string $article;
 
-    public function __construct()
+    public function __construct(string $name, string $article)
     {
+        $this->name = $name;
+        $this->article = $article;
     }
 
     public function getId(): ?int
