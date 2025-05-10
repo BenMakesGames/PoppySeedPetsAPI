@@ -15,12 +15,10 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Enum\PetPregnancyStyleEnum;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: 'App\Repository\PetBabyRepository')]
+#[ORM\Entity]
 class PetBaby
 {
     public const int PREGNANCY_DURATION = 30240;

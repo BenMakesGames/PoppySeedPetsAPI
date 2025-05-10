@@ -37,6 +37,13 @@ class PetActivityLogTag
     #[ORM\Column(type: 'string', length: 100)]
     private string $emoji;
 
+    public function __construct(string $title, string $emoji, string $color)
+    {
+        $this->title = $title;
+        $this->emoji = $emoji;
+        $this->color = $color;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

@@ -18,7 +18,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: 'App\Repository\PlantYieldRepository')]
+#[ORM\Entity]
 class PlantYield
 {
     #[ORM\Id]
@@ -28,16 +28,16 @@ class PlantYield
 
     #[ORM\ManyToOne(targetEntity: 'App\Entity\Plant', inversedBy: 'plantYields')]
     #[ORM\JoinColumn(nullable: false)]
-    private $plant;
+    private Plant $plant;
 
     #[ORM\Column(type: 'integer')]
-    private $min;
+    private int $min;
 
     #[ORM\Column(type: 'integer')]
-    private $max;
+    private int $max;
 
     #[ORM\OneToMany(targetEntity: 'App\Entity\PlantYieldItem', mappedBy: 'plantYield', orphanRemoval: true)]
-    private $items;
+    private Collection $items;
 
     public function __construct()
     {

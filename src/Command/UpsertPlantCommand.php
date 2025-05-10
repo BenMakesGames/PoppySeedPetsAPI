@@ -241,10 +241,7 @@ class UpsertPlantCommand extends PoppySeedPetsCommand
         $item = $this->askItem('Item', null);
         $percent = $this->askInt('% Chance', 100, function($n) { return $n > 0 && $n <= 100; });
 
-        $yieldItem = (new PlantYieldItem())
-            ->setItem($item)
-            ->setPercentChance($percent)
-        ;
+        $yieldItem = new PlantYieldItem($item, $percent);
 
         $yield->addItem($yieldItem);
 
