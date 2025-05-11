@@ -105,7 +105,7 @@ class GuildService
 
         $guild = $this->em->getRepository(Guild::class)->findOneBy([ 'name' => $guildName ]);
 
-        $membership = (new GuildMembership())->setGuild($guild);
+        $membership = new GuildMembership($pet, $guild);
         $pet->setGuildMembership($membership);
 
         $this->em->persist($membership);

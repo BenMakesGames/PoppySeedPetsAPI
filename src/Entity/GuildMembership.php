@@ -48,8 +48,10 @@ class GuildMembership
     #[ORM\Column(type: 'integer')]
     private int $level = 0;
 
-    public function __construct()
+    public function __construct(Pet $pet, Guild $guild)
     {
+        $this->pet = $pet;
+        $this->guild = $guild;
         $this->joinedOn = new \DateTimeImmutable();
     }
 
