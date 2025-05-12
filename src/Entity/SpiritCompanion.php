@@ -71,8 +71,8 @@ class SpiritCompanion
     private Pet $pet;
 
     #[Groups(["myPet", "spiritCompanionPublicProfile"])]
-    #[ORM\Column(type: 'string', length: 40)]
-    private string $star;
+    #[ORM\Column(type: 'string', length: 40, enumType: SpiritCompanionStarEnum::class)]
+    private SpiritCompanionStarEnum $star;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $lastHangOut = null;
@@ -84,7 +84,7 @@ class SpiritCompanion
     {
         $rng = new Xoshiro();
 
-        $this->star = SpiritCompanionStarEnum::getRandomValue($rng);
+        $this->star = $rng->rngNextFromArray(SpiritCompanionStarEnum::cases());
         $this->name = $rng->rngNextFromArray(self::NAMES);
         $this->image = $rng->rngNextFromArray(self::IMAGES);
         $this->fatheredPets = new ArrayCollection();
@@ -136,7 +136,7 @@ class SpiritCompanion
         return $this;
     }
 
-    public function getStar(): string
+    public function getStar(): SpiritCompanionStarEnum
     {
         return $this->star;
     }

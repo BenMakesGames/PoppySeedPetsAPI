@@ -222,7 +222,7 @@ class TriDChessService implements ParkEventInterface
 
             return 10;
         }
-        else if($participant->pet->hasMerit(MeritEnum::SPIRIT_COMPANION) && $participant->pet->getSpiritCompanion()->getStar() === SpiritCompanionStarEnum::CASSIOPEIA && $this->rng->rngNextInt(1, 100) <= 3 && $move > 3)
+        else if($participant->pet->getSpiritCompanion()?->getStar() === SpiritCompanionStarEnum::Cassiopeia && $this->rng->rngNextInt(1, 100) <= 3 && $move > 3)
         {
             $this->results .= '* ' . $participant->pet->getName() . '\'s spirit companion nudged ' . $this->rng->rngNextFromArray(self::ChessPieces) . ' forward.';
 

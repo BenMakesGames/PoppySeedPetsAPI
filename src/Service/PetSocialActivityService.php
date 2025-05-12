@@ -27,6 +27,7 @@ use App\Enum\RelationshipEnum;
 use App\Enum\SocialTimeWantEnum;
 use App\Enum\SpiritCompanionStarEnum;
 use App\Enum\StatusEffectEnum;
+use App\Exceptions\UnreachableException;
 use App\Functions\ArrayFunctions;
 use App\Functions\GrammarFunctions;
 use App\Functions\PetActivityLogFactory;
@@ -297,10 +298,13 @@ class PetSocialActivityService
     {
         $companion = $pet->getSpiritCompanion();
 
+        if(!$companion)
+            return false;
+
         if($pet->getPregnancy() || !$pet->getIsFertile() || !$pet->hasMerit(MeritEnum::VOLAGAMY))
             return false;
 
-        if($companion->getStar() === SpiritCompanionStarEnum::SAGITTARIUS)
+        if($companion->getStar() === SpiritCompanionStarEnum::Sagittarius)
             return $rng->rngNextInt(1, 1000) === 1;
 
         return $rng->rngNextInt(1, 2000) === 1;
@@ -326,7 +330,7 @@ class PetSocialActivityService
         {
             switch($companion->getStar())
             {
-                case SpiritCompanionStarEnum::ALTAIR:
+                case SpiritCompanionStarEnum::Altair:
                     // the flying/fighting eagle
                     if($this->rng->rngNextInt(1, 3) === 1)
                     {
@@ -340,7 +344,7 @@ class PetSocialActivityService
                     }
                     break;
 
-                case SpiritCompanionStarEnum::CASSIOPEIA:
+                case SpiritCompanionStarEnum::Cassiopeia:
                     // sneaky snake
                     if($this->rng->rngNextInt(1, 3) === 1)
                     {
@@ -356,7 +360,7 @@ class PetSocialActivityService
                     }
                     break;
 
-                case SpiritCompanionStarEnum::CEPHEUS:
+                case SpiritCompanionStarEnum::Cepheus:
                     // a king
                     if($this->rng->rngNextInt(1, 3) === 1)
                     {
@@ -370,7 +374,7 @@ class PetSocialActivityService
                     }
                     break;
 
-                case SpiritCompanionStarEnum::GEMINI:
+                case SpiritCompanionStarEnum::Gemini:
                     $message = '%pet:' . $pet->getId() . '.name% played ' . $this->rng->rngNextFromArray([
                         'hide-and-go-seek tag',
                         'hacky sack',
@@ -380,12 +384,12 @@ class PetSocialActivityService
                     ]) . ' with the ' . $companion->getName() . ' twins!';
                     break;
 
-                case SpiritCompanionStarEnum::HYDRA:
+                case SpiritCompanionStarEnum::Hydra:
                     // scary monster; depicted as basically a friendly guard dog
                     $message = '%pet:' . $pet->getId() . '.name% played catch with ' . $companion->getName() . '!';
                     break;
 
-                case SpiritCompanionStarEnum::SAGITTARIUS:
+                case SpiritCompanionStarEnum::Sagittarius:
                     // satyr-adjacent
                     if($this->rng->rngNextInt(1, 3) === 1)
                     {
@@ -401,7 +405,7 @@ class PetSocialActivityService
                     break;
 
                 default:
-                    throw new \Exception('Unknown Spirit Companion Star "' . $companion->getStar() . '"');
+                    throw new UnreachableException('Unknown Spirit Companion Star "' . $companion->getStar()->name . '"');
             }
 
             if($teachingStat)
@@ -434,21 +438,21 @@ class PetSocialActivityService
         {
             switch($companion->getStar())
             {
-                case SpiritCompanionStarEnum::ALTAIR:
-                case SpiritCompanionStarEnum::CEPHEUS:
+                case SpiritCompanionStarEnum::Altair:
+                case SpiritCompanionStarEnum::Cepheus:
                     $pet
                         ->increaseSafety($this->rng->rngNextInt(6, 10))
                         ->increaseLove($this->rng->rngNextInt(2, 4))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' told a ' . $this->rng->rngNextFromArray($adjectives) . ' story about victory in combat, and swore to protect %pet:' . $pet->getId() . '.name%!';
                     break;
-                case SpiritCompanionStarEnum::CASSIOPEIA:
+                case SpiritCompanionStarEnum::Cassiopeia:
                     $pet
                         ->increaseSafety($this->rng->rngNextInt(2, 4))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' whispered odd prophecies, then stared at %pet:' . $pet->getId() . '.name% expectantly. (It\'s the thought that counts...)';
                     break;
-                case SpiritCompanionStarEnum::GEMINI:
+                case SpiritCompanionStarEnum::Gemini:
                     $pet
                         ->increaseSafety($this->rng->rngNextInt(4, 8))
                         ->increaseLove($this->rng->rngNextInt(2, 4))
@@ -456,14 +460,14 @@ class PetSocialActivityService
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' smiled, and split into multiple copies of itself, each defending %pet:' . $pet->getId() . '.name% from another angle. They all turned to %pet:' . $pet->getId() . '.name% and gave a sincere thumbs up before recombining.';
                     break;
-                case SpiritCompanionStarEnum::SAGITTARIUS:
+                case SpiritCompanionStarEnum::Sagittarius:
                     $pet
                         ->increaseSafety($this->rng->rngNextInt(2, 4))
                         ->increaseLove($this->rng->rngNextInt(2, 4))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' tried to distract %pet:' . $pet->getId() . '.name% with ' . $this->rng->rngNextFromArray($adjectives) . ' stories about lavish parties. It kind of worked...';
                     break;
-                case SpiritCompanionStarEnum::HYDRA:
+                case SpiritCompanionStarEnum::Hydra:
                     $pet
                         ->increaseSafety($this->rng->rngNextInt(4, 8))
                         ->increaseLove($this->rng->rngNextInt(4, 8))
@@ -471,36 +475,36 @@ class PetSocialActivityService
                     $message = '%pet:' . $pet->getId() . '.name% was feeling nervous, so talked to ' . $companion->getName() . '. Sensing %pet:' . $pet->getId() . '.name%\'s unease, ' . $companion->getName() . ' looked around for potential threats, and roared menacingly.';
                     break;
                 default:
-                    throw new \Exception('Unknown Spirit Companion Star "' . $companion->getStar() . '"');
+                    throw new UnreachableException('Unknown Spirit Companion Star "' . $companion->getStar()->name . '"');
             }
         }
         else if($pet->getLove() <= 0)
         {
             switch($companion->getStar())
             {
-                case SpiritCompanionStarEnum::ALTAIR:
-                case SpiritCompanionStarEnum::CEPHEUS:
+                case SpiritCompanionStarEnum::Altair:
+                case SpiritCompanionStarEnum::Cepheus:
                     $pet
                         ->increaseSafety($this->rng->rngNextInt(2, 4))
                         ->increaseLove($this->rng->rngNextInt(2, 4))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' rambled some ' . $this->rng->rngNextFromArray($adjectives) . ' story about victory in combat... (It\'s the thought that counts...)';
                     break;
-                case SpiritCompanionStarEnum::CASSIOPEIA:
+                case SpiritCompanionStarEnum::Cassiopeia:
                     $pet
                         ->increaseSafety($this->rng->rngNextInt(2, 4))
                         ->increaseLove($this->rng->rngNextInt(2, 4))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' whispered odd prophecies, then stared at %pet:' . $pet->getId() . '.name% expectantly. (It\'s the thought that counts...)';
                     break;
-                case SpiritCompanionStarEnum::GEMINI:
+                case SpiritCompanionStarEnum::Gemini:
                     $pet
                         ->increaseSafety($this->rng->rngNextInt(4, 8))
                         ->increaseLove($this->rng->rngNextInt(4, 8))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' smiled, and split into multiple copies of itself, and they all played games together!';
                     break;
-                case SpiritCompanionStarEnum::SAGITTARIUS:
+                case SpiritCompanionStarEnum::Sagittarius:
                     $pet
                         ->increaseSafety($this->rng->rngNextInt(2, 4))
                         ->increaseLove($this->rng->rngNextInt(4, 8))
@@ -508,7 +512,7 @@ class PetSocialActivityService
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. The two hosted a party for themselves; %pet:' . $pet->getId() . '.name% had a lot of fun.';
                     break;
-                case SpiritCompanionStarEnum::HYDRA:
+                case SpiritCompanionStarEnum::Hydra:
                     $pet
                         ->increaseSafety($this->rng->rngNextInt(4, 8))
                         ->increaseLove($this->rng->rngNextInt(4, 8))
@@ -516,15 +520,15 @@ class PetSocialActivityService
                     $message = '%pet:' . $pet->getId() . '.name% was feeling lonely, so talked to ' . $companion->getName() . '. Sensing %pet:' . $pet->getId() . '.name%\'s unease, ' . $companion->getName() . ' settled into %pet:' . $pet->getId() . '.name%\'s lap.';
                     break;
                 default:
-                    throw new \Exception('Unknown Spirit Companion Star "' . $companion->getStar() . '"');
+                    throw new UnreachableException('Unknown Spirit Companion Star "' . $companion->getStar()->name . '"');
             }
         }
         else // low on esteem
         {
             switch($companion->getStar())
             {
-                case SpiritCompanionStarEnum::ALTAIR:
-                case SpiritCompanionStarEnum::CEPHEUS:
+                case SpiritCompanionStarEnum::Altair:
+                case SpiritCompanionStarEnum::Cepheus:
                     $pet
                         ->increaseSafety($this->rng->rngNextInt(2, 4))
                         ->increaseLove($this->rng->rngNextInt(2, 4))
@@ -532,19 +536,19 @@ class PetSocialActivityService
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' listened patiently; in the end, %pet:' . $pet->getId() . '.name% felt a little better.';
                     break;
-                case SpiritCompanionStarEnum::CASSIOPEIA:
+                case SpiritCompanionStarEnum::Cassiopeia:
                     $pet
                         ->increaseEsteem($this->rng->rngNextInt(4, 8))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' whispered odd prophecies, then stared at %pet:' . $pet->getId() . '.name% expectantly. Somehow, that actually helped!';
                     break;
-                case SpiritCompanionStarEnum::GEMINI:
+                case SpiritCompanionStarEnum::Gemini:
                     $pet
                         ->increaseLove($this->rng->rngNextInt(2, 4))
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' tried to entertain %pet:' . $pet->getId() . '.name% by splitting into copies and dancing around, but it didn\'t really help...';
                     break;
-                case SpiritCompanionStarEnum::SAGITTARIUS:
+                case SpiritCompanionStarEnum::Sagittarius:
                     $pet
                         ->increaseSafety($this->rng->rngNextInt(2, 4))
                         ->increaseLove($this->rng->rngNextInt(2, 4))
@@ -552,7 +556,7 @@ class PetSocialActivityService
                     ;
                     $message = '%pet:' . $pet->getId() . '.name% was feeling down, so talked to ' . $companion->getName() . '. ' . $companion->getName() . ' empathized completely, having been in similar situations themselves. It was really nice to hear!';
                     break;
-                case SpiritCompanionStarEnum::HYDRA:
+                case SpiritCompanionStarEnum::Hydra:
                     $pet
                         ->increaseSafety($this->rng->rngNextInt(2, 4))
                         ->increaseLove($this->rng->rngNextInt(2, 4))
@@ -561,7 +565,7 @@ class PetSocialActivityService
                     $message = $pet->getName() . ' was feeling down, so talked to ' . $companion->getName() . '. Sensing %pet:' . $pet->getId() . '.name%\'s unease, ' . $companion->getName() . ' settled into %pet:' . $pet->getId() . '.name%\'s lap.';
                     break;
                 default:
-                    throw new \Exception('Unknown Spirit Companion Star "' . $companion->getStar() . '"');
+                    throw new UnreachableException('Unknown Spirit Companion Star "' . $companion->getStar()->name . '"');
             }
         }
 

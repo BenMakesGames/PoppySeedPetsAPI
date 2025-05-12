@@ -160,7 +160,7 @@ class PetBaby
     #[Groups(['myPet'])]
     public function getPregnancyProgress(): string
     {
-        if($this->getParent()->getSpecies()->getPregnancyStyle() === PetPregnancyStyleEnum::EGG)
+        if($this->getParent()->getSpecies()->getPregnancyStyle() === PetPregnancyStyleEnum::Egg)
         {
             $messages = [
                 $this->getParent()->getName() . ' just got eggnant!',
@@ -195,7 +195,7 @@ class PetBaby
     public function getEggColor(): ?string
     {
         // we only see the color expressed in an egg
-        if($this->getParent()->getSpecies()->getPregnancyStyle() === PetPregnancyStyleEnum::EGG && $this->getGrowth() > self::EGG_INCUBATION_TIME)
+        if($this->getParent()->getSpecies()->getPregnancyStyle() === PetPregnancyStyleEnum::Egg && $this->getGrowth() > self::EGG_INCUBATION_TIME)
             return $this->getColorA();
         else
             return null;

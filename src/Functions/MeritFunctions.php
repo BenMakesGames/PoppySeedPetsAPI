@@ -59,7 +59,7 @@ class MeritFunctions
 
             // some merits have additional requirements:
             $available = match($merit) {
-                MeritEnum::VOLAGAMY => $petAgeInDays >= 14 && $pet->getSpecies()->getPregnancyStyle() !== PetPregnancyStyleEnum::IMPOSSIBLE,
+                MeritEnum::VOLAGAMY => $petAgeInDays >= 14 && $pet->getSpecies()->getPregnancyStyle() !== PetPregnancyStyleEnum::Impossible,
                 MeritEnum::INTROSPECTIVE => $pet->getRelationshipCount() >= 3,
 
                 // stat-based merits:

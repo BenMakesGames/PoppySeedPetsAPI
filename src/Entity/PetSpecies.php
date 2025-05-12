@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\PetPregnancyStyleEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -69,8 +70,8 @@ class PetSpecies
     private bool $availableFromPetShelter;
 
     #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "petEncyclopedia", "petFriend", "petGroupDetails", "parkEvent", "helperPet"])]
-    #[ORM\Column(type: 'integer')]
-    private int $pregnancyStyle;
+    #[ORM\Column(type: 'integer', enumType: PetPregnancyStyleEnum::class)]
+    private PetPregnancyStyleEnum $pregnancyStyle;
 
     #[Groups(["myPet", "userPublicProfile", "petPublicProfile", "petEncyclopedia", "petFriend", "petGroupDetails", "parkEvent", "helperPet"])]
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -229,12 +230,12 @@ class PetSpecies
         return $this;
     }
 
-    public function getPregnancyStyle(): int
+    public function getPregnancyStyle(): PetPregnancyStyleEnum
     {
         return $this->pregnancyStyle;
     }
 
-    public function setPregnancyStyle(int $pregnancyStyle): self
+    public function setPregnancyStyle(PetPregnancyStyleEnum $pregnancyStyle): self
     {
         $this->pregnancyStyle = $pregnancyStyle;
 

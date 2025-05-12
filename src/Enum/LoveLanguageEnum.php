@@ -14,13 +14,11 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-class LoveLanguageEnum
+enum LoveLanguageEnum: string
 {
-    use FakeEnum;
-
-    public const string GIFTS = 'gifts';
-    public const string TIME = 'time';
-    public const string WORDS = 'words';
-    public const string ACTS = 'acts';
-    public const string TOUCH = 'touch';
+    case Gifts = 'gifts';
+    case Time = 'time';
+    case Words = 'words';
+    case Acts = 'acts';
+    case Touch = 'touch';
 }

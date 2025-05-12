@@ -57,8 +57,8 @@ class PregnancyService
     public function getPregnant(Pet $pet1, Pet $pet2): void
     {
         if(
-            $pet1->getSpecies()->getPregnancyStyle() === PetPregnancyStyleEnum::IMPOSSIBLE ||
-            $pet2->getSpecies()->getPregnancyStyle() === PetPregnancyStyleEnum::IMPOSSIBLE
+            $pet1->getSpecies()->getPregnancyStyle() === PetPregnancyStyleEnum::Impossible ||
+            $pet2->getSpecies()->getPregnancyStyle() === PetPregnancyStyleEnum::Impossible
         )
             return;
 

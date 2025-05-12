@@ -216,8 +216,8 @@ class Pet
     #[ORM\Column(type: 'smallint')]
     private int $extroverted;
 
-    #[ORM\Column(type: 'string', length: 10)]
-    private string $loveLanguage;
+    #[ORM\Column(type: 'string', length: 10, enumType: LoveLanguageEnum::class)]
+    private LoveLanguageEnum $loveLanguage;
 
     #[ORM\Column(type: 'boolean')]
     private bool $isGrandparent = false;
@@ -317,7 +317,7 @@ class Pet
         $this->merits = new ArrayCollection();
         $this->groups = new ArrayCollection();
 
-        $this->loveLanguage = LoveLanguageEnum::getRandomValue($rng);
+        $this->loveLanguage = $rng->rngNextFromArray(LoveLanguageEnum::cases());
         $this->lunchboxItems = new ArrayCollection();
 
         $this->assignAffectionExpressions($rng);
@@ -1222,7 +1222,7 @@ class Pet
 
         if($this->getPregnancy() !== null)
         {
-            if($this->getSpecies()->getPregnancyStyle() === PetPregnancyStyleEnum::EGG)
+            if($this->getSpecies()->getPregnancyStyle() === PetPregnancyStyleEnum::Egg)
                 return $this->getPregnancy()->getGrowth() <= PetBaby::EGG_INCUBATION_TIME;
             else
                 return true;
@@ -1484,16 +1484,9 @@ class Pet
             return 3;
     }
 
-    public function getLoveLanguage(): ?string
+    public function getLoveLanguage(): LoveLanguageEnum
     {
         return $this->loveLanguage;
-    }
-
-    public function setLoveLanguage(string $loveLanguage): self
-    {
-        $this->loveLanguage = $loveLanguage;
-
-        return $this;
     }
 
     public function getIsGrandparent(): bool
