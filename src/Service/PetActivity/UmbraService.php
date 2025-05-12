@@ -304,7 +304,7 @@ class UmbraService
         $pet = $petWithSkills->getPet();
 
         $hasEideticMemory = $pet->hasMerit(MeritEnum::EIDETIC_MEMORY);
-        $hasRelevantSpirit = $pet->getSpiritCompanion() !== null && $pet->getSpiritCompanion()->getStar() === SpiritCompanionStarEnum::ALTAIR;
+        $hasRelevantSpirit = $pet->getSpiritCompanion()?->getStar() === SpiritCompanionStarEnum::Altair;
 
         $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getUmbraBonus()->getTotal());
 

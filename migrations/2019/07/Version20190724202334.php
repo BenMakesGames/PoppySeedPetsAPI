@@ -51,7 +51,7 @@ final class Version20190724202334 extends AbstractMigration
                 'UPDATE spirit_companion SET star=:star WHERE id=:id LIMIT 1',
                 [
                     'id' => $companion['id'],
-                    'star' => SpiritCompanionStarEnum::getRandomValue($rng)
+                    'star' => $rng->rngNextFromArray(SpiritCompanionStarEnum::cases())->value
                 ]
             );
         }

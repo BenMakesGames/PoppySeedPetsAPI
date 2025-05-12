@@ -14,14 +14,12 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-final class SpiritCompanionStarEnum
+enum SpiritCompanionStarEnum: string
 {
-    use FakeEnum;
-
-    public const string ALTAIR = 'Altair';
-    public const string CASSIOPEIA = 'Cassiopeia';
-    public const string CEPHEUS = 'Cepheus';
-    public const string GEMINI = 'Gemini';
-    public const string HYDRA = 'Hydra';
-    public const string SAGITTARIUS = 'Sagittarius';
+    case Altair = 'Altair';
+    case Cassiopeia = 'Cassiopeia';
+    case Cepheus = 'Cepheus';
+    case Gemini = 'Gemini';
+    case Hydra = 'Hydra';
+    case Sagittarius = 'Sagittarius';
 }

@@ -327,7 +327,7 @@ class TreasureMapService
 
         $tags = [ 'Adventure!' ];
 
-        if($pet->getSpiritCompanion() && $pet->getSpiritCompanion()->getStar() === SpiritCompanionStarEnum::SAGITTARIUS)
+        if($pet->getSpiritCompanion()?->getStar() === SpiritCompanionStarEnum::Sagittarius)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% and ' . $pet->getSpiritCompanion()->getName() . ' made %user:' . $pet->getOwner()->getId() . '.name% ' . $food . ' with their ' . $pet->getTool()->getItem()->getName() . '. %user:' . $pet->getOwner()->getId() . '.Name% pretended to eat it with them. It was very good.');
             $tags[] = 'Spirit Companion';
