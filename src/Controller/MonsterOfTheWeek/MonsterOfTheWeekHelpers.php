@@ -66,6 +66,7 @@ final class MonsterOfTheWeekHelpers
             MonsterOfTheWeekEnum::Cardea => 'Cardea\'s Lockbearer',
             MonsterOfTheWeekEnum::Dionysus => 'Dionysus\'s Hunger',
             MonsterOfTheWeekEnum::Huehuecoyotl => 'Huehuecoyotl\'s Folly',
+            MonsterOfTheWeekEnum::EiriPersona => 'an Eiri Persona',
             default => throw new UnreachableException()
         };
     }
