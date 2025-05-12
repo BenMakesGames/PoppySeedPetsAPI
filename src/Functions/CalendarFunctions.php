@@ -344,10 +344,11 @@ final class CalendarFunctions
     }
 
     /**
-     * @return string[]
+     * @return HolidayEnum[]
      */
     public static function getEventData(\DateTimeImmutable $dt): array
     {
+        /** @var HolidayEnum[] $events */
         $events = [];
 
         $fullMoonName = DateFunctions::getFullMoonName($dt);
@@ -356,100 +357,100 @@ final class CalendarFunctions
             $events[] = $fullMoonName . ' Moon';
 
         if(self::isStockingStuffingSeason($dt))
-            $events[] = HolidayEnum::STOCKING_STUFFING_SEASON;
+            $events[] = HolidayEnum::StockingStuffingSeason;
 
         if(self::isHalloween($dt))
-            $events[] = HolidayEnum::HALLOWEEN;
+            $events[] = HolidayEnum::Halloween;
 
         if(self::isEaster($dt))
-            $events[] = HolidayEnum::EASTER;
+            $events[] = HolidayEnum::Easter;
 
         if(self::isSaintPatricksDay($dt))
-            $events[] = HolidayEnum::SAINT_PATRICKS;
+            $events[] = HolidayEnum::SaintPatricks;
 
         if(self::isValentinesOrAdjacent($dt))
-            $events[] = HolidayEnum::VALENTINES;
+            $events[] = HolidayEnum::Valentines;
 
         if(self::isCyberMonday($dt))
-            $events[] = HolidayEnum::CYBER_MONDAY;
+            $events[] = HolidayEnum::CyberMonday;
 
         if(self::isBlackFriday($dt))
-            $events[] = HolidayEnum::BLACK_FRIDAY;
+            $events[] = HolidayEnum::BlackFriday;
 
         if(self::isPiDay($dt))
-            $events[] = HolidayEnum::PI_DAY;
+            $events[] = HolidayEnum::PiDay;
 
         if(self::isPSPBirthday($dt))
-            $events[] = HolidayEnum::PSP_BIRTHDAY;
+            $events[] = HolidayEnum::PSPBirthday;
 
         if(self::isSummerSolstice($dt))
-            $events[] = HolidayEnum::SUMMER_SOLSTICE;
+            $events[] = HolidayEnum::SummerSolstice;
 
         if(self::isWinterSolstice($dt))
-            $events[] = HolidayEnum::WINTER_SOLSTICE;
+            $events[] = HolidayEnum::WinterSolstice;
 
         if(self::isEight($dt))
-            $events[] = HolidayEnum::EIGHT;
+            $events[] = HolidayEnum::Eight;
 
         if(self::isPsyPetsBirthday($dt))
-            $events[] = HolidayEnum::PSYPETS_BIRTHDAY;
+            $events[] = HolidayEnum::PsyPetsBirthday;
 
         if(self::isAprilFools($dt))
-            $events[] = HolidayEnum::APRIL_FOOLS;
+            $events[] = HolidayEnum::AprilFools;
 
         if(self::isHanukkah($dt))
-            $events[] = HolidayEnum::HANUKKAH;
+            $events[] = HolidayEnum::Hanukkah;
 
         if(self::isWhiteDay($dt))
-            $events[] = HolidayEnum::WHITE_DAY;
+            $events[] = HolidayEnum::WhiteDay;
 
         if(self::isTalkLikeAPirateDay($dt))
-            $events[] = HolidayEnum::TALK_LIKE_A_PIRATE_DAY;
+            $events[] = HolidayEnum::TalkLikeAPirateDay;
 
         if(self::isThanksgiving($dt))
-            $events[] = HolidayEnum::THANKSGIVING;
+            $events[] = HolidayEnum::Thanksgiving;
 
         if(self::isNewYearsHoliday($dt))
-            $events[] = HolidayEnum::NEW_YEARS_DAY;
+            $events[] = HolidayEnum::NewYearsDay;
 
         if(self::isJuly4th($dt))
-            $events[] = HolidayEnum::FOURTH_OF_JULY;
+            $events[] = HolidayEnum::FourthOfJuly;
 
         if(self::isSnakeDay($dt))
-            $events[] = HolidayEnum::SNAKE_DAY;
+            $events[] = HolidayEnum::SnakeDay;
 
         if(self::isBastilleDay($dt))
-            $events[] = HolidayEnum::BASTILLE_DAY;
+            $events[] = HolidayEnum::BastilleDay;
 
         if(self::isAwaOdori($dt))
-            $events[] = HolidayEnum::AWA_ODORI;
+            $events[] = HolidayEnum::AwaOdori;
 
         if(self::isEarthDay($dt))
-            $events[] = HolidayEnum::EARTH_DAY;
+            $events[] = HolidayEnum::EarthDay;
 
         if(self::isCincoDeMayo($dt))
-            $events[] = HolidayEnum::CINCO_DE_MAYO;
+            $events[] = HolidayEnum::CincoDeMayo;
 
         if(self::isNoombatDay($dt))
-            $events[] = HolidayEnum::NOOMBAT_DAY;
+            $events[] = HolidayEnum::NoombatDay;
 
         if(self::isJelephantDay($dt))
-            $events[] = HolidayEnum::JELEPHANT_DAY;
+            $events[] = HolidayEnum::JelephantDay;
 
         if(self::isChineseNewYear($dt))
-            $events[] = HolidayEnum::LUNAR_NEW_YEAR;
+            $events[] = HolidayEnum::LunarNewYear;
 
         if(self::isHoli($dt))
-            $events[] = HolidayEnum::HOLI;
+            $events[] = HolidayEnum::Holi;
 
         if(self::isLeonidPeakOrAdjacent($dt))
-            $events[] = HolidayEnum::LEONIDS;
+            $events[] = HolidayEnum::Leonids;
 
         if(self::isLeapDay($dt))
-            $events[] = HolidayEnum::LEAP_DAY;
+            $events[] = HolidayEnum::LeapDay;
 
         if(self::isCreepyMaskDay($dt))
-            $events[] = HolidayEnum::CREEPY_MASK_DAY;
+            $events[] = HolidayEnum::CreepyMaskDay;
 
         return $events;
     }
