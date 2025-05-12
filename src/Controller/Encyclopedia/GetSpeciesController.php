@@ -16,10 +16,8 @@ namespace App\Controller\Encyclopedia;
 
 use App\Attributes\DoesNotRequireHouseHours;
 use App\Entity\PetSpecies;
-use App\Enum\PetSpeciesName;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPNotFoundException;
-use App\Functions\PetSpeciesRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -34,14 +32,10 @@ class GetSpeciesController
         string $speciesName, EntityManagerInterface $em, ResponseService $responseService
     ): JsonResponse
     {
-        try
-        {
-            $species = PetSpeciesRepository::findOneByName($em, PetSpeciesName::from($speciesName));
-        }
-        catch(\ValueError)
-        {
+        $species = $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => $speciesName ]);
+
+        if(!$species)
             throw new PSPNotFoundException('There is no such species.');
-        }
 
         return $responseService->success($species, [ SerializationGroupEnum::PET_ENCYCLOPEDIA ]);
     }
