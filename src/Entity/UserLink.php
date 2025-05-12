@@ -28,8 +28,8 @@ class UserLink
     /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 40)]
-    private string $website;
+    #[ORM\Column(type: 'string', length: 40, enumType: UserLinkWebsiteEnum::class)]
+    private UserLinkWebsiteEnum $website;
 
     #[ORM\Column(type: 'string', length: 100)]
     private string $nameOrId;
@@ -38,15 +38,15 @@ class UserLink
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
-    #[ORM\Column(type: 'string', length: 20)]
-    private string $visibility;
+    #[ORM\Column(type: 'string', length: 20, enumType: UserLinkVisibilityEnum::class)]
+    private UserLinkVisibilityEnum $visibility;
 
     public function __construct(User $user, UserLinkWebsiteEnum $website, string $nameOrId, UserLinkVisibilityEnum $visibility)
     {
         $this->user = $user;
-        $this->website = $website->value;
+        $this->website = $website;
         $this->nameOrId = $nameOrId;
-        $this->visibility = $visibility->value;
+        $this->visibility = $visibility;
     }
 
     public function getId(): ?int
@@ -54,7 +54,7 @@ class UserLink
         return $this->id;
     }
 
-    public function getWebsite(): string
+    public function getWebsite(): UserLinkWebsiteEnum
     {
         return $this->website;
     }
@@ -69,7 +69,7 @@ class UserLink
         return $this->user;
     }
 
-    public function getVisibility(): string
+    public function getVisibility(): UserLinkVisibilityEnum
     {
         return $this->visibility;
     }

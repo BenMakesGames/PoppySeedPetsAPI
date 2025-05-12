@@ -92,12 +92,12 @@ class GetByIdController
         {
             $links = $em->getRepository(UserLink::class)->findBy([
                 'user' => $user,
-                'visibility' => UserLinkVisibilityEnum::Followed->value,
+                'visibility' => UserLinkVisibilityEnum::Followed,
             ]);
         }
 
         return array_map(fn(UserLink $link) => [
-            'website' => $link->getWebsite(),
+            'website' => $link->getWebsite()->value,
             'nameOrId' => $link->getNameOrId(),
         ], $links);
     }

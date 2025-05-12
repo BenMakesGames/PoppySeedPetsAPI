@@ -112,9 +112,9 @@ class MyLinksController
 
         return $responseService->success([
             'id' => $link->getId(),
-            'website' => $link->getWebsite(),
+            'website' => $link->getWebsite()->value,
             'nameOrId' => $link->getNameOrId(),
-            'visibility' => $link->getVisibility(),
+            'visibility' => $link->getVisibility()->value,
         ]);
     }
 }
