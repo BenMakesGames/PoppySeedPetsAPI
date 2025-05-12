@@ -530,7 +530,7 @@ class UmbraService
         else
             $prize = $this->rng->rngNextFromArray($prizes);
 
-        if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
+        if($pet->isInGuild(GuildEnum::LightAndShadow))
         {
             $skill = 20 + $petWithSkills->getArcana()->getTotal() + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getStamina()->getTotal();
 
@@ -580,7 +580,7 @@ class UmbraService
 
         if($success)
         {
-            if($pet->isInGuild(GuildEnum::THE_UNIVERSE_FORGETS))
+            if($pet->isInGuild(GuildEnum::TheUniverseForgets))
             {
                 $pet->getGuildMembership()->increaseReputation();
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the Umbra, ' . '%pet:' . $pet->getId() . '.name% encountered a super gross-looking mummy dragging its long arms through the Umbral sand. It screeched and swung wildly; but ' . $pet->getName() . ' ' . $defeated . ', and claimed its ' . $prize . '!')

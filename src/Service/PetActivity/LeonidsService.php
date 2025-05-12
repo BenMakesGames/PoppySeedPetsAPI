@@ -160,7 +160,7 @@ class LeonidsService
     {
         $pet = $petWithSkills->getPet();
 
-        if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
+        if($pet->isInGuild(GuildEnum::LightAndShadow))
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
 

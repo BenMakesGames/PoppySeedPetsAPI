@@ -347,7 +347,7 @@ class DeepSeaService
 
             $tentacles = 2;
 
-            if($pet->isInGuild(GuildEnum::HIGH_IMPACT))
+            if($pet->isInGuild(GuildEnum::HighImpact))
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% was attacked by a Giant Squid while exploring the deep sea! As a member of High Impact, they immediately stepped up to the challenge, fought the squid, and stole a few Tentacles before it swam away!', 'items/tool/submarine')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fighting', 'Guild' ]))
@@ -372,7 +372,7 @@ class DeepSeaService
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $activityLog);
         }
-        else if($pet->isInGuild(GuildEnum::HIGH_IMPACT))
+        else if($pet->isInGuild(GuildEnum::HighImpact))
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, false);
 

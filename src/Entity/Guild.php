@@ -31,32 +31,32 @@ class Guild
 
     #[Groups(["guildEncyclopedia", "petGuild", "petPublicProfile"])]
     #[ORM\Column(type: 'string', length: 255)]
-    private $name;
+    private string $name;
 
     #[Groups(["guildEncyclopedia", "petGuild", "petPublicProfile"])]
     #[ORM\Column(type: 'string', length: 40)]
-    private $emblem;
+    private string $emblem;
 
     #[Groups(["guildEncyclopedia"])]
     #[ORM\ManyToOne(targetEntity: Item::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $starterTool;
+    private Item $starterTool;
 
     #[Groups(["guildEncyclopedia"])]
     #[ORM\Column(type: 'string', length: 255)]
-    private $quote;
+    private string $quote;
 
     #[ORM\Column(type: 'string', length: 20)]
-    private $juniorTitle;
+    private string $juniorTitle;
 
     #[ORM\Column(type: 'string', length: 20)]
-    private $memberTitle;
+    private string $memberTitle;
 
     #[ORM\Column(type: 'string', length: 20)]
-    private $seniorTitle;
+    private string $seniorTitle;
 
     #[ORM\Column(type: 'string', length: 20)]
-    private $masterTitle;
+    private string $masterTitle;
 
     public function getId(): ?int
     {

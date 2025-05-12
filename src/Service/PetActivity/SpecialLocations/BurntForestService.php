@@ -283,9 +283,9 @@ class BurntForestService
         $brawlRoll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getStrength()->getTotal() + $petWithSkills->getDexterity()->getTotal());
         $exp = 1;
 
-        if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
+        if($pet->isInGuild(GuildEnum::LightAndShadow))
             $brawlRoll = 0;
-        else if($pet->isInGuild(GuildEnum::THE_UNIVERSE_FORGETS))
+        else if($pet->isInGuild(GuildEnum::TheUniverseForgets))
             $umbraRoll = 0;
 
         $loot = $this->rng->rngNextFromArray([
@@ -298,7 +298,7 @@ class BurntForestService
         {
             if($umbraRoll >= 15)
             {
-                if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
+                if($pet->isInGuild(GuildEnum::LightAndShadow))
                 {
                     $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' realized that the spirit was just hungry, and found it a piece of Charcoal to eat, instead. Grateful, the tree offered them ' . $loot . '.')
                         ->setIcon('guilds/light-and-shadow')
@@ -356,7 +356,7 @@ class BurntForestService
         {
             if($brawlRoll >= 15)
             {
-                if($pet->isInGuild(GuildEnum::THE_UNIVERSE_FORGETS))
+                if($pet->isInGuild(GuildEnum::TheUniverseForgets))
                 {
                     $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a fire spirit burning a still-living tree! ' . $pet->getName() . ' immediately put the fire out so that it could no longer harm anyone; grateful, the tree offered them ' . $loot . '.')
                         ->setIcon('guilds/the-universe-forgets')
@@ -400,7 +400,7 @@ class BurntForestService
 
         if($roll >= 13)
         {
-            if($pet->isInGuild(GuildEnum::TAPESTRIES))
+            if($pet->isInGuild(GuildEnum::Tapestries))
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a tear in the fabric of reality! They were able to stitch it back together, and got some Quintessence!')
                     ->setIcon('guild/tapestries')
@@ -423,7 +423,7 @@ class BurntForestService
         }
         else
         {
-            if($pet->isInGuild(GuildEnum::TAPESTRIES))
+            if($pet->isInGuild(GuildEnum::Tapestries))
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% visited the Burnt Forest, and found a tear in the fabric of reality! They tried to repair it, but were worried about getting unraveled, themselves!')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra', 'Guild' ]))

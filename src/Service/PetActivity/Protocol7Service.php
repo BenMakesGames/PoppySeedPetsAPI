@@ -89,7 +89,7 @@ class Protocol7Service
                 $activityLog = $this->foundLayer02($petWithSkills);
                 break;
             case 9:
-                if($pet->isInGuild(GuildEnum::CORRESPONDENCE))
+                if($pet->isInGuild(GuildEnum::Correspondence))
                     $activityLog = $this->deliverMessagesForCorrespondence($petWithSkills);
                 else
                     $activityLog = $this->foundNothing($petWithSkills, $roll);
@@ -131,9 +131,9 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        if($pet->isInGuild(GuildEnum::DWARFCRAFT))
+        if($pet->isInGuild(GuildEnum::Dwarfcraft))
             return $this->doDwarfcraftDigging($petWithSkills);
-        else if($pet->isInGuild(GuildEnum::TIMES_ARROW))
+        else if($pet->isInGuild(GuildEnum::TimesArrow))
             return $this->doTimesArrow($petWithSkills);
 
         $exp = (int)ceil($roll / 10);
@@ -325,7 +325,7 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        if($pet->isInGuild(GuildEnum::TIMES_ARROW))
+        if($pet->isInGuild(GuildEnum::TimesArrow))
         {
             $roll = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getScience()->getTotal());
 
@@ -341,7 +341,7 @@ class Protocol7Service
         {
             $pet->increaseEsteem(1);
 
-            if($pet->isInGuild(GuildEnum::TIMES_ARROW))
+            if($pet->isInGuild(GuildEnum::TimesArrow))
             {
                 $pet->getGuildMembership()->increaseReputation();
 
@@ -370,7 +370,7 @@ class Protocol7Service
         }
         else
         {
-            if($pet->isInGuild(GuildEnum::TIMES_ARROW))
+            if($pet->isInGuild(GuildEnum::TimesArrow))
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% met with a Garbage Collector in Project-E. It was happy to help a member of Time\'s Arrow, but didn\'t have anything at the moment.', '')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Project-E', 'Guild' ]))
@@ -751,7 +751,7 @@ class Protocol7Service
     {
         $pet = $petWithSkills->getPet();
 
-        if($pet->isInGuild(GuildEnum::TAPESTRIES))
+        if($pet->isInGuild(GuildEnum::Tapestries))
         {
             $check = $this->rng->rngNextInt(1, 20 + $petWithSkills->getIntelligence()->getTotal() + $petWithSkills->getPerception()->getTotal() + max($petWithSkills->getArcana()->getTotal(), $petWithSkills->getScience()->getTotal()) + $petWithSkills->getHackingBonus()->getTotal());
         }
@@ -824,7 +824,7 @@ class Protocol7Service
                 ]);
             }
 
-            if($pet->isInGuild(GuildEnum::TAPESTRIES))
+            if($pet->isInGuild(GuildEnum::Tapestries))
             {
                 $pet->getGuildMembership()->increaseReputation();
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% found a corrupt sector in Project-E, but was able to repair it as they would repair the fabric of reality, and recover a ' . $otherLoot . ', and ' . $loot . ' from it!')

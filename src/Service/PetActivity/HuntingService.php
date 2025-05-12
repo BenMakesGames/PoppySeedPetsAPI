@@ -960,7 +960,7 @@ class HuntingService
         else
             $prize = 'Quintessence';
 
-        if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
+        if($pet->isInGuild(GuildEnum::LightAndShadow))
         {
             $skill = 10 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getArcana()->getTotal();
 
@@ -1045,7 +1045,7 @@ class HuntingService
             'Quintessence', 'Black Feathers', 'Giant Turkey Leg', 'Smallish Pumpkin Spice'
         ]);
 
-        if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
+        if($pet->isInGuild(GuildEnum::LightAndShadow))
         {
             $skill = 10 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getArcana()->getTotal();
 
@@ -1082,7 +1082,7 @@ class HuntingService
             }
         }
 
-        if($pet->isInGuild(GuildEnum::THE_UNIVERSE_FORGETS))
+        if($pet->isInGuild(GuildEnum::TheUniverseForgets))
         {
             $skill = 10 + $petWithSkills->getIntelligence()->getTotal() * 2 + $petWithSkills->getArcana()->getTotal();
 

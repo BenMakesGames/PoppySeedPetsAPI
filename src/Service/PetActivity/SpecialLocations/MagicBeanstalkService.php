@@ -94,7 +94,7 @@ class MagicBeanstalkService
             case 15:
             case 16:
             case 17:
-                if($pet->isInGuild(GuildEnum::HIGH_IMPACT))
+                if($pet->isInGuild(GuildEnum::HighImpact))
                     $activityLog = $this->foundPegasusNestHighImpact($petWithSkills);
                 else
                     $activityLog = $this->foundPegasusNest($petWithSkills);
@@ -222,7 +222,7 @@ class MagicBeanstalkService
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
         }
-        else if($pet->isInGuild(GuildEnum::HIGH_IMPACT))
+        else if($pet->isInGuild(GuildEnum::HighImpact))
         {
             if($this->rng->rngNextInt(1, 20 + max($petWithSkills->getStrength()->getTotal(), $petWithSkills->getDexterity()->getTotal()) + $petWithSkills->getBrawl()->getTotal()) >= 10)
             {
