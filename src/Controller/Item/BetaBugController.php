@@ -22,12 +22,14 @@ use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
+use App\Enum\PetSpeciesName;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\ItemRepository;
 use App\Functions\MeritRepository;
 use App\Functions\PetRepository;
+use App\Functions\PetSpeciesRepository;
 use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
@@ -148,7 +150,7 @@ class BetaBugController
         $newPet = $petFactory->createPet(
             $user,
             $rng->rngNextFromArray(\App\Entity\CookingBuddy::NAMES),
-            $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Cooking Buddy' ]),
+            PetSpeciesRepository::findOneByName($em,PetSpeciesName::CookingBuddy),
             $bodyColor,
             '236924', // "eyes"
             $favoriteFlavor,

@@ -18,12 +18,14 @@ use App\Entity\Inventory;
 use App\Entity\PetSpecies;
 use App\Enum\FlavorEnum;
 use App\Enum\PetLocationEnum;
+use App\Enum\PetSpeciesName;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\EnchantmentRepository;
 use App\Functions\ItemRepository;
 use App\Functions\MeritRepository;
 use App\Functions\PetColorFunctions;
 use App\Functions\PetRepository;
+use App\Functions\PetSpeciesRepository;
 use App\Service\HattierService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -126,7 +128,7 @@ class GoldRingController
         {
             $inventoryService->loseItem($user, $goldRingItem->getId(), $inventory->getLocation(), 100);
 
-            $hedgehog = $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Hedgehog' ]);
+            $hedgehog = PetSpeciesRepository::findOneByName($em, PetSpeciesName::Hedgehog);
 
             $hedgehogName = $rng->rngNextFromArray([
                 'Speedy', 'Dash', 'Blur', 'Quickly', 'Quills', 'Boots', 'Nitro', 'Boom', 'Runner', 'Jumper',

@@ -20,9 +20,11 @@ use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
+use App\Enum\PetSpeciesName;
 use App\Exceptions\PSPNotFoundException;
 use App\Functions\MeritRepository;
 use App\Functions\PetRepository;
+use App\Functions\PetSpeciesRepository;
 use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
@@ -40,12 +42,12 @@ class PhilosophersStoneController
     // should be kept in-sync with the list in philosophers-stone.component.ts
     // (or make a new endpoint to get eligible plushies... that'd be cool)
     private const array PLUSHIES = [
-        'Bulbun Plushy' => [ 'species' => 'Bulbun', 'colorA' => 'f8d592', 'colorB' => 'd4b36e' ],
-        'Peacock Plushy' => [ 'species' => 'Peacock', 'colorA' => 'ffe9d9', 'colorB' => 'a47dd7' ],
-        'Rainbow Dolphin Plushy' => [ 'species' => 'Rainbow Dolphin', 'colorA' => '64ea74', 'colorB' => 'ea64de' ],
-        'Sneqo Plushy' => [ 'species' => 'Sneqo', 'colorA' => '269645', 'colorB' => 'c8bb67' ],
-        'Phoenix Plushy' => [ 'species' => 'Phoenix', 'colorA' => 'b03d3d', 'colorB' => 'f5e106' ],
-        'Dancing Sword' => [ 'species' => 'Dancing Sword', 'colorA' => '846b38', 'colorB' => '843838' ],
+        'Bulbun Plushy' => [ 'species' => PetSpeciesName::Bulbun, 'colorA' => 'f8d592', 'colorB' => 'd4b36e' ],
+        'Peacock Plushy' => [ 'species' => PetSpeciesName::Peacock, 'colorA' => 'ffe9d9', 'colorB' => 'a47dd7' ],
+        'Rainbow Dolphin Plushy' => [ 'species' => PetSpeciesName::RainbowDolphin, 'colorA' => '64ea74', 'colorB' => 'ea64de' ],
+        'Sneqo Plushy' => [ 'species' => PetSpeciesName::Sneqo, 'colorA' => '269645', 'colorB' => 'c8bb67' ],
+        'Phoenix Plushy' => [ 'species' => PetSpeciesName::Phoenix, 'colorA' => 'b03d3d', 'colorB' => 'f5e106' ],
+        'Dancing Sword' => [ 'species' => PetSpeciesName::DancingSword, 'colorA' => '846b38', 'colorB' => '843838' ],
     ];
 
     #[Route("/{inventory}/use", methods: ["POST"])]
@@ -73,10 +75,7 @@ class PhilosophersStoneController
 
         $speciesInfo = self::PLUSHIES[$plushy->getItem()->getName()];
 
-        $species = $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => $speciesInfo['species'] ]);
-
-        if(!$species)
-            throw new \Exception('Something has gone terribly wrong. Ben has been notified; hopefully he\'ll fix it within a few hours...');
+        $species = PetSpeciesRepository::findOneByName($em, $speciesInfo['species']);
 
         $userStatsRepository->incrementStat($user, 'Philosopher\'s Stones Used');
 

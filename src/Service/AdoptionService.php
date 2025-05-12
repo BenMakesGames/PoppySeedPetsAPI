@@ -17,10 +17,12 @@ namespace App\Service;
 use App\Entity\Pet;
 use App\Entity\PetSpecies;
 use App\Entity\User;
+use App\Enum\PetSpeciesName;
 use App\Enum\UserStatEnum;
 use App\Functions\CalendarFunctions;
 use App\Functions\ColorFunctions;
 use App\Functions\DateFunctions;
+use App\Functions\PetSpeciesRepository;
 use App\Functions\RandomFunctions;
 use App\Model\ChineseCalendarInfo;
 use App\Model\PetShelterPet;
@@ -188,26 +190,26 @@ class AdoptionService
 
             if(CalendarFunctions::isHalloweenDay($this->clock->now))
             {
-                $pet->species = $this->em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Fog Elemental' ]);
+                $pet->species = PetSpeciesRepository::findOneByName($this->em, PetSpeciesName::FogElemental);
                 $pet->label = 'spooky!';
                 $dialog = "Uh... I don't know if this is a Halloween thing, or what, but... if you want a Fog Elemental, I guess it's your pick of the litter...\n\nAlthough I guess if ";
             }
             else if(CalendarFunctions::isNoombatDay($this->clock->now))
             {
-                $pet->species = $this->em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Noombat' ]);
+                $pet->species = PetSpeciesRepository::findOneByName($this->em, PetSpeciesName::Noombat);
                 $pet->label = 'noom!';
                 $dialog = "Agh! This happens every year at about this time! Noombats everywhere! I don't know if it's Noombat breeding season, or what, but please adopt one of these things! If you insist, though, and ";
             }
             else if(CalendarFunctions::isLeapDay($this->clock->now))
             {
-                $pet->species = $this->em->getRepository(PetSpecies::class)->findOneBy([
-                    'name' => [
-                        'Bear Frog',
-                        'False Frog',
-                        'Gelp',
-                        'False Frog',
+                $pet->species = PetSpeciesRepository::findOneByName(
+                    $this->em,
+                    [
+                        PetSpeciesName::BearFrog,
+                        PetSpeciesName::FalseFrog, PetSpeciesName::FalseFrog,
+                        PetSpeciesName::Gelp,
                     ][$i % 4]
-                ]);
+                );
                 $pet->label = '*ribbit*';
                 $dialog = "Uh... your guess is as good as mine...\n\nAnd this rain feels unnatural, too, don't you think?\n\nWell... anyway, if ";
             }

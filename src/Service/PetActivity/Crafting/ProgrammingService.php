@@ -26,6 +26,7 @@ use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
+use App\Enum\PetSpeciesName;
 use App\Enum\RelationshipEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ActivityHelpers;
@@ -36,6 +37,7 @@ use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\PetBadgeHelpers;
 use App\Functions\PetColorFunctions;
+use App\Functions\PetSpeciesRepository;
 use App\Functions\StatusEffectHelpers;
 use App\Model\ActivityCallback;
 use App\Model\ComputedPetSkills;
@@ -634,7 +636,7 @@ class ProgrammingService
 
     private function createInfinityImp(Pet $captor): void
     {
-        $infinityImp = $this->em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Infinity Imp' ]);
+        $infinityImp = PetSpeciesRepository::findOneByName($this->em, PetSpeciesName::InfinityImp);
 
         $impName = $this->rng->rngNextFromArray([
             'Pythagorimp', 'Euclidemon', 'Algebrogremlin', 'Probabilidemon',
