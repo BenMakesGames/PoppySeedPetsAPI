@@ -92,7 +92,7 @@ class MyLinksController
         if(strlen($nameOrId) > 100)
             throw new PSPFormValidationException('Your name or ID cannot be longer than 100 characters.');
 
-        if(strpos($nameOrId, '/') !== false || strpos($nameOrId, '\\') !== false)
+        if(str_contains($nameOrId, '/') || str_contains($nameOrId, '\\'))
             throw new PSPFormValidationException('Slashes are not allowed.');
 
         $existingLinks = $em->getRepository(UserLink::class)->count([ 'user' => $user ]);
@@ -100,11 +100,12 @@ class MyLinksController
         if($existingLinks >= 5)
             throw new PSPFormValidationException('You can only have up to 5 links.');
 
-        $link = (new UserLink())
-            ->setUser($user)
-            ->setWebsite($website)
-            ->setNameOrId($nameOrId)
-            ->setVisibility($visibility);
+        $link = new UserLink(
+            user: $user,
+            website: $website,
+            nameOrId: $nameOrId,
+            visibility: $visibility,
+        );
 
         $em->persist($link);
         $em->flush();
