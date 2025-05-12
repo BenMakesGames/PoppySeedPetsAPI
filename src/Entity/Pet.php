@@ -1222,7 +1222,7 @@ class Pet
 
         if($this->getPregnancy() !== null)
         {
-            if($this->getSpecies()->getPregnancyStyle() === PetPregnancyStyleEnum::EGG)
+            if($this->getSpecies()->getPregnancyStyle() === PetPregnancyStyleEnum::Egg)
                 return $this->getPregnancy()->getGrowth() <= PetBaby::EGG_INCUBATION_TIME;
             else
                 return true;

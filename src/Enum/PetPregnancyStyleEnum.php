@@ -14,11 +14,9 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-final class PetPregnancyStyleEnum
+enum PetPregnancyStyleEnum: int
 {
-    use FakeEnum;
-
-    public const int IMPOSSIBLE = -1;
-    public const int EGG = 0;
-    public const int WOMB = 1;
+    case Impossible = -1;
+    case Egg = 0;
+    case Womb = 1;
 }
