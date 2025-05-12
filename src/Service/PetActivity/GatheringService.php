@@ -226,7 +226,7 @@ class GatheringService
 
             $petJoinsHouse = $numberOfPetsAtHome < $pet->getOwner()->getMaxPets();
 
-            if($pet->isInGuild(GuildEnum::LIGHT_AND_SHADOW))
+            if($pet->isInGuild(GuildEnum::LightAndShadow))
             {
                 $extraMessage = ActivityHelpers::PetName($pet) . ' recognized the spirit from Light and Shadow texts: a ' . $newPet->getSpecies()->getName() . '! They began to talk - it\'s name was ' . $newPet->getName() . ', and the two formed a quick connection! ';
 

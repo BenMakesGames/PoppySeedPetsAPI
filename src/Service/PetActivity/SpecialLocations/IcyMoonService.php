@@ -224,7 +224,7 @@ class IcyMoonService
 
             $pieces = 1;
 
-            if($pet->isInGuild(GuildEnum::HIGH_IMPACT))
+            if($pet->isInGuild(GuildEnum::HighImpact))
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% was attacked by a Mini Crystalline Entity while exploring an Icy Moon! As a member of High Impact, they immediately stepped up to the challenge and fought the creature, breaking off a piece of it before it flew away!')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Location_Icy_Moon, 'Fighting', 'Guild' ]))
@@ -249,7 +249,7 @@ class IcyMoonService
 
             $this->petExperienceService->gainExp($pet, 1 + $pieces, [ PetSkillEnum::BRAWL ], $activityLog);
         }
-        else if($pet->isInGuild(GuildEnum::HIGH_IMPACT))
+        else if($pet->isInGuild(GuildEnum::HighImpact))
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
 

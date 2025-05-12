@@ -14,17 +14,15 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-class GuildEnum
+enum GuildEnum: string
 {
-    use FakeEnum;
-
-    public const string TIMES_ARROW = 'Time\'s Arrow';
-    public const string LIGHT_AND_SHADOW = 'Light and Shadow';
-    public const string TAPESTRIES = 'Tapestries';
-    public const string INNER_SANCTUM = 'Inner Sanctum';
-    public const string DWARFCRAFT = 'Dwarfcraft';
-    public const string GIZUBIS_GARDEN = 'Gizubi\'s Garden';
-    public const string HIGH_IMPACT = 'High Impact';
-    public const string THE_UNIVERSE_FORGETS = 'The Universe Forgets';
-    public const string CORRESPONDENCE = 'Correspondence';
+    case TimesArrow = 'Time\'s Arrow';
+    case LightAndShadow = 'Light and Shadow';
+    case Tapestries = 'Tapestries';
+    case InnerSanctum = 'Inner Sanctum';
+    case Dwarfcraft = 'Dwarfcraft';
+    case GizubisGarden = 'Gizubi\'s Garden';
+    case HighImpact = 'High Impact';
+    case TheUniverseForgets = 'The Universe Forgets';
+    case Correspondence = 'Correspondence';
 }

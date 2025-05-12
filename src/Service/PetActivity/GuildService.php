@@ -55,13 +55,13 @@ class GuildService
         $activityLog = $this->joinGuild(
             $pet,
             [
-                GuildEnum::TIMES_ARROW => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getPerception() + $pet->getSkills()->getScience() + $this->rng->rngNextInt(0, 10),
-                GuildEnum::TAPESTRIES => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + ($pet->getSkills()->getArcana() + $pet->getSkills()->getCrafts()) / 2 + $this->rng->rngNextInt(0, 10),
-                GuildEnum::INNER_SANCTUM => $pet->getSkills()->getIntelligence() * 2 + $pet->getSkills()->getPerception() + $this->rng->rngNextInt(0, 10),
-                GuildEnum::DWARFCRAFT => $pet->getSkills()->getStrength() + $pet->getSkills()->getStamina() + $pet->getSkills()->getCrafts() + $this->rng->rngNextInt(0, 10),
-                GuildEnum::HIGH_IMPACT => ($pet->getSkills()->getStrength() + $pet->getSkills()->getDexterity() + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getStamina() + $pet->getSkills()->getBrawl() + $pet->getSkills()->getScience()) / 2 + $this->rng->rngNextInt(0, 10),
-                GuildEnum::THE_UNIVERSE_FORGETS => $pet->getSkills()->getPerception() + $pet->getSkills()->getIntelligence() + ((1 - $pet->getExtroverted()) * 2 + 1 + $pet->getSkills()->getArcana()) / 2 + $this->rng->rngNextInt(0, 10),
-                GuildEnum::CORRESPONDENCE => $pet->getSkills()->getStamina() + $pet->getSkills()->getStrength() + ($pet->getSkills()->getArcana() + $pet->getSkills()->getStealth() + $pet->getSkills()->getScience()) / 3 + $this->rng->rngNextInt(0, 10),
+                GuildEnum::TimesArrow->value => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getPerception() + $pet->getSkills()->getScience() + $this->rng->rngNextInt(0, 10),
+                GuildEnum::Tapestries->value => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + ($pet->getSkills()->getArcana() + $pet->getSkills()->getCrafts()) / 2 + $this->rng->rngNextInt(0, 10),
+                GuildEnum::InnerSanctum->value => $pet->getSkills()->getIntelligence() * 2 + $pet->getSkills()->getPerception() + $this->rng->rngNextInt(0, 10),
+                GuildEnum::Dwarfcraft->value => $pet->getSkills()->getStrength() + $pet->getSkills()->getStamina() + $pet->getSkills()->getCrafts() + $this->rng->rngNextInt(0, 10),
+                GuildEnum::HighImpact->value => ($pet->getSkills()->getStrength() + $pet->getSkills()->getDexterity() + $pet->getSkills()->getIntelligence() + $pet->getSkills()->getStamina() + $pet->getSkills()->getBrawl() + $pet->getSkills()->getScience()) / 2 + $this->rng->rngNextInt(0, 10),
+                GuildEnum::TheUniverseForgets->value => $pet->getSkills()->getPerception() + $pet->getSkills()->getIntelligence() + ((1 - $pet->getExtroverted()) * 2 + 1 + $pet->getSkills()->getArcana()) / 2 + $this->rng->rngNextInt(0, 10),
+                GuildEnum::Correspondence->value => $pet->getSkills()->getStamina() + $pet->getSkills()->getStrength() + ($pet->getSkills()->getArcana() + $pet->getSkills()->getStealth() + $pet->getSkills()->getScience()) / 3 + $this->rng->rngNextInt(0, 10),
             ],
             $pet->getName() . ' accessed Project-E, and stumbled upon The Hall of Nine - a meeting place for members of nine major Guilds.'
         );
@@ -79,12 +79,12 @@ class GuildService
         $activityLog = $this->joinGuild(
             $pet,
             [
-                GuildEnum::LIGHT_AND_SHADOW => $pet->getSkills()->getPerception() + $pet->getSkills()->getArcana() + $pet->getSkills()->getIntelligence() + $this->rng->rngNextInt(0, 10),
-                GuildEnum::TAPESTRIES => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + ($pet->getSkills()->getArcana() + $pet->getSkills()->getCrafts()) / 2 + $this->rng->rngNextInt(0, 10),
-                GuildEnum::INNER_SANCTUM => $pet->getSkills()->getIntelligence() * 2 + $pet->getSkills()->getPerception() + $this->rng->rngNextInt(0, 10),
-                GuildEnum::GIZUBIS_GARDEN => ($pet->getExtroverted() + $petWithSkills->getSexDrive()->getTotal()) * 3 + $pet->getSkills()->getNature() / 2 + $this->rng->rngNextInt(0, 10),
-                GuildEnum::THE_UNIVERSE_FORGETS => $pet->getSkills()->getPerception() + $pet->getSkills()->getIntelligence() + ((1 - $pet->getExtroverted()) * 2 + 1 + $pet->getSkills()->getArcana()) / 2 + $this->rng->rngNextInt(0, 10),
-                GuildEnum::CORRESPONDENCE => $pet->getSkills()->getStamina() + $pet->getSkills()->getStrength() + ($pet->getSkills()->getArcana() + $pet->getSkills()->getStealth() + $pet->getSkills()->getScience()) / 3 + $this->rng->rngNextInt(0, 10),
+                GuildEnum::LightAndShadow->value => $pet->getSkills()->getPerception() + $pet->getSkills()->getArcana() + $pet->getSkills()->getIntelligence() + $this->rng->rngNextInt(0, 10),
+                GuildEnum::Tapestries->value => $pet->getSkills()->getIntelligence() + $pet->getSkills()->getDexterity() + ($pet->getSkills()->getArcana() + $pet->getSkills()->getCrafts()) / 2 + $this->rng->rngNextInt(0, 10),
+                GuildEnum::InnerSanctum->value => $pet->getSkills()->getIntelligence() * 2 + $pet->getSkills()->getPerception() + $this->rng->rngNextInt(0, 10),
+                GuildEnum::GizubisGarden->value => ($pet->getExtroverted() + $petWithSkills->getSexDrive()->getTotal()) * 3 + $pet->getSkills()->getNature() / 2 + $this->rng->rngNextInt(0, 10),
+                GuildEnum::TheUniverseForgets->value => $pet->getSkills()->getPerception() + $pet->getSkills()->getIntelligence() + ((1 - $pet->getExtroverted()) * 2 + 1 + $pet->getSkills()->getArcana()) / 2 + $this->rng->rngNextInt(0, 10),
+                GuildEnum::Correspondence->value => $pet->getSkills()->getStamina() + $pet->getSkills()->getStrength() + ($pet->getSkills()->getArcana() + $pet->getSkills()->getStealth() + $pet->getSkills()->getScience()) / 3 + $this->rng->rngNextInt(0, 10),
             ],
             $pet->getName() . ' visited the Library of Fire, and stumbled upon a meeting between members from the nine major Guilds.'
         );
@@ -143,15 +143,15 @@ class GuildService
 
         return match ($pet->getGuildMembership()->getGuild()->getName())
         {
-            GuildEnum::TIMES_ARROW => $this->doTimesArrowMission($pet),
-            GuildEnum::LIGHT_AND_SHADOW => $this->doLightAndShadowMission($pet),
-            GuildEnum::TAPESTRIES => $this->doTapestriesMission($pet),
-            GuildEnum::INNER_SANCTUM => $this->doInnerSanctumMission($pet),
-            GuildEnum::DWARFCRAFT => $this->doDwarfcraftMission($pet),
-            GuildEnum::GIZUBIS_GARDEN => $this->gizubisGardenService->adventure($petWithSkills),
-            GuildEnum::HIGH_IMPACT => $this->doHighImpactMission($pet),
-            GuildEnum::THE_UNIVERSE_FORGETS => $this->doTheUniverseForgetsMission($pet),
-            GuildEnum::CORRESPONDENCE => $this->doCorrespondenceMission($pet),
+            GuildEnum::TimesArrow->value => $this->doTimesArrowMission($pet),
+            GuildEnum::LightAndShadow->value => $this->doLightAndShadowMission($pet),
+            GuildEnum::Tapestries->value => $this->doTapestriesMission($pet),
+            GuildEnum::InnerSanctum->value => $this->doInnerSanctumMission($pet),
+            GuildEnum::Dwarfcraft->value => $this->doDwarfcraftMission($pet),
+            GuildEnum::GizubisGarden->value => $this->gizubisGardenService->adventure($petWithSkills),
+            GuildEnum::HighImpact->value => $this->doHighImpactMission($pet),
+            GuildEnum::TheUniverseForgets->value => $this->doTheUniverseForgetsMission($pet),
+            GuildEnum::Correspondence->value => $this->doCorrespondenceMission($pet),
             default => throw new EnumInvalidValueException('GuildEnum', $pet->getGuildMembership()->getGuild()->getName()),
         };
     }

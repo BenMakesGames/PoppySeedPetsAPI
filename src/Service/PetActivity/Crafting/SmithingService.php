@@ -63,7 +63,7 @@ class SmithingService
     public function getCraftingPossibilities(ComputedPetSkills $petWithSkills): array
     {
         $pet = $petWithSkills->getPet();
-        $weight = ($pet->getSafety() > 0 || $pet->isInGuild(GuildEnum::DWARFCRAFT)) ? 10 : 1;
+        $weight = ($pet->getSafety() > 0 || $pet->isInGuild(GuildEnum::Dwarfcraft)) ? 10 : 1;
 
         $possibilities = [];
 

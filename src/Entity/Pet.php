@@ -17,6 +17,7 @@ namespace App\Entity;
 use App\Enum\ActivityPersonalityEnum;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\FlavorEnum;
+use App\Enum\GuildEnum;
 use App\Enum\LoveLanguageEnum;
 use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
@@ -1536,11 +1537,11 @@ class Pet
         return $this;
     }
 
-    public function isInGuild(string $guildName, int $minTitle = 1): bool
+    public function isInGuild(GuildEnum $guild, int $minTitle = 1): bool
     {
         return
             $this->getGuildMembership() &&
-            $this->getGuildMembership()->getGuild()->getName() === $guildName &&
+            $this->getGuildMembership()->getGuild()->getName() === $guild->value &&
             $this->getGuildMembership()->getTitle() >= $minTitle
         ;
     }
