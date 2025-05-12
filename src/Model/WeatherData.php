@@ -20,7 +20,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 
 final class WeatherData
 {
-    /** @var string[] */
+    /** @var HolidayEnum[] */
     #[Groups(['weather'])]
     public array $holidays;
 
@@ -49,11 +49,8 @@ final class WeatherData
         return round($this->rainfall, 2);
     }
 
-    public function isHoliday(string $holiday): bool
+    public function isHoliday(HolidayEnum $holiday): bool
     {
-        if(!HolidayEnum::isAValue($holiday))
-            throw new EnumInvalidValueException(HolidayEnum::class, $holiday);
-
         return in_array($holiday, $this->holidays);
     }
 }

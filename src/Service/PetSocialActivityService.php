@@ -81,12 +81,12 @@ class PetSocialActivityService
 
         if(!$pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
         {
-            if($weather->isHoliday(HolidayEnum::HOLI) && $this->holiService->adventure($pet))
+            if($weather->isHoliday(HolidayEnum::Holi) && $this->holiService->adventure($pet))
                 return true;
         }
 
         // were creatures can dance with other were creatures
-        if($pet->getFood() > 0 && $weather->isHoliday(HolidayEnum::AWA_ODORI) && $this->awaOdoriService->adventure($pet))
+        if($pet->getFood() > 0 && $weather->isHoliday(HolidayEnum::AwaOdori) && $this->awaOdoriService->adventure($pet))
             return true;
 
         $availableGroups = [];

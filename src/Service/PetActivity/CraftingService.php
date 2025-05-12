@@ -1699,10 +1699,10 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Bownaner', 1);
             $pet->increaseEsteem(2);
 
-            if($roll >= 22 || $weather->isHoliday(HolidayEnum::EASTER))
+            if($roll >= 22 || $weather->isHoliday(HolidayEnum::Easter))
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made an Eat Your Fruits and Veggies, and even had enough Carrot left over to make a Carrot Key!')
-                    ->addInterestingness($weather->isHoliday(HolidayEnum::EASTER) ? PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT : (PetActivityLogInterestingnessEnum::HO_HUM + 22))
+                    ->addInterestingness($weather->isHoliday(HolidayEnum::Easter) ? PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT : (PetActivityLogInterestingnessEnum::HO_HUM + 22))
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Crafting,
                         PetActivityLogTagEnum::Location_At_Home,
@@ -2249,10 +2249,10 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Crooked Fishing Rod', 1);
             $this->houseSimService->getState()->loseItem('Carrot', 1);
 
-            if($craftsCheck >= 25 || $weather->isHoliday(HolidayEnum::EASTER))
+            if($craftsCheck >= 25 || $weather->isHoliday(HolidayEnum::Easter))
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made a Carotene Stick, and even had enough Carrot left over to make a Carrot Key!')
-                    ->addInterestingness($weather->isHoliday(HolidayEnum::EASTER) ? PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT : (PetActivityLogInterestingnessEnum::HO_HUM + 25))
+                    ->addInterestingness($weather->isHoliday(HolidayEnum::Easter) ? PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT : (PetActivityLogInterestingnessEnum::HO_HUM + 25))
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Crafting,
                         PetActivityLogTagEnum::Location_At_Home,
