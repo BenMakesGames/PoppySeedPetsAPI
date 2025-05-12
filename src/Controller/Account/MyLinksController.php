@@ -76,15 +76,15 @@ class MyLinksController
     {
         $user = $userAccessor->getUserOrThrow();
 
-        $website = trim($request->request->getString('website'));
+        $websiteName = trim($request->request->getString('website'));
         $nameOrId = trim($request->request->get('nameOrId'));
-        $visibility = trim($request->request->get('visibility'));
+        $visibilityName = trim($request->request->get('visibility'));
 
-        if(!UserLinkWebsiteEnum::isAValue($website))
-            throw new PSPFormValidationException('Please select a website.');
+        $website = UserLinkWebsiteEnum::tryFrom($websiteName)
+            ?? throw new PSPFormValidationException('Please select a website.');
 
-        if(!UserLinkVisibilityEnum::isAValue($visibility))
-            throw new PSPFormValidationException('Please select a visibility.');
+        $visibility = UserLinkVisibilityEnum::tryFrom($visibilityName)
+            ?? throw new PSPFormValidationException('Please select a visibility.');
 
         if(strlen($nameOrId) == 0)
             throw new PSPFormValidationException('Please provide a name or ID.');
@@ -92,7 +92,7 @@ class MyLinksController
         if(strlen($nameOrId) > 100)
             throw new PSPFormValidationException('Your name or ID cannot be longer than 100 characters.');
 
-        if(strpos($nameOrId, '/') !== false || strpos($nameOrId, '\\') !== false)
+        if(str_contains($nameOrId, '/') || str_contains($nameOrId, '\\'))
             throw new PSPFormValidationException('Slashes are not allowed.');
 
         $existingLinks = $em->getRepository(UserLink::class)->count([ 'user' => $user ]);
@@ -100,20 +100,21 @@ class MyLinksController
         if($existingLinks >= 5)
             throw new PSPFormValidationException('You can only have up to 5 links.');
 
-        $link = (new UserLink())
-            ->setUser($user)
-            ->setWebsite($website)
-            ->setNameOrId($nameOrId)
-            ->setVisibility($visibility);
+        $link = new UserLink(
+            user: $user,
+            website: $website,
+            nameOrId: $nameOrId,
+            visibility: $visibility,
+        );
 
         $em->persist($link);
         $em->flush();
 
         return $responseService->success([
             'id' => $link->getId(),
-            'website' => $link->getWebsite(),
+            'website' => $link->getWebsite()->value,
             'nameOrId' => $link->getNameOrId(),
-            'visibility' => $link->getVisibility(),
+            'visibility' => $link->getVisibility()->value,
         ]);
     }
 }

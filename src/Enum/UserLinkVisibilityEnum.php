@@ -14,10 +14,8 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-class UserLinkVisibilityEnum
+enum UserLinkVisibilityEnum: string
 {
-    use FakeEnum;
-
-    public const string LOGGED_IN = 'LoggedIn';
-    public const string FOLLOWED = 'Followed';
+    case LoggedIn = 'LoggedIn';
+    case Followed = 'Followed';
 }

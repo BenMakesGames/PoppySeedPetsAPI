@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\TradeGroupEnum;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table]
@@ -31,10 +32,10 @@ class TradesUnlocked
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
-    #[ORM\Column(type: 'integer')]
-    private int $trades;
+    #[ORM\Column(type: 'integer', enumType: TradeGroupEnum::class)]
+    private TradeGroupEnum $trades;
 
-    public function __construct(User $user, int $trades)
+    public function __construct(User $user, TradeGroupEnum $trades)
     {
         $this->user = $user;
         $this->trades = $trades;
@@ -50,7 +51,7 @@ class TradesUnlocked
         return $this->user;
     }
 
-    public function getTrades(): int
+    public function getTrades(): TradeGroupEnum
     {
         return $this->trades;
     }
