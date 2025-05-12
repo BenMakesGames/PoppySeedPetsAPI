@@ -112,7 +112,7 @@ class TraderService
     }
 
     /**
-     * @return int[]
+     * @return TradeGroupEnum[]
      */
     public function getUnlockedTradeGroups(User $user): array
     {
@@ -124,11 +124,20 @@ class TraderService
     }
 
     /**
-     * @return int[]
+     * @return TradeGroupEnum[]
      */
     public function getLockedTradeGroups(User $user): array
     {
-        return array_diff(TradeGroupEnum::getValues(), $this->getUnlockedTradeGroups($user));
+        $locked = [];
+        $unlocked = $this->getUnlockedTradeGroups($user);
+
+        foreach(TradeGroupEnum::cases() as $group)
+        {
+            if(!in_array($group, $unlocked))
+                $locked[] = $group;
+        }
+
+        return $locked;
     }
 
     public function getOfferById(User $user, string $id): ?TraderOffer
@@ -163,42 +172,42 @@ class TraderService
         {
             switch ($group)
             {
-                case TradeGroupEnum::METALS:
+                case TradeGroupEnum::Metals:
                     $title = 'Metals';
                     $trades = $this->getMetalOffers($user, $quantities);
                     break;
 
-                case TradeGroupEnum::DARK_THINGS:
+                case TradeGroupEnum::DarkThings:
                     $title = 'Umbral';
                     $trades = $this->getUmbralThingsOffers($user, $quantities);
                     break;
 
-                case TradeGroupEnum::CURIOSITIES:
+                case TradeGroupEnum::Curiosities:
                     $title = 'Curiosities';
                     $trades = $this->getCuriositiesOffers($user, $quantities);
                     break;
 
-                case TradeGroupEnum::PLUSHIES:
+                case TradeGroupEnum::Plushies:
                     $title = 'Plushies';
                     $trades = $this->getPlushyOffers($user, $quantities);
                     break;
 
-                case TradeGroupEnum::HOLLOW_EARTH:
+                case TradeGroupEnum::HollowEarth:
                     $title = 'Hollow Earth';
                     $trades = $this->getHollowEarthOffers($user, $quantities);
                     break;
 
-                case TradeGroupEnum::BLEACH:
+                case TradeGroupEnum::Bleach:
                     $title = 'Bleach';
                     $trades = $this->getBleachOffers($user, $quantities);
                     break;
 
-                case TradeGroupEnum::DIGITAL:
+                case TradeGroupEnum::Digital:
                     $title = 'Digital';
                     $trades = $this->getDigitalOffers($user, $quantities);
                     break;
 
-                case TradeGroupEnum::BUGS:
+                case TradeGroupEnum::Bugs:
                     $title = 'Bugs';
                     $trades = $this->getBugOffers($user, $quantities);
                     break;
@@ -207,7 +216,7 @@ class TraderService
                 case 5: // old "BOX-BOX" group unlock
                     continue 2; // why "2"? see https://www.php.net/manual/en/control-structures.continue.php >_>
                 default:
-                    throw new \Exception('You have unlocked trade group #' . $group . '... which does not exist. Ben should fix this.');
+                    throw new \Exception('You have unlocked trade group #' . $group->name . '... which does not exist. Ben should fix this.');
             }
 
             $offers[] = [

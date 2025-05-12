@@ -11,19 +11,30 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
+namespace DoctrineMigrations;
 
-namespace App\Enum;
+use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
 
-enum TradeGroupEnum: int
+/**
+ * Auto-generated Migration: Please modify to your needs!
+ */
+final class Version20250512211358 extends AbstractMigration
 {
-    case Metals = 1;
-    case DarkThings = 2;
-    //case Foods = 3;
-    case HollowEarth = 4;
-    //case BoxBox = 5;
-    case Curiosities = 6;
-    case Plushies = 7;
-    case Bleach = 8;
-    case Digital = 9;
-    case Bugs = 10;
+    public function getDescription(): string
+    {
+        return '';
+    }
+
+    public function up(Schema $schema): void
+    {
+        // these trade groups were removed foreeeeever ago
+        $this->addSql('DELETE FROM trades_unlocked WHERE trades IN (3, 5)');
+    }
+
+    public function down(Schema $schema): void
+    {
+        // this down() migration is auto-generated, please modify it to your needs
+
+    }
 }
