@@ -41,15 +41,12 @@ class UserLink
     #[ORM\Column(type: 'string', length: 20)]
     private string $visibility;
 
-    public function __construct(User $user, string $website, string $nameOrId, string $visibility)
+    public function __construct(User $user, UserLinkWebsiteEnum $website, string $nameOrId, UserLinkVisibilityEnum $visibility)
     {
-        if(!UserLinkWebsiteEnum::isAValue($website)) throw new EnumInvalidValueException(UserLinkWebsiteEnum::class, $website);
-        if(!UserLinkVisibilityEnum::isAValue($visibility)) throw new EnumInvalidValueException(UserLinkVisibilityEnum::class, $visibility);
-
         $this->user = $user;
-        $this->website = $website;
+        $this->website = $website->value;
         $this->nameOrId = $nameOrId;
-        $this->visibility = $visibility;
+        $this->visibility = $visibility->value;
     }
 
     public function getId(): ?int

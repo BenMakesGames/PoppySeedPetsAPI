@@ -92,7 +92,7 @@ class GetByIdController
         {
             $links = $em->getRepository(UserLink::class)->findBy([
                 'user' => $user,
-                'visibility' => UserLinkVisibilityEnum::FOLLOWED,
+                'visibility' => UserLinkVisibilityEnum::Followed->value,
             ]);
         }
 

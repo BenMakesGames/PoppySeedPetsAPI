@@ -14,25 +14,23 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-class UserLinkWebsiteEnum
+enum UserLinkWebsiteEnum: string
 {
-    use FakeEnum;
-
-    public const string CHICKEN_SMOOTHIE = 'ChickenSmoothie';
-    public const string DEVIANT_ART = 'DeviantArt';
-    public const string FLIGHT_RISING = 'FlightRising';
-    public const string FUR_AFFINITY = 'FurAffinity';
-    public const string GAIA_ONLINE = 'GaiaOnline';
-    public const string GITHUB = 'GitHub';
-    public const string GOATLINGS = 'Goatlings';
-    public const string INSTAGRAM = 'Instagram';
-    public const string LORWOLF = 'Lorwolf';
-    public const string MASTODON = 'Mastodon';
-    public const string NINTENDO = 'Nintendo';
-    public const string PIXEL_CATS_END = 'PixelCatsEnd';
-    public const string POPPY_SEED_PETS = 'PSP';
-    public const string STEAM = 'Steam';
-    public const string TUMBLR = 'Tumblr';
-    public const string TWITCH = 'Twitch';
-    public const string YOUTUBE = 'YouTube';
+    case ChickenSmoothie = 'ChickenSmoothie';
+    case DeviantArt = 'DeviantArt';
+    case FlightRising = 'FlightRising';
+    case FurAffinity = 'FurAffinity';
+    case GaiaOnline = 'GaiaOnline';
+    case GitHub = 'GitHub';
+    case Goatlings = 'Goatlings';
+    case Instagram = 'Instagram';
+    case Lorwolf = 'Lorwolf';
+    case Mastodon = 'Mastodon';
+    case Nintendo = 'Nintendo';
+    case PixelCatsEnd = 'PixelCatsEnd';
+    case PoppySeedPets = 'PSP';
+    case Steam = 'Steam';
+    case Tumblr = 'Tumblr';
+    case Twitch = 'Twitch';
+    case YouTube = 'YouTube';
 }
