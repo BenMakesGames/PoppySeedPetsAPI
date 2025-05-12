@@ -20,11 +20,13 @@ use App\Entity\Pet;
 use App\Entity\PetSpecies;
 use App\Entity\User;
 use App\Enum\PetLocationEnum;
+use App\Enum\PetSpeciesName;
 use App\Enum\UserStatEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\GrammarFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetRepository;
+use App\Functions\PetSpeciesRepository;
 use App\Service\IRandom;
 use App\Service\PetFactory;
 use App\Service\ResponseService;
@@ -62,7 +64,7 @@ class SummoningSomethingFriendlyController
         {
             $pet = $petFactory->createRandomPetOfSpecies(
                 $user,
-                $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Sentinel' ])
+                PetSpeciesRepository::findOneByName($em, PetSpeciesName::Sentinel)
             );
 
             $gotASentinel = true;

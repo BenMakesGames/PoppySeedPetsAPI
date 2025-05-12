@@ -20,9 +20,11 @@ use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
+use App\Enum\PetSpeciesName;
 use App\Functions\MeritRepository;
 use App\Functions\PetColorFunctions;
 use App\Functions\PetRepository;
+use App\Functions\PetSpeciesRepository;
 use App\Functions\UserQuestRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
@@ -49,7 +51,7 @@ class EggController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'egg/jellingPolyp/#/hatch');
 
-        $jelling = $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Sága Jelling' ]);
+        $jelling = PetSpeciesRepository::findOneByName($em,PetSpeciesName::SagaJelling);
 
         if(!$jelling)
             throw new \Exception('The species "Sága Jelling" does not exist! :| Make Ben fix this!');
@@ -130,7 +132,7 @@ class EggController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'egg/weird-blue/#/hatch');
 
-        $starMonkey = $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Star Monkey' ]);
+        $starMonkey = PetSpeciesRepository::findOneByName($em, PetSpeciesName::StarMonkey);
 
         if(!$starMonkey)
             throw new \Exception('The species "Star Monkey" does not exist! :| Make Ben fix this!');
@@ -222,7 +224,7 @@ class EggController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'egg/metalBox/#/open');
 
-        $grabber = $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Grabber' ]);
+        $grabber = PetSpeciesRepository::findOneByName($em, PetSpeciesName::Grabber);
 
         if(!$grabber)
             throw new \Exception('The species "Grabber" does not exist! :| Make Ben fix this!');

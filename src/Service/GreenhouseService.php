@@ -25,6 +25,7 @@ use App\Enum\FlavorEnum;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
 use App\Enum\PetLocationEnum;
+use App\Enum\PetSpeciesName;
 use App\Enum\PollinatorEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
@@ -32,6 +33,7 @@ use App\Enum\UserStatEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\MeritRepository;
 use App\Functions\PetRepository;
+use App\Functions\PetSpeciesRepository;
 use App\Functions\PlayerLogFactory;
 use App\Functions\SpiceRepository;
 use App\Functions\UserQuestRepository;
@@ -282,7 +284,7 @@ class GreenhouseService
 
     public function makeDapperSwanPet(GreenhousePlant $plant): string
     {
-        $species = $this->em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Dapper Swan' ]);
+        $species = PetSpeciesRepository::findOneByName($this->em, PetSpeciesName::DapperSwan);
 
         $colorA = $this->rng->rngNextTweakedColor($this->rng->rngNextFromArray([
             'EEEEEE', 'EEDDCC', 'DDDDBB'
@@ -312,7 +314,7 @@ class GreenhouseService
 
     public function makeMushroomPet(GreenhousePlant $plant): string
     {
-        $species = $this->em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Mushroom' ]);
+        $species = PetSpeciesRepository::findOneByName($this->em, PetSpeciesName::Mushroom);
 
         $colorA = $this->rng->rngNextTweakedColor($this->rng->rngNextFromArray([
             'e32c2c', 'e5e5d6', 'dd8a09', 'a8443d'
@@ -343,7 +345,7 @@ class GreenhouseService
 
     public function makeTomatePet(GreenhousePlant $plant): string
     {
-        $species = $this->em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Tomate' ]);
+        $species = PetSpeciesRepository::findOneByName($this->em, PetSpeciesName::Tomate);
 
         $colorA = $this->rng->rngNextTweakedColor($this->rng->rngNextFromArray([
             'FF6622', 'FFCC22', '77FF22', 'FF2222', '7722FF'

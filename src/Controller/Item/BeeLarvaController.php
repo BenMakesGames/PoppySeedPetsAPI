@@ -18,10 +18,12 @@ use App\Entity\Inventory;
 use App\Entity\PetSpecies;
 use App\Enum\FlavorEnum;
 use App\Enum\PetLocationEnum;
+use App\Enum\PetSpeciesName;
 use App\Functions\ItemRepository;
 use App\Functions\MeritRepository;
 use App\Functions\PetColorFunctions;
 use App\Functions\PetRepository;
+use App\Functions\PetSpeciesRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetFactory;
@@ -58,7 +60,7 @@ class BeeLarvaController
 
         $em->flush();
 
-        $giantBeeSpecies = $em->getRepository(PetSpecies::class)->findOneBy([ 'name' => 'Giant Bee' ]);
+        $giantBeeSpecies = PetSpeciesRepository::findOneByName($em,PetSpeciesName::MagicBee);
 
         $beeName = $rng->rngNextFromArray([
             'Mellifera', 'Bombus', 'Megachile', 'Eucerini', 'Xylocopa', 'Ceratina', 'Osmia', 'Anthidium',
