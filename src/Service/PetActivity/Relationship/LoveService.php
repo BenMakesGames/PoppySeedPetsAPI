@@ -79,7 +79,7 @@ class LoveService
         //   [ $giver->getName() . ' liked the thing.', 'They both liked the thing.', $receiver->getName() . ' really liked the thing.' ]
         switch($expression)
         {
-            case LoveLanguageEnum::TOUCH:
+            case LoveLanguageEnum::Touch:
                 $sexyTimesChance = $this->sexyTimeChances($giver, $receiver, $givingPet->getCurrentRelationship());
 
                 $message = $giver->getName() . ' hung out with ' . $receiver->getName() . '. ';
@@ -128,7 +128,7 @@ class LoveService
 
                 break;
 
-            case LoveLanguageEnum::ACTS:
+            case LoveLanguageEnum::Acts:
                 $services = [
                     $giver->getName() . ' helped ' . $receiver->getName() . ' tidy up their room.',
                 ];
@@ -150,7 +150,7 @@ class LoveService
                 ;
                 break;
 
-            case LoveLanguageEnum::WORDS:
+            case LoveLanguageEnum::Words:
                 $message = $giver->getName() . ' hung out with ' . $receiver->getName() . '. ' .
                     $giver->getName() . ' ' . ($this->rng->rngNextInt(0, $giver->getSkills()->getMusic()) >= 4 ? 'sang a love song for' : 'gave a love poem to') . ' ' . $receiver->getName() . '! ' .
                     [ $receiver->getName() . ' thought it was a little silly, but very cute.', $receiver->getName() . ' loved it! ' . $giver->getName() . ' was delighted!', $receiver->getName() . ' loved it!' ][$side]
@@ -158,7 +158,7 @@ class LoveService
 
                 break;
 
-            case LoveLanguageEnum::TIME:
+            case LoveLanguageEnum::Time:
                 $message = $giver->getName() . ' hung out with ' . $receiver->getName() . '. ' .
                     $this->rng->rngNextFromArray([
                         'They took a walk on the beach, and got into a staring contest with some seagulls.',
@@ -170,7 +170,7 @@ class LoveService
                 ;
                 break;
 
-            case LoveLanguageEnum::GIFTS:
+            case LoveLanguageEnum::Gifts:
                 $gift = $this->rng->rngNextFromArray([
                     'a small gift',
                     'a gift',
