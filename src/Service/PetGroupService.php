@@ -37,10 +37,10 @@ class PetGroupService
     public const int SOCIAL_ENERGY_PER_MEET = 60 * 12;
 
     public const array GROUP_TYPE_NAMES = [
-        PetGroupTypeEnum::BAND => 'band',
-        PetGroupTypeEnum::ASTRONOMY => 'astronomy lab',
-        PetGroupTypeEnum::GAMING => 'gaming group',
-        PetGroupTypeEnum::SPORTSBALL => 'sportsball team',
+        PetGroupTypeEnum::BAND->value => 'band',
+        PetGroupTypeEnum::ASTRONOMY->value => 'astronomy lab',
+        PetGroupTypeEnum::GAMING->value => 'gaming group',
+        PetGroupTypeEnum::SPORTSBALL->value => 'sportsball team',
     ];
 
     public function __construct(
@@ -84,7 +84,7 @@ class PetGroupService
                 break;
 
             default:
-                throw new \Exception('Unhandled group type "' . $group->getType() . '"');
+                throw new \Exception('Unhandled group type "' . $group->getType()->name . '"');
         }
     }
 
@@ -400,25 +400,25 @@ class PetGroupService
         $groupTypePreferences = [
             [
                 'type' => PetGroupTypeEnum::BAND,
-                'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::BAND],
+                'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::BAND->value],
                 'icon' => 'groups/band',
                 'preference' => 2 + PetGroupService::weightSkill($pet->getSkills()->getMusic()),
             ],
             [
                 'type' => PetGroupTypeEnum::ASTRONOMY,
-                'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::ASTRONOMY],
+                'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::ASTRONOMY->value],
                 'icon' => 'groups/astronomy',
                 'preference' => 2 + PetGroupService::weightSkill($pet->getSkills()->getScience()),
             ],
             [
                 'type' => PetGroupTypeEnum::GAMING,
-                'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::GAMING],
+                'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::GAMING->value],
                 'icon' => 'groups/gaming',
                 'preference' => 1 + ($pet->getExtroverted() + 1) * 2,
             ],
             [
                 'type' => PetGroupTypeEnum::SPORTSBALL,
-                'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::SPORTSBALL],
+                'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::SPORTSBALL->value],
                 'icon' => 'groups/gaming',
                 'preference' => 2 + PetGroupService::weightSkill($pet->getSkills()->getBrawl()),
             ]
@@ -427,10 +427,7 @@ class PetGroupService
         $groupType = ArrayFunctions::pick_one_weighted($groupTypePreferences, fn($t) => $t['preference']);
         $type = $groupType['type'];
 
-        $group = (new PetGroup())
-            ->setType($type)
-            ->setName($this->generateName($type))
-        ;
+        $group = new PetGroup(type: $type, name: $this->generateName($type));
 
         $this->em->persist($group);
 
@@ -485,7 +482,7 @@ class PetGroupService
         return $group;
     }
 
-    public function generateName(int $type): string
+    public function generateName(PetGroupTypeEnum $type): string
     {
         return match ($type)
         {
@@ -493,7 +490,7 @@ class PetGroupService
             PetGroupTypeEnum::ASTRONOMY => $this->astronomyClubService->generateGroupName(),
             PetGroupTypeEnum::GAMING => $this->gamingGroupService->generateGroupName(),
             PetGroupTypeEnum::SPORTSBALL => $this->sportsBallService->generateGroupName(),
-            default => throw new \Exception('Ben forgot to program group names for groups of type "' . $type . '"! (Bad Ben!)'),
+            default => throw new \Exception('Ben forgot to program group names for groups of type "' . $type->name . '"! (Bad Ben!)'),
         };
     }
 }
