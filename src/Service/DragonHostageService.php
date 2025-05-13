@@ -31,10 +31,10 @@ class DragonHostageService
 
     public function generateHostage(): DragonHostage
     {
-        $type = $this->rng->rngNextFromArray(DragonHostageTypeEnum::getValues());
+        $type = $this->rng->rngNextFromArray(DragonHostageTypeEnum::cases());
 
         $crownColor = $this->rng->rngNextFromArray(self::CrownColors);
-        $creatureColor = $this->rng->rngNextFromArray(self::HostageColors[$type]);
+        $creatureColor = $this->rng->rngNextFromArray(self::HostageColors[$type->value]);
         $name = $this->generateHostageName($type);
         $dialog = $this->generateHostageDialog();
 
@@ -48,9 +48,9 @@ class DragonHostageService
         ;
     }
 
-    public function generateHostageName(string $type): string
+    public function generateHostageName(DragonHostageTypeEnum $type): string
     {
-        return $this->rng->rngNextFromArray(self::HostageNames[$type]);
+        return $this->rng->rngNextFromArray(self::HostageNames[$type->value]);
     }
 
     public function generateHostageDialog(): string
@@ -68,21 +68,21 @@ class DragonHostageService
         );
     }
 
-    public function generateLoot(string $type): DragonHostageLoot
+    public function generateLoot(DragonHostageTypeEnum $type): DragonHostageLoot
     {
-        $item = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray(self::HostageLoot[$type]));
+        $item = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray(self::HostageLoot[$type->value]));
 
         return new DragonHostageLoot(
             $item,
-            'A member of ' . ucfirst($type) . ' royalty dropped this as you shooed them out of your dragon\'s den.',
-            'The ' . $type . ' made a fuss and tried to hide from you, but you eventually shooed it out of the den. After the ordeal was over, you noticed it dropped ' . $item->getNameWithArticle() . '!'
+            'A member of ' . ucfirst($type->value) . ' royalty dropped this as you shooed them out of your dragon\'s den.',
+            'The ' . $type->value . ' made a fuss and tried to hide from you, but you eventually shooed it out of the den. After the ordeal was over, you noticed it dropped ' . $item->getNameWithArticle() . '!'
         );
     }
 
     private const array HostageColors = [
-        DragonHostageTypeEnum::MAGPIE => [ '3d484f', '4e4642', '696969' ],
-        DragonHostageTypeEnum::RACCOON => [ '' ],
-        DragonHostageTypeEnum::SQUID => [ 'e59db9', 'e7d5b2' ],
+        DragonHostageTypeEnum::MAGPIE->value => [ '3d484f', '4e4642', '696969' ],
+        DragonHostageTypeEnum::RACCOON->value => [ '' ],
+        DragonHostageTypeEnum::SQUID->value => [ 'e59db9', 'e7d5b2' ],
     ];
 
     private const array CrownColors = [
@@ -90,15 +90,15 @@ class DragonHostageService
     ];
 
     private const array HostageLoot = [
-        DragonHostageTypeEnum::MAGPIE => [
+        DragonHostageTypeEnum::MAGPIE->value => [
             'Ruby Feather',
             'Black Feathers',
         ],
-        DragonHostageTypeEnum::RACCOON => [
+        DragonHostageTypeEnum::RACCOON->value => [
             'Little Strongbox',
             'Minor Scroll of Riches',
         ],
-        DragonHostageTypeEnum::SQUID => [
+        DragonHostageTypeEnum::SQUID->value => [
             'Scroll of the Sea',
             'Secret Seashell',
         ]
@@ -112,7 +112,7 @@ class DragonHostageService
     ];
 
     private const array HostageNames = [
-        DragonHostageTypeEnum::MAGPIE => [
+        DragonHostageTypeEnum::MAGPIE->value => [
             'Acel', 'Adalicia', 'Adelaide', 'Adelynn', 'Adrianna', 'Aimee',
             'Alisanne', 'Aloin', 'Alyssandra', 'Amoux', 'Ancil', 'Angela',
             'Archard', 'Armand', 'Avelaine', 'Baylen', 'Beaumont', 'Bellamy',
@@ -128,13 +128,13 @@ class DragonHostageService
             'Nanon', 'Noeline', 'Orlena', 'Papillon', 'Pascaline', 'Perrin',
             'Romaine', 'Roussel', 'Solaina', 'Violetta'
         ],
-        DragonHostageTypeEnum::RACCOON => [
+        DragonHostageTypeEnum::RACCOON->value => [
             'Aleksy', 'Andnej', 'Artur', 'Casimir', 'Cyprian', 'Cyryl',
             'Dodek', 'Emmilian', 'Feliks', 'Florian', 'Gerik', 'Janek',
             'Maksym', 'Mikolai', 'Pawelek', 'Pawl', 'Piotr', 'Seweryn',
             'Telek', 'Tola', 'Wicus', 'Wit', 'Ziven',
         ],
-        DragonHostageTypeEnum::SQUID => [
+        DragonHostageTypeEnum::SQUID->value => [
             'Abayomi', 'Ain', 'Akiiki', 'Amsi', 'Aswad', 'Azizi',
             'Badru', 'Bebti', 'Chenzira', 'Chisisi', 'Dakarai', 'Dendera',
             'Ebonique', 'Garai', 'Gyasi', 'Hasani', 'Husani', 'Jamila',

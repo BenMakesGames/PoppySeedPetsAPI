@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\DragonHostageTypeEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -28,31 +29,31 @@ class DragonHostage
 
     #[ORM\OneToOne(targetEntity: Dragon::class, inversedBy: 'hostage', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
-    private $dragon;
+    private Dragon $dragon;
+
+    #[Groups(["myDragon"])]
+    #[ORM\Column(type: 'string', length: 40, enumType: DragonHostageTypeEnum::class)]
+    private DragonHostageTypeEnum $type;
 
     #[Groups(["myDragon"])]
     #[ORM\Column(type: 'string', length: 40)]
-    private $type;
+    private string $name;
 
     #[Groups(["myDragon"])]
     #[ORM\Column(type: 'string', length: 40)]
-    private $name;
-
-    #[Groups(["myDragon"])]
-    #[ORM\Column(type: 'string', length: 40)]
-    private $appearance;
+    private string $appearance;
 
     #[Groups(["myDragon"])]
     #[ORM\Column(type: 'string', length: 255)]
-    private $dialog;
+    private string $dialog;
 
     #[Groups(["myDragon"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $colorA;
+    private string $colorA;
 
     #[Groups(["myDragon"])]
     #[ORM\Column(type: 'string', length: 6)]
-    private $colorB;
+    private string $colorB;
 
     public function getId(): ?int
     {
@@ -71,12 +72,12 @@ class DragonHostage
         return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): DragonHostageTypeEnum
     {
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(DragonHostageTypeEnum $type): self
     {
         $this->type = $type;
 

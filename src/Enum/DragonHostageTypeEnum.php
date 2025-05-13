@@ -14,11 +14,9 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-class DragonHostageTypeEnum
+enum DragonHostageTypeEnum: string
 {
-    use FakeEnum;
-
-    public const string MAGPIE = 'magpie';
-    public const string RACCOON = 'raccoon';
-    public const string SQUID = 'squid';
+    case MAGPIE = 'magpie';
+    case RACCOON = 'raccoon';
+    case SQUID = 'squid';
 }
