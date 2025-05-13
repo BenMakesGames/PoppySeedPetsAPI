@@ -16,8 +16,6 @@ namespace App\Enum;
 
 enum MonsterOfTheWeekEnum: string
 {
-    use Enum;
-
     case Dionysus = 'Dionysus';
     case Anhur = 'Anhur';
     case Boshinogami = 'Boshinogami';
