@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-class PetLocationEnum
+final class PetLocationEnum
 {
     use FakeEnum;
 

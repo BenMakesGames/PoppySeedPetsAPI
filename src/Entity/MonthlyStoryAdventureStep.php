@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\StoryAdventureTypeEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -36,8 +37,8 @@ class MonthlyStoryAdventureStep
     private string $title;
 
     #[Groups([ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" ])]
-    #[ORM\Column(type: 'string', length: 20)]
-    private string $type;
+    #[ORM\Column(type: 'string', length: 20, enumType: StoryAdventureTypeEnum::class)]
+    private StoryAdventureTypeEnum $type;
 
     #[ORM\Column(type: 'integer')]
     private int $step;
@@ -108,12 +109,12 @@ class MonthlyStoryAdventureStep
         return $this;
     }
 
-    public function getType(): string
+    public function getType(): StoryAdventureTypeEnum
     {
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(StoryAdventureTypeEnum $type): self
     {
         $this->type = $type;
 
