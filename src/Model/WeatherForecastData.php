@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use App\Enum\HolidayEnum;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 final class WeatherForecastData
@@ -21,7 +22,7 @@ final class WeatherForecastData
     #[Groups(["weather"])]
     public \DateTimeImmutable $date;
 
-    /** @var string[] */
+    /** @var HolidayEnum[] */
     #[Groups(["weather"])]
     public array $holidays;
 

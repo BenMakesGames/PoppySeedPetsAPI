@@ -108,7 +108,7 @@ class GreenhouseService
         return $message;
     }
 
-    public function applyPollinatorSpice(Inventory $item, string $pollinators): void
+    public function applyPollinatorSpice(Inventory $item, PollinatorEnum $pollinators): void
     {
         if($pollinators === PollinatorEnum::Bees1 || $pollinators === PollinatorEnum::Bees2)
             $spiceName = $this->rng->rngNextInt(1, 20) === 1 ? 'of Queens' : 'Anthophilan';
