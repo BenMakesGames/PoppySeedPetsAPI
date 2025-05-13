@@ -276,7 +276,7 @@ class HollowEarthService
             case HollowEarthMoveDirectionEnum::SOUTH: $y++; break;
             case HollowEarthMoveDirectionEnum::WEST: $x--; break;
             case HollowEarthMoveDirectionEnum::ZERO: break;
-            default: throw new \InvalidArgumentException('Player has an unknown currentDirection: "' . $player->getCurrentDirection() . '"');
+            default: throw new \InvalidArgumentException('Player has an unknown currentDirection: "' . $player->getCurrentDirection()->value . '"');
         }
 
         return $this->em->getRepository(HollowEarthTile::class)->findOneBy([
