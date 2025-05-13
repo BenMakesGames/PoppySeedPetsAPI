@@ -18,7 +18,6 @@ use App\Entity\Inventory;
 use App\Entity\ItemTool;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
-use App\Exceptions\PSPFormValidationException;
 use App\Functions\StringFunctions;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -149,8 +148,8 @@ class InventoryFilterService implements FilterServiceInterface
     {
         if(!is_array($value)) $value = [ $value ];
 
-        $value = array_map(fn($v) => FlavorEnum::tryFrom(strtolower($v)) ?? throw new PSPFormValidationException($v . ' is not a flavor'), $value);
-        $value = array_intersect($value, FlavorEnum::cases());
+        $value = array_map(strtolower(...), $value);
+        $value = array_intersect($value, array_map(fn(FlavorEnum $f) => $f->value, FlavorEnum::cases()));
 
         if(count($value) === 0) return;
 

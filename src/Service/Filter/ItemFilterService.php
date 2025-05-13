@@ -142,8 +142,8 @@ class ItemFilterService implements FilterServiceInterface
     {
         if(!is_array($value)) $value = [ $value ];
 
-        $value = array_map(fn($v) => FlavorEnum::tryFrom(strtolower($v)) ?? throw new PSPFormValidationException($v . ' is not a flavor'), $value);
-        $value = array_intersect($value, FlavorEnum::cases());
+        $value = array_map(strtolower(...), $value);
+        $value = array_intersect($value, array_map(fn(FlavorEnum $f) => $f->value, FlavorEnum::cases()));
 
         if(count($value) === 0) return;
 
