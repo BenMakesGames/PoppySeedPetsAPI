@@ -12,41 +12,19 @@ declare(strict_types=1);
  */
 
 
-namespace App\Repository;
+namespace App\Service;
 
 use App\Entity\Pet;
 use App\Entity\PetQuest;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 
-/**
- * @method PetQuest|null find($id, $lockMode = null, $lockVersion = null)
- * @method PetQuest|null findOneBy(array $criteria, array $orderBy = null)
- * @method PetQuest[]    findAll()
- * @method PetQuest[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- * @deprecated
- */
-class PetQuestRepository extends ServiceEntityRepository
+class PetQuestRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(private readonly EntityManagerInterface $em)
     {
-        parent::__construct($registry, PetQuest::class);
     }
 
     private array $petQuestPerRequestCache = [];
-
-    public function exists(Pet $pet, string $name): bool
-    {
-        $cacheKey = $pet->getId() . '-' . $name;
-
-        if(array_key_exists($cacheKey, $this->petQuestPerRequestCache))
-            return true;
-
-        return $this->count([
-            'pet' => $pet,
-            'name' => $name,
-        ]) > 0;
-    }
 
     public function findOrCreate(Pet $pet, string $name, $default): PetQuest
     {
@@ -54,7 +32,7 @@ class PetQuestRepository extends ServiceEntityRepository
 
         if(!array_key_exists($cacheKey, $this->petQuestPerRequestCache))
         {
-            $record = $this->findOneBy([
+            $record = $this->em->getRepository(PetQuest::class)->findOneBy([
                 'pet' => $pet,
                 'name' => $name,
             ]);
@@ -63,7 +41,7 @@ class PetQuestRepository extends ServiceEntityRepository
             {
                 $record = new PetQuest(pet: $pet, name: $name, value: $default);
 
-                $this->getEntityManager()->persist($record);
+                $this->em->persist($record);
             }
 
             $this->petQuestPerRequestCache[$cacheKey] = $record;
