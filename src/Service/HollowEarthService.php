@@ -271,11 +271,11 @@ class HollowEarthService
 
         switch($player->getCurrentDirection())
         {
-            case HollowEarthMoveDirectionEnum::NORTH: $y--; break;
-            case HollowEarthMoveDirectionEnum::EAST: $x++; break;
-            case HollowEarthMoveDirectionEnum::SOUTH: $y++; break;
-            case HollowEarthMoveDirectionEnum::WEST: $x--; break;
-            case HollowEarthMoveDirectionEnum::ZERO: break;
+            case HollowEarthMoveDirectionEnum::North: $y--; break;
+            case HollowEarthMoveDirectionEnum::East: $x++; break;
+            case HollowEarthMoveDirectionEnum::South: $y++; break;
+            case HollowEarthMoveDirectionEnum::West: $x--; break;
+            case HollowEarthMoveDirectionEnum::Zero: break;
             default: throw new \InvalidArgumentException('Player has an unknown currentDirection: "' . $player->getCurrentDirection()->value . '"');
         }
 

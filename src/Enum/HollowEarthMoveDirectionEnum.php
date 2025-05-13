@@ -15,9 +15,9 @@ namespace App\Enum;
 
 enum HollowEarthMoveDirectionEnum: string
 {
-    case NORTH = 'N';
-    case EAST = 'E';
-    case SOUTH = 'S';
-    case WEST = 'W';
-    case ZERO = 'Z';
+    case North = 'N';
+    case East = 'E';
+    case South = 'S';
+    case West = 'W';
+    case Zero = 'Z';
 }
