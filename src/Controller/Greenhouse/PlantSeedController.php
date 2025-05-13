@@ -81,11 +81,11 @@ class PlantSeedController
         if(count($plantsOfSameType) >= $numberOfPlots)
             throw new PSPInvalidOperationException('You can\'t plant anymore plants of this type.');
 
-        $plant = (new GreenhousePlant())
-            ->setOwner($user)
-            ->setPlant($seed->getItem()->getPlant())
-            ->setOrdinal($lastOrdinal + 1)
-        ;
+        $plant = new GreenhousePlant(
+            owner: $user,
+            plant: $seed->getItem()->getPlant(),
+            ordinal: $lastOrdinal +1
+        );
 
         $em->persist($plant);
         $em->remove($seed);

@@ -80,9 +80,9 @@ class DragonHostageService
     }
 
     private const array HostageColors = [
-        DragonHostageTypeEnum::MAGPIE->value => [ '3d484f', '4e4642', '696969' ],
-        DragonHostageTypeEnum::RACCOON->value => [ '' ],
-        DragonHostageTypeEnum::SQUID->value => [ 'e59db9', 'e7d5b2' ],
+        DragonHostageTypeEnum::Magpie->value => [ '3d484f', '4e4642', '696969' ],
+        DragonHostageTypeEnum::Raccoon->value => [ '' ],
+        DragonHostageTypeEnum::Squid->value => [ 'e59db9', 'e7d5b2' ],
     ];
 
     private const array CrownColors = [
@@ -90,15 +90,15 @@ class DragonHostageService
     ];
 
     private const array HostageLoot = [
-        DragonHostageTypeEnum::MAGPIE->value => [
+        DragonHostageTypeEnum::Magpie->value => [
             'Ruby Feather',
             'Black Feathers',
         ],
-        DragonHostageTypeEnum::RACCOON->value => [
+        DragonHostageTypeEnum::Raccoon->value => [
             'Little Strongbox',
             'Minor Scroll of Riches',
         ],
-        DragonHostageTypeEnum::SQUID->value => [
+        DragonHostageTypeEnum::Squid->value => [
             'Scroll of the Sea',
             'Secret Seashell',
         ]
@@ -112,7 +112,7 @@ class DragonHostageService
     ];
 
     private const array HostageNames = [
-        DragonHostageTypeEnum::MAGPIE->value => [
+        DragonHostageTypeEnum::Magpie->value => [
             'Acel', 'Adalicia', 'Adelaide', 'Adelynn', 'Adrianna', 'Aimee',
             'Alisanne', 'Aloin', 'Alyssandra', 'Amoux', 'Ancil', 'Angela',
             'Archard', 'Armand', 'Avelaine', 'Baylen', 'Beaumont', 'Bellamy',
@@ -128,13 +128,13 @@ class DragonHostageService
             'Nanon', 'Noeline', 'Orlena', 'Papillon', 'Pascaline', 'Perrin',
             'Romaine', 'Roussel', 'Solaina', 'Violetta'
         ],
-        DragonHostageTypeEnum::RACCOON->value => [
+        DragonHostageTypeEnum::Raccoon->value => [
             'Aleksy', 'Andnej', 'Artur', 'Casimir', 'Cyprian', 'Cyryl',
             'Dodek', 'Emmilian', 'Feliks', 'Florian', 'Gerik', 'Janek',
             'Maksym', 'Mikolai', 'Pawelek', 'Pawl', 'Piotr', 'Seweryn',
             'Telek', 'Tola', 'Wicus', 'Wit', 'Ziven',
         ],
-        DragonHostageTypeEnum::SQUID->value => [
+        DragonHostageTypeEnum::Squid->value => [
             'Abayomi', 'Ain', 'Akiiki', 'Amsi', 'Aswad', 'Azizi',
             'Badru', 'Bebti', 'Chenzira', 'Chisisi', 'Dakarai', 'Dendera',
             'Ebonique', 'Garai', 'Gyasi', 'Hasani', 'Husani', 'Jamila',

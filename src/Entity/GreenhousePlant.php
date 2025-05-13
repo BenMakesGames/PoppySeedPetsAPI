@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Enum\EnumInvalidValueException;
 use App\Enum\PollinatorEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -56,15 +55,18 @@ class GreenhousePlant
     private int $ordinal;
 
     #[Groups(["greenhousePlant"])]
-    #[ORM\Column(type: 'string', length: 20, nullable: true)]
-    private ?string $pollinators = null;
+    #[ORM\Column(type: 'string', length: 20, nullable: true, enumType: PollinatorEnum::class)]
+    private ?PollinatorEnum $pollinators = null;
 
     #[ORM\Version]
     #[ORM\Column(type: 'integer')]
     private int $version;
 
-    public function __construct()
+    public function __construct(User $owner, Plant $plant, int $ordinal)
     {
+        $this->owner = $owner;
+        $this->plant = $plant;
+        $this->ordinal = $ordinal;
         $this->lastInteraction = (new \DateTimeImmutable())->modify('-1 day');
     }
 
@@ -76,13 +78,6 @@ class GreenhousePlant
     public function getPlant(): ?Plant
     {
         return $this->plant;
-    }
-
-    public function setPlant(Plant $plant): self
-    {
-        $this->plant = $plant;
-
-        return $this;
     }
 
     public function getGrowth(): int
@@ -221,19 +216,13 @@ class GreenhousePlant
         return $this;
     }
 
-    public function getPollinators(): ?string
+    public function getPollinators(): ?PollinatorEnum
     {
         return $this->pollinators;
     }
 
-    /**
-     * @throws EnumInvalidValueException
-     */
-    public function setPollinators(?string $pollinators): self
+    public function setPollinators(?PollinatorEnum $pollinators): self
     {
-        if($pollinators != null && !PollinatorEnum::isAValue($pollinators))
-            throw new EnumInvalidValueException(PollinatorEnum::class, $pollinators);
-
         $this->pollinators = $pollinators;
 
         return $this;

@@ -110,9 +110,9 @@ class GreenhouseService
 
     public function applyPollinatorSpice(Inventory $item, string $pollinators): void
     {
-        if($pollinators === PollinatorEnum::BEES_1 || $pollinators === PollinatorEnum::BEES_2)
+        if($pollinators === PollinatorEnum::Bees1 || $pollinators === PollinatorEnum::Bees2)
             $spiceName = $this->rng->rngNextInt(1, 20) === 1 ? 'of Queens' : 'Anthophilan';
-        else if($pollinators === PollinatorEnum::BUTTERFLIES)
+        else if($pollinators === PollinatorEnum::Butterflies)
             $spiceName = $this->rng->rngNextFromArray([ 'Fortified', 'Nectarous' ]);
         else
             throw new \InvalidArgumentException('Programmer foolishness did not account for all pollinators when applying spices!');
@@ -178,19 +178,19 @@ class GreenhouseService
         $twoHoursAgo = $this->clock->now->sub(\DateInterval::createFromDateString('2 hours'));
 
         if($user->getGreenhouse()->getButterfliesDismissedOn() <= $twoHoursAgo)
-            $this->maybeAssignPollinator($user, PollinatorEnum::BUTTERFLIES);
+            $this->maybeAssignPollinator($user, PollinatorEnum::Butterflies);
 
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::Beehive))
         {
             if($user->getGreenhouse()->getBeesDismissedOn() <= $twoHoursAgo)
-                $this->maybeAssignPollinator($user, PollinatorEnum::BEES_1);
+                $this->maybeAssignPollinator($user, PollinatorEnum::Bees1);
 
             if($user->getBeehive() && $user->getBeehive()->getWorkers() >= 500 && $user->getGreenhouse()->getBees2DismissedOn() <= $twoHoursAgo)
-                $this->maybeAssignPollinator($user, PollinatorEnum::BEES_2);
+                $this->maybeAssignPollinator($user, PollinatorEnum::Bees2);
         }
     }
 
-    private function maybeAssignPollinator(User $user, string $pollinator): bool
+    private function maybeAssignPollinator(User $user, PollinatorEnum $pollinator): bool
     {
         // must not already have this pollinator present
         if(ArrayFunctions::any($user->getGreenhousePlants(), fn(GreenhousePlant $p) => $p->getPollinators() == $pollinator))

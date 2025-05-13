@@ -16,7 +16,7 @@ namespace App\Enum;
 
 enum DragonHostageTypeEnum: string
 {
-    case MAGPIE = 'magpie';
-    case RACCOON = 'raccoon';
-    case SQUID = 'squid';
+    case Magpie = 'magpie';
+    case Raccoon = 'raccoon';
+    case Squid = 'squid';
 }

@@ -14,11 +14,9 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-class PollinatorEnum
+enum PollinatorEnum: string
 {
-    use FakeEnum;
-
-    public const string BUTTERFLIES = 'butterflies';
-    public const string BEES_1 = 'bees1';
-    public const string BEES_2 = 'bees2';
+    case Butterflies = 'butterflies';
+    case Bees1 = 'bees1';
+    case Bees2 = 'bees2';
 }
