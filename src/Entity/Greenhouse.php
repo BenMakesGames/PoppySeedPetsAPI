@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\BirdBathBirdEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -29,61 +30,62 @@ class Greenhouse
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'greenhouse', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private $owner;
+    private User $owner;
 
     #[Groups(["myGreenhouse"])]
     #[ORM\Column(type: 'smallint')]
-    private $maxPlants = 3;
+    private int $maxPlants = 3;
 
     #[Groups(["myGreenhouse"])]
     #[ORM\Column(type: 'boolean')]
-    private $hasBirdBath = false;
+    private bool $hasBirdBath = false;
 
     #[Groups(["myGreenhouse"])]
-    #[ORM\Column(type: 'string', length: 20, nullable: true)]
-    private $visitingBird = null;
-
-    #[Groups(["myGreenhouse"])]
-    #[ORM\Column(type: 'smallint')]
-    private $maxWaterPlants = 0;
+    #[ORM\Column(type: 'string', length: 20, nullable: true, enumType: BirdBathBirdEnum::class)]
+    private ?BirdBathBirdEnum $visitingBird = null;
 
     #[Groups(["myGreenhouse"])]
     #[ORM\Column(type: 'smallint')]
-    private $maxDarkPlants = 0;
+    private int $maxWaterPlants = 0;
+
+    #[Groups(["myGreenhouse"])]
+    #[ORM\Column(type: 'smallint')]
+    private int $maxDarkPlants = 0;
 
     #[Groups(["myGreenhouse"])]
     #[ORM\Column(type: 'boolean')]
-    private $hasComposter = false;
+    private bool $hasComposter = false;
 
     #[ORM\Column(type: 'integer')]
-    private $composterFood = 0;
+    private int $composterFood = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $composterBonusCountdown = 0;
+    private int $composterBonusCountdown = 0;
 
     #[Groups(["helperPet"])]
     #[ORM\OneToOne(targetEntity: Pet::class, cascade: ['persist', 'remove'])]
-    private $helper;
+    private ?Pet $helper = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $butterfliesDismissedOn;
+    private \DateTimeImmutable $butterfliesDismissedOn;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $beesDismissedOn;
+    private \DateTimeImmutable $beesDismissedOn;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $bees2DismissedOn;
+    private \DateTimeImmutable $bees2DismissedOn;
 
     #[Groups(["myGreenhouse"])]
     #[ORM\Column(type: 'boolean')]
-    private $hasFishStatue = false;
+    private bool $hasFishStatue = false;
 
     #[Groups(["myGreenhouse"])]
     #[ORM\Column]
     private bool $hasMoondial = false;
 
-    public function __construct()
+    public function __construct(User $owner)
     {
+        $this->owner = $owner;
         $this->setComposterBonusCountdown();
         $this->butterfliesDismissedOn = new \DateTimeImmutable();
         $this->beesDismissedOn = new \DateTimeImmutable();
@@ -95,7 +97,7 @@ class Greenhouse
         return $this->id;
     }
 
-    public function getOwner(): ?User
+    public function getOwner(): User
     {
         return $this->owner;
     }
@@ -131,12 +133,12 @@ class Greenhouse
         return $this;
     }
 
-    public function getVisitingBird(): ?string
+    public function getVisitingBird(): ?BirdBathBirdEnum
     {
         return $this->visitingBird;
     }
 
-    public function setVisitingBird(?string $visitingBird): self
+    public function setVisitingBird(?BirdBathBirdEnum $visitingBird): self
     {
         $this->visitingBird = $visitingBird;
 

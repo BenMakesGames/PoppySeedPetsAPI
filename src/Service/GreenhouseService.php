@@ -61,7 +61,7 @@ class GreenhouseService
 
         switch($greenhouse->getVisitingBird())
         {
-            case BirdBathBirdEnum::OWL:
+            case BirdBathBirdEnum::Owl:
                 $scroll = $this->rng->rngNextFromArray([
                     'Behatting Scroll',
                     'Behatting Scroll',
@@ -76,7 +76,7 @@ class GreenhouseService
                 $activityLogMessage = 'You approached an owl in your birdbath! It flew off, leaving behind a ' . $scroll . '!';
                 break;
 
-            case BirdBathBirdEnum::RAVEN:
+            case BirdBathBirdEnum::Raven:
                 $this->inventoryService->receiveItem('Black Feathers', $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
                 $this->inventoryService->receiveItem('Black Feathers', $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
                 $extraItem = $this->rng->rngNextFromArray([
@@ -89,7 +89,7 @@ class GreenhouseService
                 $activityLogMessage = 'You approached a raven in your birdbath! It flew off, leaving behind some Black Feathers, and ' . $extraInventory->getItem()->getNameWithArticle() . '!';
                 break;
 
-            case BirdBathBirdEnum::TOUCAN:
+            case BirdBathBirdEnum::Toucan:
                 $this->inventoryService->receiveItem('Imperturbable Toucan', $user, $user, 'Found at ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
                 $message = 'As you approach the toucan, it turns to face you. You freeze, and stare at each other for a few seconds before it hops right into your arms!';
                 $activityLogMessage = 'You approached a toucan in your birdbath, and it hopped into your arms!';

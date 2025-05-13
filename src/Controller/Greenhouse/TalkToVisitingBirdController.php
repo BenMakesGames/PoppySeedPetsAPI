@@ -39,7 +39,7 @@ class TalkToVisitingBirdController
         if(!$user->getGreenhouse())
             throw new PSPNotUnlockedException('Greenhouse');
 
-        if(!$user->getGreenhouse()->getVisitingBird())
+        if($user->getGreenhouse()->getVisitingBird() === null)
             throw new PSPNotFoundException('Hm... there\'s no bird here. Reload, maybe??');
 
         $message = $greenhouseService->approachBird($user->getGreenhouse());
