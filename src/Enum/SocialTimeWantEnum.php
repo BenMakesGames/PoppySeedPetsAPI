@@ -14,11 +14,9 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-class SocialTimeWantEnum
+enum SocialTimeWantEnum
 {
-    use FakeEnum;
-
-    public const string HANG_OUT = 'hangOut';
-    public const string GROUP = 'group';
-    public const string CREATE_GROUP = 'createGroup';
+    case HangOut;
+    case Group;
+    case CreateGroup;
 }
