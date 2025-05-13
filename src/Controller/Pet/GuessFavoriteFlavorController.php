@@ -56,10 +56,8 @@ class GuessFavoriteFlavorController
         if($pet->getRevealedFavoriteFlavor())
             throw new PSPInvalidOperationException($pet->getName() . '\'s favorite flavor has already been revealed!');
 
-        $guess = strtolower(trim($request->request->getAlpha('flavor')));
-
-        if(!FlavorEnum::isAValue($guess))
-            throw new PSPFormValidationException('Please pick a flavor.');
+        $guess = FlavorEnum::tryFrom(strtolower(trim($request->request->getAlpha('flavor'))))
+            ?? throw new PSPFormValidationException('Please pick a flavor.');
 
         $flavorGuesses = UserQuestRepository::findOrCreate($em, $user, 'Flavor Guesses for Pet #' . $pet->getId(), 0);
 
@@ -76,7 +74,7 @@ class GuessFavoriteFlavorController
                 ->setRevealedFavoriteFlavor($flavorGuesses->getValue())
                 ->increaseAffectionLevel(1)
             ;
-            $inventoryService->receiveItem('Heartstone', $user, $user, $user->getName() . ' received this from ' . $pet->getName() . ' for knowing their favorite flavor: ' . $pet->getFavoriteFlavor() . '!', LocationEnum::HOME);
+            $inventoryService->receiveItem('Heartstone', $user, $user, $user->getName() . ' received this from ' . $pet->getName() . ' for knowing their favorite flavor: ' . $pet->getFavoriteFlavor()->value . '!', LocationEnum::HOME);
             $responseService->setReloadInventory();
             $data = $pet;
 

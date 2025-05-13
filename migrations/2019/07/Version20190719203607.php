@@ -51,7 +51,7 @@ final class Version20190719203607 extends AbstractMigration
                 'UPDATE pet SET favorite_flavor=:flavor WHERE id=:id LIMIT 1',
                 [
                     'id' => $pet['id'],
-                    'flavor' => FlavorEnum::getRandomValue($rng)
+                    'flavor' => $rng->rngNextFromArray(FlavorEnum::cases()),
                 ]
             );
         }

@@ -210,7 +210,7 @@ class GatheringService
             $newPet = $this->petFactory->createPet(
                 $pet->getOwner(), $newPetName, $newPetSpecies,
                 $colorA, $newPetInfo['ColorB'],
-                FlavorEnum::getRandomValue($this->rng),
+                $this->rng->rngNextFromArray(FlavorEnum::cases()),
                 MeritRepository::findOneByName($this->em, MeritEnum::NO_SHADOW_OR_REFLECTION)
             );
 

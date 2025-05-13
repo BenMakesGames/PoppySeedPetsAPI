@@ -18,6 +18,7 @@ use App\Entity\ItemTool;
 use App\Entity\MarketListing;
 use App\Entity\User;
 use App\Enum\FlavorEnum;
+use App\Exceptions\PSPFormValidationException;
 use App\Functions\StringFunctions;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -127,8 +128,8 @@ class MarketFilterService implements FilterServiceInterface
     {
         if(!is_array($value)) $value = [ $value ];
 
-        $value = array_map('strtolower', $value);
-        $value = array_intersect($value, FlavorEnum::getValues());
+        $value = array_map(fn($v) => FlavorEnum::tryFrom(strtolower($v)) ?? throw new PSPFormValidationException($v . ' is not a flavor'), $value);
+        $value = array_intersect($value, FlavorEnum::cases());
 
         if(count($value) === 0) return;
 

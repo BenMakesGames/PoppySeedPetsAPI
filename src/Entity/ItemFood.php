@@ -424,16 +424,16 @@ class ItemFood
 
         $hasAnyFixedFlavor = false;
 
-        foreach(FlavorEnum::getValues() as $flavor)
+        foreach(FlavorEnum::cases() as $flavor)
         {
-            if($this->$flavor > 0)
+            if($this->{$flavor->value} > 0)
             {
-                if($this->$flavor > 4)
-                    $modifiers[] = 'extremely ' . $flavor;
-                else if($this->$flavor > 2)
-                    $modifiers[] = 'very ' . $flavor;
+                if($this->{$flavor->value} > 4)
+                    $modifiers[] = 'extremely ' . $flavor->value;
+                else if($this->{$flavor->value} > 2)
+                    $modifiers[] = 'very ' . $flavor->value;
                 else
-                    $modifiers[] = $flavor;
+                    $modifiers[] = $flavor->value;
 
                 $hasAnyFixedFlavor = true;
             }

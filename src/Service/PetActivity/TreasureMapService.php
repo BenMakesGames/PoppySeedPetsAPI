@@ -528,7 +528,7 @@ class TreasureMapService
     /**
      * @return string[]
      */
-    public static function getFluffmongerFlavorFoods(string $flavor): array
+    public static function getFluffmongerFlavorFoods(FlavorEnum $flavor): array
     {
         return match ($flavor)
         {
@@ -544,7 +544,7 @@ class TreasureMapService
             FlavorEnum::FATTY => [ 'Onion Rings', 'Eggnog', 'Hakuna Frittata' ],
             FlavorEnum::ONIONY => [ 'Onion Rings', 'Hakuna Frittata', 'Instant Ramen (Dry)' ],
             FlavorEnum::CHEMICALLY => [ 'Fermented Fish Onigiri', 'Century Egg', 'Tomato "Sushi"' ],
-            default => throw new \Exception('Ben forgot to code Fluffmonger foods for the flavor "' . $flavor . '"!'),
+            default => throw new \Exception('Ben forgot to code Fluffmonger foods for the flavor "' . $flavor->value . '"!'),
         };
     }
 

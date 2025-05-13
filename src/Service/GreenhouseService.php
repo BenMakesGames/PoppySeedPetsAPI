@@ -139,7 +139,15 @@ class GreenhouseService
 
         $startingMerit = MeritRepository::findOneByName($this->em, $this->rng->rngNextFromArray($startingMerits));
 
-        $harvestedPet = $this->petFactory->createPet($user, $name, $species, $colorA, $colorB, FlavorEnum::getRandomValue($this->rng), $startingMerit);
+        $harvestedPet = $this->petFactory->createPet(
+            $user,
+            $name,
+            $species,
+            $colorA,
+            $colorB,
+            $this->rng->rngNextFromArray(FlavorEnum::cases()),
+            $startingMerit
+        );
 
         if($bonusMerit)
             $harvestedPet->addMerit($bonusMerit);

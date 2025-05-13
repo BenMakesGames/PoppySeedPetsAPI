@@ -68,8 +68,8 @@ class FoodWithSpice
         if($food->getChanceForBonusItem())
             $this->bonusItems[] = new BonusItemChance($food);
 
-        foreach(FlavorEnum::getValues() as $flavor)
-            $this->{$flavor} = $food->{'get' . $flavor}();
+        foreach(FlavorEnum::cases() as $flavor)
+            $this->{$flavor} = $food->{'get' . $flavor->value}();
 
         if($food->getGrantedSkill())
             $this->grantedSkills[] = $food->getGrantedSkill();
@@ -123,8 +123,8 @@ class FoodWithSpice
             if($effects->getGrantsSelfReflection())
                 $this->grantsSelfReflection = true;
 
-            foreach(FlavorEnum::getValues() as $flavor)
-                $this->{$flavor} += $effects->{'get' . $flavor}();
+            foreach(FlavorEnum::cases() as $flavor)
+                $this->{$flavor} += $effects->{'get' . $flavor->value}();
 
             if($effects->getLeftovers())
                 $this->leftovers[] = $effects->getLeftovers();

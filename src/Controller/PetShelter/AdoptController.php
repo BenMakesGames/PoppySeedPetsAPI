@@ -93,7 +93,7 @@ class AdoptController
 
         $newPet = $petFactory->createPet(
             $user, $petName, $petToAdopt->species, $petToAdopt->colorA, $petToAdopt->colorB,
-            FlavorEnum::getRandomValue($rng),
+            $rng->rngNextFromArray(FlavorEnum::cases()),
             MeritRepository::getRandomAdoptedPetStartingMerit($em, $rng)
         );
 

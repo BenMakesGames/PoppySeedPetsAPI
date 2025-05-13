@@ -76,10 +76,7 @@ class EatingService
         $this->applyFoodEffects($pet, $food);
 
         // consider favorite flavor:
-        if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
-            throw new EnumInvalidValueException(FlavorEnum::class, $pet->getFavoriteFlavor());
-
-        $randomFlavor = $food->randomFlavor > 0 ? FlavorEnum::getRandomValue($this->rng) : null;
+        $randomFlavor = $food->randomFlavor > 0 ? $this->rng->rngNextFromArray(FlavorEnum::cases()) : null;
 
         $esteemGain = self::getFavoriteFlavorStrength($pet, $food, $randomFlavor) + $food->love;
 
@@ -98,12 +95,12 @@ class EatingService
         return true;
     }
 
-    public static function getFavoriteFlavorStrength(Pet $pet, FoodWithSpice $food, string $randomFlavor = null): int
+    public static function getFavoriteFlavorStrength(Pet $pet, FoodWithSpice $food, ?FlavorEnum $randomFlavor = null): int
     {
         if($pet->hasMerit(MeritEnum::AFFECTIONLESS))
             return 0;
 
-        $favoriteFlavorStrength = $food->{$pet->getFavoriteFlavor()};
+        $favoriteFlavorStrength = $food->{$pet->getFavoriteFlavor()->value};
 
         if($randomFlavor !== null && $randomFlavor === $pet->getFavoriteFlavor())
             $favoriteFlavorStrength += $food->randomFlavor;
@@ -282,10 +279,7 @@ class EatingService
             $this->applyFoodEffects($pet, $food);
 
             // consider favorite flavor:
-            if(!FlavorEnum::isAValue($pet->getFavoriteFlavor()))
-                throw new EnumInvalidValueException(FlavorEnum::class, $pet->getFavoriteFlavor());
-
-            $randomFlavor = $food->randomFlavor > 0 ? FlavorEnum::getRandomValue($this->rng) : null;
+            $randomFlavor = $food->randomFlavor > 0 ? $this->rng->rngNextFromArray(FlavorEnum::cases()) : null;
 
             $favoriteFlavorStrength = self::getFavoriteFlavorStrength($pet, $food, $randomFlavor);
 

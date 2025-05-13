@@ -87,7 +87,13 @@ class EggController
         ]);
 
         $newPet = $petFactory->createPet(
-            $user, $jellingName, $jelling, '', '', FlavorEnum::getRandomValue($rng), MeritRepository::findOneByName($em, MeritEnum::SAGA_SAGA)
+            owner: $user,
+            name: $jellingName,
+            species: $jelling,
+            colorA: '',
+            colorB: '',
+            favoriteFlavor: $rng->rngNextFromArray(FlavorEnum::cases()),
+            startingMerit: MeritRepository::findOneByName($em, MeritEnum::SAGA_SAGA)
         );
 
         $newPet
@@ -176,7 +182,13 @@ class EggController
             ]) . ' ' . $user->getName();
 
             $newPet = $petFactory->createPet(
-                $user, $monkeyName, $starMonkey, '', '', FlavorEnum::getRandomValue($rng), MeritRepository::getRandomStartingMerit($em, $rng)
+                owner: $user,
+                name: $monkeyName,
+                species: $starMonkey,
+                colorA: '',
+                colorB: '',
+                favoriteFlavor: $rng->rngNextFromArray(FlavorEnum::cases()),
+                startingMerit: MeritRepository::getRandomStartingMerit($em, $rng)
             );
 
             $newPet
@@ -257,7 +269,13 @@ class EggController
             $message .= "\n\nAnyway, it's dashing around like it's excited to be here; it really seems to like you! In fact, it's already named itself after you??";
 
             $newPet = $petFactory->createPet(
-                $user, '', $grabber, '', '', FlavorEnum::getRandomValue($rng), MeritRepository::getRandomStartingMerit($em, $rng)
+                owner: $user,
+                name: '',
+                species: $grabber,
+                colorA: '',
+                colorB: '',
+                favoriteFlavor: $rng->rngNextFromArray(FlavorEnum::cases()),
+                startingMerit: MeritRepository::getRandomStartingMerit($em, $rng)
             );
 
             PetColorFunctions::recolorPet($rng, $newPet, 0.2);
