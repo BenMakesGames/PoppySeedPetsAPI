@@ -11,15 +11,12 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Enum;
 
-class LetterSenderEnum
+enum LetterSenderEnum: string
 {
-    use FakeEnum;
-
-    public const string SHARUMINYINKA = 'Sharuminyinka';
-    public const string KATICA = 'Katica';
-    public const string HYSSOP = 'Hyssop';
-    public const string MIA = 'Mia';
+    case Sharuminyinka = 'Sharuminyinka';
+    case Katica = 'Katica';
+    case Hyssop = 'Hyssop';
+    case Mia = 'Mia';
 }
