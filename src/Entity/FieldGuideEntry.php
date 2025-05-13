@@ -27,8 +27,8 @@ class FieldGuideEntry
     /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 20)]
-    private string $type;
+    #[ORM\Column(type: 'string', length: 20, enumType: FieldGuideEntryTypeEnum::class)]
+    private FieldGuideEntryTypeEnum $type;
 
     #[ORM\Column(type: 'string', length: 40, unique: true)]
     private string $name;
@@ -44,16 +44,13 @@ class FieldGuideEntry
         return $this->id;
     }
 
-    public function getType(): string
+    public function getType(): FieldGuideEntryTypeEnum
     {
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(FieldGuideEntryTypeEnum $type): self
     {
-        if(!FieldGuideEntryTypeEnum::isAValue($type))
-            throw new EnumInvalidValueException(FieldGuideEntryTypeEnum::class, $type);
-
         $this->type = $type;
 
         return $this;

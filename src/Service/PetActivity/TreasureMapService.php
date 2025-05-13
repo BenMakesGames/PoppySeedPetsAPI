@@ -532,18 +532,18 @@ class TreasureMapService
     {
         return match ($flavor)
         {
-            FlavorEnum::EARTHY => [ 'Fried Tomato', 'Matzah Bread', 'Smashed Potatoes' ],
-            FlavorEnum::FRUITY => [ 'Fried Tomato', 'Naner Yogurt', 'Red' ],
-            FlavorEnum::TANNIC => [ 'Chocolate Ice Cream', 'Warm Red Muffin', 'Mixed Nuts' ],
-            FlavorEnum::SPICY => [ 'Candied Ginger', 'Onion Rings', 'Shakshouka' ],
-            FlavorEnum::CREAMY => [ 'Chocolate Ice Cream', 'Coconut Half', 'Eggnog' ],
-            FlavorEnum::MEATY => [ 'Fish', 'Beans', 'Hakuna Frittata' ],
-            FlavorEnum::PLANTY => [ 'Shakshouka', 'Hakuna Frittata', 'Coconut Half' ],
-            FlavorEnum::FISHY => [ 'Battered, Fried Fish', 'Fermented Fish Onigiri' ],
-            FlavorEnum::FLORAL => [ 'Apricot', 'Berry Muffin', 'Orange Juice' ],
-            FlavorEnum::FATTY => [ 'Onion Rings', 'Eggnog', 'Hakuna Frittata' ],
-            FlavorEnum::ONIONY => [ 'Onion Rings', 'Hakuna Frittata', 'Instant Ramen (Dry)' ],
-            FlavorEnum::CHEMICALLY => [ 'Fermented Fish Onigiri', 'Century Egg', 'Tomato "Sushi"' ],
+            FlavorEnum::Earthy => [ 'Fried Tomato', 'Matzah Bread', 'Smashed Potatoes' ],
+            FlavorEnum::Fruity => [ 'Fried Tomato', 'Naner Yogurt', 'Red' ],
+            FlavorEnum::Tannic => [ 'Chocolate Ice Cream', 'Warm Red Muffin', 'Mixed Nuts' ],
+            FlavorEnum::Spicy => [ 'Candied Ginger', 'Onion Rings', 'Shakshouka' ],
+            FlavorEnum::Creamy => [ 'Chocolate Ice Cream', 'Coconut Half', 'Eggnog' ],
+            FlavorEnum::Meaty => [ 'Fish', 'Beans', 'Hakuna Frittata' ],
+            FlavorEnum::Planty => [ 'Shakshouka', 'Hakuna Frittata', 'Coconut Half' ],
+            FlavorEnum::Fishy => [ 'Battered, Fried Fish', 'Fermented Fish Onigiri' ],
+            FlavorEnum::Floral => [ 'Apricot', 'Berry Muffin', 'Orange Juice' ],
+            FlavorEnum::Fatty => [ 'Onion Rings', 'Eggnog', 'Hakuna Frittata' ],
+            FlavorEnum::Oniony => [ 'Onion Rings', 'Hakuna Frittata', 'Instant Ramen (Dry)' ],
+            FlavorEnum::Chemically => [ 'Fermented Fish Onigiri', 'Century Egg', 'Tomato "Sushi"' ],
             default => throw new \Exception('Ben forgot to code Fluffmonger foods for the flavor "' . $flavor->value . '"!'),
         };
     }

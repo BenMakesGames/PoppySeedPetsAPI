@@ -103,7 +103,7 @@ class BetaBugController
         {
             case 'Cooking Buddy': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::getRandomStartingMerit($em, $rng), $rng->rngNextFromArray(FlavorEnum::cases()), null, 'd8d8d8', 100); break;
             case 'Cooking "Alien"': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::findOneByName($em, MeritEnum::BEHATTED), $rng->rngNextFromArray(FlavorEnum::cases()), 'Antenna', 'd8d8d8', 100); break;
-            case 'Cooking... with Fire': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::getRandomStartingMerit($em, $rng), FlavorEnum::SPICY, null, '6e6e6e', 100); break;
+            case 'Cooking... with Fire': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::getRandomStartingMerit($em, $rng), FlavorEnum::Spicy, null, '6e6e6e', 100); break;
             case 'Mini Cooking Buddy': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::getRandomStartingMerit($em, $rng), $rng->rngNextFromArray(FlavorEnum::cases()), null, 'd8d8d8', 60); break;
             case 'Mega Cooking Buddy': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::getRandomStartingMerit($em, $rng), $rng->rngNextFromArray(FlavorEnum::cases()), null, 'd8d8d8', 150); break;
             case 'Sentient Beetle': self::makeBeetleEvil($responseService, $em, $user, $item); break;

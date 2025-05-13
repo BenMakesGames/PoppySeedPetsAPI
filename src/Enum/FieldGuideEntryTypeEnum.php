@@ -14,15 +14,13 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-class FieldGuideEntryTypeEnum
+enum FieldGuideEntryTypeEnum: string
 {
-    use FakeEnum;
-
-    public const string ANIMAL = 'animal';
-    public const string PLANT = 'plant';
-    public const string CELESTIAL = 'celestial';
-    public const string SYNTHETIC = 'synthetic';
-    public const string CRYPTID = 'cryptid';
-    public const string LOCATION = 'location';
-    public const string CEREMONY = 'ceremony';
+    case Animal = 'animal';
+    case Plant = 'plant';
+    case Celestial = 'celestial';
+    case Synthetic = 'synthetic';
+    case Cryptid = 'cryptid';
+    case Location = 'location';
+    case Ceremony = 'ceremony';
 }

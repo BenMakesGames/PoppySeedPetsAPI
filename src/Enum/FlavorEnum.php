@@ -16,16 +16,16 @@ namespace App\Enum;
 
 enum FlavorEnum: string
 {
-    case EARTHY = 'earthy';
-    case FRUITY = 'fruity';
-    case TANNIC = 'tannic';
-    case SPICY = 'spicy';
-    case CREAMY = 'creamy';
-    case MEATY = 'meaty';
-    case PLANTY = 'planty';
-    case FISHY = 'fishy';
-    case FLORAL = 'floral';
-    case FATTY = 'fatty';
-    case ONIONY = 'oniony';
-    case CHEMICALLY = 'chemically';
+    case Earthy = 'earthy';
+    case Fruity = 'fruity';
+    case Tannic = 'tannic';
+    case Spicy = 'spicy';
+    case Creamy = 'creamy';
+    case Meaty = 'meaty';
+    case Planty = 'planty';
+    case Fishy = 'fishy';
+    case Floral = 'floral';
+    case Fatty = 'fatty';
+    case Oniony = 'oniony';
+    case Chemically = 'chemically';
 }
