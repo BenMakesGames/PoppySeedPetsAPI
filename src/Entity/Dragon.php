@@ -118,6 +118,7 @@ class Dragon
     #[Groups(['myDragon'])]
     private $hostage;
 
+    /** @noinspection PhpUnusedPrivateFieldInspection */
     #[ORM\Version]
     #[ORM\Column(type: 'integer')]
     private int $version;

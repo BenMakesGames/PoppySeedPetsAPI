@@ -24,6 +24,7 @@ class Merit
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups(["meritEncyclopedia"])]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[Groups(["availableMerits", "myPet", "meritEncyclopedia", "userPublicProfile", "petPublicProfile", "petGroupDetails", "parkEvent", "petFriend", "hollowEarth", "petActivityLogAndPublicPet", "helperPet"])]

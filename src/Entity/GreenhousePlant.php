@@ -58,6 +58,7 @@ class GreenhousePlant
     #[ORM\Column(type: 'string', length: 20, nullable: true, enumType: PollinatorEnum::class)]
     private ?PollinatorEnum $pollinators = null;
 
+    /** @noinspection PhpUnusedPrivateFieldInspection */
     #[ORM\Version]
     #[ORM\Column(type: 'integer')]
     private int $version;

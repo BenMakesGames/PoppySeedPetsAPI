@@ -43,6 +43,7 @@ class UserQuest
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $lastUpdated;
 
+    /** @noinspection PhpUnusedPrivateFieldInspection */
     #[ORM\Version]
     #[ORM\Column(type: 'integer')]
     private int $version;

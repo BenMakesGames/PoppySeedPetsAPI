@@ -77,6 +77,7 @@ class Beehive
     #[ORM\OneToOne(targetEntity: Pet::class, cascade: ['persist', 'remove'])]
     private $helper;
 
+    /** @noinspection PhpUnusedPrivateFieldInspection */
     #[ORM\Version]
     #[ORM\Column(type: 'integer')]
     private int $version;

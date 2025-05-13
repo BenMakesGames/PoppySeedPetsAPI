@@ -25,6 +25,7 @@ class InventoryForSale
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[ORM\OneToOne(inversedBy: 'forSale')]

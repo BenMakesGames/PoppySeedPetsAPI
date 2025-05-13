@@ -49,6 +49,7 @@ class Pet
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups([SerializationGroupEnum::MY_PET, 'userPublicProfile', 'petPublicProfile', 'myInventory', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'spiritCompanionPublicProfile', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet'])]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'pets')]

@@ -77,6 +77,7 @@ class HollowEarthPlayer
     #[ORM\Column(type: 'boolean')]
     private bool $showGoods = false;
 
+    /** @noinspection PhpUnusedPrivateFieldInspection */
     #[ORM\Version]
     #[ORM\Column(type: 'integer')]
     private int $version;
