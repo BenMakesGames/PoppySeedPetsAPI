@@ -77,11 +77,11 @@ class PullUpPlantController
 
         $pollinators = $plant->getPollinators();
 
-        if($pollinators === PollinatorEnum::BUTTERFLIES)
+        if($pollinators === PollinatorEnum::Butterflies)
             $user->getGreenhouse()->setButterfliesDismissedOn(new \DateTimeImmutable());
-        if($pollinators === PollinatorEnum::BEES_1)
+        if($pollinators === PollinatorEnum::Bees1)
             $user->getGreenhouse()->setBeesDismissedOn(new \DateTimeImmutable());
-        if($pollinators === PollinatorEnum::BEES_2)
+        if($pollinators === PollinatorEnum::Bees2)
             $user->getGreenhouse()->setBees2DismissedOn(new \DateTimeImmutable());
 
         $em->remove($plant);

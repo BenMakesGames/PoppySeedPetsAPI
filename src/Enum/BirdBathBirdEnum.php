@@ -14,11 +14,9 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-class BirdBathBirdEnum
+enum BirdBathBirdEnum: string
 {
-    use FakeEnum;
-
-    public const string OWL = 'owl';
-    public const string RAVEN = 'raven';
-    public const string TOUCAN = 'toucan';
+    case Owl = 'owl';
+    case Raven = 'raven';
+    case Toucan = 'toucan';
 }

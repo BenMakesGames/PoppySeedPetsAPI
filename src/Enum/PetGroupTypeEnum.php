@@ -14,12 +14,10 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-class PetGroupTypeEnum
+enum PetGroupTypeEnum: int
 {
-    use FakeEnum;
-
-    public const int BAND = 1;
-    public const int ASTRONOMY = 2;
-    public const int GAMING = 3;
-    public const int SPORTSBALL = 4;
+    case BAND = 1;
+    case ASTRONOMY = 2;
+    case GAMING = 3;
+    case SPORTSBALL = 4;
 }

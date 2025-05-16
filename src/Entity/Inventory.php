@@ -38,6 +38,7 @@ class Inventory
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups(["myPet", "myInventory", "greenhouseFertilizer", "mySeeds", "fireplaceFuel", "dragonTreasure", "myHollowEarthTiles"])]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Item::class, inversedBy: 'inventory')]
@@ -99,8 +100,10 @@ class Inventory
     #[ORM\OneToOne(mappedBy: 'inventory', cascade: ['remove'])]
     private ?InventoryForSale $forSale = null;
 
+    /** @noinspection PhpUnusedPrivateFieldInspection */
     #[ORM\Version]
     #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore property.unused */
     private int $version;
 
     public function __construct(User $owner, Item $item)

@@ -167,7 +167,7 @@ class PregnancyService
             $pregnancy->getSpecies(),
             $pregnancy->getColorA(),
             $pregnancy->getColorB(),
-            FlavorEnum::getRandomValue($this->rng),
+            $this->rng->rngNextFromArray(FlavorEnum::cases()),
             MeritRepository::getRandomStartingMerit($this->em, $this->rng)
         );
 
@@ -179,7 +179,7 @@ class PregnancyService
                 $pregnancy->getSpecies(),
                 $pregnancy->getColorA(),
                 $pregnancy->getColorB(),
-                FlavorEnum::getRandomValue($this->rng),
+                $this->rng->rngNextFromArray(FlavorEnum::cases()),
                 MeritRepository::getRandomStartingMerit($this->em, $this->rng)
             );
         }

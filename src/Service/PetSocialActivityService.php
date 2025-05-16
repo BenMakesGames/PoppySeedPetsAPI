@@ -92,7 +92,7 @@ class PetSocialActivityService
         $availableGroups = [];
 
         $wants = [
-            [ 'activity' => SocialTimeWantEnum::HANG_OUT, 'weight' => 60 ]
+            [ 'activity' => SocialTimeWantEnum::HangOut, 'weight' => 60 ]
         ];
 
         if(!$pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
@@ -102,10 +102,10 @@ class PetSocialActivityService
             });
 
             if(count($availableGroups) > 0)
-                $wants[] = [ 'activity' => SocialTimeWantEnum::GROUP, 'weight' => 30 ];
+                $wants[] = [ 'activity' => SocialTimeWantEnum::Group, 'weight' => 30 ];
 
             if(count($pet->getGroups()) < $pet->getMaximumGroups())
-                $wants[] = [ 'activity' => SocialTimeWantEnum::CREATE_GROUP, 'weight' => 5 ];
+                $wants[] = [ 'activity' => SocialTimeWantEnum::CreateGroup, 'weight' => 5 ];
         }
 
         while(count($wants) > 0)
@@ -118,16 +118,16 @@ class PetSocialActivityService
 
             switch($activity)
             {
-                case SocialTimeWantEnum::HANG_OUT:
+                case SocialTimeWantEnum::HangOut:
                     if($this->hangOutWithFriend($pet))
                         return true;
                     break;
 
-                case SocialTimeWantEnum::GROUP:
+                case SocialTimeWantEnum::Group:
                     $this->petGroupService->doGroupActivity($this->rng->rngNextFromArray($availableGroups->toArray()));
                     return true;
 
-                case SocialTimeWantEnum::CREATE_GROUP:
+                case SocialTimeWantEnum::CreateGroup:
                     if($this->petGroupService->createGroup($pet))
                         return true;
                     break;

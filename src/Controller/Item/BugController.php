@@ -245,7 +245,7 @@ class BugController
             $em->getRepository(PetSpecies::class)->find(40),
             $colorA,
             $colorB,
-            FlavorEnum::getRandomValue($rng),
+            $rng->rngNextFromArray(FlavorEnum::cases()),
             MeritRepository::getRandomAdoptedPetStartingMerit($em, $rng)
         );
 

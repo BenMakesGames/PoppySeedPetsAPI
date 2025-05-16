@@ -61,7 +61,7 @@ class GreenhouseService
 
         switch($greenhouse->getVisitingBird())
         {
-            case BirdBathBirdEnum::OWL:
+            case BirdBathBirdEnum::Owl:
                 $scroll = $this->rng->rngNextFromArray([
                     'Behatting Scroll',
                     'Behatting Scroll',
@@ -76,7 +76,7 @@ class GreenhouseService
                 $activityLogMessage = 'You approached an owl in your birdbath! It flew off, leaving behind a ' . $scroll . '!';
                 break;
 
-            case BirdBathBirdEnum::RAVEN:
+            case BirdBathBirdEnum::Raven:
                 $this->inventoryService->receiveItem('Black Feathers', $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
                 $this->inventoryService->receiveItem('Black Feathers', $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
                 $extraItem = $this->rng->rngNextFromArray([
@@ -89,7 +89,7 @@ class GreenhouseService
                 $activityLogMessage = 'You approached a raven in your birdbath! It flew off, leaving behind some Black Feathers, and ' . $extraInventory->getItem()->getNameWithArticle() . '!';
                 break;
 
-            case BirdBathBirdEnum::TOUCAN:
+            case BirdBathBirdEnum::Toucan:
                 $this->inventoryService->receiveItem('Imperturbable Toucan', $user, $user, 'Found at ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
                 $message = 'As you approach the toucan, it turns to face you. You freeze, and stare at each other for a few seconds before it hops right into your arms!';
                 $activityLogMessage = 'You approached a toucan in your birdbath, and it hopped into your arms!';
@@ -108,11 +108,11 @@ class GreenhouseService
         return $message;
     }
 
-    public function applyPollinatorSpice(Inventory $item, string $pollinators): void
+    public function applyPollinatorSpice(Inventory $item, PollinatorEnum $pollinators): void
     {
-        if($pollinators === PollinatorEnum::BEES_1 || $pollinators === PollinatorEnum::BEES_2)
+        if($pollinators === PollinatorEnum::Bees1 || $pollinators === PollinatorEnum::Bees2)
             $spiceName = $this->rng->rngNextInt(1, 20) === 1 ? 'of Queens' : 'Anthophilan';
-        else if($pollinators === PollinatorEnum::BUTTERFLIES)
+        else if($pollinators === PollinatorEnum::Butterflies)
             $spiceName = $this->rng->rngNextFromArray([ 'Fortified', 'Nectarous' ]);
         else
             throw new \InvalidArgumentException('Programmer foolishness did not account for all pollinators when applying spices!');
@@ -139,7 +139,15 @@ class GreenhouseService
 
         $startingMerit = MeritRepository::findOneByName($this->em, $this->rng->rngNextFromArray($startingMerits));
 
-        $harvestedPet = $this->petFactory->createPet($user, $name, $species, $colorA, $colorB, FlavorEnum::getRandomValue($this->rng), $startingMerit);
+        $harvestedPet = $this->petFactory->createPet(
+            $user,
+            $name,
+            $species,
+            $colorA,
+            $colorB,
+            $this->rng->rngNextFromArray(FlavorEnum::cases()),
+            $startingMerit
+        );
 
         if($bonusMerit)
             $harvestedPet->addMerit($bonusMerit);
@@ -170,19 +178,19 @@ class GreenhouseService
         $twoHoursAgo = $this->clock->now->sub(\DateInterval::createFromDateString('2 hours'));
 
         if($user->getGreenhouse()->getButterfliesDismissedOn() <= $twoHoursAgo)
-            $this->maybeAssignPollinator($user, PollinatorEnum::BUTTERFLIES);
+            $this->maybeAssignPollinator($user, PollinatorEnum::Butterflies);
 
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::Beehive))
         {
             if($user->getGreenhouse()->getBeesDismissedOn() <= $twoHoursAgo)
-                $this->maybeAssignPollinator($user, PollinatorEnum::BEES_1);
+                $this->maybeAssignPollinator($user, PollinatorEnum::Bees1);
 
             if($user->getBeehive() && $user->getBeehive()->getWorkers() >= 500 && $user->getGreenhouse()->getBees2DismissedOn() <= $twoHoursAgo)
-                $this->maybeAssignPollinator($user, PollinatorEnum::BEES_2);
+                $this->maybeAssignPollinator($user, PollinatorEnum::Bees2);
         }
     }
 
-    private function maybeAssignPollinator(User $user, string $pollinator): bool
+    private function maybeAssignPollinator(User $user, PollinatorEnum $pollinator): bool
     {
         // must not already have this pollinator present
         if(ArrayFunctions::any($user->getGreenhousePlants(), fn(GreenhousePlant $p) => $p->getPollinators() == $pollinator))

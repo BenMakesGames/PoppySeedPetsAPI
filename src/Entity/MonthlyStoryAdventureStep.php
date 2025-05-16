@@ -14,13 +14,11 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Repository\MonthlyStoryAdventureStepRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Enum\StoryAdventureTypeEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: MonthlyStoryAdventureStepRepository::class)]
+#[ORM\Entity]
 class MonthlyStoryAdventureStep
 {
     #[Groups([ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" ])]
@@ -32,51 +30,51 @@ class MonthlyStoryAdventureStep
 
     #[ORM\ManyToOne(targetEntity: MonthlyStoryAdventure::class, inversedBy: 'steps')]
     #[ORM\JoinColumn(nullable: false)]
-    private $adventure;
+    private MonthlyStoryAdventure $adventure;
 
     #[Groups([ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" ])]
     #[ORM\Column(type: 'string', length: 30)]
-    private $title;
+    private string $title;
 
     #[Groups([ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" ])]
-    #[ORM\Column(type: 'string', length: 20)]
-    private $type;
+    #[ORM\Column(type: 'string', length: 20, enumType: StoryAdventureTypeEnum::class)]
+    private StoryAdventureTypeEnum $type;
 
     #[ORM\Column(type: 'integer')]
-    private $step;
+    private int $step;
 
     #[ORM\Column(type: 'integer', nullable: true)]
-    private $previousStep;
+    private ?int $previousStep;
 
     #[Groups([ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" ])]
     #[ORM\Column(type: 'float')]
-    private $x;
+    private float $x;
 
     #[Groups([ "starKindredStoryStepAvailable", "starKindredStoryStepComplete" ])]
     #[ORM\Column(type: 'float')]
-    private $y;
+    private float $y;
 
     #[Groups([ "starKindredStoryStepAvailable" ])]
     #[ORM\Column(type: 'integer')]
-    private $minPets;
+    private int $minPets;
 
     #[Groups([ "starKindredStoryStepAvailable" ])]
     #[ORM\Column(type: 'integer')]
-    private $maxPets;
+    private int $maxPets;
 
     #[Groups([ "starKindredStoryStepComplete" ])]
     #[ORM\Column(type: 'text', nullable: true)]
-    private $narrative;
+    private ?string $narrative;
 
     #[ORM\Column(type: 'string', length: 40, nullable: true)]
-    private $treasure;
+    private ?string $treasure;
 
     #[ORM\ManyToOne(targetEntity: Enchantment::class)]
-    private $aura;
+    private ?Enchantment $aura;
 
     #[Groups([ "starKindredStoryStepAvailable" ])]
     #[ORM\Column(type: 'string', length: 10, nullable: true)]
-    private $pinOverride;
+    private string $pinOverride;
 
     public function __construct()
     {
@@ -111,19 +109,19 @@ class MonthlyStoryAdventureStep
         return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): StoryAdventureTypeEnum
     {
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(StoryAdventureTypeEnum $type): self
     {
         $this->type = $type;
 
         return $this;
     }
 
-    public function getStep(): ?int
+    public function getStep(): int
     {
         return $this->step;
     }
@@ -147,7 +145,7 @@ class MonthlyStoryAdventureStep
         return $this;
     }
 
-    public function getX(): ?float
+    public function getX(): float
     {
         return $this->x;
     }
@@ -159,7 +157,7 @@ class MonthlyStoryAdventureStep
         return $this;
     }
 
-    public function getY(): ?float
+    public function getY(): float
     {
         return $this->y;
     }

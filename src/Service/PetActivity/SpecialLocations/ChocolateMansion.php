@@ -34,12 +34,12 @@ use App\Functions\StatusEffectHelpers;
 use App\Functions\UserQuestRepository;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
-use App\Repository\PetQuestRepository;
 use App\Service\Clock;
 use App\Service\FieldGuideService;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\PetExperienceService;
+use App\Service\PetQuestRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ChocolateMansion

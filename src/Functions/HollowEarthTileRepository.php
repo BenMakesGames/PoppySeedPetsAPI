@@ -44,7 +44,7 @@ final class HollowEarthTileRepository
     {
         return $em->getRepository(HollowEarthTile::class)->createQueryBuilder('t')
             ->andWhere('t.moveDirection != :zero')
-            ->setParameter('zero', HollowEarthMoveDirectionEnum::ZERO)
+            ->setParameter('zero', HollowEarthMoveDirectionEnum::Zero)
             ->getQuery()
             ->enableResultCache(24 * 60 * 60, CacheHelpers::getCacheItemName('HollowEarthTileRepository_FindAllInBounds'))
             ->execute()

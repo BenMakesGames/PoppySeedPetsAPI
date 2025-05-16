@@ -118,8 +118,10 @@ class Dragon
     #[Groups(['myDragon'])]
     private $hostage;
 
+    /** @noinspection PhpUnusedPrivateFieldInspection */
     #[ORM\Version]
     #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore property.unused */
     private int $version;
 
     public function __construct()

@@ -23,6 +23,7 @@ class PetActivityLogItem
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'createdItems')]

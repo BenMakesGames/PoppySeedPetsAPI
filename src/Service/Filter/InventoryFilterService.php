@@ -148,8 +148,8 @@ class InventoryFilterService implements FilterServiceInterface
     {
         if(!is_array($value)) $value = [ $value ];
 
-        $value = array_map('strtolower', $value);
-        $value = array_intersect($value, FlavorEnum::getValues());
+        $value = array_map(strtolower(...), $value);
+        $value = array_intersect($value, array_map(fn(FlavorEnum $f) => $f->value, FlavorEnum::cases()));
 
         if(count($value) === 0) return;
 

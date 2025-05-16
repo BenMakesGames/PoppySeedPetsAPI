@@ -658,7 +658,7 @@ class ProgrammingService
         $newPet = $this->petFactory->createPet(
             $captor->getOwner(), $impName, $infinityImp,
             $petColors[0], $petColors[1],
-            FlavorEnum::getRandomValue($this->rng),
+            $this->rng->rngNextFromArray(FlavorEnum::cases()),
             MeritRepository::findOneByName($this->em, $startingMerit)
         );
 

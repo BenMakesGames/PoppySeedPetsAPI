@@ -101,11 +101,11 @@ class BetaBugController
 
         switch($item->getItem()->getName())
         {
-            case 'Cooking Buddy': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::getRandomStartingMerit($em, $rng), FlavorEnum::getRandomValue($rng), null, 'd8d8d8', 100); break;
-            case 'Cooking "Alien"': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::findOneByName($em, MeritEnum::BEHATTED), FlavorEnum::getRandomValue($rng), 'Antenna', 'd8d8d8', 100); break;
-            case 'Cooking... with Fire': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::getRandomStartingMerit($em, $rng), FlavorEnum::SPICY, null, '6e6e6e', 100); break;
-            case 'Mini Cooking Buddy': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::getRandomStartingMerit($em, $rng), FlavorEnum::getRandomValue($rng), null, 'd8d8d8', 60); break;
-            case 'Mega Cooking Buddy': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::getRandomStartingMerit($em, $rng), FlavorEnum::getRandomValue($rng), null, 'd8d8d8', 150); break;
+            case 'Cooking Buddy': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::getRandomStartingMerit($em, $rng), $rng->rngNextFromArray(FlavorEnum::cases()), null, 'd8d8d8', 100); break;
+            case 'Cooking "Alien"': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::findOneByName($em, MeritEnum::BEHATTED), $rng->rngNextFromArray(FlavorEnum::cases()), 'Antenna', 'd8d8d8', 100); break;
+            case 'Cooking... with Fire': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::getRandomStartingMerit($em, $rng), FlavorEnum::Spicy, null, '6e6e6e', 100); break;
+            case 'Mini Cooking Buddy': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::getRandomStartingMerit($em, $rng), $rng->rngNextFromArray(FlavorEnum::cases()), null, 'd8d8d8', 60); break;
+            case 'Mega Cooking Buddy': self::createCookingBuddy($responseService, $em, $petFactory, $rng, $item, $user, MeritRepository::getRandomStartingMerit($em, $rng), $rng->rngNextFromArray(FlavorEnum::cases()), null, 'd8d8d8', 150); break;
             case 'Sentient Beetle': self::makeBeetleEvil($responseService, $em, $user, $item); break;
             case 'Rainbowsaber': self::makeGlitchedOutRainbowsaber($responseService, $em, $user, $item); break;
             default: throw new PSPInvalidOperationException("The Beta Bug cannot be used on that item!");
@@ -143,7 +143,7 @@ class BetaBugController
 
     private static function createCookingBuddy(
         ResponseService $responseService, EntityManagerInterface $em, PetFactory $petFactory, IRandom $rng,
-        Inventory $inventoryItem, User $user, Merit $startingMerit, string $favoriteFlavor, ?string $startingHatItem,
+        Inventory $inventoryItem, User $user, Merit $startingMerit, FlavorEnum $favoriteFlavor, ?string $startingHatItem,
         string $bodyColor, int $scale
     ): void
     {

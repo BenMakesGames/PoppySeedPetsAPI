@@ -89,8 +89,10 @@ class Fireplace
     #[ORM\Column(type: 'integer')]
     private $gnomePoints = 0;
 
+    /** @noinspection PhpUnusedPrivateFieldInspection */
     #[ORM\Version]
     #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore property.unused */
     private int $version;
 
     public function getId(): ?int

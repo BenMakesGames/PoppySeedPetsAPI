@@ -52,7 +52,7 @@ class GreenhouseBlueprintController
 
         $pet = BlueprintHelpers::getPet($em, $user, $request);
 
-        $greenhouse = new Greenhouse();
+        $greenhouse = new Greenhouse($user);
 
         $user->setGreenhouse($greenhouse);
 

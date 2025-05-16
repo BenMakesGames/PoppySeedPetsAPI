@@ -53,7 +53,11 @@ class PetFactory
     {
     }
 
-    public function createPet(User $owner, string $name, PetSpecies $species, string $colorA, string $colorB, string $favoriteFlavor, Merit $startingMerit): Pet
+    public function createPet(
+        User $owner, string $name, PetSpecies $species,
+        string $colorA, string $colorB,
+        FlavorEnum $favoriteFlavor, Merit $startingMerit
+    ): Pet
     {
         $petSkills = new PetSkills();
 
@@ -124,7 +128,7 @@ class PetFactory
             $petSpecies,
             $colorA,
             $colorB,
-            FlavorEnum::getRandomValue($this->rng),
+            $this->rng->rngNextFromArray(FlavorEnum::cases()),
             $startingMerit
         );
 

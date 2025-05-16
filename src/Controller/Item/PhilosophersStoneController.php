@@ -92,7 +92,15 @@ class PhilosophersStoneController
 
         $startingMerit = MeritRepository::findOneByName($em, MeritEnum::ETERNAL);
 
-        $pet = $petFactory->createPet($user, $name, $species, $speciesInfo['colorA'], $speciesInfo['colorB'], FlavorEnum::getRandomValue($rng), $startingMerit);
+        $pet = $petFactory->createPet(
+            $user,
+            $name,
+            $species,
+            $speciesInfo['colorA'],
+            $speciesInfo['colorB'],
+            $rng->rngNextFromArray(FlavorEnum::cases()),
+            $startingMerit
+        );
 
         $numberOfPetsAtHome = PetRepository::getNumberAtHome($em, $user);
 

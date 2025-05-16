@@ -14,16 +14,14 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-class StoryAdventureTypeEnum
+enum StoryAdventureTypeEnum: string
 {
-    use FakeEnum;
-
-    public const string STORY = 'Story';
-    public const string MINE_GOLD = 'MineGold';
-    public const string COLLECT_STONE = 'CollectStone';
-    public const string HUNT = 'HuntAutoScaling';
-    public const string GATHER = 'Gather';
-    public const string TREASURE_HUNT = 'TreasureHunt';
-    public const string WANDERING_MONSTER = 'WanderingMonster';
-    public const string RANDOM_RECRUIT = 'RecruitTown';
+    case Story = 'Story';
+    case MineGold = 'MineGold';
+    case CollectStone = 'CollectStone';
+    case Hunt = 'HuntAutoScaling';
+    case Gather = 'Gather';
+    case TreasureHunt = 'TreasureHunt';
+    case WanderingMonster = 'WanderingMonster';
+    case RandomRecruit = 'RecruitTown';
 }

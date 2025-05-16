@@ -42,8 +42,8 @@ class PetGroup
     private Collection $members;
 
     #[Groups(["petGroup", "petGroupDetails", "petGroupIndex", "petPublicProfile"])]
-    #[ORM\Column(type: 'integer')]
-    private int $type;
+    #[ORM\Column(type: 'integer', enumType: PetGroupTypeEnum::class)]
+    private PetGroupTypeEnum $type;
 
     #[Groups(["petGroup"])]
     #[ORM\Column(type: 'integer')]
@@ -71,8 +71,10 @@ class PetGroup
     #[ORM\Column(type: 'integer')]
     private int $socialEnergy = 0;
 
-    public function __construct()
+    public function __construct(PetGroupTypeEnum $type, string $name)
     {
+        $this->type = $type;
+        $this->name = $name;
         $this->members = new ArrayCollection();
         $this->createdOn = new \DateTimeImmutable();
         $this->lastMetOn = new \DateTimeImmutable();
@@ -109,22 +111,9 @@ class PetGroup
         return $this;
     }
 
-    public function getType(): ?int
+    public function getType(): PetGroupTypeEnum
     {
         return $this->type;
-    }
-
-    /**
-     * @throws EnumInvalidValueException
-     */
-    public function setType(int $type): self
-    {
-        if(!PetGroupTypeEnum::isAValue($type))
-            throw new EnumInvalidValueException(PetGroupTypeEnum::class, $type);
-
-        $this->type = $type;
-
-        return $this;
     }
 
     public function getProgress(): int
@@ -167,13 +156,6 @@ class PetGroup
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
     }
 
     public function getLastMetOn(): \DateTimeImmutable

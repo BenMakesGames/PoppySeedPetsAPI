@@ -11,16 +11,13 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License along with The Poppy Seed Pets API. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 namespace App\Enum;
 
-final class HollowEarthMoveDirectionEnum
+enum HollowEarthMoveDirectionEnum: string
 {
-    use FakeEnum;
-
-    public const string NORTH = 'N';
-    public const string EAST = 'E';
-    public const string SOUTH = 'S';
-    public const string WEST = 'W';
-    public const string ZERO = 'Z';
+    case North = 'N';
+    case East = 'E';
+    case South = 'S';
+    case West = 'W';
+    case Zero = 'Z';
 }

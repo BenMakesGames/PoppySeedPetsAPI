@@ -113,9 +113,10 @@ class RegisterController
 
         $em->persist($user);
 
+        /** @var FlavorEnum $favoriteFlavor */
         $favoriteFlavor = $rng->rngNextFromArray([
-            FlavorEnum::EARTHY, FlavorEnum::FRUITY, FlavorEnum::CREAMY, FlavorEnum::MEATY, FlavorEnum::PLANTY,
-            FlavorEnum::FISHY, FlavorEnum::FATTY,
+            FlavorEnum::Earthy, FlavorEnum::Fruity, FlavorEnum::Creamy, FlavorEnum::Meaty, FlavorEnum::Planty,
+            FlavorEnum::Fishy, FlavorEnum::Fatty,
         ]);
 
         $startingMerit = MeritRepository::getRandomFirstPetStartingMerit($em, $rng);

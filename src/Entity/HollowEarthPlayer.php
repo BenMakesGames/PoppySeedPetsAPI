@@ -50,8 +50,8 @@ class HollowEarthPlayer
     #[ORM\JoinColumn(nullable: true)]
     private ?Pet $chosenPet = null;
 
-    #[ORM\Column(type: 'string', length: 1)]
-    private string $currentDirection;
+    #[ORM\Column(type: 'string', length: 1, enumType: HollowEarthMoveDirectionEnum::class)]
+    private HollowEarthMoveDirectionEnum $currentDirection;
 
     #[Groups(["hollowEarth"])]
     #[ORM\Column(type: 'integer')]
@@ -77,8 +77,10 @@ class HollowEarthPlayer
     #[ORM\Column(type: 'boolean')]
     private bool $showGoods = false;
 
+    /** @noinspection PhpUnusedPrivateFieldInspection */
     #[ORM\Version]
     #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore property.unused */
     private int $version;
 
     public function __construct(User $user)
@@ -200,16 +202,13 @@ class HollowEarthPlayer
         return $action;
     }
 
-    public function getCurrentDirection(): string
+    public function getCurrentDirection(): HollowEarthMoveDirectionEnum
     {
         return $this->currentDirection;
     }
 
-    public function setCurrentDirection(string $currentDirection): self
+    public function setCurrentDirection(HollowEarthMoveDirectionEnum $currentDirection): self
     {
-        if(!HollowEarthMoveDirectionEnum::isAValue($currentDirection))
-            throw new EnumInvalidValueException(HollowEarthMoveDirectionEnum::class, $currentDirection);
-
         $this->currentDirection = $currentDirection;
 
         return $this;

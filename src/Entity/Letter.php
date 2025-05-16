@@ -14,13 +14,12 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Repository\LetterRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Table]
 #[ORM\Index(name: 'sender_idx', columns: ['sender'])]
-#[ORM\Entity(repositoryClass: LetterRepository::class)]
+#[ORM\Entity]
 class Letter
 {
     #[ORM\Id]

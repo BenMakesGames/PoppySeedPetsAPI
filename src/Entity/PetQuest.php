@@ -14,12 +14,11 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Repository\PetQuestRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table]
 #[ORM\UniqueConstraint(name: 'pet_id_name_idx', columns: ['pet_id', 'name'])]
-#[ORM\Entity(repositoryClass: PetQuestRepository::class)]
+#[ORM\Entity]
 class PetQuest
 {
     #[ORM\Id]

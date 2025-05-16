@@ -26,8 +26,8 @@ use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Model\PetChanges;
-use App\Repository\PetQuestRepository;
 use App\Service\PetExperienceService;
+use App\Service\PetQuestRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class HoliService

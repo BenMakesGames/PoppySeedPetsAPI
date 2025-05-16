@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-class PlantTypeEnum
+final class PlantTypeEnum
 {
     use FakeEnum;
 

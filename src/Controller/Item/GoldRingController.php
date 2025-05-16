@@ -140,7 +140,7 @@ class GoldRingController
             $newPet = $petFactory->createPet(
                 $user, $hedgehogName, $hedgehog,
                 $petColors[0], $petColors[1],
-                FlavorEnum::getRandomValue($rng),
+                $rng->rngNextFromArray(FlavorEnum::cases()),
                 MeritRepository::getRandomStartingMerit($em, $rng)
             );
 

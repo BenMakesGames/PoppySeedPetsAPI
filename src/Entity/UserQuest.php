@@ -43,8 +43,10 @@ class UserQuest
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $lastUpdated;
 
+    /** @noinspection PhpUnusedPrivateFieldInspection */
     #[ORM\Version]
     #[ORM\Column(type: 'integer')]
+    /** @phpstan-ignore property.unused */
     private int $version;
 
     public function __construct(User $user, string $name, $value)

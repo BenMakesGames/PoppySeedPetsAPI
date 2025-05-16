@@ -79,14 +79,14 @@ class MonthlyStoryAdventureService
 
         $results = match ($step->getType())
         {
-            StoryAdventureTypeEnum::COLLECT_STONE => $this->doCollectStone($user, $step, $petSkills),
-            StoryAdventureTypeEnum::GATHER => $this->doGather($user, $step, $petSkills),
-            StoryAdventureTypeEnum::HUNT => $this->doHunt($user, $step, $petSkills),
-            StoryAdventureTypeEnum::MINE_GOLD => $this->doMineGold($user, $step, $petSkills),
-            StoryAdventureTypeEnum::RANDOM_RECRUIT => $this->doRandomRecruit($user, $step, $petSkills),
-            StoryAdventureTypeEnum::STORY => $this->doStory($user, $step, $petSkills),
-            StoryAdventureTypeEnum::TREASURE_HUNT => $this->doTreasureHunt($user, $step, $petSkills),
-            StoryAdventureTypeEnum::WANDERING_MONSTER => $this->doWanderingMonster($user, $step, $petSkills),
+            StoryAdventureTypeEnum::CollectStone => $this->doCollectStone($user, $step, $petSkills),
+            StoryAdventureTypeEnum::Gather => $this->doGather($user, $step, $petSkills),
+            StoryAdventureTypeEnum::Hunt => $this->doHunt($user, $step, $petSkills),
+            StoryAdventureTypeEnum::MineGold => $this->doMineGold($user, $step, $petSkills),
+            StoryAdventureTypeEnum::RandomRecruit => $this->doRandomRecruit($user, $step, $petSkills),
+            StoryAdventureTypeEnum::Story => $this->doStory($user, $step, $petSkills),
+            StoryAdventureTypeEnum::TreasureHunt => $this->doTreasureHunt($user, $step, $petSkills),
+            StoryAdventureTypeEnum::WanderingMonster => $this->doWanderingMonster($user, $step, $petSkills),
             default => throw new \Exception('Oh, dang: Ben forgot to implement this story adventure type! :('),
         };
 

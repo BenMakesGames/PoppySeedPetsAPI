@@ -14,21 +14,18 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-final class FlavorEnum
+enum FlavorEnum: string
 {
-    use FakeEnum;
-
-    const string EARTHY = 'earthy';
-    const string FRUITY = 'fruity';
-    const string TANNIC = 'tannic';
-    const string SPICY = 'spicy';
-    const string CREAMY = 'creamy';
-    const string MEATY = 'meaty';
-    const string PLANTY = 'planty';
-    const string FISHY = 'fishy';
-    const string FLORAL = 'floral';
-    const string FATTY = 'fatty';
-    const string ONIONY = 'oniony';
-    const string CHEMICALLY = 'chemically';
-
+    case Earthy = 'earthy';
+    case Fruity = 'fruity';
+    case Tannic = 'tannic';
+    case Spicy = 'spicy';
+    case Creamy = 'creamy';
+    case Meaty = 'meaty';
+    case Planty = 'planty';
+    case Fishy = 'fishy';
+    case Floral = 'floral';
+    case Fatty = 'fatty';
+    case Oniony = 'oniony';
+    case Chemically = 'chemically';
 }

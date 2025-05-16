@@ -49,6 +49,7 @@ class Pet
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups([SerializationGroupEnum::MY_PET, 'userPublicProfile', 'petPublicProfile', 'myInventory', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'spiritCompanionPublicProfile', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet'])]
+    /** @phpstan-ignore property.unusedType */
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'pets')]
@@ -109,15 +110,15 @@ class Pet
     #[ORM\ManyToOne(targetEntity: PetSpecies::class)]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups([SerializationGroupEnum::MY_PET, 'userPublicProfile', 'petPublicProfile', 'parkEvent', 'petFriend', 'hollowEarth', 'petGroupDetails', 'guildMember', 'petActivityLogAndPublicPet', 'helperPet', 'petActivityLogs'])]
-    private $species;
+    private PetSpecies $species;
 
     #[ORM\OneToOne(targetEntity: Inventory::class, inversedBy: 'holder')]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
     #[Groups([SerializationGroupEnum::MY_PET, 'userPublicProfile', 'petPublicProfile', 'hollowEarth', 'petGroupDetails', 'helperPet'])]
-    private $tool;
+    private ?Inventory $tool = null;
 
-    #[ORM\Column(type: 'string', length: 20)]
-    private string $favoriteFlavor;
+    #[ORM\Column(type: 'string', length: 20, enumType: FlavorEnum::class)]
+    private FlavorEnum $favoriteFlavor;
 
     #[ORM\Column(type: 'text')]
     #[Groups([SerializationGroupEnum::MY_PET])]
@@ -915,16 +916,13 @@ class Pet
         return $this;
     }
 
-    public function getFavoriteFlavor(): string
+    public function getFavoriteFlavor(): FlavorEnum
     {
         return $this->favoriteFlavor;
     }
 
-    public function setFavoriteFlavor(string $favoriteFlavor): self
+    public function setFavoriteFlavor(FlavorEnum $favoriteFlavor): self
     {
-        if(!FlavorEnum::isAValue($favoriteFlavor))
-            throw new EnumInvalidValueException(FlavorEnum::class, $favoriteFlavor);
-
         $this->favoriteFlavor = $favoriteFlavor;
 
         return $this;
@@ -1555,7 +1553,7 @@ class Pet
     public function getFlavor(): string
     {
         if($this->revealedFavoriteFlavor > 0)
-            return $this->favoriteFlavor;
+            return $this->favoriteFlavor->value;
         else
             return 'Unknown';
     }

@@ -168,8 +168,8 @@ class UpsertItemCommand extends PoppySeedPetsCommand
             $food->setCaffeine($this->askInt('Caffeine hours', $food->getCaffeine()));
             $food->setPsychedelic($this->askInt('Psychedelic hours', $food->getPsychedelic()));
 
-            foreach(FlavorEnum::getValues() as $flavor)
-                $food->{'set' . $flavor}($this->askInt(ucfirst($flavor) . ' hours', $food->{'get' . $flavor}()));
+            foreach(FlavorEnum::cases() as $flavor)
+                $food->{'set' . $flavor->value}($this->askInt(ucfirst($flavor->value) . ' hours', $food->{'get' . $flavor->value}()));
 
             $food->setContainsTentacles($this->askBool('Contains tentacles?', $food->getContainsTentacles()));
 

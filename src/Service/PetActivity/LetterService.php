@@ -26,27 +26,24 @@ use App\Enum\PetActivityLogInterestingnessEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\UnlockableFeatureEnum;
+use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
 use App\Functions\UserQuestRepository;
 use App\Functions\UserUnlockedFeatureHelpers;
 use App\Model\ComputedPetSkills;
 use App\Model\PetChanges;
-use App\Repository\LetterRepository;
 use App\Service\InventoryService;
 use App\Service\IRandom;
 use App\Service\MuseumService;
 use App\Service\PetExperienceService;
-use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class LetterService
 {
     public function __construct(
         private readonly InventoryService $inventoryService,
-        private readonly ResponseService $responseService,
         private readonly PetExperienceService $petExperienceService,
         private readonly MuseumService $museumService,
-        private readonly LetterRepository $letterRepository,
         private readonly EntityManagerInterface $em,
         private readonly IRandom $rng
     )
@@ -90,7 +87,7 @@ class LetterService
         if($lettersDelivered >= $accountAgeInYears)
             return null;
 
-        $response = $this->doDeliverLetter($petWithSkills, LetterSenderEnum::MIA, 1);
+        $response = $this->doDeliverLetter($petWithSkills, LetterSenderEnum::Mia, 1);
 
         if(!$response)
             return null;
@@ -123,7 +120,7 @@ class LetterService
         if($hyssopLettersDelivered && $hyssopLettersDelivered->getValue() >= $canReceiveLettersFromFairies->getValue())
             return null;
 
-        $response = $this->doDeliverLetter($petWithSkills, LetterSenderEnum::HYSSOP, 4);
+        $response = $this->doDeliverLetter($petWithSkills, LetterSenderEnum::Hyssop, 4);
 
         return $response ? $response->activityLog : null;
     }
@@ -134,7 +131,7 @@ class LetterService
 
         if($owner->getBeehive() && $owner->getBeehive()->getWorkers() >= 5000)
         {
-            $response = $this->doDeliverLetter($petWithSkills, LetterSenderEnum::KATICA, 19);
+            $response = $this->doDeliverLetter($petWithSkills, LetterSenderEnum::Katica, 19);
 
             return $response ? $response->activityLog : null;
         }
@@ -158,7 +155,7 @@ class LetterService
 
             if($sharuminyinkaQuestStep->getLastUpdated() < $thirtyDaysAgo)
             {
-                $response = $this->doDeliverLetter($petWithSkills, LetterSenderEnum::SHARUMINYINKA, 14);
+                $response = $this->doDeliverLetter($petWithSkills, LetterSenderEnum::Sharuminyinka, 14);
 
                 return $response ? $response->activityLog : null;
             }
@@ -167,20 +164,20 @@ class LetterService
         return null;
     }
 
-    private function doDeliverLetter(ComputedPetSkills $petWithSkills, string $sender, int $minDaysBetweenDelivery): ?LetterResponse
+    private function doDeliverLetter(ComputedPetSkills $petWithSkills, LetterSenderEnum $sender, int $minDaysBetweenDelivery): ?LetterResponse
     {
         $pet = $petWithSkills->getPet();
         $owner = $pet->getOwner();
         $deliveryIntervalAgo = (new \DateTimeImmutable())->modify('-' . $minDaysBetweenDelivery . ' days');
 
-        $lettersDelivered = UserQuestRepository::findOrCreate($this->em, $owner, $sender . ' Letters Delivered', 0);
+        $lettersDelivered = UserQuestRepository::findOrCreate($this->em, $owner, $sender->value . ' Letters Delivered', 0);
 
         // for letters beyond the first, we must wait at least $minDaysBetweenDelivery to deliver another message:
         if($lettersDelivered->getValue() > 0 && $lettersDelivered->getLastUpdated() >= $deliveryIntervalAgo)
             return null;
 
         // if all the letters have already been delivered, get outta' here:
-        if($lettersDelivered->getValue() >= $this->letterRepository->getNumberOfLettersFromSender($sender))
+        if($lettersDelivered->getValue() >= self::getNumberOfLettersFromSender($this->em, $sender))
             return null;
 
         $petChanges = new PetChanges($pet);
@@ -240,7 +237,8 @@ class LetterService
                 $descriptionForCourier = '%pet:' . $pet->getId() . '.name%.';
             }
 
-            $courierActivity = $this->responseService->createActivityLog($courier, '%pet:' . $courier->getId() . '.name% - on a job for Correspondence - delivered a Letter from ' . $sender . ' to ' . $descriptionForCourier, 'icons/activity-logs/letter')
+            $courierActivity = PetActivityLogFactory::createUnreadLog($this->em, $courier, '%pet:' . $courier->getId() . '.name% - on a job for Correspondence - delivered a Letter from ' . $sender->value . ' to ' . $descriptionForCourier)
+                ->setIcon('icons/activity-logs/letter')
                 ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Guild', 'Mail' ]))
             ;
@@ -250,7 +248,8 @@ class LetterService
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, null);
 
-        $activityLog = $this->responseService->createActivityLog($pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a courier delivered them a Letter from ' . $sender . '! The courier was ' . $descriptionForPet, 'icons/activity-logs/letter')
+        $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a courier delivered them a Letter from ' . $sender->value . '! The courier was ' . $descriptionForPet)
+            ->setIcon('icons/activity-logs/letter')
             ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Mail' ]))
         ;
@@ -268,6 +267,17 @@ class LetterService
         $response->activityLog = $activityLog;
 
         return $response;
+    }
+
+    private static function getNumberOfLettersFromSender(EntityManagerInterface $em, LetterSenderEnum $sender): int
+    {
+        return (int)$em->getRepository(Letter::class)->createQueryBuilder('l')
+            ->select('COUNT(l.id)')
+            ->andWhere('l.sender = :sender')
+            ->setParameter('sender', $sender)
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
     }
 
     private function findRandomCourier(Pet $except): ?Pet
@@ -313,11 +323,8 @@ class LetterService
         ;
     }
 
-    private static function getNumberOfLettersFromSender(EntityManagerInterface $em, User $user, string $sender): int
+    private static function getNumberOfLettersToUserFromSender(EntityManagerInterface $em, User $user, LetterSenderEnum $sender): int
     {
-        if(!LetterSenderEnum::isAValue($sender))
-            throw new EnumInvalidValueException(LetterSenderEnum::class, $sender);
-
         return (int)$em->getRepository(UserLetter::class)->createQueryBuilder('ul')
             ->select('COUNT(ul.id)')
             ->leftJoin('ul.letter', 'l')
@@ -330,9 +337,9 @@ class LetterService
         ;
     }
 
-    private function giveNextLetter(User $user, string $sender, string $comment): UserLetter
+    private function giveNextLetter(User $user, LetterSenderEnum $sender, string $comment): UserLetter
     {
-        $existingLetters = self::getNumberOfLettersFromSender($this->em, $user, $sender);
+        $existingLetters = self::getNumberOfLettersToUserFromSender($this->em, $user, $sender);
 
         $nextLetter = $this->findBySenderIndex($sender, $existingLetters);
 
@@ -347,7 +354,7 @@ class LetterService
 
         if($nextLetter->getAttachment())
         {
-            $item = $this->inventoryService->receiveItem($nextLetter->getAttachment(), $user, null, 'This item was sent by ' . $sender . ', along with a letter.', LocationEnum::HOME, true);
+            $item = $this->inventoryService->receiveItem($nextLetter->getAttachment(), $user, null, 'This item was sent by ' . $sender->value . ', along with a letter.', LocationEnum::HOME, true);
 
             if($nextLetter->getBonus()) $item->setEnchantment($nextLetter->getBonus());
             if($nextLetter->getSpice()) $item->setSpice($nextLetter->getSpice());
@@ -361,11 +368,8 @@ class LetterService
         return $newLetter;
     }
 
-    private function findBySenderIndex(string $sender, int $index): ?Letter
+    private function findBySenderIndex(LetterSenderEnum $sender, int $index): ?Letter
     {
-        if(!LetterSenderEnum::isAValue($sender))
-            throw new EnumInvalidValueException(LetterSenderEnum::class, $sender);
-
         $results = $this->em->getRepository(Letter::class)->findBy(
             [ 'sender' => $sender ],
             [ 'id' => 'ASC' ],

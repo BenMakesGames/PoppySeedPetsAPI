@@ -15,12 +15,12 @@ declare(strict_types=1);
 namespace App\Controller\MonthlyStoryAdventure;
 
 use App\Entity\MonthlyStoryAdventure;
+use App\Entity\MonthlyStoryAdventureStep;
 use App\Entity\UserMonthlyStoryAdventureStepCompleted;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotUnlockedException;
 use App\Functions\UserQuestRepository;
-use App\Repository\MonthlyStoryAdventureStepRepository;
 use App\Service\ResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -34,9 +34,7 @@ class GetById
     #[Route("/{story}", methods: ["GET"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function handle(
-        MonthlyStoryAdventure $story,
-        MonthlyStoryAdventureStepRepository $monthlyStoryAdventureStepRepository,
-        ResponseService $responseService, EntityManagerInterface $em,
+        MonthlyStoryAdventure $story, ResponseService $responseService, EntityManagerInterface $em,
         UserAccessor $userAccessor
     ): JsonResponse
     {
@@ -55,7 +53,7 @@ class GetById
             ->getQuery()
             ->execute();
 
-        $available = $monthlyStoryAdventureStepRepository->findAvailable($story, $complete);
+        $available = self::findAvailable($em, $story, $complete);
         $playedStarKindred = UserQuestRepository::findOrCreate($em, $user, 'Played ★Kindred', (new \DateTimeImmutable())->modify('-1 day')->format('Y-m-d'));
 
         $canNextPlayOn = \DateTimeImmutable::createFromFormat('Y-m-d', $playedStarKindred->getValue())->add(\DateInterval::createFromDateString('1 day'));
@@ -74,4 +72,44 @@ class GetById
             ]
         );
     }
+
+    /**
+     * @param UserMonthlyStoryAdventureStepCompleted[] $completed
+     * @return MonthlyStoryAdventureStep[]
+     */
+    private static function findAvailable(EntityManagerInterface $em, MonthlyStoryAdventure $adventure, array $completed): array
+    {
+        $qb = $em->getRepository(MonthlyStoryAdventureStep::class)->createQueryBuilder('s');
+
+        $completedSteps = array_map(fn(UserMonthlyStoryAdventureStepCompleted $c) => $c->getAdventureStep()->getStep(), $completed);
+        $completedAdventureStepIds = array_map(fn(UserMonthlyStoryAdventureStepCompleted $c) => $c->getAdventureStep()->getId(), $completed);
+
+        $qb = $qb
+            ->andWhere('s.adventure = :adventure')
+            ->setParameter('adventure', $adventure)
+        ;
+
+        if(count($completedSteps) > 0)
+        {
+            $qb = $qb
+                ->andWhere($qb->expr()->orX('s.previousStep IS NULL', 's.previousStep IN (:completedSteps)'))
+                ->setParameter('completedSteps', $completedSteps)
+            ;
+        }
+        else
+        {
+            $qb = $qb->andWhere('s.previousStep IS NULL');
+        }
+
+        if(count($completedAdventureStepIds) > 0)
+        {
+            $qb = $qb
+                ->andWhere('s.id NOT IN (:completedAdventureStepIds)')
+                ->setParameter('completedAdventureStepIds', $completedAdventureStepIds)
+            ;
+        }
+
+        return $qb->getQuery()->execute();
+    }
+
 }
