@@ -21,7 +21,7 @@ use App\Entity\PetActivityLog;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
@@ -111,7 +111,7 @@ class GuildService
         $this->em->persist($membership);
 
         return PetActivityLogFactory::createUnreadLog($this->em, $pet, $message . ' After chatting with a member of ' . $guildName . ' for a while, %pet:' . $pet->getId() . '.name% decided to join!')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+            ->addInterestingness(PetActivityLogInterestingness::RareActivity)
         ;
     }
 

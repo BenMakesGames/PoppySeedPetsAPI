@@ -18,7 +18,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\BirdBathBirdEnum;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Functions\ActivityHelpers;
@@ -70,7 +70,7 @@ class GenericAdventureService
             $pet->getHat()->changeItem(ItemRepository::findOneByName($this->em, 'William, Shush'));
 
             return PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, some random dude jumped out of nowhere and shot an arrow in %pet:' . $pet->getId() . '.name%\'s Red!')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
             ;
         }
 
@@ -97,7 +97,7 @@ class GenericAdventureService
 
             return PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name%, having become a grandparent, has been thinking about their life up until this point, and adopted a new philosophy: ' . $newMerit . '!')
                 ->setChanges($changes->compare($pet))
-                ->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP)
+                ->addInterestingness(PetActivityLogInterestingness::LevelUp)
             ;
         }
 
@@ -114,7 +114,7 @@ class GenericAdventureService
             $changes = new PetChanges($pet);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a raccoon carrying a House Fairy in its mouth. The raccoon stared at %pet:' . $pet->getId() . '.name% for a moment, then dropped the House Fairy and scurried away.')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::RareActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fae-kind' ]))
             ;
             $inventory = $this->inventoryService->petCollectsItem('House Fairy', $pet, 'A startled raccoon dropped this while ' . $pet->getName() . ' was out.', $activityLog);
@@ -159,7 +159,7 @@ class GenericAdventureService
             $pet->getOwner()->getGreenhouse()->setVisitingBird($bird);
 
             return PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While ' . '%pet:' . $pet->getId() . '.name% was thinking about what to do, they saw a huge ' . $bird . ' swoop into the Greenhouse and land on the Bird Bath!')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Greenhouse' ]))
             ;
         }
@@ -311,7 +311,7 @@ class GenericAdventureService
 
         $activityLog
             ->setChanges($changes->compare($pet))
-            ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
         ;
 
         return $activityLog;
@@ -322,7 +322,7 @@ class GenericAdventureService
         UserUnlockedFeatureHelpers::create($this->em, $pet->getOwner(), $feature);
 
         return PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' explored the town a bit, and stumbled upon a ' . $description . '! (Check it out in the menu!)')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY)
+            ->addInterestingness(PetActivityLogInterestingness::OneTimeQuestActivity)
         ;
     }
 

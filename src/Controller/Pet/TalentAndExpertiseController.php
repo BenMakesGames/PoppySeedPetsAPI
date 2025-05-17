@@ -16,7 +16,7 @@ namespace App\Controller\Pet;
 
 use App\Entity\Pet;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
 use App\Exceptions\PSPInvalidOperationException;
@@ -93,7 +93,7 @@ class TalentAndExpertiseController
         $pet->getSkills()->setTalent();
 
         PetActivityLogFactory::createUnreadLog($em, $pet, str_replace('%pet.name%', $pet->getName(), $merit->getDescription()))
-            ->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP)
+            ->addInterestingness(PetActivityLogInterestingness::LevelUp)
         ;
 
         $em->flush();
@@ -159,7 +159,7 @@ class TalentAndExpertiseController
         $pet->getSkills()->setExpertise();
 
         PetActivityLogFactory::createUnreadLog($em, $pet, str_replace('%pet.name%', $pet->getName(), $merit->getDescription()))
-            ->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP)
+            ->addInterestingness(PetActivityLogInterestingness::LevelUp)
         ;
 
         $em->flush();

@@ -20,7 +20,7 @@ use App\Entity\PetRelationship;
 use App\Entity\PetSpecies;
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
@@ -202,7 +202,7 @@ class ProgrammingService
             $this->houseSimService->getState()->loseItem('Pointer', 1);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% dereferenced a String from a Pointer.', 'items/resource/string')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 10)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -233,7 +233,7 @@ class ProgrammingService
             $this->houseSimService->getState()->loseItem('Finite State Machine', 1);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% upgraded a Finite State Machine into a Regex.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -277,7 +277,7 @@ class ProgrammingService
             $this->houseSimService->getState()->loseItem('Quinacridone Magenta Dye', 1);
             $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% programmed a Dragondrop!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -321,7 +321,7 @@ class ProgrammingService
             $this->houseSimService->getState()->loseItem('String', 1);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bootstrapped a Compiler.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -351,7 +351,7 @@ class ProgrammingService
             $this->houseSimService->getState()->loseItem('Elvish Magnifying Glass', 1);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% implemented Rijndael.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -390,7 +390,7 @@ class ProgrammingService
                 $this->houseSimService->getState()->loseItem('Ruler', 1);
                 $pet->increaseEsteem(3);
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% calculated Viswanath\'s Constant with the help of a 4-function Calculator that they found ' . $whereFound . '!')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16 + 10)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 16 + 10)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
                 ;
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -406,7 +406,7 @@ class ProgrammingService
                 $this->houseSimService->getState()->loseItem('Ruler', 1);
                 $pet->increaseEsteem(1);
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% calculated Viswanath\'s Constant.')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
                 ;
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -454,7 +454,7 @@ class ProgrammingService
                 $this->houseSimService->getState()->loseItem('Hash Table', 1);
                 $pet->increaseEsteem(3);
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% computed a Hapax Legomenon with the help of a 4-function Calculator that they found ' . $whereFound . '!')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15 + 10)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 15 + 10)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
                 ;
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -469,7 +469,7 @@ class ProgrammingService
                 $this->houseSimService->getState()->loseItem('Hash Table', 1);
                 $pet->increaseEsteem(1);
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% computed a Hapax Legomenon with the help of a 4-function Calculator.')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
                 ;
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -517,7 +517,7 @@ class ProgrammingService
                 $this->houseSimService->getState()->loseItem('Painted Boomerang', 1);
                 $pet->increaseEsteem(5);
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% computed a Strange Attractor with the help of a 4-function Calculator that they found ' . $whereFound . '!')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17 + 10)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 17 + 10)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
                 ;
                 $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -532,7 +532,7 @@ class ProgrammingService
                 $this->houseSimService->getState()->loseItem('Painted Boomerang', 1);
                 $pet->increaseEsteem(3);
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% computed a Strange Attractor with the help of a 4-function Calculator.')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 17)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
                 ;
                 $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -581,7 +581,7 @@ class ProgrammingService
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::PROGRAM, false);
             $activityLog = $this->responseService->createActivityLog($pet, $impDiscovery . ' %pet:' . $pet->getId() . '.name% was able to subdue the creature, and tossed it in to your daycare!', 'icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming', PetActivityLogTagEnum::Physics, 'Fighting' ]))
-                ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::RareActivity)
             ;
 
             if($isLucky)
@@ -709,7 +709,7 @@ class ProgrammingService
             $this->houseSimService->getState()->loseItem('Password', 1);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created Brute Force.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -741,7 +741,7 @@ class ProgrammingService
             $this->houseSimService->getState()->loseItem('Gold Bar', 1);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% became a l33t h4xx0r.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 17)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -790,7 +790,7 @@ class ProgrammingService
             $this->houseSimService->getState()->loseItem('Paper', 1);
             $pet->increaseEsteem(1);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% discovered Zawinski\'s Law.')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 19)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 19)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -823,7 +823,7 @@ class ProgrammingService
             $this->houseSimService->getState()->loseItem('NUL', 1);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Phishing Rod.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -855,7 +855,7 @@ class ProgrammingService
             $this->houseSimService->getState()->loseItem('NUL', 1);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Diffie-H Key.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 13)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -897,7 +897,7 @@ class ProgrammingService
             $this->houseSimService->getState()->loseItem('Weird Beetle', 1);
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% uploaded an AI into a Weird Beetle\'s brain, granting it sentience!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 24)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 24)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
             $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -935,7 +935,7 @@ class ProgrammingService
 
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% hacked a Macintosh, and got its ' . ArrayFunctions::list_nice_sorted($loot) . '.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
 

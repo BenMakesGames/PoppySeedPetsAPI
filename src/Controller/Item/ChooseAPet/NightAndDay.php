@@ -16,7 +16,7 @@ namespace App\Controller\Item\ChooseAPet;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetSkillEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
@@ -73,7 +73,7 @@ class NightAndDay
         $itemList = ArrayFunctions::list_nice($pairOfItems);
 
         $activityLog = PetActivityLogFactory::createReadLog($em, $pet, "%pet:{$pet->getId()}.name% {$messageMiddle} {$itemList}!")
-            ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
+            ->addInterestingness(PetActivityLogInterestingness::PlayerActionResponse)
         ;
 
         foreach($pairOfItems as $item)

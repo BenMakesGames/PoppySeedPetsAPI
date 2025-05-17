@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace App\Service\PetActivity\SpecialLocations;
 
 use App\Entity\PetActivityLog;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
@@ -76,7 +76,7 @@ class FructalPlaneService
         if(count($loot) === 0)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' was thinking about what to do, when they were suddenly sucked into their ' . $pet->getTool()->getFullItemName() . ', and into the Fructal Plane! It all happened so quickly, ' . ActivityHelpers::PetName($pet) . ' wasn\'t able to get their bearings until they were ejected back to the physical world.')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::The_Umbra,
                     PetActivityLogTagEnum::Location_The_Fructal_Plane,
@@ -92,7 +92,7 @@ class FructalPlaneService
         }
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% was thinking about what to do, when they were suddenly sucked into their ' . $pet->getTool()->getFullItemName() . ', and into the Fructal Plane! They grabbed what they could before being ejected back to the physical world: ' . ArrayFunctions::list_nice_sorted($loot) . '.')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                 PetActivityLogTagEnum::The_Umbra,
                 PetActivityLogTagEnum::Location_The_Fructal_Plane,

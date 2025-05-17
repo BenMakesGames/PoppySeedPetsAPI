@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
@@ -65,7 +65,7 @@ class KappaService
         if($totalSkill >= 12)
         {
             $activityLog = $this->responseService->createActivityLog($pet, 'While ' . ActivityHelpers::PetName($pet) . ' was thinking about what to do, a Kappa jumped them! ' . ActivityHelpers::PetName($pet) . ' saw it coming a mile away, though, beat the creature back, and reclaimed its stolen Shirikodama. (Their Cucumber was reduced to a pulp in the process.)', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting', 'Adventure!' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
@@ -76,7 +76,7 @@ class KappaService
         else if($this->rng->rngNextInt(1, 20 + $totalSkill) >= 16)
         {
             $activityLog = $this->responseService->createActivityLog($pet, 'While ' . ActivityHelpers::PetName($pet) . ' was thinking about what to do, a Kappa jumped them! It was a tough fight, but ' . ActivityHelpers::PetName($pet) . ' beat the creature back, and reclaimed its stolen Shirikodama! (Their Cucumber was reduced to a pulp in the process.)', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting', 'Adventure!' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
@@ -87,7 +87,7 @@ class KappaService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, 'While ' . ActivityHelpers::PetName($pet) . ' was thinking about what to do, a Kappa jumped them! It was a tough fight, which ended when the Kappa ate ' . ActivityHelpers::PetName($pet) . '\'s Cucumber, and ran off giggling! >:(', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting', 'Adventure!' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
@@ -120,7 +120,7 @@ class KappaService
             EquipmentFunctions::destroyPetTool($this->em, $pet);
 
             $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' recognized the Shirikodama as belonging to ' . ActivityHelpers::UserName($owner) . ', so returned it to them. ' . ActivityHelpers::UserName($owner) . ' thanked ' . ActivityHelpers::PetName($pet) . ' with many pets and pats.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
             ;
             $pet->increaseLove(4)->increaseEsteem(4);
@@ -146,7 +146,7 @@ class KappaService
             EquipmentFunctions::destroyPetTool($this->em, $pet);
 
             $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' wasn\'t immediately sure who the Shirikodama belonged to, so wandered the town for a little before spotting ' . ActivityHelpers::UserName($owner) . ', and recognizing them as the owner! ' . ActivityHelpers::PetName($pet) . ' returned the Shirikodama to ' . ActivityHelpers::UserName($owner) . ', who thanked them with many pets and pats.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
             ;
             $pet->increaseLove(4)->increaseEsteem(4);
@@ -165,7 +165,7 @@ class KappaService
         else
         {
             $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' wasn\'t sure who the Shirikodama belonged to, so wandered the town for a little. They approached several residents, but none were the owner.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
             ;
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);

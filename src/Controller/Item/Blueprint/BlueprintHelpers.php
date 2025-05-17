@@ -16,7 +16,7 @@ namespace App\Controller\Item\Blueprint;
 
 use App\Entity\Pet;
 use App\Entity\User;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Exceptions\PSPPetNotFoundException;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
@@ -63,7 +63,7 @@ class BlueprintHelpers
         $activityLog = PetActivityLogFactory::createUnreadLog($em, $pet, $logMessage)
             ->setIcon('ui/affection')
             ->setChanges($changes->compare($pet))
-            ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+            ->addInterestingness(PetActivityLogInterestingness::RareActivity)
         ;
 
         if($skill)
@@ -71,7 +71,7 @@ class BlueprintHelpers
             $pet->getSkills()->increaseStat($skill);
 
             $activityLog
-                ->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP)
+                ->addInterestingness(PetActivityLogInterestingness::LevelUp)
                 ->setEntry($activityLog->getEntry() . ' +1 ' . ucfirst($skill) . '!')
                 ->addTags(PetActivityLogTagHelpers::findByNames($em, [ 'Level-up' ]));
         }

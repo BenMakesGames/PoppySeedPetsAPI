@@ -17,7 +17,7 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\EnumInvalidValueException;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
@@ -79,7 +79,7 @@ class StrangeUmbralEncounters
             $tags[] = 'Stealth';
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the umbra, ' . ActivityHelpers::PetName($pet) . ' ' . $encounter['description'])
-            ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags))
         ;
 
@@ -145,14 +145,14 @@ class StrangeUmbralEncounters
             ;
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring some ruins in the Umbra, ' . '%pet:' . $pet->getId() . '.name% was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language %pet:' . $pet->getId() . '.name% didn\'t know, but it was clearly a prediction of the future. %pet:' . $pet->getId() . '.name%\'s ' . $pet->getTool()->getItem()->getName() . ' began to glow, and the old man left...')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
             ;
         }
         else
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring some ruins in the Umbra, ' . '%pet:' . $pet->getId() . '.name% was approached by an old man riding an alligator and holding a goshawk. He said something, but it was in a language %pet:' . $pet->getId() . '.name% didn\'t know, but it was clearly a prediction of the future.')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
             ;
         }
@@ -174,7 +174,7 @@ class StrangeUmbralEncounters
         $discoveryMessage = 'While exploring the Umbra, some white rain started to fall. ' . '%pet:' . $pet->getId() . '.name% looked up, and saw the Cosmic Goat flying overhead, milk flowing from its udder.';
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $discoveryMessage . ' They gathered up as much of the "rain" as they could.')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
         ;
 

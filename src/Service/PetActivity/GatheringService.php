@@ -22,7 +22,7 @@ use App\Enum\FlavorEnum;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\MoonPhaseEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetLocationEnum;
@@ -174,7 +174,7 @@ class GatheringService
                     PetActivityLogTagEnum::Gathering,
                     PetActivityLogTagEnum::Location_Abandoned_Quarry
                 ]))
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
             ;
 
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
@@ -261,7 +261,7 @@ class GatheringService
                     PetActivityLogTagEnum::Gathering,
                     PetActivityLogTagEnum::Location_Abandoned_Quarry
                 ]))
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
             ;
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::ARCANA ], $activityLog);
@@ -421,7 +421,7 @@ class GatheringService
         {
             $activityLog
                 ->setEntry($activityLog->getEntry() . ' Hm-what? There was a Pinecone in the bush, too?!')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Special Event', 'Stocking Stuffing Season' ]))
             ;
 
@@ -495,7 +495,7 @@ class GatheringService
         else if($pet->hasMerit(MeritEnum::BEHATTED) && $this->rng->rngNextInt(1, 75) === 1)
         {
             $activityLog = $this->responseService->createActivityLog($pet, 'Resting on top of a Hollow Log, ' . ActivityHelpers::PetName($pet) . ' spotted a Red Bow! (Hot dang!)', 'items/hat/bow-red')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     'Gathering',
                     PetActivityLogTagEnum::Location_Hollow_Log
@@ -566,7 +566,7 @@ class GatheringService
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% stole an Egg from a Bird Nest. Hm-what? There was a Pinecone up there, too!', '');
                 $activityLog
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                    ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Stealth', 'Special Event', 'Stocking Stuffing Season' ]))
                 ;
             }
@@ -792,7 +792,7 @@ class GatheringService
             {
                 $activityLog
                     ->setEntry($activityLog->getEntry() . ' (Honeydont?! Lucky~!)')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                    ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Lucky~!' ]))
                 ;
             }
@@ -922,7 +922,7 @@ class GatheringService
             $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% found a lone Naner Tree in the island\'s Micro-jungle. They left a small offering for Nang Tani... who appeared out of thin air, and gave them ' . $loot->getNameWithArticle() . '!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
             ;
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
@@ -1059,7 +1059,7 @@ class GatheringService
             {
                 $activityLog
                     ->setEntry($activityLog->getEntry() . ' (Melowatern!? Lucky~!)')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                    ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ;
                 $tags[] = 'Lucky~!';
             }
@@ -1136,7 +1136,7 @@ class GatheringService
             {
                 $activityLog
                     ->setEntry($activityLog->getEntry() . ' (Melowatern!? Lucky~!)')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                    ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ;
                 $tags[] = 'Lucky~!';
             }
@@ -1235,7 +1235,7 @@ class GatheringService
                 if($eideticMemory)
                 {
                     $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored a huge cave, perfectly memorizing its layout as they went, and found ' . ArrayFunctions::list_nice_sorted($loot) . '.', '')
-                        ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                        ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                     ;
                 }
                 else
@@ -1452,7 +1452,7 @@ class GatheringService
             if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
             {
                 $activityLog->setEntry($activityLog->getEntry() . ' ' . ucfirst($locationName) . ' was hot, but their ' . ActivityHelpers::SourceOfHeatProtection($petWithSkills) . ' protected them.')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                    ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ;
             }
             else

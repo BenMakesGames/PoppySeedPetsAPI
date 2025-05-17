@@ -18,7 +18,7 @@ use App\Entity\ParkEvent;
 use App\Entity\Pet;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Functions\ActivityHelpers;
 use App\Functions\CalendarFunctions;
 use App\Functions\DateFunctions;
@@ -163,7 +163,7 @@ class ParkService
         }
 
         $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, $pet->getName() . ' found a ' . $balloon . ' while participating in a ' . $parkEventType . ' event!')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+            ->addInterestingness(PetActivityLogInterestingness::RareActivity)
         ;
 
         $balloonComment = $pet->getName() . ' found this while participating in a ' . $parkEventType  . ' event!';

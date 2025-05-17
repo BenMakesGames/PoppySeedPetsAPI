@@ -19,7 +19,7 @@ use App\Entity\PetActivityLog;
 use App\Entity\Spice;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
@@ -261,7 +261,7 @@ class IcyMoonService
             {
                 $activityLog
                     ->setEntry($activityLog->getEntry() . ' (Their shock-resistance helped, but dang, that thing is crazy!)')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                    ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ;
             }
             else
@@ -281,7 +281,7 @@ class IcyMoonService
             {
                 $activityLog
                     ->setEntry($activityLog->getEntry() . ' (Their shock-resistance helped, but dang, that thing is crazy!)')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                    ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ;
             }
             else
@@ -347,7 +347,7 @@ class IcyMoonService
                 if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
                 {
                     $activityLog->setEntry($activityLog->getEntry() . ' The core was hot, but their ' . ActivityHelpers::SourceOfHeatProtection($petWithSkills) . ' protected them.')
-                        ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                        ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                         ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Heatstroke ]))
                     ;
                 }
@@ -372,7 +372,7 @@ class IcyMoonService
                 $lavaOrFirestone = $this->rng->rngNextFromArray([ 'Liquid-hot Magma', 'Firestone' ]);
 
                 $activityLog->setEntry($activityLog->getEntry() . ' As they were leaving, the caves began to shake violently! %pet:' . $pet->getId() . '.name% managed to start up the Tiny Rocketship, and shot out of the moon as it crumbled into pieces!')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                    ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                     ->addTag(PetActivityLogTagHelpers::findOneByName($this->em, PetActivityLogTagEnum::Location_Escaping_Icy_Moon))
                 ;
 

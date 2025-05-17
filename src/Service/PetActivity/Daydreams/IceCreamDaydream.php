@@ -16,7 +16,7 @@ namespace App\Service\PetActivity\Daydreams;
 
 use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
@@ -64,7 +64,7 @@ class IceCreamDaydream
         $log
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Dream' ]))
             ->setIcon('icons/status-effect/daydream-ice-cream')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
             ->setChanges($changes->compare($pet));
 
         return $log;

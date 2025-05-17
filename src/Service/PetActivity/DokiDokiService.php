@@ -16,7 +16,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
 use App\Entity\PetBadge;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
@@ -64,7 +64,7 @@ class DokiDokiService
         };
 
         $activityLog
-            ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
             ->setChanges($changes->compare($pet))
         ;

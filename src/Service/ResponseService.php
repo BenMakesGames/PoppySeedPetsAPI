@@ -21,7 +21,7 @@ use App\Entity\PetActivityLogItem;
 use App\Entity\PetActivityLogTag;
 use App\Entity\UnreadPetActivityLog;
 use App\Entity\User;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\SerializationGroupEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
@@ -234,7 +234,7 @@ class ResponseService
 
     public function addFlashMessage(string $message): self
     {
-        $this->flashMessages[] = new FlashMessage(0, $message, '', null, PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE);
+        $this->flashMessages[] = new FlashMessage(0, $message, '', null, PetActivityLogInterestingness::PlayerActionResponse);
 
         return $this;
     }

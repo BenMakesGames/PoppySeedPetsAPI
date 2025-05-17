@@ -17,7 +17,7 @@ namespace App\Controller\Halloween;
 use App\Entity\Inventory;
 use App\Entity\User;
 use App\Enum\LocationEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
@@ -112,7 +112,7 @@ class GiveCandyToTrickOrTreaterController
                 $logMessage .= ' (' . $rng->rngNextFromArray([ 'Just what they wanted!', 'Ah! The good stuff!', 'One of their favorites!' ]) . ')';
 
             PetActivityLogFactory::createUnreadLog($em, $trickOrTreater, $logMessage)
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
+                ->addInterestingness(PetActivityLogInterestingness::HolidayOrSpecialEvent)
                 ->setIcon('ui/halloween')
                 ->addTags(PetActivityLogTagHelpers::findByNames($em, [ 'Special Event', 'Halloween' ]))
             ;

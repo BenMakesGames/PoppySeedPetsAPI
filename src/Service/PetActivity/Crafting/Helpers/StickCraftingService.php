@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace App\Service\PetActivity\Crafting\Helpers;
 
 use App\Entity\PetActivityLog;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
@@ -208,7 +208,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Talon', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Hunting Spear.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 13)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -256,7 +256,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Red', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Red Flail.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 13)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -295,7 +295,7 @@ class StickCraftingService
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% started to make a Straw Broom, but a weird-lookin\' elf, or something, ran in, turned the Wheat into a Gold Bar, and left!', '');
 
             $activityLog
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home, 'Fae-kind' ]))
             ;
 
@@ -475,7 +475,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Overly-long Spear', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a - like - CRAZY-long Spear. It\'s really rather silly.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -514,7 +514,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Champignon.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -552,7 +552,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Wooden Sword.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 12)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -569,7 +569,7 @@ class StickCraftingService
 
                 $activityLog
                     ->setEntry($activityLog->getEntry() . '.. and had some leftover wood and string, so also threw together a pair of Knitting Needles!')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 22)
                 ;
 
                 $this->inventoryService->petCollectsItem('Knitting Needles', $pet, $pet->getName() . ' created this with the leftovers from making a Wooden Sword.', $activityLog);
@@ -613,7 +613,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Glass', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a "Rustic" Magnifying Glass.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 13)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -651,7 +651,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(2);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Sweet Beat.')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -690,7 +690,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(2);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% glued together a Whorl Staff.')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 10)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -728,7 +728,7 @@ class StickCraftingService
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Naner-picker.', 'items/tool/basket/fruit-picker')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -789,13 +789,13 @@ class StickCraftingService
             $this->inventoryService->petCollectsItem($extraLoot, $pet, $pet->getName() . ' found this on a stick!', $activityLog);
 
             $activityLog->setEntry($activityLog->getEntry() . ' While they were doing that, they spotted a ' . $extraLoot . '! ... wait, make that TWO! They grabbed both before they could get away!')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
             ;
         }
         else
         {
             $activityLog->setEntry($activityLog->getEntry() . ' While they were doing that, they spotted a ' . $extraLoot . '! They grabbed it before it could get away!')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
             ;
         }
 

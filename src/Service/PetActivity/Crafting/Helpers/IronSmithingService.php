@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace App\Service\PetActivity\Crafting\Helpers;
 
 use App\Entity\PetActivityLog;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\ItemRepository;
@@ -71,7 +71,7 @@ class IronSmithingService
             $article = $this->rng->rngNextInt(1, 10) === 1 ? 'a humble' : 'a';
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Meat-seeking Claymore from ' . $article . ' Laser-guided Sword.', 'items/tool/sword/laser-guided-and-winged')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 25)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 25)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
             ;
 
@@ -176,7 +176,7 @@ class IronSmithingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged ' . $making['description'] . ' from an Iron Bar with enough left over to make a Nail File, as well!.', $making['image'])
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $making['difficulty'] + 10)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + $making['difficulty'] + 10)
             ;
 
             $this->inventoryService->petCollectsItem($making['item'], $pet, $pet->getName() . ' forged this from an Iron Bar.', $activityLog);
@@ -192,7 +192,7 @@ class IronSmithingService
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged ' . $making['description'] . ' from an Iron Bar.', $making['image'])
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $making['difficulty'])
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + $making['difficulty'])
             ;
 
             $this->inventoryService->petCollectsItem($making['item'], $pet, $pet->getName() . ' forged this from an Iron Bar.', $activityLog);
@@ -227,7 +227,7 @@ class IronSmithingService
             $pet->increaseEsteem(1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% turned a simple Bug-catcher\'s Net into a Water Strider.', 'items/tool/net/water-strider')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
             ;
 
@@ -278,7 +278,7 @@ class IronSmithingService
                 $pet->increaseEsteem(3);
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made Yellow Scissors, and science\'d up a mechanical can-opener with the leftover materials.', 'items/tool/scissors/yellow-can-opener')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing', 'Crafting' ]))
                 ;
 
@@ -291,7 +291,7 @@ class IronSmithingService
                 $pet->increaseEsteem(1);
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made Yellow Scissors.', 'items/tool/scissors/yellow')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 13)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing', 'Crafting' ]))
                 ;
 
@@ -337,7 +337,7 @@ class IronSmithingService
                 $pet->increaseEsteem(3);
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made Green Scissors, and science\'d up a mechanical can-opener with the leftover materials.', 'items/tool/scissors/yellow-can-opener')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing', 'Crafting' ]))
                 ;
 
@@ -350,7 +350,7 @@ class IronSmithingService
                 $pet->increaseEsteem(1);
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made Green Scissors.', 'items/tool/scissors/yellow')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 13)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing', 'Crafting' ]))
                 ;
 
@@ -394,7 +394,7 @@ class IronSmithingService
                 $pet->increaseEsteem(2);
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Saucepan... and a Whisk!', 'items/tool/saucepan')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
                 ;
                 $this->inventoryService->petCollectsItem('Whisk', $pet, $pet->getName() . ' created this.', $activityLog);
@@ -406,7 +406,7 @@ class IronSmithingService
                 $pet->increaseEsteem(1);
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Saucepan.', 'items/tool/saucepan')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 10)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
                 ;
 
@@ -451,7 +451,7 @@ class IronSmithingService
                 $bonusItems = $this->rng->rngNextSubsetFromArray([ 'Trowel', 'Hand Rake', 'Bezeling Planisher' ], 2);
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made ' . $item->getNameWithArticle() . ' from a Crooked Stick, and Iron Bar... with enough left over to make a ' . $bonusItems[0] . ' _and_ ' . $bonusItems[1] . ', as well! (Dang! Such skills!)', 'items/' . $item->getImage())
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 33)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 33)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
                 ;
 
@@ -469,7 +469,7 @@ class IronSmithingService
                 $bonusItem = $this->rng->rngNextFromArray([ 'Trowel', 'Hand Rake', 'Bezeling Planisher' ]);
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made ' . $item->getNameWithArticle() . ' from a Crooked Stick, and Iron Bar... with enough left over to make a ' .  $bonusItem .', as well!', 'items/' . $item->getImage())
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 23)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 23)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
                 ;
 
@@ -483,7 +483,7 @@ class IronSmithingService
                 $pet->increaseEsteem(1);
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made ' . $item->getNameWithArticle() . ' from a Crooked Stick, and Iron Bar.', 'items/' . $item->getImage())
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 13)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
                 ;
 
@@ -519,7 +519,7 @@ class IronSmithingService
             $pet->increaseEsteem(1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Grappling Hook from Iron Bar, and String.', 'items/tool/grappling-hook')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing', 'Crafting' ]))
             ;
 
@@ -533,7 +533,7 @@ class IronSmithingService
 
                 $activityLog
                     ->setEntry($activityLog->getEntry() . '.. and had enough metal and string left over to throw together a pair of Knitting Needles!')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 22)
                 ;
 
                 $this->inventoryService->petCollectsItem('Knitting Needles', $pet, $pet->getName() . ' created this with the leftovers from making a Wooden Sword.', $activityLog);
@@ -603,7 +603,7 @@ class IronSmithingService
             $pet->increaseEsteem(3);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made ' . $makes->getNameWithArticle() . ' from an Iron Bar and some Dark Matter!', 'items/tool/hammer/heavy')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
             ;
             $this->inventoryService->petCollectsItem($makes, $pet, $pet->getName() . ' created this from an Iron Bar and some Dark Matter!', $activityLog);
@@ -638,7 +638,7 @@ class IronSmithingService
             $pet->increaseEsteem(2);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Mirror Shield!', 'items/tool/shield/mirror')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
             ;
 
@@ -673,7 +673,7 @@ class IronSmithingService
             $pet->increaseEsteem(2);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Mushketeer!', 'items/tool/sword/mushroom')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing', 'Crafting' ]))
             ;
 
@@ -709,7 +709,7 @@ class IronSmithingService
             $pet->increaseEsteem(2);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made a Snailppling Hook!')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing', 'Crafting' ]))
             ;
 

@@ -14,23 +14,24 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-final class PetActivityLogInterestingnessEnum
+/**
+ * This is not actually an enum; just a collection of constant values.
+ */
+final class PetActivityLogInterestingness
 {
-    use FakeEnum;
+    public const int HoHum = 0;
+    public const int UncommonActivity = 1000;
+    public const int ActivityUsingMerit = 2000;
+    public const int ParkEvent = 3000;
+    public const int HolidayOrSpecialEvent = 3500;
+    public const int LunchboxEmpty = 4000;
+    public const int RareActivity = 5000;
+    public const int LevelUp = 6000;
+    public const int NewRelationship = 6000;
+    public const int RelationshipDiscussion = 8000;
+    public const int OneTimeQuestActivity = 8500;
+    public const int ActivityYieldingPetBadge = 8600;
+    public const int GaveBirth = 9000;
 
-    public const int HO_HUM = 0;
-    public const int UNCOMMON_ACTIVITY = 1000;
-    public const int ACTIVITY_USING_MERIT = 2000;
-    public const int PARK_EVENT = 3000;
-    public const int HOLIDAY_OR_SPECIAL_EVENT = 3500;
-    public const int LUNCHBOX_EMPTY = 4000;
-    public const int RARE_ACTIVITY = 5000;
-    public const int LEVEL_UP = 6000;
-    public const int NEW_RELATIONSHIP = 6000;
-    public const int RELATIONSHIP_DISCUSSION = 8000;
-    public const int ONE_TIME_QUEST_ACTIVITY = 8500;
-    public const int ACTIVITY_YIELDING_PET_BADGE = 8600;
-    public const int GAVE_BIRTH = 9000;
-
-    public const int PLAYER_ACTION_RESPONSE = 9999;
+    public const int PlayerActionResponse = 9999;
 }

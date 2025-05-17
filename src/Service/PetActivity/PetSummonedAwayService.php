@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Exceptions\UnreachableException;
@@ -64,7 +64,7 @@ class PetSummonedAwayService
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         $activityLog
-            ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+            ->addInterestingness(PetActivityLogInterestingness::RareActivity)
             ->setChanges($changes->compare($pet))
         ;
 

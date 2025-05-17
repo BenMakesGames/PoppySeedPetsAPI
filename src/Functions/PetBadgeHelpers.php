@@ -18,7 +18,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetBadge;
 use App\Enum\EnumInvalidValueException;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetBadgeEnum;
 use Doctrine\ORM\EntityManagerInterface;
@@ -43,7 +43,7 @@ final class PetBadgeHelpers
         $log
             ->setEntry($log->getEntry() . ' ' . str_replace('%pet.name%', ActivityHelpers::PetName($pet), self::BADGE_HURRAHS[$badgeName]))
             ->addTag(PetActivityLogTagHelpers::findOneByName($em, PetActivityLogTagEnum::Badge))
-            ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_YIELDING_PET_BADGE)
+            ->addInterestingness(PetActivityLogInterestingness::ActivityYieldingPetBadge)
         ;
     }
 
@@ -69,7 +69,7 @@ final class PetBadgeHelpers
 
         return PetActivityLogFactory::createUnreadLog($em, $pet, $logMessage)
             ->addTag(PetActivityLogTagHelpers::findOneByName($em, PetActivityLogTagEnum::Badge))
-            ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_YIELDING_PET_BADGE)
+            ->addInterestingness(PetActivityLogInterestingness::ActivityYieldingPetBadge)
         ;
     }
 

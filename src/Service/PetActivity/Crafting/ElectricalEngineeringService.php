@@ -20,7 +20,7 @@ use App\Entity\PetRelationship;
 use App\Entity\PetSpecies;
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
@@ -174,7 +174,7 @@ class ElectricalEngineeringService
             $this->houseSimService->getState()->loseOneOf($this->rng, $metalToUse);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% 3D printed & wired a Laser Pointer.', 'items/resource/string')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ '3D Printing', 'Electronics' ]))
             ;
 
@@ -228,7 +228,7 @@ class ElectricalEngineeringService
             $this->houseSimService->getState()->loseOneOf($this->rng, $metalToUse);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% 3D printed & wired up a Metal Detector.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ '3D Printing', 'Electronics' ]))
             ;
 
@@ -278,7 +278,7 @@ class ElectricalEngineeringService
             $this->houseSimService->getState()->loseOneOf($this->rng, [ 'Metal Detector (Iron)', 'Metal Detector (Silver)', 'Metal Detector (Gold)' ]);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% modified an ordinary Metal Detector, turning it into a Secret Seashell Detector!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics' ]))
             ;
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -310,7 +310,7 @@ class ElectricalEngineeringService
             $this->houseSimService->getState()->loseItem('Bass Guitar', 1);
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Laser Guitar!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics' ]))
             ;
             $this->inventoryService->petCollectsItem('Laser Guitar', $pet, $pet->getName() . ' created this.', $activityLog);
@@ -342,7 +342,7 @@ class ElectricalEngineeringService
             $pet->increaseEsteem(-3);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to put together a Rainbowsaber, but accidentally broke the Glass Pendulum they were trying to put inside; only its String remains :(', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics' ]))
             ;
 
@@ -358,7 +358,7 @@ class ElectricalEngineeringService
             $this->houseSimService->getState()->loseItem('Glass Pendulum', 1);
             $pet->increaseEsteem(5);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Rainbowsaber!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics' ]))
             ;
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ], $activityLog);
@@ -393,7 +393,7 @@ class ElectricalEngineeringService
             if($pet->hasMerit(MeritEnum::SOOTHING_VOICE))
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% engineered a Resonating Bow. They sang a soothing song as they plucked the last string, producing a Music Note.', '')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                    ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics' ]))
                 ;
 
@@ -402,7 +402,7 @@ class ElectricalEngineeringService
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% engineered a Resonating Bow.', '')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics' ]))
                 ;
             }
@@ -436,7 +436,7 @@ class ElectricalEngineeringService
             $this->houseSimService->getState()->loseItem('Sylvan Fishing Rod', 1);
             $pet->increaseEsteem(5);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% integrated Alien Tissue into a Sylvan Fishing Rod using a Laser Pointer! (As you do!)', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 19)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 19)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics', 'Magic-binding' ]))
             ;
             $this->inventoryService->petCollectsItem('Eridanus', $pet, $pet->getName() . ' scienced this.', $activityLog);
@@ -466,7 +466,7 @@ class ElectricalEngineeringService
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to electrify some gold, but it kept trying to zap them! ' . ActivityHelpers::PetName($pet) . '\'s shock-resistance protected them from any harm, but it was still annoying as heck.', '')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics', 'Smithing' ]))
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                    ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ], $activityLog);
@@ -490,7 +490,7 @@ class ElectricalEngineeringService
             $this->houseSimService->getState()->loseItem('Plastic Boomerang', 1);
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% electrified some gold caps and attached them to a boomerang, creating a bug-zapping Buggerang!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics', 'Smithing' ]))
             ;
             $description = $this->rng->rngNextInt(1, 10) === 1 ? ($pet->getName() . ' scienced this. With SCIENCE.') : ($pet->getName() . ' scienced this.');
@@ -538,7 +538,7 @@ class ElectricalEngineeringService
             $this->houseSimService->getState()->loseItem('Toy Alien Gun', 1);
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% rigged up a Toy Alien Gun to actually shoot lasers!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics', 'Magic-binding' ]))
             ;
             $this->inventoryService->petCollectsItem('Alien Gun', $pet, $pet->getName() . ' engineered this.', $activityLog);
@@ -582,7 +582,7 @@ class ElectricalEngineeringService
             $this->houseSimService->getState()->loseItem('Alien Tissue', 1);
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% added alien tech to a Lightning Sword, creating DNA!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics' ]))
             ;
             $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ], $activityLog);

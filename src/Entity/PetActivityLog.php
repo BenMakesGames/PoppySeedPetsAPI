@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Model\PetChangesSummary;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -125,7 +125,7 @@ class PetActivityLog
         $this->changes = $changes;
 
         if($changes !== null && (!!$changes->level || !!$changes->affectionLevel))
-            $this->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP);
+            $this->addInterestingness(PetActivityLogInterestingness::LevelUp);
 
         return $this;
     }

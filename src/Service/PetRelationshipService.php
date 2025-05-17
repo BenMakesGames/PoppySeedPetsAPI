@@ -19,7 +19,7 @@ use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\RelationshipEnum;
 use App\Enum\StatusEffectEnum;
 use App\Functions\PetActivityLogFactory;
@@ -160,12 +160,12 @@ class PetRelationshipService
             $whatASurprise = $this->rng->rngNextInt(1, 10) === 1 ? 'Quelle surprise!' : 'What a surprise!';
 
             PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% and %pet:' . $otherPet->getId() . '.name% are living together, now! ' . $whatASurprise)
-                ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
+                ->addInterestingness(PetActivityLogInterestingness::NewRelationship)
                 ->setIcon('icons/activity-logs/friend')
             ;
 
             PetActivityLogFactory::createUnreadLog($this->em, $otherPet, '%pet:' . $otherPet->getId() . '.name% and %pet:' . $pet->getId() . '.name% are living together, now! ' . $whatASurprise)
-                ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
+                ->addInterestingness(PetActivityLogInterestingness::NewRelationship)
                 ->setIcon('icons/activity-logs/friend')
             ;
         }
@@ -266,7 +266,7 @@ class PetRelationshipService
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $meetDescription)->setIcon('icons/activity-logs/friend');
 
         $activityLog
-            ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
+            ->addInterestingness(PetActivityLogInterestingness::NewRelationship)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $groupTags))
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout' ]))
         ;
@@ -294,7 +294,7 @@ class PetRelationshipService
 
         $otherPetActivityLog
             ->setIcon($icon)
-            ->addInterestingness(PetActivityLogInterestingnessEnum::NEW_RELATIONSHIP)
+            ->addInterestingness(PetActivityLogInterestingness::NewRelationship)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, $groupTags))
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout' ]))
         ;

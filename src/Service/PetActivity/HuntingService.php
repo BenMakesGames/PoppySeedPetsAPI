@@ -22,7 +22,7 @@ use App\Enum\DistractionLocationEnum;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
 use App\Enum\MoonPhaseEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
@@ -248,7 +248,7 @@ class HuntingService
             ;
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% couldn\'t find anything to hunt, so watched some small birds play in the Greenhouse Bird Bath, instead.', 'icons/activity-logs/birb')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Hunting', 'Greenhouse' ]))
             ;
 
@@ -743,7 +743,7 @@ class HuntingService
         if($pet->hasMerit(MeritEnum::GOURMAND) && $this->rng->rngNextInt(1, 2) === 1)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered an Onion Boy. The fumes were powerful, but ' . $pet->getName() . ' didn\'t even flinch, and swallowed the Onion Boy whole! (Ah~! A true Gourmand!)', 'items/veggie/onion')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting', 'Eating', 'Gourmand' ]))
             ;
 
@@ -1167,7 +1167,7 @@ class HuntingService
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% encountered a Satyr; the Satyr was so enamored by ' . $pet->getName() . '\'s cordiality, they had a simply _wonderful_ time, and offered gifts before leaving in peace.', 'icons/activity-logs/drunk-satyr')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fae-kind' ]))
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
             ;
             $pet->increaseEsteem(1);
             $this->inventoryService->petCollectsItem('Blackberry Wine', $pet, 'Gifts for ' . $pet->getName() . ', from a Satyr.', $activityLog);
@@ -1353,7 +1353,7 @@ class HuntingService
             if($this->rng->rngNextInt(1, 30) === 1 && $pet->hasMerit(MeritEnum::LUCKY))
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to unfold a Paper Golem, but got a nasty paper cut! During the fight, however, a small, glowing die rolled out from within the folds of the golem! Lucky~! ' . $pet->getName() . ' grabbed it before fleeing.', '')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                    ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting', 'Crafting', 'Lucky~!' ]))
                 ;
 
@@ -1578,7 +1578,7 @@ class HuntingService
             $prize = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray($possibleLoot));
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out hunting, and encountered an Egg Salad Monstrosity! After a grueling (and sticky) battle, ' . $pet->getName() . ' took a huge bite out of the monster, slaying it! (Ah~! A true Gourmand!) Finally, they dug ' . $prize->getNameWithArticle() . ' out of the lumpy corpse, and brought it home.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Hunting', 'Eating', 'Gourmand' ]))
             ;
 

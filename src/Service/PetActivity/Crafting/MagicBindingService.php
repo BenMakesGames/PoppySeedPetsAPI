@@ -16,7 +16,7 @@ namespace App\Service\PetActivity\Crafting;
 
 use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
@@ -538,7 +538,7 @@ class MagicBindingService
                 $pet->increaseEsteem(6);
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Glowing Twenty-sided Die from a chunk of Blackonite!', '')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 30)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 30)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Magic_binding,
                         PetActivityLogTagEnum::Location_At_Home,
@@ -554,7 +554,7 @@ class MagicBindingService
                 $pet->increaseEsteem($numberOfDice);
 
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a block of glowing dice from a chunk of Blackonite, then gently tapped it to break the dice apart. ' . $numberOfDice . ' were made!', '')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Magic_binding,
                         PetActivityLogTagEnum::Location_At_Home,
@@ -758,7 +758,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Hourglass', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted an Hourglass. It\'s _magic_ now!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -794,7 +794,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Fish Head Shovel', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a Fish Head Shovel in Nephthys\'s name!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -840,7 +840,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Glass', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made and enchanted Temperance!', 'items/tool/scythe/little-death')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Smithing' ]))
             ;
             $this->inventoryService->petCollectsItem('Temperance', $pet, $pet->getName() . ' made this.', $activityLog);
@@ -899,7 +899,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Ceremonial Trident', 1);
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% used a Ceremonial Trident to materialize the ' . $makes . '!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -971,7 +971,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
             $pet->increaseEsteem(5);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made an Iridescent Hand Cannon by extending a Blunderbuss, and binding a Moon Pearl to it!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 21)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 21)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Crafting,
@@ -1027,7 +1027,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Elvish Magnifying Glass', 1);
             $pet->increaseEsteem(5);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Warping Wand!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 24)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 24)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Crafting,
@@ -1067,7 +1067,7 @@ class MagicBindingService
             if($umbraCheck >= 28)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made an Invisible Shovel by binding the power of the moon to a Plastic Shovel! Oh: and there\'s a little Invisibility Juice left over!', '')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 28)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 28)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Magic_binding,
                         PetActivityLogTagEnum::Location_At_Home,
@@ -1079,7 +1079,7 @@ class MagicBindingService
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made an Invisible Shovel by binding the power of the moon to a Plastic Shovel!', '')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Magic_binding,
                         PetActivityLogTagEnum::Location_At_Home,
@@ -1132,7 +1132,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Painted Dumbbell', 1);
             $pet->increaseEsteem(5);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% made a Smiling Wand by decorating & enchanting a Painted Dumbbell!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1168,7 +1168,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Farmer\'s Multi-tool', 1);
             $pet->increaseEsteem(4);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a Farmer\'s Multi-tool with one of Gizubi\'s rituals.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1204,7 +1204,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Double Scythe', 1);
             $pet->increaseEsteem(4);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a Double Scythe with Umbral magic...', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1242,7 +1242,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Rapier', 1);
             $pet->increaseEsteem(6);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound Night and Day...')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1280,7 +1280,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Rapier', 1);
             $pet->increaseEsteem(6);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound S. Epée...')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1336,7 +1336,7 @@ class MagicBindingService
                 ->increaseSafety(2)
             ;
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound a Dancing Sword...', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1372,7 +1372,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Poker', 1);
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound a Wand of Lightning...', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 19)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 19)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1397,7 +1397,7 @@ class MagicBindingService
             {
                 $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' tried to bind some lightning to a Heavy Hammer, but it kept trying to zap them! ' . ActivityHelpers::PetName($pet) . '\'s shock-resistance protected them from any harm, but it was still annoying as heck.', '')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                    ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ;
 
                 $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
@@ -1429,7 +1429,7 @@ class MagicBindingService
             {
                 $activityLog = $this->responseService->createActivityLog($pet, ActivityHelpers::PetName($pet) . ' tried to bind lightning to a Heavy Hammer, but the lightning was throwing sparks like crazy. ' . ActivityHelpers::PetName($pet) . '\'s shock-resistance protected them, but it was still annoying...', 'icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                    ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ;
             }
             else
@@ -1453,7 +1453,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('White Feathers', 1);
             $pet->increaseEsteem($this->rng->rngNextInt(4, 8));
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound Mjölnir!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 25)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 25)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1511,7 +1511,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Vicious', 1);
             $pet->increaseEsteem(5);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound The Dark Knight!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 24)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 24)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1558,7 +1558,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Witch-hazel', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a broom into a Witch\'s Broom!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1634,7 +1634,7 @@ class MagicBindingService
             }
 
             $activityLog = $this->responseService->createActivityLog($pet, $message, '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1642,7 +1642,7 @@ class MagicBindingService
             ;
 
             if($usedMerit)
-                $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT);
+                $activityLog->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit);
 
             $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::ARCANA ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60) + $additionalTime, PetActivityStatEnum::MAGIC_BIND, true);
@@ -1735,7 +1735,7 @@ class MagicBindingService
             $pet->increaseEsteem(2);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 75), PetActivityStatEnum::MAGIC_BIND, true);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound Armor!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1786,7 +1786,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Ruby Feather', 1);
             $pet->increaseEsteem($this->rng->rngNextInt(4, 8));
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Wunderbuss!!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 30)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 30)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Smithing' ]))
             ;
             $this->inventoryService->petCollectsItem($makingItem, $pet, $pet->getName() . ' created this!', $activityLog);
@@ -1831,7 +1831,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Wings', 1);
             $pet->increaseEsteem($this->rng->rngNextInt(4, 8));
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created Rainbow Wings!')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 30)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 30)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1864,7 +1864,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Blood Wine', 1);
             $this->houseSimService->getState()->loseItem('Heavy Lance', 1);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created an Ambu Lance!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 22)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1900,7 +1900,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Ruby Feather', 1);
             $pet->increaseEsteem(5);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound Rubyeye!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1951,7 +1951,7 @@ class MagicBindingService
             $pet->increaseEsteem(2);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::MAGIC_BIND, true);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a regular old Gold Tuning Fork; now it\'s an _Astral_ Tuning Fork!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1997,7 +1997,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Compass', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a regular ol\' Compass; now it\'s an _Enchanted_ Compass!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2031,7 +2031,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Striped Microcline', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound a Whisper Stone!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2072,7 +2072,7 @@ class MagicBindingService
             if($getQuill)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Wings... and made a Quill with a spare Feather.', '')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Magic_binding,
                         PetActivityLogTagEnum::Crafting,
@@ -2087,7 +2087,7 @@ class MagicBindingService
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Wings.', '')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Magic_binding,
                         PetActivityLogTagEnum::Location_At_Home,
@@ -2143,7 +2143,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Gold Trifecta', 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% imbued a Gold Trifecta with the power of the number 13!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2185,7 +2185,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Leaf Spear', 1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound Mint to a Leaf Spear, creating a Spearmint!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2221,7 +2221,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Fishing Recorder', 1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound a Music Note to a Fishing Recorder, creating a Kokopelli!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 22)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2273,7 +2273,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Goodberries', 1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some berries to a Crooked Stick, creating Twiggen Berries!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Crafting,
@@ -2322,7 +2322,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Paint Stripper', 1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% mixed some magic Ambrotypic Solvent!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Physics,
@@ -2352,7 +2352,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Gold Bar', 1);
             $pet->increaseEsteem(4);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% trapped a Tachyon in a Crystal Ball!')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2389,7 +2389,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Meteorite', 1);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% channeled Noetala\'s watchful eye from the depths of space...', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2444,7 +2444,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $pet->increaseEsteem(1);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% magically bound a Lotusjar!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 24)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 24)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2489,7 +2489,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Wand of Ice', 1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% infused a Wand of Ice with Mint, creating a Cool Mint Scepter!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2527,7 +2527,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Everice', 1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Everice to a Pinecone, creating a _Magic_ Pinecone!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 12)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2567,7 +2567,7 @@ class MagicBindingService
             if($skillCheck >= 26)
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Everice to an Invisible Shovel, creating Sleet! Oh: and there\'s a little Invisibility Juice left over!', '')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 26)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 26)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Magic_binding,
                         PetActivityLogTagEnum::Location_At_Home,
@@ -2579,7 +2579,7 @@ class MagicBindingService
             else
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Everice to an Invisible Shovel, creating Sleet!', '')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 21)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 21)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Magic_binding,
                         PetActivityLogTagEnum::Location_At_Home,
@@ -2630,7 +2630,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('String', 1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Everice to a Scythe, creating Frostbite!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2680,7 +2680,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Nonsenserang', 1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% transmuted the plastic of a Nonsenserang into ice, creating a Hexicle!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2716,7 +2716,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Crystal Ball', 1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound a moonbeam to a Crystal Ball, creating a Moon Pearl!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 10)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2768,7 +2768,7 @@ class MagicBindingService
             ;
 
             $activityLog = $this->responseService->createActivityLog($pet, $message, '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2811,7 +2811,7 @@ class MagicBindingService
             $makes = $weather->isNight ? 'Midnight' : 'Sunrise';
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a Sidereal Spear, creating ' . $makes . '!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2865,7 +2865,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem($uniqueIngredient, 1);
             $pet->increaseEsteem(2);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created ' . $scrollItem->getNameWithArticle() . '.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2934,7 +2934,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Coriander Flower', 1);
             $pet->increaseEsteem(3);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Mericarp.')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2980,7 +2980,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Talon', 1);
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Monster-summoning Scroll.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -3014,7 +3014,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Potato', 1);
             $pet->increaseEsteem(5);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Glowing Russet Staff of Swiftness.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -3049,7 +3049,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Rapier', 1);
             $pet->increaseEsteem($this->rng->rngNextInt(3, 6));
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound a White Épée.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 17)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -3081,7 +3081,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Bindle', 1);
             $pet->increaseEsteem(5);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gifted a Bindle with the power of flight!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -3116,7 +3116,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Grappling Hook', 1);
             $pet->increaseEsteem(5);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% gifted a Grappling Hook with the power of flight!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -3153,7 +3153,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Grappling Hook', 1);
             $pet->increaseEsteem(4);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Gravitational Waves to a Grappling Hook! Now it\'s real good at SMASHING STUFF!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Physics,
@@ -3190,7 +3190,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Red Flail', 1);
             $pet->increaseEsteem(4);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Scales to a Red Flail, creating a Yggdrasil Branch!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 17)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -3242,7 +3242,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Jar of Fireflies', 1);
             $pet->increaseEsteem(4);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound a Lullablade!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 17)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -3281,7 +3281,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Decorated Flute', 1);
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% blessed a Decorated Flute with the skills of an ancient poet...', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -3319,7 +3319,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseOneOf($this->rng, [ 'Snakebite', 'Wood\'s Metal' ]);
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% brought some Fluff to life, and bound it to a sword, creating a Cattail!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 16)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -3357,7 +3357,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Snakebite');
             $pet->increaseEsteem(3);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% steeped a Snakebite in Hebenon, then cast a spell on it, turning the Snakebite into Malice!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -3395,7 +3395,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Painted Whorl Staff', 1);
             $pet->increaseEsteem(3);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound a Gyre!')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(
                     PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Magic_binding,
@@ -3460,7 +3460,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Moon Pearl', 1);
             $pet->increaseEsteem(4);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% fed and enchanted a Cattail, creating a Molly!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -3509,7 +3509,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Everice', 1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% bound some Everice to a Heavy Hammer, creating Fimbulvetr!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 22)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -3536,7 +3536,7 @@ class MagicBindingService
         if($roll <= 2)
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to imbue an Iron Axe with lightning, but accidentally melted it, instead!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 22)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Smithing' ]))
             ;
 
@@ -3552,7 +3552,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Lightning in a Bottle', 1);
             $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% silvered an Iron Axe, and imbued with lightning, creating a Lightning Axe.', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 22)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding', 'Smithing' ]))
             ;
             $this->inventoryService->petCollectsItem('Lightning Axe', $pet, $pet->getName() . ' created this by adding a silver-iron blade to a Wand of Lightning.', $activityLog);
@@ -3584,7 +3584,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Mericarp', 1);
             $pet->increaseEsteem(4);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% created a Sunless Mericarp!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 22)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -3600,7 +3600,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Tiny Black Hole', 1);
             $pet->increaseEsteem(-4);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to bind a Tiny Black Hole to a Mericarp, but accidentally evaporated the black hole, instead :|', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 22)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -3630,7 +3630,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Quintessence', 1);
             $pet->increaseEsteem(-4);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Mysterious Seed, but it resisted the enchantment, and the Quintessence evaporated away! :|')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 22)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -3644,7 +3644,7 @@ class MagicBindingService
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% tried to enchant a Mysterious Seed, but it was like the seed was actively resisting the enchantment!')
                 ->setIcon('icons/activity-logs/confused')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 22)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Magic-binding' ]))
             ;
 
@@ -3660,7 +3660,7 @@ class MagicBindingService
         $pet->increaseEsteem(4);
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% successfully enchanted a Mysterious Seed... into something _terrible!_')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 22)
+            ->addInterestingness(PetActivityLogInterestingness::HoHum + 22)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                 PetActivityLogTagEnum::Magic_binding,
                 PetActivityLogTagEnum::Location_At_Home,
@@ -3696,7 +3696,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Crooked Stick', 1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% enchanted a Glass Pendulum, creating an Aos Sí!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -3732,7 +3732,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Blackonite', 1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% used an Aos Sí to absorb a piece of Blackonite, creating a Bean Sídhe!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 27)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 27)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -3769,7 +3769,7 @@ class MagicBindingService
             $this->houseSimService->getState()->loseItem('Heavy Hammer', 1);
             $pet->increaseEsteem(4);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% bound a pair of Rainbow Wings to a Heavy Hammer! Shiny!')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 21)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 21)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,

@@ -18,7 +18,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\DistractionLocationEnum;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
@@ -170,7 +170,7 @@ class FishingService
             ;
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% couldn\'t find anything to fish, so watched some small birds play in the Greenhouse Bird Bath, instead.', 'icons/activity-logs/birb')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fishing', 'Greenhouse' ]))
             ;
 
@@ -220,7 +220,7 @@ class FishingService
     private function fishedMerchantFish(Pet $pet): PetActivityLog
     {
         $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at a Stream, and caught a Fish... but wait: that\'s no ordinary Fish...', '')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+            ->addInterestingness(PetActivityLogInterestingness::RareActivity)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                 PetActivityLogTagEnum::Fishing,
                 PetActivityLogTagEnum::Location_Stream,
@@ -388,7 +388,7 @@ class FishingService
             {
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing, and started to reel something in, only to realize it was a huge Galloping Octopus! ' . $pet->getName() . ' beat the creature back into the sea, but not before discerping one of its Tentacles!', '')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fishing', 'Fighting' ]))
                 ;
                 $this->inventoryService->petCollectsItem('Tentacle', $pet, $pet->getName() . ' received this from a fight with a Galloping Octopus.', $activityLog);
@@ -402,7 +402,7 @@ class FishingService
             {
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::HUNT, true);
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing, and started to reel something in, only to realize it was a huge Galloping Octopus! ' . $pet->getName() . ' beat the creature back into the sea, but not before discerping two of its Tentacles!', '')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fishing', 'Fighting' ]))
                 ;
                 $this->inventoryService->petCollectsItem('Tentacle', $pet, $pet->getName() . ' received this from a fight with a Galloping Octopus.', $activityLog);
@@ -441,7 +441,7 @@ class FishingService
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::FISH, true);
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at a still-water pond. There weren\'t any fish, but there was some Algae!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fishing' ]))
             ;
 
@@ -567,7 +567,7 @@ class FishingService
         if($this->rng->rngNextInt(1, 200) === 1 && $pet->hasMerit(MeritEnum::LUCKY))
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went out fishing, and reeled in... some Fish Bones!? (Lucky~??)', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fishing', 'Lucky~!' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
@@ -603,7 +603,7 @@ class FishingService
         if($this->rng->rngNextInt(1, 80) === 1 && $pet->hasMerit(MeritEnum::LUCKY))
         {
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% went fishing at a Waterfall Basin, and reeled in a Little Strongbox! Lucky~!', '')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fishing', 'Lucky~!' ]))
             ;
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
@@ -629,7 +629,7 @@ class FishingService
                 {
                     $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% went fishing at a Waterfall Basin. There, ' . $pet->getName() . '\'s humming caught the attention of a mermaid! However, the mermaid saw ' . ActivityHelpers::PetName($pet) . '\'s ghastly appearance, gasped, and swam away as quickly as they could!')
                         ->setIcon('icons/status-effect/bite-vampire')
-                        ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                        ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                         ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fishing' ]))
                     ;
                     $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::MUSIC, PetSkillEnum::ARCANA ], $activityLog);
@@ -704,7 +704,7 @@ class FishingService
         {
             $moneys = $this->rng->rngNextInt(10, 15) + $bonusMoney;
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% fished around in the Plaza fountain while no one was looking, and grabbed ' . $moneys . ' moneys! Lucky~!', 'icons/activity-logs/moneys')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fishing', 'Stealth', 'Moneys', 'Lucky~!' ]))
             ;
         }
@@ -857,7 +857,7 @@ class FishingService
         ;
 
         $activityLog = $this->responseService->createActivityLog($pet, $message, '')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fishing', 'Gathering' ]))
         ;
 

@@ -18,7 +18,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\GuildEnum;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
@@ -206,7 +206,7 @@ class DeepSeaService
             {
                 $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the shelf sea using the Submarine. They spotted a lone Jelling Polyp while they were out there, and took it home!', 'items/tool/submarine')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Gathering' ]))
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+                    ->addInterestingness(PetActivityLogInterestingness::RareActivity)
                 ;
 
                 $pet->increaseEsteem(6);
@@ -468,7 +468,7 @@ class DeepSeaService
             if($petWithSkills->getHasProtectionFromHeat()->getTotal() > 0)
             {
                 $activityLog->setEntry($activityLog->getEntry() . ' The Volcano was hot, but their ' . ActivityHelpers::SourceOfHeatProtection($petWithSkills) . ' protected them.')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                    ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Gathering', 'Dark', 'Heatstroke' ]))
                 ;
             }

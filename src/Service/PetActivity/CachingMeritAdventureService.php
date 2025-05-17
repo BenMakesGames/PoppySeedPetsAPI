@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace App\Service\PetActivity;
 
 use App\Entity\PetActivityLog;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
@@ -66,7 +66,7 @@ class CachingMeritAdventureService
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% was hungry, so they dug up one of their old food caches on the island, which contained ' . $cacheItem->getNameWithArticle() . '.')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))
-            ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+            ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
         ;
         $this->inventoryService->petCollectsItem($cacheItem, $pet, $pet->getName() . ' found this in one of their old food caches.', $activityLog);
 

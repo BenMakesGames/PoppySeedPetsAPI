@@ -19,7 +19,7 @@ use App\Entity\PetActivityLog;
 use App\Entity\PetQuest;
 use App\Entity\UserQuest;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
@@ -89,7 +89,7 @@ class ChocolateMansion
         };
 
         $activityLog
-            ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
             ->setChanges($changes->compare($pet))
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Le Manoir de Chocolat', 'Adventure!' ]))
         ;
@@ -218,7 +218,7 @@ class ChocolateMansion
             $icon = 'icons/status-effect/bite-vampire';
 
             $description .= 'Fortunately, %pet:' . $pet->getId() . '.name%\'s vampire bite tricked the vampire into thinking they were the same sort of creatures! After apologizing, the vampire offered %pet:' . $pet->getId() . '.name% ' . $item->getNameWithArticle() . '. They accepted, and left as quickly as seemed polite.';
-            $extraInterestingness = PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY;
+            $extraInterestingness = PetActivityLogInterestingness::UncommonActivity;
 
             $deceivedTheVampire = true;
         }
@@ -236,7 +236,7 @@ class ChocolateMansion
             $tags[] = 'Stealth';
 
             $description .= 'Fortunately, %pet:' . $pet->getId() . '.name%\'s pale color tricked the vampire into thinking they were the same sort of creatures. After apologizing, the vampire offered %pet:' . $pet->getId() . '.name% ' . $item->getNameWithArticle() . '. They accepted, and left as quickly as seemed polite.';
-            $extraInterestingness = PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY;
+            $extraInterestingness = PetActivityLogInterestingness::UncommonActivity;
 
             $deceivedTheVampire = true;
         }
@@ -253,7 +253,7 @@ class ChocolateMansion
             $loot[] = $item;
 
             $description .= 'Fortunately, the vampire was completely taken by %pet:' . $pet->getId() . '.name%\'s cordiality, and the two had a simply _wonderful_ time! The vampire offered %pet:' . $pet->getId() . '.name% ' . $item->getNameWithArticle() . '. They accepted, and left as quickly as seemed polite.';
-            $extraInterestingness = PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY;
+            $extraInterestingness = PetActivityLogInterestingness::UncommonActivity;
         }
         else if($roll >= 20)
         {
@@ -672,7 +672,7 @@ class ChocolateMansion
         $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags));
 
         if($usedMerit)
-            $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT);
+            $activityLog->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit);
 
         return $activityLog;
     }

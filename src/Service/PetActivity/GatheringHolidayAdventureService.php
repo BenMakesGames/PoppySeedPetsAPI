@@ -17,7 +17,7 @@ namespace App\Service\PetActivity;
 use App\Entity\PetActivityLog;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\GatheringHolidayEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
@@ -247,7 +247,7 @@ class GatheringHolidayAdventureService
             $pet->increaseEsteem($level);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% was attacked by some kind of ' . $adjective . ', fish-rabbit hybrid thing, but was able to defeat it!')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $level * 3)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + $level * 3)
             ;
 
             $this->petExperienceService->gainExp($pet, $level, [ PetSkillEnum::BRAWL ], $activityLog);
@@ -261,7 +261,7 @@ class GatheringHolidayAdventureService
             if($loot === 'Behatting Scroll')
             {
                 $gotBehattingScrollThisEaster->setValue(true);
-                $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY);
+                $activityLog->addInterestingness(PetActivityLogInterestingness::RareActivity);
             }
 
             return $activityLog;
