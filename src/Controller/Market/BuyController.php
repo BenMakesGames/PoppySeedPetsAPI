@@ -150,6 +150,8 @@ class BuyController
 
             $em->remove($itemToBuy);
 
+            $em->flush();
+
             $marketService->updateLowestPriceForItem(
                 $inventory->getItem(),
             );
