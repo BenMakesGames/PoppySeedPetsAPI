@@ -296,8 +296,14 @@ class SmithingService
                 $possibilities[] = new ActivityCallback($this->createAntipode(...), 10);
         }
 
-        if($this->houseSimService->hasInventory('Antipode') && $this->houseSimService->hasInventory('Lightning Sword'))
-            $possibilities[] = new ActivityCallback($this->createTrinityBlade(...), 10);
+        if($this->houseSimService->hasInventory('Lightning Sword'))
+        {
+            if($this->houseSimService->hasInventory('Antipode'))
+                $possibilities[] = new ActivityCallback($this->createTrinityBlade(...), 10);
+
+            if($this->houseSimService->hasInventory('Wand of Lightning'))
+                $possibilities[] = new ActivityCallback($this->createWayTooMuchLightning(...), 10);
+        }
 
         if($this->houseSimService->hasInventory('Everice'))
         {
@@ -1287,6 +1293,42 @@ class SmithingService
         else
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% wanted to make a Trinity Blade, but wasn\'t sure where to begin...')
+                ->setIcon('icons/activity-logs/confused')
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
+            ;
+
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::CRAFTS ], $activityLog);
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::SMITH, false);
+        }
+
+        return $activityLog;
+    }
+
+    public function createWayTooMuchLightning(ComputedPetSkills $petWithSkills): PetActivityLog
+    {
+        $pet = $petWithSkills->getPet();
+        $roll = $this->rng->rngNextInt(1, 20 + max($petWithSkills->getDexterity()->getTotal(), $petWithSkills->getIntelligence()->getTotal()) + $petWithSkills->getStamina()->getTotal() + $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getSmithingBonus()->getTotal());
+
+        if($roll >= 25)
+        {
+            $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::SMITH, true);
+            $this->houseSimService->getState()->loseItem('Lightning Sword', 1);
+            $this->houseSimService->getState()->loseItem('Wand of Lightning', 1);
+
+            $pet->increaseEsteem(6);
+
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% smithed, like, Way _(way)_ Too Much Lightning! Fortunately, some of the energy was converted into Magic Smoke. So that\'s neat.')
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 25)
+                ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
+            ;
+            $this->inventoryService->petCollectsItem('Way Too Much Lightning', $pet, $pet->getName() . ' created this by hammering a Lightning Sword and a Wand of Lightning together!', $activityLog);
+            $this->inventoryService->petCollectsItem('Magic Smoke', $pet, 'This was created as a byproduct of ' . $pet->getName() . ' creating Way Too Much Lightning!', $activityLog);
+
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::CRAFTS ], $activityLog);
+        }
+        else
+        {
+            $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% wanted to stuff a ' . $this->rng->rngNextFromArray([ 'Wand of Lightning', 'Lightning Sword' ]) . ' full of even more lightning, but wasn\'t sure how to make it work...')
                 ->setIcon('icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
             ;
