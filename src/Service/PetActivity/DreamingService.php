@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace App\Service\PetActivity;
 
-use App\Entity\Dream;
 use App\Entity\Item;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
@@ -143,8 +142,8 @@ class DreamingService
 
         $replacements = $this->generateReplacementsDictionary($item, $pet, $species);
 
-        $eventDescription = DreamingService::applyMadlib($dream->getDescription(), $replacements);
-        $itemDescription = DreamingService::applyMadlib($dream->getItemDescription(), $replacements);
+        $eventDescription = DreamingService::applyMadlib($dream['description'], $replacements);
+        $itemDescription = DreamingService::applyMadlib($dream['itemDescription'], $replacements);
 
         $this->inventoryService->receiveItem($itemName, $pet->getOwner(), $pet->getOwner(), $itemDescription, LocationEnum::HOME);
 
@@ -160,24 +159,9 @@ class DreamingService
         return $log;
     }
 
-    public function findRandomDream(IRandom $rng): Dream
+    public function findRandomDream(IRandom $rng): array
     {
-        $numberOfDreams = (int)$this->em->getRepository(Dream::class)
-            ->createQueryBuilder('d')
-            ->select('COUNT(d.id)')
-            ->getQuery()
-            ->getSingleScalarResult()
-        ;
-
-        $offset = $rng->rngNextInt(0, $numberOfDreams - 1);
-
-        return $this->em->getRepository(Dream::class)
-            ->createQueryBuilder('d')
-            ->setFirstResult($offset)
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getSingleResult()
-        ;
+        return $rng->rngNextFromArray(self::Dreams);
     }
 
     public function generateReplacementsDictionary(Item $item, Pet $pet, PetSpecies $species): array
@@ -239,4 +223,75 @@ class DreamingService
 
         return $text;
     }
+
+    public const Dreams = [
+        [
+            'description' => 'In a dream, %dreamer% was %wandering% %location1%, when they spotted %a_pet_or_monster%. It whispered something, but %dreamer% can\'t remember what, and gave %dreamer% %item%.',
+            'itemDescription' => '%A_pet_or_monster% gave this to %dreamer% in a dream.'
+        ],
+        [
+            'description' => 'While %wandering% %location1% in a dream, %dreamer% spotted %item%. They reached down and grabbed it, and when they looked up, they were %location2%.',
+            'itemDescription' => '%dreamer% found this in %location1% in a dream.'
+        ],
+        [
+            'description' => '%dreamer% dreamed they tripped over %item%, and tumbled into a pit %location1%. The %item% fell in, too, and %dreamer% grabbed it, and ate it.',
+            'itemDescription' => '%dreamer% ate this while falling in a dream.'
+        ],
+        [
+            'description' => 'In a dream, %dreamer% and a friend were %wandering% %location1%. The friend reached into their pocket and pulled out something covered in cloth. %dreamer% lifted up the cloth, and found %item%. When they looked up, their friend was gone.',
+            'itemDescription' => '%dreamer% received this from a friend in a dream.'
+        ],
+        [
+            'description' => '%dreamer% dreamed that they were making out with %a_species% on %surface% %location1%. %Item_with_article% got in the way, so %dreamer% tossed it aside.',
+            'itemDescription' => '%dreamer%, um, found this in a dream.'
+        ],
+        [
+            'description' => 'In a dream, %dreamer% got in a fight with %a_species% %location1%. The %species% threw %item% at %dreamer%, and declared victory! >:(',
+            'itemDescription' => 'A stupid %species% threw this at %dreamer% in a dream.'
+        ],
+        [
+            'description' => 'In a dream, %dreamer% and a friend went out to eat, and ordered %item_with_article% and %a_food_or_drink%. When the %item% arrived, it was %more% than expected!',
+            'itemDescription' => '%dreamer% ordered this at a restaurant in a dream.'
+        ],
+        [
+            'description' => '%dreamer% saw their parents in a dream, but couldn\'t make them out. They hummed a familiar tune, and handed %dreamer% %item%.',
+            'itemDescription' => '%dreamer% got this from their parents in a dream.'
+        ],
+        [
+            'description' => 'In a dream, %dreamer% found a secret compartment %location1%. They crawled inside, and arrived %location2%. On %surface%, there was %item%. %dreamer% took it.',
+            'itemDescription' => '%dreamer% found this on %surface% %location2% in a dream.'
+        ],
+        [
+            'description' => 'In a dream, %dreamer% bumped into %a_pet_or_monster%, causing them to drop %item_with_article%. %dreamer% %adverb% picked it up, and tried to call out, but their voice wasn\'t working.',
+            'itemDescription' => '%dreamer% %adverb% picked this up in a dream.'
+        ],
+        [
+            'description' => 'In a dream, %dreamer% was approached by a huge %item%. They %adverb% ran away; as they did so, the %item% shrank. Eventually, %dreamer% stopped, and picked it up.',
+            'itemDescription' => '%dreamer% was chased by this in a dream. (It was bigger in the dream...)'
+        ],
+        [
+            'description' => '%Location1% in a dream, %dreamer% looked in a mirror. They were %more% than usual. Also, there was %item_with_article% on their head!',
+            'itemDescription' => '%dreamer% saw this on their head while looking in a mirror in a dream.'
+        ],
+        [
+            'description' => 'In a dream, %dreamer% was %wandering% %location1%, and found themselves %location2%, surrounded by %plural_stuff%! %dreamer% spotted %item% in the distance, reached out for it, then woke up.',
+            'itemDescription' => '%dreamer% found this amidst %plural_stuff% in a dream.'
+        ],
+        [
+            'description' => 'In a dream, %dreamer% was in a room full of %plural_stuff%, kissing %a_species%, but the %species% was actually %item_with_article%? Or something? And then they woke up...',
+            'itemDescription' => '%dreamer% was kissing this in a dream?? (Don\'t ask; dreams are weird.)'
+        ],
+        [
+            'description' => '%dreamer% thought they were exploring %location1% in a dream, but they were actually %a_monster%, but super-tiny, exploring %surface%. They found %item_with_article% while wandering around (it was also super-tiny), and woke up.',
+            'itemDescription' => '%dreamer% found this on %surface% in a dream.'
+        ],
+        [
+            'description' => '%dreamer% got lost in a maze full of %plural_stuff% in a dream. They wandered around for what felt like forever before finally finding the %item% they had been sent to find there. Then they woke up.',
+            'itemDescription' => 'In a dream, %dreamer% was sent on a quest to find this... and succeeded!'
+        ],
+        [
+            'description' => '%dreamer% had a dream where they were %a_monster%, but also they could _see_ %the_monster%? And %the_monster% was holding %item_with_article%, which %dreamer% took, even though they already had it... it was weird.',
+            'itemDescription' => '%dreamer% took this from their self, in a dream, when they were %a_monster%.'
+        ]
+    ];
 }
