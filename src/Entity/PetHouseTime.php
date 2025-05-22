@@ -22,7 +22,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Table]
 #[ORM\Index(name: 'activity_time_idx', columns: ['activity_time'])]
 #[ORM\Index(name: 'social_energy_idx', columns: ['social_energy'])]
-#[ORM\Entity(repositoryClass: 'App\Repository\PetHouseTimeRepository')]
+#[ORM\Entity]
 class PetHouseTime
 {
     #[ORM\Id]
