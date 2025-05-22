@@ -21,4 +21,4 @@ More info about this project can be found in the `docs/` directory:
 ### Recommended reading/viewing
 
 * "The Art of Readable Code" - https://docslib.org/doc/3480439/the-art-of-readable-code-pdf
-* Some YouTube videos: https://www.youtube.com/playlist?list=PLMzQZ9sF5S2HecRCVCF9pmdqfZK2HCbxN
+* Some YouTube videos - https://www.youtube.com/playlist?list=PLMzQZ9sF5S2HecRCVCF9pmdqfZK2HCbxN
