@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Table]
 #[ORM\Index(name: 'time_remaining_idx', columns: ['time_remaining'])]
-#[ORM\Entity(repositoryClass: 'App\Repository\StatusEffectRepository')]
+#[ORM\Entity]
 class StatusEffect
 {
     #[ORM\Id]

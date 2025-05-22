@@ -19,6 +19,38 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Check for Repository Pattern Usage
+      run: |
+        echo "Checking for uses of Doctrine Repositories..."
+        
+        # Search for ServiceEntityRepository usage
+        SERVICE_REPO_FILES=$(grep -r "ServiceEntityRepository" src/ --include="*.php" -l || true)
+        
+        # Search for repositoryClass configuration
+        REPO_CLASS_FILES=$(grep -r "repositoryClass:" . --include="*.php" -l || true)
+        
+        # Check if any violations were found
+        VIOLATIONS_FOUND=false
+        
+        if [ ! -z "$SERVICE_REPO_FILES" ]; then
+          echo "❌ Files containing 'ServiceEntityRepository' found:"
+          echo "$SERVICE_REPO_FILES"
+          VIOLATIONS_FOUND=true
+        fi
+        
+        if [ ! -z "$REPO_CLASS_FILES" ]; then
+          echo "❌ Files containing 'repositoryClass:' found:"
+          echo "$REPO_CLASS_FILES"
+          VIOLATIONS_FOUND=true
+        fi
+        
+        if [ "$VIOLATIONS_FOUND" = true ]; then
+          echo ""
+          echo "🧚‍♀️ Hey, listen! Doctrine repository usage detected. Please remove these files/configurations."
+          echo "Use direct entity manager queries or domain-specific query builders instead."
+          exit 1
+        fi
+
     - name: Check License Headers
       uses: apache/skywalking-eyes/header@main
       with:
