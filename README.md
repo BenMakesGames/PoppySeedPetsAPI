@@ -17,3 +17,8 @@ More info about this project can be found in the `docs/` directory:
 * [Support BenMakesGames on Patreon](https://www.patreon.com/BenMakesGames)
   * hosting PSP isn't free... but this also isn't my job; I'm good; def take care of yourself first!
 * [Learn more about the GPLv3 license](https://www.gnu.org/licenses/quick-guide-gplv3.html)
+
+### Recommended reading/viewing
+
+* "The Art of Readable Code" - https://docslib.org/doc/3480439/the-art-of-readable-code-pdf
+* Some YouTube videos: https://www.youtube.com/playlist?list=PLMzQZ9sF5S2HecRCVCF9pmdqfZK2HCbxN
