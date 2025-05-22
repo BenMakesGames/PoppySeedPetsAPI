@@ -16,7 +16,7 @@ namespace App\Controller\Greenhouse;
 
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetBadgeEnum;
 use App\Exceptions\PSPInvalidOperationException;
 use App\Exceptions\PSPNotFoundException;
@@ -184,7 +184,7 @@ class WeedController
                 $inventoryService->petCollectsItem($bonusFlower, $helper, $helper->getName() . ' found this while weeding the Greenhouse with ' . $user->getName() . '.', $activityLogEntry);
 
             $activityLogEntry
-                ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
+                ->addInterestingness(PetActivityLogInterestingness::PlayerActionResponse)
                 ->setChanges($changes->compare($helper))
                 ->addTags(PetActivityLogTagHelpers::findByNames($em, [ 'Add-on Assistance', 'Greenhouse' ]))
             ;

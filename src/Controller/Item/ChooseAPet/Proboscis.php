@@ -16,7 +16,7 @@ namespace App\Controller\Item\ChooseAPet;
 
 use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetSkillEnum;
 use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
@@ -72,7 +72,7 @@ class Proboscis
             $actionDescription .= ", and {$honeyCombQuantity} Honeycomb";
 
         $activityLog = PetActivityLogFactory::createReadLog($em, $pet, "%pet:{$pet->getId()}.name% {$actionDescription}!")
-            ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
+            ->addInterestingness(PetActivityLogInterestingness::PlayerActionResponse)
         ;
 
         for($i = 0; $i < $sugarQuantity; $i++)

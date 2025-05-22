@@ -16,7 +16,7 @@ namespace App\Service\PetActivity;
 
 use App\Entity\Pet;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\UserStatEnum;
@@ -64,7 +64,7 @@ class SagaSagaService
         $skill = $this->rng->rngNextFromArray($possibleSkills);
 
         $log = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' got 5 points in ' . $skill . ', and was transformed into a skill scroll! All that remains is their ghost...')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY)
+            ->addInterestingness(PetActivityLogInterestingness::OneTimeQuestActivity)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Level-up' ]))
         ;
 

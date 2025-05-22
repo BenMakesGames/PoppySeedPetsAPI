@@ -20,7 +20,7 @@ use App\Entity\PetRelationship;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\HolidayEnum;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\RelationshipEnum;
@@ -314,7 +314,7 @@ class PetSocialActivityService
     {
         $teachingStat = null;
         $activityTags = [ 'Spirit Companion' ];
-        $activityInterestingness = PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT;
+        $activityInterestingness = PetActivityLogInterestingness::ActivityUsingMerit;
 
         $changes = new PetChanges($pet);
 
@@ -429,7 +429,7 @@ class PetSocialActivityService
             {
                 $this->pregnancyService->getPregnantViaSpiritCompanion($pet);
                 $activityTags[] = 'Pregnancy';
-                $activityInterestingness = PetActivityLogInterestingnessEnum::RARE_ACTIVITY;
+                $activityInterestingness = PetActivityLogInterestingness::RareActivity;
                 $message .= ' When the two touched, they felt a mysterious spark of energy! Somehow, %pet:' . $pet->getId() . '.name% knows... they\'re going to have a baby!';
             }
 

@@ -17,7 +17,7 @@ namespace App\Service\PetActivity;
 use App\Entity\PetActivityLog;
 use App\Enum\DistractionLocationEnum;
 use App\Enum\EnumInvalidValueException;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\PetActivityLogFactory;
@@ -55,7 +55,7 @@ class GatheringDistractionService
         }
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $description)
-            ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+            ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Gathering ]))
         ;
 

@@ -18,7 +18,7 @@ use App\Entity\ParkEvent;
 use App\Entity\Pet;
 use App\Enum\MeritEnum;
 use App\Enum\ParkEventTypeEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\SpiritCompanionStarEnum;
@@ -297,7 +297,7 @@ class TriDChessService implements ParkEventInterface
 
             $log = PetActivityLogFactory::createUnreadLog($this->em, $participant->pet, $activityLogEntry)
                 ->setIcon('icons/activity-logs/park')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::PARK_EVENT)
+                ->addInterestingness(PetActivityLogInterestingness::ParkEvent)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Park Event', 'Tri-D Chess' ]))
             ;
 

@@ -18,7 +18,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\RelationshipEnum;
 use App\Functions\ActivityHelpers;
@@ -78,7 +78,7 @@ class HoliService
 
         $activityLog
             ->setChanges($changes->compare($pet))
-            ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
+            ->addInterestingness(PetActivityLogInterestingness::HolidayOrSpecialEvent)
             // tags set in other methods
         ;
 
@@ -157,7 +157,7 @@ class HoliService
 
         $otherPetLog
             ->setIcon(self::HOLI_ACTIVITY_LOG_ICON)
-            ->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION)
+            ->addInterestingness(PetActivityLogInterestingness::RelationshipDiscussion)
             ->setChanges($otherPetChanges->compare($otherPet))
             ->addTags($tags)
         ;
@@ -170,7 +170,7 @@ class HoliService
 
         $activityLog
             ->setIcon(self::HOLI_ACTIVITY_LOG_ICON)
-            ->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION)
+            ->addInterestingness(PetActivityLogInterestingness::RelationshipDiscussion)
             ->addTags($tags)
         ;
 

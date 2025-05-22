@@ -18,7 +18,7 @@ use App\Entity\Guild;
 use App\Entity\Pet;
 use App\Entity\PetRelationship;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\RelationshipEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Exceptions\PSPFormValidationException;
@@ -143,7 +143,7 @@ class SelfReflectionController
         $pet->increaseSelfReflectionPoint(-1);
 
         PetActivityLogFactory::createUnreadLog($em, $pet, $pet->getName() . ' left ' . $oldGuildName . ', and joined ' . $guild->getName() . '!')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
+            ->addInterestingness(PetActivityLogInterestingness::PlayerActionResponse)
         ;
 
         $em->flush();
@@ -219,7 +219,7 @@ class SelfReflectionController
 
         PetActivityLogFactory::createUnreadLog($em, $pet, $pet->getName() . ' and ' . $friend->getName() . ' talked and made up! They are now ' . $relationshipDescriptions[$newRelationship ] . '!')
             ->setIcon('icons/activity-logs/friend')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
+            ->addInterestingness(PetActivityLogInterestingness::PlayerActionResponse)
         ;
 
         $otherSide
@@ -236,7 +236,7 @@ class SelfReflectionController
 
         $friendActivityLog
             ->setIcon('icons/activity-logs/friend')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE);
+            ->addInterestingness(PetActivityLogInterestingness::PlayerActionResponse);
 
         $pet->increaseSelfReflectionPoint(-1);
 

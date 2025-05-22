@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace App\Service\PetActivity\Crafting\Helpers;
 
 use App\Entity\PetActivityLog;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
 use App\Functions\PetActivityLogTagHelpers;
@@ -63,7 +63,7 @@ class MeteoriteSmithingService
             $this->houseSimService->getState()->loseItem('Meteorite', 1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged Ilumetsa from gold, iron, and a chunk of Meteorite.', 'items/tool/hammer/red')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 25)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 25)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
             ;
 
@@ -98,7 +98,7 @@ class MeteoriteSmithingService
             $this->houseSimService->getState()->loseItem('Meteorite', 1);
 
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% forged a Horizon Mirror!', 'items/treasure/space-mirror')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 25)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 25)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
             ;
 

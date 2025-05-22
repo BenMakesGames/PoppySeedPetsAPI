@@ -18,7 +18,7 @@ use App\Controller\Item\ItemControllerHelpers;
 use App\Entity\Inventory;
 use App\Entity\Merit;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Functions\PetActivityLogFactory;
 use App\Model\PetChanges;
 use App\Service\IRandom;
@@ -83,7 +83,7 @@ class YggdrasilBranch
         }
 
         PetActivityLogFactory::createReadLog($em, $pet, "%pet:{$pet->getId()}.name% {$itemActionDescription}")
-            ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
+            ->addInterestingness(PetActivityLogInterestingness::PlayerActionResponse)
             ->setChanges($petChanges->compare($pet))
         ;
 

@@ -20,7 +20,7 @@ use App\Entity\StatusEffect;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\StatusEffectEnum;
@@ -119,7 +119,7 @@ class PetExperienceService
 
                 $activityLog
                     ->setEntry($activityLog->getEntry() . ' %pet:' . $pet->getId() . '.name% leveled up! +1 ' . ucfirst($statToLevel) . '!')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::LEVEL_UP)
+                    ->addInterestingness(PetActivityLogInterestingness::LevelUp)
                 ;
             }
 
@@ -298,7 +298,7 @@ class PetExperienceService
 
         PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% gave Twu Wuv to %user:' . $pet->getOwner()->getId() . '.Name% for Valentine\'s Day! (Two of them! Two Twu Wuvs!)')
             ->setIcon('items/resource/twu-wuv')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
+            ->addInterestingness(PetActivityLogInterestingness::HolidayOrSpecialEvent)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Special Event', 'Valentine\'s' ]))
         ;
 

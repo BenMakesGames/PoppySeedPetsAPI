@@ -19,7 +19,7 @@ use App\Entity\PetActivityLog;
 use App\Entity\PetRelationship;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\RelationshipEnum;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
@@ -72,7 +72,7 @@ class RelationshipChangeService
         $p2->setTimeUntilChange();
 
         foreach($logs as $log)
-            $log->addInterestingness(PetActivityLogInterestingnessEnum::RELATIONSHIP_DISCUSSION);
+            $log->addInterestingness(PetActivityLogInterestingness::RelationshipDiscussion);
 
         return $logs;
     }

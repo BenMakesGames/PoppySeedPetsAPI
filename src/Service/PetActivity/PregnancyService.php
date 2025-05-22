@@ -20,7 +20,7 @@ use App\Entity\PetRelationship;
 use App\Entity\PetSpecies;
 use App\Enum\FlavorEnum;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetLocationEnum;
@@ -263,7 +263,7 @@ class PregnancyService
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::HAD_A_BABY, $activityLog);
 
         $activityLog
-            ->addInterestingness(PetActivityLogInterestingnessEnum::GAVE_BIRTH)
+            ->addInterestingness(PetActivityLogInterestingness::GaveBirth)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Pregnancy' ]))
         ;
 

@@ -25,7 +25,7 @@ use App\Entity\User;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\StatusEffectEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotFoundException;
@@ -214,7 +214,7 @@ class InventoryService
                 {
                     $activityLog
                         ->setEntry($activityLog->getEntry() . ' The ' . $item->getName() . ' was transformed into... Corn??? (That\'s not how the curse is supposed to work!)')
-                        ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                        ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                     ;
 
                     $item = ItemRepository::findOneByName($this->em, 'Corn');
@@ -223,7 +223,7 @@ class InventoryService
                 {
                     $activityLog
                         ->setEntry($activityLog->getEntry() . ' The ' . $item->getName() . ' was transformed into Wheat by their curse!')
-                        ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                        ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                     ;
 
                     $item = ItemRepository::findOneByName($this->em, 'Wheat');
@@ -233,7 +233,7 @@ class InventoryService
             {
                 $activityLog
                     ->setEntry($activityLog->getEntry() . ' The ' . $item->getName() . ' was transformed into a Gold Bar by their curse!')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                    ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ;
 
                 $item = ItemRepository::findOneByName($this->em, 'Gold Bar');
@@ -372,7 +372,7 @@ class InventoryService
                 ->setEnchantment($bonus)
             ;
 
-            $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT);
+            $activityLog->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit);
 
             $this->applySeasonalSpiceToNewItem($extraItem);
 

@@ -17,7 +17,7 @@ namespace App\Controller\Item;
 use App\Entity\Inventory;
 use App\Entity\Pet;
 use App\Enum\LocationEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetLocationEnum;
 use App\Enum\PetSkillEnum;
 use App\Enum\UserStatEnum;
@@ -103,7 +103,7 @@ class DragonVaseController
 
             $activityLog
                 ->setChanges($changes->compare($pet))
-                ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
+                ->addInterestingness(PetActivityLogInterestingness::PlayerActionResponse)
             ;
 
             $petNames[] = $pet->getName();

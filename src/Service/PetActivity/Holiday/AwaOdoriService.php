@@ -17,7 +17,7 @@ namespace App\Service\PetActivity\Holiday;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetActivityLogTag;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\StatusEffectEnum;
 use App\Functions\ArrayFunctions;
 use App\Functions\PetActivityLogFactory;
@@ -129,7 +129,7 @@ class AwaOdoriService
             ->setIcon('calendar/holidays/awa-odori')
             ->setChanges($changes->compare($pet))
             ->addTags($activityLogTags)
-            ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
+            ->addInterestingness(PetActivityLogInterestingness::HolidayOrSpecialEvent)
         ;
 
         return $log;

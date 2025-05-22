@@ -16,7 +16,7 @@ namespace App\Service\PetActivity\SpecialLocations;
 
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
@@ -98,7 +98,7 @@ class HeartDimensionService
 
         if($adventure < 7)
         {
-            $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY);
+            $activityLog->addInterestingness(PetActivityLogInterestingness::RareActivity);
             $bugChance1InX = 10;
         }
         else

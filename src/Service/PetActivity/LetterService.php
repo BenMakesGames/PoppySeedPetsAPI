@@ -22,7 +22,7 @@ use App\Entity\UserLetter;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\LetterSenderEnum;
 use App\Enum\LocationEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\RelationshipEnum;
 use App\Enum\UnlockableFeatureEnum;
@@ -239,7 +239,7 @@ class LetterService
 
             $courierActivity = PetActivityLogFactory::createUnreadLog($this->em, $courier, '%pet:' . $courier->getId() . '.name% - on a job for Correspondence - delivered a Letter from ' . $sender->value . ' to ' . $descriptionForCourier)
                 ->setIcon('icons/activity-logs/letter')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::RareActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Guild', 'Mail' ]))
             ;
 
@@ -250,7 +250,7 @@ class LetterService
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While %pet:' . $pet->getId() . '.name% was thinking about what to do, a courier delivered them a Letter from ' . $sender->value . '! The courier was ' . $descriptionForPet)
             ->setIcon('icons/activity-logs/letter')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+            ->addInterestingness(PetActivityLogInterestingness::RareActivity)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Mail' ]))
         ;
 

@@ -17,7 +17,7 @@ namespace App\Service\PetActivity\Group;
 use App\Entity\Pet;
 use App\Entity\PetGroup;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetSkillEnum;
 use App\Functions\EnchantmentRepository;
 use App\Functions\GroupNameGenerator;
@@ -255,7 +255,7 @@ class GamingGroupService
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $this->formatMessage($messageTemplate, $member, $group))
                 ->setIcon(self::ActivityIcon)
-                ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Gaming Group' ]))
             ;
 

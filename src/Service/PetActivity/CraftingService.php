@@ -18,7 +18,7 @@ use App\Entity\PetActivityLog;
 use App\Enum\EnumInvalidValueException;
 use App\Enum\HolidayEnum;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetSkillEnum;
@@ -528,7 +528,7 @@ class CraftingService
             $pet->increaseEsteem(2);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made a ' . $item . ' from Fiberglass.')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
             $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' created this from Fiberglass.', $activityLog);
@@ -574,7 +574,7 @@ class CraftingService
             $pet->increaseEsteem(3);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Decorated Flute.')
                 ->setIcon('items/tool/instrument/flute-decorated')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
             $this->inventoryService->petCollectsItem('Decorated Flute', $pet, $pet->getName() . ' created this by tying a Glass Pendulum to a Flute.', $activityLog);
@@ -620,7 +620,7 @@ class CraftingService
             $pet->increaseEsteem(3);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Drumpkin!')
                 ->setIcon('items/tool/instrument/drumpkin')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home, 'Smithing' ]))
             ;
             $this->inventoryService->petCollectsItem('Drumpkin', $pet, $pet->getName() . ' created this!', $activityLog);
@@ -673,7 +673,7 @@ class CraftingService
             $pet->increaseEsteem($paperCount * 2);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created ' . $paperCount . ' Paper!')
                 ->setIcon('items/resource/paper')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 5 + $paperCount * 5)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 5 + $paperCount * 5)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
 
@@ -790,7 +790,7 @@ class CraftingService
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Double Scythe; ' . $and)
                 ->setIcon('items/tool/scythe/double')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
 
@@ -826,7 +826,7 @@ class CraftingService
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Fish Head Shovel!')
                 ->setIcon('items/tool/shovel/fish-head')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
 
@@ -871,7 +871,7 @@ class CraftingService
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Farmer\'s Multi-tool!')
                 ->setIcon('items/tool/shovel/multi-tool')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
 
@@ -918,7 +918,7 @@ class CraftingService
 
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% spun some ' . $spunWhat . ' into TWO ' . $making->getName() . '!')
                     ->setIcon('items/' . $making->getImage())
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $difficulty + 12)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + $difficulty + 12)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
                 ;
 
@@ -933,7 +933,7 @@ class CraftingService
 
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% spun some ' . $spunWhat . ' into ' . $making->getName() . '.')
                     ->setIcon('items/' . $making->getImage())
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + $difficulty)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + $difficulty)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
                 ;
 
@@ -1004,7 +1004,7 @@ class CraftingService
 
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% molded a Chocolate Bar into TWO ' . $making->getName() . 's!')
                     ->setIcon('items/' . $making->getImage())
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Crafting,
                         PetActivityLogTagEnum::Location_At_Home,
@@ -1019,7 +1019,7 @@ class CraftingService
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% molded a Chocolate Bar into ' . $making->getNameWithArticle() . '.')
                     ->setIcon('items/' . $making->getImage())
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 10)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Crafting,
                         PetActivityLogTagEnum::Location_At_Home,
@@ -1568,7 +1568,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Glass', 1);
             $pet->increaseEsteem(2);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% cut some Glass to look like a gem, and made a Glass Pendulum.')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1614,7 +1614,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Naner', 1);
             $pet->increaseEsteem(2);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made a makeshift bow... out of a Naner.')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 11)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 11)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1650,7 +1650,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Green Dye', 1);
             $pet->increaseEsteem(2);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% sculpted some Gypsum into the shape of a dragon!')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1702,7 +1702,7 @@ class CraftingService
             if($roll >= 22 || $weather->isHoliday(HolidayEnum::Easter))
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made an Eat Your Fruits and Veggies, and even had enough Carrot left over to make a Carrot Key!')
-                    ->addInterestingness($weather->isHoliday(HolidayEnum::Easter) ? PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT : (PetActivityLogInterestingnessEnum::HO_HUM + 22))
+                    ->addInterestingness($weather->isHoliday(HolidayEnum::Easter) ? PetActivityLogInterestingness::HolidayOrSpecialEvent : (PetActivityLogInterestingness::HoHum + 22))
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Crafting,
                         PetActivityLogTagEnum::Location_At_Home,
@@ -1716,7 +1716,7 @@ class CraftingService
             else
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% loaded a Bownaner with a Carrot...')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 12)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 12)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Crafting,
                         PetActivityLogTagEnum::Location_At_Home,
@@ -1760,7 +1760,7 @@ class CraftingService
                 $message .= ' (It\'s harder than it looks!)';
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1797,7 +1797,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Silver Key', 1);
             $pet->increaseEsteem(3);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created Benjamin Franklin. (A kite, not the person.)')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 17)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 17)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_Neighborhood,
@@ -1853,7 +1853,7 @@ class CraftingService
                 ;
 
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Short-range Telephone, and was even able to squeeze the Yellow Dye out of the Small, Yellow Plastic Bucket they used.' . $extra)
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Crafting,
                         PetActivityLogTagEnum::Location_At_Home,
@@ -1865,7 +1865,7 @@ class CraftingService
             else
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Short-range Telephone. They tried to extract the Yellow Dye from the Small, Yellow Plastic Bucket they used, but wasn\'t able to recover a useful amount of it.')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Crafting,
                         PetActivityLogTagEnum::Location_At_Home,
@@ -1916,7 +1916,7 @@ class CraftingService
             $pet->increaseEsteem(3);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created a Crow\'s Eye... with Roadkill?!')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1956,7 +1956,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('L-Square', 1);
             $pet->increaseEsteem(3);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created Ribbely\'s Composite.')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -1995,7 +1995,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Ruby Feather', 1);
             $pet->increaseEsteem(5);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made an Afternoon Hat by shaping some White Cloth, and tying a Ruby Feather to it!')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 13)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 13)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2030,7 +2030,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Feathers', 1);
             $pet->increaseEsteem(3);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% created an Ornate Pan Flute.')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2128,7 +2128,7 @@ class CraftingService
             $pet->increaseEsteem(2);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% enchanted a Decorated Spear to be ' . $veilPiercer->getNameWithArticle() . '.')
                 ->setIcon('items/' . $veilPiercer->getImage())
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Magic_binding,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2163,7 +2163,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Decorated Spear', 1);
             $pet->increaseEsteem(2);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% further decorated a Decorated Spear; now it\'s a Nagatooth!')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2207,7 +2207,7 @@ class CraftingService
             ;
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $activityLogMessage)
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2252,7 +2252,7 @@ class CraftingService
             if($craftsCheck >= 25 || $weather->isHoliday(HolidayEnum::Easter))
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made a Carotene Stick, and even had enough Carrot left over to make a Carrot Key!')
-                    ->addInterestingness($weather->isHoliday(HolidayEnum::Easter) ? PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT : (PetActivityLogInterestingnessEnum::HO_HUM + 25))
+                    ->addInterestingness($weather->isHoliday(HolidayEnum::Easter) ? PetActivityLogInterestingness::HolidayOrSpecialEvent : (PetActivityLogInterestingness::HoHum + 25))
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Crafting,
                         PetActivityLogTagEnum::Location_At_Home,
@@ -2266,7 +2266,7 @@ class CraftingService
             else
             {
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made a Carrot Lure for a Crooked Fishing Rod; now it\'s a Carotene Stick!')
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                         PetActivityLogTagEnum::Crafting,
                         PetActivityLogTagEnum::Location_At_Home,
@@ -2457,7 +2457,7 @@ class CraftingService
             $pet->increaseEsteem(3);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% repaired a Rusty Blunderbuss. It\'s WAY less rusty now!')
                 ->setIcon('items/tool/gun/blunderbuss')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home, 'Smithing' ]))
             ;
             $this->inventoryService->petCollectsItem('Blunderbuss', $pet, $pet->getName() . ' repaired this Rusty Blunderbuss.', $activityLog);
@@ -2489,7 +2489,7 @@ class CraftingService
             $pet->increaseEsteem(2);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% repaired a Rusty Rapier. It\'s WAY less rusty now!')
                 ->setIcon('items/tool/sword/rapier')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 14)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home, 'Smithing' ]))
             ;
             $this->inventoryService->petCollectsItem('Rapier', $pet, $pet->getName() . ' repaired this Rapier.', $activityLog);
@@ -2524,7 +2524,7 @@ class CraftingService
             $pet->increaseEsteem(2);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% repaired a Rusted, Busted Mechanism; it\'s now a fully-functional ' . $loot . '!')
                 ->setIcon('items/old-mechanism/busted')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 18)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 18)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2613,7 +2613,7 @@ class CraftingService
             $pet->increaseEsteem(3);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% dyed ' . $makingItem->getNameWithArticle() . '.')
                 ->setIcon('items/' . $makingItem->getImage())
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 10)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Painting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2649,7 +2649,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Sunflower Stick', 1);
             $pet->increaseSafety($this->rng->rngNextInt(2, 4));
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made a Sun-sun Flag!')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 10)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2685,7 +2685,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Sun-sun Flag', 2);
             $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made a Sun-sun Flag-flag, Son!')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 20)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2721,7 +2721,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Talon', 1);
             $pet->increaseEsteem(2);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made a Pale Flail!')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 15)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2757,7 +2757,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Crooked Stick');
             $pet->increaseEsteem(3);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% used their Eidetic Memory to perfectly knot _two_ Bindles!')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
             $this->inventoryService->petCollectsItem('Bindle', $pet, $pet->getName() . ' made this, thanks to their Eidetic Memory.', $activityLog);
@@ -2772,7 +2772,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Crooked Stick');
             $pet->increaseEsteem(3);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made a Bindle by tying a White Flag to a stick.')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 10)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,
@@ -2810,7 +2810,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Crooked Fishing Rod');
             $pet->increaseEsteem(3);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% used their Eidetic Memory to perfectly knot _two_ Bindles!')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+                ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Crafting, PetActivityLogTagEnum::Location_At_Home ]))
             ;
             $this->inventoryService->petCollectsItem('Bindle', $pet, $pet->getName() . ' made this, thanks to their Eidetic Memory.', $activityLog);
@@ -2824,7 +2824,7 @@ class CraftingService
             $this->houseSimService->getState()->loseItem('Crooked Fishing Rod');
             $pet->increaseEsteem(3);
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% made a Bindle by tying a White Flag to a Crooked Fishing Rod.')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 10)
+                ->addInterestingness(PetActivityLogInterestingness::HoHum + 10)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [
                     PetActivityLogTagEnum::Crafting,
                     PetActivityLogTagEnum::Location_At_Home,

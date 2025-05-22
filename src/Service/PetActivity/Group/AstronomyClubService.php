@@ -19,7 +19,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetGroup;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetSkillEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\CalendarFunctions;
@@ -135,7 +135,7 @@ class AstronomyClubService
 
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $this->formatMessage($messageTemplate, $member, $group, ''))
                     ->setIcon(self::ActivityIcon)
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HOLIDAY_OR_SPECIAL_EVENT)
+                    ->addInterestingness(PetActivityLogInterestingness::HolidayOrSpecialEvent)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Astronomy Lab', 'Special Event', 'Leonids' ]))
                 ;
@@ -222,7 +222,7 @@ class AstronomyClubService
 
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member, $this->formatMessage($messageTemplate, $member, $group, $description))
                     ->setIcon(self::ActivityIcon)
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::UNCOMMON_ACTIVITY)
+                    ->addInterestingness(PetActivityLogInterestingness::UncommonActivity)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Astronomy Lab' ]))
                 ;
@@ -247,7 +247,7 @@ class AstronomyClubService
 
                 $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $member,  $member->getName() . ' explored the cosmos with ' . $group->getName() . '.')
                     ->setIcon(self::ActivityIcon)
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM)
+                    ->addInterestingness(PetActivityLogInterestingness::HoHum)
                     ->setChanges($petChanges[$member->getId()]->compare($member))
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout', 'Astronomy Lab' ]))
                 ;

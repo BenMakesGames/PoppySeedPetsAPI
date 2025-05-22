@@ -16,7 +16,7 @@ namespace App\Controller\Item;
 
 use App\Entity\Inventory;
 use App\Entity\Pet;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetLocationEnum;
 use App\Functions\ActivityHelpers;
 use App\Functions\ItemRepository;
@@ -95,7 +95,7 @@ class HornOfPlentyController
 
         PetActivityLogFactory::createReadLog($em, $helperPet, ActivityHelpers::PetName($helperPet) . ' found ' . $lootDescription . ' in a Horn of Plenty.')
             ->setChanges($changes->compare($helperPet))
-            ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE);
+            ->addInterestingness(PetActivityLogInterestingness::PlayerActionResponse);
 
         if($rng->rngNextInt(2, 6) <= $numberOfTosses)
         {

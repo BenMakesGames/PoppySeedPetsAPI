@@ -23,7 +23,7 @@ use App\Entity\User;
 use App\Enum\ActivityPersonalityEnum;
 use App\Enum\GatheringHolidayEnum;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityLogTagEnum;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
@@ -391,7 +391,7 @@ class PetActivityService
             $lunchboxLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message)
                 ->setIcon('icons/activity-logs/lunchbox')
                 ->setChanges($petChanges->compare($pet))
-                ->addInterestingness($itemsLeftInLunchbox === 0 ? PetActivityLogInterestingnessEnum::LUNCHBOX_EMPTY : 1)
+                ->addInterestingness($itemsLeftInLunchbox === 0 ? PetActivityLogInterestingness::LunchboxEmpty : 1)
             ;
 
             PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::EMPTIED_THEIR_LUNCHBOX, $lunchboxLog);
@@ -1182,7 +1182,7 @@ class PetActivityService
             $changes = new PetChanges($pet);
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' was thinking about what to do, when their Fairy Godmother showed up! "Let\'s do something about that nasty Vampire bite!" she said, and with a flick of her wand, ' . ActivityHelpers::PetName($pet) . '\'s vampire bite was healed! "Much better! <small>Nasty creatures, those!</small> You take care, now!"')
-                ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::RareActivity)
             ;
 
             $pet
@@ -1245,7 +1245,7 @@ class PetActivityService
         $changes = new PetChanges($pet);
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' was thinking about what to do, when their Fairy Godmother showed up! They chatted for a while before she delivered these parting words: "' . $randomChat . '"... and a parting gift: ' . $randomGoody . '. (' . $soNice . ')')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+            ->addInterestingness(PetActivityLogInterestingness::RareActivity)
         ;
 
         $pet
@@ -1275,7 +1275,7 @@ class PetActivityService
         ]);
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, ActivityHelpers::PetName($pet) . ' was thinking about what to do, when they spotted a Handicrafts Supply Box nearby! (Athena\'s Gifts! ' . $randomExclamation . ')')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+            ->addInterestingness(PetActivityLogInterestingness::RareActivity)
         ;
 
         $this->inventoryService->petCollectsItem('Handicrafts Supply Box', $pet, $pet->getName() . ' received this - a gift from the gods!', $activityLog);

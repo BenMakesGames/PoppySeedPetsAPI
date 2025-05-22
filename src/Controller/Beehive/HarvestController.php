@@ -16,7 +16,7 @@ namespace App\Controller\Beehive;
 
 use App\Enum\LocationEnum;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetBadgeEnum;
 use App\Enum\SerializationGroupEnum;
 use App\Enum\UnlockableFeatureEnum;
@@ -165,7 +165,7 @@ class HarvestController
                 }
 
                 $activityLog
-                    ->addInterestingness(PetActivityLogInterestingnessEnum::PLAYER_ACTION_RESPONSE)
+                    ->addInterestingness(PetActivityLogInterestingness::PlayerActionResponse)
                     ->setChanges($changes->compare($helper))
                     ->addTags(PetActivityLogTagHelpers::findByNames($em, [ 'Add-on Assistance', 'Beehive' ]))
                 ;

@@ -20,7 +20,7 @@ use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Entity\PetSpecies;
 use App\Enum\LocationEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Functions\GrammarFunctions;
@@ -151,7 +151,7 @@ class DreamingService
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         $log = $this->responseService->createActivityLog($pet, $eventDescription, '')
-            ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+            ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Dream' ]))
         ;
 

@@ -20,7 +20,7 @@ use App\Entity\PetActivityLog;
 use App\Entity\User;
 use App\Entity\UserUnlockedAura;
 use App\Enum\EnumInvalidValueException;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PlayerActivityLogTagEnum;
 use App\Enum\UnlockableFeatureEnum;
 use App\Exceptions\PSPNotFoundException;
@@ -182,7 +182,7 @@ class HattierService
 
         $cacheKey = $this->getAuraUnlockedCacheKey($user, $enchantment);
 
-        $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY);
+        $activityLog->addInterestingness(PetActivityLogInterestingness::RareActivity);
 
         $this->userAurasPerRequestCache[$cacheKey] = $unlockedAura;
 
@@ -235,7 +235,7 @@ class HattierService
         if($pet->getHat() && !$pet->getHat()->getEnchantment())
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $logIfHatGetsEnchanted)
-                ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::RareActivity)
             ;
 
             $pet->getHat()->setEnchantment($enchantment);
@@ -243,7 +243,7 @@ class HattierService
         else
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $logIfHatDoesNotGetEnchanted)
-                ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::RareActivity)
             ;
         }
 
@@ -266,7 +266,7 @@ class HattierService
         {
             $activityLog
                 ->setEntry($activityLog->getEntry() . ' ' . $addedToHatDescription)
-                ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::RareActivity)
             ;
 
             $pet->getHat()->setEnchantment($enchantment);
@@ -275,7 +275,7 @@ class HattierService
         {
             $activityLog
                 ->setEntry($activityLog->getEntry() . ' ' . $notAddedToHatDescription)
-                ->addInterestingness(PetActivityLogInterestingnessEnum::RARE_ACTIVITY)
+                ->addInterestingness(PetActivityLogInterestingness::RareActivity)
             ;
         }
 

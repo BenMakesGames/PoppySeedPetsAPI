@@ -17,7 +17,7 @@ namespace App\Service\PetActivity;
 use App\Entity\Pet;
 use App\Entity\PetActivityLog;
 use App\Enum\LocationEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetBadgeEnum;
 use App\Functions\PetActivityLogFactory;
 use App\Functions\PetActivityLogTagHelpers;
@@ -44,7 +44,7 @@ class PoopingService
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% shed some ' . $pet->getSpecies()->getSheds()->getName() . '.')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Shedding']))
-            ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+            ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
         ;
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::POOPED_SHED_OR_BATHED, $activityLog);
@@ -55,7 +55,7 @@ class PoopingService
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name%, um, _created_ some Dark Matter.')
             ->setIcon('items/element/dark-matter')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Pooping']))
-            ->addInterestingness(PetActivityLogInterestingnessEnum::ACTIVITY_USING_MERIT)
+            ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
         ;
 
         if($this->rng->rngNextInt(1, 20) === 1)

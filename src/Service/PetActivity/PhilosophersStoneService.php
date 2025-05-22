@@ -17,7 +17,7 @@ namespace App\Service\PetActivity;
 // see /notes/ElementQuest.md
 use App\Entity\PetActivityLog;
 use App\Enum\MeritEnum;
-use App\Enum\PetActivityLogInterestingnessEnum;
+use App\Enum\PetActivityLogInterestingness;
 use App\Enum\PetActivityStatEnum;
 use App\Enum\PetBadgeEnum;
 use App\Enum\PetSkillEnum;
@@ -108,7 +108,7 @@ class PhilosophersStoneService
                         $activityLogMessage
                     );
 
-                    $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20);
+                    $activityLog->addInterestingness(PetActivityLogInterestingness::HoHum + 20);
 
                     $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this from the remains of the Lava Giant\'s Spirit!', $activityLog);
                     $this->inventoryService->petCollectsItem('Liquid-hot Magma', $pet, $pet->getName() . ' got this from the remains of the Lava Giant\'s Spirit!', $activityLog);
@@ -124,7 +124,7 @@ class PhilosophersStoneService
                         $activityLogMessage
                     );
 
-                    $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY);
+                    $activityLog->addInterestingness(PetActivityLogInterestingness::OneTimeQuestActivity);
 
                     $pet->increaseEsteem(12);
 
@@ -216,7 +216,7 @@ class PhilosophersStoneService
                     $activityLogMessage .= '. The Ceremony of Fire made short work of the icicles, freeing the Quintessence locked inside.';
 
                     $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $activityLogMessage)
-                        ->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20);
+                        ->addInterestingness(PetActivityLogInterestingness::HoHum + 20);
 
                     $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this from the ice cave in the frozen quag of the Umbra.', $activityLog);
                     $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this from the ice cave in the frozen quag in the Umbra.', $activityLog);
@@ -233,7 +233,7 @@ class PhilosophersStoneService
 
                     $pet->increaseEsteem(12);
 
-                    $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY);
+                    $activityLog->addInterestingness(PetActivityLogInterestingness::OneTimeQuestActivity);
 
                     $this->inventoryService->petCollectsItem('Quintessence', $pet, $pet->getName() . ' got this from the ice cave in the frozen quag in the Umbra.', $activityLog);
                     $this->inventoryService->petCollectsItem('Vesica Hydrargyrum', $pet, $pet->getName() . ' found this in the heart of the ice cave in the frozen quag in the Umbra!', $activityLog);
@@ -314,7 +314,7 @@ class PhilosophersStoneService
 
                     $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $activityLogMessage);
 
-                    $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY);
+                    $activityLog->addInterestingness(PetActivityLogInterestingness::OneTimeQuestActivity);
 
                     $pet->addMerit(MeritRepository::findOneByName($this->em, MeritEnum::MANXOME));
 
@@ -338,7 +338,7 @@ class PhilosophersStoneService
 
                     $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $activityLogMessage);
 
-                    $activityLog->addInterestingness(PetActivityLogInterestingnessEnum::HO_HUM + 20);
+                    $activityLog->addInterestingness(PetActivityLogInterestingness::HoHum + 20);
 
                     foreach($loot['items'] as $item)
                         $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' got this by defeating ' . $aMonsterType . ' Jabberwock!', $activityLog);
@@ -398,7 +398,7 @@ class PhilosophersStoneService
         $pet->addMerit(MeritRepository::findOneByName($this->em, MeritEnum::LIGHTNING_REINS));
 
         $activityLog
-            ->addInterestingness(PetActivityLogInterestingnessEnum::ONE_TIME_QUEST_ACTIVITY)
+            ->addInterestingness(PetActivityLogInterestingness::OneTimeQuestActivity)
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
             ->setChanges($changes->compare($pet))
         ;
