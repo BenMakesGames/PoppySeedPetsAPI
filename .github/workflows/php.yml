@@ -46,7 +46,7 @@ jobs:
         
         if [ "$VIOLATIONS_FOUND" = true ]; then
           echo ""
-          echo "Doctrine repository usage detected. Please remove these files/configurations."
+          echo "🧚‍♀️ Hey, listen! Doctrine repository usage detected. Please remove these files/configurations."
           echo "Use direct entity manager queries or domain-specific query builders instead."
           exit 1
         fi
