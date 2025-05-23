@@ -46,26 +46,24 @@ class DirtyLumpController
         $lockedToOwner = $lump->getLockedToOwner();
 
         $item = $rng->rngNextFromArray([
-            'Secret Seashell',
-            'Striped Microcline',
+            'Beta Bug',
             'Blackonite',
-            $rng->rngNextFromArray([ 'Meteorite', 'Species Transmigration Serum' ]),
             'Century Egg',
             'Digital Camera',
-            'Beta Bug',
-            'White Bow',
             'Fish Bones',
-            'Worms',
-            $rng->rngNextFromArray([ 'Potion of Stealth', 'Werebane' ]),
+            'Lunchbox Paint',
+            'Major Scroll of Riches',
+            'Meteorite',
+            'Monster Box',
+            'Mortar or Pestle',
             'Propeller Beanie',
             'Rusted, Busted Mechanism',
-            $rng->rngNextFromArray([ 'Tile: Hidden Alcove', 'Tile: Sand Worm!' ]),
-            'Tower Chest',
-            'Major Scroll of Riches',
             'Sand-covered... Something',
-            'Monster Box',
-            'Lunchbox Paint',
-            $rng->rngNextFromArray([ 'Flowerbomb', 'Giant Turkey Leg' ]),
+            'Striped Microcline',
+            'Tile: Sand Worm!',
+            'Werebane',
+            'Worms',
+            $rng->rngNextFromArray([ 'White Bow', 'Species Transmigration Serum' ]),
         ]);
 
         $itemObject = ItemRepository::findOneByName($em, $item);
