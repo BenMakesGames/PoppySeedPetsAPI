@@ -52,6 +52,7 @@ final class MeritEnum
     public const string WONDROUS_INTELLIGENCE = 'Wondrous Intelligence';
     public const string BIGGER_LUNCHBOX = 'Bigger Lunchbox';
     public const string BLUSH_OF_LIFE = 'Blush of Life';
+    public const string MORTARS_AND_PESTLES = 'Mortars and Pestles';
 
     // obtained by seeking the Philosopher's Stone
     public const string METATRON_S_TOUCH = 'Metatron\'s Touch';

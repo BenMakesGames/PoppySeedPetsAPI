@@ -357,6 +357,7 @@ class ComputedPetSkills
     {
         $skill = new TotalPetSkill();
         $skill->tool = $this->pet->getTool() ? $this->pet->getTool()->miningBonus() : 0;
+        $skill->merits = ($this->pet->hasMerit(MeritEnum::MORTARS_AND_PESTLES) ? 1 : 0);
 
         return $skill;
     }
