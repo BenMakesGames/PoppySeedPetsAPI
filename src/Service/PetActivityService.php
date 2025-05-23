@@ -67,6 +67,7 @@ use App\Service\PetActivity\HuntingService;
 use App\Service\PetActivity\JumpRopeService;
 use App\Service\PetActivity\KappaService;
 use App\Service\PetActivity\LetterService;
+use App\Service\PetActivity\MortarOrPestleService;
 use App\Service\PetActivity\PetCleaningSelfService;
 use App\Service\PetActivity\PetSummonedAwayService;
 use App\Service\PetActivity\PhilosophersStoneService;
@@ -137,7 +138,8 @@ class PetActivityService
         private readonly JumpRopeService $jumpRopeService,
         private readonly DokiDokiService $dokiDokiService,
         private readonly LostInTownService $lostInTownService,
-        private readonly FructalPlaneService $fructalPlaneService
+        private readonly FructalPlaneService $fructalPlaneService,
+        private readonly MortarOrPestleService $mortarOrPestleService
     )
     {
     }
@@ -698,17 +700,8 @@ class PetActivityService
 
                 break;
 
-            case 'Saucepan':
-                if($this->rng->rngNextInt(1, 10) === 1)
-                {
-                    $this->treasureMapService->doCookSomething($pet);
-                    return true;
-                }
-
-                break;
-
-            case 'Diffie-H Key':
-                $this->treasureMapService->doUseDiffieHKey($pet);
+            case '5-leaf Clover':
+                $this->treasureMapService->doLeprechaun($petWithSkills);
                 return true;
 
             case 'Aubergine Commander':
@@ -719,20 +712,28 @@ class PetActivityService
                 }
                 break;
 
-            case 'Chocolate Key':
-                $this->chocolateMansion->adventure($petWithSkills);
-                return true;
-
             case 'Carrot Key':
                 $this->caerbannog->adventure($petWithSkills);
                 return true;
 
-            case '5-leaf Clover':
-                $this->treasureMapService->doLeprechaun($petWithSkills);
+            case 'Ceremony of Fire':
+                if($this->rng->rngNextInt(1, 20) == 1)
+                {
+                    $this->philosophersStoneService->seekVesicaHydrargyrum($petWithSkills);
+                    return true;
+                }
+                break;
+
+            case 'Chocolate Key':
+                $this->chocolateMansion->adventure($petWithSkills);
                 return true;
 
-            case 'Winged Key':
-                $this->treasureMapService->doAbundantiasVault($pet);
+            case 'Cucumber':
+                $this->kappaService->doHuntKappa($petWithSkills);
+                return true;
+
+            case 'Diffie-H Key':
+                $this->treasureMapService->doUseDiffieHKey($pet);
                 return true;
 
             case 'Fimbulvetr':
@@ -743,41 +744,9 @@ class PetActivityService
                 }
                 break;
 
-            case 'Ceremony of Fire':
-                if($this->rng->rngNextInt(1, 20) == 1)
-                {
-                    $this->philosophersStoneService->seekVesicaHydrargyrum($petWithSkills);
-                    return true;
-                }
-                break;
-
-            case 'Snickerblade':
-                if($this->rng->rngNextInt(1, 20) == 1)
-                {
-                    $this->philosophersStoneService->seekEarthsEgg($petWithSkills);
-                    return true;
-                }
-                break;
-
             case 'Fruit Fly on a String':
                 $this->treasureMapService->doFruitHunting($pet);
                 return true;
-
-            case 'Cucumber':
-                $this->kappaService->doHuntKappa($petWithSkills);
-                return true;
-
-            case 'Shirikodama':
-                $this->kappaService->doReturnShirikodama($petWithSkills);
-                return true;
-
-            case 'Skewered Marshmallow':
-                if($this->rng->rngNextInt(1, 10) == 1)
-                {
-                    $this->treasureMapService->doToastSkeweredMarshmallow($pet);
-                    return true;
-                }
-                break;
 
             case 'Jump Rope':
                 if($this->rng->rngNextInt(1, 4) == 1)
@@ -794,6 +763,44 @@ class PetActivityService
                     return true;
                 }
                 break;
+
+            case 'Mortar or Pestle':
+                if($this->mortarOrPestleService->findTheOtherBit($petWithSkills->getPet()))
+                    return true;
+                break;
+
+            case 'Saucepan':
+                if($this->rng->rngNextInt(1, 10) === 1)
+                {
+                    $this->treasureMapService->doCookSomething($pet);
+                    return true;
+                }
+
+                break;
+
+            case 'Shirikodama':
+                $this->kappaService->doReturnShirikodama($petWithSkills);
+                return true;
+
+            case 'Skewered Marshmallow':
+                if($this->rng->rngNextInt(1, 10) == 1)
+                {
+                    $this->treasureMapService->doToastSkeweredMarshmallow($pet);
+                    return true;
+                }
+                break;
+
+            case 'Snickerblade':
+                if($this->rng->rngNextInt(1, 20) == 1)
+                {
+                    $this->philosophersStoneService->seekEarthsEgg($petWithSkills);
+                    return true;
+                }
+                break;
+
+            case 'Winged Key':
+                $this->treasureMapService->doAbundantiasVault($pet);
+                return true;
 
             case 'Woher Cuán Nani-nani':
                 $this->lostInTownService->adventure($petWithSkills);
