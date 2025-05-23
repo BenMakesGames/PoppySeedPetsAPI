@@ -138,8 +138,6 @@ class LostInTownService
         }
         else
         {
-            EquipmentFunctions::destroyPetTool($this->em, $pet);
-            
             $items = [
                 $this->rng->rngNextFromArray([ 'Black Scarf', 'Cool Sunglasses', 'Gaming Box', 'Password' ]),
                 $this->rng->rngNextFromArray([ 'Glowing Protojelly', 'Green Egg', 'Thaumatoxic Cookies', 'Magic Smoke' ]),
@@ -154,6 +152,9 @@ class LostInTownService
 
             $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::GATHER, true);
+
+            // destroy the tool AFTER allowing it to apply any exp bonuses, etc (above)
+            EquipmentFunctions::destroyPetTool($this->em, $pet);
 
             foreach($items as $item)
                 $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' found this in a locker at the end of a long sewer pipe.', $activityLog);
