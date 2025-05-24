@@ -61,7 +61,7 @@ class GreenhouseBlueprintController
         BlueprintHelpers::rewardHelper(
             $petExperienceService, $responseService, $em,
             $pet,
-            PetSkillEnum::CRAFTS,
+            PetSkillEnum::Crafts,
             'You and ' . $pet->getName() . ' clear out a space in the public Greenhouse! ("Greenhouse" has been added to the menu!)',
             $pet->getName() . ' cleared out a space in the public Greenhouse with ' . $user->getName() . '!'
         );

@@ -75,7 +75,7 @@ class StrangeUmbralEncounters
 
         $tags = [ 'The Umbra' ];
 
-        if(in_array(PetSkillEnum::STEALTH, $encounter['skills']))
+        if(in_array(PetSkillEnum::Stealth, $encounter['skills']))
             $tags[] = 'Stealth';
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, 'While exploring the umbra, ' . ActivityHelpers::PetName($pet) . ' ' . $encounter['description'])
@@ -94,27 +94,27 @@ class StrangeUmbralEncounters
         return $this->rng->rngNextFromArray([
             [
                 'description' => 'saw a family of deer spirits running across the umbral sands. ' . ActivityHelpers::PetName($pet) . ' watched for a while before returning home.',
-                'skills' => [ PetSkillEnum::ARCANA ]
+                'skills' => [ PetSkillEnum::Arcana ]
             ],
             [
                 'description' => 'saw the Raccoon King and his entourage. ' . ActivityHelpers::PetName($pet) . ' hid behind some rocks and waited for them to pass...',
-                'skills' => [ PetSkillEnum::ARCANA, PetSkillEnum::STEALTH ]
+                'skills' => [ PetSkillEnum::Arcana, PetSkillEnum::Stealth ]
             ],
             [
                 'description' => 'encountered a friendly wizard. They traveled for a while, the wizard making conversation, until they parted ways.',
-                'skills' => [ PetSkillEnum::ARCANA ]
+                'skills' => [ PetSkillEnum::Arcana ]
             ],
             [
                 'description' => 'found a large field of wild, oversized plants. ' . ActivityHelpers::PetName($pet) . ' explored the field for a while, avoiding the more aggressive-looking plants...',
-                'skills' => [ PetSkillEnum::ARCANA ]
+                'skills' => [ PetSkillEnum::Arcana ]
             ],
             [
                 'description' => 'felt the ground tremble. They looked around, but didn\'t see an obvious source of the shaking...',
-                'skills' => [ PetSkillEnum::ARCANA ]
+                'skills' => [ PetSkillEnum::Arcana ]
             ],
             [
                 'description' => 'felt a strange breeze. Looking up, they saw a flock (or maybe "school"?) of translucent creatures gliding overhead.',
-                'skills' => [ PetSkillEnum::ARCANA ]
+                'skills' => [ PetSkillEnum::Arcana ]
             ]
         ]);
     }
@@ -159,7 +159,7 @@ class StrangeUmbralEncounters
 
         StatusEffectHelpers::applyStatusEffect($this->em, $pet, $fate, 1);
 
-        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Arcana ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
         return $activityLog;
@@ -178,7 +178,7 @@ class StrangeUmbralEncounters
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'The Umbra' ]))
         ;
 
-        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Arcana ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
 
         $cosmic = SpiceRepository::findOneByName($this->em, 'Cosmic');

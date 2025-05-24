@@ -117,7 +117,7 @@ class IceCreamDaydream
 
             PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $log);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Arcana ], $log);
 
             return $log;
         }
@@ -128,7 +128,7 @@ class IceCreamDaydream
                 $petWithSkills->getPet(),
                 ActivityHelpers::PetName($pet) . ' daydreamed they were surfing on a wave of mint chocolate ice cream, dodging pieces of cookies as they went. A whole cookie hit them in the face, jolting them back to reality!');
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $log);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana ], $log);
 
             return $log;
         }
@@ -157,7 +157,7 @@ class IceCreamDaydream
                 ActivityHelpers::PetName($pet) . ' daydreamed they were a giant in a world where mountains were scoops of ice cream, shaping new landscapes. They created mountain ranges of rocky road, then snapped back to reality!');
         }
 
-        $this->petExperienceService->gainExp($pet, 5, [ PetSkillEnum::CRAFTS ], $log);
+        $this->petExperienceService->gainExp($pet, 5, [ PetSkillEnum::Crafts ], $log);
 
         return $log;
     }
@@ -196,7 +196,7 @@ class IceCreamDaydream
             ActivityHelpers::PetName($pet) . ' daydreamed they met an enchanted ice cream vendor who could foresee the future in swirls of gelato. "I see ' . $possibleFates[$fate] . ' in your future," they said in a raspy voice before ' . ActivityHelpers::PetName($pet) . ' snapped back to reality.'
         );
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $log);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana ], $log);
 
         StatusEffectHelpers::applyStatusEffect($this->em, $pet, $fate, 1);
 

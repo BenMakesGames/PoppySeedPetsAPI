@@ -143,7 +143,7 @@ class PhysicsService
         $this->inventoryService->petCollectsItem('Rock', $pet, 'This came crashing through the window when ' . $pet->getName() . ' accidentally rotated gravity around the house while handling some Gravitational Waves!', $activityLog);
         $this->inventoryService->petCollectsItem('Rock', $pet, 'This came crashing through the window when ' . $pet->getName() . ' accidentally rotated gravity around the house while handling some Gravitational Waves!', $activityLog);
 
-        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
 
         return $activityLog;
     }
@@ -162,7 +162,7 @@ class PhysicsService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
         else if($roll > 22)
@@ -175,7 +175,7 @@ class PhysicsService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, true);
 
             $this->inventoryService->petCollectsItem('Fish', $pet, $pet->getName() . ' measured a Photon, confirming the _Poisson_ Distribution!', $activityLog);
@@ -191,7 +191,7 @@ class PhysicsService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, true);
 
             $this->inventoryService->petCollectsItem('Fish', $pet, $pet->getName() . ' measured a Photon, confirming the _Poisson_ Distribution!', $activityLog);
@@ -203,7 +203,7 @@ class PhysicsService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
 
@@ -223,7 +223,7 @@ class PhysicsService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, 'Eating' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
         else if($roll >= 17)
@@ -237,7 +237,7 @@ class PhysicsService
             ;
             $this->inventoryService->petCollectsItem('Wormhole', $pet, $pet->getName() . ' created this from a Tiny Black Hole, and also Worms.' . ($this->rng->rngNextInt(1, 10) === 1 ? ' (SCIENCE.)' : ''), $activityLog);
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, true);
         }
         else
@@ -245,7 +245,7 @@ class PhysicsService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to make a Wormhole, but the Worms kept crawling away, and %pet:' . $pet->getId() . '.name% wasted all their time gathering them back up again...', 'icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics ]))
             ;
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
 
@@ -266,7 +266,7 @@ class PhysicsService
                     ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ;
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
             }
             else
@@ -276,7 +276,7 @@ class PhysicsService
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, PetActivityLogTagEnum::Crafting ]))
                 ;
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
             }
         }
@@ -292,7 +292,7 @@ class PhysicsService
             ;
             $description = $this->rng->rngNextInt(1, 10) === 1 ? ($pet->getName() . ' scienced this. With SCIENCE.') : ($pet->getName() . ' scienced this.');
             $this->inventoryService->petCollectsItem('Lightning Sword', $pet, $description, $activityLog);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
         }
         else
         {
@@ -300,7 +300,7 @@ class PhysicsService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, PetActivityLogTagEnum::Crafting ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
         }
 
@@ -321,7 +321,7 @@ class PhysicsService
                     ->addInterestingness(PetActivityLogInterestingness::ActivityUsingMerit)
                 ;
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
             }
             else
@@ -331,7 +331,7 @@ class PhysicsService
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, PetActivityLogTagEnum::Crafting ]))
                 ;
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
             }
         }
@@ -347,7 +347,7 @@ class PhysicsService
             ;
             $description = $this->rng->rngNextInt(1, 10) === 1 ? ($pet->getName() . ' scienced this. With SCIENCE.') : ($pet->getName() . ' scienced this.');
             $this->inventoryService->petCollectsItem('Livewire', $pet, $description, $activityLog);
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::CRAFT, true);
         }
         else
@@ -356,7 +356,7 @@ class PhysicsService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, PetActivityLogTagEnum::Crafting ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::CRAFT, false);
         }
 
@@ -381,7 +381,7 @@ class PhysicsService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, 'Smithing' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::ARCANA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science, PetSkillEnum::Arcana ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
         else if($roll >= 19)
@@ -396,7 +396,7 @@ class PhysicsService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, 'Smithing' ]))
             ;
             $this->inventoryService->petCollectsItem('Bermuda Triangle', $pet, $pet->getName() . ' scienced this.', $activityLog);
-            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::Science ], $activityLog);
         }
         else
         {
@@ -404,7 +404,7 @@ class PhysicsService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics, 'Smithing' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
 
@@ -429,7 +429,7 @@ class PhysicsService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics', 'Smithing' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science, PetSkillEnum::Crafts ], $activityLog);
         }
         else if($roll >= 24)
         {
@@ -450,7 +450,7 @@ class PhysicsService
 
                 $this->inventoryService->petCollectsItem('Mini Satellite Dish', $pet, $pet->getName() . ' made this out of the leftovers from making a Graviton Gun!', $activityLog);
 
-                $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::Science, PetSkillEnum::Crafts ], $activityLog);
             }
             else
             {
@@ -458,7 +458,7 @@ class PhysicsService
                     ->addInterestingness(PetActivityLogInterestingness::HoHum + 24)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics', 'Smithing' ]))
                 ;
-                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::Science, PetSkillEnum::Crafts ], $activityLog);
             }
 
             $this->inventoryService->petCollectsItem('Graviton Gun', $pet, $pet->getName() . ' engineered this.', $activityLog);
@@ -469,7 +469,7 @@ class PhysicsService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Electronics', 'Smithing' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE, PetSkillEnum::CRAFTS ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science, PetSkillEnum::Crafts ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
 
@@ -498,7 +498,7 @@ class PhysicsService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
 
             $this->inventoryService->petCollectsItem('Geodesic Curlicue', $pet, $pet->getName() . ' scienced this together. With science.', $activityLog);
         }
@@ -509,7 +509,7 @@ class PhysicsService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Physics ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
 

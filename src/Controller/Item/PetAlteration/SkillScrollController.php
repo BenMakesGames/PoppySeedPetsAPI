@@ -40,7 +40,7 @@ class SkillScrollController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::BRAWL, $userAccessor);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::Brawl, $userAccessor);
     }
 
     #[Route("/craftsSkillScroll/{inventory}", methods: ["POST"])]
@@ -50,7 +50,7 @@ class SkillScrollController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::CRAFTS, $userAccessor);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::Crafts, $userAccessor);
     }
 
     #[Route("/musicSkillScroll/{inventory}", methods: ["POST"])]
@@ -60,7 +60,7 @@ class SkillScrollController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::MUSIC, $userAccessor);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::Music, $userAccessor);
     }
 
     #[Route("/natureSkillScroll/{inventory}", methods: ["POST"])]
@@ -70,7 +70,7 @@ class SkillScrollController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::NATURE, $userAccessor);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::Nature, $userAccessor);
     }
 
     #[Route("/scienceSkillScroll/{inventory}", methods: ["POST"])]
@@ -80,7 +80,7 @@ class SkillScrollController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::SCIENCE, $userAccessor);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::Science, $userAccessor);
     }
 
     #[Route("/stealthSkillScroll/{inventory}", methods: ["POST"])]
@@ -90,7 +90,7 @@ class SkillScrollController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::STEALTH, $userAccessor);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::Stealth, $userAccessor);
     }
 
     #[Route("/arcanaSkillScroll/{inventory}", methods: ["POST"])]
@@ -100,7 +100,7 @@ class SkillScrollController
         UserAccessor $userAccessor
     ): JsonResponse
     {
-        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::ARCANA, $userAccessor);
+        return $this->doSkillScroll($inventory, $request, $em, $responseService, PetSkillEnum::Arcana, $userAccessor);
     }
 
     private function doSkillScroll(

@@ -92,7 +92,7 @@ class Molly
         for($i = 0; $i < $babies; $i++)
             $inventoryService->petCollectsItem($babyItem, $pet, "{$pet->getName()} helped a Molly \"give birth\" to this...", $activityLog);
 
-        $petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
+        $petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Nature ], $activityLog);
 
         $activityLog->setChanges($petChanges->compare($pet));
 

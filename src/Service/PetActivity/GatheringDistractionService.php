@@ -80,7 +80,7 @@ class GatheringDistractionService
         {
             $distractions[] = [
                 'description' => 'they saw a spider making a crazy-huge web! They watched for a while before returning home.',
-                'skills' => [ PetSkillEnum::NATURE, PetSkillEnum::CRAFTS ],
+                'skills' => [ PetSkillEnum::Nature, PetSkillEnum::Crafts ],
             ];
         }
 
@@ -93,7 +93,7 @@ class GatheringDistractionService
 
             $distractions[] = [
                 'description' => $description,
-                'skills' => [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ],
+                'skills' => [ PetSkillEnum::Nature, PetSkillEnum::Brawl ],
             ];
         }
 
@@ -105,7 +105,7 @@ class GatheringDistractionService
 
             $distractions[] = [
                 'description' => 'they saw a large spider fighting a praying mantis! After a long fight, the ' . $winner . ' claimed victory! (And a meal!)',
-                'skills' => [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ],
+                'skills' => [ PetSkillEnum::Nature, PetSkillEnum::Brawl ],
             ];
         }
 
@@ -118,7 +118,7 @@ class GatheringDistractionService
 
             $distractions[] = [
                 'description' => $description,
-                'skills' => [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ],
+                'skills' => [ PetSkillEnum::Nature, PetSkillEnum::Brawl ],
             ];
         }
 
@@ -126,7 +126,7 @@ class GatheringDistractionService
         {
             $distractions[] = [
                 'description' => 'they saw a HUGE turtle on the edge of the woods, just chillin\' and grazin\'.',
-                'skills' => [ PetSkillEnum::NATURE ],
+                'skills' => [ PetSkillEnum::Nature ],
             ];
         }
 
@@ -141,7 +141,7 @@ class GatheringDistractionService
 
             $distractions[] = [
                 'description' => "they saw a raccoon rummaging {$rummageTarget}, when a huge owl swooped in and grabbed the raccoon! The raccoon let out a short cry as it was carried away, into the {$darkness}...",
-                'skills' => [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH, PetSkillEnum::BRAWL ],
+                'skills' => [ PetSkillEnum::Nature, PetSkillEnum::Stealth, PetSkillEnum::Brawl ],
             ];
         }
 
@@ -149,7 +149,7 @@ class GatheringDistractionService
         {
             $distractions[] = [
                 'description' => 'they saw some seagulls smashing clams against the rocks' . ($anyRain ? ' in the rain' : '') . '! They watched for a while - from a safe distance - before returning home.',
-                'skills' => [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ],
+                'skills' => [ PetSkillEnum::Nature, PetSkillEnum::Brawl ],
             ];
         }
 
@@ -157,7 +157,7 @@ class GatheringDistractionService
         {
             $distractions[] = [
                 'description' => 'they saw a pair of crabs under a rock, grooming one another, and eating the various bits picked off one another!',
-                'skills' => [ PetSkillEnum::NATURE ],
+                'skills' => [ PetSkillEnum::Nature ],
             ];
         }
 
@@ -165,7 +165,7 @@ class GatheringDistractionService
         {
             $distractions[] = [
                 'description' => 'they saw an army of ants traveling through the tunnels. They followed for a while, but never found out where the army was headed...',
-                'skills' => [ PetSkillEnum::NATURE ],
+                'skills' => [ PetSkillEnum::Nature ],
             ];
         }
 
@@ -178,7 +178,7 @@ class GatheringDistractionService
 
             $distractions[] = [
                 'description' => "they saw a glowworm eating a {$prey}; the {$prey} wasn't dead yet, but it was clearly heading that way... (Oof! Brutal!)",
-                'skills' => [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL ],
+                'skills' => [ PetSkillEnum::Nature, PetSkillEnum::Brawl ],
             ];
         }
 
@@ -186,7 +186,7 @@ class GatheringDistractionService
         {
             $distractions[] = [
                 'description' => 'they saw a really funny stalagmite formation-- or, wait, are they stalactites? ("Stalagmites might make it..." but what does _that_ mean?!? Stupid, useless mnemonic!)',
-                'skills' => [ PetSkillEnum::NATURE ],
+                'skills' => [ PetSkillEnum::Nature ],
             ];
         }
 
@@ -199,7 +199,7 @@ class GatheringDistractionService
 
             $distractions[] = [
                 'description' => $description,
-                'skills' => [ PetSkillEnum::NATURE ],
+                'skills' => [ PetSkillEnum::Nature ],
             ];
         }
 
@@ -213,7 +213,7 @@ class GatheringDistractionService
 
             $distractions[] = [
                 'description' => 'they watched a small flock of geese cross a road' . ($anyRain ? ' in the rain' : '') . '. ' . $retreatingAnimals . ' on the other side of the road, seeing the approaching geese, ran away.',
-                'skills' => [ PetSkillEnum::NATURE ]
+                'skills' => [ PetSkillEnum::Nature ]
             ];
         }
 
@@ -221,7 +221,7 @@ class GatheringDistractionService
         {
             $distractions[] = [
                 'description' => 'they spotted a couple scientists chatting over a meal. They listened for a while before returning home.',
-                'skills' => [ PetSkillEnum::SCIENCE ],
+                'skills' => [ PetSkillEnum::Science ],
             ];
         }
 
@@ -239,7 +239,7 @@ class GatheringDistractionService
 
             $distractions[] = [
                 'description' => $description . ' They stalked it for a while, but lost the trail before ever getting a good look at it...',
-                'skills' => [ PetSkillEnum::STEALTH, PetSkillEnum::ARCANA ],
+                'skills' => [ PetSkillEnum::Stealth, PetSkillEnum::Arcana ],
             ];
         }
 
@@ -247,7 +247,7 @@ class GatheringDistractionService
         {
             $distractions[] = [
                 'description' => 'they saw a family of huge lizards bathing in a pool. They watched for a while - from a safe distance - before returning home.',
-                'skills' => [ PetSkillEnum::STEALTH, PetSkillEnum::NATURE ],
+                'skills' => [ PetSkillEnum::Stealth, PetSkillEnum::Nature ],
             ];
         }
 
@@ -255,7 +255,7 @@ class GatheringDistractionService
         {
             $distractions[] = [
                 'description' => 'they saw a family of huge lizards lounging on steaming rocks' . ($anyRain ? ', apparently completely unconcerned about the rain' : '') . '. They watched for a while - from a safe distance - before returning home.',
-                'skills' => [ PetSkillEnum::STEALTH, PetSkillEnum::NATURE ],
+                'skills' => [ PetSkillEnum::Stealth, PetSkillEnum::Nature ],
             ];
         }
 
@@ -263,12 +263,12 @@ class GatheringDistractionService
         {
             $distractions[] = [
                 'description' => 'they saw an army of ants traveling amidst steaming rocks. They followed for a while, but never found out where the army was headed...',
-                'skills' => [ PetSkillEnum::NATURE ],
+                'skills' => [ PetSkillEnum::Nature ],
             ];
 
             $distractions[] = [
                 'description' => 'they watched as a plume of smoke escaped from the volcano\'s top. They investigated for a while, looking for the source of the smoke, or any signs of geologic activity, but didn\'t find anything conclusive...',
-                'skills' => [ PetSkillEnum::SCIENCE ],
+                'skills' => [ PetSkillEnum::Science ],
             ];
         }
 
@@ -276,7 +276,7 @@ class GatheringDistractionService
         {
             $distractions[] = [
                 'description' => 'they saw a seagull flying low over the ocean. Suddenly, a shark jumped out, and snatched it!',
-                'skills' => [ PetSkillEnum::NATURE, PetSkillEnum::BRAWL, PetSkillEnum::STEALTH ],
+                'skills' => [ PetSkillEnum::Nature, PetSkillEnum::Brawl, PetSkillEnum::Stealth ],
             ];
         }
 
@@ -284,7 +284,7 @@ class GatheringDistractionService
         {
             $distractions[] = [
                 'description' => 'they saw a fox running into the woods, seagull egg in maw! Sneaky thief!',
-                'skills' => [ PetSkillEnum::NATURE, PetSkillEnum::STEALTH ],
+                'skills' => [ PetSkillEnum::Nature, PetSkillEnum::Stealth ],
             ];
         }
 
@@ -299,7 +299,7 @@ class GatheringDistractionService
 
             $distractions[] = [
                 'description' => $description,
-                'skills' => [ PetSkillEnum::NATURE ],
+                'skills' => [ PetSkillEnum::Nature ],
             ];
         }
 

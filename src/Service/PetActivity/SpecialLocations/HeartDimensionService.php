@@ -310,17 +310,17 @@ class HeartDimensionService
 
         $stats = [
             [
-                'stat' => PetSkillEnum::CRAFTS,
+                'stat' => PetSkillEnum::Crafts,
                 'value' => $petWithSkills->getCrafts()->getTotal() + $petWithSkills->getDexterity()->getTotal(),
                 'message' => 'The shadow drew a sword, but ' . $pet->getName() . ' patched up the mirror before the shadow could escape!',
             ],
             [
-                'stat' => PetSkillEnum::BRAWL,
+                'stat' => PetSkillEnum::Brawl,
                 'value' => $petWithSkills->getBrawl()->getTotal() + $petWithSkills->getStrength()->getTotal(),
                 'message' => 'The shadow drew a sword, and leaped out of the mirror! But ' . $pet->getName() . ' struck first, and the shadow dissipated!',
             ],
             [
-                'stat' => PetSkillEnum::MUSIC,
+                'stat' => PetSkillEnum::Music,
                 'value' => $petWithSkills->getMusic()->getTotal() + $petWithSkills->getIntelligence()->getTotal(),
                 'message' => 'The shadow drew a sword, and leaped out of the mirror! But ' . $pet->getName() . ' sung a song of power, and the shadow dissipated!'
             ],

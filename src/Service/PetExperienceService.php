@@ -144,13 +144,13 @@ class PetExperienceService
     private static function getPetFocusingStatusEffect(Pet $pet): ?FocusingStatusEffect
     {
         $possibleEffects = [
-            [ PetSkillEnum::BRAWL, StatusEffectEnum::FOCUSED_BRAWL ],
-            [ PetSkillEnum::NATURE, StatusEffectEnum::FOCUSED_NATURE ],
-            [ PetSkillEnum::CRAFTS, StatusEffectEnum::FOCUSED_CRAFTS ],
-            [ PetSkillEnum::STEALTH, StatusEffectEnum::FOCUSED_STEALTH ],
-            [ PetSkillEnum::SCIENCE, StatusEffectEnum::FOCUSED_SCIENCE ],
-            [ PetSkillEnum::MUSIC, StatusEffectEnum::FOCUSED_MUSIC ],
-            [ PetSkillEnum::ARCANA, StatusEffectEnum::FOCUSED_ARCANA ],
+            [ PetSkillEnum::Brawl, StatusEffectEnum::FOCUSED_BRAWL ],
+            [ PetSkillEnum::Nature, StatusEffectEnum::FOCUSED_NATURE ],
+            [ PetSkillEnum::Crafts, StatusEffectEnum::FOCUSED_CRAFTS ],
+            [ PetSkillEnum::Stealth, StatusEffectEnum::FOCUSED_STEALTH ],
+            [ PetSkillEnum::Science, StatusEffectEnum::FOCUSED_SCIENCE ],
+            [ PetSkillEnum::Music, StatusEffectEnum::FOCUSED_MUSIC ],
+            [ PetSkillEnum::Arcana, StatusEffectEnum::FOCUSED_ARCANA ],
         ];
 
         foreach($possibleEffects as $effect)

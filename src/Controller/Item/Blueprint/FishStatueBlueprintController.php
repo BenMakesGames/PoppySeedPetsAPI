@@ -74,7 +74,7 @@ class FishStatueBlueprintController
         BlueprintHelpers::rewardHelper(
             $petExperienceService, $responseService, $em,
             $pet,
-            PetSkillEnum::CRAFTS,
+            PetSkillEnum::Crafts,
             $flashMessage,
             $pet->getName() . ' installed a Fish Statue in the Greenhouse with ' . $user->getName() . '!'
         );

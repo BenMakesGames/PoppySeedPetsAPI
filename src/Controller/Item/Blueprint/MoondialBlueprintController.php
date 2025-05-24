@@ -68,7 +68,7 @@ class MoondialBlueprintController
         BlueprintHelpers::rewardHelper(
             $petExperienceService, $responseService, $em,
             $pet,
-            PetSkillEnum::CRAFTS,
+            PetSkillEnum::Crafts,
             $flashMessage,
             $pet->getName() . ' built a Moondial in the Greenhouse with ' . $user->getName() . '!'
         );

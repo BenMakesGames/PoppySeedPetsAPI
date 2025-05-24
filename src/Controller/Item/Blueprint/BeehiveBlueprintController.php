@@ -83,7 +83,7 @@ class BeehiveBlueprintController
         BlueprintHelpers::rewardHelper(
             $petExperienceService, $responseService, $em,
             $pet,
-            PetSkillEnum::CRAFTS,
+            PetSkillEnum::Crafts,
             'The blueprint is _super_ tiny, but with the help of ' . $your . ' ' . $magnifyingGlass->getFullItemName() . ', you\'re able to make it all out, and you and ' . $pet->getName() . ' put the thing together! ("Beehive" has been added to the menu!)',
             $pet->getName() . ' put a Beehive together with ' . $user->getName() . '!'
         );

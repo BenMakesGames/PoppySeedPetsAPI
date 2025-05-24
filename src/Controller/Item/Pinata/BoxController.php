@@ -146,7 +146,7 @@ class BoxController
                 $activityLog = PetActivityLogFactory::createUnreadLog($em, $pet, 'While ' . $user->getName() . ' was sifting through a box of ore, a lobster jumped out and tried to attack them! ' . $pet->getName() . ' stepped in and saved the day! It was a little scary, but hey: +1 Fish meat!')
                     ->setChanges($changes->compare($pet));
 
-                $petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $activityLog);
+                $petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Brawl ], $activityLog);
             }
         }
 
@@ -665,7 +665,7 @@ class BoxController
 
             $activityLog = PetActivityLogFactory::createUnreadLog($em, $pet, $pet->getName() . ' listened to the Jukebox.');
 
-            $petExperienceService->gainExp($pet, 1, [ PetSkillEnum::MUSIC ], $activityLog);
+            $petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Music ], $activityLog);
 
             $activityLog->setChanges($changes->compare($pet));
         }

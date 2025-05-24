@@ -121,7 +121,7 @@ class DeepSeaService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine' ]))
         ;
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Nature, PetSkillEnum::Science ], $activityLog);
 
         return $activityLog;
     }
@@ -136,7 +136,7 @@ class DeepSeaService
 
         $this->inventoryService->petCollectsItem('Algae', $pet, $pet->getName() . ' cleaned this off the Submarine.', $activityLog);
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Nature, PetSkillEnum::Science ], $activityLog);
 
         return $activityLog;
     }
@@ -160,7 +160,7 @@ class DeepSeaService
 
                 $pet->increaseEsteem($this->rng->rngNextInt(4, 8));
 
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Nature, PetSkillEnum::Science ], $activityLog);
             }
             else
             {
@@ -174,7 +174,7 @@ class DeepSeaService
 
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while exploring the shelf sea using the Submarine.', $activityLog);
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Nature, PetSkillEnum::Science ], $activityLog);
             }
         }
         else
@@ -187,7 +187,7 @@ class DeepSeaService
 
             $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Nature, PetSkillEnum::Science ], $activityLog);
         }
 
         return $activityLog;
@@ -213,7 +213,7 @@ class DeepSeaService
 
                 $this->inventoryService->petCollectsItem('Jelling Polyp', $pet, $pet->getName() . ' found this while exploring the shelf sea using the Submarine.', $activityLog);
 
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Nature, PetSkillEnum::Science ], $activityLog);
             }
             else
             {
@@ -224,7 +224,7 @@ class DeepSeaService
                 $this->inventoryService->petCollectsItem('Jellyfish Jelly', $pet, $pet->getName() . ' found this while exploring the shelf sea using the Submarine.', $activityLog);
             }
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Nature, PetSkillEnum::Science ], $activityLog);
         }
         else
         {
@@ -236,7 +236,7 @@ class DeepSeaService
 
             $pet->increaseEsteem($this->rng->rngNextInt(2, 4));
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Nature, PetSkillEnum::Science ], $activityLog);
         }
 
         return $activityLog;
@@ -265,7 +265,7 @@ class DeepSeaService
 
             $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this while exploring the Coral Reef using the Submarine.', $activityLog);
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Nature, PetSkillEnum::Science ], $activityLog);
 
             $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Coral Reef', '%pet:' . $pet->getId() . '.name% explored the Coral Reef using the Submarine.');
         }
@@ -282,7 +282,7 @@ class DeepSeaService
 
             $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Coral Reef', $activityLog->getEntry());
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Nature, PetSkillEnum::Science ], $activityLog);
         }
 
         return $activityLog;
@@ -317,7 +317,7 @@ class DeepSeaService
             if($roll >= 24)
                 $this->inventoryService->petCollectsItem('Glass', $pet, $pet->getName() . ' took this from a hexactinellid while exploring the depths of the ocean using the Submarine.', $activityLog);
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Nature, PetSkillEnum::Science ], $activityLog);
         }
         else
         {
@@ -327,7 +327,7 @@ class DeepSeaService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fishing', 'Dark' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Nature, PetSkillEnum::Science ], $activityLog);
         }
 
         return $activityLog;
@@ -370,7 +370,7 @@ class DeepSeaService
             for($i = 0; $i < $tentacles; $i++)
                 $this->inventoryService->petCollectsItem('Tentacle', $pet, $pet->getName() . ' got this by defeating a Giant Squid in the deep sea!', $activityLog);
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Brawl ], $activityLog);
         }
         else if($pet->isInGuild(GuildEnum::HighImpact))
         {
@@ -382,7 +382,7 @@ class DeepSeaService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fighting', 'Guild' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Brawl ], $activityLog);
         }
         else
         {
@@ -392,7 +392,7 @@ class DeepSeaService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Fighting' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Brawl ], $activityLog);
         }
 
         return $activityLog;
@@ -411,7 +411,7 @@ class DeepSeaService
 
         $pet->increaseLove($this->rng->rngNextInt(2, 4));
 
-        $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::NATURE, PetSkillEnum::MUSIC ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::Nature, PetSkillEnum::Music ], $activityLog);
 
         $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Whales', $activityLog->getEntry());
 
@@ -451,7 +451,7 @@ class DeepSeaService
             foreach($loot as $itemName)
                 $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' found this near a submarine volcano using their Submarine.', $activityLog);
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Nature ], $activityLog);
         }
         else
         {
@@ -460,7 +460,7 @@ class DeepSeaService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% explored the deep sea using the Submarine (and their ' . ActivityHelpers::SourceOfLight($petWithSkills) . '), and found a submarine volcano! They had to resurface before they could collect anything, though.', 'icons/activity-logs/confused')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Gathering', 'Dark' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Nature ], $activityLog);
         }
 
         if($this->rng->rngNextInt(1, 10 + $petWithSkills->getStamina()->getTotal()) < 8)
@@ -565,7 +565,7 @@ class DeepSeaService
 
             $this->fieldGuideService->maybeUnlock($pet->getOwner(), 'Shipwrecked Fleet', $fleetDiscovery);
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Nature, PetSkillEnum::Science ], $activityLog);
         }
         else
         {
@@ -575,7 +575,7 @@ class DeepSeaService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Submarine', 'Gathering' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE, PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Nature, PetSkillEnum::Science ], $activityLog);
         }
 
         return $activityLog;

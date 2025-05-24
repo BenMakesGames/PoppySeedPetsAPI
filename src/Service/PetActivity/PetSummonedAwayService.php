@@ -103,7 +103,7 @@ class PetSummonedAwayService
         $this->petExperienceService->gainExp(
             $pet,
             $this->rng->rngNextInt(1, 3),
-            [ PetSkillEnum::BRAWL, PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ],
+            [ PetSkillEnum::Brawl, PetSkillEnum::Brawl, PetSkillEnum::Arcana ],
             $activityLog
         );
 
@@ -136,7 +136,7 @@ class PetSummonedAwayService
                 break;
             case 3:
                 $activity = 'play in a band at a fancy party in a mansion';
-                $skill = PetSkillEnum::MUSIC;
+                $skill = PetSkillEnum::Music;
                 $loot = $this->rng->rngNextFromArray([
                     'Fungal Clarinet', 'Decorated Flute',
                     'Gold Triangle', 'Melodica'
@@ -171,37 +171,37 @@ class PetSummonedAwayService
         {
             case 1:
                 $activity = 'hold a weird-looking mirror while a laser was focused on it';
-                $skill = PetSkillEnum::SCIENCE;
+                $skill = PetSkillEnum::Science;
                 $tags = [ 'Physics' ];
                 break;
             case 2:
                 $activity = 'mix various chemicals together while the wizard watched (from a distance, for some reason...)';
-                $skill = PetSkillEnum::SCIENCE;
+                $skill = PetSkillEnum::Science;
                 $tags = [ 'Physics' ];
                 break;
             case 3:
                 $activity = 'look through almost a hundred photographs of the night sky, looking for bright spots';
-                $skill = PetSkillEnum::SCIENCE;
+                $skill = PetSkillEnum::Science;
                 $tags = [ 'Physics' ];
                 break;
             case 4:
                 $activity = 'perform a very-specific dance while holding some candles';
-                $skill = PetSkillEnum::ARCANA;
+                $skill = PetSkillEnum::Arcana;
                 $tags = [ 'The Umbra' ];
                 break;
             case 5:
                 $activity = 'draw a series of symbols in geometric shapes on the ground';
-                $skill = PetSkillEnum::ARCANA;
+                $skill = PetSkillEnum::Arcana;
                 $tags = [ 'Magic-binding' ];
                 break;
             case 6:
                 $activity = 'keep an eye on a trapped spirit while the wizard tended to other things';
-                $skill = PetSkillEnum::ARCANA;
+                $skill = PetSkillEnum::Arcana;
                 $tags = [ 'The Umbra' ];
                 break;
             case 7:
                 $activity = 'stand motionless, "like a gargoyle", and watch out for intruders for nearly one full hour';
-                $skill = PetSkillEnum::STEALTH;
+                $skill = PetSkillEnum::Stealth;
                 $tags = [ 'Stealth' ];
                 break;
             default:

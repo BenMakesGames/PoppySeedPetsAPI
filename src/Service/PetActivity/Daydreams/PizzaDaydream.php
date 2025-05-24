@@ -180,7 +180,7 @@ class PizzaDaydream
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
 
-        $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::NATURE ], $log);
+        $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::Nature ], $log);
 
         return $log;
     }

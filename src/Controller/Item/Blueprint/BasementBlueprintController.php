@@ -54,7 +54,7 @@ class BasementBlueprintController
         BlueprintHelpers::rewardHelper(
             $petExperienceService, $responseService, $em,
             $pet,
-            PetSkillEnum::CRAFTS,
+            PetSkillEnum::Crafts,
             $pet->getName() . ' helps you build the Basement. Together, you\'re done in no time! (Video game logic!) ("Basement" has been added to the menu!)',
             $pet->getName() . ' helped ' . $user->getName() . ' "build" a Basement!'
         );

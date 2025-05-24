@@ -193,7 +193,7 @@ class ProgrammingService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to dereference a String from a Pointer, but encountered a null exception :(', 'icons/activity-logs/null')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->inventoryService->petCollectsItem('NUL', $pet, $pet->getName() . ' encountered a null exception when trying to dereference a pointer.', $activityLog);
         }
         else if($roll >= 10)
@@ -205,7 +205,7 @@ class ProgrammingService
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 10)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->inventoryService->petCollectsItem('String', $pet, $pet->getName() . ' dereferenced this from a Pointer.', $activityLog);
         }
         else
@@ -214,7 +214,7 @@ class ProgrammingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
 
@@ -236,7 +236,7 @@ class ProgrammingService
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
             $this->inventoryService->petCollectsItem('Regex', $pet, $pet->getName() . ' built this from a Finite State Machine.', $activityLog);
         }
         else
@@ -245,7 +245,7 @@ class ProgrammingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
 
@@ -265,7 +265,7 @@ class ProgrammingService
             ;
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
 
             return $activityLog;
         }
@@ -280,7 +280,7 @@ class ProgrammingService
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
             $this->inventoryService->petCollectsItem('Dragondrop', $pet, $pet->getName() . ' programmed this.', $activityLog);
             return $activityLog;
         }
@@ -290,7 +290,7 @@ class ProgrammingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             return $activityLog;
         }
     }
@@ -309,7 +309,7 @@ class ProgrammingService
             $this->inventoryService->petCollectsItem('Pointer', $pet, $pet->getName() . ' accidentally de-allocated a String; all that remains is this Pointer.', $activityLog);
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
 
             return $activityLog;
         }
@@ -324,7 +324,7 @@ class ProgrammingService
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
             $this->inventoryService->petCollectsItem('Compiler', $pet, $pet->getName() . ' bootstrapped this.', $activityLog);
         }
         else
@@ -333,7 +333,7 @@ class ProgrammingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
         return $activityLog;
@@ -354,7 +354,7 @@ class ProgrammingService
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
             $this->inventoryService->petCollectsItem('Rijndael', $pet, $pet->getName() . ' implemented this.', $activityLog);
         }
         else
@@ -363,7 +363,7 @@ class ProgrammingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
         return $activityLog;
@@ -393,7 +393,7 @@ class ProgrammingService
                     ->addInterestingness(PetActivityLogInterestingness::HoHum + 16 + 10)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
                 ;
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
                 $this->inventoryService->petCollectsItem('Viswanath\'s Constant', $pet, $pet->getName() . ' calculated this.', $activityLog);
                 $this->inventoryService->petCollectsItem('4-function Calculator', $pet, $pet->getName() . ' rummaged around the house, and found this ' . $whereFound . '!', $activityLog);
 
@@ -409,7 +409,7 @@ class ProgrammingService
                     ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
                 ;
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
                 $this->inventoryService->petCollectsItem('Viswanath\'s Constant', $pet, $pet->getName() . ' calculated this.', $activityLog);
                 return $activityLog;
             }
@@ -425,7 +425,7 @@ class ProgrammingService
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
                 ;
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, false);
 
                 return $activityLog;
@@ -457,7 +457,7 @@ class ProgrammingService
                     ->addInterestingness(PetActivityLogInterestingness::HoHum + 15 + 10)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
                 ;
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
                 $this->inventoryService->petCollectsItem('Hapax Legomenon', $pet, $pet->getName() . ' calculated this.', $activityLog);
                 $this->inventoryService->petCollectsItem('4-function Calculator', $pet, $pet->getName() . ' rummaged around the house, and found this ' . $whereFound . '!', $activityLog);
                 return $activityLog;
@@ -472,7 +472,7 @@ class ProgrammingService
                     ->addInterestingness(PetActivityLogInterestingness::HoHum + 15)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
                 ;
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
                 $this->inventoryService->petCollectsItem('Hapax Legomenon', $pet, $pet->getName() . ' calculated this.', $activityLog);
                 return $activityLog;
             }
@@ -488,7 +488,7 @@ class ProgrammingService
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
                 ;
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, false);
 
                 return $activityLog;
@@ -520,7 +520,7 @@ class ProgrammingService
                     ->addInterestingness(PetActivityLogInterestingness::HoHum + 17 + 10)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
                 ;
-                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::Science ], $activityLog);
                 $this->inventoryService->petCollectsItem('Strange Attractor', $pet, $pet->getName() . ' computed this from a Painted Boomerang and Imaginary Number.', $activityLog);
                 $this->inventoryService->petCollectsItem('4-function Calculator', $pet, $pet->getName() . ' rummaged around the house, and found this ' . $whereFound . '!', $activityLog);
                 return $activityLog;
@@ -535,7 +535,7 @@ class ProgrammingService
                     ->addInterestingness(PetActivityLogInterestingness::HoHum + 17)
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
                 ;
-                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::Science ], $activityLog);
                 $this->inventoryService->petCollectsItem('Strange Attractor', $pet, $pet->getName() . ' computed this from a Painted Boomerang and Imaginary Number.', $activityLog);
                 return $activityLog;
             }
@@ -550,7 +550,7 @@ class ProgrammingService
                     ->setIcon('icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
                 ;
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
 
                 return $activityLog;
@@ -591,7 +591,7 @@ class ProgrammingService
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Lucky~!' ]));
             }
 
-            $this->petExperienceService->gainExp($pet, 5, [ PetSkillEnum::SCIENCE, PetSkillEnum::BRAWL ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 5, [ PetSkillEnum::Science, PetSkillEnum::Brawl ], $activityLog);
 
             $this->createInfinityImp($pet);
 
@@ -605,7 +605,7 @@ class ProgrammingService
                 $activityLog = $this->responseService->createActivityLog($pet, $impDiscovery . ' During the fight, %pet:' . $pet->getId() . '.name% exploited a divergence in the imp\'s construction, and unraveled it, receiving ' . $loot . '!', 'icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming', PetActivityLogTagEnum::Physics ]))
                 ;
-                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::Science ], $activityLog);
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' received this by unraveling an Infinity Imp.', $activityLog);
                 return $activityLog;
             }
@@ -618,7 +618,7 @@ class ProgrammingService
                 $activityLog = $this->responseService->createActivityLog($pet, $impDiscovery . ' %pet:' . $pet->getId() . '.name% slew the creature outright, and claimed its ' . $loot . '!', 'icons/activity-logs/confused')
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming', 'Fighting' ]))
                 ;
-                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::Science ], $activityLog);
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' received this by slaying an Infinity Imp.', $activityLog);
                 return $activityLog;
             }
@@ -628,7 +628,7 @@ class ProgrammingService
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::WRANGLED_WITH_INFINITIES, $activityLog);
 
-        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROGRAM, false);
 
         return $activityLog;
@@ -712,7 +712,7 @@ class ProgrammingService
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 14)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
             $this->inventoryService->petCollectsItem('Brute Force', $pet, $pet->getName() . ' upgraded a Regex into this, with the help of a Password.', $activityLog);
         }
         else
@@ -721,7 +721,7 @@ class ProgrammingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
 
@@ -744,7 +744,7 @@ class ProgrammingService
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 17)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
             $this->inventoryService->petCollectsItem('l33t h4xx0r', $pet, $pet->getName() . ' made this.', $activityLog);
 
             if($pet->hasMerit(MeritEnum::BEHATTED) && $roll >= 27)
@@ -770,7 +770,7 @@ class ProgrammingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
 
@@ -793,7 +793,7 @@ class ProgrammingService
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 19)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
             $this->inventoryService->petCollectsItem('Zawinski\'s Law', $pet, $pet->getName() . ' made this.', $activityLog);
         }
         else
@@ -803,7 +803,7 @@ class ProgrammingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
 
@@ -826,7 +826,7 @@ class ProgrammingService
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 16)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
             $this->inventoryService->petCollectsItem('Phishing Rod', $pet, $pet->getName() . ' made this.', $activityLog);
         }
         else
@@ -835,7 +835,7 @@ class ProgrammingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
 
@@ -858,7 +858,7 @@ class ProgrammingService
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 13)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
             $this->inventoryService->petCollectsItem('Diffie-H Key', $pet, $pet->getName() . ' made this.', $activityLog);
         }
         else
@@ -867,7 +867,7 @@ class ProgrammingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
 
@@ -888,7 +888,7 @@ class ProgrammingService
             $activityLog = $this->responseService->createActivityLog($pet, '%pet:' . $pet->getId() . '.name% tried to upload an AI into a Weird Beetle\'s brain, but, uh... the beetle... did not survive...', '')
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
         }
         else if($roll >= 24)
         {
@@ -900,7 +900,7 @@ class ProgrammingService
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + 24)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
-            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::Science ], $activityLog);
             $this->inventoryService->petCollectsItem('Sentient Beetle', $pet, $pet->getName() . ' gave this beetle sentience by uploading an AI into its brain.', $activityLog);
 
             PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::CREATED_SENTIENT_BEETLE, $activityLog);
@@ -911,7 +911,7 @@ class ProgrammingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
 
@@ -939,7 +939,7 @@ class ProgrammingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
 
             foreach($loot as $item)
                 $this->inventoryService->petCollectsItem($item, $pet, $pet->getName() . ' got this by hacking a Macintosh.', $activityLog);
@@ -950,7 +950,7 @@ class ProgrammingService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Programming' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::PROGRAM, false);
         }
 

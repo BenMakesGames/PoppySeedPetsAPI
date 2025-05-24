@@ -240,7 +240,7 @@ class KinBallService implements ParkEventInterface
                 $this->petExperienceService->gainExp(
                     $participant->pet,
                     $expGain,
-                    [ PetSkillEnum::BRAWL ],
+                    [ PetSkillEnum::Brawl ],
                     $log
                 );
 

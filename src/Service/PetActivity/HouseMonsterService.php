@@ -214,7 +214,7 @@ class HouseMonsterService
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $result);
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(5, 15), PetActivityStatEnum::HUNT, $won);
-            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ], $activityLog);
+            $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::Brawl ], $activityLog);
 
             $changes = $petChanges[$pet->getId()]->compare($pet);
 

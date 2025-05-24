@@ -98,7 +98,7 @@ class NoodleDaydream
                 ActivityHelpers::PetName($pet) . ' daydreamed they were in a ship on a stormy sea, when a creature attacked from the depths! Enormous, noodle tentacles wrapped around the ship, and began attacking the crew! ' . ActivityHelpers::PetName($pet) . ' fought their hardest, and with help from their crew mates were able to beat the creature back! When they snapped back to reality, they were covered in the monster\'s remains, and other detritus...'
             );
 
-            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL ], $log);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::Brawl ], $log);
 
             $remains = $this->rng->rngNextSubsetFromArray([
                 'Noodles', 'Noodles', 'Chili Calamari', 'Tomato "Sushi"',
@@ -127,7 +127,7 @@ class NoodleDaydream
             $this->inventoryService->petCollectsItem('Noodles', $pet, $pet->getName() . ' was attacked by a noodle-kraken in a daydream; these are some of its tentacles. Apparently.', $log);
             $this->inventoryService->petCollectsItem('Noodles', $pet, $pet->getName() . ' was attacked by a noodle-kraken in a daydream; these are some of its tentacles. Apparently.', $log);
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $log);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Brawl ], $log);
         }
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);

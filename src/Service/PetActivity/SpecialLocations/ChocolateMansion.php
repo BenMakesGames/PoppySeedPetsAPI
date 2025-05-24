@@ -120,7 +120,7 @@ class ChocolateMansion
             {
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
                 $expAmount = 3;
-                $expStats = [ PetSkillEnum::BRAWL ];
+                $expStats = [ PetSkillEnum::Brawl ];
 
                 $loot[] = 'Chocolate-stained Cloth';
 
@@ -139,7 +139,7 @@ class ChocolateMansion
             {
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
                 $expAmount = 2;
-                $expStats = [ PetSkillEnum::BRAWL ];
+                $expStats = [ PetSkillEnum::Brawl ];
 
                 $description .= '%pet:' . $pet->getId() . '.name% was overwhelmed by the attack, and forced to flee!';
             }
@@ -150,7 +150,7 @@ class ChocolateMansion
             {
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, true);
                 $expAmount = 3;
-                $expStats = [ PetSkillEnum::ARCANA ];
+                $expStats = [ PetSkillEnum::Arcana ];
 
                 $loot[] = 'Chocolate-stained Cloth';
 
@@ -169,7 +169,7 @@ class ChocolateMansion
             {
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::UMBRA, false);
                 $expAmount = 2;
-                $expStats = [ PetSkillEnum::ARCANA ];
+                $expStats = [ PetSkillEnum::Arcana ];
 
                 $description .= '%pet:' . $pet->getId() . '.name% tried to cast a banishing spell, but was overwhelmed by the attack, and forced to flee!';
             }
@@ -207,7 +207,7 @@ class ChocolateMansion
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, true);
             $expAmount = 1;
-            $expStats = [ PetSkillEnum::STEALTH ];
+            $expStats = [ PetSkillEnum::Stealth ];
 
             $item = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
                 'Blood Wine', 'Chocolate Wine',
@@ -226,7 +226,7 @@ class ChocolateMansion
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::OTHER, true);
             $expAmount = 1;
-            $expStats = [ PetSkillEnum::STEALTH ];
+            $expStats = [ PetSkillEnum::Stealth ];
 
             $item = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray([
                 'Blood Wine', 'Chocolate Wine',
@@ -259,7 +259,7 @@ class ChocolateMansion
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, true);
             $expAmount = 3;
-            $expStats = [ PetSkillEnum::BRAWL ];
+            $expStats = [ PetSkillEnum::Brawl ];
 
             $loot[] = 'Chocolate Wine';
             $tags[] = 'Fighting';
@@ -279,7 +279,7 @@ class ChocolateMansion
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
             $expAmount = 2;
-            $expStats = [ PetSkillEnum::BRAWL ];
+            $expStats = [ PetSkillEnum::Brawl ];
 
             $pet->increaseSafety(-6);
 
@@ -293,7 +293,7 @@ class ChocolateMansion
         {
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::HUNT, false);
             $expAmount = 2;
-            $expStats = [ PetSkillEnum::BRAWL ];
+            $expStats = [ PetSkillEnum::Brawl ];
 
             $pet->increaseSafety(-3);
 
@@ -343,7 +343,7 @@ class ChocolateMansion
 
             $this->inventoryService->petCollectsItem($book, $pet, $pet->getName() . ' found this in the study of le Manoir de Chocolat.', $activityLog);
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Stealth ], $activityLog);
         }
         else
         {
@@ -353,7 +353,7 @@ class ChocolateMansion
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Stealth' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Stealth ], $activityLog);
         }
 
         $this->inventoryService->petCollectsItem('Chocolate Bar', $pet, $pet->getName() . ' broke this off of a chocolate book in the study of le Manoir de Chocolat.', $activityLog);
@@ -370,14 +370,14 @@ class ChocolateMansion
             {
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(5, 10), PetActivityStatEnum::PROGRAM, false);
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
                 $chemistryDescription .= 'They weren\'t sure what to make of it.';
             }
             else if($scienceRoll >= 15)
             {
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::PROGRAM, true);
 
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
                 $pet->increaseEsteem(8);
 
                 $chemistryDescription .= 'They looked over the notes, and realized it was some kind of "dungeon puzzle". After following the instructions, they produced a liquid which puffed away immediately, and a strange "click" was heard from elsewhere in the mansion! (Dungeon puzzle!)';
@@ -387,7 +387,7 @@ class ChocolateMansion
             {
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::PROGRAM, true);
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
                 $chemistryDescription .= 'They looked over the notes, and realized it was some kind of "dungeon puzzle", but after following the instructions, they were left with some Useless Fizz. (Must have messed something up!)';
                 $loot = 'Useless Fizz';
             }
@@ -431,11 +431,11 @@ class ChocolateMansion
 
         $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this in the master bedroom of le Manoir de Chocolat.', $activityLog);
 
-        $this->petExperienceService->gainExp($pet, $success ? 2 : 1, [ PetSkillEnum::STEALTH ], $activityLog);
+        $this->petExperienceService->gainExp($pet, $success ? 2 : 1, [ PetSkillEnum::Stealth ], $activityLog);
 
         if($searchRoll >= 25 && $quest->getValue() === self::QuestValueAllExceptCellarAndAttic)
         {
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Stealth ], $activityLog);
             $pet->increaseEsteem(8);
 
             $activityLog->setEntry($activityLog->getEntry() . ' While they were poking around, %pet:' . $pet->getId() . '.name% found a secret door with passages to the mansion\'s cellar and attic, and unlocked the doors to both before returning home!');
@@ -472,7 +472,7 @@ class ChocolateMansion
 
         $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this in the parlor of le Manoir de Chocolat.', $activityLog);
 
-        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Stealth ], $activityLog);
 
         if($searchRoll > 2 && $quest->getValue() === self::QuestValueAllExceptCellarAndAttic)
         {
@@ -486,14 +486,14 @@ class ChocolateMansion
             {
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(5, 10), PetActivityStatEnum::OTHER, false);
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::MUSIC ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Music ], $activityLog);
                 $musicDescription .= ', but the music was crazy-complicated, so %pet:' . $pet->getId() . '.name% left it alone.';
             }
             else if($musicRoll >= 15)
             {
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::PROGRAM, true);
 
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Science ], $activityLog);
                 $musicDescription .= '. %pet:' . $pet->getId() . '.name% played it, producing a Music Note; when they had finished, a strange "click" was heard from elsewhere in the mansion. (A dungeon puzzle!?)';
                 $pet->increaseEsteem(8);
                 $quest->setValue(self::QuestValueFullAccess);
@@ -503,7 +503,7 @@ class ChocolateMansion
             {
                 $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::PROGRAM, true);
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
                 $musicDescription .= '. %pet:' . $pet->getId() . '.name% tried to play it, but couldn\'t get past a tricky part in the middle. They produced a Music Note, but ultimately had to give up, and move on.';
                 $loot = 'Music Note';
             }
@@ -589,7 +589,7 @@ class ChocolateMansion
 
         $this->inventoryService->petCollectsItem($loot, $pet, $comment, $activityLog);
 
-        $this->petExperienceService->gainExp($pet, $roll >= $difficulty ? 2 : 1, [ PetSkillEnum::STEALTH ], $activityLog);
+        $this->petExperienceService->gainExp($pet, $roll >= $difficulty ? 2 : 1, [ PetSkillEnum::Stealth ], $activityLog);
 
         return $activityLog;
     }
@@ -758,7 +758,7 @@ class ChocolateMansion
 
                 $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' broke this off of a Chocolate Mastiff at le Manoir de Chocolat.', $activityLog);
 
-                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Brawl ], $activityLog);
             }
             else
             {
@@ -768,7 +768,7 @@ class ChocolateMansion
                     ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fighting' ]))
                 ;
 
-                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
+                $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Brawl ], $activityLog);
             }
         }
 

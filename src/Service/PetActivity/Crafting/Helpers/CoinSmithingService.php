@@ -53,7 +53,7 @@ class CoinSmithingService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing' ]))
         ;
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Crafts ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 60), PetActivityStatEnum::SMITH, false);
 
         return $activityLog;
@@ -73,7 +73,7 @@ class CoinSmithingService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing', 'Moneys' ]))
         ;
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Crafts ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(75, 90), PetActivityStatEnum::SMITH, true);
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::MINTED_MONEYS, $activityLog);
@@ -95,7 +95,7 @@ class CoinSmithingService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Smithing', 'Moneys' ]))
         ;
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Crafts ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(75, 90), PetActivityStatEnum::SMITH, true);
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::MINTED_MONEYS, $activityLog);

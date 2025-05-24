@@ -468,7 +468,7 @@ class JoustingService implements ParkEventInterface
         if($team->wins === $this->round)
             PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::FIRST_PLACE_JOUSTING, $log);
 
-        $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::BRAWL ], $log);
+        $this->petExperienceService->gainExp($pet, $exp, [ PetSkillEnum::Brawl ], $log);
 
         $log->setChanges($changes->compare($pet));
 

@@ -334,7 +334,7 @@ class PetSocialActivityService
                     // the flying/fighting eagle
                     if($this->rng->rngNextInt(1, 3) === 1)
                     {
-                        $teachingStat = PetSkillEnum::BRAWL;
+                        $teachingStat = PetSkillEnum::Brawl;
                         $message = '%pet:' . $pet->getId() . '.name% practiced hunting with ' . $companion->getName() . '!';
                     }
                     else
@@ -348,7 +348,7 @@ class PetSocialActivityService
                     // sneaky snake
                     if($this->rng->rngNextInt(1, 3) === 1)
                     {
-                        $teachingStat = PetSkillEnum::STEALTH;
+                        $teachingStat = PetSkillEnum::Stealth;
                         $message = $companion->getName() . ' showed %pet:' . $pet->getId() . '.name% how to take advantage of their surroundings to hide their presence.';
                     }
                     else
@@ -364,7 +364,7 @@ class PetSocialActivityService
                     // a king
                     if($this->rng->rngNextInt(1, 3) === 1)
                     {
-                        $teachingStat = PetSkillEnum::ARCANA;
+                        $teachingStat = PetSkillEnum::Arcana;
                         $message = '%pet:' . $pet->getId() . '.name% listened to ' . $companion->getName() . '\'s stories about the various lands of the near and far Umbra...';
                     }
                     else
@@ -394,7 +394,7 @@ class PetSocialActivityService
                     if($this->rng->rngNextInt(1, 3) === 1)
                     {
                         // teaches music
-                        $teachingStat = PetSkillEnum::MUSIC;
+                        $teachingStat = PetSkillEnum::Music;
                         $message = '%pet:' . $pet->getId() . '.name% ' . $this->rng->rngNextFromArray([ 'played music', 'danced', 'sang' ]) . ' with ' . $companion->getName() . '!';
                     }
                     else

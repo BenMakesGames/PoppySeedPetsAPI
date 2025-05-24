@@ -71,7 +71,7 @@ class CachingMeritAdventureService
         $this->inventoryService->petCollectsItem($cacheItem, $pet, $pet->getName() . ' found this in one of their old food caches.', $activityLog);
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::GATHER, true);
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Nature ], $activityLog);
 
         return $activityLog;
     }

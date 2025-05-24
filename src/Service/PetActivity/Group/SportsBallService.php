@@ -136,9 +136,9 @@ class SportsBallService
             ;
 
             $this->petExperienceService->gainExp($member, 1, [
-                PetSkillEnum::BRAWL,
-                PetSkillEnum::BRAWL,
-                PetSkillEnum::STEALTH,
+                PetSkillEnum::Brawl,
+                PetSkillEnum::Brawl,
+                PetSkillEnum::Stealth,
             ], $activityLog);
 
             if($this->rng->rngNextInt(1, 10) === 1 && $member->getId() !== $lowestPerformer)

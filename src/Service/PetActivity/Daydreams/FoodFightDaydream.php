@@ -87,7 +87,7 @@ class FoodFightDaydream
 
             PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $log);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Brawl ], $log);
 
             return $log;
         }
@@ -125,7 +125,7 @@ class FoodFightDaydream
 
             PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $log);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Brawl ], $log);
             $pet->increaseEsteem(4);
 
             return $log;
@@ -137,7 +137,7 @@ class FoodFightDaydream
                 $petWithSkills->getPet(),
                 ActivityHelpers::PetName($pet) . ' daydreamed they encountered a chocolate dragon! The two battled fiercely, but a giant piece of the dragon fell on ' . ActivityHelpers::PetName($pet) . ', causing them to snap back to reality...');
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $log);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Brawl ], $log);
 
             $this->inventoryService->petCollectsItem('Chocolate Bar', $pet, 'A piece of a chocolate dragon than fell on ' . $pet->getName() . ' in a daydream.', $log);
 
@@ -164,7 +164,7 @@ class FoodFightDaydream
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $log);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Brawl ], $log);
 
         return $log;
     }
@@ -190,7 +190,7 @@ class FoodFightDaydream
 
         PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::PULLED_AN_ITEM_FROM_A_DREAM, $log);
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $log);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Brawl ], $log);
 
         return $log;
     }

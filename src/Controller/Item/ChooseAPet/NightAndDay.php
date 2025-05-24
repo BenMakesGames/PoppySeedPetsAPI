@@ -79,7 +79,7 @@ class NightAndDay
         foreach($pairOfItems as $item)
             $inventoryService->petCollectsItem($item, $pet, "{$pet->getName()} {$messageMiddle} this!", $activityLog);
 
-        $petExperienceService->gainExp($pet, 2, [ PetSkillEnum::ARCANA ], $activityLog);
+        $petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Arcana ], $activityLog);
 
         $activityLog->setChanges($petChanges->compare($pet));
 

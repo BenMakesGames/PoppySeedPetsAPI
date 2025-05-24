@@ -158,7 +158,7 @@ class GatheringHolidayAdventureService
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $message);
 
-        $this->petExperienceService->gainExp($pet, $experience, [ PetSkillEnum::NATURE ], $activityLog);
+        $this->petExperienceService->gainExp($pet, $experience, [ PetSkillEnum::Nature ], $activityLog);
 
         if($holiday === GatheringHolidayEnum::Easter)
         {
@@ -250,7 +250,7 @@ class GatheringHolidayAdventureService
                 ->addInterestingness(PetActivityLogInterestingness::HoHum + $level * 3)
             ;
 
-            $this->petExperienceService->gainExp($pet, $level, [ PetSkillEnum::BRAWL ], $activityLog);
+            $this->petExperienceService->gainExp($pet, $level, [ PetSkillEnum::Brawl ], $activityLog);
 
             $newItem = $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' defeated some kind of ' . $adjective . ', fish-rabbit hybrid thing, and got this!', $activityLog);
 
@@ -274,7 +274,7 @@ class GatheringHolidayAdventureService
 
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% was attacked by some kind of ' . $adjective . ', fish-rabbit hybrid thing! ' . $pet->getName() . ' couldn\'t land a single attack, and ran away!');
 
-            $this->petExperienceService->gainExp($pet, (int)ceil($level / 2), [ PetSkillEnum::BRAWL ], $activityLog);
+            $this->petExperienceService->gainExp($pet, (int)ceil($level / 2), [ PetSkillEnum::Brawl ], $activityLog);
 
             return $activityLog;
         }

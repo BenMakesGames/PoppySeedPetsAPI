@@ -77,7 +77,7 @@ class TreasureMapService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Adventure!' ]))
             ;
             $pet->increaseEsteem(-1);
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::NATURE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Nature ], $activityLog);
 
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 90), PetActivityStatEnum::GATHER, false);
         }
@@ -89,7 +89,7 @@ class TreasureMapService
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering', 'Adventure!' ]))
             ;
 
-            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::NATURE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::Nature ], $activityLog);
             $pet->increaseEsteem(5);
 
             EquipmentFunctions::destroyPetTool($this->em, $pet);
@@ -162,7 +162,7 @@ class TreasureMapService
 
         $pet->increaseFood(-1);
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana ], $activityLog);
         $this->petExperienceService->spendTime($pet, 120, PetActivityStatEnum::OTHER, null);
 
         $activityLog->setChanges($changes->compare($pet));
@@ -184,7 +184,7 @@ class TreasureMapService
         if($floor === 1)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% took their ' . $keybladeName . ' to the Tower of Trials, but couldn\'t even get past the first floor...');
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Brawl ], $activityLog);
             $pet
                 ->increaseEsteem(-2)
                 ->increaseFood(-1)
@@ -193,7 +193,7 @@ class TreasureMapService
         else if($floor < 25)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% took their ' . $keybladeName . ' to the Tower of Trials, but had to retreat after only the ' . GrammarFunctions::ordinalize($floor) . ' floor.');
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::BRAWL ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Brawl ], $activityLog);
             $pet
                 ->increaseFood(-2)
             ;
@@ -201,7 +201,7 @@ class TreasureMapService
         else if($floor < 50)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% took their ' . $keybladeName . ' to the Tower of Trials, but got tired and had to quit after the ' . GrammarFunctions::ordinalize($floor) . ' floor.');
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Brawl ], $activityLog);
             $pet
                 ->increaseFood(-3)
             ;
@@ -209,7 +209,7 @@ class TreasureMapService
         else if($floor < 75)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% took their ' . $keybladeName . ' to the Tower of Trials, and got as far as the ' . GrammarFunctions::ordinalize($floor) . ' floor before they had to quit. (Not bad!)');
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::BRAWL ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Brawl ], $activityLog);
             $pet
                 ->increaseFood(-4)
                 ->increaseEsteem(2)
@@ -218,7 +218,7 @@ class TreasureMapService
         else if($floor < 100)
         {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% took their ' . $keybladeName . ' to the Tower of Trials, and got all the way to the ' . GrammarFunctions::ordinalize($floor) . ' floor, but couldn\'t get any further. (Pretty good, though!)');
-            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::BRAWL ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::Brawl ], $activityLog);
             $pet
                 ->increaseFood(-5)
                 ->increaseEsteem(3)
@@ -226,7 +226,7 @@ class TreasureMapService
         }
         else {
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% took their ' . $keybladeName . ' to the Tower of Trials, and beat the 100th floor! They plunged the keyblade into the pedestal, unlocking the door to the treasure room, and claimed a Tower Chest!');
-            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::BRAWL ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 4, [ PetSkillEnum::Brawl ], $activityLog);
             $pet
                 ->increaseFood(-6)
                 ->increaseEsteem(5)
@@ -264,7 +264,7 @@ class TreasureMapService
             if($pet->hasStatusEffect(StatusEffectEnum::BITTEN_BY_A_VAMPIRE))
                 $activityLog->setIcon('icons/status-effect/bite-vampire');
 
-            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana ], $activityLog);
             EquipmentFunctions::unequipPet($pet);
             return $activityLog;
         }
@@ -283,7 +283,7 @@ class TreasureMapService
 
         $pet->setTool($newInventory);
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 
         return $activityLog;
@@ -299,7 +299,7 @@ class TreasureMapService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
         ;
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::ARCANA ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Arcana ], $activityLog);
         StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::EGGPLANT_CURSED, $this->rng->rngNextInt(24, 48) * 60);
 
         $pet
@@ -338,7 +338,7 @@ class TreasureMapService
             $pet->increaseLove(4);
         }
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::CRAFTS, PetSkillEnum::NATURE ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Crafts, PetSkillEnum::Nature ], $activityLog);
         $activityLog->addTags(PetActivityLogTagHelpers::findByNames($this->em, $tags));
 
         return $activityLog;
@@ -371,7 +371,7 @@ class TreasureMapService
         ;
         $this->inventoryService->petCollectsItem($loot, $pet, $pet->getName() . ' found this in Project-E by using a Diffie-H Key.', $activityLog);
 
-        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::SCIENCE ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::Science ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::PROTOCOL_7, true);
 
         return $activityLog;
@@ -400,7 +400,7 @@ class TreasureMapService
             'a half-buried hole just outside town'
         ]);
 
-        $skillTrained = $location == $magicLocation ? PetSkillEnum::ARCANA : PetSkillEnum::NATURE;
+        $skillTrained = $location == $magicLocation ? PetSkillEnum::Arcana : PetSkillEnum::Nature;
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% followed a Fruit Fly on a String to ' . $location . ', and retrieved ' . ArrayFunctions::list_nice_sorted($loot) . ' after setting the fly free.')
             ->setIcon('items/bug/fly-fruit')

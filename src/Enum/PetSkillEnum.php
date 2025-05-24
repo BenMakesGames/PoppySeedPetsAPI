@@ -18,11 +18,11 @@ final class PetSkillEnum
 {
     use FakeEnum;
 
-    public const string ARCANA = 'arcana';
-    public const string BRAWL = 'brawl';
-    public const string CRAFTS = 'crafts';
-    public const string MUSIC = 'music';
-    public const string NATURE = 'nature';
-    public const string SCIENCE = 'science';
-    public const string STEALTH = 'stealth';
+    public const string Arcana = 'arcana';
+    public const string Brawl = 'brawl';
+    public const string Crafts = 'crafts';
+    public const string Music = 'music';
+    public const string Nature = 'nature';
+    public const string Science = 'science';
+    public const string Stealth = 'stealth';
 }

@@ -81,9 +81,9 @@ class DragonVaseController
         {
             $changes = new PetChanges($pet);
 
-            $skill = $rng->rngNextFromArray([ PetSkillEnum::BRAWL, PetSkillEnum::ARCANA ]);
+            $skill = $rng->rngNextFromArray([ PetSkillEnum::Brawl, PetSkillEnum::Arcana ]);
 
-            $description = $skill == PetSkillEnum::BRAWL ? 'pounced on' : 'bound';
+            $description = $skill == PetSkillEnum::Brawl ? 'pounced on' : 'bound';
 
             $petItem = $rng->rngNextFromArray([ 'Quintessence', 'Wings', 'Feathers' ]);
 

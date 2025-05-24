@@ -69,7 +69,7 @@ class BirdBathBlueprintController
         BlueprintHelpers::rewardHelper(
             $petExperienceService, $responseService, $em,
             $pet,
-            PetSkillEnum::CRAFTS,
+            PetSkillEnum::Crafts,
             $flashMessage,
             $pet->getName() . ' built a Bird Bath in the Greenhouse with ' . $user->getName() . '!'
         );

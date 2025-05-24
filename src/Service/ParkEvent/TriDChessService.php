@@ -310,7 +310,7 @@ class TriDChessService implements ParkEventInterface
             $this->petExperienceService->gainExp(
                 $participant->pet,
                 $expGain,
-                [ PetSkillEnum::SCIENCE ],
+                [ PetSkillEnum::Science ],
                 $log
             );
 

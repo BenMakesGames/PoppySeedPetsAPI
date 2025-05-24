@@ -257,7 +257,7 @@ class AstronomyClubService
         }
 
         foreach($group->getMembers() as $pet)
-            $this->petExperienceService->gainExp($pet, $expGainPerPet[$pet->getId()], [ PetSkillEnum::SCIENCE ], $activityLogsPerPet[$pet->getId()]);
+            $this->petExperienceService->gainExp($pet, $expGainPerPet[$pet->getId()], [ PetSkillEnum::Science ], $activityLogsPerPet[$pet->getId()]);
 
         $this->petRelationshipService->groupGathering(
             $group->getMembers(),

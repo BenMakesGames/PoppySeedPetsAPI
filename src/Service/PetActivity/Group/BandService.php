@@ -341,7 +341,7 @@ class BandService
         }
 
         foreach($group->getMembers() as $pet)
-            $this->petExperienceService->gainExp($pet, $expGainPerPet[$pet->getId()], [ PetSkillEnum::MUSIC ], $activityLogsPerPet[$pet->getId()]);
+            $this->petExperienceService->gainExp($pet, $expGainPerPet[$pet->getId()], [ PetSkillEnum::Music ], $activityLogsPerPet[$pet->getId()]);
 
         $this->petRelationshipService->groupGathering(
             $group->getMembers(),

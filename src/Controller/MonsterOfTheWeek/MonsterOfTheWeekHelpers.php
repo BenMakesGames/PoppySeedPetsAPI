@@ -135,20 +135,20 @@ final class MonsterOfTheWeekHelpers
         {
             $effects = $item->getTool();
 
-            $points = max($points, $effects->getBrawl() + ($effects->getFocusSkill() == PetSkillEnum::BRAWL ? 2 : 0));
+            $points = max($points, $effects->getBrawl() + ($effects->getFocusSkill() == PetSkillEnum::Brawl ? 2 : 0));
         }
 
         if($item->getEnchants() && $item->getEnchants()->getEffects())
         {
             $effects = $item->getEnchants()->getEffects();
-            $points = max($points, $effects->getBrawl() + ($effects->getFocusSkill() == PetSkillEnum::BRAWL ? 2 : 0));
+            $points = max($points, $effects->getBrawl() + ($effects->getFocusSkill() == PetSkillEnum::Brawl ? 2 : 0));
         }
 
         if($item->getFood())
         {
             $effects = $item->getFood();
 
-            $points = max($points, $effects->getGrantedSkill() == PetSkillEnum::BRAWL ? 2 : 0);
+            $points = max($points, $effects->getGrantedSkill() == PetSkillEnum::Brawl ? 2 : 0);
         }
 
         return (int)floor(pow($points, 1.3333));
@@ -204,20 +204,20 @@ final class MonsterOfTheWeekHelpers
         {
             $effects = $item->getTool();
 
-            $points = max($points, $effects->getMusic() + ($effects->getFocusSkill() == PetSkillEnum::MUSIC ? 2 : 0));
+            $points = max($points, $effects->getMusic() + ($effects->getFocusSkill() == PetSkillEnum::Music ? 2 : 0));
         }
 
         if($item->getEnchants() && $item->getEnchants()->getEffects())
         {
             $effects = $item->getEnchants()->getEffects();
-            $points = max($points, $effects->getMusic() + ($effects->getFocusSkill() == PetSkillEnum::MUSIC ? 2 : 0));
+            $points = max($points, $effects->getMusic() + ($effects->getFocusSkill() == PetSkillEnum::Music ? 2 : 0));
         }
 
         if($item->getFood())
         {
             $effects = $item->getFood();
 
-            $points = max($points, $effects->getGrantedSkill() == PetSkillEnum::MUSIC ? 2 : 0);
+            $points = max($points, $effects->getGrantedSkill() == PetSkillEnum::Music ? 2 : 0);
         }
 
         if($item->hasItemGroup('Musical Instrument'))
@@ -246,20 +246,20 @@ final class MonsterOfTheWeekHelpers
         {
             $effects = $item->getTool();
 
-            $points = max($points, $effects->getScience() + ($effects->getFocusSkill() == PetSkillEnum::SCIENCE ? 2 : 0) + ($effects->getPreventsBugs() ? 1 : 0));
+            $points = max($points, $effects->getScience() + ($effects->getFocusSkill() == PetSkillEnum::Science ? 2 : 0) + ($effects->getPreventsBugs() ? 1 : 0));
         }
 
         if($item->getEnchants() && $item->getEnchants()->getEffects())
         {
             $effects = $item->getEnchants()->getEffects();
-            $points = max($points, $effects->getScience() + ($effects->getFocusSkill() == PetSkillEnum::SCIENCE ? 2 : 0) + ($effects->getPreventsBugs() ? 1 : 0));
+            $points = max($points, $effects->getScience() + ($effects->getFocusSkill() == PetSkillEnum::Science ? 2 : 0) + ($effects->getPreventsBugs() ? 1 : 0));
         }
 
         if($item->getFood())
         {
             $effects = $item->getFood();
 
-            $points = max($points, $effects->getGrantedSkill() == PetSkillEnum::SCIENCE ? 2 : 0);
+            $points = max($points, $effects->getGrantedSkill() == PetSkillEnum::Science ? 2 : 0);
         }
 
         if(str_contains(mb_strtolower($item->getName()), 'fiberglass'))

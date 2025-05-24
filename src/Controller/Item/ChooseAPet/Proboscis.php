@@ -81,7 +81,7 @@ class Proboscis
         for($i = 0; $i < $honeyCombQuantity; $i++)
             $inventoryService->petCollectsItem('Honeycomb', $pet, "{$pet->getName()} used a Proboscis to drink from the flowers of the island, and got this!", $activityLog);
 
-        $petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
+        $petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Nature ], $activityLog);
 
         $activityLog->setChanges($petChanges->compare($pet));
 

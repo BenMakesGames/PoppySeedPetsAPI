@@ -86,7 +86,7 @@ class LostInTownService
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% followed the Woher Cuán Nani-nani, which lead them into a back alley in town. In some open boxes they found ' . ArrayFunctions::list_nice_sorted($items) . '. They looked around for a while, and scavenged up ' . ArrayFunctions::list_nice_sorted($items) . '. Afterwards, they realized they\'d lost the sign!')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]));
 
-        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Nature ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::GATHER, true);
 
         foreach($items as $item)
@@ -112,7 +112,7 @@ class LostInTownService
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% followed the Woher Cuán Nani-nani, which lead them deep into the island\'s Micro-jungle, where they found a ruined settlement. They looked around for a while, and scavenged up ' . ArrayFunctions::list_nice_sorted($items) . '. Afterwards, they realized they\'d lost the sign!')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]));
 
-        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Nature ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::GATHER, true);
 
         foreach($items as $item)
@@ -150,7 +150,7 @@ class LostInTownService
                     PetActivityLogTagEnum::Dark
                 ]));
 
-            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::NATURE ], $activityLog);
+            $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::Nature ], $activityLog);
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(60, 75), PetActivityStatEnum::GATHER, true);
 
             // destroy the tool AFTER allowing it to apply any exp bonuses, etc (above)
@@ -179,7 +179,7 @@ class LostInTownService
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% followed the Woher Cuán Nani-nani, which lead them to a door that didn\'t seem to go anywhere. They opened it up, and stepped inside, finding themselves in a small pocket dimension that looped in on itself. It seemed someone had made a home for themselves there, but long since abandoned it. ' . ActivityHelpers::PetName($pet) . ' rummaged around for a bit, and scavenged up ' . ArrayFunctions::list_nice_sorted($items) . ' before returning home. Afterwards, they realized they\'d left the sign behind, and were completely unable to find the door again!')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]));
 
-        $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::ARCANA ], $activityLog);
+        $this->petExperienceService->gainExp($pet, 3, [ PetSkillEnum::Arcana ], $activityLog);
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(30, 45), PetActivityStatEnum::GATHER, true);
 
         foreach($items as $item)

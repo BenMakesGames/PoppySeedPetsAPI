@@ -50,13 +50,13 @@ class SagaSagaService
 
         $possibleSkills = [];
 
-        if($pet->getSkills()->getStealth() >= 5) $possibleSkills[] = PetSkillEnum::STEALTH;
-        if($pet->getSkills()->getNature() >= 5) $possibleSkills[] = PetSkillEnum::NATURE;
-        if($pet->getSkills()->getBrawl() >= 5) $possibleSkills[] = PetSkillEnum::BRAWL;
-        if($pet->getSkills()->getArcana() >= 5) $possibleSkills[] = PetSkillEnum::ARCANA;
-        if($pet->getSkills()->getCrafts() >= 5) $possibleSkills[] = PetSkillEnum::CRAFTS;
-        if($pet->getSkills()->getMusic() >= 5) $possibleSkills[] = PetSkillEnum::MUSIC;
-        if($pet->getSkills()->getScience() >= 5) $possibleSkills[] = PetSkillEnum::SCIENCE;
+        if($pet->getSkills()->getStealth() >= 5) $possibleSkills[] = PetSkillEnum::Stealth;
+        if($pet->getSkills()->getNature() >= 5) $possibleSkills[] = PetSkillEnum::Nature;
+        if($pet->getSkills()->getBrawl() >= 5) $possibleSkills[] = PetSkillEnum::Brawl;
+        if($pet->getSkills()->getArcana() >= 5) $possibleSkills[] = PetSkillEnum::Arcana;
+        if($pet->getSkills()->getCrafts() >= 5) $possibleSkills[] = PetSkillEnum::Crafts;
+        if($pet->getSkills()->getMusic() >= 5) $possibleSkills[] = PetSkillEnum::Music;
+        if($pet->getSkills()->getScience() >= 5) $possibleSkills[] = PetSkillEnum::Science;
 
         if(count($possibleSkills) === 0)
             return false;
