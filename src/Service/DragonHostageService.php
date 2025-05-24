@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\Dragon;
 use App\Entity\DragonHostage;
 use App\Entity\Item;
 use App\Enum\DragonHostageTypeEnum;
@@ -29,7 +30,7 @@ class DragonHostageService
     {
     }
 
-    public function generateHostage(): DragonHostage
+    public function generateHostage(Dragon $dragon): DragonHostage
     {
         $type = $this->rng->rngNextFromArray(DragonHostageTypeEnum::cases());
 
@@ -39,6 +40,7 @@ class DragonHostageService
         $dialog = $this->generateHostageDialog();
 
         return (new DragonHostage())
+            ->setDragon($dragon)
             ->setType($type)
             ->setAppearance('1') // later, make more appearances: $this->rng->rngNextInt(1, 3)
             ->setColorA($crownColor)

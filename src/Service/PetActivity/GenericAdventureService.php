@@ -170,7 +170,7 @@ class GenericAdventureService
 
             if($dragon && !$dragon->getHostage())
             {
-                $hostage = $this->dragonHostageService->generateHostage();
+                $hostage = $this->dragonHostageService->generateHostage($dragon);
 
                 $this->em->persist($hostage);
 
