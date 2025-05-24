@@ -32,7 +32,7 @@ use App\Service\UserAccessor;
 #[Route("/item/album")]
 class AlbumController
 {
-    public const array GENRES = [
+    public const array Genres = [
         'Salsa',
         'Meringue',
         'Rock',
@@ -92,7 +92,7 @@ class AlbumController
             $rng->rngNextInt(4, 6)
         );
 
-        $genre = $rng->rngNextFromArray(self::GENRES);
+        $genre = $rng->rngNextFromArray(self::Genres);
         $extraItem = $rng->rngNextFromArray([ 'Pointer', 'NUL', 'Quintessence' ]);
 
         $inventoryService->giveInventoryQuantities($musicNotes, $user, $user, $user->getName() . ' got this by listening to an EP.', $location);
@@ -104,7 +104,7 @@ class AlbumController
         $em->flush();
 
         return $responseService->itemActionSuccess(
-            "<em>♫ " . $rng->rngNextFromArray(Music::LYRICS) . " ♪</em>\n\n" .
+            "<em>♫ " . $rng->rngNextFromArray(Music::Lyrics) . " ♪</em>\n\n" .
             'What totally and completely original songs these pets have written! In the ' . mb_strtolower($genre) . ' genre, of course... so you get some ' . $genre . "! (Of course!)\n\n" .
             'You also received ' . $musicNotes->quantity . ' Music Notes, and a ' . $extraItem . '.',
             [ 'itemDeleted' => true ]
@@ -129,7 +129,7 @@ class AlbumController
             $rng->rngNextInt(4, 6)
         );
 
-        $genre = $rng->rngNextFromArray(self::GENRES);
+        $genre = $rng->rngNextFromArray(self::Genres);
 
         $extraItems = [ 'NUL', 'Pointer', 'Quintessence' ];
 
@@ -144,7 +144,7 @@ class AlbumController
         $em->flush();
 
         return $responseService->itemActionSuccess(
-            "<em>♫ " . $rng->rngNextFromArray(Music::LYRICS) . " ♪</em>\n\n" .
+            "<em>♫ " . $rng->rngNextFromArray(Music::Lyrics) . " ♪</em>\n\n" .
             'What totally and completely original songs these pets have written! In the ' . mb_strtolower($genre) . ' genre, of course... so you get some ' . $genre . "! (Of course!)\n\n" .
             'You also received ' . $musicNotes->quantity . ' Music Notes, ' . ArrayFunctions::list_nice($extraItems) . '.',
             [ 'itemDeleted' => true ]

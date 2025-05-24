@@ -59,10 +59,10 @@ class CollectHolidayBoxController
             $box->userQuestEntity->setValue(true);
 
         if(str_contains($box->itemName, 'Box') || str_contains($box->itemName, 'Bag'))
-            $userStatsRepository->incrementStat($user, UserStatEnum::PLAZA_BOXES_RECEIVED, $box->quantity);
+            $userStatsRepository->incrementStat($user, UserStatEnum::PlazaBoxesReceived, $box->quantity);
 
         for($i = 0; $i < $box->quantity; $i++)
-            $inventoryService->receiveItem($box->itemName, $user, $user, $box->comment, LocationEnum::HOME, true);
+            $inventoryService->receiveItem($box->itemName, $user, $user, $box->comment, LocationEnum::Home, true);
 
         $museumService->forceDonateItem($user, $box->itemName, 'Tess donated this to the Museum on your behalf.', null);
 

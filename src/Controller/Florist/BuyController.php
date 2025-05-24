@@ -62,14 +62,14 @@ class BuyController
 
         $transactionService->spendMoney($user, $userPick['cost'], 'Purchased a ' . $userPick['item']['name'] . ' at The Florist.');
 
-        $inventoryService->receiveItem($userPick['item']['name'], $user, $user, $user->getName() . ' bought this at The Florist\'s.', LocationEnum::HOME, true);
+        $inventoryService->receiveItem($userPick['item']['name'], $user, $user, $user->getName() . ' bought this at The Florist\'s.', LocationEnum::Home, true);
 
         $statName = $userPick['item']['name'] . 's Purchased';
 
         $stat = $userStatsRepository->incrementStat($user, $statName);
 
         if($userPick['item']['name'] === 'Flowerbomb' && $stat->getValue() === 1)
-            $inventoryService->receiveItem('Book of Flowers', $user, $user, 'This was delivered to you from The Florist\'s.', LocationEnum::HOME, true);
+            $inventoryService->receiveItem('Book of Flowers', $user, $user, 'This was delivered to you from The Florist\'s.', LocationEnum::Home, true);
 
         $em->flush();
 

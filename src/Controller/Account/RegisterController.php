@@ -113,7 +113,6 @@ class RegisterController
 
         $em->persist($user);
 
-        /** @var FlavorEnum $favoriteFlavor */
         $favoriteFlavor = $rng->rngNextFromArray([
             FlavorEnum::Earthy, FlavorEnum::Fruity, FlavorEnum::Creamy, FlavorEnum::Meaty, FlavorEnum::Planty,
             FlavorEnum::Fishy, FlavorEnum::Fatty,
@@ -128,7 +127,7 @@ class RegisterController
             ->setScale($rng->rngNextInt(90, 110))
         ;
 
-        $inventoryService->receiveItem('Welcome Note', $user, null, 'This Welcome Note was waiting for ' . $user->getName() . ' in their house.', LocationEnum::HOME, true);
+        $inventoryService->receiveItem('Welcome Note', $user, null, 'This Welcome Note was waiting for ' . $user->getName() . ' in their house.', LocationEnum::Home, true);
 
         $myTheme = new UserStyle(user: $user, name: UserStyle::Current);
 

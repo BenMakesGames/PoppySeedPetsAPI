@@ -48,7 +48,7 @@ class IceMangoController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $mangoesShattered = $userStatsRepository->incrementStat($user, UserStatEnum::SHATTERED_ICE_MANGO);
+        $mangoesShattered = $userStatsRepository->incrementStat($user, UserStatEnum::ShatteredIceMango);
         $lastShatterEffect = UserQuestRepository::findOrCreate($em, $user, 'Last Ice "Mango" Shattering', 0);
 
         $possibleEffects = array_diff([ 1, 2, 3, 4 ], [ $lastShatterEffect->getValue() ]);

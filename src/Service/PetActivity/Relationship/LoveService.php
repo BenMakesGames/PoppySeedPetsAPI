@@ -266,7 +266,7 @@ class LoveService
                 else //if($totalDrive >= 3)
                     return 95;
 
-            case RelationshipEnum::MATE:
+            case RelationshipEnum::Mate:
                 if($totalDrive <= -3)
                     return 1;
                 if($totalDrive === -2)

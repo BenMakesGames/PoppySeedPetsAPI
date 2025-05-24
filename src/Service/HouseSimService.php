@@ -46,7 +46,7 @@ class HouseSimService
 
         $inventory = $em->getRepository(Inventory::class)->findBy([
             'owner' => $user,
-            'location' => LocationEnum::HOME
+            'location' => LocationEnum::Home
         ]);
 
         $this->performanceProfiler->logExecutionTime(__METHOD__ . ' - Fetch Inventory', microtime(true) - $time);

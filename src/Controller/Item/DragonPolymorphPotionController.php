@@ -52,7 +52,7 @@ class DragonPolymorphPotionController
         $currentAppearance = $dragon->getAppearance();
 
         $availableAppearances = array_filter(
-            Dragon::APPEARANCE_IMAGES,
+            Dragon::AppearanceImages,
             fn(int $image) => $image !== $currentAppearance
         );
 

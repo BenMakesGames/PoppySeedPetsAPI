@@ -40,7 +40,7 @@ class FireplaceService
             ->addOrderBy('item.fuel', 'DESC')
             ->addOrderBy('item.name', 'ASC')
             ->setParameter('owner', $user->getId())
-            ->setParameter('home', LocationEnum::HOME)
+            ->setParameter('home', LocationEnum::Home)
         ;
 
         if($inventoryIds)

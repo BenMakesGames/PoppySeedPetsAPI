@@ -18,11 +18,11 @@ final class RelationshipEnum
 {
     use FakeEnum;
 
-    public const string BROKE_UP = 'broke up';
-    public const string DISLIKE = 'dislike';
-    public const string FRIENDLY_RIVAL = 'friendly rival';
-    public const string FRIEND = 'friend';
+    public const string BrokeUp = 'broke up';
+    public const string Dislike = 'dislike';
+    public const string FriendlyRival = 'friendly rival';
+    public const string Friend = 'friend';
     public const string BFF = 'bff';
     public const string FWB = 'fwb';
-    public const string MATE = 'mate';
+    public const string Mate = 'mate';
 }

@@ -70,9 +70,9 @@ class FriendlyRivalsService
         $combinedSkills = array_splice($combinedSkills, 0, 3, true);
 
         // the pets may not compete, if they actually have different goals
-        if ($p1->getRelationshipGoal() !== RelationshipEnum::FRIENDLY_RIVAL && $this->rng->rngNextInt(1, 3) === 1)
+        if ($p1->getRelationshipGoal() !== RelationshipEnum::FriendlyRival && $this->rng->rngNextInt(1, 3) === 1)
         {
-            if ($p2->getRelationshipGoal() !== RelationshipEnum::FRIENDLY_RIVAL)
+            if ($p2->getRelationshipGoal() !== RelationshipEnum::FriendlyRival)
                 $message = $p1->getPet()->getName() . ' and ' . $p2->getPet()->getName() . ' met to brag about their ' . array_key_first($combinedSkills) . ', but realized that neither were really feeling up to it, so called the contest off.';
             else
                 $message = $p1->getPet()->getName() . ' and ' . $p2->getPet()->getName() . ' met to brag about their ' . array_key_first($combinedSkills) . ', but ' . $p1->getPet()->getName() . ' wasn\'t really feeling it. ' . $p2->getPet()->getName() . ' accepted the win.';
@@ -83,9 +83,9 @@ class FriendlyRivalsService
             return $this->createLogs($p1->getPet(), $p2->getPet(), $message);
         }
 
-        if ($p2->getRelationshipGoal() !== RelationshipEnum::FRIENDLY_RIVAL && $this->rng->rngNextInt(1, 3) === 1)
+        if ($p2->getRelationshipGoal() !== RelationshipEnum::FriendlyRival && $this->rng->rngNextInt(1, 3) === 1)
         {
-            if ($p1->getRelationshipGoal() !== RelationshipEnum::FRIENDLY_RIVAL)
+            if ($p1->getRelationshipGoal() !== RelationshipEnum::FriendlyRival)
                 $message = $p1->getPet()->getName() . ' and ' . $p2->getPet()->getName() . ' met to brag about their ' . array_key_first($combinedSkills) . ', but realized that neither were really feeling up to it, so called the contest off.';
             else
                 $message = $p1->getPet()->getName() . ' and ' . $p2->getPet()->getName() . ' met to brag about their ' . array_key_first($combinedSkills) . ', but ' . $p2->getPet()->getName() . ' wasn\'t really feeling it. ' . $p1->getPet()->getName() . ' accepted the win.';

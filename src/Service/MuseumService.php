@@ -65,7 +65,7 @@ class MuseumService
 
         $this->transactionService->getMuseumFavor($user, $item->getMuseumPoints(), 'Someone, or something, donated ' . $item->getNameWithArticle() . ' to the Museum on your behalf.');
 
-        $this->userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM, 1);
+        $this->userStatsRepository->incrementStat($user, UserStatEnum::ItemsDonatedToMuseum, 1);
 
         return true;
     }

@@ -86,7 +86,7 @@ class HotPotatoController
         }
         else
         {
-            $userStatsRepository->incrementStat($user, UserStatEnum::TOSSED_A_HOT_POTATO);
+            $userStatsRepository->incrementStat($user, UserStatEnum::TossedAHotPotato);
 
             return $hotPotatoService->tossItem($inventory);
         }

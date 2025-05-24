@@ -45,7 +45,7 @@ class UpdateStockingController
         $colorA = $request->request->getAlnum('colorA');
         $colorB = $request->request->getAlnum('colorB');
 
-        if(!in_array($appearance, Fireplace::STOCKING_APPEARANCES))
+        if(!in_array($appearance, Fireplace::StockingAppearances))
             throw new PSPFormValidationException('Must choose a stocking appearance...');
 
         if(!preg_match('/[A-Fa-f0-9]{6}/', $colorA))

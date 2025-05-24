@@ -64,7 +64,7 @@ class GetGreenhouseController
     {
         return $em->getRepository(Inventory::class)->count([
             'owner' => $user->getId(),
-            'location' => LocationEnum::BIRD_BATH,
+            'location' => LocationEnum::BirdBath,
             'item' => ItemRepository::getIdByName($em, $itemName)
         ]) > 0;
     }

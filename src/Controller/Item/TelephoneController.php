@@ -69,7 +69,7 @@ class TelephoneController
         sort($pizzas);
 
         foreach($pizzas as $pizza)
-            $inventoryService->receiveItem($pizza, $user, $user, 'You ordered this pizza over the telephone.', LocationEnum::HOME);
+            $inventoryService->receiveItem($pizza, $user, $user, 'You ordered this pizza over the telephone.', LocationEnum::Home);
 
         $em->flush();
 

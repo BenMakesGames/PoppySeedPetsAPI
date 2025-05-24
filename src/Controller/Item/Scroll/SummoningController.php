@@ -68,7 +68,7 @@ class SummoningController
 
         $result = $houseMonsterService->doFight('You read the scroll', $petsAtHome, $monster);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
 
         $em->flush();
 

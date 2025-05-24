@@ -64,7 +64,7 @@ class GiveCandyToTrickOrTreaterController
         $candy = $em->getRepository(Inventory::class)->findOneBy([
             'id' => $inventoryId,
             'owner' => $user->getId(),
-            'location' => LocationEnum::HOME
+            'location' => LocationEnum::Home
         ]);
 
         if(!$candy)

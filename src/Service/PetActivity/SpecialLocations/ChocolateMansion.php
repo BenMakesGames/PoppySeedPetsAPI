@@ -44,11 +44,11 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ChocolateMansion
 {
-    private const int QUEST_VALUE_PATIO_ONLY = 1;
-    private const int QUEST_VALUE_UP_TO_GARDENS = 2;
-    private const int QUEST_VALUE_UP_TO_FOYER = 3;
-    private const int QUEST_VALUE_ALL_EXCEPT_CELLAR_AND_ATTIC = 6;
-    private const int QUEST_VALUE_FULL_ACCESS = 8;
+    private const int QuestValuePatioOnly = 1;
+    private const int QuestValueUpToGardens = 2;
+    private const int QuestValueUpToFoyer = 3;
+    private const int QuestValueAllExceptCellarAndAttic = 6;
+    private const int QuestValueFullAccess = 8;
 
     public function __construct(
         private readonly IRandom $rng,
@@ -68,9 +68,9 @@ class ChocolateMansion
 
         EquipmentFunctions::destroyPetTool($this->em, $pet);
 
-        $roomsAvailableQuest = UserQuestRepository::findOrCreate($this->em, $pet->getOwner(), 'Chocolate Mansion Rooms', self::QUEST_VALUE_PATIO_ONLY);
+        $roomsAvailableQuest = UserQuestRepository::findOrCreate($this->em, $pet->getOwner(), 'Chocolate Mansion Rooms', self::QuestValuePatioOnly);
 
-        $petFurthestRoom = $this->petQuestRepository->findOrCreate($pet, 'Chocolate Mansion Furthest Room', self::QUEST_VALUE_UP_TO_FOYER);
+        $petFurthestRoom = $this->petQuestRepository->findOrCreate($pet, 'Chocolate Mansion Furthest Room', self::QuestValueUpToFoyer);
 
         $maxRoom = min($roomsAvailableQuest->getValue(), $petFurthestRoom->getValue());
 
@@ -358,7 +358,7 @@ class ChocolateMansion
 
         $this->inventoryService->petCollectsItem('Chocolate Bar', $pet, $pet->getName() . ' broke this off of a chocolate book in the study of le Manoir de Chocolat.', $activityLog);
 
-        if($searchRoll > 2 && $quest->getValue() === self::QUEST_VALUE_ALL_EXCEPT_CELLAR_AND_ATTIC)
+        if($searchRoll > 2 && $quest->getValue() === self::QuestValueAllExceptCellarAndAttic)
         {
             $loot = null;
 
@@ -381,7 +381,7 @@ class ChocolateMansion
                 $pet->increaseEsteem(8);
 
                 $chemistryDescription .= 'They looked over the notes, and realized it was some kind of "dungeon puzzle". After following the instructions, they produced a liquid which puffed away immediately, and a strange "click" was heard from elsewhere in the mansion! (Dungeon puzzle!)';
-                $quest->setValue(self::QUEST_VALUE_FULL_ACCESS);
+                $quest->setValue(self::QuestValueFullAccess);
             }
             else
             {
@@ -433,14 +433,14 @@ class ChocolateMansion
 
         $this->petExperienceService->gainExp($pet, $success ? 2 : 1, [ PetSkillEnum::STEALTH ], $activityLog);
 
-        if($searchRoll >= 25 && $quest->getValue() === self::QUEST_VALUE_ALL_EXCEPT_CELLAR_AND_ATTIC)
+        if($searchRoll >= 25 && $quest->getValue() === self::QuestValueAllExceptCellarAndAttic)
         {
             $this->petExperienceService->gainExp($pet, 1, [ PetSkillEnum::STEALTH ], $activityLog);
             $pet->increaseEsteem(8);
 
             $activityLog->setEntry($activityLog->getEntry() . ' While they were poking around, %pet:' . $pet->getId() . '.name% found a secret door with passages to the mansion\'s cellar and attic, and unlocked the doors to both before returning home!');
 
-            $quest->setValue(self::QUEST_VALUE_FULL_ACCESS);
+            $quest->setValue(self::QuestValueFullAccess);
         }
 
         return $activityLog;
@@ -474,7 +474,7 @@ class ChocolateMansion
 
         $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::STEALTH ], $activityLog);
 
-        if($searchRoll > 2 && $quest->getValue() === self::QUEST_VALUE_ALL_EXCEPT_CELLAR_AND_ATTIC)
+        if($searchRoll > 2 && $quest->getValue() === self::QuestValueAllExceptCellarAndAttic)
         {
             $loot = null;
 
@@ -496,7 +496,7 @@ class ChocolateMansion
                 $this->petExperienceService->gainExp($pet, 2, [ PetSkillEnum::SCIENCE ], $activityLog);
                 $musicDescription .= '. %pet:' . $pet->getId() . '.name% played it, producing a Music Note; when they had finished, a strange "click" was heard from elsewhere in the mansion. (A dungeon puzzle!?)';
                 $pet->increaseEsteem(8);
-                $quest->setValue(self::QUEST_VALUE_FULL_ACCESS);
+                $quest->setValue(self::QuestValueFullAccess);
                 $loot = 'Music Note';
             }
             else
@@ -522,9 +522,9 @@ class ChocolateMansion
         $pet = $petWithSkills->getPet();
         $description = $this->getEntryDescription($pet);
 
-        if($petFurthestRoom->getValue() === self::QUEST_VALUE_UP_TO_FOYER)
+        if($petFurthestRoom->getValue() === self::QuestValueUpToFoyer)
         {
-            $petFurthestRoom->setValue(self::QUEST_VALUE_FULL_ACCESS);
+            $petFurthestRoom->setValue(self::QuestValueFullAccess);
             $description .= 'They stepped into the mansion for the first time, and took a moment to marvel at the grand foyer... before immediately snooping around! While there, ';
         }
         else
@@ -648,9 +648,9 @@ class ChocolateMansion
 
         if($success)
         {
-            if($quest->getValue() === self::QUEST_VALUE_UP_TO_GARDENS)
+            if($quest->getValue() === self::QuestValueUpToGardens)
             {
-                $quest->setValue(self::QUEST_VALUE_ALL_EXCEPT_CELLAR_AND_ATTIC);
+                $quest->setValue(self::QuestValueAllExceptCellarAndAttic);
                 $description .= 'There was a chocolate fountain in the center; %pet:' . $pet->getId() . '.name% bottled some of the liquid. While they were doing so, they spotted a lever. Pulling it, a large \\*CLANK\\* was heard coming from the front of the house!';
             }
             else

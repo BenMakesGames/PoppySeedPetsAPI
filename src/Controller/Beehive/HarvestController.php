@@ -60,7 +60,7 @@ class HarvestController
         {
             $beehive->setRoyalJellyProgress(0);
 
-            $inventoryService->receiveItem('Royal Jelly', $user, $user, $user->getName() . ' took this from their Beehive.', LocationEnum::HOME);
+            $inventoryService->receiveItem('Royal Jelly', $user, $user, $user->getName() . ' took this from their Beehive.', LocationEnum::Home);
 
             $itemNames[] = 'Royal Jelly';
         }
@@ -69,7 +69,7 @@ class HarvestController
         {
             $beehive->setHoneycombProgress(0);
 
-            $inventoryService->receiveItem('Honeycomb', $user, $user, $user->getName() . ' took this from their Beehive.', LocationEnum::HOME);
+            $inventoryService->receiveItem('Honeycomb', $user, $user, $user->getName() . ' took this from their Beehive.', LocationEnum::Home);
 
             $itemNames[] = 'Honeycomb';
         }
@@ -85,7 +85,7 @@ class HarvestController
             $item = $rng->rngNextFromArray($possibleItems);
 
             $newItems = [
-                $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' took this from their Beehive.', LocationEnum::HOME)
+                $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' took this from their Beehive.', LocationEnum::Home)
             ];
 
             if($beehive->getHelper())

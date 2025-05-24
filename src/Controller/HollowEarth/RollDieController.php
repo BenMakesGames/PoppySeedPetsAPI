@@ -89,7 +89,7 @@ class RollDieController
             else
                 $loot = 'Blue Plastic Egg';
 
-            $inventoryService->receiveItem($loot, $user, $user, $user->getName() . ' spotted this while traveling with ' . $player->getChosenPet()->getName() . ' through the Hollow Earth!', LocationEnum::HOME)
+            $inventoryService->receiveItem($loot, $user, $user, $user->getName() . ' spotted this while traveling with ' . $player->getChosenPet()->getName() . ' through the Hollow Earth!', LocationEnum::Home)
                 ->setLockedToOwner($loot !== 'Blue Plastic Egg')
             ;
 

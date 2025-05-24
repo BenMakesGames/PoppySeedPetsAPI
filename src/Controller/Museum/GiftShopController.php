@@ -87,19 +87,19 @@ class GiftShopController
 
         $itemObject = ItemRepository::findOneByName($em, $item['item']['name']);
 
-        $itemsInBuyersHome = InventoryService::countTotalInventory($em, $user, LocationEnum::HOME);
+        $itemsInBuyersHome = InventoryService::countTotalInventory($em, $user, LocationEnum::Home);
 
-        $targetLocation = LocationEnum::HOME;
+        $targetLocation = LocationEnum::Home;
 
-        if($itemsInBuyersHome >= User::MAX_HOUSE_INVENTORY)
+        if($itemsInBuyersHome >= User::MaxHouseInventory)
         {
             if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
                 throw new PSPInvalidOperationException('There\'s not enough space in your house!');
 
-            $itemsInBuyersBasement = InventoryService::countTotalInventory($em, $user, LocationEnum::BASEMENT);
+            $itemsInBuyersBasement = InventoryService::countTotalInventory($em, $user, LocationEnum::Basement);
 
-            if($itemsInBuyersBasement < User::MAX_BASEMENT_INVENTORY)
-                $targetLocation = LocationEnum::BASEMENT;
+            if($itemsInBuyersBasement < User::MaxBasementInventory)
+                $targetLocation = LocationEnum::Basement;
             else
                 throw new PSPInvalidOperationException('There\'s not enough space in your house or basement!');
         }
@@ -108,7 +108,7 @@ class GiftShopController
 
         $inventoryService->receiveItem($itemObject, $user, null, $user->getName() . ' bought this from the Museum Gift Shop.', $targetLocation, true);
 
-        if($targetLocation === LocationEnum::BASEMENT)
+        if($targetLocation === LocationEnum::Basement)
             $responseService->addFlashMessage('You bought ' . $itemObject->getNameWithArticle() . '; your house is full, so it\'s been sent to your basement.');
         else
             $responseService->addFlashMessage('You bought ' . $itemObject->getNameWithArticle() . '.');

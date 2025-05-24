@@ -62,10 +62,10 @@ class MakeExchangeController
         if($quantity > $exchange->canMakeExchange)
             throw new PSPInvalidOperationException('You only have the stuff to do this exchange up to ' . $exchange->canMakeExchange . ' times.');
 
-        if(!$traderService->userCanMakeExchange($user, $exchange, LocationEnum::HOME))
+        if(!$traderService->userCanMakeExchange($user, $exchange, LocationEnum::Home))
             throw new PSPNotFoundException('The items you need to make this exchange could not be found in your house.');
 
-        $traderService->makeExchange($user, $exchange, LocationEnum::HOME, $quantity);
+        $traderService->makeExchange($user, $exchange, LocationEnum::Home, $quantity);
 
         $message = null;
 
@@ -78,7 +78,7 @@ class MakeExchangeController
             if($quest->getValue() === false)
             {
                 $quest->setValue(true);
-                $inventoryService->receiveItem('Behatting Scroll', $user, null, 'The Trader gave you this, for Halloween.', LocationEnum::HOME, true);
+                $inventoryService->receiveItem('Behatting Scroll', $user, null, 'The Trader gave you this, for Halloween.', LocationEnum::Home, true);
 
                 $message = 'Oh, and here, have a Behatting Scroll. It\'ll come in handy for Halloween, trust me!';
             }

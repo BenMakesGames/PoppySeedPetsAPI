@@ -63,7 +63,7 @@ class BugController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::BUGS_SQUISHED);
+        $userStatsRepository->incrementStat($user, UserStatEnum::BugsSquished);
 
         $em->flush();
 
@@ -83,8 +83,8 @@ class BugController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::BUGS_PUT_OUTSIDE);
-        $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_RECYCLED);
+        $userStatsRepository->incrementStat($user, UserStatEnum::BugsPutOutside);
+        $userStatsRepository->incrementStat($user, UserStatEnum::ItemsRecycled);
 
         $em->flush();
 
@@ -114,7 +114,7 @@ class BugController
         switch($inventory->getItem()->getName())
         {
             case 'Centipede':
-                $userStatsRepository->incrementStat($user, UserStatEnum::EVOLVED_A_CENTIPEDE);
+                $userStatsRepository->incrementStat($user, UserStatEnum::EvolvedACentipede);
                 $inventory
                     ->changeItem(ItemRepository::findOneByName($em, 'Moth'))
                     ->addComment($user->getName() . ' fed this Centipede, allowing it to grow up into a beautiful... Moth.')
@@ -129,7 +129,7 @@ class BugController
                 break;
 
             case 'Line of Ants':
-                $userStatsRepository->incrementStat($user, UserStatEnum::FED_A_LINE_OF_ANTS);
+                $userStatsRepository->incrementStat($user, UserStatEnum::FedALineOfAnts);
 
                 if($item->getItem()->getName() === 'Ants on a Log')
                 {
@@ -181,7 +181,7 @@ class BugController
 
         $em->remove($item);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::BUGS_FED);
+        $userStatsRepository->incrementStat($user, UserStatEnum::BugsFed);
 
         $em->flush();
 

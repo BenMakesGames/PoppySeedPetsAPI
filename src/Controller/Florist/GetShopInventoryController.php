@@ -43,7 +43,7 @@ class GetShopInventoryController
 
         $hasRolledSatyrDice = $em->getRepository(UserStats::class)->findOneBy([
             'user' => $user,
-            'stat' => UserStatEnum::ROLLED_SATYR_DICE
+            'stat' => UserStatEnum::RolledSatyrDice
         ]);
 
         return $responseService->success([

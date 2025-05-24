@@ -157,7 +157,7 @@ class BookstoreService
         if(!in_array($itemToGive, $questStep['askingFor']))
             throw new PSPFormValidationException('That\'s not what I\'m looking for right now...');
 
-        if($this->inventoryService->loseItem($user, $item->getId(), [ LocationEnum::HOME, LocationEnum::BASEMENT ], 1) === 0)
+        if($this->inventoryService->loseItem($user, $item->getId(), [ LocationEnum::Home, LocationEnum::Basement ], 1) === 0)
         {
             throw new PSPNotFoundException('You don\'t seem to have ' . $item->getNameWithArticle() . '...');
         }
@@ -231,7 +231,7 @@ class BookstoreService
         if($flowersPurchased && $flowersPurchased->getValue() > 0)
             $bookPrices['Book of Flowers'] = 15;
 
-        $cookedSomething = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::COOKED_SOMETHING ]);
+        $cookedSomething = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::CookedSomething ]);
 
         if($cookedSomething)
         {
@@ -284,7 +284,7 @@ class BookstoreService
             }
         }
 
-        $itemsDonatedToMuseum = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::ITEMS_DONATED_TO_MUSEUM ]);
+        $itemsDonatedToMuseum = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::ItemsDonatedToMuseum ]);
 
         if($itemsDonatedToMuseum)
         {
@@ -341,12 +341,12 @@ class BookstoreService
 
     public function renamingScrollAvailable(User $user): bool
     {
-        $petsAdopted = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::PETS_ADOPTED ]);
+        $petsAdopted = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::PetsAdopted ]);
 
         if($petsAdopted && $petsAdopted->getValue() > 0)
             return true;
 
-        $petsBirthed = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::PETS_BIRTHED ]);
+        $petsBirthed = $this->em->getRepository(UserStats::class)->findOneBy([ 'user' => $user, 'stat' => UserStatEnum::PetsBirthed ]);
 
         if($petsBirthed && $petsBirthed->getValue() > 0)
             return true;

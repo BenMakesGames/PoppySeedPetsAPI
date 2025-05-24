@@ -28,7 +28,7 @@ use App\Service\UserAccessor;
 #[Route("/item/plasticEgg")]
 class PlasticEggController
 {
-    private const array CANDY = [
+    private const array Candy = [
         'Blue Hard Candy',
         'Orange Hard Candy',
         'Purple Hard Candy',
@@ -90,17 +90,17 @@ class PlasticEggController
                         ],
                         [
                             'items' => [
-                                $rng->rngNextFromArray(self::CANDY),
-                                $rng->rngNextFromArray(self::CANDY),
-                                $rng->rngNextFromArray(self::CANDY)
+                                $rng->rngNextFromArray(self::Candy),
+                                $rng->rngNextFromArray(self::Candy),
+                                $rng->rngNextFromArray(self::Candy)
                             ],
                             'description' => 'and there\'s candy inside! (Yay! Candy!)',
                         ],
                         [
                             'items' => [
-                                $rng->rngNextFromArray(self::CANDY),
-                                $rng->rngNextFromArray(self::CANDY),
-                                $rng->rngNextFromArray(self::CANDY)
+                                $rng->rngNextFromArray(self::Candy),
+                                $rng->rngNextFromArray(self::Candy),
+                                $rng->rngNextFromArray(self::Candy)
                             ],
                             'description' => 'and there\'s candy inside! :D',
                         ],
@@ -145,11 +145,11 @@ class PlasticEggController
                     $possibleLoot = [
                         [
                             'items' => [
-                                $rng->rngNextFromArray(self::CANDY),
-                                $rng->rngNextFromArray(self::CANDY),
-                                $rng->rngNextFromArray(self::CANDY),
-                                $rng->rngNextFromArray(self::CANDY),
-                                $rng->rngNextFromArray(self::CANDY)
+                                $rng->rngNextFromArray(self::Candy),
+                                $rng->rngNextFromArray(self::Candy),
+                                $rng->rngNextFromArray(self::Candy),
+                                $rng->rngNextFromArray(self::Candy),
+                                $rng->rngNextFromArray(self::Candy)
                             ],
                             'description' => 'and there\'s candy inside! SO MUCH CANDY!',
                         ],

@@ -89,12 +89,12 @@ class ParkService
                 if(!$pet->getTool())
                 {
                     $pet->setTool($balloon);
-                    $balloon->setLocation(LocationEnum::WARDROBE);
+                    $balloon->setLocation(LocationEnum::Wardrobe);
                 }
                 else if(!$pet->getHat() && $pet->hasMerit(MeritEnum::BEHATTED))
                 {
                     $pet->setHat($balloon);
-                    $balloon->setLocation(LocationEnum::WARDROBE);
+                    $balloon->setLocation(LocationEnum::Wardrobe);
                 }
             }
 
@@ -134,7 +134,7 @@ class ParkService
                         $pet->getOwner(),
                         $pet->getOwner(),
                         $pet->getName() . ' got this from participating in a park event!',
-                        LocationEnum::HOME,
+                        LocationEnum::Home,
                         true
                     );
                 }

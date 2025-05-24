@@ -69,7 +69,7 @@ class BenjaminFranklinController
         if($rng->rngNextInt(1, 10) === 1)
             $comment .= ' They also got dead. Oh, wait, no: thank goodness: this is just a video game, so they\'re actually fine.';
 
-        $inventoryService->receiveItem('Lightning in a Bottle', $user, $user, $comment, LocationEnum::HOME, $inventory->getLockedToOwner());
+        $inventoryService->receiveItem('Lightning in a Bottle', $user, $user, $comment, LocationEnum::Home, $inventory->getLockedToOwner());
 
         $userStatsService->incrementStat($user, 'Flew a Kite in the Rain');
 

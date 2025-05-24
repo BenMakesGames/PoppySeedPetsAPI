@@ -88,11 +88,11 @@ class EggplantController
                 $newItem->setSpice($inventory->getSpice());
             }
 
-            $userStatsRepository->incrementStat($user, UserStatEnum::EGGS_HARVESTED_FROM_EGGPLANTS, $eggs);
+            $userStatsRepository->incrementStat($user, UserStatEnum::EggsHarvestedFromEggplants, $eggs);
         }
         else
         {
-            $userStatsRepository->incrementStat($user, UserStatEnum::ROTTEN_EGGPLANTS, 1);
+            $userStatsRepository->incrementStat($user, UserStatEnum::RottenEggplants, 1);
         }
 
         if($rng->rngNextInt(1, 100) === 1)

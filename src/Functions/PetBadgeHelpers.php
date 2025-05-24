@@ -41,7 +41,7 @@ final class PetBadgeHelpers
         $pet->addBadge($newBadge);
 
         $log
-            ->setEntry($log->getEntry() . ' ' . str_replace('%pet.name%', ActivityHelpers::PetName($pet), self::BADGE_HURRAHS[$badgeName]))
+            ->setEntry($log->getEntry() . ' ' . str_replace('%pet.name%', ActivityHelpers::PetName($pet), self::BadgeHurrahs[$badgeName]))
             ->addTag(PetActivityLogTagHelpers::findOneByName($em, PetActivityLogTagEnum::Badge))
             ->addInterestingness(PetActivityLogInterestingness::ActivityYieldingPetBadge)
         ;
@@ -63,9 +63,9 @@ final class PetBadgeHelpers
         $pet->addBadge($newBadge);
 
         if($logMessage)
-            $logMessage .= ' ' . str_replace('%pet.name%', ActivityHelpers::PetName($pet), self::BADGE_HURRAHS[$badgeName]);
+            $logMessage .= ' ' . str_replace('%pet.name%', ActivityHelpers::PetName($pet), self::BadgeHurrahs[$badgeName]);
         else
-            $logMessage = str_replace('%pet.name%', ActivityHelpers::PetName($pet), self::BADGE_HURRAHS[$badgeName]);
+            $logMessage = str_replace('%pet.name%', ActivityHelpers::PetName($pet), self::BadgeHurrahs[$badgeName]);
 
         return PetActivityLogFactory::createUnreadLog($em, $pet, $logMessage)
             ->addTag(PetActivityLogTagHelpers::findOneByName($em, PetActivityLogTagEnum::Badge))
@@ -73,7 +73,7 @@ final class PetBadgeHelpers
         ;
     }
 
-    private const array BADGE_HURRAHS = [
+    private const array BadgeHurrahs = [
         PetBadgeEnum::REVEALED_FAVORITE_FLAVOR => '(Also, there\'s a badge for that: Flavor YESknown!, and %pet.name% just got it!)',
         PetBadgeEnum::COMPLETED_HEART_DIMENSION => 'Also: A Suburb to the Brain - that\'s the name of the badge that %pet.name% just got!',
         PetBadgeEnum::TRIED_ON_A_NEW_STYLE => 'Check out those new, um, digs? Also: that new badge?! Yeah, I dunno if you knew, but %pet.name% just got the Fashionista badge.',

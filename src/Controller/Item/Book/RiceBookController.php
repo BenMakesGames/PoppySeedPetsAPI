@@ -26,7 +26,7 @@ use App\Service\UserAccessor;
 #[Route("/item/riceBook")]
 class RiceBookController
 {
-    private const array RECIPES = [
+    private const array Recipes = [
         'Nigiri',
         'Onigiri',
         'Fish Onigiri',
@@ -55,7 +55,7 @@ class RiceBookController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'riceBook/#/upload');
 
-        $message = $cookingService->showRecipeNamesToCookingBuddy($user, self::RECIPES);
+        $message = $cookingService->showRecipeNamesToCookingBuddy($user, self::Recipes);
 
         return $responseService->itemActionSuccess($message);
     }

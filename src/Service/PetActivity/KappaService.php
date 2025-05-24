@@ -128,7 +128,7 @@ class KappaService
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(15, 30), PetActivityStatEnum::OTHER, null);
             PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::RETURNED_A_SHIRIKODAMA, $activityLog);
 
-            $this->userStatsRepository->incrementStat($owner, UserStatEnum::PETTED_A_PET, 1);
+            $this->userStatsRepository->incrementStat($owner, UserStatEnum::PettedAPet, 1);
 
             PlayerLogFactory::create($this->em, $owner, ActivityHelpers::PetName($pet) . ' returned your Shirikodama! (Some Kappa must have stolen it!) You thank ' . ActivityHelpers::PetName($pet) . ' with pets and pats before swallowing the Shirikodama.', [
                 'Shirikodama',
@@ -154,7 +154,7 @@ class KappaService
             $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
             PetBadgeHelpers::awardBadge($this->em, $pet, PetBadgeEnum::RETURNED_A_SHIRIKODAMA, $activityLog);
 
-            $this->userStatsRepository->incrementStat($owner, UserStatEnum::PETTED_A_PET, 1);
+            $this->userStatsRepository->incrementStat($owner, UserStatEnum::PettedAPet, 1);
 
             PlayerLogFactory::create($this->em, $owner, ActivityHelpers::PetName($pet) . ' returned your Shirikodama! (Some Kappa must have stolen it!) You thank ' . ActivityHelpers::PetName($pet) . ' with pets and pats before swallowing the Shirikodama.', [
                 'Shirikodama',

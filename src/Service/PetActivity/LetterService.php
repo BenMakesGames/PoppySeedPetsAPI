@@ -197,23 +197,23 @@ class LetterService
             {
                 switch($relationship->getCurrentRelationship())
                 {
-                    case RelationshipEnum::BROKE_UP:
+                    case RelationshipEnum::BrokeUp:
                         $descriptionForPet = '%pet:' . $courier->getId() . '.name%! :( %pet:' . $courier->getId() . '.name% handed over the letter without saying a word, and left.';
                         $descriptionForCourier = '%pet:' . $pet->getId() . '.name%! :( %pet:' . $pet->getId() . '.name% took the letter without saying a word, and left.';
                         $pet->increaseEsteem(-$this->rng->rngNextInt(4, 8));
                         $courier->increaseEsteem(-$this->rng->rngNextInt(4, 8));
                         break;
-                    case RelationshipEnum::DISLIKE:
+                    case RelationshipEnum::Dislike:
                         $descriptionForPet = '%pet:' . $courier->getId() . '.name%! :| %pet:' . $courier->getId() . '.name% handed over the letter without saying a word, and left.';
                         $descriptionForCourier = '%pet:' . $pet->getId() . '.name%! :| %pet:' . $pet->getId() . '.name% took the letter without saying a word, and left.';
                         $pet->increaseSafety(-$this->rng->rngNextInt(2, 4));
                         $courier->increaseSafety(-$this->rng->rngNextInt(2, 4));
                         break;
-                    case RelationshipEnum::FRIENDLY_RIVAL:
+                    case RelationshipEnum::FriendlyRival:
                         $descriptionForPet = 'their friendly rival, %pet:' . $courier->getId() . '.name%! %pet:' . $courier->getId() . '.name% triumphantly handed the letter over, laughed, and left.';
                         $descriptionForCourier = '%pet:' . $pet->getId() . '.name%! %pet:' . $pet->getId() . '.name% took the letter with a smug grin! %pet:' . $courier->getId() . '.name% laughed it off, and left.';
                         break;
-                    case RelationshipEnum::FRIEND:
+                    case RelationshipEnum::Friend:
                     case RelationshipEnum::BFF:
                     case RelationshipEnum::FWB:
                         $descriptionForPet = 'their friend, %pet:' . $courier->getId() . '.name%! %pet:' . $courier->getId() . '.name% handed the letter over, and the two chatted for a while.';
@@ -221,7 +221,7 @@ class LetterService
                         $pet->increaseLove($this->rng->rngNextInt(2, 4))->increaseSafety($this->rng->rngNextInt(2, 4));
                         $courier->increaseLove($this->rng->rngNextInt(2, 4))->increaseSafety($this->rng->rngNextInt(2, 4));
                         break;
-                    case RelationshipEnum::MATE:
+                    case RelationshipEnum::Mate:
                         $descriptionForPet = 'their partner, %pet:' . $courier->getId() . '.name%! %pet:' . $courier->getId() . '.name% handed the letter over, and the two chatted for a while.';
                         $descriptionForCourier = 'their partner, %pet:' . $pet->getId() . '.name%! %pet:' . $courier->getId() . '.name% handed the letter over, and the two chatted for a while.';
                         $pet->increaseLove($this->rng->rngNextInt(4, 8))->increaseSafety($this->rng->rngNextInt(2, 4));
@@ -354,7 +354,7 @@ class LetterService
 
         if($nextLetter->getAttachment())
         {
-            $item = $this->inventoryService->receiveItem($nextLetter->getAttachment(), $user, null, 'This item was sent by ' . $sender->value . ', along with a letter.', LocationEnum::HOME, true);
+            $item = $this->inventoryService->receiveItem($nextLetter->getAttachment(), $user, null, 'This item was sent by ' . $sender->value . ', along with a letter.', LocationEnum::Home, true);
 
             if($nextLetter->getBonus()) $item->setEnchantment($nextLetter->getBonus());
             if($nextLetter->getSpice()) $item->setSpice($nextLetter->getSpice());

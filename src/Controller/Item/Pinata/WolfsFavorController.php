@@ -37,7 +37,7 @@ use App\Service\UserAccessor;
 #[Route("/item")]
 class WolfsFavorController
 {
-    private const string USER_STAT_NAME = 'Redeemed a Wolf\'s Favor';
+    private const string UserStatName = 'Redeemed a Wolf\'s Favor';
 
     #[Route("/changeWereform/{inventory}", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
@@ -107,7 +107,7 @@ class WolfsFavorController
         foreach($loot as $item)
             $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a Wolf\'s Favor.', $location);
 
-        $userStatsRepository->incrementStat($user, self::USER_STAT_NAME);
+        $userStatsRepository->incrementStat($user, self::UserStatName);
 
         $em->remove($inventory);
 
@@ -140,7 +140,7 @@ class WolfsFavorController
         foreach($loot as $item)
             $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this from a Wolf\'s Favor.', $location);
 
-        $userStatsRepository->incrementStat($user, self::USER_STAT_NAME);
+        $userStatsRepository->incrementStat($user, self::UserStatName);
 
         $em->remove($inventory);
 

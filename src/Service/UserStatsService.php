@@ -71,17 +71,17 @@ class UserStatsService
 
         $stat->increaseValue($change);
 
-        if($name === UserStatEnum::ITEMS_BOUGHT_IN_MARKET)
+        if($name === UserStatEnum::ItemsBoughtInMarket)
         {
             if($oldValue < 50 && $stat->getValue() >= 50)
                 $user->increaseMaxMarketBids(5);
         }
-        else if($name === UserStatEnum::ITEMS_SOLD_IN_MARKET)
+        else if($name === UserStatEnum::ItemsSoldInMarket)
         {
             if($oldValue < 50 && $stat->getValue() >= 50)
                 $user->increaseMaxMarketBids(5);
         }
-        else if($name === UserStatEnum::ITEMS_DONATED_TO_MUSEUM)
+        else if($name === UserStatEnum::ItemsDonatedToMuseum)
         {
             if($oldValue < 400 && $stat->getValue() >= 400)
             {

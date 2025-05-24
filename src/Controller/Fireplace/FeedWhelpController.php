@@ -58,7 +58,7 @@ class FeedWhelpController
         $items = $em->getRepository(Inventory::class)->findBy([
             'id' => $itemIds,
             'owner' => $user->getId(),
-            'location' => LocationEnum::HOME
+            'location' => LocationEnum::Home
         ]);
 
         $items = array_filter($items, function(Inventory $i) {
@@ -80,7 +80,7 @@ class FeedWhelpController
 
             $whelp->increaseFood($item->getItem()->getFood()->getFood() + $item->getItem()->getFood()->getSpicy() * 2);
 
-            while($whelp->getFood() >= Dragon::FOOD_REQUIRED_FOR_A_MEAL)
+            while($whelp->getFood() >= Dragon::FoodRequiredForAMeal)
             {
                 $whelp->decreaseFood();
 
@@ -104,7 +104,7 @@ class FeedWhelpController
             sort($loot);
 
             foreach($loot as $item)
-                $inventoryService->receiveItem($item, $user, $user, $whelp->getName() . ' spit this up.', LocationEnum::HOME);
+                $inventoryService->receiveItem($item, $user, $user, $whelp->getName() . ' spit this up.', LocationEnum::Home);
 
             $responseService->addFlashMessage($whelp->getName() . ' spit up ' . ArrayFunctions::list_nice($loot) . '.');
         }
@@ -119,7 +119,7 @@ class FeedWhelpController
 
         if($whelp->getGrowth() >= 35 * 20)
         {
-            $greetingsAndThanks = $rng->rngNextSubsetFromArray(Dragon::GREETINGS_AND_THANKS, 2);
+            $greetingsAndThanks = $rng->rngNextSubsetFromArray(Dragon::GreetingsAndThanks, 2);
 
             $whelp
                 ->setIsAdult(true)

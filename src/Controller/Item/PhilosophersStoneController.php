@@ -41,7 +41,7 @@ class PhilosophersStoneController
 {
     // should be kept in-sync with the list in philosophers-stone.component.ts
     // (or make a new endpoint to get eligible plushies... that'd be cool)
-    private const array PLUSHIES = [
+    private const array Plushies = [
         'Bulbun Plushy' => [ 'species' => PetSpeciesName::Bulbun, 'colorA' => 'f8d592', 'colorB' => 'd4b36e' ],
         'Peacock Plushy' => [ 'species' => PetSpeciesName::Peacock, 'colorA' => 'ffe9d9', 'colorB' => 'a47dd7' ],
         'Rainbow Dolphin Plushy' => [ 'species' => PetSpeciesName::RainbowDolphin, 'colorA' => '64ea74', 'colorB' => 'ea64de' ],
@@ -67,13 +67,13 @@ class PhilosophersStoneController
         $plushy = $em->getRepository(Inventory::class)->findOneBy([
             'id' => $itemId,
             'owner' => $user,
-            'location' => LocationEnum::HOME
+            'location' => LocationEnum::Home
         ]);
 
-        if(!$plushy || !array_key_exists($plushy->getItem()->getName(), self::PLUSHIES))
+        if(!$plushy || !array_key_exists($plushy->getItem()->getName(), self::Plushies))
             throw new PSPNotFoundException('Could not find that item!? Reload, and try again...');
 
-        $speciesInfo = self::PLUSHIES[$plushy->getItem()->getName()];
+        $speciesInfo = self::Plushies[$plushy->getItem()->getName()];
 
         $species = PetSpeciesRepository::findOneByName($em, $speciesInfo['species']);
 

@@ -82,7 +82,7 @@ class PetAndFeedController
         $inventory = $em->getRepository(Inventory::class)->findBy([
             'owner' => $user,
             'id' => $items,
-            'location' => LocationEnum::HOME,
+            'location' => LocationEnum::Home,
         ]);
 
         if(count($items) !== count($inventory))

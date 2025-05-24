@@ -30,8 +30,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    public const int MAX_HOUSE_INVENTORY = 100;
-    public const int MAX_BASEMENT_INVENTORY = 10000;
+    public const int MaxHouseInventory = 100;
+    public const int MaxBasementInventory = 10000;
     public const int MinPassphraseLength = 12;
     public const int MaxPassphraseLength = 128; // Reasonable maximum to prevent DoS attacks
 

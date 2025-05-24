@@ -98,7 +98,7 @@ class SagaSagaService
 
         $this->responseService->setReloadPets();
 
-        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::COMPLETED_A_SAGA_SAGA);
+        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::CompletedASagaSaga);
 
         return true;
     }

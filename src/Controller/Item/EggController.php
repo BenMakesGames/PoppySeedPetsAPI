@@ -58,7 +58,7 @@ class EggController
 
         $location = $inventory->getLocation();
 
-        if($location !== LocationEnum::HOME)
+        if($location !== LocationEnum::Home)
             return $responseService->itemActionSuccess('You can\'t hatch it here! Take it to your house, quick!');
 
         $message = "A jellyfish detaches itself from the polyp, ";
@@ -145,7 +145,7 @@ class EggController
 
         $location = $inventory->getLocation();
 
-        if($location !== LocationEnum::HOME)
+        if($location !== LocationEnum::Home)
             return $responseService->itemActionSuccess('You can\'t hatch it here! Take it to your house, quick!');
 
         $increasedPetLimitWithEgg = UserQuestRepository::findOrCreate($em, $user, 'Increased Pet Limit with Weird, Blue Egg', false);
@@ -243,7 +243,7 @@ class EggController
 
         $location = $inventory->getLocation();
 
-        if($location !== LocationEnum::HOME)
+        if($location !== LocationEnum::Home)
             return $responseService->itemActionSuccess('You can\'t open it here! Take it to your house, quick!');
 
         $increasedPetLimitWithEgg = UserQuestRepository::findOrCreate($em, $user, 'Increased Pet Limit with Weird, Blue Egg', false);

@@ -60,7 +60,7 @@ class GoOnAdventure
 
         $playedStarKindred->setValue($today);
 
-        if(InventoryService::countTotalInventory($em, $user, LocationEnum::HOME) > 150)
+        if(InventoryService::countTotalInventory($em, $user, LocationEnum::Home) > 150)
             throw new PSPInvalidOperationException('Your house is far too cluttered to play ★Kindred!');
 
         if($adventureService->isStepCompleted($user, $step))

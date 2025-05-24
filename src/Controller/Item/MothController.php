@@ -49,9 +49,9 @@ class MothController
         ItemControllerHelpers::validateInventory($user, $inventory, 'releaseMoths');
 
         if(
-            $inventory->getLocation() != LocationEnum::HOME &&
-            $inventory->getLocation() != LocationEnum::BASEMENT &&
-            $inventory->getLocation() != LocationEnum::MANTLE
+            $inventory->getLocation() != LocationEnum::Home &&
+            $inventory->getLocation() != LocationEnum::Basement &&
+            $inventory->getLocation() != LocationEnum::Mantle
         )
         {
             throw new PSPInvalidOperationException('Moths can only be released from the home, basement, or fireplace mantle.');
@@ -79,9 +79,9 @@ class MothController
         $mothLocation = $request->request->getInt('location');
 
         if(
-            $mothLocation != LocationEnum::HOME &&
-            $mothLocation != LocationEnum::BASEMENT &&
-            $mothLocation != LocationEnum::MANTLE
+            $mothLocation != LocationEnum::Home &&
+            $mothLocation != LocationEnum::Basement &&
+            $mothLocation != LocationEnum::Mantle
         )
         {
             throw new PSPInvalidOperationException('Moths can only be released from the home, basement, or fireplace mantle.');
@@ -154,7 +154,7 @@ class MothController
         if($gotLove)
             $items[] = 'Chang\'e\'s Love';
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::BUGS_PUT_OUTSIDE, $mothCount);
+        $userStatsRepository->incrementStat($user, UserStatEnum::BugsPutOutside, $mothCount);
 
         $quantitiesByItem = [];
 

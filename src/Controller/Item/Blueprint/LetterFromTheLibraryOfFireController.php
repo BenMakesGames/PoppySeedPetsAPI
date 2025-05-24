@@ -99,8 +99,7 @@ The Library of Fire is always open. We look forward to seeing you!');
                 $colors[1] = $temp;
             }
 
-            $dragon = (new Dragon())
-                ->setOwner($user)
+            $dragon = (new Dragon(owner: $user))
                 ->setName($rng->rngNextFromArray([
                     'Tanin', 'Draak', 'Dragua', 'Zenido', 'Vishap', 'Herensuge', 'Ghuṛi Biśēṣa',
                     'Chinjoka', 'Qiú', 'Lohikäärme', 'Drak\'oni', 'Ḍrēgana', 'Naga', 'Ajagar',

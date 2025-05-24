@@ -36,7 +36,7 @@ final class DragonHelpers
     {
         $treasuresGiven = $em->getRepository(UserStats::class)->findOneBy([
             'user' => $user,
-            'stat' => UserStatEnum::TREASURES_GIVEN_TO_DRAGON_HOARD
+            'stat' => UserStatEnum::TreasuresGivenToDragonHoard
         ]);
 
         $response = $normalizer->normalize($dragon, null, [ 'groups' => [

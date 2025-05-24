@@ -21,7 +21,7 @@ use App\Model\WeatherForecastData;
 
 class WeatherService
 {
-    private const array HOUR_OF_DAY_TEMPERATURE_MODIFIER = [
+    private const array HourOfDayTemperatureModifier = [
         // 12 am ...
         1, 1, 1, 1, 1, 0,
         0, 1, 2, 4, 6, 7,
@@ -84,7 +84,7 @@ class WeatherService
 
         $hourOfDay = (int)$hourOfYear % 24;
 
-        $temp += self::HOUR_OF_DAY_TEMPERATURE_MODIFIER[$hourOfDay];
+        $temp += self::HourOfDayTemperatureModifier[$hourOfDay];
 
         // some random wiggling; less if it's raining
         // (13, 23, 11, 31, and 47 are all primes)

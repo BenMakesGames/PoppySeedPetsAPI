@@ -37,7 +37,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class TraderService
 {
-    private const array TRADER_NAMES = [
+    private const array TraderNames = [
         // Saffron
         'Azafrán', 'Zaeafran',
 
@@ -157,7 +157,7 @@ class TraderService
 
     public function getOffers(User $user): array
     {
-        $quantities = $this->inventoryService->getInventoryQuantities($user, LocationEnum::HOME, 'name');
+        $quantities = $this->inventoryService->getInventoryQuantities($user, LocationEnum::Home, 'name');
 
         $offers = [
             [
@@ -1596,7 +1596,7 @@ class TraderService
 
     public static function generateTrader(User $user, IRandom $rng): Trader
     {
-        $trader = new Trader(user: $user, name: $rng->rngNextFromArray(self::TRADER_NAMES));
+        $trader = new Trader(user: $user, name: $rng->rngNextFromArray(self::TraderNames));
 
         self::recolorTrader($rng, $trader);
 

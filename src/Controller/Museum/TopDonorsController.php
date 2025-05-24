@@ -50,7 +50,7 @@ class TopDonorsController
             ->andWhere('s.stat = :statName')
             ->addOrderBy('s.value', 'DESC')
             ->addOrderBy('s.lastTime', 'ASC')
-            ->setParameter('statName', UserStatEnum::ITEMS_DONATED_TO_MUSEUM)
+            ->setParameter('statName', UserStatEnum::ItemsDonatedToMuseum)
         ;
 
         $paginator = new Paginator($qb);

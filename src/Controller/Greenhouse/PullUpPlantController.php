@@ -52,7 +52,7 @@ class PullUpPlantController
             $logMessage .= ' ' . $flashMessage;
             $responseService->addFlashMessage($flashMessage);
 
-            $inventoryService->receiveItem('Magic Beans', $user, $user, 'Received by pulling up a Magic Beanstalk, apparently. Magically.', LocationEnum::HOME);
+            $inventoryService->receiveItem('Magic Beans', $user, $user, 'Received by pulling up a Magic Beanstalk, apparently. Magically.', LocationEnum::Home);
         }
         else if($plant->getPlant()->getName() === 'Midnight Arch')
         {
@@ -60,7 +60,7 @@ class PullUpPlantController
             $logMessage .= ' ' . $flashMessage;
             $responseService->addFlashMessage($flashMessage);
 
-            $inventoryService->receiveItem('Mysterious Seed', $user, $user, 'Received by pulling up a Midnight Arch, apparently. Magically.', LocationEnum::HOME);
+            $inventoryService->receiveItem('Mysterious Seed', $user, $user, 'Received by pulling up a Midnight Arch, apparently. Magically.', LocationEnum::Home);
         }
         else if($plant->getPlant()->getName() === 'Goat' && $plant->getIsAdult())
         {
@@ -68,9 +68,9 @@ class PullUpPlantController
             $logMessage .= ' ' . $flashMessage;
             $responseService->addFlashMessage($flashMessage);
 
-            $inventoryService->receiveItem('Fluff', $user, $user, 'Dropped by a startled goat.', LocationEnum::HOME);
+            $inventoryService->receiveItem('Fluff', $user, $user, 'Dropped by a startled goat.', LocationEnum::Home);
             if($rng->rngNextInt(1, 2) === 1)
-                $inventoryService->receiveItem('Fluff', $user, $user, 'Dropped by a startled goat.', LocationEnum::HOME);
+                $inventoryService->receiveItem('Fluff', $user, $user, 'Dropped by a startled goat.', LocationEnum::Home);
         }
 
         PlayerLogFactory::create($em, $user, $logMessage, [ 'Greenhouse' ]);

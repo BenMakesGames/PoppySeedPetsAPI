@@ -675,9 +675,9 @@ class ProgrammingService
 
         $petWithCaptor = (new PetRelationship())
             ->setRelationship($captor)
-            ->setCurrentRelationship(RelationshipEnum::DISLIKE)
+            ->setCurrentRelationship(RelationshipEnum::Dislike)
             ->setPet($newPet)
-            ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+            ->setRelationshipGoal(RelationshipEnum::Dislike)
             ->setMetDescription('%relationship.name% pulled %pet.name% out of the imaginary plane, trapping them here!')
         ;
 
@@ -685,9 +685,9 @@ class ProgrammingService
 
         $captorWithPet = (new PetRelationship())
             ->setRelationship($newPet)
-            ->setCurrentRelationship(RelationshipEnum::DISLIKE)
+            ->setCurrentRelationship(RelationshipEnum::Dislike)
             ->setPet($captor)
-            ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+            ->setRelationshipGoal(RelationshipEnum::Dislike)
             ->setMetDescription('%pet.name% pulled %relationship.name% out of the imaginary plane, trapping them here!')
         ;
 

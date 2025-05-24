@@ -24,7 +24,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity]
 class SpiritCompanion
 {
-    const array NAMES = [
+    const array Names = [
         'Achak', 'Âme', 'Anda', 'Arima', 'Atma', 'Avira',
         'Cheveyo',
         'Drogo', 'Du\'an', 'Duša', 'Dvasia',
@@ -46,7 +46,7 @@ class SpiritCompanion
         'Ysbryd', 'Yūrei',
     ];
 
-    const array IMAGES = [
+    const array Images = [
         'blob', 'dino', 'erm', 'splat', 'jellyfish', 'sooty', 'cat-snake', 'haha', 'icicle', 'square',
         'rsuusd-bat', 'sea-monster', 'wtf'
     ];
@@ -85,8 +85,8 @@ class SpiritCompanion
         $rng = new Xoshiro();
 
         $this->star = $rng->rngNextFromArray(SpiritCompanionStarEnum::cases());
-        $this->name = $rng->rngNextFromArray(self::NAMES);
-        $this->image = $rng->rngNextFromArray(self::IMAGES);
+        $this->name = $rng->rngNextFromArray(self::Names);
+        $this->image = $rng->rngNextFromArray(self::Images);
         $this->fatheredPets = new ArrayCollection();
     }
 

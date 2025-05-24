@@ -50,7 +50,7 @@ class CollectWeeklyCarePackageController
         if($days < 7)
             throw new PSPInvalidOperationException('It\'s too early to collect your weekly Care Package.');
 
-        $itemsDonated = $userStatsRepository->getStatValue($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM);
+        $itemsDonated = $userStatsRepository->getStatValue($user, UserStatEnum::ItemsDonatedToMuseum);
 
         $canGetHandicraftsBox = $itemsDonated >= 100;
         $canGetFishBag = $itemsDonated >= 450;
@@ -58,30 +58,30 @@ class CollectWeeklyCarePackageController
 
         if($type === 1)
         {
-            $newInventory = $inventoryService->receiveItem('Fruits & Veggies Box', $user, $user, $user->getName() . ' got this as a weekly Care Package.', LocationEnum::HOME, true);
+            $newInventory = $inventoryService->receiveItem('Fruits & Veggies Box', $user, $user, $user->getName() . ' got this as a weekly Care Package.', LocationEnum::Home, true);
         }
         else if($type === 2)
         {
-            $newInventory = $inventoryService->receiveItem('Baker\'s Box', $user, $user, $user->getName() . ' got this as a weekly Care Package.', LocationEnum::HOME, true);
+            $newInventory = $inventoryService->receiveItem('Baker\'s Box', $user, $user, $user->getName() . ' got this as a weekly Care Package.', LocationEnum::Home, true);
         }
         else if($type === 3 && $canGetHandicraftsBox)
         {
-            $newInventory = $inventoryService->receiveItem('Handicrafts Supply Box', $user, $user, $user->getName() . ' got this as a weekly Care Package.', LocationEnum::HOME, true);
+            $newInventory = $inventoryService->receiveItem('Handicrafts Supply Box', $user, $user, $user->getName() . ' got this as a weekly Care Package.', LocationEnum::Home, true);
         }
         else if($type === 4 && $canGetGamingBox)
         {
-            $newInventory = $inventoryService->receiveItem('Gaming Box', $user, $user, $user->getName() . ' got this as a weekly Care Package.', LocationEnum::HOME, true);
+            $newInventory = $inventoryService->receiveItem('Gaming Box', $user, $user, $user->getName() . ' got this as a weekly Care Package.', LocationEnum::Home, true);
         }
         else if($type === 5 && $canGetFishBag)
         {
-            $newInventory = $inventoryService->receiveItem('Fish Bag', $user, $user, $user->getName() . ' got this as a weekly Care... Bag??', LocationEnum::HOME, true);
+            $newInventory = $inventoryService->receiveItem('Fish Bag', $user, $user, $user->getName() . ' got this as a weekly Care... Bag??', LocationEnum::Home, true);
         }
         else
             throw new PSPFormValidationException('Must specify a Care Package "type".');
 
         $user->setLastAllowanceCollected($user->getLastAllowanceCollected()->modify('+' . (floor($days / 7) * 7) . ' days'));
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::PLAZA_BOXES_RECEIVED, 1);
+        $userStatsRepository->incrementStat($user, UserStatEnum::PlazaBoxesReceived, 1);
 
         $em->flush();
 

@@ -60,15 +60,15 @@ class BuyBook
         if($user->getMoneys() < $allPrices[$item->getName()])
             throw new PSPNotEnoughCurrencyException($allPrices[$item->getName()] . '~~m~~', $user->getMoneys() . '~~m~~');
 
-        $itemsAtHome = $inventoryService->countItemsInLocation($user, LocationEnum::HOME);
+        $itemsAtHome = $inventoryService->countItemsInLocation($user, LocationEnum::Home);
 
-        if($itemsAtHome >= User::MAX_HOUSE_INVENTORY)
-            throw new PSPFormValidationException('Your house is already overflowing with items! (The usual max is ' . User::MAX_HOUSE_INVENTORY . ' items - you\'ve got ' . $itemsAtHome . '!)');
+        if($itemsAtHome >= User::MaxHouseInventory)
+            throw new PSPFormValidationException('Your house is already overflowing with items! (The usual max is ' . User::MaxHouseInventory . ' items - you\'ve got ' . $itemsAtHome . '!)');
 
         $cost = $allPrices[$item->getName()];
         $transactionService->spendMoney($user, $cost, 'You bought ' . $item->getName() . ' from the Bookstore.');
 
-        $inventoryService->receiveItem($item, $user, null, $user->getName() . ' bought this from the Book Store.', LocationEnum::HOME, true);
+        $inventoryService->receiveItem($item, $user, null, $user->getName() . ' bought this from the Book Store.', LocationEnum::Home, true);
 
         $em->flush();
 

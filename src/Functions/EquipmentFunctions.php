@@ -26,7 +26,7 @@ class EquipmentFunctions
             return;
 
         $pet->getTool()
-            ->setLocation(LocationEnum::HOME)
+            ->setLocation(LocationEnum::Home)
         ;
         $pet->setTool(null);
     }
@@ -37,7 +37,7 @@ class EquipmentFunctions
             return;
 
         $pet->getHat()
-            ->setLocation(LocationEnum::HOME)
+            ->setLocation(LocationEnum::Home)
         ;
         $pet->setHat(null);
     }

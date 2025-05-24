@@ -16,7 +16,7 @@ namespace App\Model;
 
 class FortuneCookie
 {
-    const array MESSAGES = [
+    const array Fortunes = [
         'You will soon meet a dark stranger.',
         'Someone is looking out for you.',
         'You have great patience.',

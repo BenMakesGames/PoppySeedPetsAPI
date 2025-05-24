@@ -56,7 +56,7 @@ class SpiritPolymorphPotionController
         $em->remove($inventory);
 
         $currentImage = $pet->getSpiritCompanion()->getImage();
-        $possibleImages = array_filter(SpiritCompanion::IMAGES, fn($i) => $i !== $currentImage);
+        $possibleImages = array_filter(SpiritCompanion::Images, fn($i) => $i !== $currentImage);
 
         $pet->getSpiritCompanion()->setImage($rng->rngNextFromArray($possibleImages));
 

@@ -45,7 +45,7 @@ class GivingTreeGatheringService
         if(!$givingTree)
             throw new \Exception('The "Giving Tree" NPC does not exist in the database!');
 
-        $items = InventoryService::countTotalInventory($this->em, $givingTree, LocationEnum::HOME);
+        $items = InventoryService::countTotalInventory($this->em, $givingTree, LocationEnum::Home);
 
         // just to make suuuuuuuuuuuuuuuuuuper sure that there's enough for every pet that might be doing this...
         if($items < 100)

@@ -43,7 +43,7 @@ class TransactionService
         $user->increaseMoneys(-$amount);
 
         if($countTotalMoneysSpentStat)
-            $this->userStatsRepository->incrementStat($user, UserStatEnum::TOTAL_MONEYS_SPENT, $amount);
+            $this->userStatsRepository->incrementStat($user, UserStatEnum::TotalMoneysSpent, $amount);
 
         $tags = array_merge($additionalTags, [ 'Moneys' ]);
 

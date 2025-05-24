@@ -97,7 +97,7 @@ class HoliService
             ->andWhere('r.currentRelationship IN (:dislikedRelationshipTypes)')
             ->andWhere('pet.id=:petId')
             ->setParameter('petId', $pet->getId())
-            ->setParameter('dislikedRelationshipTypes', [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ])
+            ->setParameter('dislikedRelationshipTypes', [ RelationshipEnum::Dislike, RelationshipEnum::BrokeUp ])
         ;
 
         return $qb->getQuery()->execute();
@@ -122,16 +122,16 @@ class HoliService
         $relationshipOtherSide = $otherPet->getRelationshipWith($pet);
 
         // set current relationship to "Friend"
-        $relationshipToReconcile->setCurrentRelationship(RelationshipEnum::FRIEND);
-        $relationshipOtherSide->setCurrentRelationship(RelationshipEnum::FRIEND);
+        $relationshipToReconcile->setCurrentRelationship(RelationshipEnum::Friend);
+        $relationshipOtherSide->setCurrentRelationship(RelationshipEnum::Friend);
 
         // set goal to "Friend" if current goal is "Dislike" or "Broke Up"
         // (I don't THINK "Broke Up" can ever be a goal, but just in case...)
-        if(in_array($relationshipToReconcile->getRelationshipGoal(), [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ]))
-            $relationshipToReconcile->setRelationshipGoal(RelationshipEnum::FRIEND);
+        if(in_array($relationshipToReconcile->getRelationshipGoal(), [ RelationshipEnum::Dislike, RelationshipEnum::BrokeUp ]))
+            $relationshipToReconcile->setRelationshipGoal(RelationshipEnum::Friend);
 
-        if(in_array($relationshipOtherSide->getRelationshipGoal(), [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ]))
-            $relationshipOtherSide->setRelationshipGoal(RelationshipEnum::FRIEND);
+        if(in_array($relationshipOtherSide->getRelationshipGoal(), [ RelationshipEnum::Dislike, RelationshipEnum::BrokeUp ]))
+            $relationshipOtherSide->setRelationshipGoal(RelationshipEnum::Friend);
 
         $pet
             ->increaseSafety(8)

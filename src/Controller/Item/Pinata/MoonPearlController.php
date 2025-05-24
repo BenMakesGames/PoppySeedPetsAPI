@@ -90,7 +90,7 @@ class MoonPearlController
 
                     $message = 'You shatter the Moon Pearl, yielding a couple lumps of Moon Dust, and some Silica Grounds, and ' . $helper->getName() . ' gathers up the Quintessence before it evaporates away.';
 
-                    if($location !== LocationEnum::HOME)
+                    if($location !== LocationEnum::Home)
                         $message .= ' (' . $helper->getName() . ' placed the items they got in the house... that\'s just where pets put the stuff they get, you know!)';
 
                     $reloadPets = true;

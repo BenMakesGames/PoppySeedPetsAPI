@@ -55,7 +55,7 @@ class DismissHostageController
 
         $responseService->addFlashMessage($loot->flashMessage);
 
-        $inventoryService->receiveItem($loot->item, $dragon->getOwner(), $dragon->getOwner(), $loot->comment, LocationEnum::HOME, false);
+        $inventoryService->receiveItem($loot->item, $dragon->getOwner(), $dragon->getOwner(), $loot->comment, LocationEnum::Home, false);
 
         PlayerLogFactory::create(
             $em,

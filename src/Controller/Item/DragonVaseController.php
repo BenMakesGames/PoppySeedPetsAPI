@@ -71,7 +71,7 @@ class DragonVaseController
             $user,
             $user,
             $user->getName() . ' caught this as it escaped a Dragon Vase they smashed.',
-            LocationEnum::HOME,
+            LocationEnum::Home,
             false
         );
 
@@ -138,7 +138,7 @@ class DragonVaseController
         $dippedItem = $em->getRepository(Inventory::class)->findOneBy([
             'id' => $itemId,
             'owner' => $user,
-            'location' => LocationEnum::HOME
+            'location' => LocationEnum::Home
         ]);
 
         if(!$dippedItem)
@@ -155,7 +155,7 @@ class DragonVaseController
 
         $usedDragonVase->setValue($today);
 
-        $dippingStat = $userStatsRepository->incrementStat($user, UserStatEnum::TOOLS_DIPPED_IN_A_DRAGON_VASE);
+        $dippingStat = $userStatsRepository->incrementStat($user, UserStatEnum::ToolsDippedInADragonVase);
 
         // Dragon Vase-only bonuses
         $possibleBonuses = [

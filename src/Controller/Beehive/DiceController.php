@@ -50,7 +50,7 @@ class DiceController
             ->andWhere('item.name IN (:diceItemNames)')
             ->addOrderBy('item.name', 'ASC')
             ->setParameter('owner', $user->getId())
-            ->setParameter('home', LocationEnum::HOME)
+            ->setParameter('home', LocationEnum::Home)
             ->setParameter('diceItemNames', array_keys(HollowEarthService::DICE_ITEMS))
             ->getQuery()
             ->getResult()

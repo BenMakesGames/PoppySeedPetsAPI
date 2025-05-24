@@ -37,7 +37,7 @@ final class Version20200406180000 extends AbstractMigration
         $this->addSql('
             UPDATE inventory AS i
             LEFT JOIN pet AS p ON p.tool_id=i.id OR p.hat_id=i.id
-            SET i.location=' . LocationEnum::WARDROBE . '
+            SET i.location=' . LocationEnum::Wardrobe . '
             WHERE p.id IS NOT NULL
         ');
     }
@@ -47,6 +47,6 @@ final class Version20200406180000 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('UPDATE inventory SET location=' . LocationEnum::HOME . ' WHERE location=' . LocationEnum::WARDROBE);
+        $this->addSql('UPDATE inventory SET location=' . LocationEnum::Home . ' WHERE location=' . LocationEnum::Wardrobe);
     }
 }

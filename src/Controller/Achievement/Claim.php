@@ -65,7 +65,7 @@ final class Claim
 
         $em->persist($badge);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ACHIEVEMENTS_CLAIMED);
+        $userStatsRepository->incrementStat($user, UserStatEnum::AchievementsClaimed);
 
         self::getAchievementReward($user, $progress['reward'], $inventoryService, $transactionService);
 
@@ -116,7 +116,7 @@ final class Claim
         {
             case CostOrYieldTypeEnum::Item:
                 for($i = 0; $i < $yield->quantity; $i++)
-                    $inventoryService->receiveItem($yield->item, $user, $user, 'Received by claiming an Achievement.', LocationEnum::HOME, true);
+                    $inventoryService->receiveItem($yield->item, $user, $user, 'Received by claiming an Achievement.', LocationEnum::Home, true);
 
                 break;
 

@@ -145,7 +145,7 @@ class DreamingService
         $eventDescription = DreamingService::applyMadlib($dream['description'], $replacements);
         $itemDescription = DreamingService::applyMadlib($dream['itemDescription'], $replacements);
 
-        $this->inventoryService->receiveItem($itemName, $pet->getOwner(), $pet->getOwner(), $itemDescription, LocationEnum::HOME);
+        $this->inventoryService->receiveItem($itemName, $pet->getOwner(), $pet->getOwner(), $itemDescription, LocationEnum::Home);
 
         $this->petExperienceService->spendTime($pet, $this->rng->rngNextInt(45, 60), PetActivityStatEnum::OTHER, null);
 

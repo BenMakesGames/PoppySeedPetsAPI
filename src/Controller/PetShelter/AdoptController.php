@@ -114,7 +114,7 @@ class AdoptController
             $newPet->addMerit(MeritRepository::findOneByName($em, 'Behatted'));
 
             $hat = (new Inventory(owner: $user, item: ItemRepository::findOneByName($em, 'Mermaid Egg')))
-                ->setLocation(LocationEnum::WARDROBE)
+                ->setLocation(LocationEnum::Wardrobe)
                 ->addComment($newPet->getName() . ' came from the Hollow Earth wearing this...')
             ;
 
@@ -133,7 +133,7 @@ class AdoptController
 
         $transactionService->spendMoney($user, $costToAdopt, 'Adopted a new pet.');
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::PETS_ADOPTED, 1);
+        $userStatsRepository->incrementStat($user, UserStatEnum::PetsAdopted, 1);
 
         $now = (new \DateTimeImmutable())->format('Y-m-d');
 

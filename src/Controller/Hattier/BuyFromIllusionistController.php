@@ -85,13 +85,13 @@ class BuyFromIllusionistController
         {
             $bloodWineId = ItemRepository::getIdByName($em, 'Blood Wine');
 
-            if($inventoryService->loseItem($user, $bloodWineId, [ LocationEnum::HOME, LocationEnum::BASEMENT], $cost) === 0)
+            if($inventoryService->loseItem($user, $bloodWineId, [ LocationEnum::Home, LocationEnum::Basement], $cost) === 0)
                 throw new PSPNotFoundException('You do not have enough Blood Wine.');
         }
         else
             throw new UnreachableException();
 
-        $inventoryService->receiveItem($item, $user, $user, 'Purchased from the Illusionist.', LocationEnum::HOME);
+        $inventoryService->receiveItem($item, $user, $user, 'Purchased from the Illusionist.', LocationEnum::Home);
 
         $em->flush();
 

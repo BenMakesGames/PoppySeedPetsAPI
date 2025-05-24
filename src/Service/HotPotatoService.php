@@ -63,7 +63,7 @@ class HotPotatoService
 
         $inventory
             ->changeOwner($target, $owner->getName() . ' tossed this to ' . $target->getName() . '!', $this->em)
-            ->setLocation(LocationEnum::HOME)
+            ->setLocation(LocationEnum::Home)
         ;
 
         $this->em->flush();
@@ -85,7 +85,7 @@ class HotPotatoService
 
         $inventory
             ->changeOwner($target, 'This was magically transported from ' . $owner->getName() . ' to ' . $target->getName() . '!', $this->em)
-            ->setLocation(LocationEnum::HOME)
+            ->setLocation(LocationEnum::Home)
         ;
 
         $this->em->flush();

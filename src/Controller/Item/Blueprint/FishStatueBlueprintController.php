@@ -56,7 +56,7 @@ class FishStatueBlueprintController
 
         $threeDeePrinterId = ItemRepository::getIdByName($em, '3D Printer');
 
-        if(InventoryService::countInventory($em, $user->getId(), $threeDeePrinterId, LocationEnum::HOME) < 1)
+        if(InventoryService::countInventory($em, $user->getId(), $threeDeePrinterId, LocationEnum::Home) < 1)
             return $responseService->itemActionSuccess('The statue appears to be a fountain! You and ' . $pet->getName() . ' are going to need a 3D Printer at home, and some Plastic to make some pipes...');
 
         $plastic = InventoryHelpers::findOneToConsume($em, $user, 'Plastic');

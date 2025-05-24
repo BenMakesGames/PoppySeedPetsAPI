@@ -43,7 +43,7 @@ use App\Service\UserAccessor;
 #[Route("/item/betaBug")]
 class BetaBugController
 {
-    private const array ALLOWED_ITEMS = [
+    private const array AllowedItems = [
         'Cooking Buddy',
         'Cooking "Alien"',
         'Cooking... with Fire',
@@ -71,8 +71,8 @@ class BetaBugController
             ->andWhere('item.name IN (:allowedItemNames)')
             ->andWhere('i.location=:home')
             ->setParameter('ownerId', $user->getId())
-            ->setParameter('allowedItemNames', self::ALLOWED_ITEMS)
-            ->setParameter('home', LocationEnum::HOME)
+            ->setParameter('allowedItemNames', self::AllowedItems)
+            ->setParameter('home', LocationEnum::Home)
             ->getQuery()
             ->execute();
 
@@ -93,7 +93,7 @@ class BetaBugController
         $item = $em->getRepository(Inventory::class)->findOneBy([
             'id' => $request->request->getInt('item'),
             'owner' => $user,
-            'location' => LocationEnum::HOME
+            'location' => LocationEnum::Home
         ]);
 
         if(!$item)
@@ -149,7 +149,7 @@ class BetaBugController
     {
         $newPet = $petFactory->createPet(
             $user,
-            $rng->rngNextFromArray(\App\Entity\CookingBuddy::NAMES),
+            $rng->rngNextFromArray(\App\Entity\CookingBuddy::Names),
             PetSpeciesRepository::findOneByName($em,PetSpeciesName::CookingBuddy),
             $bodyColor,
             '236924', // "eyes"
@@ -163,7 +163,7 @@ class BetaBugController
         {
             $inventory = (new Inventory(owner: $user, item: ItemRepository::findOneByName($em, $startingHatItem)))
                 ->setCreatedBy($user)
-                ->setLocation(LocationEnum::WARDROBE)
+                ->setLocation(LocationEnum::Wardrobe)
                 ->setWearer($newPet)
             ;
 

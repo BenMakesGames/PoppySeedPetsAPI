@@ -82,7 +82,7 @@ class PetAndPraiseService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ PetActivityLogTagEnum::Petting ]))
         ;
 
-        $this->userStatsRepository->incrementStat($petter, UserStatEnum::PETTED_A_PET);
+        $this->userStatsRepository->incrementStat($petter, UserStatEnum::PettedAPet);
     }
 
 }

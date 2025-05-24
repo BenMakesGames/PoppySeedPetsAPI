@@ -65,7 +65,7 @@ class DieController
 
         $em->flush();
 
-        if($inventory->getLocation() === LocationEnum::BASEMENT)
+        if($inventory->getLocation() === LocationEnum::Basement)
             $location = 'under the basement stairs';
         else
             $location = 'on one of the walls';

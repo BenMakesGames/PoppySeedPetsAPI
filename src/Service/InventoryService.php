@@ -267,7 +267,7 @@ class InventoryService
                         $extraItem = (new Inventory(owner: $pet->getOwner(), item: $extraItemItem))
                             ->setCreatedBy($pet->getOwner())
                             ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
-                            ->setLocation(LocationEnum::HOME)
+                            ->setLocation(LocationEnum::Home)
                             ->setSpice($extraItemSpice)
                             ->setEnchantment($bonus)
                         ;
@@ -288,7 +288,7 @@ class InventoryService
                     $extraItem = (new Inventory(owner: $pet->getOwner(), item: $item))
                         ->setCreatedBy($pet->getOwner())
                         ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
-                        ->setLocation(LocationEnum::HOME)
+                        ->setLocation(LocationEnum::Home)
                         ->setSpice($extraItemSpice)
                         ->setEnchantment($bonus)
                     ;
@@ -324,7 +324,7 @@ class InventoryService
                         $extraItem = (new Inventory(owner: $pet->getOwner(), item: $extraItemItem))
                             ->setCreatedBy($pet->getOwner())
                             ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
-                            ->setLocation(LocationEnum::HOME)
+                            ->setLocation(LocationEnum::Home)
                             ->setSpice($extraItemSpice)
                             ->setEnchantment($bonus)
                         ;
@@ -345,7 +345,7 @@ class InventoryService
                     $extraItem = (new Inventory(owner: $pet->getOwner(), item: $item))
                         ->setCreatedBy($pet->getOwner())
                         ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with their ' . $pet->getTool()->getItem()->getName() . '.')
-                        ->setLocation(LocationEnum::HOME)
+                        ->setLocation(LocationEnum::Home)
                         ->setSpice($extraItemSpice)
                         ->setEnchantment($bonus)
                     ;
@@ -367,7 +367,7 @@ class InventoryService
             $extraItem = (new Inventory(owner: $pet->getOwner(), item: $musicNote))
                 ->setCreatedBy($pet->getOwner())
                 ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' as a Celestial Choruser.')
-                ->setLocation(LocationEnum::HOME)
+                ->setLocation(LocationEnum::Home)
                 ->setSpice($extraItemSpice)
                 ->setEnchantment($bonus)
             ;
@@ -389,7 +389,7 @@ class InventoryService
             $extraItem = (new Inventory(owner: $pet->getOwner(), item: $pectin))
                 ->setCreatedBy($pet->getOwner())
                 ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' while ' . StatusEffectEnum::FRUIT_CLOBBERING . '.')
-                ->setLocation(LocationEnum::HOME)
+                ->setLocation(LocationEnum::Home)
                 ->setSpice($extraItemSpice)
                 ->setEnchantment($bonus)
             ;
@@ -409,7 +409,7 @@ class InventoryService
             $extraItem = (new Inventory(owner: $pet->getOwner(), item: $pectin))
                 ->setCreatedBy($pet->getOwner())
                 ->addComment($pet->getName() . ' got this by obtaining ' . $item->getName() . ' with its Lightning Reins.')
-                ->setLocation(LocationEnum::HOME)
+                ->setLocation(LocationEnum::Home)
                 ->setEnchantment($bonus)
             ;
 
@@ -424,7 +424,7 @@ class InventoryService
             $extraItem = (new Inventory(owner: $pet->getOwner(), item: $item))
                 ->setCreatedBy($pet->getOwner())
                 ->addComment($pet->getName() . ' got this extra ' . $item->getName() . ' thanks to being ' . StatusEffectEnum::SPICED . '.')
-                ->setLocation(LocationEnum::HOME)
+                ->setLocation(LocationEnum::Home)
                 ->setEnchantment($bonus)
             ;
 
@@ -439,7 +439,7 @@ class InventoryService
             $extraItem = (new Inventory(owner: $pet->getOwner(), item: $item))
                 ->setCreatedBy($pet->getOwner())
                 ->addComment($pet->getName() . ' got this extra ' . $item->getName() . ' thanks to being ' . StatusEffectEnum::HOPPIN . '.')
-                ->setLocation(LocationEnum::HOME)
+                ->setLocation(LocationEnum::Home)
                 ->setSpice($extraItemSpice)
                 ->setEnchantment($bonus)
             ;
@@ -471,7 +471,7 @@ class InventoryService
         $i = (new Inventory(owner: $pet->getOwner(), item: $item))
             ->setCreatedBy($pet->getOwner())
             ->addComment($comment)
-            ->setLocation(LocationEnum::HOME)
+            ->setLocation(LocationEnum::Home)
             ->setSpice($spice)
             ->setEnchantment($bonus)
         ;
@@ -550,8 +550,8 @@ class InventoryService
         for($i = 0; $i < $bugs; $i++)
         {
             $location = (!$toolAttractsBugs && $pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Basement) && $this->rng->rngNextInt(1, 4) === 1)
-                ? LocationEnum::BASEMENT
-                : LocationEnum::HOME
+                ? LocationEnum::Basement
+                : LocationEnum::Home
             ;
 
             $inventory = $this->receiveItem($bug, $pet->getOwner(), null, $comment, $location);
@@ -608,7 +608,7 @@ class InventoryService
 
         $this->applySeasonalSpiceToNewItem($i);
 
-        if($location !== LocationEnum::HOME || !$this->houseSimService->getState()->addInventory($i))
+        if($location !== LocationEnum::Home || !$this->houseSimService->getState()->addInventory($i))
             $this->em->persist($i);
 
         $this->responseService->setReloadInventory();

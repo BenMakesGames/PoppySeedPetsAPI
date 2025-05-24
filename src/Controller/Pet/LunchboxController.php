@@ -61,7 +61,7 @@ class LunchboxController
         if($inventory->getLunchboxItem())
             throw new PSPInvalidOperationException('That item is in ' . $inventory->getLunchboxItem()->getPet()->getName() . '\'s lunchbox!');
 
-        $inventory->setLocation(LocationEnum::LUNCHBOX);
+        $inventory->setLocation(LocationEnum::Lunchbox);
 
         if($inventory->getForSale())
             $em->remove($inventory->getForSale());
@@ -97,7 +97,7 @@ class LunchboxController
             throw new PSPInvalidOperationException('That item is not in a lunchbox! (Reload and try again?)');
 
         $inventory
-            ->setLocation(LocationEnum::HOME)
+            ->setLocation(LocationEnum::Home)
         ;
 
         $em->remove($inventory->getLunchboxItem());

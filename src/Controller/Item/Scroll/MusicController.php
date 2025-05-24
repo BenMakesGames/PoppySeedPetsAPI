@@ -46,7 +46,7 @@ class MusicController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
 
         $commonItems = [
             'Flute', 'Fiberglass Flute', 'Music Note', 'Gold Triangle'

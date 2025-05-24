@@ -48,7 +48,7 @@ class BuyController
         $buyTo = $request->request->getInt('location');
         $payWith = strtolower($request->request->getAlpha('payWith', 'moneys'));
 
-        if($buyTo !== LocationEnum::HOME && $buyTo !== LocationEnum::BASEMENT)
+        if($buyTo !== LocationEnum::Home && $buyTo !== LocationEnum::Basement)
             throw new PSPFormValidationException('You must select a location to put the purchased items.');
 
         if($payWith !== 'moneys' && $payWith !== 'recycling')
@@ -88,22 +88,22 @@ class BuyController
         $grocerItemsDay = UserQuestRepository::findOrCreate($em, $user, 'Grocer Items Purchased Date', $now->format('Y-m-d'));
 
         if($now->format('Y-m-d') === $grocerItemsDay->getValue())
-            $maxCanPurchase = GrocerService::MAX_CAN_PURCHASE_PER_DAY - $grocerItemsQuantity->getValue();
+            $maxCanPurchase = GrocerService::MaxCanPurchasePerDay - $grocerItemsQuantity->getValue();
         else
-            $maxCanPurchase = GrocerService::MAX_CAN_PURCHASE_PER_DAY;
+            $maxCanPurchase = GrocerService::MaxCanPurchasePerDay;
 
         if($totalQuantity > $maxCanPurchase)
-            throw new PSPInvalidOperationException('Only ' . GrocerService::MAX_CAN_PURCHASE_PER_DAY . ' items per day, please.');
+            throw new PSPInvalidOperationException('Only ' . GrocerService::MaxCanPurchasePerDay . ' items per day, please.');
 
         if(count($buyingInventory) === 0)
             throw new PSPFormValidationException('Did you forget to select something to buy?');
 
         $existingInventoryCount = InventoryService::countTotalInventory($em, $user, $buyTo);
-        $maxInventory = $buyTo === LocationEnum::BASEMENT ? User::MAX_BASEMENT_INVENTORY : User::MAX_HOUSE_INVENTORY;
+        $maxInventory = $buyTo === LocationEnum::Basement ? User::MaxBasementInventory : User::MaxHouseInventory;
 
         if($existingInventoryCount + $totalQuantity > $maxInventory)
         {
-            if($buyTo === LocationEnum::HOME)
+            if($buyTo === LocationEnum::Home)
                 throw new PSPInvalidOperationException('You don\'t have enough space for ' . $totalQuantity . ' more item' . ($totalQuantity === 1 ? '' : 's') . ' in your House.');
             else
                 throw new PSPInvalidOperationException('You don\'t have enough space for ' . $totalQuantity . ' more item' . ($totalQuantity === 1 ? '' : 's') . ' in your Basement.');
@@ -154,10 +154,10 @@ class BuyController
 
         $currency = $payWith === 'moneys' ? '~~m~~' : ' recycling points';
 
-        $responseService->addFlashMessage($totalQuantity . ' ' . ($totalQuantity === 1 ? 'item was' : 'items were') . ' purchased for ' . $totalCost . $currency . '. ' . ($totalQuantity === 1 ? 'It' : 'They') . ' can be found in your ' . ($buyTo === LocationEnum::HOME ? 'House' : 'Basement') . '.');
+        $responseService->addFlashMessage($totalQuantity . ' ' . ($totalQuantity === 1 ? 'item was' : 'items were') . ' purchased for ' . $totalCost . $currency . '. ' . ($totalQuantity === 1 ? 'It' : 'They') . ' can be found in your ' . ($buyTo === LocationEnum::Home ? 'House' : 'Basement') . '.');
 
         return $responseService->success([
-            'maxPerDay' => GrocerService::MAX_CAN_PURCHASE_PER_DAY,
+            'maxPerDay' => GrocerService::MaxCanPurchasePerDay,
             'maxRemainingToday' => $maxCanPurchase - $totalQuantity,
         ]);
     }

@@ -27,9 +27,9 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 #[ORM\Entity]
 class Fireplace
 {
-    public const int MAX_HEAT = 3 * 24 * 60; // 3 days
+    public const int MaxHeat = 3 * 24 * 60; // 3 days
 
-    public const array STOCKING_APPEARANCES = [
+    public const array StockingAppearances = [
         'fluffed',
         'tasseled',
         'snowflaked',
@@ -47,25 +47,25 @@ class Fireplace
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'fireplace')]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private User $user;
 
     #[Groups(["myFireplace"])]
     #[ORM\Column(type: 'integer')]
-    private $longestStreak = 0;
+    private int $longestStreak = 0;
 
     #[Groups(["myFireplace"])]
     #[ORM\Column(type: 'integer')]
-    private $currentStreak = 0;
+    private int $currentStreak = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $heat = 0;
+    private int $heat = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $points = 0;
+    private int $points = 0;
 
     #[Groups(["myFireplace"])]
     #[ORM\Column(type: 'smallint')]
-    private $mantleSize = 12;
+    private int $mantleSize = 12;
 
     #[ORM\Column(type: 'string', length: 20)]
     private $stockingAppearance;
@@ -78,16 +78,16 @@ class Fireplace
 
     #[Groups(["helperPet"])]
     #[ORM\OneToOne(targetEntity: Pet::class, cascade: ['persist', 'remove'])]
-    private $helper;
+    private ?Pet $helper = null;
 
     #[ORM\Column(type: 'integer')]
-    private $soot = 0;
+    private int $soot = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $alcohol = 0;
+    private int $alcohol = 0;
 
     #[ORM\Column(type: 'integer')]
-    private $gnomePoints = 0;
+    private int $gnomePoints = 0;
 
     /** @noinspection PhpUnusedPrivateFieldInspection */
     #[ORM\Version]
@@ -95,12 +95,17 @@ class Fireplace
     /** @phpstan-ignore property.unused */
     private int $version;
 
+    public function __construct(User $user)
+    {
+        $this->user = $user;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
@@ -112,12 +117,12 @@ class Fireplace
         return $this;
     }
 
-    public function getLongestStreak(): ?int
+    public function getLongestStreak(): int
     {
         return $this->longestStreak;
     }
 
-    public function getCurrentStreak(): ?int
+    public function getCurrentStreak(): int
     {
         return $this->currentStreak;
     }
@@ -129,7 +134,7 @@ class Fireplace
 
     public function addFuel(int $fuel, int $alcohol): self
     {
-        $heatToAdd = min($fuel, self::MAX_HEAT - $this->heat);
+        $heatToAdd = min($fuel, self::MaxHeat - $this->heat);
 
         $this->heat += $heatToAdd;
         $this->alcohol += $alcohol;
@@ -147,7 +152,7 @@ class Fireplace
         if($this->heat <= 0)
             return 0;
         else
-            return (int)max(1, $this->heat * 100 / self::MAX_HEAT);
+            return (int)max(1, $this->heat * 100 / self::MaxHeat);
     }
 
     #[Groups(["myFireplace"])]
@@ -202,7 +207,7 @@ class Fireplace
         return ArrayFunctions::list_nice($words, ', ', $butOrAnd);
     }
 
-    public function getPoints(): ?int
+    public function getPoints(): int
     {
         return $this->points;
     }
@@ -310,7 +315,7 @@ class Fireplace
         return $this;
     }
 
-    public function getSoot(): ?int
+    public function getSoot(): int
     {
         return $this->soot;
     }
@@ -334,7 +339,7 @@ class Fireplace
         return $this;
     }
 
-    public function getGnomePoints(): ?int
+    public function getGnomePoints(): int
     {
         return $this->gnomePoints;
     }

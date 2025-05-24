@@ -644,7 +644,7 @@ class BoxController
         if($today === $listenedToJukebox->getValue())
             return $responseService->itemActionSuccess('You already listened to the Jukebox today. (Everyone knows that Jukeboxes can only be listened to once per day! Everyone!)');
 
-        if($inventory->getLocation() !== LocationEnum::HOME && $inventory->getLocation() !== LocationEnum::MANTLE)
+        if($inventory->getLocation() !== LocationEnum::Home && $inventory->getLocation() !== LocationEnum::Mantle)
             return $responseService->itemActionSuccess('For maximum effect, the Jukebox should be played somewhere your pets can hear it!');
 
         $listenedToJukebox->setValue($today);

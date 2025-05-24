@@ -172,7 +172,7 @@ class HarvestPlantController
                     $lootItem = $loot->getItem();
                     $lootItemName = $lootItem->getName();
 
-                    $item = $inventoryService->receiveItem($lootItem, $user, $user, $user->getName() . ' harvested this from ' . GrammarFunctions::indefiniteArticle($plantName) . ' ' . $plantName . '.', LocationEnum::HOME);
+                    $item = $inventoryService->receiveItem($lootItem, $user, $user, $user->getName() . ' harvested this from ' . GrammarFunctions::indefiniteArticle($plantName) . ' ' . $plantName . '.', LocationEnum::Home);
 
                     if($pollinators)
                         $greenhouseService->applyPollinatorSpice($item, $pollinators);
@@ -199,7 +199,7 @@ class HarvestPlantController
                     : $user->getName() . ' harvested this from ' . GrammarFunctions::indefiniteArticle($plantName) . ' ' . $plantName . '...'
                 ;
 
-                $item = $inventoryService->receiveItem('Mint', $user, $user, $comment, LocationEnum::HOME);
+                $item = $inventoryService->receiveItem('Mint', $user, $user, $comment, LocationEnum::Home);
 
                 if($pollinators)
                     $greenhouseService->applyPollinatorSpice($item, $pollinators);
@@ -210,7 +210,7 @@ class HarvestPlantController
                 $message = 'You harvested ' . ArrayFunctions::list_nice_quantities($lootList) . '!';
         }
 
-        $plantsHarvested = $userStatsRepository->incrementStat($user, UserStatEnum::HARVESTED_PLANT);
+        $plantsHarvested = $userStatsRepository->incrementStat($user, UserStatEnum::HarvestedAPlant);
 
         if($plantsHarvested->getValue() === 3)
         {
@@ -229,6 +229,7 @@ class HarvestPlantController
         }
         else
         {
+            /** @var Pet[] $eligiblePets */
             $eligiblePets = $em->getRepository(Pet::class)->findBy([
                 'owner' => $user->getId(),
                 'location' => PetLocationEnum::HOME
@@ -243,7 +244,6 @@ class HarvestPlantController
 
                 if($rng->rngNextInt(1, 550) <= $chanceOfHelp || $plant->getPlant()->getName() === 'Earth Tree')
                 {
-                    /** @var Pet $helper */
                     $helper = $rng->rngNextFromArray($eligiblePets);
 
                     $activity = $greenhouseAdventureService->adventure($helper->getComputedSkills(), $plant);

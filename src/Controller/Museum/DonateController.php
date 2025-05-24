@@ -58,7 +58,7 @@ class DonateController
         $inventory = $em->getRepository(Inventory::class)->findBy([
             'id' => $inventoryIds,
             'owner' => $user,
-            'location' => [ LocationEnum::HOME, LocationEnum::BASEMENT ]
+            'location' => [ LocationEnum::Home, LocationEnum::Basement ]
         ]);
 
         if(count($inventory) === 0)
@@ -108,7 +108,7 @@ class DonateController
 
         $transactionService->getMuseumFavor($user, $totalMuseumPoints, 'You donated ' . $donationSummary . ' to the Museum.');
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM, count($inventory));
+        $userStatsRepository->incrementStat($user, UserStatEnum::ItemsDonatedToMuseum, count($inventory));
 
         $em->flush();
 

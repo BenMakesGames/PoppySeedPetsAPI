@@ -27,7 +27,7 @@ use App\Service\UserAccessor;
 #[Route("/item/featheredHat")]
 class FeatheredHatController
 {
-    private const array TWEAKS = [
+    private const array Tweaks = [
         'Afternoon Hat' => 'Evening Hat',
     ];
 
@@ -42,11 +42,11 @@ class FeatheredHatController
 
         $oldItemName = $inventory->getItem()->getName();
 
-        if(array_key_exists($oldItemName, self::TWEAKS))
-            $newItemName = self::TWEAKS[$oldItemName];
+        if(array_key_exists($oldItemName, self::Tweaks))
+            $newItemName = self::Tweaks[$oldItemName];
         else
         {
-            $newItemName = array_search($oldItemName, self::TWEAKS);
+            $newItemName = array_search($oldItemName, self::Tweaks);
 
             if(!$newItemName)
                 throw new \Exception($oldItemName . ' cannot be tweaked?? This is a result of programmer oversight. Please let Ben know.');

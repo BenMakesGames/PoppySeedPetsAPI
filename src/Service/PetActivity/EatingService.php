@@ -221,7 +221,7 @@ class EatingService
         if($pet->hasMerit(MeritEnum::BURPS_MOTHS) && $this->rng->rngNextInt(1, 200) < $food->food + $food->junk)
         {
             $inventory = (new Inventory(owner: $pet->getOwner(), item: ItemRepository::findOneByName($this->em, 'Moth')))
-                ->setLocation(LocationEnum::HOME)
+                ->setLocation(LocationEnum::Home)
                 ->setCreatedBy($pet->getOwner())
                 ->addComment('After eating ' . $food->name . ', ' . $pet->getName() . ' burped this up!')
             ;
@@ -331,7 +331,7 @@ class EatingService
             if($pet->getPregnancy())
                 $pet->getPregnancy()->increaseAffection($gain);
 
-            $this->userStatsRepository->incrementStat($feeder, UserStatEnum::FOOD_HOURS_FED_TO_PETS, $foodGained);
+            $this->userStatsRepository->incrementStat($feeder, UserStatEnum::FoodHoursFedToPets, $foodGained);
 
             $this->cravingService->maybeAddCraving($pet);
         }
@@ -361,7 +361,7 @@ class EatingService
 
             if($ateAFortuneCookie)
             {
-                $message .= ' "' . $this->rng->rngNextFromArray(FortuneCookie::MESSAGES) . '"';
+                $message .= ' "' . $this->rng->rngNextFromArray(FortuneCookie::Fortunes) . '"';
                 if($this->rng->rngNextInt(1, 20) === 1 && $pet->getOwner()->hasUnlockedFeature(UnlockableFeatureEnum::Greenhouse))
                 {
                     $message .= ' ... in bed!';

@@ -50,7 +50,7 @@ class GetSeedsController
             ->andWhere('plant.type=:plantType')
             ->addOrderBy('item.name', 'ASC')
             ->setParameter('owner', $user->getId())
-            ->setParameter('consumableLocations', Inventory::CONSUMABLE_LOCATIONS)
+            ->setParameter('consumableLocations', Inventory::ConsumableLocations)
             ->setParameter('plantType', $type)
             ->getQuery()
             ->getResult()

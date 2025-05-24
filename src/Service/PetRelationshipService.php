@@ -33,14 +33,14 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class PetRelationshipService
 {
-    public const array RELATIONSHIP_COMMITMENTS = [
-        RelationshipEnum::BROKE_UP => -1,
-        RelationshipEnum::DISLIKE => 0,
-        RelationshipEnum::FRIENDLY_RIVAL => 1,
-        RelationshipEnum::FRIEND => 2,
+    public const array RelationshipCommitments = [
+        RelationshipEnum::BrokeUp => -1,
+        RelationshipEnum::Dislike => 0,
+        RelationshipEnum::FriendlyRival => 1,
+        RelationshipEnum::Friend => 2,
         RelationshipEnum::BFF => 3,
         RelationshipEnum::FWB => 4,
-        RelationshipEnum::MATE => 5,
+        RelationshipEnum::Mate => 5,
     ];
 
     public function __construct(
@@ -56,8 +56,8 @@ class PetRelationshipService
 
     public static function min(string $relationship1, string $relationship2): string
     {
-        $r1Commitment = self::RELATIONSHIP_COMMITMENTS[$relationship1];
-        $r2Commitment = self::RELATIONSHIP_COMMITMENTS[$relationship2];
+        $r1Commitment = self::RelationshipCommitments[$relationship1];
+        $r2Commitment = self::RelationshipCommitments[$relationship2];
 
         $min = min($r1Commitment, $r2Commitment);
 
@@ -66,8 +66,8 @@ class PetRelationshipService
 
     public static function max(string $relationship1, string $relationship2): string
     {
-        $r1Commitment = self::RELATIONSHIP_COMMITMENTS[$relationship1];
-        $r2Commitment = self::RELATIONSHIP_COMMITMENTS[$relationship2];
+        $r1Commitment = self::RelationshipCommitments[$relationship1];
+        $r2Commitment = self::RelationshipCommitments[$relationship2];
 
         $max = max($r1Commitment, $r2Commitment);
 
@@ -79,15 +79,15 @@ class PetRelationshipService
      */
     public static function getRelationshipsBetween(string $relationship1, string $relationship2): array
     {
-        $r1Commitment = self::RELATIONSHIP_COMMITMENTS[$relationship1];
-        $r2Commitment = self::RELATIONSHIP_COMMITMENTS[$relationship2];
+        $r1Commitment = self::RelationshipCommitments[$relationship1];
+        $r2Commitment = self::RelationshipCommitments[$relationship2];
 
         $minCommitment = min($r1Commitment, $r2Commitment);
         $maxCommitment = max($r1Commitment, $r2Commitment);
 
         $between = [];
 
-        foreach(self::RELATIONSHIP_COMMITMENTS as $relationship=>$commitment)
+        foreach(self::RelationshipCommitments as $relationship=>$commitment)
         {
             if($commitment >= $minCommitment && $commitment <= $maxCommitment)
                 $between[] = $relationship;
@@ -180,17 +180,17 @@ class PetRelationshipService
     {
         if($this->loveService->isTooCloselyRelatedForSex($pet, $otherPet))
         {
-            $initialRelationship = RelationshipEnum::FRIEND;
+            $initialRelationship = RelationshipEnum::Friend;
 
             $possibleRelationships = [
-                RelationshipEnum::FRIEND,
-                RelationshipEnum::FRIEND,
+                RelationshipEnum::Friend,
+                RelationshipEnum::Friend,
                 RelationshipEnum::BFF,
                 RelationshipEnum::BFF,
                 RelationshipEnum::BFF,
                 RelationshipEnum::BFF,
-                RelationshipEnum::FRIENDLY_RIVAL,
-                RelationshipEnum::DISLIKE,
+                RelationshipEnum::FriendlyRival,
+                RelationshipEnum::Dislike,
             ];
         }
         else
@@ -202,15 +202,15 @@ class PetRelationshipService
             {
                 $initialRelationship = RelationshipEnum::FWB;
                 $possibleRelationships = [
-                    RelationshipEnum::FRIEND,
+                    RelationshipEnum::Friend,
                     RelationshipEnum::BFF,
                     RelationshipEnum::FWB,
                     RelationshipEnum::FWB,
                     RelationshipEnum::FWB,
                     RelationshipEnum::FWB,
-                    RelationshipEnum::MATE,
-                    RelationshipEnum::MATE,
-                    RelationshipEnum::MATE,
+                    RelationshipEnum::Mate,
+                    RelationshipEnum::Mate,
+                    RelationshipEnum::Mate,
                 ];
             }
             else if($r <= 5)
@@ -222,8 +222,8 @@ class PetRelationshipService
                     RelationshipEnum::BFF,
                     RelationshipEnum::BFF,
                     RelationshipEnum::BFF,
-                    RelationshipEnum::MATE,
-                    RelationshipEnum::MATE
+                    RelationshipEnum::Mate,
+                    RelationshipEnum::Mate
                 ];
 
                 if($totalSexDrive >= 1)
@@ -232,21 +232,21 @@ class PetRelationshipService
             }
             else if($r <= 15 && !($pet->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD) || $otherPet->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD)))
             {
-                $initialRelationship = RelationshipEnum::DISLIKE;
-                $possibleRelationships = [ RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE, RelationshipEnum::FRIENDLY_RIVAL ];
+                $initialRelationship = RelationshipEnum::Dislike;
+                $possibleRelationships = [ RelationshipEnum::Dislike, RelationshipEnum::Dislike, RelationshipEnum::Dislike, RelationshipEnum::FriendlyRival ];
             }
             else
             {
-                $initialRelationship = RelationshipEnum::FRIEND;
+                $initialRelationship = RelationshipEnum::Friend;
                 $possibleRelationships = [
-                    RelationshipEnum::FRIEND,
-                    RelationshipEnum::FRIEND,
+                    RelationshipEnum::Friend,
+                    RelationshipEnum::Friend,
                     RelationshipEnum::BFF,
                     RelationshipEnum::BFF,
-                    RelationshipEnum::FRIENDLY_RIVAL,
-                    RelationshipEnum::MATE,
-                    RelationshipEnum::MATE,
-                    RelationshipEnum::MATE,
+                    RelationshipEnum::FriendlyRival,
+                    RelationshipEnum::Mate,
+                    RelationshipEnum::Mate,
+                    RelationshipEnum::Mate,
                 ];
 
                 if($totalSexDrive >= 1)
@@ -258,9 +258,9 @@ class PetRelationshipService
 
         $meetDescription = str_replace([ '%p1%', '%p2%' ], [ '%pet:' . $pet->getId() . '.name%', '%pet:' . $otherPet->getId() . '.name%' ], $metActivityLogTemplate);
 
-        if($petRelationship->getCurrentRelationship() === RelationshipEnum::DISLIKE)
+        if($petRelationship->getCurrentRelationship() === RelationshipEnum::Dislike)
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $meetDescription . ' They didn\'t really get along, though...')->setIcon('icons/activity-logs/enemy');
-        else if($petRelationship->getCurrentRelationship() === RelationshipEnum::FWB || $petRelationship->getRelationshipGoal() === RelationshipEnum::FWB || $petRelationship->getRelationshipGoal() === RelationshipEnum::MATE)
+        else if($petRelationship->getCurrentRelationship() === RelationshipEnum::FWB || $petRelationship->getRelationshipGoal() === RelationshipEnum::FWB || $petRelationship->getRelationshipGoal() === RelationshipEnum::Mate)
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $meetDescription . ' (And what a cutie!)')->setIcon('icons/activity-logs/friend-cute');
         else
             $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, $meetDescription)->setIcon('icons/activity-logs/friend');
@@ -273,12 +273,12 @@ class PetRelationshipService
 
         $meetDescription = str_replace([ '%p1%', '%p2%'], [ '%pet:' . $otherPet->getId() . '.name%', '%pet:' . $pet->getId() . '.name%' ], $metActivityLogTemplate);
 
-        if($petRelationship->getCurrentRelationship() === RelationshipEnum::DISLIKE)
+        if($petRelationship->getCurrentRelationship() === RelationshipEnum::Dislike)
         {
             $meetDescription .= ' They didn\'t really get along, though...';
             $icon = 'icons/activity-logs/enemy';
         }
-        else if($otherPetRelationship->getCurrentRelationship() === RelationshipEnum::FWB || $otherPetRelationship->getRelationshipGoal() === RelationshipEnum::FWB || $otherPetRelationship->getRelationshipGoal() === RelationshipEnum::MATE)
+        else if($otherPetRelationship->getCurrentRelationship() === RelationshipEnum::FWB || $otherPetRelationship->getRelationshipGoal() === RelationshipEnum::FWB || $otherPetRelationship->getRelationshipGoal() === RelationshipEnum::Mate)
         {
             $meetDescription .= ' (And what a cutie!)';
             $icon = 'icons/activity-logs/friend-cute';
@@ -308,21 +308,21 @@ class PetRelationshipService
 
         $commitment += match($relationshipGoal)
         {
-            RelationshipEnum::MATE => 100,
+            RelationshipEnum::Mate => 100,
             RelationshipEnum::FWB => 80,
             RelationshipEnum::BFF => 70,
-            RelationshipEnum::FRIEND => 50,
-            RelationshipEnum::FRIENDLY_RIVAL => 20,
+            RelationshipEnum::Friend => 50,
+            RelationshipEnum::FriendlyRival => 20,
             default => 0,
         };
 
         $commitment += match($startingRelationship)
         {
-            RelationshipEnum::MATE => 30,
+            RelationshipEnum::Mate => 30,
             RelationshipEnum::FWB => 20,
             RelationshipEnum::BFF => 18,
-            RelationshipEnum::FRIEND => 12,
-            RelationshipEnum::FRIENDLY_RIVAL => 5,
+            RelationshipEnum::Friend => 12,
+            RelationshipEnum::FriendlyRival => 5,
             default => 0,
         };
 
@@ -332,13 +332,13 @@ class PetRelationshipService
     public static function calculateRelationshipDistance(string $initialRelationship, string $targetRelationship): int
     {
         $values = [
-            RelationshipEnum::BROKE_UP => -2,
-            RelationshipEnum::DISLIKE => 0,
-            RelationshipEnum::FRIENDLY_RIVAL => 2,
-            RelationshipEnum::FRIEND => 3,
+            RelationshipEnum::BrokeUp => -2,
+            RelationshipEnum::Dislike => 0,
+            RelationshipEnum::FriendlyRival => 2,
+            RelationshipEnum::Friend => 3,
             RelationshipEnum::BFF => 6,
             RelationshipEnum::FWB => 8,
-            RelationshipEnum::MATE => 10,
+            RelationshipEnum::Mate => 10,
         ];
 
         return $values[$targetRelationship] - $values[$initialRelationship];
@@ -358,7 +358,7 @@ class PetRelationshipService
         $p1->setLastMet();
         $p2->setLastMet();
 
-        if($p1->getCurrentRelationship() === RelationshipEnum::DISLIKE)
+        if($p1->getCurrentRelationship() === RelationshipEnum::Dislike)
         {
             if($p1->getPet()->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD))
                 $p1Description = null;
@@ -372,7 +372,7 @@ class PetRelationshipService
 
             $icon = '';
         }
-        else if($p1->getCurrentRelationship() === RelationshipEnum::BROKE_UP)
+        else if($p1->getCurrentRelationship() === RelationshipEnum::BrokeUp)
         {
             $p1Description = str_replace([ '%p1%', '%p2%' ], [ $p1->getPet()->getName(), $p2->getPet()->getName() ], $enemyDescription);
             $p2Description = str_replace([ '%p1%', '%p2%' ], [ $p2->getPet()->getName(), $p1->getPet()->getName() ], $enemyDescription);
@@ -428,14 +428,14 @@ class PetRelationshipService
 
             switch($p1->getCurrentRelationship())
             {
-                case RelationshipEnum::BROKE_UP:
-                case RelationshipEnum::DISLIKE:
+                case RelationshipEnum::BrokeUp:
+                case RelationshipEnum::Dislike:
                     throw new \Exception('Pets which do not like each other (#' . $p1->getPet()->getId() . ' & #' . $p2->getPet()->getId() . ') should not be hanging out privately! Some kind of bug has occurred!');
 
-                case RelationshipEnum::FRIENDLY_RIVAL:
+                case RelationshipEnum::FriendlyRival:
                     return $this->friendlyRivalsService->hangOutPrivatelyAsFriendlyRivals($p1, $p2);
 
-                case RelationshipEnum::FRIEND:
+                case RelationshipEnum::Friend:
                     return $this->hangOutPrivatelyAsFriends($p1, $p2);
 
                 case RelationshipEnum::BFF:
@@ -444,7 +444,7 @@ class PetRelationshipService
                 case RelationshipEnum::FWB:
                     return $this->hangOutPrivatelyAsFWBs($p1, $p2);
 
-                case RelationshipEnum::MATE:
+                case RelationshipEnum::Mate:
                     return $this->hangOutPrivatelyAsMates($p1, $p2);
 
                 default:
@@ -510,7 +510,7 @@ class PetRelationshipService
                     if($this->rng->rngNextInt(1, 20) === 1)
                         $this->pregnancyService->getPregnant($pet, $friend);
                 }
-                else if($p1->getCurrentRelationship() === RelationshipEnum::MATE && $this->rng->rngNextInt(1, 5) === 1)
+                else if($p1->getCurrentRelationship() === RelationshipEnum::Mate && $this->rng->rngNextInt(1, 5) === 1)
                 {
                     $message = $this->loveService->expressLove($p1, $p2);
 
@@ -691,7 +691,7 @@ class PetRelationshipService
     public function createRelationship(Pet $pet, string $howPetMetSummary, Pet $otherPet, string $howOtherPetMetSummary, string $initialRelationship, array $possibleRelationships): array
     {
         if($pet->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD))
-            $petPossibleRelationships = array_filter($possibleRelationships, fn($r) => $r !== RelationshipEnum::DISLIKE);
+            $petPossibleRelationships = array_filter($possibleRelationships, fn($r) => $r !== RelationshipEnum::Dislike);
         else
             $petPossibleRelationships = $possibleRelationships;
 
@@ -712,7 +712,7 @@ class PetRelationshipService
 
         // other pet
         if($otherPet->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD))
-            $otherPetPossibleRelationships = array_filter($possibleRelationships, fn($r) => $r !== RelationshipEnum::DISLIKE);
+            $otherPetPossibleRelationships = array_filter($possibleRelationships, fn($r) => $r !== RelationshipEnum::Dislike);
         else
             $otherPetPossibleRelationships = $possibleRelationships;
 

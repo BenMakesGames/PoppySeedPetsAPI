@@ -18,10 +18,10 @@ final class LocationEnum
 {
     use FakeEnum;
 
-    const int HOME = 0;
-    const int BASEMENT = 1;
-    const int MANTLE = 2;
-    const int WARDROBE = 3;
-    const int LUNCHBOX = 4;
-    const int BIRD_BATH = 5;
+    const int Home = 0;
+    const int Basement = 1;
+    const int Mantle = 2;
+    const int Wardrobe = 3;
+    const int Lunchbox = 4;
+    const int BirdBath = 5;
 }

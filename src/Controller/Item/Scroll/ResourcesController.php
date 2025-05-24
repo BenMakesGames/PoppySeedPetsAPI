@@ -61,7 +61,7 @@ class ResourcesController
         $location = $inventory->getLocation();
         $locked = $inventory->getLockedToOwner();
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
 
         $em->remove($inventory);
 
@@ -109,7 +109,7 @@ class ResourcesController
         $location = $inventory->getLocation();
         $locked = $inventory->getLockedToOwner();
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
 
         $em->remove($inventory);
 

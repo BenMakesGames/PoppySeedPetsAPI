@@ -71,7 +71,7 @@ class FeedController
         foreach($items as $item)
         {
             // don't feed an item if doing so would waste more than half the item's fuel
-            if($fireplace->getHeat() + $item->getItem()->getFuel() / 2 <= Fireplace::MAX_HEAT)
+            if($fireplace->getHeat() + $item->getItem()->getFuel() / 2 <= Fireplace::MaxHeat)
             {
                 $alcohol = $item->getItem()->getFood() ? $item->getItem()->getFood()->getAlcohol() * 4 : 0;
                 $fireplace->addFuel($item->getItem()->getFuel(), $alcohol);
@@ -92,7 +92,7 @@ class FeedController
 
             PlayerLogFactory::create($em, $user, $entry, [ 'Fireplace' ]);
 
-            $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_THROWN_INTO_THE_FIREPLACE, count($fuelUsed));
+            $userStatsRepository->incrementStat($user, UserStatEnum::ItemsThrownIntoTheFireplace, count($fuelUsed));
         }
 
         if($fireplace->getHelper() && $fireplace->getSoot() >= 18 * 60)
@@ -131,7 +131,7 @@ class FeedController
                 }
             }
 
-            $loot = $inventoryService->receiveItem($extraItem, $user, $user, $helper->getName() . ' found this in ' . $user->getName() . '\'s Fireplace chimney.', LocationEnum::HOME);
+            $loot = $inventoryService->receiveItem($extraItem, $user, $user, $helper->getName() . ' found this in ' . $user->getName() . '\'s Fireplace chimney.', LocationEnum::Home);
 
             $message = $helper->getName() . ' found ' . $loot->getItem()->getNameWithArticle() . ' in the chimney!';
 

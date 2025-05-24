@@ -73,7 +73,7 @@ class WeedController
         else
             $itemName = $rng->rngNextFromArray([ 'Dandelion', 'Crooked Stick', 'Crooked Stick' ]);
 
-        $foundItem = $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this while weeding their Greenhouse.', LocationEnum::HOME);
+        $foundItem = $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this while weeding their Greenhouse.', LocationEnum::Home);
         $foundItem2 = null;
 
         if($greenhouse->isHasFishStatue())
@@ -88,7 +88,7 @@ class WeedController
                 ]
             ;
 
-            $foundItem2 = $inventoryService->receiveItem($rng->rngNextFromArray($possibleItem2s), $user, $user, $user->getName() . ' found this while cleaning their Fish Statue.', LocationEnum::HOME);
+            $foundItem2 = $inventoryService->receiveItem($rng->rngNextFromArray($possibleItem2s), $user, $user, $user->getName() . ' found this while cleaning their Fish Statue.', LocationEnum::Home);
 
             $message = 'You found ' . $foundItem->getItem()->getNameWithArticle() . ' while cleaning up, plus ' . $foundItem2->getItem()->getNameWithArticle() . ' near the Fish Statue!';
 

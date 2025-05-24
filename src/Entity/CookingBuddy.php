@@ -20,7 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class CookingBuddy
 {
-    public const array NAMES = [
+    public const array Names = [
         'Asparagus', 'Arugula',
         'Biryani', 'Bisque',
         'Cake', 'Ceviche',
@@ -86,7 +86,7 @@ class CookingBuddy
 
         do
         {
-            $this->name = $rng->rngNextFromArray(self::NAMES);
+            $this->name = $rng->rngNextFromArray(self::Names);
         } while($this->name === $oldName);
 
         return $this;

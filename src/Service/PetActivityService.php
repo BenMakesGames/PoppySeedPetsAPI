@@ -470,11 +470,11 @@ class PetActivityService
         $plasticPrinterPossibilities = $this->plasticPrinterService->getCraftingPossibilities($petWithSkills);
         $notCraftingPossibilities = $this->notReallyCraftsService->getCraftingPossibilities($petWithSkills);
 
-        $houseTooFull = $this->rng->rngNextInt(1, 10) > User::MAX_HOUSE_INVENTORY - $itemsInHouse;
+        $houseTooFull = $this->rng->rngNextInt(1, 10) > User::MaxHouseInventory - $itemsInHouse;
 
         if($houseTooFull)
         {
-            if($itemsInHouse >= User::MAX_HOUSE_INVENTORY)
+            if($itemsInHouse >= User::MaxHouseInventory)
                 $description = '%user:' . $pet->getOwner()->getId() . '.Name\'s% house is crazy-full.';
             else
                 $description = '%user:' . $pet->getOwner()->getId() . '.Name\'s% house is getting pretty full.';
@@ -674,7 +674,7 @@ class PetActivityService
             case 'Peacock Plushy':
             case 'Phoenix Plushy':
             case '"Roy" Plushy':
-                if($this->rng->rngNextInt(1, 6) === 1 || $this->userStatsRepository->getStatValue($pet->getOwner(), UserStatEnum::TRADED_WITH_THE_FLUFFMONGER) === 0)
+                if($this->rng->rngNextInt(1, 6) === 1 || $this->userStatsRepository->getStatValue($pet->getOwner(), UserStatEnum::TradedWithTheFluffmonger) === 0)
                 {
                     $this->treasureMapService->doFluffmongerTrade($pet);
                     return true;

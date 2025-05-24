@@ -298,7 +298,7 @@ final class CalendarFunctions
     public static function isHoli(\DateTimeInterface $dt): bool
     {
         $monthAndDay = $dt->format('nd');
-        return $monthAndDay === self::HOLI_MONTH_DAYS[(int)$dt->format('Y')];
+        return $monthAndDay === self::HoliMonthDays[(int)$dt->format('Y')];
     }
 
     public static function isNewYearsHoliday(\DateTimeInterface $dt): bool
@@ -318,9 +318,9 @@ final class CalendarFunctions
         $year = (int)$dt->format('Y');
         $monthAndDay = (int)$dt->format('nd');
 
-        $leonidPeakDay = array_key_exists($year, self::LEONID_PEAK_DAYS)
-            ? self::LEONID_PEAK_DAYS[$year]
-            : self::LEONID_PEAK_DAY_DEFAULT
+        $leonidPeakDay = array_key_exists($year, self::LeonidPeakDays)
+            ? self::LeonidPeakDays[$year]
+            : self::LeonidPeakDayDefault
         ;
 
         return abs($monthAndDay - $leonidPeakDay) <= 1;
@@ -455,7 +455,7 @@ final class CalendarFunctions
         return $events;
     }
 
-    public const array HOLI_MONTH_DAYS = [
+    public const array HoliMonthDays = [
         2021 => '329',
         2022 => '318',
         2023 => '308',
@@ -478,10 +478,12 @@ final class CalendarFunctions
         2040 => '329',
     ];
 
-    public const int LEONID_PEAK_DAY_DEFAULT = 1117;
+    public const int LeonidPeakDayDefault = 1117;
 
-    public const array LEONID_PEAK_DAYS = [
-        // for years which are omitted, LEONID_PEAK_DAY_DEFAULT is assumed
+    /**
+     * for years which are omitted, {@see LeonidPeakDayDefault} is assumed.
+     */
+    public const array LeonidPeakDays = [
         2022 => 1119,
     ];
 

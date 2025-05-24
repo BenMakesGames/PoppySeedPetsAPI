@@ -83,19 +83,19 @@ class TradesController
         if($trade['maxQuantity'] < $quantity)
             throw new PSPInvalidOperationException('You do not have enough goods to make ' . $quantity . ' trade' . ($quantity == 1 ? '' : 's') . '; you can do up to ' . $trade['maxQuantity'] . ', at most.');
 
-        $itemsAtHome = InventoryService::countTotalInventory($em, $user, LocationEnum::HOME);
+        $itemsAtHome = InventoryService::countTotalInventory($em, $user, LocationEnum::Home);
 
-        $destination = LocationEnum::HOME;
+        $destination = LocationEnum::Home;
 
-        if($itemsAtHome + $quantity > User::MAX_HOUSE_INVENTORY)
+        if($itemsAtHome + $quantity > User::MaxHouseInventory)
         {
             if($user->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
             {
-                $destination = LocationEnum::BASEMENT;
+                $destination = LocationEnum::Basement;
 
-                $itemsInBasement = InventoryService::countTotalInventory($em, $user, LocationEnum::BASEMENT);
+                $itemsInBasement = InventoryService::countTotalInventory($em, $user, LocationEnum::Basement);
 
-                if($itemsInBasement + $quantity > User::MAX_BASEMENT_INVENTORY)
+                if($itemsInBasement + $quantity > User::MaxBasementInventory)
                 {
                     throw new PSPInvalidOperationException('There is not enough room in your house or basement for ' . $quantity . ' more items!');
                 }
@@ -121,7 +121,7 @@ class TradesController
 
         $trades = $hollowEarthService->getTrades($player);
 
-        $destinationDescription = $destination === LocationEnum::HOME
+        $destinationDescription = $destination === LocationEnum::Home
             ? 'your house'
             : 'your basement'
         ;

@@ -173,7 +173,7 @@ class HollowEarthService
             ->andWhere('i.location IN (:allowedLocations)')
             ->andWhere('item.name IN (:dice)')
             ->setParameter('owner', $user->getId())
-            ->setParameter('allowedLocations', Inventory::CONSUMABLE_LOCATIONS)
+            ->setParameter('allowedLocations', Inventory::ConsumableLocations)
             ->setParameter('dice', array_keys(self::DICE_ITEMS))
             ->groupBy('item.name')
             ->getQuery()
@@ -258,7 +258,7 @@ class HollowEarthService
             ->setCurrentAction($action)
         ;
 
-        $this->userStatsRepository->incrementStat($player->getUser(), UserStatEnum::HOLLOW_EARTH_SPACES_MOVED, $movesRemaining - $player->getMovesRemaining());
+        $this->userStatsRepository->incrementStat($player->getUser(), UserStatEnum::HollowEarthSpacesMoved, $movesRemaining - $player->getMovesRemaining());
 
         if($leftGoTile)
             PetBadgeHelpers::awardBadgeAndLog($this->em, $player->getChosenPet(), PetBadgeEnum::GO, null);

@@ -181,8 +181,8 @@ class JoustingService implements ParkEventInterface
         $team1CurrentRelationship = $team1Relationship === null ? null : $team1Relationship->getCurrentRelationship();
         $team2CurrentRelationship = $team2Relationship === null ? null : $team2Relationship->getCurrentRelationship();
 
-        $team1WontWorkTogether = $team1CurrentRelationship === RelationshipEnum::DISLIKE || $team1CurrentRelationship === RelationshipEnum::BROKE_UP;
-        $team2WontWorkTogether = $team2CurrentRelationship === RelationshipEnum::DISLIKE || $team2CurrentRelationship === RelationshipEnum::BROKE_UP;
+        $team1WontWorkTogether = $team1CurrentRelationship === RelationshipEnum::Dislike || $team1CurrentRelationship === RelationshipEnum::BrokeUp;
+        $team2WontWorkTogether = $team2CurrentRelationship === RelationshipEnum::Dislike || $team2CurrentRelationship === RelationshipEnum::BrokeUp;
 
         // @TODO a chance that they "power through", and work together, anyway?
 
@@ -212,16 +212,16 @@ class JoustingService implements ParkEventInterface
         $mountRiderRelationship = $team1->mount->getRelationshipWith($team2->rider);
         $mountMountRelationship = $team1->mount->getRelationshipWith($team2->mount);
 
-        if($riderRiderRelationship && $riderRiderRelationship->getCurrentRelationship() === RelationshipEnum::FRIENDLY_RIVAL)
+        if($riderRiderRelationship && $riderRiderRelationship->getCurrentRelationship() === RelationshipEnum::FriendlyRival)
             $rivalries[] = [ $team1->rider, $team2->rider ];
 
-        if($riderMountRelationship && $riderMountRelationship->getCurrentRelationship() === RelationshipEnum::FRIENDLY_RIVAL)
+        if($riderMountRelationship && $riderMountRelationship->getCurrentRelationship() === RelationshipEnum::FriendlyRival)
             $rivalries[] = [ $team1->rider, $team2->mount ];
 
-        if($mountRiderRelationship && $mountRiderRelationship->getCurrentRelationship() === RelationshipEnum::FRIENDLY_RIVAL)
+        if($mountRiderRelationship && $mountRiderRelationship->getCurrentRelationship() === RelationshipEnum::FriendlyRival)
             $rivalries[] = [ $team1->mount, $team2->rider ];
 
-        if($mountMountRelationship && $mountMountRelationship->getCurrentRelationship() === RelationshipEnum::FRIENDLY_RIVAL)
+        if($mountMountRelationship && $mountMountRelationship->getCurrentRelationship() === RelationshipEnum::FriendlyRival)
             $rivalries[] = [ $team1->mount, $team2->mount ];
 
         if(count($rivalries) > 0)

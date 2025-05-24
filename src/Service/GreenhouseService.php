@@ -71,26 +71,26 @@ class GreenhouseService
                     'Forgetting Scroll',
                 ]);
 
-                $this->inventoryService->receiveItem($scroll, $user, $user, 'Left behind by a huge owl that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
+                $this->inventoryService->receiveItem($scroll, $user, $user, 'Left behind by a huge owl that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::Home);
                 $message = 'As you approach the owl, it tilts its head at you. You freeze, and stare at each other for a few seconds before the owl flies off, dropping some kind of scroll as it goes!';
                 $activityLogMessage = 'You approached an owl in your birdbath! It flew off, leaving behind a ' . $scroll . '!';
                 break;
 
             case BirdBathBirdEnum::Raven:
-                $this->inventoryService->receiveItem('Black Feathers', $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
-                $this->inventoryService->receiveItem('Black Feathers', $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
+                $this->inventoryService->receiveItem('Black Feathers', $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::Home);
+                $this->inventoryService->receiveItem('Black Feathers', $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::Home);
                 $extraItem = $this->rng->rngNextFromArray([
                     'Juice Box',
                     $this->rng->rngNextFromArray([ 'Winged Key', 'Piece of Cetgueli\'s Map' ]),
                     $this->rng->rngNextFromArray([ 'Magic Smoke', 'Lightning in a Bottle' ]),
                 ]);
-                $extraInventory = $this->inventoryService->receiveItem($extraItem, $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
+                $extraInventory = $this->inventoryService->receiveItem($extraItem, $user, $user, 'Left behind by a huge raven that visited ' . $user->getName() . '\'s Bird Bath.', LocationEnum::Home);
                 $message = 'As you approach the raven, it turns to face you. You freeze, and stare at each other for a few seconds before the raven flies off in a flurry of Black Feathers! Also, it apparently left ' . $extraInventory->getItem()->getNameWithArticle() . ' behind? \'Kay...';
                 $activityLogMessage = 'You approached a raven in your birdbath! It flew off, leaving behind some Black Feathers, and ' . $extraInventory->getItem()->getNameWithArticle() . '!';
                 break;
 
             case BirdBathBirdEnum::Toucan:
-                $this->inventoryService->receiveItem('Imperturbable Toucan', $user, $user, 'Found at ' . $user->getName() . '\'s Bird Bath.', LocationEnum::HOME);
+                $this->inventoryService->receiveItem('Imperturbable Toucan', $user, $user, 'Found at ' . $user->getName() . '\'s Bird Bath.', LocationEnum::Home);
                 $message = 'As you approach the toucan, it turns to face you. You freeze, and stare at each other for a few seconds before it hops right into your arms!';
                 $activityLogMessage = 'You approached a toucan in your birdbath, and it hopped into your arms!';
                 break;
@@ -101,7 +101,7 @@ class GreenhouseService
 
         $greenhouse->setVisitingBird(null);
 
-        $this->userStatsRepository->incrementStat($user, UserStatEnum::LARGE_BIRDS_APPROACHED);
+        $this->userStatsRepository->incrementStat($user, UserStatEnum::LargeBirdsApproached);
 
         PlayerLogFactory::create($this->em, $user, $activityLogMessage, [ 'Greenhouse', 'Birdbath' ]);
 
@@ -247,7 +247,7 @@ class GreenhouseService
 
             ->addOrderBy('item.name', 'ASC')
             ->setParameter('owner', $user->getId())
-            ->setParameter('home', LocationEnum::HOME)
+            ->setParameter('home', LocationEnum::Home)
         ;
 
         if($inventoryIds)

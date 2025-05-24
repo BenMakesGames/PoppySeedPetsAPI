@@ -204,13 +204,13 @@ class PetRelationship
     {
         return match ($this->currentRelationship)
         {
-            RelationshipEnum::BROKE_UP => -80,
-            RelationshipEnum::DISLIKE => -35,
-            RelationshipEnum::FRIENDLY_RIVAL => 0,
-            RelationshipEnum::FRIEND => 35,
+            RelationshipEnum::BrokeUp => -80,
+            RelationshipEnum::Dislike => -35,
+            RelationshipEnum::FriendlyRival => 0,
+            RelationshipEnum::Friend => 35,
             RelationshipEnum::BFF => 65,
             RelationshipEnum::FWB => 70,
-            RelationshipEnum::MATE => 100,
+            RelationshipEnum::Mate => 100,
             default => 0,
         };
     }

@@ -49,7 +49,7 @@ class GetHouseController
 
         $inventory = $inventoryRepository->findBy([
             'owner' => $user,
-            'location' => LocationEnum::HOME
+            'location' => LocationEnum::Home
         ]);
 
         return $responseService->success([

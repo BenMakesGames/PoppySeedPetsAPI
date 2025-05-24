@@ -93,7 +93,7 @@ class ClaimRewardsController
         $contribution->setRewardsClaimed();
 
         foreach($rewards as $reward)
-            $inventoryService->receiveItem($reward, $user, null, $user->getName() . ' received this for feeding ' . MonsterOfTheWeekHelpers::getSpiritNameWithArticle($monster->getMonster()) . '.', LocationEnum::HOME, true);
+            $inventoryService->receiveItem($reward, $user, null, $user->getName() . ' received this for feeding ' . MonsterOfTheWeekHelpers::getSpiritNameWithArticle($monster->getMonster()) . '.', LocationEnum::Home, true);
 
         $em->flush();
 

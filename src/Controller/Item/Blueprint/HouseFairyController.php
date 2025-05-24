@@ -40,7 +40,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/item/fairy")]
 class HouseFairyController
 {
-    public const array FAIRY_NAMES = [
+    public const array FairyNames = [
         'Ævintýri', 'Alfrigg', 'Ant', 'Ao', 'Aphid', 'Apricot', 'Arethusa', 'Ariel',
         'Basil', 'Beeswax', 'Bitterweed', 'Blueberry', 'Bromine',
         'Cardamom', 'Celadon', 'Celeste', 'Cobweb', 'Coriander', 'Cornsilk', 'Cottonweed', 'Cottonwood', 'Crysta', 'Curium', 'Cyclamen',
@@ -68,7 +68,7 @@ class HouseFairyController
 
     private static function fairyName(Inventory $i): string
     {
-        return self::FAIRY_NAMES[$i->getId() % count(self::FAIRY_NAMES)];
+        return self::FairyNames[$i->getId() % count(self::FairyNames)];
     }
 
     #[Route("/{inventory}/hello", methods: ["POST"])]
@@ -172,14 +172,13 @@ class HouseFairyController
 
         $stockingColors = PetColorFunctions::generateRandomPetColors($rng);
 
-        $fireplace = (new Fireplace())
-            ->setUser($user)
-            ->setStockingAppearance($rng->rngNextFromArray(Fireplace::STOCKING_APPEARANCES))
+        $fireplace = (new Fireplace(user: $user))
+            ->setStockingAppearance($rng->rngNextFromArray(Fireplace::StockingAppearances))
             ->setStockingColorA($stockingColors[0])
             ->setStockingColorB($stockingColors[1])
         ;
 
-        if($userStatsRepository->getStatValue($user, UserStatEnum::ITEMS_DONATED_TO_MUSEUM) >= 400)
+        if($userStatsRepository->getStatValue($user, UserStatEnum::ItemsDonatedToMuseum) >= 400)
             $fireplace->setMantleSize(24);
 
         $em->persist($fireplace);

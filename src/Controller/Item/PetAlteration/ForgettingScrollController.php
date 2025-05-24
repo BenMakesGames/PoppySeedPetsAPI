@@ -106,7 +106,7 @@ class ForgettingScrollController
                 throw new PSPInvalidOperationException('That merit cannot be unlearned.');
         }
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
 
         $em->remove($inventory);
 
@@ -178,7 +178,7 @@ class ForgettingScrollController
         if($pet->getSkills()->getStat($skill) < 1)
             throw new PSPInvalidOperationException($pet->getName() . ' does not have any points of ' . $skill . ' to unlearn.');
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
 
         $em->remove($inventory);
 

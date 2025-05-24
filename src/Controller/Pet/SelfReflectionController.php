@@ -65,7 +65,7 @@ class SelfReflectionController
             ->andWhere('r.pet=:pet')
             ->andWhere('r.currentRelationship IN (:currentRelationship)')
             ->setParameter('pet', $pet)
-            ->setParameter('currentRelationship', [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ])
+            ->setParameter('currentRelationship', [ RelationshipEnum::Dislike, RelationshipEnum::BrokeUp ])
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -73,15 +73,15 @@ class SelfReflectionController
         {
             $relationships = $em->getRepository(PetRelationship::class)->findBy([
                 'pet' => $pet,
-                'currentRelationship' => [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ],
+                'currentRelationship' => [ RelationshipEnum::Dislike, RelationshipEnum::BrokeUp ],
             ], [], $numberDisliked);
 
             $troubledRelationships = array_map(
                 fn(PetRelationship $r) => [
                     'pet' => $r->getRelationship(),
                     'possibleRelationships' => PetRelationshipService::getRelationshipsBetween(
-                        PetRelationshipService::max(RelationshipEnum::FRIEND, $r->getRelationshipGoal()),
-                        PetRelationshipService::max(RelationshipEnum::FRIEND, $r->getRelationship()->getRelationshipWith($r->getPet())->getRelationshipGoal())
+                        PetRelationshipService::max(RelationshipEnum::Friend, $r->getRelationshipGoal()),
+                        PetRelationshipService::max(RelationshipEnum::Friend, $r->getRelationship()->getRelationshipWith($r->getPet())->getRelationshipGoal())
                     )
                 ],
                 $relationships
@@ -182,7 +182,7 @@ class SelfReflectionController
         if(!$relationship)
             throw new PSPNotFoundException('Those pets don\'t seem to have a relationship of any kind...');
 
-        if($relationship->getCurrentRelationship() !== RelationshipEnum::BROKE_UP && $relationship->getCurrentRelationship() !== RelationshipEnum::DISLIKE)
+        if($relationship->getCurrentRelationship() !== RelationshipEnum::BrokeUp && $relationship->getCurrentRelationship() !== RelationshipEnum::Dislike)
             throw new PSPInvalidOperationException('Those pets are totally okay with each other already!');
 
         $friend = $relationship->getRelationship();
@@ -196,8 +196,8 @@ class SelfReflectionController
             throw new \Exception($pet->getName() . ' knows ' . $friend->getName() . ', but not the other way around! This is a terrible bug! Make Ben fix it!');
 
         $possibleRelationships = PetRelationshipService::getRelationshipsBetween(
-            PetRelationshipService::max($relationship->getRelationshipGoal(), RelationshipEnum::FRIEND),
-            PetRelationshipService::max($otherSide->getRelationshipGoal(), RelationshipEnum::FRIEND)
+            PetRelationshipService::max($relationship->getRelationshipGoal(), RelationshipEnum::Friend),
+            PetRelationshipService::max($otherSide->getRelationshipGoal(), RelationshipEnum::Friend)
         );
 
         $newRelationship = $rng->rngNextFromArray($possibleRelationships);
@@ -205,10 +205,10 @@ class SelfReflectionController
         $minimumCommitment = PetRelationshipService::generateInitialCommitment($rng, $newRelationship, $newRelationship);
 
         $relationshipDescriptions = [
-            RelationshipEnum::FRIEND => 'friends',
+            RelationshipEnum::Friend => 'friends',
             RelationshipEnum::BFF => 'BFFs',
             RelationshipEnum::FWB => 'FWBs',
-            RelationshipEnum::MATE => 'dating'
+            RelationshipEnum::Mate => 'dating'
         ];
 
         $relationship
@@ -266,14 +266,14 @@ class SelfReflectionController
             throw new PSPPetNotFoundException();
 
         $petRelationshipTypeaheadService->setParameters($pet, [
-            RelationshipEnum::BROKE_UP,
-            RelationshipEnum::DISLIKE
+            RelationshipEnum::BrokeUp,
+            RelationshipEnum::Dislike
         ]);
 
         $suggestions = array_map(function(Pet $otherPet) use($pet) {
             $possibleRelationships = PetRelationshipService::getRelationshipsBetween(
-                PetRelationshipService::max(RelationshipEnum::FRIEND, $otherPet->getRelationshipWith($pet)->getRelationshipGoal()),
-                PetRelationshipService::max(RelationshipEnum::FRIEND, $pet->getRelationshipWith($otherPet)->getRelationshipGoal())
+                PetRelationshipService::max(RelationshipEnum::Friend, $otherPet->getRelationshipWith($pet)->getRelationshipGoal()),
+                PetRelationshipService::max(RelationshipEnum::Friend, $pet->getRelationshipWith($otherPet)->getRelationshipGoal())
             );
 
             return [

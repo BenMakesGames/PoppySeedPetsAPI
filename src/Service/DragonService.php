@@ -117,7 +117,7 @@ class DragonService
             ->andWhere('item.treasure IS NOT NULL')
             ->setParameter('inventoryIds', $itemIds)
             ->setParameter('user', $user->getId())
-            ->setParameter('home', LocationEnum::HOME)
+            ->setParameter('home', LocationEnum::Home)
             ->getQuery()
             ->execute()
         ;
@@ -139,7 +139,7 @@ class DragonService
 
         sort($offeringItemNames);
 
-        $this->userStatsRepository->incrementStat($user, UserStatEnum::TREASURES_GIVEN_TO_DRAGON_HOARD, count($items));
+        $this->userStatsRepository->incrementStat($user, UserStatEnum::TreasuresGivenToDragonHoard, count($items));
 
         $silverGoodies = self::SilverGoodies;
         $goldGoodies = self::GoldGoodies;
@@ -205,7 +205,7 @@ class DragonService
 
         foreach($goodies as $goody)
         {
-            $newItem = $this->inventoryService->receiveItem($goody['item'], $user, $user, $user->getName() . ' received this from their dragon, ' . $dragon->getName() . '.', LocationEnum::HOME);
+            $newItem = $this->inventoryService->receiveItem($goody['item'], $user, $user, $user->getName() . ' received this from their dragon, ' . $dragon->getName() . '.', LocationEnum::Home);
 
             if(array_key_exists('bonus', $goody)) $newItem->setEnchantment(EnchantmentRepository::findOneByName($this->em, $goody['bonus']));
             if(array_key_exists('spice', $goody)) $newItem->setSpice(SpiceRepository::findOneByName($this->em, $goody['spice']));
@@ -278,7 +278,7 @@ class DragonService
 
                 $extraItemName = $this->rng->rngNextFromArray($possibleItems);
 
-                $extraItem = $this->inventoryService->receiveItem($extraItemName, $user, $user, $user->getName() . ' received this from their dragon, ' . $dragon->getName() . ' (and ' . ArrayFunctions::list_nice($helperAdjectives) . ' helper, ' . $dragon->getHelper()->getName() . ').', LocationEnum::HOME);
+                $extraItem = $this->inventoryService->receiveItem($extraItemName, $user, $user, $user->getName() . ' received this from their dragon, ' . $dragon->getName() . ' (and ' . ArrayFunctions::list_nice($helperAdjectives) . ' helper, ' . $dragon->getHelper()->getName() . ').', LocationEnum::Home);
             }
         }
 

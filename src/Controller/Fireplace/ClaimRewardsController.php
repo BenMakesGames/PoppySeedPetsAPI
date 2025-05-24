@@ -86,7 +86,7 @@ class ClaimRewardsController
 
             if($itemName === 'House Fairy')
             {
-                $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Oh! Hello!)', LocationEnum::HOME);
+                $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Oh! Hello!)', LocationEnum::Home);
 
                 // triggers Hyssop letter #3
                 $oldValue = UserQuestRepository::findOrCreate($em, $user, 'Can Receive Letters from Fairies', 0);
@@ -94,15 +94,15 @@ class ClaimRewardsController
                     $oldValue->setValue(3);
             }
             else if($itemName === 'Burnt Log')
-                $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Nothing surprising there.)', LocationEnum::HOME);
+                $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Nothing surprising there.)', LocationEnum::Home);
             else if($itemName === 'Poker')
-                $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Oops! How\'d that get left in there!)', LocationEnum::HOME);
+                $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Oops! How\'d that get left in there!)', LocationEnum::Home);
             else if($itemName === 'Naner Pancakes' || $itemName === 'Hot Dog')
-                $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Whew! didn\'t burn!)', LocationEnum::HOME);
+                $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Whew! didn\'t burn!)', LocationEnum::Home);
             else if($rng->rngNextInt(1, 4) === 1)
-                $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Did someone put that in there? It seems like someone put that in there.)', LocationEnum::HOME);
+                $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Did someone put that in there? It seems like someone put that in there.)', LocationEnum::Home);
             else
-                $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Is that... normal?)', LocationEnum::HOME);
+                $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' found this in their fireplace. (Is that... normal?)', LocationEnum::Home);
 
             $itemsReceived[] = $itemName;
         }
@@ -124,7 +124,7 @@ class ClaimRewardsController
         {
             $fireplace->spendGnomePoints(24);
 
-            $inventoryService->receiveItem('Gnome\'s Favor', $user, $user, $user->getName() . ' was given this by a Fireplace Gnome!', LocationEnum::HOME);
+            $inventoryService->receiveItem('Gnome\'s Favor', $user, $user, $user->getName() . ' was given this by a Fireplace Gnome!', LocationEnum::Home);
 
             $gnomishMessage = $rng->rngNextFromArray([
                 'A gnome stumbles out of the fireplace and thanks you for your gifts before falling into a gap in the hearth\'s brickwork.',

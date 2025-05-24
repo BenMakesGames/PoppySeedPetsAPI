@@ -103,52 +103,52 @@ final class PetShelterPet
     }
 
 
-    public const array PET_HALLOWEEN_NAMES = [
+    public const array PetHalloweenNames = [
         'Pumpkin', 'Luna', 'Magic', 'Bones', 'Haunt', 'Spirit', 'Cauldron', 'Werewolf', 'Vampire',
     ];
 
-    public const array PET_CHRISTMAS_NAMES = [
+    public const array PetChristmasNames = [
         'Holly', 'Cocoa', 'Evergreen', 'Santa', 'Dasher', 'Dancer', 'Prancer', 'Vixen', 'Comet', 'Cupid', 'Donner',
         'Blitzen', 'Rudolph', 'Olive', 'Spirit', 'Mint', 'Sol Invictus',
     ];
 
-    public const array PET_BLACK_FRIDAY_NAMES = [
+    public const array PetBlackFridayNames = [
         'Madness', 'Despair', 'Desperation', 'Depravity', 'Turpitude', 'Darkness', 'Terror', 'Recoil',
         'Deals', '50% Off', 'Bedlam', 'Chaos', 'Breakdown', 'Spoils',
     ];
 
-    public const array PET_CYBER_MONDAY_NAMES = [
+    public const array PetCyberMondayNames = [
         'DLC', '50% Off', 'Meta Tag', 'Redirect', '302', 'robots.txt', 'Heatmap', 'Tracking Cookie', 'SEO', 'CPC',
         'CTR', 'Demographic', 'Lead Magnet', 'Remarketing', 'CTA', 'Bounce Rate', 'Open Rate', 'CPA',
         'Conversion Rate',
     ];
 
-    public const array PET_THANKSGIVING_NAMES = [
+    public const array PetThanksgivingNames = [
         'Gobbles', 'Pumpkin', 'Cranberry', 'Turkey', 'Stuffing', 'Mashed Potatoes', 'Gravy', 'Marshmallow',
         'Light Meat', 'Dark Meat', 'Crispy Onion', 'Sweet Potato', 'Brown Sugar', 'Pecan Pie',
     ];
 
-    public const array PET_HANUKKAH_NAMES = [
+    public const array PetHanukkahNames = [
         'Dreidel', 'Olive Oil', 'Potato', 'Pancake', 'Gelt', 'Maccabee', 'Pączki', 'Buñuelo', 'Sufganiyah',
     ];
 
-    public const array PET_EASTER_NAMES = [
+    public const array PetEasterNames = [
         'Osterbaum', 'Bunny', 'Rabbit', 'Daffodil', 'Lamb', 'Pastel',
     ];
 
-    public const array PET_WINTER_SOLSTICE_NAMES = [
+    public const array PetWinterSolsticeNames = [
         'Solstice', 'Midwinter', 'Makara', 'Yaldā', 'Yule', 'Dongzhi',
     ];
 
-    public const array PET_VALENTINES_NAMES = [
+    public const array PetValentinesNames = [
         'Isabeau', 'Margery', 'Lace', 'Coupon', 'Cariño',
     ];
 
-    public const array PET_WHITE_DAY_NAMES = [
+    public const array PetWhiteDayNames = [
         'Marshmallow', 'Trắng', 'Cake', 'Cookie', 'Doki-doki', 'Lace',
     ];
 
-    public const array PET_CHINESE_ZODIAC_NAMES = [
+    public const array PetChineseZodiacNames = [
         '鼠' => [ 'Rat', 'Shǔ' ],
         '牛' => [ 'Ox', 'Niú' ],
         '虎' => [ 'Tiger', 'Hǔ' ],

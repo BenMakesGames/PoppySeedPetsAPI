@@ -40,13 +40,13 @@ class GetInventoryController
         $grocerItemsDay = UserQuestRepository::findOrCreate($em, $user, 'Grocer Items Purchased Date', $now->format('Y-m-d'));
 
         if($now->format('Y-m-d') === $grocerItemsDay->getValue())
-            $maxCanPurchase = GrocerService::MAX_CAN_PURCHASE_PER_DAY - $grocerItemsQuantity->getValue();
+            $maxCanPurchase = GrocerService::MaxCanPurchasePerDay - $grocerItemsQuantity->getValue();
         else
-            $maxCanPurchase = GrocerService::MAX_CAN_PURCHASE_PER_DAY;
+            $maxCanPurchase = GrocerService::MaxCanPurchasePerDay;
 
         return $responseService->success([
             'inventory' => $grocerService->getInventory(),
-            'maxPerDay' => GrocerService::MAX_CAN_PURCHASE_PER_DAY,
+            'maxPerDay' => GrocerService::MaxCanPurchasePerDay,
             'maxRemainingToday' => $maxCanPurchase,
         ]);
     }

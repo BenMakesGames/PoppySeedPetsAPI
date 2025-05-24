@@ -52,28 +52,28 @@ class CleanBirdBathController
             ->andWhere('i.owner=:owner')
             ->andWhere('i.location=:location')
             ->setParameter('owner', $user->getId())
-            ->setParameter('location', LocationEnum::BIRD_BATH)
+            ->setParameter('location', LocationEnum::BirdBath)
             ->getQuery()
             ->getResult();
 
         if(count($itemsInBirdBath) === 0)
             throw new PSPInvalidOperationException('There\'s nothing to clean!');
 
-        $itemsAtHome = $inventoryService->countItemsInLocation($user, LocationEnum::HOME);
+        $itemsAtHome = $inventoryService->countItemsInLocation($user, LocationEnum::Home);
 
-        if($itemsAtHome >= User::MAX_HOUSE_INVENTORY)
+        if($itemsAtHome >= User::MaxHouseInventory)
             throw new PSPInvalidOperationException('You don\'t have enough room in your house for all these items!');
 
         // +1 item, because the items come in pairs (oil or bubblegum + a shed item), and we don't want to leave a lone shed item
-        if($itemsAtHome + count($itemsInBirdBath) > User::MAX_HOUSE_INVENTORY + 1)
-            $itemsToTake = array_slice($itemsInBirdBath, 0, User::MAX_HOUSE_INVENTORY - $itemsAtHome);
+        if($itemsAtHome + count($itemsInBirdBath) > User::MaxHouseInventory + 1)
+            $itemsToTake = array_slice($itemsInBirdBath, 0, User::MaxHouseInventory - $itemsAtHome);
         else
             $itemsToTake = $itemsInBirdBath;
 
         $itemsRemaining = count($itemsInBirdBath) - count($itemsToTake);
 
         foreach($itemsToTake as $item)
-            $item->setLocation(LocationEnum::HOME);
+            $item->setLocation(LocationEnum::Home);
 
         $itemNames = array_map(fn(Inventory $i) => $i->getItem()->getName(), $itemsToTake);
 

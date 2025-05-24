@@ -30,7 +30,7 @@ use App\Service\UserAccessor;
 #[Route("/item/boosterPack")]
 class BoosterPackController
 {
-    private const array SET_ITEM_GROUP_NAMES = [
+    private const array SetItemGroupNames = [
         'one' => 'Hollow Earth Booster Pack',
         'two' => 'Community Booster Pack',
     ];
@@ -52,7 +52,7 @@ class BoosterPackController
 
         $location = $inventory->getLocation();
 
-        $itemGroupNameBase = self::SET_ITEM_GROUP_NAMES[$set];
+        $itemGroupNameBase = self::SetItemGroupNames[$set];
 
         $commons = $em->getRepository(ItemGroup::class)->findOneBy([ 'name' => $itemGroupNameBase . ': Common' ]);
         $uncommons = $em->getRepository(ItemGroup::class)->findOneBy([ 'name' => $itemGroupNameBase . ': Uncommon' ]);

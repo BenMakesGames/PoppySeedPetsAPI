@@ -29,7 +29,7 @@ use App\Service\UserAccessor;
 #[Route("/item/heartstone")]
 class HeartstoneController
 {
-    private const string STAT_NAME = 'Transformed a Heartstone';
+    private const string StatName = 'Transformed a Heartstone';
 
     #[Route("/{inventory}/transform", methods: ["POST"])]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
@@ -44,7 +44,7 @@ class HeartstoneController
         ItemControllerHelpers::validateInventory($user, $inventory, 'heartstone/#/transform');
         ItemControllerHelpers::validateLocationSpace($inventory, $em);
 
-        $numberTransformed = $userStatsRepository->getStatValue($user, self::STAT_NAME);
+        $numberTransformed = $userStatsRepository->getStatValue($user, self::StatName);
         $petsWhoHaveCompletedHeartDimensionAdventures = $userStatsRepository->getStatValue($user, 'Pet Completed the Heartstone Dimension');
 
         $numberThatCanBeTransformed = $petsWhoHaveCompletedHeartDimensionAdventures - $numberTransformed;
@@ -63,7 +63,7 @@ class HeartstoneController
         for($i = 0; $i < 2; $i++)
             $inventoryService->receiveItem('Heartessence', $user, $user, $user->getName() . ' got this by transforming a Heartstone.', $location, $locked);
 
-        $userStatsRepository->incrementStat($user, self::STAT_NAME);
+        $userStatsRepository->incrementStat($user, self::StatName);
 
         $em->remove($inventory);
 

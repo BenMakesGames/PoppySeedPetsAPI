@@ -235,8 +235,8 @@ class GatheringService
                     '%pet.name% found %relationship.name% in an Abandoned Quarry.',
                     $newPet,
                     '%relationship.name% found %pet.name% in an Abandoned Quarry.',
-                    RelationshipEnum::FRIEND,
-                    [ RelationshipEnum::FRIENDLY_RIVAL, RelationshipEnum::FRIEND, RelationshipEnum::FRIEND, RelationshipEnum::BFF, RelationshipEnum::BFF, RelationshipEnum::FWB, RelationshipEnum::MATE ]
+                    RelationshipEnum::Friend,
+                    [ RelationshipEnum::FriendlyRival, RelationshipEnum::Friend, RelationshipEnum::Friend, RelationshipEnum::BFF, RelationshipEnum::BFF, RelationshipEnum::FWB, RelationshipEnum::Mate ]
                 );
             }
             else

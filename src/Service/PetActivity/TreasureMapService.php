@@ -277,7 +277,7 @@ class TreasureMapService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Fae-kind', 'Adventure!' ]))
         ;
 
-        $newInventory = $this->inventoryService->receiveItem($loot, $pet->getOwner(), $pet->getOwner(), 'Given to ' . $pet->getName() . ' by a Leprechaun.', LocationEnum::WARDROBE, $pet->getTool()->getLockedToOwner());
+        $newInventory = $this->inventoryService->receiveItem($loot, $pet->getOwner(), $pet->getOwner(), 'Given to ' . $pet->getName() . ' by a Leprechaun.', LocationEnum::Wardrobe, $pet->getTool()->getLockedToOwner());
 
         EquipmentFunctions::destroyPetTool($this->em, $pet);
 
@@ -408,7 +408,7 @@ class TreasureMapService
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Adventure!' ]))
         ;
 
-        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::BUGS_PUT_OUTSIDE);
+        $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::BugsPutOutside);
 
         foreach($loot as $itemName)
             $this->inventoryService->petCollectsItem($itemName, $pet, $pet->getName() . ' got this from ' . $location . ', which they found by following a Fruit Fly on a String.', $activityLog);
@@ -431,7 +431,7 @@ class TreasureMapService
             $this->houseSimService->getState()->loseItem('Fluff', 1);
 
             // had fluff!
-            $fluffTradedStat = $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::TRADED_WITH_THE_FLUFFMONGER);
+            $fluffTradedStat = $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::TradedWithTheFluffmonger);
 
             $fluffmongerSpecialTrades = [
                 'Behatting Scroll' => 20,

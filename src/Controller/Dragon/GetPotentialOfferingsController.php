@@ -52,7 +52,7 @@ class GetPotentialOfferingsController
             ->andWhere('i.location=:home')
             ->andWhere('item.treasure IS NOT NULL')
             ->setParameter('user', $user->getId())
-            ->setParameter('home', LocationEnum::HOME)
+            ->setParameter('home', LocationEnum::Home)
             ->getQuery()
             ->execute()
         ;

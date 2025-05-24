@@ -16,7 +16,7 @@ namespace App\Functions;
 
 class ProfanityFilterFunctions
 {
-    private const array TRANSFORMS = [
+    private const array Transforms = [
         's+e+x+($|[^a-z])' => 'love$1',
         's+e+x+y+' => 'lovely',
         'c+u+n+t+' => 'muffin',
@@ -59,7 +59,7 @@ class ProfanityFilterFunctions
     {
         $out = $in;
 
-        foreach(self::TRANSFORMS as $from=>$to)
+        foreach(self::Transforms as $from=>$to)
         {
             $from = str_replace(
                 [ 'a+', 'b+', 'c+', 'd+', 'e+', 'f+', 'i+', 'l+', 'n+', 'o+', 'r+', 's+', 's*', 't+', 'u+', 'x+', 'y+', 'z+' ],

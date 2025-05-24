@@ -16,8 +16,8 @@ namespace App\Enum;
 
 enum PetGroupTypeEnum: int
 {
-    case BAND = 1;
-    case ASTRONOMY = 2;
-    case GAMING = 3;
-    case SPORTSBALL = 4;
+    case Band = 1;
+    case Astronomy = 2;
+    case Gaming = 3;
+    case Sportsball = 4;
 }

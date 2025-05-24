@@ -291,10 +291,10 @@ class PregnancyService
             ->increaseFood(-$this->rng->rngNextInt(8, 16))
         ;
 
-        $this->userStatsRepository->incrementStat($user, UserStatEnum::PETS_BIRTHED);
+        $this->userStatsRepository->incrementStat($user, UserStatEnum::PetsBirthed);
     }
 
-    private const array CANONICALIZED_FORBIDDEN_COMBINED_NAMES = [
+    private const array CanonicalizedForbiddenCombinedNames = [
         'beaner',
         'chink',
         'con', // coon
@@ -370,7 +370,7 @@ class PregnancyService
         $canonicalized = str_replace([ '0', '1', '2', '3', '4', '5', '7' ], [ 'o', 'i', 'z', 'e', 'a', 's', 't' ], $canonicalized); // l33t
         $canonicalized = preg_replace('/([\s.\'-,])\1+/', '$1', $canonicalized); // remove duplicate characters (ex: "faaaaaaaaaaaag" is as bad as "fag")
 
-        return in_array($canonicalized, self::CANONICALIZED_FORBIDDEN_COMBINED_NAMES);
+        return in_array($canonicalized, self::CanonicalizedForbiddenCombinedNames);
     }
 
     /**

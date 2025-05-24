@@ -46,7 +46,7 @@ class PlasticBottleController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $bottlesOpened = $userStatsRepository->incrementStat($user, UserStatEnum::PLASTIC_BOTTLES_OPENED);
+        $bottlesOpened = $userStatsRepository->incrementStat($user, UserStatEnum::PlasticBottlesOpened);
 
         if($bottlesOpened->getValue() > 3 && $rng->rngNextInt(1, 50) === 1)
         {

@@ -131,7 +131,7 @@ class StoryService
             $requiredInventory = InventoryService::deserializeItemList($this->em, $choice['requiredInventory']);
 
             foreach($requiredInventory as $quantity)
-                $this->inventoryService->loseItem($this->user, $quantity->item->getId(), [ LocationEnum::HOME, LocationEnum::BASEMENT ], $quantity->quantity);
+                $this->inventoryService->loseItem($this->user, $quantity->item->getId(), [ LocationEnum::Home, LocationEnum::Basement ], $quantity->quantity);
         }
     }
 
@@ -210,7 +210,7 @@ class StoryService
     private function getUserInventory(): array
     {
         if(!$this->userInventory)
-            $this->userInventory = $this->inventoryService->getInventoryQuantities($this->user, LocationEnum::HOME, 'name');
+            $this->userInventory = $this->inventoryService->getInventoryQuantities($this->user, LocationEnum::Home, 'name');
 
         return $this->userInventory;
     }
@@ -244,7 +244,7 @@ class StoryService
                 $lockedToOwner = array_key_exists('locked', $action) && $action['locked'];
                 $description = str_replace([ '%user.name%' ], [ $this->user->getName() ], $action['description']);
 
-                $this->inventoryService->receiveItem($action['item'], $this->user, null, $description, LocationEnum::HOME, $lockedToOwner);
+                $this->inventoryService->receiveItem($action['item'], $this->user, null, $description, LocationEnum::Home, $lockedToOwner);
 
                 break;
 
@@ -254,7 +254,7 @@ class StoryService
 
             case StoryActionTypeEnum::LOSE_ITEM:
                 $itemId = ItemRepository::getIdByName($this->em, $action['item']);
-                $this->inventoryService->loseItem($this->user, $itemId, [ LocationEnum::HOME, LocationEnum::BASEMENT ]);
+                $this->inventoryService->loseItem($this->user, $itemId, [ LocationEnum::Home, LocationEnum::Basement ]);
                 break;
 
             case StoryActionTypeEnum::LOSE_CALLING_INVENTORY:

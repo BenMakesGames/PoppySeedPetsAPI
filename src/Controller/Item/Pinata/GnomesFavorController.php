@@ -31,9 +31,9 @@ use App\Service\UserAccessor;
 #[Route("/item/gnomesFavor")]
 class GnomesFavorController
 {
-    private const string USER_STAT_NAME = 'Redeemed a Gnome\'s Favor';
+    private const string UserStatName = 'Redeemed a Gnome\'s Favor';
 
-    private const array GNOMISH_MAGIC = [
+    private const array GnomishMagic = [
         ' (Whoa! Magic!)',
         ' (Gnomish magic!)',
         ' #justgnomethings',
@@ -59,13 +59,13 @@ class GnomesFavorController
         for($i = 0; $i < 2; $i++)
             $inventoryService->receiveItem('Quintessence', $user, $user, $user->getName() . ' got this from a Gnome\'s Favor.', $location);
 
-        $userStatsRepository->incrementStat($user, self::USER_STAT_NAME);
+        $userStatsRepository->incrementStat($user, self::UserStatName);
 
         $em->remove($inventory);
 
         $em->flush();
 
-        $extraSilliness = $rng->rngNextFromArray(self::GNOMISH_MAGIC);
+        $extraSilliness = $rng->rngNextFromArray(self::GnomishMagic);
 
         return $responseService->itemActionSuccess('Two Quintessence materialize in front of you with a flash! ' . $extraSilliness, [ 'itemDeleted' => true ]);
     }
@@ -114,7 +114,7 @@ class GnomesFavorController
             ;
         }
 
-        $userStatsRepository->incrementStat($user, self::USER_STAT_NAME);
+        $userStatsRepository->incrementStat($user, self::UserStatName);
 
         $em->remove($inventory);
 
@@ -123,7 +123,7 @@ class GnomesFavorController
         $itemList = array_map(fn(Inventory $i) => $i->getFullItemName(), $newInventory);
         sort($itemList);
 
-        $extraSilliness = $rng->rngNextFromArray(self::GNOMISH_MAGIC);
+        $extraSilliness = $rng->rngNextFromArray(self::GnomishMagic);
 
         return $responseService->itemActionSuccess(ArrayFunctions::list_nice($itemList) . ' materialize in front of you with a flash! ' . $extraSilliness, [ 'itemDeleted' => true ]);
     }
@@ -160,7 +160,7 @@ class GnomesFavorController
         for($i = 0; $i < 3; $i++)
             $newInventory[] = $inventoryService->receiveItem($possibleItems[$i], $user, $user, $user->getName() . ' got this from a Gnome\'s Favor.', $location);
 
-        $userStatsRepository->incrementStat($user, self::USER_STAT_NAME);
+        $userStatsRepository->incrementStat($user, self::UserStatName);
 
         $em->remove($inventory);
 
@@ -169,7 +169,7 @@ class GnomesFavorController
         $itemList = array_map(fn(Inventory $i) => $i->getFullItemName(), $newInventory);
         sort($itemList);
 
-        $extraSilliness = $rng->rngNextFromArray(self::GNOMISH_MAGIC);
+        $extraSilliness = $rng->rngNextFromArray(self::GnomishMagic);
 
         return $responseService->itemActionSuccess(ArrayFunctions::list_nice($itemList) . ' materialize in front of you with a flash! ' . $extraSilliness, [ 'itemDeleted' => true ]);
     }

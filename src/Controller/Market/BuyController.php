@@ -60,16 +60,16 @@ class BuyController
         if(InventoryForSale::calculateBuyPrice($price) > $user->getMoneys())
             throw new PSPNotEnoughCurrencyException(InventoryForSale::calculateBuyPrice($price) . '~~m~~', $user->getMoneys() . '~~m~~');
 
-        $itemsAtHome = $inventoryService->countItemsInLocation($user, LocationEnum::HOME);
+        $itemsAtHome = $inventoryService->countItemsInLocation($user, LocationEnum::Home);
 
-        $placeItemsIn = LocationEnum::HOME;
+        $placeItemsIn = LocationEnum::Home;
 
-        if($itemsAtHome >= User::MAX_HOUSE_INVENTORY)
+        if($itemsAtHome >= User::MaxHouseInventory)
         {
             if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
                 throw new PSPInvalidOperationException('Your house has ' . $itemsAtHome . ' items; you\'ll need to make some space, first!');
 
-            $itemsInBasement = $inventoryService->countItemsInLocation($user, LocationEnum::BASEMENT);
+            $itemsInBasement = $inventoryService->countItemsInLocation($user, LocationEnum::Basement);
 
             $dang = $rng->rngNextFromArray([
                 'Dang!',
@@ -78,10 +78,10 @@ class BuyController
                 'Whaaaat?!',
             ]);
 
-            if($itemsInBasement >= User::MAX_BASEMENT_INVENTORY)
+            if($itemsInBasement >= User::MaxBasementInventory)
                 throw new PSPInvalidOperationException('Your house has ' . $itemsAtHome . ', and your basement has ' . $itemsInBasement . ' items! (' . $dang . ') You\'ll need to make some space, first...');
 
-            $placeItemsIn = LocationEnum::BASEMENT;
+            $placeItemsIn = LocationEnum::Basement;
         }
 
         $qb = $em->getRepository(InventoryForSale::class)->createQueryBuilder('i')
@@ -127,7 +127,7 @@ class BuyController
         {
             if($inventory->getOwner() === $user)
             {
-                if($inventory->getLocation() === LocationEnum::BASEMENT)
+                if($inventory->getLocation() === LocationEnum::Basement)
                     $responseService->addFlashMessage('The ' . $inventory->getItem()->getName() . ' is one of yours! It has been removed from the Market, and can be found in your Basement!');
                 else
                     $responseService->addFlashMessage('The ' . $inventory->getItem()->getName() . ' is one of yours! It has been removed from the Market, and can be found in your Home!');
@@ -142,7 +142,7 @@ class BuyController
 
                 $marketService->transferItemToPlayer($inventory, $user, $placeItemsIn, $itemToBuy->getSellPrice(), $user->getName() . ' bought this from ' . $inventory->getOwner()->getName() . ' at the Market.');
 
-                if($placeItemsIn === LocationEnum::BASEMENT)
+                if($placeItemsIn === LocationEnum::Basement)
                     $responseService->addFlashMessage('The ' . $inventory->getItem()->getName() . ' is yours; you\'ll find it in your Basement! (Your Home is a bit full...)');
                 else
                     $responseService->addFlashMessage('The ' . $inventory->getItem()->getName() . ' is yours!');

@@ -51,10 +51,10 @@ class BeehiveBlueprintController
             throw new PSPInvalidOperationException('You\'ve already got a Beehive!');
 
         $magnifyingGlass = InventoryHelpers::findAnyOneFromItemGroup($em, $user, 'Magnifying Glass', [
-            LocationEnum::HOME,
-            LocationEnum::BASEMENT,
-            LocationEnum::MANTLE,
-            LocationEnum::WARDROBE,
+            LocationEnum::Home,
+            LocationEnum::Basement,
+            LocationEnum::Mantle,
+            LocationEnum::Wardrobe,
         ]);
 
         if(!$magnifyingGlass)

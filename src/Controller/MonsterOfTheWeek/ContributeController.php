@@ -59,7 +59,7 @@ class ContributeController
         $items = $em->getRepository(Inventory::class)->findBy([
             'id' => $itemIds,
             'owner' => $user,
-            'location' => LocationEnum::HOME
+            'location' => LocationEnum::Home
         ]);
 
         if(count($items) < count($itemIds))

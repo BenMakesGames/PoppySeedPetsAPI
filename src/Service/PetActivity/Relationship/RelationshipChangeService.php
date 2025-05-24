@@ -44,11 +44,11 @@ class RelationshipChangeService
     {
         switch($p1->getCurrentRelationship())
         {
-            case RelationshipEnum::FRIENDLY_RIVAL:
+            case RelationshipEnum::FriendlyRival:
                 $logs = $this->hangOutPrivatelySuggestingRelationshipChangeAsFriendlyRival($p1, $p2);
                 break;
 
-            case RelationshipEnum::FRIEND:
+            case RelationshipEnum::Friend:
                 $logs = $this->hangOutPrivatelySuggestingRelationshipChangeAsFriends($p1, $p2);
                 break;
 
@@ -60,7 +60,7 @@ class RelationshipChangeService
                 $logs = $this->hangOutPrivatelySuggestingRelationshipChangeAsFWBs($p1, $p2);
                 break;
 
-            case RelationshipEnum::MATE:
+            case RelationshipEnum::Mate:
                 $logs = $this->hangOutPrivatelySuggestingRelationshipChangeAsMates($p1, $p2);
                 break;
 
@@ -108,18 +108,18 @@ class RelationshipChangeService
      */
     private function hangOutPrivatelySuggestingRelationshipChangeAsFriendlyRival(PetRelationship $p1, PetRelationship $p2): array
     {
-        if($p1->getRelationshipGoal() === RelationshipEnum::DISLIKE)
+        if($p1->getRelationshipGoal() === RelationshipEnum::Dislike)
         {
-            $p1->setCurrentRelationship(RelationshipEnum::DISLIKE);
-            $p2->setCurrentRelationship(RelationshipEnum::DISLIKE);
+            $p1->setCurrentRelationship(RelationshipEnum::Dislike);
+            $p2->setCurrentRelationship(RelationshipEnum::Dislike);
 
-            if($p2->getRelationshipGoal() === RelationshipEnum::DISLIKE)
+            if($p2->getRelationshipGoal() === RelationshipEnum::Dislike)
             {
                 $log2Message = $p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s shennanigans! The feeling is mutual! They are no longer friendly rivals!';
             }
             else
             {
-                $p2->setRelationshipGoal(RelationshipEnum::DISLIKE);
+                $p2->setRelationshipGoal(RelationshipEnum::Dislike);
 
                 $log2Message = $p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s shennanigans! They don\'t want to be friendly rivals any more! (How rude!)';
             }
@@ -130,16 +130,16 @@ class RelationshipChangeService
             );
         }
 
-        if($p2->getRelationshipGoal() === RelationshipEnum::DISLIKE)
+        if($p2->getRelationshipGoal() === RelationshipEnum::Dislike)
         {
             $p1
-                ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
+                ->setCurrentRelationship(RelationshipEnum::BrokeUp)
                 ->setRelationshipGoal($this->rng->rngNextFromArray([
-                    RelationshipEnum::FRIENDLY_RIVAL, RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE, RelationshipEnum::DISLIKE
+                    RelationshipEnum::FriendlyRival, RelationshipEnum::Dislike, RelationshipEnum::Dislike, RelationshipEnum::Dislike
                 ]))
             ;
 
-            $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
+            $p2->setCurrentRelationship(RelationshipEnum::BrokeUp);
 
             return self::createLogs(
                 $this->em,
@@ -148,19 +148,19 @@ class RelationshipChangeService
             );
         }
 
-        $p1->setCurrentRelationship(RelationshipEnum::FRIEND);
-        $p2->setCurrentRelationship(RelationshipEnum::FRIEND);
+        $p1->setCurrentRelationship(RelationshipEnum::Friend);
+        $p2->setCurrentRelationship(RelationshipEnum::Friend);
 
         if($this->rng->rngNextInt(1, 3) === 1)
             $mostly = ' (Well, mostly!)';
         else
             $mostly = '';
 
-        $log1Message = $p1->getRelationshipGoal() === RelationshipEnum::FRIENDLY_RIVAL
+        $log1Message = $p1->getRelationshipGoal() === RelationshipEnum::FriendlyRival
             ? $p1->getPet()->getName() . ' wanted to be friends with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' accepted...'
             : $p1->getPet()->getName() . ' wanted to be friends with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' happily accepted! No more of this silly rivalry stuff!' . $mostly;
 
-        $log2Message = $p2->getRelationshipGoal() === RelationshipEnum::FRIENDLY_RIVAL
+        $log2Message = $p2->getRelationshipGoal() === RelationshipEnum::FriendlyRival
             ? $p1->getPet()->getName() . ' wanted to be friends with ' . $p2->getPet()->getName() . '; they accepted...'
             : $p1->getPet()->getName() . ' wanted to be friends with ' . $p2->getPet()->getName() . '; they happily accepted! No more of this silly rivalry stuff!' . $mostly;
 
@@ -179,10 +179,10 @@ class RelationshipChangeService
     {
         switch($p1->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
+            case RelationshipEnum::Dislike:
                 return $this->hangOutPrivatelyFromFriendsToDisliked($p1, $p2);
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
+            case RelationshipEnum::FriendlyRival:
                 return $this->hangOutPrivatelyFromFriendsToFriendlyRivals($p1, $p2);
 
             case RelationshipEnum::BFF:
@@ -194,7 +194,7 @@ class RelationshipChangeService
                 else
                     return $this->hangOutPrivatelyFromFriendsToFWBs($p1, $p2);
 
-            case RelationshipEnum::MATE:
+            case RelationshipEnum::Mate:
                 if($this->rng->rngNextInt(1, 4) === 1)
                     return $this->hangOutPrivatelyFromFriendsToMates($p1, $p2);
                 else
@@ -213,10 +213,10 @@ class RelationshipChangeService
     {
         switch($p2->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
-                $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
-                $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
-                $p1->setRelationshipGoal(RelationshipEnum::DISLIKE);
+            case RelationshipEnum::Dislike:
+                $p1->setCurrentRelationship(RelationshipEnum::BrokeUp);
+                $p2->setCurrentRelationship(RelationshipEnum::BrokeUp);
+                $p1->setRelationshipGoal(RelationshipEnum::Dislike);
 
                 return self::createLogs(
                     $this->em,
@@ -224,10 +224,10 @@ class RelationshipChangeService
                     $p2->getPet(), $p1->getPet()->getName() . ' said that they consider ' . $p2->getPet()->getName() . ' a best friend; ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :|'
                 );
 
-            case RelationshipEnum::FRIEND:
+            case RelationshipEnum::Friend:
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 45, 45);
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
+            case RelationshipEnum::FriendlyRival:
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 40, 40);
 
             case RelationshipEnum::BFF:
@@ -242,7 +242,7 @@ class RelationshipChangeService
                     'icons/activity-logs/friend'
                 );
 
-            case RelationshipEnum::MATE:
+            case RelationshipEnum::Mate:
                 return $this->hangOutPrivatelyFromBFFsToMates($p2, $p1);
 
             default:
@@ -258,10 +258,10 @@ class RelationshipChangeService
     {
         switch($p2->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
-                $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
-                $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
-                $p1->setRelationshipGoal(RelationshipEnum::DISLIKE);
+            case RelationshipEnum::Dislike:
+                $p1->setCurrentRelationship(RelationshipEnum::BrokeUp);
+                $p2->setCurrentRelationship(RelationshipEnum::BrokeUp);
+                $p1->setRelationshipGoal(RelationshipEnum::Dislike);
 
                 return self::createLogs(
                     $this->em,
@@ -270,10 +270,10 @@ class RelationshipChangeService
                     'icons/activity-logs/breakup'
                 );
 
-            case RelationshipEnum::FRIEND:
+            case RelationshipEnum::Friend:
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 60, 25);
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
+            case RelationshipEnum::FriendlyRival:
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 10, 10);
 
             case RelationshipEnum::BFF:
@@ -290,7 +290,7 @@ class RelationshipChangeService
                     'icons/activity-logs/friend-cute'
                 );
 
-            case RelationshipEnum::MATE:
+            case RelationshipEnum::Mate:
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 65, 25);
 
             default:
@@ -305,11 +305,11 @@ class RelationshipChangeService
     private function hangOutPrivatelySuggestingMatesWithCompleteRejection(PetRelationship $p1, PetRelationship $p2): array
     {
         $p1
-            ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-            ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+            ->setCurrentRelationship(RelationshipEnum::BrokeUp)
+            ->setRelationshipGoal(RelationshipEnum::Dislike)
         ;
 
-        $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
+        $p2->setCurrentRelationship(RelationshipEnum::BrokeUp);
 
         return self::createLogs(
             $this->em,
@@ -327,16 +327,16 @@ class RelationshipChangeService
     {
         switch($p2->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
+            case RelationshipEnum::Dislike:
                 return $this->hangOutPrivatelySuggestingMatesWithCompleteRejection($p1, $p2);
 
-            case RelationshipEnum::FRIEND:
+            case RelationshipEnum::Friend:
                 if($this->rng->rngNextInt(1, 4) === 1)
                     return $this->hangOutPrivatelyFromFriendsToBFFs($p1, $p2);
                 else
                     return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 25, 45);
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
+            case RelationshipEnum::FriendlyRival:
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 10, 10);
 
             case RelationshipEnum::BFF:
@@ -345,9 +345,9 @@ class RelationshipChangeService
             case RelationshipEnum::FWB:
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 25, 45);
 
-            case RelationshipEnum::MATE:
-                $p1->setCurrentRelationship(RelationshipEnum::MATE);
-                $p2->setCurrentRelationship(RelationshipEnum::MATE);
+            case RelationshipEnum::Mate:
+                $p1->setCurrentRelationship(RelationshipEnum::Mate);
+                $p2->setCurrentRelationship(RelationshipEnum::Mate);
 
                 return self::createLogs(
                     $this->em,
@@ -369,13 +369,13 @@ class RelationshipChangeService
     {
         switch($p2->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
+            case RelationshipEnum::Dislike:
                 return $this->hangOutPrivatelySuggestingMatesWithCompleteRejection($p1, $p2);
 
-            case RelationshipEnum::FRIEND:
+            case RelationshipEnum::Friend:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p2, $p1, 5, 30);
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
+            case RelationshipEnum::FriendlyRival:
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 10, 10);
 
             case RelationshipEnum::BFF:
@@ -384,9 +384,9 @@ class RelationshipChangeService
             case RelationshipEnum::FWB:
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 25, 45);
 
-            case RelationshipEnum::MATE:
-                $p1->setCurrentRelationship(RelationshipEnum::MATE);
-                $p2->setCurrentRelationship(RelationshipEnum::MATE);
+            case RelationshipEnum::Mate:
+                $p1->setCurrentRelationship(RelationshipEnum::Mate);
+                $p2->setCurrentRelationship(RelationshipEnum::Mate);
 
                 return self::createLogs(
                     $this->em,
@@ -410,12 +410,12 @@ class RelationshipChangeService
     ): array
     {
         $downgradeDescription = [
-            RelationshipEnum::DISLIKE => 'break up entirely',
-            RelationshipEnum::FRIEND => 'just be friends',
+            RelationshipEnum::Dislike => 'break up entirely',
+            RelationshipEnum::Friend => 'just be friends',
             RelationshipEnum::BFF => 'just be BFFs',
             RelationshipEnum::FWB => 'just be friends, but maybe still, you know, _do stuff_',
-            RelationshipEnum::FRIENDLY_RIVAL => 'just be friendly rivals',
-            RelationshipEnum::MATE => 'date',
+            RelationshipEnum::FriendlyRival => 'just be friendly rivals',
+            RelationshipEnum::Mate => 'date',
         ];
 
         $p1IsFriendOfTheWorld = $p1->getPet()->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD);
@@ -458,8 +458,8 @@ class RelationshipChangeService
             $message = $p1->getPet()->getName() . ' wanted to ' . $downgradeDescription[$p1->getRelationshipGoal()] . '; ' . $p2->getPet()->getName() . ' was really upset! After arguing for a while, the two broke up entirely! :(';
             $tags[] = 'Break-up';
 
-            $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
-            $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
+            $p1->setCurrentRelationship(RelationshipEnum::BrokeUp);
+            $p2->setCurrentRelationship(RelationshipEnum::BrokeUp);
         }
 
         [ $p1Log, $p2Log ] = self::createLogs(
@@ -523,30 +523,30 @@ class RelationshipChangeService
     ): array
     {
         $upgradeDescription = [
-            RelationshipEnum::DISLIKE => 'break up',
-            RelationshipEnum::FRIENDLY_RIVAL => 'be friendly rivals',
-            RelationshipEnum::FRIEND => 'be friends',
+            RelationshipEnum::Dislike => 'break up',
+            RelationshipEnum::FriendlyRival => 'be friendly rivals',
+            RelationshipEnum::Friend => 'be friends',
             RelationshipEnum::BFF => 'be BFFs',
             RelationshipEnum::FWB => 'be FWBs',
-            RelationshipEnum::MATE => 'date',
+            RelationshipEnum::Mate => 'date',
         ];
 
         $downgradeDescription = [
-            RelationshipEnum::DISLIKE => 'break up entirely',
-            RelationshipEnum::FRIENDLY_RIVAL => 'just be friendly rivals',
-            RelationshipEnum::FRIEND => 'just be friends',
+            RelationshipEnum::Dislike => 'break up entirely',
+            RelationshipEnum::FriendlyRival => 'just be friendly rivals',
+            RelationshipEnum::Friend => 'just be friends',
             RelationshipEnum::BFF => 'just be BFFs',
             RelationshipEnum::FWB => 'just be friends, but maybe still, you know, _do stuff_',
-            RelationshipEnum::MATE => 'date',
+            RelationshipEnum::Mate => 'date',
         ];
 
         $descriptioning = [
-            RelationshipEnum::DISLIKE => 'breaking up entirely',
-            RelationshipEnum::FRIENDLY_RIVAL => 'being friendly rivals',
-            RelationshipEnum::FRIEND => 'being friends',
+            RelationshipEnum::Dislike => 'breaking up entirely',
+            RelationshipEnum::FriendlyRival => 'being friendly rivals',
+            RelationshipEnum::Friend => 'being friends',
             RelationshipEnum::BFF => 'being BFFs',
             RelationshipEnum::FWB => 'being FWBs',
-            RelationshipEnum::MATE => 'dating',
+            RelationshipEnum::Mate => 'dating',
         ];
 
         $p1IsFriendOfTheWorld = $p1->getPet()->hasMerit(MeritEnum::FRIEND_OF_THE_WORLD);
@@ -589,8 +589,8 @@ class RelationshipChangeService
             $tags[] = 'Break-up';
             $icon = 'icons/activity-logs/breakup';
 
-            $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
-            $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
+            $p1->setCurrentRelationship(RelationshipEnum::BrokeUp);
+            $p2->setCurrentRelationship(RelationshipEnum::BrokeUp);
         }
 
         [ $p1Log, $p2Log ] = self::createLogs(
@@ -614,9 +614,9 @@ class RelationshipChangeService
     {
         switch($p2->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
-                $p1->setCurrentRelationship(RelationshipEnum::DISLIKE);
-                $p2->setCurrentRelationship(RelationshipEnum::DISLIKE);
+            case RelationshipEnum::Dislike:
+                $p1->setCurrentRelationship(RelationshipEnum::Dislike);
+                $p2->setCurrentRelationship(RelationshipEnum::Dislike);
 
                 return self::createLogs(
                     $this->em,
@@ -624,16 +624,16 @@ class RelationshipChangeService
                     $p2->getPet(), $p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense! The feeling is mutual! They are no longer friends >:('
                 );
 
-            case RelationshipEnum::FRIEND:
+            case RelationshipEnum::Friend:
                 $p2->getPet()
                     ->increaseLove(-$this->rng->rngNextInt(12, 18))
                     ->increaseEsteem(-$this->rng->rngNextInt(8, 12))
                 ;
 
-                $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
+                $p1->setCurrentRelationship(RelationshipEnum::BrokeUp);
                 $p2
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
                 ;
 
                 return self::createLogs(
@@ -643,21 +643,21 @@ class RelationshipChangeService
                     'icons/activity-logs/breakup'
                 );
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
+            case RelationshipEnum::FriendlyRival:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 35, 0);
 
             case RelationshipEnum::BFF:
             case RelationshipEnum::FWB:
-            case RelationshipEnum::MATE:
+            case RelationshipEnum::Mate:
                 $p2->getPet()
                     ->increaseLove(-$this->rng->rngNextInt(16, 24))
                     ->increaseEsteem(-$this->rng->rngNextInt(12, 16))
                 ;
 
-                $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
+                $p1->setCurrentRelationship(RelationshipEnum::BrokeUp);
                 $p2
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
                 ;
 
                 return self::createLogs(
@@ -680,10 +680,10 @@ class RelationshipChangeService
     {
         switch($p2->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
-                $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
-                $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
-                $p1->setRelationshipGoal(RelationshipEnum::DISLIKE);
+            case RelationshipEnum::Dislike:
+                $p1->setCurrentRelationship(RelationshipEnum::BrokeUp);
+                $p2->setCurrentRelationship(RelationshipEnum::BrokeUp);
+                $p1->setRelationshipGoal(RelationshipEnum::Dislike);
 
                 return self::createLogs(
                     $this->em,
@@ -691,12 +691,12 @@ class RelationshipChangeService
                     $p2->getPet(), $p1->getPet()->getName() . ' suggested being friendly rivals; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out anymore, and said so! The two are no longer friends...'
                 );
 
-            case RelationshipEnum::FRIEND:
+            case RelationshipEnum::Friend:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 50, 30);
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
-                $p1->setCurrentRelationship(RelationshipEnum::FRIENDLY_RIVAL);
-                $p2->setCurrentRelationship(RelationshipEnum::FRIENDLY_RIVAL);
+            case RelationshipEnum::FriendlyRival:
+                $p1->setCurrentRelationship(RelationshipEnum::FriendlyRival);
+                $p2->setCurrentRelationship(RelationshipEnum::FriendlyRival);
 
                 return self::createLogs(
                     $this->em,
@@ -711,7 +711,7 @@ class RelationshipChangeService
             case RelationshipEnum::FWB:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 10, 10);
 
-            case RelationshipEnum::MATE:
+            case RelationshipEnum::Mate:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 20, 0);
 
             default:
@@ -727,19 +727,19 @@ class RelationshipChangeService
     {
         switch($p1->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
+            case RelationshipEnum::Dislike:
                 return $this->hangOutPrivatelyFromBFFsToDisliked($p1, $p2);
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
+            case RelationshipEnum::FriendlyRival:
                 return $this->hangOutPrivatelyFromBFFsToFriendlyRivals($p1, $p2);
 
-            case RelationshipEnum::FRIEND:
+            case RelationshipEnum::Friend:
                 return $this->hangOutPrivatelyFromBFFsToFriends($p1, $p2);
 
             case RelationshipEnum::FWB:
                 return $this->hangOutPrivatelyFromBFFsToFWBs($p1, $p2);
 
-            case RelationshipEnum::MATE:
+            case RelationshipEnum::Mate:
                 return $this->hangOutPrivatelyFromBFFsToMates($p1, $p2);
 
             default:
@@ -755,15 +755,15 @@ class RelationshipChangeService
     {
         switch($p2->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
+            case RelationshipEnum::Dislike:
                 $p1
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
                 ;
 
                 $p2
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
                 ;
 
                 return self::createLogs(
@@ -773,12 +773,12 @@ class RelationshipChangeService
                     'icons/activity-logs/breakup'
                 );
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
+            case RelationshipEnum::FriendlyRival:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 45, 40);
 
-            case RelationshipEnum::FRIEND:
-                $p1->setCurrentRelationship(RelationshipEnum::FRIEND);
-                $p2->setCurrentRelationship(RelationshipEnum::FRIEND);
+            case RelationshipEnum::Friend:
+                $p1->setCurrentRelationship(RelationshipEnum::Friend);
+                $p2->setCurrentRelationship(RelationshipEnum::Friend);
 
                 return self::createLogs(
                     $this->em,
@@ -790,7 +790,7 @@ class RelationshipChangeService
             case RelationshipEnum::FWB:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 15, 65);
 
-            case RelationshipEnum::MATE:
+            case RelationshipEnum::Mate:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 10, 50);
 
             default:
@@ -806,15 +806,15 @@ class RelationshipChangeService
     {
         switch($p2->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
+            case RelationshipEnum::Dislike:
                 $p1
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
                 ;
 
                 $p2
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
                 ;
 
                 return self::createLogs(
@@ -823,10 +823,10 @@ class RelationshipChangeService
                     $p2->getPet(), $p1->getPet()->getName() . ' wanted to stop being BFFs, and just be Friendly Rivals; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! >:('
                 );
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
+            case RelationshipEnum::FriendlyRival:
 
-                $p1->setCurrentRelationship(RelationshipEnum::FRIENDLY_RIVAL);
-                $p2->setCurrentRelationship(RelationshipEnum::FRIENDLY_RIVAL);
+                $p1->setCurrentRelationship(RelationshipEnum::FriendlyRival);
+                $p2->setCurrentRelationship(RelationshipEnum::FriendlyRival);
 
                 return self::createLogs(
                     $this->em,
@@ -835,14 +835,14 @@ class RelationshipChangeService
                     'icons/activity-logs/friend'
                 );
 
-            case RelationshipEnum::FRIEND:
+            case RelationshipEnum::Friend:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 45, 40);
 
             case RelationshipEnum::BFF:
             case RelationshipEnum::FWB:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 35, 20);
 
-            case RelationshipEnum::MATE:
+            case RelationshipEnum::Mate:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 20, 5);
 
             default:
@@ -858,10 +858,10 @@ class RelationshipChangeService
     {
         switch($p2->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
-                $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
-                $p2->setCurrentRelationship(RelationshipEnum::BROKE_UP);
-                $p1->setRelationshipGoal(RelationshipEnum::DISLIKE);
+            case RelationshipEnum::Dislike:
+                $p1->setCurrentRelationship(RelationshipEnum::BrokeUp);
+                $p2->setCurrentRelationship(RelationshipEnum::BrokeUp);
+                $p1->setRelationshipGoal(RelationshipEnum::Dislike);
 
                 return self::createLogs(
                     $this->em,
@@ -869,10 +869,10 @@ class RelationshipChangeService
                     $p2->getPet(), $p1->getPet()->getName() . ' said that they want to be FWBs with ' . $p2->getPet()->getName() . '; ' . $p2->getPet()->getName() . ' revealed that they don\'t actually like hanging out with ' . $p1->getPet()->getName() . '! They are no longer friends :|'
                 );
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
+            case RelationshipEnum::FriendlyRival:
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 25, 25);
 
-            case RelationshipEnum::FRIEND:
+            case RelationshipEnum::Friend:
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 40, 40);
 
             case RelationshipEnum::BFF:
@@ -889,7 +889,7 @@ class RelationshipChangeService
                     'icons/activity-logs/friend-cute'
                 );
 
-            case RelationshipEnum::MATE:
+            case RelationshipEnum::Mate:
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 50, 45);
 
             default:
@@ -905,9 +905,9 @@ class RelationshipChangeService
     {
         switch($p2->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
-                $p1->setCurrentRelationship(RelationshipEnum::DISLIKE);
-                $p2->setCurrentRelationship(RelationshipEnum::DISLIKE);
+            case RelationshipEnum::Dislike:
+                $p1->setCurrentRelationship(RelationshipEnum::Dislike);
+                $p2->setCurrentRelationship(RelationshipEnum::Dislike);
 
                 return self::createLogs(
                     $this->em,
@@ -915,17 +915,17 @@ class RelationshipChangeService
                     $p2->getPet(), $p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense! The feeling is mutual! They are no longer friends >:('
                 );
 
-            case RelationshipEnum::FRIEND:
-            case RelationshipEnum::FRIENDLY_RIVAL:
+            case RelationshipEnum::Friend:
+            case RelationshipEnum::FriendlyRival:
                 $p2->getPet()
                     ->increaseLove(-$this->rng->rngNextInt(4, 8))
                     ->increaseEsteem(-$this->rng->rngNextInt(1, 4))
                 ;
 
-                $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
+                $p1->setCurrentRelationship(RelationshipEnum::BrokeUp);
                 $p2
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
                 ;
 
                 return self::createLogs(
@@ -941,10 +941,10 @@ class RelationshipChangeService
                     ->increaseEsteem(-$this->rng->rngNextInt(8, 12))
                 ;
 
-                $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
+                $p1->setCurrentRelationship(RelationshipEnum::BrokeUp);
                 $p2
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
                 ;
 
                 return self::createLogs(
@@ -954,16 +954,16 @@ class RelationshipChangeService
                     'icons/activity-logs/breakup'
                 );
 
-            case RelationshipEnum::MATE:
+            case RelationshipEnum::Mate:
                 $p2->getPet()
                     ->increaseLove(-$this->rng->rngNextInt(16, 24))
                     ->increaseEsteem(-$this->rng->rngNextInt(12, 16))
                 ;
 
-                $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
+                $p1->setCurrentRelationship(RelationshipEnum::BrokeUp);
                 $p2
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
                 ;
 
                 return self::createLogs(
@@ -985,22 +985,22 @@ class RelationshipChangeService
     {
         switch($p1->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
+            case RelationshipEnum::Dislike:
                 if($this->rng->rngNextInt(1, 4) === 1)
                     return $this->hangOutPrivatelyFromFWBsToFriends($p1, $p2);
                 else
                     return $this->hangOutPrivatelyFromFWBsToDisliked($p1, $p2);
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
+            case RelationshipEnum::FriendlyRival:
                 return $this->hangOutPrivatelyFromFWBsToFriendlyRivals($p1, $p2);
 
-            case RelationshipEnum::FRIEND:
+            case RelationshipEnum::Friend:
                 return $this->hangOutPrivatelyFromFWBsToFriends($p1, $p2);
 
             case RelationshipEnum::BFF:
                 return $this->hangOutPrivatelyFromFWBsToBFFs($p1, $p2);
 
-            case RelationshipEnum::MATE:
+            case RelationshipEnum::Mate:
                 return $this->hangOutPrivatelyFromFWBsToMates($p1, $p2);
 
             default:
@@ -1016,11 +1016,11 @@ class RelationshipChangeService
     {
         switch($p2->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
+            case RelationshipEnum::Dislike:
                 return $this->hangOutPrivatelySuggestingMatesWithCompleteRejection($p1, $p2);
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
-            case RelationshipEnum::FRIEND:
+            case RelationshipEnum::FriendlyRival:
+            case RelationshipEnum::Friend:
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 10, 25);
 
             case RelationshipEnum::BFF:
@@ -1029,9 +1029,9 @@ class RelationshipChangeService
             case RelationshipEnum::FWB:
                 return $this->hangOutPrivatelySuggestingRelationshipUpgradeWithChanceForDrama($p1, $p2, 30, 60);
 
-            case RelationshipEnum::MATE:
-                $p1->setCurrentRelationship(RelationshipEnum::MATE);
-                $p2->setCurrentRelationship(RelationshipEnum::MATE);
+            case RelationshipEnum::Mate:
+                $p1->setCurrentRelationship(RelationshipEnum::Mate);
+                $p2->setCurrentRelationship(RelationshipEnum::Mate);
 
                 return self::createLogs(
                     $this->em,
@@ -1053,15 +1053,15 @@ class RelationshipChangeService
     {
         switch($p2->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
+            case RelationshipEnum::Dislike:
                 $p1
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
                 ;
 
                 $p2
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
                 ;
 
                 return self::createLogs(
@@ -1071,10 +1071,10 @@ class RelationshipChangeService
                     'icons/activity-logs/breakup'
                 );
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
+            case RelationshipEnum::FriendlyRival:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 20, 20);
 
-            case RelationshipEnum::FRIEND:
+            case RelationshipEnum::Friend:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 40, 40);
 
             case RelationshipEnum::BFF:
@@ -1091,7 +1091,7 @@ class RelationshipChangeService
             case RelationshipEnum::FWB:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 45, 45);
 
-            case RelationshipEnum::MATE:
+            case RelationshipEnum::Mate:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 35, 35);
 
             default:
@@ -1107,15 +1107,15 @@ class RelationshipChangeService
     {
         switch($p2->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
+            case RelationshipEnum::Dislike:
                 $p1
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
                 ;
 
                 $p2
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
                 ;
 
                 return self::createLogs(
@@ -1124,12 +1124,12 @@ class RelationshipChangeService
                     $p2->getPet(), $p1->getPet()->getName() . ' wanted to stop being intimate, and just be Friends; ' . $p2->getPet()->getName() . ' doesn\'t actually want to hang out at all anymore, and breaks up entirely! >:('
                 );
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
+            case RelationshipEnum::FriendlyRival:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 45, 45);
 
-            case RelationshipEnum::FRIEND:
-                $p1->setCurrentRelationship(RelationshipEnum::FRIEND);
-                $p2->setCurrentRelationship(RelationshipEnum::FRIEND);
+            case RelationshipEnum::Friend:
+                $p1->setCurrentRelationship(RelationshipEnum::Friend);
+                $p2->setCurrentRelationship(RelationshipEnum::Friend);
 
                 return self::createLogs(
                     $this->em,
@@ -1144,7 +1144,7 @@ class RelationshipChangeService
             case RelationshipEnum::FWB:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 35, 35);
 
-            case RelationshipEnum::MATE:
+            case RelationshipEnum::Mate:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 30, 15);
 
             default:
@@ -1160,15 +1160,15 @@ class RelationshipChangeService
     {
         switch($p2->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
+            case RelationshipEnum::Dislike:
                 $p1
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
                 ;
 
                 $p2
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
                 ;
 
                 return self::createLogs(
@@ -1178,9 +1178,9 @@ class RelationshipChangeService
                     'icons/activity-logs/breakup'
                 );
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
-                $p1->setCurrentRelationship(RelationshipEnum::FRIENDLY_RIVAL);
-                $p2->setCurrentRelationship(RelationshipEnum::FRIENDLY_RIVAL);
+            case RelationshipEnum::FriendlyRival:
+                $p1->setCurrentRelationship(RelationshipEnum::FriendlyRival);
+                $p2->setCurrentRelationship(RelationshipEnum::FriendlyRival);
 
                 return self::createLogs(
                     $this->em,
@@ -1189,7 +1189,7 @@ class RelationshipChangeService
                     'icons/activity-logs/friend'
                 );
 
-            case RelationshipEnum::FRIEND:
+            case RelationshipEnum::Friend:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 45, 45);
 
             case RelationshipEnum::BFF:
@@ -1198,7 +1198,7 @@ class RelationshipChangeService
             case RelationshipEnum::FWB:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 25, 20);
 
-            case RelationshipEnum::MATE:
+            case RelationshipEnum::Mate:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 20, 5);
 
             default:
@@ -1214,9 +1214,9 @@ class RelationshipChangeService
     {
         switch($p2->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
-                $p1->setCurrentRelationship(RelationshipEnum::DISLIKE);
-                $p2->setCurrentRelationship(RelationshipEnum::DISLIKE);
+            case RelationshipEnum::Dislike:
+                $p1->setCurrentRelationship(RelationshipEnum::Dislike);
+                $p2->setCurrentRelationship(RelationshipEnum::Dislike);
 
                 return self::createLogs(
                     $this->em,
@@ -1224,10 +1224,10 @@ class RelationshipChangeService
                     $p2->getPet(), $p1->getPet()->getName() . ' said they\'re tired of ' . $p2->getPet()->getName() . '\'s nonsense! The feeling is mutual! They are no longer friends >:('
                 );
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
+            case RelationshipEnum::FriendlyRival:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 20, 0);
 
-            case RelationshipEnum::FRIEND:
+            case RelationshipEnum::Friend:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 40, 0);
 
             case RelationshipEnum::BFF:
@@ -1235,19 +1235,19 @@ class RelationshipChangeService
 
             case RelationshipEnum::FWB:
                 // negotiate for a less-involved relationship
-                $p2->setRelationshipGoal($this->rng->rngNextFromArray([ RelationshipEnum::BFF, RelationshipEnum::FRIEND, RelationshipEnum::FRIEND ]));
+                $p2->setRelationshipGoal($this->rng->rngNextFromArray([ RelationshipEnum::BFF, RelationshipEnum::Friend, RelationshipEnum::Friend ]));
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 35, 0);
 
-            case RelationshipEnum::MATE:
+            case RelationshipEnum::Mate:
                 $p2->getPet()
                     ->increaseLove(-$this->rng->rngNextInt(16, 24))
                     ->increaseEsteem(-$this->rng->rngNextInt(12, 16))
                 ;
 
-                $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
+                $p1->setCurrentRelationship(RelationshipEnum::BrokeUp);
                 $p2
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
                 ;
 
                 return self::createLogs(
@@ -1270,16 +1270,16 @@ class RelationshipChangeService
     {
         switch($p1->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
+            case RelationshipEnum::Dislike:
                 if($this->rng->rngNextInt(1, 4) === 1)
                     return $this->hangOutPrivatelyFromMatesToFriends($p1, $p2);
                 else
                     return $this->hangOutPrivatelyFromMatesToDisliked($p1, $p2);
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
+            case RelationshipEnum::FriendlyRival:
                 return $this->hangOutPrivatelyFromMatesToFriendlyRivals($p1, $p2);
 
-            case RelationshipEnum::FRIEND:
+            case RelationshipEnum::Friend:
                 return $this->hangOutPrivatelyFromMatesToFriends($p1, $p2);
 
             case RelationshipEnum::BFF:
@@ -1301,15 +1301,15 @@ class RelationshipChangeService
     {
         switch($p2->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
+            case RelationshipEnum::Dislike:
                 $p1
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
                 ;
 
                 $p2
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
                 ;
 
                 return self::createLogs(
@@ -1319,9 +1319,9 @@ class RelationshipChangeService
                     'icons/activity-logs/breakup'
                 );
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
-                $p1->setCurrentRelationship(RelationshipEnum::FRIENDLY_RIVAL);
-                $p2->setCurrentRelationship(RelationshipEnum::FRIENDLY_RIVAL);
+            case RelationshipEnum::FriendlyRival:
+                $p1->setCurrentRelationship(RelationshipEnum::FriendlyRival);
+                $p2->setCurrentRelationship(RelationshipEnum::FriendlyRival);
 
                 return self::createLogs(
                     $this->em,
@@ -1330,7 +1330,7 @@ class RelationshipChangeService
                     'icons/activity-logs/friend'
                 );
 
-            case RelationshipEnum::FRIEND:
+            case RelationshipEnum::Friend:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 50, 40);
 
             case RelationshipEnum::BFF:
@@ -1339,7 +1339,7 @@ class RelationshipChangeService
             case RelationshipEnum::FWB:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 30, 10);
 
-            case RelationshipEnum::MATE:
+            case RelationshipEnum::Mate:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 20, 5);
 
             default:
@@ -1355,15 +1355,15 @@ class RelationshipChangeService
     {
         switch($p2->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
+            case RelationshipEnum::Dislike:
                 $p1
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
                 ;
 
                 $p2
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
                 ;
 
                 return self::createLogs(
@@ -1373,10 +1373,10 @@ class RelationshipChangeService
                     'icons/activity-logs/breakup'
                 );
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
+            case RelationshipEnum::FriendlyRival:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 20, 20);
 
-            case RelationshipEnum::FRIEND:
+            case RelationshipEnum::Friend:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 45, 45);
 
             case RelationshipEnum::BFF:
@@ -1394,7 +1394,7 @@ class RelationshipChangeService
             case RelationshipEnum::FWB:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 50, 40);
 
-            case RelationshipEnum::MATE:
+            case RelationshipEnum::Mate:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 35, 35);
 
             default:
@@ -1410,15 +1410,15 @@ class RelationshipChangeService
     {
         switch($p2->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
+            case RelationshipEnum::Dislike:
                 $p1
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
                 ;
 
                 $p2
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
                 ;
 
                 return self::createLogs(
@@ -1428,10 +1428,10 @@ class RelationshipChangeService
                     'icons/activity-logs/breakup'
                 );
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
+            case RelationshipEnum::FriendlyRival:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 15, 15);
 
-            case RelationshipEnum::FRIEND:
+            case RelationshipEnum::Friend:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 25, 25);
 
             case RelationshipEnum::BFF:
@@ -1448,7 +1448,7 @@ class RelationshipChangeService
                     'icons/activity-logs/friend-cute'
                 );
 
-            case RelationshipEnum::MATE:
+            case RelationshipEnum::Mate:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 35, 35);
 
             default:
@@ -1464,15 +1464,15 @@ class RelationshipChangeService
     {
         switch($p2->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
+            case RelationshipEnum::Dislike:
                 $p1
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
                 ;
 
                 $p2
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
                 ;
 
                 return self::createLogs(
@@ -1482,11 +1482,11 @@ class RelationshipChangeService
                     'icons/activity-logs/breakup'
                 );
 
-            case RelationshipEnum::FRIENDLY_RIVAL:
-            case RelationshipEnum::FRIEND:
+            case RelationshipEnum::FriendlyRival:
+            case RelationshipEnum::Friend:
             case RelationshipEnum::BFF:
-                $p1->setCurrentRelationship(RelationshipEnum::FRIEND);
-                $p2->setCurrentRelationship(RelationshipEnum::FRIEND);
+                $p1->setCurrentRelationship(RelationshipEnum::Friend);
+                $p2->setCurrentRelationship(RelationshipEnum::Friend);
 
                 return self::createLogs(
                     $this->em,
@@ -1497,8 +1497,8 @@ class RelationshipChangeService
             case RelationshipEnum::FWB:
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 15, 60);
 
-            case RelationshipEnum::MATE:
-                $p2->setRelationshipGoal($this->rng->rngNextFromArray([ RelationshipEnum::FWB, RelationshipEnum::MATE ]));
+            case RelationshipEnum::Mate:
+                $p2->setRelationshipGoal($this->rng->rngNextFromArray([ RelationshipEnum::FWB, RelationshipEnum::Mate ]));
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 15, 60);
 
             default:
@@ -1514,9 +1514,9 @@ class RelationshipChangeService
     {
         switch($p2->getRelationshipGoal())
         {
-            case RelationshipEnum::DISLIKE:
-                $p1->setCurrentRelationship(RelationshipEnum::DISLIKE);
-                $p2->setCurrentRelationship(RelationshipEnum::DISLIKE);
+            case RelationshipEnum::Dislike:
+                $p1->setCurrentRelationship(RelationshipEnum::Dislike);
+                $p2->setCurrentRelationship(RelationshipEnum::Dislike);
 
                 return self::createLogs(
                     $this->em,
@@ -1524,17 +1524,17 @@ class RelationshipChangeService
                     $p2->getPet(), $p1->getPet()->getName() . ' said they don\'t like ' . $p2->getPet()->getName() . ' anymore. The feeling is mutual! They\'re breaking up! >:('
                 );
 
-            case RelationshipEnum::FRIEND:
-            case RelationshipEnum::FRIENDLY_RIVAL:
+            case RelationshipEnum::Friend:
+            case RelationshipEnum::FriendlyRival:
                 $p2->getPet()
                     ->increaseLove(-$this->rng->rngNextInt(12, 18))
                     ->increaseEsteem(-$this->rng->rngNextInt(8, 12))
                 ;
 
-                $p1->setCurrentRelationship(RelationshipEnum::BROKE_UP);
+                $p1->setCurrentRelationship(RelationshipEnum::BrokeUp);
                 $p2
-                    ->setRelationshipGoal(RelationshipEnum::DISLIKE)
-                    ->setCurrentRelationship(RelationshipEnum::BROKE_UP)
+                    ->setRelationshipGoal(RelationshipEnum::Dislike)
+                    ->setCurrentRelationship(RelationshipEnum::BrokeUp)
                 ;
 
                 return self::createLogs(
@@ -1545,9 +1545,9 @@ class RelationshipChangeService
 
             case RelationshipEnum::BFF:
             case RelationshipEnum::FWB:
-            case RelationshipEnum::MATE:
+            case RelationshipEnum::Mate:
                 // negotiate for a less-involved relationship
-                $p2->setRelationshipGoal($this->rng->rngNextFromArray([ RelationshipEnum::FWB, RelationshipEnum::BFF, RelationshipEnum::FRIEND ]));
+                $p2->setRelationshipGoal($this->rng->rngNextFromArray([ RelationshipEnum::FWB, RelationshipEnum::BFF, RelationshipEnum::Friend ]));
                 return $this->hangOutPrivatelySuggestingRelationshipDowngradeWithChanceForDrama($p1, $p2, 20, 0);
 
             default:

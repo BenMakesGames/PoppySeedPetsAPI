@@ -58,7 +58,7 @@ class MyTilesController
             ->andWhere('item.hollowEarthTileCard IS NOT NULL')
             ->andWhere('type.name IN (:allowedTypes)')
             ->setParameter('user', $user->getId())
-            ->setParameter('home', LocationEnum::HOME)
+            ->setParameter('home', LocationEnum::Home)
             ->setParameter('allowedTypes', $types)
             ->getQuery()
             ->execute()

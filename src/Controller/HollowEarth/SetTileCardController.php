@@ -66,7 +66,7 @@ class SetTileCardController
         $inventory = $em->getRepository(Inventory::class)->findOneBy([
             'id' => $inventoryId,
             'owner' => $user,
-            'location' => LocationEnum::HOME
+            'location' => LocationEnum::Home
         ]);
 
         if(!$inventory)

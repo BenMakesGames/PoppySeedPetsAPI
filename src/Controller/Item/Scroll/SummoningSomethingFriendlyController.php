@@ -54,7 +54,7 @@ class SummoningSomethingFriendlyController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
 
         $pet = null;
         $gotASentinel = false;

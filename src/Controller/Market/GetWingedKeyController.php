@@ -51,7 +51,7 @@ class GetWingedKeyController
 
         $museumService->forceDonateItem($user, 'Winged Key', $comment);
 
-        $inventoryService->receiveItem('Winged Key', $user, null, $comment, LocationEnum::HOME, true);
+        $inventoryService->receiveItem('Winged Key', $user, null, $comment, LocationEnum::Home, true);
 
         $em->flush();
 

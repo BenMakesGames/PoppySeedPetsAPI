@@ -41,7 +41,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route("/greenhouse")]
 class FeedComposterController
 {
-    public const array FORBIDDEN_COMPOST = [
+    public const array ForbiddenCompost = [
         'Small Bag of Fertilizer',
         'Bag of Fertilizer',
         'Large Bag of Fertilizer',
@@ -69,7 +69,7 @@ class FeedComposterController
         $items = $greenhouseService->findFertilizers($user, $itemIds);
 
         $items = array_filter($items, function(Inventory $i)  {
-            return !in_array($i->getItem()->getName(), self::FORBIDDEN_COMPOST) && $i->getTotalFertilizerValue() > 0;
+            return !in_array($i->getItem()->getName(), self::ForbiddenCompost) && $i->getTotalFertilizerValue() > 0;
         });
 
         if(count($items) < count($itemIds))
@@ -103,7 +103,7 @@ class FeedComposterController
 
         if($itemDelta > 0)
         {
-            $itemsAtHome = InventoryService::countTotalInventory($em, $user, LocationEnum::HOME);
+            $itemsAtHome = InventoryService::countTotalInventory($em, $user, LocationEnum::Home);
 
             if($itemsAtHome > 100)
                 throw new PSPInvalidOperationException('That would leave you with more items at home than you started with, and you\'re already over 100!');
@@ -115,7 +115,7 @@ class FeedComposterController
         foreach($items as $item)
             $em->remove($item);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_COMPOSTED, count($items));
+        $userStatsRepository->incrementStat($user, UserStatEnum::ItemsComposted, count($items));
 
         $user->getGreenhouse()
             ->setComposterFood($remainingFertilizer)
@@ -146,22 +146,22 @@ class FeedComposterController
             $bonusItemNames[] = $bonusItem->getNameWithArticle();
 
             if($bonusItem->getName() === 'Paper Bag')
-                $theBonusItem = $inventoryService->receiveItem($bonusItem, $user, $user, $user->getName() . ' found this in their composter. (Its contents are PROBABLY safe to eat?)', LocationEnum::HOME, false);
+                $theBonusItem = $inventoryService->receiveItem($bonusItem, $user, $user, $user->getName() . ' found this in their composter. (Its contents are PROBABLY safe to eat?)', LocationEnum::Home, false);
             else
-                $theBonusItem = $inventoryService->receiveItem($bonusItem, $user, $user, $user->getName() . ' found this in their composter.', LocationEnum::HOME, false);
+                $theBonusItem = $inventoryService->receiveItem($bonusItem, $user, $user, $user->getName() . ' found this in their composter.', LocationEnum::Home, false);
 
             if($bonusItem->getName() === 'String' || $bonusItem->getName() === 'Grandparoot' || $bonusItem->getName() === 'Paper Bag')
                 $theBonusItem->setSpice(SpiceRepository::findOneByName($em, 'Rancid'));
         }
 
         for($i = 0; $i < $largeBags; $i++)
-            $inventoryService->receiveItem('Large Bag of Fertilizer', $user, $user, $user->getName() . ' made this using their composter.', LocationEnum::HOME, false);
+            $inventoryService->receiveItem('Large Bag of Fertilizer', $user, $user, $user->getName() . ' made this using their composter.', LocationEnum::Home, false);
 
         for($i = 0; $i < $mediumBags; $i++)
-            $inventoryService->receiveItem('Bag of Fertilizer', $user, $user, $user->getName() . ' made this using their composter.', LocationEnum::HOME, false);
+            $inventoryService->receiveItem('Bag of Fertilizer', $user, $user, $user->getName() . ' made this using their composter.', LocationEnum::Home, false);
 
         for($i = 0; $i < $smallBags; $i++)
-            $inventoryService->receiveItem('Small Bag of Fertilizer', $user, $user, $user->getName() . ' made this using their composter.', LocationEnum::HOME, false);
+            $inventoryService->receiveItem('Small Bag of Fertilizer', $user, $user, $user->getName() . ' made this using their composter.', LocationEnum::Home, false);
 
         $got = [];
 

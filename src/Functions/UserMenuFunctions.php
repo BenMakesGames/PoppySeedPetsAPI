@@ -22,7 +22,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class UserMenuFunctions
 {
-    private const array DEFAULT_ORDER = [
+    private const array DefaultOrder = [
         'home', 'cookingBuddy', 'basement', 'greenhouse', 'beehive', 'dragonDen', 'hollowEarth', 'starKindred',
         'fireplace', 'park', 'plaza', 'museum', 'zoologist', 'market', 'grocer', 'petShelter',
         'bookstore', 'trader', 'hattier', 'fieldGuide', 'mailbox', 'painter', 'florist',
@@ -31,9 +31,9 @@ final class UserMenuFunctions
 
     public static function updateUserMenuSortOrder(EntityManagerInterface $em, User $user, array $order): void
     {
-        $order = array_filter($order, fn($o) => in_array($o, self::DEFAULT_ORDER));
+        $order = array_filter($order, fn($o) => in_array($o, self::DefaultOrder));
 
-        foreach(self::DEFAULT_ORDER as $o)
+        foreach(self::DefaultOrder as $o)
         {
             if(!in_array($o, $order))
                 $order[] = $o;
@@ -76,7 +76,7 @@ final class UserMenuFunctions
 
         $userSortOrder = $userSortOrderEntity
             ? $userSortOrderEntity->getMenuOrder()
-            : self::DEFAULT_ORDER
+            : self::DefaultOrder
         ;
 
         $menuItems = [];

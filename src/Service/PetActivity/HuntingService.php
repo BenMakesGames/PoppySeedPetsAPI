@@ -866,7 +866,7 @@ class HuntingService
 
             $this->transactionService->spendMoney($pet->getOwner(), $moneysLost, $pet->getName() . ' was outsmarted by a Thieving Magpie, ' . $description, false);
 
-            $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::MONEYS_STOLEN_BY_THIEVING_MAGPIES, $moneysLost);
+            $this->userStatsRepository->incrementStat($pet->getOwner(), UserStatEnum::MoneysStolenByThievingMagpies, $moneysLost);
 
             $pet
                 ->increaseEsteem(-2)

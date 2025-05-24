@@ -65,7 +65,7 @@ class LimitsController
 
         $itemRequiredId = ItemRepository::getIdByName($em, $itemRequired['itemName']);
 
-        if($inventoryService->loseItem($user, $itemRequiredId, [ LocationEnum::HOME, LocationEnum::BASEMENT ], 1) === 0)
+        if($inventoryService->loseItem($user, $itemRequiredId, [ LocationEnum::Home, LocationEnum::Basement ], 1) === 0)
             throw new PSPNotFoundException('Come back when you ACTUALLY have the item.');
 
         $user->setMaxSellPrice($user->getMaxSellPrice() + 10);

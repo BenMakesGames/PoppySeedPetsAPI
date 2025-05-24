@@ -45,7 +45,7 @@ class RichesController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
 
         $moneys = $rng->rngNextInt(30, 50);
 
@@ -80,7 +80,7 @@ class RichesController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+        $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
 
         $moneys = $rng->rngNextInt(60, 100);
 

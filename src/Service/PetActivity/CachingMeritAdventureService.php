@@ -42,7 +42,7 @@ class CachingMeritAdventureService
     }
 
     // foods that are <= 4 food + love
-    private const array POSSIBLE_CACHED_FOODS = [
+    private const array PossibleCachedFoods = [
         'Beans',
         'Canned Food',
         'Egg',
@@ -62,7 +62,7 @@ class CachingMeritAdventureService
         StatusEffectHelpers::applyStatusEffect($this->em, $pet, StatusEffectEnum::CACHE_EMPTY, 24 * 60);
 
         $pet->increaseFood(4);
-        $cacheItem = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray(self::POSSIBLE_CACHED_FOODS));
+        $cacheItem = ItemRepository::findOneByName($this->em, $this->rng->rngNextFromArray(self::PossibleCachedFoods));
 
         $activityLog = PetActivityLogFactory::createUnreadLog($this->em, $pet, '%pet:' . $pet->getId() . '.name% was hungry, so they dug up one of their old food caches on the island, which contained ' . $cacheItem->getNameWithArticle() . '.')
             ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Gathering' ]))

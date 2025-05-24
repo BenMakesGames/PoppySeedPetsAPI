@@ -33,9 +33,9 @@ class ItemControllerHelpers
             throw new PSPInvalidOperationException('That item cannot be used in that way!');
 
         if(
-            $inventory->getLocation() !== LocationEnum::BASEMENT &&
-            $inventory->getLocation() !== LocationEnum::HOME &&
-            $inventory->getLocation() !== LocationEnum::MANTLE
+            $inventory->getLocation() !== LocationEnum::Basement &&
+            $inventory->getLocation() !== LocationEnum::Home &&
+            $inventory->getLocation() !== LocationEnum::Mantle
         )
             throw new PSPInvalidOperationException('To do this, the item must be in your house, Basement, or Fireplace mantle.');
     }
@@ -45,11 +45,11 @@ class ItemControllerHelpers
      */
     public static function validateLocationSpace(Inventory $inventory, EntityManagerInterface $em): void
     {
-        if($inventory->getLocation() === LocationEnum::HOME)
+        if($inventory->getLocation() === LocationEnum::Home)
             self::validateHouseSpace($inventory, $em);
-        else if($inventory->getLocation() === LocationEnum::BASEMENT)
+        else if($inventory->getLocation() === LocationEnum::Basement)
             self::validateBasementSpace($inventory, $em);
-        else if($inventory->getLocation() === LocationEnum::MANTLE)
+        else if($inventory->getLocation() === LocationEnum::Mantle)
             self::validateMantleSpace($inventory, $em);
         else
             throw new PSPInvalidOperationException('To do this, the item must be in your house, Basement, or Fireplace mantle.');
@@ -57,7 +57,7 @@ class ItemControllerHelpers
 
     private static function validateHouseSpace(Inventory $inventory, EntityManagerInterface $em): void
     {
-        $itemsInHouse = InventoryService::countTotalInventory($em, $inventory->getOwner(), LocationEnum::HOME);
+        $itemsInHouse = InventoryService::countTotalInventory($em, $inventory->getOwner(), LocationEnum::Home);
 
         if($itemsInHouse > 150)
         {
@@ -75,15 +75,15 @@ class ItemControllerHelpers
 
     private static function validateBasementSpace(Inventory $inventory, EntityManagerInterface $em): void
     {
-        $itemsInHouse = InventoryService::countTotalInventory($em, $inventory->getOwner(), LocationEnum::BASEMENT);
+        $itemsInHouse = InventoryService::countTotalInventory($em, $inventory->getOwner(), LocationEnum::Basement);
 
-        if($itemsInHouse >= User::MAX_BASEMENT_INVENTORY)
+        if($itemsInHouse >= User::MaxBasementInventory)
             throw new PSPInvalidOperationException('Your basement is already stuffed! You\'ll need to clear some space, or move the ' . $inventory->getItem()->getName() . ' somewhere else before trying again.');
     }
 
     private static function validateMantleSpace(Inventory $inventory, EntityManagerInterface $em): void
     {
-        $itemsInHouse = InventoryService::countTotalInventory($em, $inventory->getOwner(), LocationEnum::MANTLE);
+        $itemsInHouse = InventoryService::countTotalInventory($em, $inventory->getOwner(), LocationEnum::Mantle);
 
         $maxMantleSize = $inventory->getOwner()->getFireplace() ? $inventory->getOwner()->getFireplace()->getMantleSize() : 12;
 

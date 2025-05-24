@@ -68,7 +68,7 @@ class Cooking101Controller
     {
         ItemControllerHelpers::validateInventory($userAccessor->getUserOrThrow(), $inventory, 'cooking101/#/read');
 
-        $recipeCount = count(RecipeRepository::RECIPES);
+        $recipeCount = count(RecipeRepository::Recipes);
 
         return $responseService->itemActionSuccess('# Cooking 101
 

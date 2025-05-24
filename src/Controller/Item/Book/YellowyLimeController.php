@@ -66,10 +66,10 @@ class YellowyLimeController
         ItemControllerHelpers::validateInventory($user, $inventory, 'yellowyLime/#/read');
 
         $magnifyingGlass = InventoryHelpers::findAnyOneFromItemGroup($em, $user, 'Magnifying Glass', [
-            LocationEnum::HOME,
-            LocationEnum::BASEMENT,
-            LocationEnum::MANTLE,
-            LocationEnum::WARDROBE,
+            LocationEnum::Home,
+            LocationEnum::Basement,
+            LocationEnum::Mantle,
+            LocationEnum::Wardrobe,
         ]);
 
         if(!$magnifyingGlass)

@@ -88,7 +88,7 @@ class EquipController
         $pet->setTool($inventory);
 
         // move it to the wardrobe
-        $inventory->setLocation(LocationEnum::WARDROBE);
+        $inventory->setLocation(LocationEnum::Wardrobe);
 
         if($inventory->getForSale())
             $em->remove($inventory->getForSale());
@@ -155,7 +155,7 @@ class EquipController
         $pet->setHat($inventory);
 
         // move it to the wardrobe
-        $inventory->setLocation(LocationEnum::WARDROBE);
+        $inventory->setLocation(LocationEnum::Wardrobe);
 
         if($inventory->getForSale())
             $em->remove($inventory->getForSale());
@@ -207,7 +207,7 @@ class EquipController
             throw new PSPInvalidOperationException($pet->getName() . ' is not currently wearing a hat.');
 
         $pet->getHat()
-            ->setLocation(LocationEnum::HOME)
+            ->setLocation(LocationEnum::Home)
         ;
 
         $pet->setHat(null);

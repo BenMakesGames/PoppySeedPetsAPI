@@ -60,9 +60,9 @@ class FeedController
             : $beehive->getRequestedItem()
         ;
 
-        if($inventoryService->loseItem($user, $itemToFeed->getId(), LocationEnum::HOME, 1) === 0)
+        if($inventoryService->loseItem($user, $itemToFeed->getId(), LocationEnum::Home, 1) === 0)
         {
-            if($inventoryService->loseItem($user, $itemToFeed->getId(), LocationEnum::BASEMENT, 1) === 0)
+            if($inventoryService->loseItem($user, $itemToFeed->getId(), LocationEnum::Basement, 1) === 0)
                 throw new PSPNotFoundException('You do not have ' . $itemToFeed->getNameWithArticle() . ' in your house, or your basement!');
             else
                 $responseService->addFlashMessage('You give the queen ' . $itemToFeed->getNameWithArticle() . ' from your basement. Her bees immediately whisk it away into the hive!');
@@ -73,7 +73,7 @@ class FeedController
         $beehiveService->fedRequestedItem($beehive, $alternate);
         $beehive->setInteractionPower();
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::FED_THE_BEEHIVE);
+        $userStatsRepository->incrementStat($user, UserStatEnum::FedTheBeehive);
 
         $em->flush();
 

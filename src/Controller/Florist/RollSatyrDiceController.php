@@ -136,9 +136,9 @@ class RollSatyrDiceController
             $transactionService->getRecyclingPoints($user, $points, 'Earned at a game of Satyr Dice.', [ 'Satyr Dice' ]);
 
         foreach($items as $itemName)
-            $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from a game of Satyr Dice.', LocationEnum::HOME);
+            $inventoryService->receiveItem($itemName, $user, $user, $user->getName() . ' got this from a game of Satyr Dice.', LocationEnum::Home);
 
-        $userStatsService->incrementStat($user, UserStatEnum::ROLLED_SATYR_DICE);
+        $userStatsService->incrementStat($user, UserStatEnum::RolledSatyrDice);
 
         $em->flush();
 

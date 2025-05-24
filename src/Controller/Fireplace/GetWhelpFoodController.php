@@ -45,7 +45,7 @@ class GetWhelpFoodController
 
         $food = $em->getRepository(Inventory::class)->createQueryBuilder('i')
             ->andWhere('i.owner=:user')->setParameter('user', $user->getId())
-            ->andWhere('i.location=:home')->setParameter('home', LocationEnum::HOME)
+            ->andWhere('i.location=:home')->setParameter('home', LocationEnum::Home)
             ->join('i.item', 'item')
             ->join('item.food', 'food')
             ->andWhere('(food.spicy > 0 OR food.meaty > 0 OR food.fishy > 0)')

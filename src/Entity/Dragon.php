@@ -21,12 +21,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Dragon
 {
     // as a whelp:
-    public const int FOOD_REQUIRED_FOR_A_MEAL = 35;
-    public const int FOOD_REQUIRED_TO_GROW = 35 * 20;
+    public const int FoodRequiredForAMeal = 35;
+    public const int FoodRequiredToGrow = 35 * 20;
 
     // as an adult:
-    public const array APPEARANCE_IMAGES = [ 1, 2, 3, 4 ];
-    public const array GREETINGS_AND_THANKS = [
+    public const array AppearanceImages = [ 1, 2, 3, 4 ];
+    public const array GreetingsAndThanks = [
         [
             'greeting' => 'Hello, friend.',
             'thanks' => 'Thank you, friend.',
@@ -57,7 +57,7 @@ class Dragon
 
     #[ORM\OneToOne(targetEntity: User::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private $owner;
+    private User $owner;
 
     #[Groups(["myFireplace", "myDragon"])]
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
@@ -102,21 +102,21 @@ class Dragon
 
     #[ORM\Column(type: 'smallint')]
     #[Groups(['myDragon'])]
-    private $appearance;
+    private int $appearance;
 
     #[Groups(["helperPet"])]
     #[ORM\OneToOne(targetEntity: Pet::class, cascade: ['persist', 'remove'])]
-    private $helper;
+    private ?Pet $helper = null;
 
     #[ORM\Column(type: 'float')]
-    private $earnings = 0;
+    private float $earnings = 0;
 
     #[ORM\Column(type: 'float')]
-    private $byproductProgress = 0;
+    private float $byproductProgress = 0;
 
     #[ORM\OneToOne(targetEntity: DragonHostage::class, mappedBy: 'dragon')]
     #[Groups(['myDragon'])]
-    private $hostage;
+    private ?DragonHostage $hostage = null;
 
     /** @noinspection PhpUnusedPrivateFieldInspection */
     #[ORM\Version]
@@ -124,9 +124,10 @@ class Dragon
     /** @phpstan-ignore property.unused */
     private int $version;
 
-    public function __construct()
+    public function __construct(User $owner)
     {
-        $this->appearance = self::APPEARANCE_IMAGES[array_rand(self::APPEARANCE_IMAGES)];
+        $this->owner = $owner;
+        $this->appearance = self::AppearanceImages[array_rand(self::AppearanceImages)];
     }
 
     public function getId(): ?int
@@ -134,7 +135,7 @@ class Dragon
         return $this->id;
     }
 
-    public function getOwner(): ?User
+    public function getOwner(): User
     {
         return $this->owner;
     }
@@ -173,7 +174,7 @@ class Dragon
 
     public function decreaseFood(): self
     {
-        $this->food -= self::FOOD_REQUIRED_FOR_A_MEAL;
+        $this->food -= self::FoodRequiredForAMeal;
 
         return $this;
     }
@@ -222,10 +223,10 @@ class Dragon
     #[Groups(["myFireplace"])]
     public function getGrowthPercent(): float
     {
-        return $this->growth / self::FOOD_REQUIRED_TO_GROW;
+        return $this->growth / self::FoodRequiredToGrow;
     }
 
-    public function getSilver(): ?int
+    public function getSilver(): int
     {
         return $this->silver;
     }
@@ -237,7 +238,7 @@ class Dragon
         return $this;
     }
 
-    public function getGold(): ?int
+    public function getGold(): int
     {
         return $this->gold;
     }
@@ -249,7 +250,7 @@ class Dragon
         return $this;
     }
 
-    public function getGems(): ?int
+    public function getGems(): int
     {
         return $this->gems;
     }

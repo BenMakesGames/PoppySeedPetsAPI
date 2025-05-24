@@ -61,7 +61,7 @@ class GetByIdController
 
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace))
         {
-            $mantle = $em->getRepository(Inventory::class)->findBy(['owner' => $user, 'location' => LocationEnum::MANTLE]);
+            $mantle = $em->getRepository(Inventory::class)->findBy(['owner' => $user, 'location' => LocationEnum::Mantle]);
 
             $data['mantle'] = $normalizer->normalize($mantle, null, [ 'groups' => [ SerializationGroupEnum::FIREPLACE_MANTLE ] ]);
         }

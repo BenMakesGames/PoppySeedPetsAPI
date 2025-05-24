@@ -28,7 +28,7 @@ use App\Service\UserAccessor;
 #[Route("/item/reversable")]
 class ReversableController
 {
-    private const array FLIPS = [
+    private const array Flips = [
         'Small Plastic Bucket' => 'Upside-down Plastic Bucket',
         'Shiny Pail' => 'Upside-down Shiny Pail',
         'Small, Yellow Plastic Bucket' => 'Upside-down, Yellow Plastic Bucket',
@@ -48,11 +48,11 @@ class ReversableController
 
         $oldItemName = $inventory->getItem()->getName();
 
-        if(array_key_exists($oldItemName, self::FLIPS))
-            $newItemName = self::FLIPS[$oldItemName];
+        if(array_key_exists($oldItemName, self::Flips))
+            $newItemName = self::Flips[$oldItemName];
         else
         {
-            $newItemName = array_search($oldItemName, self::FLIPS);
+            $newItemName = array_search($oldItemName, self::Flips);
 
             if(!$newItemName)
                 throw new \Exception($oldItemName . ' cannot be flipped?? This is a result of programmer oversight. Please let Ben know.');

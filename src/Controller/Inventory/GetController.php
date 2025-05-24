@@ -42,7 +42,7 @@ class GetController
 
         $inventory = $inventoryRepository->findBy([
             'owner' => $userAccessor->getUserOrThrow(),
-            'location' => LocationEnum::HOME
+            'location' => LocationEnum::Home
         ]);
 
         return $responseService->success($inventory, [ SerializationGroupEnum::MY_INVENTORY ]);

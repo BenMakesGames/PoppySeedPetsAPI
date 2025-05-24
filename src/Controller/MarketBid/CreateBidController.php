@@ -51,26 +51,26 @@ class CreateBidController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Market))
             throw new PSPNotUnlockedException('Market');
 
-        $itemsAtHome = InventoryService::countTotalInventory($em, $user, LocationEnum::HOME);
+        $itemsAtHome = InventoryService::countTotalInventory($em, $user, LocationEnum::Home);
 
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
-            $location = LocationEnum::HOME;
+            $location = LocationEnum::Home;
         else
         {
-            $location = $request->request->getInt('location', LocationEnum::HOME);
+            $location = $request->request->getInt('location', LocationEnum::Home);
 
             if(!LocationEnum::isAValue($location))
                 throw new PSPFormValidationException('You must select a location for the item to go to.');
         }
 
-        if($itemsAtHome >= User::MAX_HOUSE_INVENTORY)
+        if($itemsAtHome >= User::MaxHouseInventory)
         {
             if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
                 throw new PSPInvalidOperationException('Your house is already overflowing with items! You\'ll need to clear some out before you can create any new bids.');
 
-            $itemsInBasement = InventoryService::countTotalInventory($em, $user, LocationEnum::BASEMENT);
+            $itemsInBasement = InventoryService::countTotalInventory($em, $user, LocationEnum::Basement);
 
-            if($itemsInBasement >= User::MAX_BASEMENT_INVENTORY)
+            if($itemsInBasement >= User::MaxBasementInventory)
                 throw new PSPInvalidOperationException('Your house and basement are already overflowing with items! You\'ll need to clear some space before you can create any new bids.');
         }
 

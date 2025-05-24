@@ -123,9 +123,9 @@ class HalloweenService
         if($item)
         {
             if($toGivingTree)
-                return $this->inventoryService->receiveItem($item, $user, $user, $user->getName() . ' found this at the Giving Tree during Halloween!', LocationEnum::HOME);
+                return $this->inventoryService->receiveItem($item, $user, $user, $user->getName() . ' found this at the Giving Tree during Halloween!', LocationEnum::Home);
             else
-                return $this->inventoryService->receiveItem($item, $user, $trickOrTreater->getOwner(), $trickOrTreater->getName() . ' gave you this item after trick-or-treating. (Treats for everyone, I guess!)', LocationEnum::HOME);
+                return $this->inventoryService->receiveItem($item, $user, $trickOrTreater->getOwner(), $trickOrTreater->getName() . ' gave you this item after trick-or-treating. (Treats for everyone, I guess!)', LocationEnum::Home);
         }
         else
             return null;
@@ -143,7 +143,7 @@ class HalloweenService
             ->leftJoin('item.food', 'food')
             ->andWhere('food.isCandy=1')
             ->setParameter('user', $user->getId())
-            ->setParameter('home', LocationEnum::HOME)
+            ->setParameter('home', LocationEnum::Home)
             ->getQuery()
             ->execute()
         ;

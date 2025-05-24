@@ -56,7 +56,7 @@ class HotPotController
         $dippedItem = $em->getRepository(Inventory::class)->findOneBy([
             'id' => $itemId,
             'owner' => $user,
-            'location' => LocationEnum::HOME
+            'location' => LocationEnum::Home
         ]);
 
         if(!$dippedItem)
@@ -73,7 +73,7 @@ class HotPotController
 
         $usedHotPot->setValue($today);
 
-        $dippingStat = $userStatsRepository->incrementStat($user, UserStatEnum::FOODS_DIPPED_IN_A_HOT_POT);
+        $dippingStat = $userStatsRepository->incrementStat($user, UserStatEnum::FoodsDippedInAHotPot);
 
         // Hot Pot-only spices
         $possibleSpices = [

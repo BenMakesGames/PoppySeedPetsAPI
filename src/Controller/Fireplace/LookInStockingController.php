@@ -117,7 +117,7 @@ class LookInStockingController
 
         $itemObject = ItemRepository::findOneByName($em, $item[0]);
 
-        $newItem = $inventoryService->receiveItem($item[0], $user, $user, $user->getName() . ' found this in a stocking over their Fireplace on ' . $now->format('M j, Y') . '.', LocationEnum::HOME, true);
+        $newItem = $inventoryService->receiveItem($item[0], $user, $user, $user->getName() . ' found this in a stocking over their Fireplace on ' . $now->format('M j, Y') . '.', LocationEnum::Home, true);
 
         if($item[1])
         {

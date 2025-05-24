@@ -74,7 +74,7 @@ class GuessFavoriteFlavorController
                 ->setRevealedFavoriteFlavor($flavorGuesses->getValue())
                 ->increaseAffectionLevel(1)
             ;
-            $inventoryService->receiveItem('Heartstone', $user, $user, $user->getName() . ' received this from ' . $pet->getName() . ' for knowing their favorite flavor: ' . $pet->getFavoriteFlavor()->value . '!', LocationEnum::HOME);
+            $inventoryService->receiveItem('Heartstone', $user, $user, $user->getName() . ' received this from ' . $pet->getName() . ' for knowing their favorite flavor: ' . $pet->getFavoriteFlavor()->value . '!', LocationEnum::Home);
             $responseService->setReloadInventory();
             $data = $pet;
 

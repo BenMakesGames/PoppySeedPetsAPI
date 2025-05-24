@@ -46,7 +46,7 @@ class CannedFoodController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $cansOpened = $userStatsRepository->incrementStat($user, UserStatEnum::CANS_OF_FOOD_OPENED);
+        $cansOpened = $userStatsRepository->incrementStat($user, UserStatEnum::CansOfFoodOpened);
 
         if($cansOpened->getValue() > 3 && $rng->rngNextInt(1, 50) === 1)
         {

@@ -45,13 +45,13 @@ class MoveController
 
         $user = $userAccessor->getUserOrThrow();
 
-        $allowedLocations = [ LocationEnum::HOME ];
+        $allowedLocations = [ LocationEnum::Home ];
 
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::Fireplace))
-            $allowedLocations[] = LocationEnum::MANTLE;
+            $allowedLocations[] = LocationEnum::Mantle;
 
         if($user->hasUnlockedFeature(UnlockableFeatureEnum::Basement))
-            $allowedLocations[] = LocationEnum::BASEMENT;
+            $allowedLocations[] = LocationEnum::Basement;
 
         if(!in_array($location, $allowedLocations))
             throw new PSPFormValidationException('Invalid location given.');
@@ -79,19 +79,19 @@ class MoveController
 
         $itemsInTargetLocation = $inventoryService->countItemsInLocation($user, $location);
 
-        if($location === LocationEnum::HOME)
+        if($location === LocationEnum::Home)
         {
-            if ($itemsInTargetLocation + count($inventory) > User::MAX_HOUSE_INVENTORY)
+            if ($itemsInTargetLocation + count($inventory) > User::MaxHouseInventory)
                 throw new PSPInvalidOperationException('You do not have enough space in your house!');
         }
 
-        if($location === LocationEnum::BASEMENT)
+        if($location === LocationEnum::Basement)
         {
-            if ($itemsInTargetLocation + count($inventory) > User::MAX_BASEMENT_INVENTORY)
+            if ($itemsInTargetLocation + count($inventory) > User::MaxBasementInventory)
                 throw new PSPInvalidOperationException('You do not have enough space in the basement!');
         }
 
-        if($location === LocationEnum::MANTLE)
+        if($location === LocationEnum::Mantle)
         {
             if ($itemsInTargetLocation + count($inventory) > $user->getFireplace()->getMantleSize())
                 throw new PSPInvalidOperationException('The mantle only has space for ' . $user->getFireplace()->getMantleSize() . ' items.');

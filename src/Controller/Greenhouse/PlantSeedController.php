@@ -57,7 +57,7 @@ class PlantSeedController
         $seed = $em->getRepository(Inventory::class)->findOneBy([
             'id' => $seedId,
             'owner' => $user->getId(),
-            'location' => Inventory::CONSUMABLE_LOCATIONS,
+            'location' => Inventory::ConsumableLocations,
         ]);
 
         if($seed === null || $seed->getItem()->getPlant() === null)

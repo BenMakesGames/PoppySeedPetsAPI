@@ -101,9 +101,9 @@ class MarketService
 
     public function transferItemToPlayer(Inventory $item, User $newOwner, int $location, int $sellPrice, string $newItemComment): void
     {
-        $this->userStatsRepository->incrementStat($item->getOwner(), UserStatEnum::TOTAL_MONEYS_EARNED_IN_MARKET, $sellPrice);
-        $this->userStatsRepository->incrementStat($item->getOwner(), UserStatEnum::ITEMS_SOLD_IN_MARKET, 1);
-        $this->userStatsRepository->incrementStat($newOwner, UserStatEnum::ITEMS_BOUGHT_IN_MARKET, 1);
+        $this->userStatsRepository->incrementStat($item->getOwner(), UserStatEnum::TotalMoneysEarnedInMarket, $sellPrice);
+        $this->userStatsRepository->incrementStat($item->getOwner(), UserStatEnum::ItemsSoldInMarket, 1);
+        $this->userStatsRepository->incrementStat($newOwner, UserStatEnum::ItemsBoughtInMarket, 1);
 
         $item
             ->setSpice(null)
@@ -163,25 +163,25 @@ class MarketService
 
         $this->transactionService->getMoney($user, $price, 'Sold ' . InventoryModifierFunctions::getNameWithModifiers($inventory) . ' in the Market.', [ 'Market' ]);
 
-        $targetLocation = LocationEnum::HOME;
+        $targetLocation = LocationEnum::Home;
 
-        if($highestBid->getTargetLocation() === LocationEnum::BASEMENT)
+        if($highestBid->getTargetLocation() === LocationEnum::Basement)
         {
-            $itemsInBuyersBasement = InventoryService::countTotalInventory($this->em, $highestBid->getUser(), LocationEnum::BASEMENT);
+            $itemsInBuyersBasement = InventoryService::countTotalInventory($this->em, $highestBid->getUser(), LocationEnum::Basement);
 
-            if($itemsInBuyersBasement < User::MAX_BASEMENT_INVENTORY)
-                $targetLocation = LocationEnum::BASEMENT;
+            if($itemsInBuyersBasement < User::MaxBasementInventory)
+                $targetLocation = LocationEnum::Basement;
         }
         else // assume home as fallback/default
         {
-            $itemsInBuyersHome = InventoryService::countTotalInventory($this->em, $highestBid->getUser(), LocationEnum::HOME);
+            $itemsInBuyersHome = InventoryService::countTotalInventory($this->em, $highestBid->getUser(), LocationEnum::Home);
 
-            if($itemsInBuyersHome >= User::MAX_HOUSE_INVENTORY)
+            if($itemsInBuyersHome >= User::MaxHouseInventory)
             {
-                $itemsInBuyersBasement = InventoryService::countTotalInventory($this->em, $highestBid->getUser(), LocationEnum::BASEMENT);
+                $itemsInBuyersBasement = InventoryService::countTotalInventory($this->em, $highestBid->getUser(), LocationEnum::Basement);
 
-                if($itemsInBuyersBasement < User::MAX_BASEMENT_INVENTORY)
-                    $targetLocation = LocationEnum::BASEMENT;
+                if($itemsInBuyersBasement < User::MaxBasementInventory)
+                    $targetLocation = LocationEnum::Basement;
             }
         }
 

@@ -47,7 +47,7 @@ class FireplaceController
 
         $mantle = $em->getRepository(Inventory::class)->findBy([
             'owner' => $user,
-            'location' => LocationEnum::MANTLE
+            'location' => LocationEnum::Mantle
         ]);
 
         $dragon = DragonRepository::findWhelp($em, $user);
@@ -68,7 +68,7 @@ class FireplaceController
     {
         $inventory = $em->getRepository(Inventory::class)->findBy([
             'owner' => $user,
-            'location' => LocationEnum::MANTLE
+            'location' => LocationEnum::Mantle
         ]);
 
         return $responseService->success($inventory, [ SerializationGroupEnum::FIREPLACE_MANTLE ]);

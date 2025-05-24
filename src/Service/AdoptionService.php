@@ -43,7 +43,7 @@ class AdoptionService
 
     public function getPetsAdopted(User $user): int
     {
-        return $this->userStatsRepository->getStatValue($user, UserStatEnum::PETS_ADOPTED);
+        return $this->userStatsRepository->getStatValue($user, UserStatEnum::PetsAdopted);
     }
 
     public function getAdoptionFee(User $user): int
@@ -321,40 +321,40 @@ class AdoptionService
         $monthDay = $this->clock->getMonthAndDay();
 
         if(CalendarFunctions::isHalloween($this->clock->now))
-            return PetShelterPet::PET_HALLOWEEN_NAMES;
+            return PetShelterPet::PetHalloweenNames;
 
         // PSP Thanksgiving overlaps Black Friday, but for pet adoption purposes, we want Black Friday to win out:
         if(CalendarFunctions::isBlackFriday($this->clock->now))
-            return PetShelterPet::PET_BLACK_FRIDAY_NAMES;
+            return PetShelterPet::PetBlackFridayNames;
 
         if(CalendarFunctions::isCyberMonday($this->clock->now))
-            return PetShelterPet::PET_CYBER_MONDAY_NAMES;
+            return PetShelterPet::PetCyberMondayNames;
 
         if(CalendarFunctions::isThanksgiving($this->clock->now))
-            return PetShelterPet::PET_THANKSGIVING_NAMES;
+            return PetShelterPet::PetThanksgivingNames;
 
         if(CalendarFunctions::isEaster($this->clock->now))
-            return PetShelterPet::PET_EASTER_NAMES;
+            return PetShelterPet::PetEasterNames;
 
         if(CalendarFunctions::isValentinesOrAdjacent($this->clock->now))
-            return PetShelterPet::PET_VALENTINES_NAMES;
+            return PetShelterPet::PetValentinesNames;
 
         if(CalendarFunctions::isWhiteDay($this->clock->now))
-            return PetShelterPet::PET_WHITE_DAY_NAMES;
+            return PetShelterPet::PetWhiteDayNames;
 
         // winter solstice, more or less
         if(CalendarFunctions::isWinterSolstice($this->clock->now))
-            return PetShelterPet::PET_WINTER_SOLSTICE_NAMES;
+            return PetShelterPet::PetWinterSolsticeNames;
 
         // Christmas colors (would normally do a 3-day range, but dec 23 isWinterSolstice())
         if($monthDay >= 1224 && $monthDay <= 1225)
-            return PetShelterPet::PET_CHRISTMAS_NAMES;
+            return PetShelterPet::PetChristmasNames;
 
         if(CalendarFunctions::isHanukkah($this->clock->now))
-            return PetShelterPet::PET_HANUKKAH_NAMES;
+            return PetShelterPet::PetHanukkahNames;
 
         if($this->chineseCalendarInfo->month === 1 && $this->chineseCalendarInfo->day <= 6)
-            return PetShelterPet::PET_CHINESE_ZODIAC_NAMES[$this->chineseCalendarInfo->animal];
+            return PetShelterPet::PetChineseZodiacNames[$this->chineseCalendarInfo->animal];
 
         if(CalendarFunctions::isSaintPatricksDay($this->clock->now))
             return PetShelterPet::PetNames;

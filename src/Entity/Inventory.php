@@ -29,9 +29,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Inventory
 {
     /** @var int[] */
-    public const array CONSUMABLE_LOCATIONS = [
-        LocationEnum::HOME,
-        LocationEnum::BASEMENT
+    public const array ConsumableLocations = [
+        LocationEnum::Home,
+        LocationEnum::Basement
     ];
 
     #[ORM\Id]
@@ -70,7 +70,7 @@ class Inventory
     private ?Pet $holder = null;
 
     #[ORM\Column(type: 'smallint')]
-    private int $location = LocationEnum::HOME;
+    private int $location = LocationEnum::Home;
 
     #[ORM\OneToOne(targetEntity: Pet::class, mappedBy: 'hat')]
     private ?Pet $wearer = null;
@@ -136,7 +136,7 @@ class Inventory
         if($this->getWearer() && !$item->getHat())
         {
             $this
-                ->setLocation(LocationEnum::HOME)
+                ->setLocation(LocationEnum::Home)
                 ->getWearer()->setHat(null)
             ;
         }
@@ -144,7 +144,7 @@ class Inventory
         if($this->getHolder() && !$item->getTool())
         {
             $this
-                ->setLocation(LocationEnum::HOME)
+                ->setLocation(LocationEnum::Home)
                 ->getHolder()->setTool(null)
             ;
         }

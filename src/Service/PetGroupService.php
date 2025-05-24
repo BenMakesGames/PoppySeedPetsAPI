@@ -34,13 +34,13 @@ use Doctrine\ORM\Query\Expr\Join;
 
 class PetGroupService
 {
-    public const int SOCIAL_ENERGY_PER_MEET = 60 * 12;
+    public const int SocialEnergyPerMeet = 60 * 12;
 
-    public const array GROUP_TYPE_NAMES = [
-        PetGroupTypeEnum::BAND->value => 'band',
-        PetGroupTypeEnum::ASTRONOMY->value => 'astronomy lab',
-        PetGroupTypeEnum::GAMING->value => 'gaming group',
-        PetGroupTypeEnum::SPORTSBALL->value => 'sportsball team',
+    public const array GroupTypeNames = [
+        PetGroupTypeEnum::Band->value => 'band',
+        PetGroupTypeEnum::Astronomy->value => 'astronomy lab',
+        PetGroupTypeEnum::Gaming->value => 'gaming group',
+        PetGroupTypeEnum::Sportsball->value => 'sportsball team',
     ];
 
     public function __construct(
@@ -57,7 +57,7 @@ class PetGroupService
 
     public function doGroupActivity(PetGroup $group): void
     {
-        $group->spendSocialEnergy(PetGroupService::SOCIAL_ENERGY_PER_MEET);
+        $group->spendSocialEnergy(PetGroupService::SocialEnergyPerMeet);
 
         if($this->checkForSplitUp($group))
             return;
@@ -67,19 +67,19 @@ class PetGroupService
 
         switch ($group->getType())
         {
-            case PetGroupTypeEnum::BAND:
+            case PetGroupTypeEnum::Band:
                 $this->bandService->meet($group);
                 break;
 
-            case PetGroupTypeEnum::ASTRONOMY:
+            case PetGroupTypeEnum::Astronomy:
                 $this->astronomyClubService->meet($group);
                 break;
 
-            case PetGroupTypeEnum::GAMING:
+            case PetGroupTypeEnum::Gaming:
                 $this->gamingGroupService->meet($group);
                 break;
 
-            case PetGroupTypeEnum::SPORTSBALL:
+            case PetGroupTypeEnum::Sportsball:
                 $this->sportsBallService->meet($group);
                 break;
 
@@ -210,7 +210,7 @@ class PetGroupService
             ->andWhere('r2.currentRelationship NOT IN (:unhappyRelationships)')
             ->orderBy('p2s.music', 'DESC')
             ->setParameter('groupMembers', $group->getMembers()->map(fn(Pet $p) => $p->getId()))
-            ->setParameter('unhappyRelationships', [ RelationshipEnum::BROKE_UP, RelationshipEnum::DISLIKE ])
+            ->setParameter('unhappyRelationships', [ RelationshipEnum::BrokeUp, RelationshipEnum::Dislike ])
             ->getQuery()
             ->execute()
         ;
@@ -350,10 +350,10 @@ class PetGroupService
     }
 
     private const array FriendlyRelationships = [
-        RelationshipEnum::FRIEND,
+        RelationshipEnum::Friend,
         RelationshipEnum::BFF,
         RelationshipEnum::FWB,
-        RelationshipEnum::MATE
+        RelationshipEnum::Mate
     ];
 
     /**
@@ -369,7 +369,7 @@ class PetGroupService
 
                 return
                     //
-                    $r->getCurrentRelationship() !== RelationshipEnum::BROKE_UP &&
+                    $r->getCurrentRelationship() !== RelationshipEnum::BrokeUp &&
 
                     // as long as both pets WANT a friendly relationship, they'll do this
                     $otherSide &&
@@ -399,26 +399,26 @@ class PetGroupService
 
         $groupTypePreferences = [
             [
-                'type' => PetGroupTypeEnum::BAND,
-                'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::BAND->value],
+                'type' => PetGroupTypeEnum::Band,
+                'description' => self::GroupTypeNames[PetGroupTypeEnum::Band->value],
                 'icon' => 'groups/band',
                 'preference' => 2 + PetGroupService::weightSkill($pet->getSkills()->getMusic()),
             ],
             [
-                'type' => PetGroupTypeEnum::ASTRONOMY,
-                'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::ASTRONOMY->value],
+                'type' => PetGroupTypeEnum::Astronomy,
+                'description' => self::GroupTypeNames[PetGroupTypeEnum::Astronomy->value],
                 'icon' => 'groups/astronomy',
                 'preference' => 2 + PetGroupService::weightSkill($pet->getSkills()->getScience()),
             ],
             [
-                'type' => PetGroupTypeEnum::GAMING,
-                'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::GAMING->value],
+                'type' => PetGroupTypeEnum::Gaming,
+                'description' => self::GroupTypeNames[PetGroupTypeEnum::Gaming->value],
                 'icon' => 'groups/gaming',
                 'preference' => 1 + ($pet->getExtroverted() + 1) * 2,
             ],
             [
-                'type' => PetGroupTypeEnum::SPORTSBALL,
-                'description' => self::GROUP_TYPE_NAMES[PetGroupTypeEnum::SPORTSBALL->value],
+                'type' => PetGroupTypeEnum::Sportsball,
+                'description' => self::GroupTypeNames[PetGroupTypeEnum::Sportsball->value],
                 'icon' => 'groups/gaming',
                 'preference' => 2 + PetGroupService::weightSkill($pet->getSkills()->getBrawl()),
             ]
@@ -435,19 +435,19 @@ class PetGroupService
 
         switch($type)
         {
-            case PetGroupTypeEnum::BAND:
+            case PetGroupTypeEnum::Band:
                 usort($availableFriends, function (ComputedPetSkills $a, ComputedPetSkills $b) {
                     return $b->getMusic()->getTotal() <=> $a->getMusic()->getTotal();
                 });
                 break;
 
-            case PetGroupTypeEnum::ASTRONOMY:
+            case PetGroupTypeEnum::Astronomy:
                 usort($availableFriends, function (ComputedPetSkills $a, ComputedPetSkills $b) {
                     return $b->getScience()->getTotal() <=> $a->getScience()->getTotal();
                 });
                 break;
 
-            case PetGroupTypeEnum::SPORTSBALL:
+            case PetGroupTypeEnum::Sportsball:
                 usort($availableFriends, function (ComputedPetSkills $a, ComputedPetSkills $b) {
                     return $b->getBrawl()->getTotal() + $b->getStealth()->getTotal() / 2 <=> $a->getBrawl()->getTotal() + $b->getStealth()->getTotal() / 2;
                 });
@@ -468,7 +468,7 @@ class PetGroupService
             $friendPet = $friend->getPet();
             $friendPet->addGroup($group);
 
-            PetActivityLogFactory::createUnreadLog($this->em, $friendPet, $friendPet->getName() . ' was invited to join ' . $pet->getName() . '\'s new ' . self::GROUP_TYPE_NAMES[$type->value] . ', ' . $group->getName() . '!')
+            PetActivityLogFactory::createUnreadLog($this->em, $friendPet, $friendPet->getName() . ' was invited to join ' . $pet->getName() . '\'s new ' . self::GroupTypeNames[$type->value] . ', ' . $group->getName() . '!')
                 ->addInterestingness(PetActivityLogInterestingness::NewRelationship)
                 ->addTags(PetActivityLogTagHelpers::findByNames($this->em, [ 'Group Hangout' ]))
             ;
@@ -486,10 +486,10 @@ class PetGroupService
     {
         return match ($type)
         {
-            PetGroupTypeEnum::BAND => $this->bandService->generateGroupName(),
-            PetGroupTypeEnum::ASTRONOMY => $this->astronomyClubService->generateGroupName(),
-            PetGroupTypeEnum::GAMING => $this->gamingGroupService->generateGroupName(),
-            PetGroupTypeEnum::SPORTSBALL => $this->sportsBallService->generateGroupName(),
+            PetGroupTypeEnum::Band => $this->bandService->generateGroupName(),
+            PetGroupTypeEnum::Astronomy => $this->astronomyClubService->generateGroupName(),
+            PetGroupTypeEnum::Gaming => $this->gamingGroupService->generateGroupName(),
+            PetGroupTypeEnum::Sportsball => $this->sportsBallService->generateGroupName(),
             default => throw new \Exception('Ben forgot to program group names for groups of type "' . $type->name . '"! (Bad Ben!)'),
         };
     }

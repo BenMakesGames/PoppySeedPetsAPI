@@ -49,7 +49,7 @@ interface IRandom
      * @return T A random element from the array
      * @phpstan-impure
      */
-    function rngNextFromArray(array $array): mixed;
+    function rngNextFromArray(array $array);
 
     /**
      * @param array $array The array to shuffle; shuffle is performed in place

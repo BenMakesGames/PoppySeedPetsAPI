@@ -205,7 +205,7 @@ class HouseMonsterService
         }
 
         foreach($loot as $item)
-            $this->inventoryService->receiveItem($item, $user, $user, $message, LocationEnum::HOME);
+            $this->inventoryService->receiveItem($item, $user, $user, $message, LocationEnum::Home);
 
         foreach($petsAtHome as $pet)
         {

@@ -47,7 +47,7 @@ class StrangeFieldController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::STRANGE_FIELDS_COLLAPSED);
+        $userStatsRepository->incrementStat($user, UserStatEnum::StrangeFieldsCollapsed);
 
         $possibleItems = [
             'Tachyon', 'Photon',

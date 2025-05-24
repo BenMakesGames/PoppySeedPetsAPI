@@ -46,7 +46,7 @@ class TradeForKatsGiftPackageController
         if(!$user->hasUnlockedFeature(UnlockableFeatureEnum::Florist))
             throw new PSPNotUnlockedException('Florist');
 
-        $quantities = $inventoryService->getInventoryQuantities($user, LocationEnum::HOME, 'name');
+        $quantities = $inventoryService->getInventoryQuantities($user, LocationEnum::Home, 'name');
 
         $exchange = TraderOffer::createTradeOffer(
             [
@@ -67,7 +67,7 @@ class TradeForKatsGiftPackageController
             true
         );
 
-        $traderService->makeExchange($user, $exchange, LocationEnum::HOME, 1, 'Received by trading with the florist, Kat.');
+        $traderService->makeExchange($user, $exchange, LocationEnum::Home, 1, 'Received by trading with the florist, Kat.');
         $userStatsService->incrementStat($user, 'Traded for Kat\'s Gift Package');
 
         $em->flush();

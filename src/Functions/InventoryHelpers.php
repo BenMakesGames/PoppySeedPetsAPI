@@ -28,7 +28,7 @@ class InventoryHelpers
             ->leftJoin('i.item', 'item')
             ->andWhere('item.name=:itemName')
             ->setParameter('user', $owner)
-            ->setParameter('consumableLocations', Inventory::CONSUMABLE_LOCATIONS)
+            ->setParameter('consumableLocations', Inventory::ConsumableLocations)
             ->setParameter('itemName', $itemName)
             ->setMaxResults(1)
             ->getQuery()
@@ -40,7 +40,7 @@ class InventoryHelpers
      * @param int[] $locationsToCheck
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public static function findAnyOneFromItemGroup(EntityManagerInterface $em, User $owner, string $itemGroupName, array $locationsToCheck = Inventory::CONSUMABLE_LOCATIONS): ?Inventory
+    public static function findAnyOneFromItemGroup(EntityManagerInterface $em, User $owner, string $itemGroupName, array $locationsToCheck = Inventory::ConsumableLocations): ?Inventory
     {
         return $em->getRepository(Inventory::class)->createQueryBuilder('i')
             ->andWhere('i.owner=:user')

@@ -47,7 +47,7 @@ class BurntLogController
         $location = $inventory->getLocation();
         $lockedToOwner = $inventory->getLockedToOwner();
 
-        $stat = $userStatsRepository->incrementStat($user, UserStatEnum::BURNT_LOGS_BROKEN);
+        $stat = $userStatsRepository->incrementStat($user, UserStatEnum::BurntLogsBroken);
 
         $extraItem = ItemRepository::findOneByName($em, $rng->rngNextFromArray([
             'Crooked Stick',

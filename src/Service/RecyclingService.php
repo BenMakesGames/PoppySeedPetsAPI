@@ -85,7 +85,7 @@ class RecyclingService
 
             if($i->getItem()->hasUseAction('bug/#/putOutside'))
             {
-                $this->userStatsRepository->incrementStat($user, UserStatEnum::BUGS_PUT_OUTSIDE);
+                $this->userStatsRepository->incrementStat($user, UserStatEnum::BugsPutOutside);
                 $this->em->remove($i);
                 continue;
             }
@@ -94,7 +94,7 @@ class RecyclingService
             {
                 $i
                     ->changeOwner($givingTree, $user->getName() . ' recycled this item, and it found its way to The Giving Tree!', $this->em)
-                    ->setLocation(LocationEnum::HOME)
+                    ->setLocation(LocationEnum::Home)
                 ;
             }
             else
@@ -106,7 +106,7 @@ class RecyclingService
 
         if($totalRecyclingPointsEarned > 0 || $totalItemsRecycled > 0)
         {
-            $this->userStatsRepository->incrementStat($user, UserStatEnum::ITEMS_RECYCLED, $totalItemsRecycled);
+            $this->userStatsRepository->incrementStat($user, UserStatEnum::ItemsRecycled, $totalItemsRecycled);
 
             $this->transactionService->getRecyclingPoints(
                 $user,

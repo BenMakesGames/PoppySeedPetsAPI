@@ -48,7 +48,7 @@ class GetFoodController
 
         $inventoryAtHome = $em->getRepository(Inventory::class)->findBy([
             'owner' => $user,
-            'location' => LocationEnum::HOME
+            'location' => LocationEnum::Home
         ]);
 
         $foods = [];

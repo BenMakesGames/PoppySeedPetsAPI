@@ -36,10 +36,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/cookingBuddy')]
 class PrepareRecipeFromMemory
 {
-    private const array ALLOWED_LOCATIONS = [
-        LocationEnum::HOME,
-        LocationEnum::BASEMENT,
-        LocationEnum::MANTLE
+    private const array AllowedLocations = [
+        LocationEnum::Home,
+        LocationEnum::Basement,
+        LocationEnum::Mantle
     ];
 
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
@@ -65,7 +65,7 @@ class PrepareRecipeFromMemory
 
         $location = $request->request->getInt('location');
 
-        if(!in_array($location, self::ALLOWED_LOCATIONS))
+        if(!in_array($location, self::AllowedLocations))
             throw new PSPInvalidOperationException('Cooking Buddies are only usable on the house, Basement, or Fireplace Mantle.');
 
         $inventoryToUse = [];
@@ -90,7 +90,7 @@ class PrepareRecipeFromMemory
 
         $results = $cookingService->prepareRecipeWithCookingBuddy($user, $inventoryToUse, $recipe, $quantity);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::COOKED_SOMETHING, $quantity);
+        $userStatsRepository->incrementStat($user, UserStatEnum::CookedSomething, $quantity);
 
         $em->flush();
 

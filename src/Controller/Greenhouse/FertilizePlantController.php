@@ -56,7 +56,7 @@ class FertilizePlantController
         $fertilizer = $em->getRepository(Inventory::class)->findOneBy([
             'id' => $fertilizerId,
             'owner' => $user->getId(),
-            'location' => Inventory::CONSUMABLE_LOCATIONS,
+            'location' => Inventory::ConsumableLocations,
         ]);
 
         if(!$fertilizer || $fertilizer->getTotalFertilizerValue() <= 0)
@@ -64,7 +64,7 @@ class FertilizePlantController
 
         $plant->fertilize($fertilizer);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::FERTILIZED_PLANT);
+        $userStatsRepository->incrementStat($user, UserStatEnum::FertilizedAPlant);
 
         $plantNameArticle = GrammarFunctions::indefiniteArticle($plant->getPlant()->getName());
 

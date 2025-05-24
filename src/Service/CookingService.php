@@ -202,7 +202,7 @@ class CookingService
         if($alreadyKnownRecipe)
             return false;
 
-        if(!ArrayFunctions::any(RecipeRepository::RECIPES, fn($recipe) => $recipe['name'] === $recipeName))
+        if(!ArrayFunctions::any(RecipeRepository::Recipes, fn($recipe) => $recipe['name'] === $recipeName))
             throw new \Exception('Cannot learn recipe "' . $recipeName . '" - it doesn\'t exist!');
 
         $knownRecipe = new KnownRecipes(
@@ -212,7 +212,7 @@ class CookingService
 
         $this->em->persist($knownRecipe);
 
-        $this->userStatsRepository->incrementStat($user, UserStatEnum::RECIPES_LEARNED_BY_COOKING_BUDDY);
+        $this->userStatsRepository->incrementStat($user, UserStatEnum::RecipesLearnedByCookingBuddy);
 
         return true;
     }
@@ -287,7 +287,7 @@ class CookingService
             }
         }
 
-        $this->userStatsRepository->incrementStat($preparer, UserStatEnum::COOKED_SOMETHING, $multiple);
+        $this->userStatsRepository->incrementStat($preparer, UserStatEnum::CookedSomething, $multiple);
 
         $results = new PrepareRecipeResults();
         $results->inventory = $newInventory;

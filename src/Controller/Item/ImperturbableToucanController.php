@@ -43,7 +43,7 @@ class ImperturbableToucanController
 
         $em->remove($inventory);
 
-        $userStatsService->incrementStat($user, UserStatEnum::SET_A_TOUCAN_FREE, 1);
+        $userStatsService->incrementStat($user, UserStatEnum::SetAToucanFree, 1);
 
         $em->flush();
 

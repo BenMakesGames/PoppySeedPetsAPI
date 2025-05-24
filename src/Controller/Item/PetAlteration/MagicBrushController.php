@@ -59,7 +59,7 @@ class MagicBrushController
 
         $item = $pet->getSpecies()->getSheds();
 
-        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this by brushing ' . $pet->getName() . ' with a Magic Brush.', LocationEnum::HOME, false);
+        $inventoryService->receiveItem($item, $user, $user, $user->getName() . ' got this by brushing ' . $pet->getName() . ' with a Magic Brush.', LocationEnum::Home, false);
 
         $em->remove($inventory);
         $em->flush();

@@ -98,7 +98,7 @@ class PetSocialActivityService
         if(!$pet->hasStatusEffect(StatusEffectEnum::WEREFORM))
         {
             $availableGroups = $pet->getGroups()->filter(function(PetGroup $g) {
-                return $g->getSocialEnergy() >= PetGroupService::SOCIAL_ENERGY_PER_MEET;
+                return $g->getSocialEnergy() >= PetGroupService::SocialEnergyPerMeet;
             });
 
             if(count($availableGroups) > 0)
@@ -240,7 +240,7 @@ class PetSocialActivityService
             ->andWhere('r.commitment>0')
             ->andWhere('pet.id=:petId')
             ->setParameter('petId', $pet->getId())
-            ->setParameter('dislikedRelationshipTypes', [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ])
+            ->setParameter('dislikedRelationshipTypes', [ RelationshipEnum::Dislike, RelationshipEnum::BrokeUp ])
         ;
 
         return $qb->getQuery()->execute();
@@ -681,7 +681,7 @@ class PetSocialActivityService
             ->addOrderBy('r.commitment', 'DESC')
             ->setMaxResults($maxFriendsToConsider)
             ->setParameter('petId', $pet->getId())
-            ->setParameter('excludedRelationshipTypes', [ RelationshipEnum::DISLIKE, RelationshipEnum::BROKE_UP ])
+            ->setParameter('excludedRelationshipTypes', [ RelationshipEnum::Dislike, RelationshipEnum::BrokeUp ])
             ->setParameter('minimumFriendSocialEnergy', (PetExperienceService::SOCIAL_ENERGY_PER_HANG_OUT * 3) / 2)
         ;
 

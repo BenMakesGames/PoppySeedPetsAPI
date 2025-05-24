@@ -16,7 +16,7 @@ namespace App\Functions;
 
 final class RecipeRepository
 {
-    public const array RECIPES = [
+    public const array Recipes = [
         [ 'name' => '"Chicken" Noodle Soup (with Fish)', 'ingredients' => '30:1,33:1,262:1', 'makes' => '323:2' ],
         [ 'name' => '"Chicken" Noodle Soup (with Tofu)', 'ingredients' => '30:1,262:1,494:1', 'makes' => '323:2' ],
         [ 'name' => '"Chicken" Noodle Soup (with Turkey)', 'ingredients' => '30:1,262:1,342:1', 'makes' => '323:4' ],
@@ -746,12 +746,12 @@ final class RecipeRepository
 
     public static function findBy(callable $delegate)
     {
-        return array_filter(self::RECIPES, $delegate);
+        return array_filter(self::Recipes, $delegate);
     }
 
     public static function findOneBy(callable $delegate)
     {
-        return ArrayFunctions::find_one(self::RECIPES, $delegate);
+        return ArrayFunctions::find_one(self::Recipes, $delegate);
     }
 
     public static function findOneByName(string $recipeName): ?array

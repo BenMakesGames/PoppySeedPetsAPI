@@ -50,7 +50,7 @@ class GetDonatableItemsController
             ->leftJoin('i.item', 'item')
             ->andWhere('i.location IN (:locations)')
             ->andWhere('item.id NOT IN (SELECT miitem.id FROM App\\Entity\\MuseumItem mi LEFT JOIN mi.item miitem WHERE mi.user=:user)')
-            ->setParameter('locations', [ LocationEnum::HOME, LocationEnum::BASEMENT ])
+            ->setParameter('locations', [ LocationEnum::Home, LocationEnum::Basement ])
             ->setParameter('user', $user)
             ->addGroupBy('item.id')
             ->addGroupBy('i.enchantment')

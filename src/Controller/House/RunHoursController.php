@@ -66,7 +66,7 @@ class RunHoursController
 
             $inventory = $em->getRepository(Inventory::class)->findBy([
                 'owner' => $userAccessor->getUserOrThrow(),
-                'location' => LocationEnum::HOME
+                'location' => LocationEnum::Home
             ]);
 
             $data['inventory'] = $normalizer->normalize($inventory, null, [ 'groups' => [ SerializationGroupEnum::MY_INVENTORY ] ]);

@@ -66,7 +66,7 @@ class FruitScrollController
         }
         else if($r === 2 || $r === 3) // get a bunch of the same item
         {
-            $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+            $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
 
             $item = $rng->rngNextFromArray([
                 'Pamplemousse', 'Blackberries', 'Bunch of Naners', 'Blueberries', 'Red',
@@ -93,7 +93,7 @@ class FruitScrollController
         }
         else // get a bunch of different items
         {
-            $userStatsRepository->incrementStat($user, UserStatEnum::READ_A_SCROLL);
+            $userStatsRepository->incrementStat($user, UserStatEnum::ReadAScroll);
 
             $possibleItems = [
                 'Fruits & Veggies Box',

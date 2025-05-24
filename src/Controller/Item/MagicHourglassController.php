@@ -44,7 +44,7 @@ class MagicHourglassController
 
         ItemControllerHelpers::validateInventory($user, $inventory, 'magicHourglass/#/shatter');
 
-        if($inventory->getLocation() !== LocationEnum::HOME)
+        if($inventory->getLocation() !== LocationEnum::Home)
         {
             return $responseService->success('Somehow you get the feeling that your pets would like to watch this happen.');
         }
@@ -58,7 +58,7 @@ class MagicHourglassController
 
         $em->remove($inventory);
 
-        $userStatsRepository->incrementStat($user, UserStatEnum::MAGIC_HOURGLASSES_SMASHED);
+        $userStatsRepository->incrementStat($user, UserStatEnum::MagicHourglassesSmashed);
 
         $query = $em->createQuery('
             UPDATE App\Entity\PetHouseTime AS ht
