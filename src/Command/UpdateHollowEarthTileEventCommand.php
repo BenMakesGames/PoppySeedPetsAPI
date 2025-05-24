@@ -82,31 +82,31 @@ class UpdateHollowEarthTileEventCommand extends PoppySeedPetsCommand
 
         switch($type)
         {
-            case HollowEarthActionTypeEnum::ONWARD:
+            case HollowEarthActionTypeEnum::Onward:
                 $this->createBasicEvent($event);
                 return;
 
-            case HollowEarthActionTypeEnum::PET_CHALLENGE:
+            case HollowEarthActionTypeEnum::PetChallenge:
                 $this->createPetChallengeEvent($event);
                 return;
 
-            case HollowEarthActionTypeEnum::MOVE_TO:
+            case HollowEarthActionTypeEnum::MoveTo:
                 $this->createMoveToEvent($event);
                 return;
 
-            case HollowEarthActionTypeEnum::PAY_ITEM:
+            case HollowEarthActionTypeEnum::PayItem:
                 $this->createPayItemEvent($event);
                 return;
 
-            case HollowEarthActionTypeEnum::PAY_MONEY:
+            case HollowEarthActionTypeEnum::PayMoneys:
                 $this->createPayMoneysEvent($event);
                 return;
 
-            case HollowEarthActionTypeEnum::PAY_ITEM_AND_MONEY:
+            case HollowEarthActionTypeEnum::PayItemAndMoneys:
                 $this->createPayItemAndMoneysEvent($event);
                 return;
 
-            case HollowEarthActionTypeEnum::CHOOSE_ONE:
+            case HollowEarthActionTypeEnum::ChooseOne:
                 $this->createChooseOneEvent($event);
                 return;
 
@@ -180,7 +180,7 @@ class UpdateHollowEarthTileEventCommand extends PoppySeedPetsCommand
 
     private function createPetChallengeEvent(array &$event): void
     {
-        $event['type'] = HollowEarthActionTypeEnum::PET_CHALLENGE;
+        $event['type'] = HollowEarthActionTypeEnum::PetChallenge;
         $event['description'] = $this->askString('Description', null);
         $event['buttonText'] = $this->askString('Button text', 'OK');
         $event['baseRoll'] = 20;
@@ -268,7 +268,7 @@ class UpdateHollowEarthTileEventCommand extends PoppySeedPetsCommand
 
     private function createChooseOneEvent(array &$event): void
     {
-        $event['type'] = HollowEarthActionTypeEnum::CHOOSE_ONE;
+        $event['type'] = HollowEarthActionTypeEnum::ChooseOne;
         $event['description'] = $this->askString('Description', null);
 
         $event['buttons'] = [
@@ -287,7 +287,7 @@ class UpdateHollowEarthTileEventCommand extends PoppySeedPetsCommand
 
     private function createMoveToEvent(array &$event): void
     {
-        $event['type'] = HollowEarthActionTypeEnum::MOVE_TO;
+        $event['type'] = HollowEarthActionTypeEnum::MoveTo;
         $event['description'] = $this->askString('Description', null);
         $event['buttonText'] = $this->askString('Button text', 'OK');
 
@@ -313,7 +313,7 @@ class UpdateHollowEarthTileEventCommand extends PoppySeedPetsCommand
 
     private function createPayMoneysEvent(array &$event): void
     {
-        $event['type'] = HollowEarthActionTypeEnum::PAY_MONEY;
+        $event['type'] = HollowEarthActionTypeEnum::PayMoneys;
         $event['description'] = $this->askString('Description', null);
 
         do
@@ -328,7 +328,7 @@ class UpdateHollowEarthTileEventCommand extends PoppySeedPetsCommand
 
     private function createPayItemEvent(array &$event): void
     {
-        $event['type'] = HollowEarthActionTypeEnum::PAY_ITEM;
+        $event['type'] = HollowEarthActionTypeEnum::PayItem;
         $event['description'] = $this->askString('Description', null);
 
         while(true)
@@ -353,7 +353,7 @@ class UpdateHollowEarthTileEventCommand extends PoppySeedPetsCommand
 
     private function createPayItemAndMoneysEvent(array &$event): void
     {
-        $event['type'] = HollowEarthActionTypeEnum::PAY_ITEM_AND_MONEY;
+        $event['type'] = HollowEarthActionTypeEnum::PayItemAndMoneys;
         $event['description'] = $this->askString('Description', null);
 
         do

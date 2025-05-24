@@ -177,17 +177,17 @@ class HollowEarthPlayer
 
             switch($action['type'])
             {
-                case HollowEarthActionTypeEnum::PAY_ITEM:
+                case HollowEarthActionTypeEnum::PayItem:
                     $action['item'] = $this->currentAction['item'];
                     break;
-                case HollowEarthActionTypeEnum::PAY_MONEY:
+                case HollowEarthActionTypeEnum::PayMoneys:
                     $action['amount'] = $this->currentAction['amount'];
                     break;
-                case HollowEarthActionTypeEnum::PAY_ITEM_AND_MONEY:
+                case HollowEarthActionTypeEnum::PayItemAndMoneys:
                     $action['item'] = $this->currentAction['item'];
                     $action['amount'] = $this->currentAction['amount'];
                     break;
-                case HollowEarthActionTypeEnum::CHOOSE_ONE:
+                case HollowEarthActionTypeEnum::ChooseOne:
                     $action['buttons'] = $this->currentAction['buttons'];
                     break;
             }

@@ -72,9 +72,9 @@ class PlantSeedController
 
         $numberOfPlots = match ($seed->getItem()->getPlant()->getType())
         {
-            PlantTypeEnum::EARTH => $greenhouse->getMaxPlants(),
-            PlantTypeEnum::WATER => $greenhouse->getMaxWaterPlants(),
-            PlantTypeEnum::DARK => $greenhouse->getMaxDarkPlants(),
+            PlantTypeEnum::Earth => $greenhouse->getMaxPlants(),
+            PlantTypeEnum::Water => $greenhouse->getMaxWaterPlants(),
+            PlantTypeEnum::Dark => $greenhouse->getMaxDarkPlants(),
             default => throw new \Exception('Selected item doesn\'t have a valid plant type! Someone let Ben know he messed up!'),
         };
 

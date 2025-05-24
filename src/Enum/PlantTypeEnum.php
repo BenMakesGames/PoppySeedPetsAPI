@@ -18,7 +18,7 @@ final class PlantTypeEnum
 {
     use FakeEnum;
 
-    public const string EARTH = 'earth';
-    public const string WATER = 'water';
-    public const string DARK = 'dark';
+    public const string Earth = 'earth';
+    public const string Water = 'water';
+    public const string Dark = 'dark';
 }

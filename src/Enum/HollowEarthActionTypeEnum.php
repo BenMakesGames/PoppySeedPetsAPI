@@ -18,11 +18,11 @@ final class HollowEarthActionTypeEnum
 {
     use FakeEnum;
 
-    public const string PET_CHALLENGE = 'petChallenge';
-    public const string MOVE_TO = 'moveTo';
-    public const string PAY_ITEM = 'payItem?';
-    public const string PAY_MONEY = 'payMoneys?';
-    public const string PAY_ITEM_AND_MONEY = 'payItemAndMoneys?';
-    public const string CHOOSE_ONE = 'chooseOne';
-    public const string ONWARD = 'onward';
+    public const string PetChallenge = 'petChallenge';
+    public const string MoveTo = 'moveTo';
+    public const string PayItem = 'payItem?';
+    public const string PayMoneys = 'payMoneys?';
+    public const string PayItemAndMoneys = 'payItemAndMoneys?';
+    public const string ChooseOne = 'chooseOne';
+    public const string Onward = 'onward';
 }

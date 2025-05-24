@@ -86,9 +86,9 @@ class RunParkEventsCommand extends Command
 
         $parkEvent = match ($eventType)
         {
-            ParkEventTypeEnum::KIN_BALL => $this->playKinBall(),
-            ParkEventTypeEnum::TRI_D_CHESS => $this->playTriDChess(),
-            ParkEventTypeEnum::JOUSTING => $this->playJousting(),
+            ParkEventTypeEnum::KinBall => $this->playKinBall(),
+            ParkEventTypeEnum::TriDChess => $this->playTriDChess(),
+            ParkEventTypeEnum::Jousting => $this->playJousting(),
             default => throw new \Exception('oops: support for events of type "' . $eventType . '" has not been coded!'),
         };
 
@@ -122,7 +122,7 @@ class RunParkEventsCommand extends Command
     {
         $idealNumberOfPets = 12;
 
-        $pets = self::findPetsEligibleForParkEvent($this->em, ParkEventTypeEnum::KIN_BALL, $idealNumberOfPets * 3);
+        $pets = self::findPetsEligibleForParkEvent($this->em, ParkEventTypeEnum::KinBall, $idealNumberOfPets * 3);
 
         $pets = $this->sliceSimilarLevel($pets, $idealNumberOfPets, function(Pet $a, Pet $b) {
             return KinBallParticipant::getSkill($a) <=> KinBallParticipant::getSkill($b);
@@ -144,7 +144,7 @@ class RunParkEventsCommand extends Command
     {
         $idealNumberOfPets = $this->rng->rngNextFromArray([ 8, 16, 16 ]);
 
-        $pets = self::findPetsEligibleForParkEvent($this->em, ParkEventTypeEnum::TRI_D_CHESS, $idealNumberOfPets * 3);
+        $pets = self::findPetsEligibleForParkEvent($this->em, ParkEventTypeEnum::TriDChess, $idealNumberOfPets * 3);
 
         $pets = $this->sliceSimilarLevel($pets, $idealNumberOfPets, function(Pet $a, Pet $b) {
             return TriDChessParticipant::getSkill($a) <=> TriDChessParticipant::getSkill($b);
@@ -169,7 +169,7 @@ class RunParkEventsCommand extends Command
     {
         $idealNumberOfPets = $this->rng->rngNextFromArray([ 16, 16, 32 ]);
 
-        $pets = self::findPetsEligibleForParkEvent($this->em, ParkEventTypeEnum::JOUSTING, $idealNumberOfPets * 3);
+        $pets = self::findPetsEligibleForParkEvent($this->em, ParkEventTypeEnum::Jousting, $idealNumberOfPets * 3);
 
         $pets = $this->sliceSimilarLevel($pets, $idealNumberOfPets, function(Pet $a, Pet $b) {
             return $this->joustingService->getPetSkill($a) <=> $this->joustingService->getPetSkill($b);

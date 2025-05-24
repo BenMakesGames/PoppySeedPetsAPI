@@ -20,24 +20,24 @@ use Symfony\Component\Serializer\Attribute\Groups;
 final class PetShelterPet
 {
     public const array PetNames = [
-        'Aalina', 'Aaron', 'Abrahil', 'Addy', 'Aedoc', 'Aelfric', 'Aimery', 'Alain','Alcubierre', 'Alda', 'Aldreda', 'Aldus',
-        'Alienora', 'Aliette', 'Amée', 'Amis', 'Amphelise', 'Arlotto', 'Artaca', 'Auberi', 'Aureliana',
+        'Aalina', 'Aaron', 'Abrahil', 'Addy', 'Aedoc', 'Aelfric', 'Aimery', 'Alain', 'Alcubierre', 'Alda', 'Aldreda',
+        'Aldus', 'Alienora', 'Aliette', 'Amée', 'Amis', 'Amphelise', 'Arlotto', 'Artaca', 'Auberi', 'Aureliana',
 
-        'Batu', 'Belka', 'Berislav', 'Bezzhen', 'Biedeluue', 'Blaise', 'Blicze', 'Bogdan', 'Bogdana', 'Bogumir', 'Bohr', 'Borscht', 'Bradan',
-        'Bratomil',
+        'Batu', 'Belka', 'Berislav', 'Bezzhen', 'Biedeluue', 'Blaise', 'Blicze', 'Bogdan', 'Bogdana', 'Bogumir', 'Bohr',
+        'Borscht', 'Bradan', 'Bratomil',
 
-        'Cat', 'Cateline', 'Ceinguled', 'Ceri', 'Ceslinus', 'Chedomir', 'Christien', 'Clement', 'Coilean', 'Col', 'Cookie', 'Curie', 'Cynbel',
-        'Cyra', 'Czestobor',
+        'Cat', 'Cateline', 'Ceinguled', 'Ceri', 'Ceslinus', 'Chedomir', 'Christien', 'Clement', 'Coilean', 'Col',
+        'Cookie', 'Curie', 'Cynbel', 'Cyra', 'Czestobor',
 
         'Dagena', 'Dalibor', 'Denyw', 'Dicun', 'Disideri', 'Dmitrei', 'Dog', 'Dorothy', 'Dragomir', 'Dye',
 
-        'Eda', 'Eileve', 'Elena', 'Elis', 'Elric', 'Emilija', 'Enguerrand', 'Enim', 'Enynny', 'Erasmus', 'Estienne', 'Euler',
-        'Eve',
+        'Eda', 'Eileve', 'Elena', 'Elis', 'Elric', 'Emilija', 'Enguerrand', 'Enim', 'Enynny', 'Erasmus', 'Estienne',
+        'Euler', 'Eve',
 
         'Felix', 'Fennel', 'Fiora', 'Firmin', 'Fluri', 'Francis', 'Fritz', 'Frotlildis',
 
-        'Galine', 'Garnier', 'Garsea', 'Gene', 'Gennoveus', 'Genoveva', 'Geoffroi', 'Gidie', 'Giliana', 'Godelive', 'Gomes',
-        'Gosse', 'Gregory', 'Gubin', 'Guiscard', 'Gwennan',
+        'Galine', 'Garnier', 'Garsea', 'Gene', 'Gennoveus', 'Genoveva', 'Geoffroi', 'Gidie', 'Giliana', 'Godelive',
+        'Gomes', 'Gosse', 'Gregory', 'Gubin', 'Guiscard', 'Gwennan',
 
         'Hamon', 'Hans', 'Hideki', 'Hippu', 'Honey', 'Hopcyn', 'Hunfrid',
 
@@ -45,13 +45,14 @@ final class PetShelterPet
 
         'Jadviga', 'Jehanne', 'Jocosa', 'Johannes', 'Josse', 'Juniper', 'Jurian',
 
-        'Kaija', 'Kain', 'Kale', 'Karma', 'Kazimir', 'Kepler', 'Kima', 'Kinborough', 'Kint', 'Kirik', 'Klara', 'Kryspin', 'Kukka',
+        'Kaija', 'Kain', 'Kale', 'Karma', 'Kazimir', 'Kepler', 'Kima', 'Kinborough', 'Kint', 'Kirik', 'Klara',
+        'Kryspin', 'Kukka',
 
         'Larkin', 'Leland', 'Leodhild', 'Leon', 'Levi', 'Lorencio', 'Lowri', 'Lucass', 'Ludmila', 'Lumi',
 
         'Maccos', 'Maeldoi', 'Magdalena', 'Makrina', 'Malik', 'Margaret', 'Marsley', 'Masayasu', 'Mateline',
-        'Mathias', 'Matty', 'Maurifius', 'Mayonnaise', 'Meduil', 'Melita', 'Meoure', 'Merewen', 'Milian', 'Millicent', 'Mold',
-        'Molle', 'Montgomery', 'Morys', 'Muriel',
+        'Mathias', 'Matty', 'Maurifius', 'Mayonnaise', 'Meduil', 'Melita', 'Meoure', 'Merewen', 'Milian', 'Millicent',
+        'Mold', 'Molle', 'Montgomery', 'Morys', 'Muriel',
 
         'Nascimbene', 'Nate', 'Newt', 'Nicholina', 'Nilus', 'Noe', 'Noll', 'Nuño',
 
@@ -59,11 +60,13 @@ final class PetShelterPet
 
         'Paperclip', 'Pascal', 'Perkhta', 'Pesczek', 'Poppy', 'Pridbjørn', 'Pyry',
 
-        'Radomil', 'Raven', 'Raymond', 'Regina', 'Reina', 'Rihanna', 'Rimoete', 'Rocatos', 'Roger', 'Rosalind', 'Rosehip', 'Rostislav', 'Rozalia', 'Rum', 'Runne', 'Ryd',
+        'Radomil', 'Raven', 'Raymond', 'Regina', 'Reina', 'Rihanna', 'Rimoete', 'Rocatos', 'Roger', 'Rosalind',
+        'Rosehip', 'Rostislav', 'Rozalia', 'Rum', 'Runne', 'Ryd',
 
         'Saewine', 'Sancha', 'Sandivoi', 'Schmitty', 'Seppo', 'Sisu', 'Skenfrith', 'Sulimir', 'Sunnifa', 'Sybil',
 
-        'Taki', 'Talan', 'Tede', 'Temüjin', 'Tephaine', 'Tetris', 'Theodore', 'Tiecia', 'Timur', 'Tomila', 'Toregene', 'Trenewydd', 'Tuli',
+        'Taki', 'Talan', 'Tede', 'Temüjin', 'Tephaine', 'Tetris', 'Theodore', 'Tiecia', 'Timur', 'Tomila', 'Toregene',
+        'Trenewydd', 'Tuli',
 
         'Ulla', 'Umami', 'Umbra', 'Úna', 'Unit', 'Usk',
 

@@ -32,7 +32,7 @@ class GetSeedsController
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
     public function getSeeds(
         ResponseService $responseService, EntityManagerInterface $em, UserAccessor $userAccessor,
-        string $type = PlantTypeEnum::EARTH,
+        string $type = PlantTypeEnum::Earth,
     ): JsonResponse
     {
         if(!PlantTypeEnum::isAValue($type))

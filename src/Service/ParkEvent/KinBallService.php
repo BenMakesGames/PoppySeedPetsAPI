@@ -81,7 +81,7 @@ class KinBallService implements ParkEventInterface
         if(!$this->isGoodNumberOfPets(count($pets)))
             throw new \InvalidArgumentException('Exactly 12 pets are required to play Kin-Ball.');
 
-        $parkEvent = (new ParkEvent(ParkEventTypeEnum::KIN_BALL))
+        $parkEvent = (new ParkEvent(ParkEventTypeEnum::KinBall))
             ->addParticipants($pets)
         ;
 

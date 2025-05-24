@@ -79,31 +79,31 @@ class PlayController
         {
             switch($action['type'])
             {
-                case HollowEarthActionTypeEnum::PAY_ITEM:
+                case HollowEarthActionTypeEnum::PayItem:
                     $this->continueActingPayItem($action, $player, $request->request, $hollowEarthService, $em);
                     break;
 
-                case HollowEarthActionTypeEnum::PAY_MONEY:
+                case HollowEarthActionTypeEnum::PayMoneys:
                     $this->continueActingPayMoney($action, $player, $request->request, $hollowEarthService, $transactionService);
                     break;
 
-                case HollowEarthActionTypeEnum::PAY_ITEM_AND_MONEY:
+                case HollowEarthActionTypeEnum::PayItemAndMoneys:
                     $this->continueActingPayItemAndMoney($action, $player, $request->request, $hollowEarthService, $em, $transactionService);
                     break;
 
-                case HollowEarthActionTypeEnum::PET_CHALLENGE:
+                case HollowEarthActionTypeEnum::PetChallenge:
                     $this->continueActingPetChallenge($action, $player, $request->request, $hollowEarthService, $rng, $em);
                     break;
 
-                case HollowEarthActionTypeEnum::CHOOSE_ONE:
+                case HollowEarthActionTypeEnum::ChooseOne:
                     $this->continueActingChooseOne($action, $player, $request->request, $hollowEarthService);
                     break;
 
-                case HollowEarthActionTypeEnum::MOVE_TO:
+                case HollowEarthActionTypeEnum::MoveTo:
                     $hollowEarthService->moveTo($player, $action['id']);
                     break;
 
-                case HollowEarthActionTypeEnum::ONWARD:
+                case HollowEarthActionTypeEnum::Onward:
                     $player->setCurrentAction(null);
                     break;
 
