@@ -407,7 +407,7 @@ class HollowEarthService
             $this->transactionService->getMoney($player->getUser(), $event['receiveMoneys'], $player->getChosenPet()->getName() . ' got this while exploring the Hollow Earth.');
 
         if(array_key_exists('changeDirection', $event))
-            $player->setCurrentDirection($event['changeDirection']);
+            $player->setCurrentDirection(HollowEarthMoveDirectionEnum::from($event['changeDirection']));
 
         if(array_key_exists('type', $event))
             $player->setCurrentAction($event);
